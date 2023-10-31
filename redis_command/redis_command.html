@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Redis常用命令手册</title>
+<meta name="description" content="这部Redis命令手册介绍了常用的Redis命令，包括键（Key）命令和服务端命令、客户端命令、数据类型命令等。Redis命令是操作Redis数据库的必备知识，每一位Redis管理员都应该掌握常用命令。" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="../view/niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="redis_command.html">Redis常用命令手册</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Redis常用命令手册</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">Redis 命令大致可分为以下几种：
+<ul>
+<li>
+服务端（server）命令</li>
+<li>
+客户端（client）命令</li>
+<li>
+键命令（key）</li>
+<li>
+数据类型命令</li>
+<li>
+功能应用命令</li>
+</ul>
+<br />
+这本《Redis 常用命令手册》介绍了 Redis 中经常使用的命令，包括键命令和数据类型命令，其中数据类型命令包括 String、List、Hash、Set 以及 Sorted Set。
+<h2>
+键（Key）命令</h2>
+我们知道 Redis 是 key-value 型数据库，使用 key 对 value 进行存储，因此，键（Key）命令是 Redis 中经常使用的一类命令。常用的键命令如下所示：<br />
+<table style="width:100%">
+<tbody>
+<tr>
+<th>
+命令</th>
+<th>
+说明</th>
+</tr>
+<tr>
+<td>
+<a href="../redis2/del.html" target="_blank">DEL</a></td>
+<td>
+若键存在的情况下，该命令用于删除键</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/dump.html" target="_blank">DUMP</a></td>
+<td>
+用于序列化给定 key ，并返回被序列化的值</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/exists.html" target="_blank">EXISTS</a></td>
+<td>
+用于检查键是否存在，若存在则返回 1，否则返回 0</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/expire.html" target="_blank">EXPIRE</a></td>
+<td>
+设置 key 的过期时间，以秒为单位</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/expireat.html" target="_blank">EXPIREAT</a></td>
+<td>
+该命令与 EXPIRE 相似，用于为 key 设置过期时间，不同在于，它的时间参数值采用的是时间戳格式。</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/keys.html" target="_blank">KEYS</a></td>
+<td>
+此命令用于查找与指定&nbsp;pattern 匹配的 key</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/move.html" target="_blank">MOVE</a></td>
+<td>
+将当前数据库中的 key 移动至指定的数据库中（默认存储为 0 库，可选 1-15中的任意库）</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/persist.html" target="_blank">PERSIST</a></td>
+<td>
+该命令用于删除 key 的过期时间，然后 key 将一直存在，不会过期</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/pexpire.html" target="_blank">PEXPIRE</a></td>
+<td>
+设置 key 的过期，以毫秒为单位</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/randomkey.html" target="_blank">RANDOMKEY</a></td>
+<td>
+从当前数据库中随机返回一个 key</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/rename.html" target="_blank">RENAME</a></td>
+<td>
+修改 key 的名称</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/scan.html" target="_blank">SCAN</a></td>
+<td>
+基于游标的迭代器，用于迭代数据库中存在的所有键，cursor 指的是迭代游标</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/ttl.html" target="_blank">TTL</a></td>
+<td>
+用于检查 key 还剩多长时间过期，以秒为单位</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/type.html" target="_blank">TYPE</a></td>
+<td>
+该命令用于获取 value 的数据类型。</td>
+</tr>
+</tbody>
+</table>
+<h2>
+Hash 命令</h2>
+Hash（哈希散列）是 Redis 基本数据类型之一，它以字符串映射表的形式来进行存储。Hash 特别适合用于存储对象。常用的命令如下所示：<br />
+<table style="width:100%">
+<tbody>
+<tr>
+<th>
+命令</th>
+<th>
+说明</th>
+</tr>
+<tr>
+<td>
+<a href="../redis2/hdel.html" target="_blank">HDEL</a></td>
+<td>
+用于删除一个或多个哈希表字段</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/hexists.html" target="_blank">HEXISTS</a></td>
+<td>
+用于确定哈希字段是否存在</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/hget.html" target="_blank">HGET</a></td>
+<td>
+获取存储在 key 中的哈希字段的值</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/hgetall.html" target="_blank">HGETALL</a></td>
+<td>
+获取存储在 key 中的所有哈希字段值</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/hincrby.html" target="_blank">HINCRBY</a></td>
+<td>
+为存储在 key 中的哈希表指定字段做整数增量运算&nbsp;</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/hkeys.html" target="_blank">HKEYS</a></td>
+<td>
+获取存储在 key 中的哈希表的所有字段</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/hlen.html" target="_blank">HLEN</a></td>
+<td>
+获取存储在 key 中的哈希表的字段数量</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/hset.html" target="_blank">HSET</a></td>
+<td>
+用于设置存储在 key 中的哈希表字段的值</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/hvals.html" target="_blank">HVALS</a></td>
+<td>
+用于获取哈希表中的所有值</td>
+</tr>
+</tbody>
+</table>
+<h2>
+String 命令</h2>
+Strings（字符串）结构是 Redis 的基本数据类型之一，我们可以通过相关字符串命令对其进行操作，比如设置、检索、删除等等。字符串类型有诸多的应用场景，比如微博粉丝的关注与取消等。<br />
+<br />
+下面介绍了 Redis 中常营的字符串命令：<br />
+<table style="width:100%;">
+<tbody>
+<tr>
+<th>
+命令</th>
+<th>
+说明</th>
+</tr>
+<tr>
+<td>
+<a href="../redis2/append.html" target="_blank">APPEND</a></td>
+<td>
+该命令将 value 追加到 key 所存储值的末尾</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/bitcount.html" target="_blank">BITCOUNT</a></td>
+<td>
+该命令用于计算字符串中，被设置为 1 的比特位的数量。</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/decr.html" target="_blank">DECR</a></td>
+<td>
+将 key 所存储的整数值减&nbsp;1</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/decrby.html" target="_blank">DECRBY</a></td>
+<td>
+将 key 所储存的值减去给定的递减值（decrement）</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/get.html" target="_blank">GET</a></td>
+<td>
+用于检索指定键的值</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/getbit.html" target="_blank">GETBIT</a></td>
+<td>
+对 key 所存储的字符串值，获取其指定偏移量上的位（bit）</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/getrange.html" target="_blank">GETRANGE</a></td>
+<td>
+返回 key 中字符串值的子字符</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/getset.html" target="_blank">GETSET</a></td>
+<td>
+将给定 key 的值设置为 value，并返回 key 的旧值</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/incr.html" target="_blank">INCR</a></td>
+<td>
+将 key 所存储的整数值加 1</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/incrby.html" target="_blank">INCRBY</a></td>
+<td>
+将 key 所储存的值加上给定的递增值（increment）</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/incrbyfloat.html" target="_blank">INCRBYFLOAT</a></td>
+<td>
+将 key 所储存的值加上指定的浮点递增值（increment）</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/mget.html" target="_blank">MGET</a></td>
+<td>
+一次性获取一个或多个&nbsp;key 所存储的值</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/mset.html" target="_blank">MSET</a></td>
+<td>
+该命令允许同时设置多个键值对</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/msetnx.html" target="_blank">MSETNX</a></td>
+<td>
+当指定的 key 都不存在时，用于设置多个键值对</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/set.html" target="_blank">SET</a></td>
+<td>
+用于设定指定键的值</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/setbit.html" target="_blank">SETBIT</a></td>
+<td>
+对 key 所储存的字符串值，设置或清除指定偏移量上的位(bit)</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/setex.html" target="_blank">SETEX</a></td>
+<td>
+将值 value 存储到 key中 ，并将 key 的过期时间设为 seconds (以秒为单位)</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/strlen.html" target="_blank">STRLEN</a></td>
+<td>
+返回 key 所储存的字符串值的长度</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/setnx.html" target="_blank">SETNX</a></td>
+<td>
+当 key 不存在时设置 key 的值</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/setrange.html" target="_blank">SETRANGE</a></td>
+<td>
+从偏移量 offset&nbsp;开始，使用指定的 value 覆盖的 key 所存储的部分字符串值</td>
+</tr>
+</tbody>
+</table>
+<h2>
+List 命令</h2>
+List 是 Redis 中最常用数据类型之一。Redis 提供了诸多用于操作列表类型的命令，通过这些命令你可以实现将一个元素添加到列表的头部，或者尾部等诸多操作。<br />
+<br />
+List 常用的命令如下所示：<br />
+<table width="100%">
+<tbody>
+<tr>
+<th>
+命令</th>
+<th>
+说明</th>
+</tr>
+<tr>
+<td>
+<a href="../redis2/blpop.html" target="_blank">BLPOP</a></td>
+<td>
+用于删除并返回列表中的第一个元素（头部操作），如果列表中没有元素，就会发生阻塞，直到列表等待超时或发现可弹出元素为止</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/brpop.html" target="_blank">BRPOP</a></td>
+<td>
+用于删除并返回列表中的最后一个元素（尾部操作），如果列表中没有元素，就会发生阻塞，直到列表等待超时或发现可弹出元素为止</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/brpoplpush.html" target="_blank">BRPOPLPUSH</a></td>
+<td>
+从列表中取出最后一个元素，并插入到另一个列表的头部。如果列表中没有元素，就会发生阻塞，直到等待超时或发现可弹出元素时为止</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/lindex_command.html" target="_blank">LINDEX</a></td>
+<td>
+通过索引获取列表中的元素</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/linsert.html" target="_blank">LINSERT</a></td>
+<td>
+指定列表中一个元素在它之前或之后插入另外一个元素</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/llen.html" target="_blank">LLEN</a></td>
+<td>
+用于获取列表的长度</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/lpop.html" target="_blank">LPOP</a></td>
+<td>
+从列表的头部弹出元素，默认为第一个元素</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/lpush.html" target="_blank">LPUSH</a></td>
+<td>
+在列表头部插入一个或者多个值</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/lpushx.html" target="_blank">LPUSHX</a></td>
+<td>
+当储存列表的 key 存在时，用于将值插入到列表头部</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/lrange.html" target="_blank">LRANGE</a></td>
+<td>
+获取列表指定范围内的元素</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/lrem.html" target="_blank">LREM</a></td>
+<td>
+表示从列表中删除元素与 value 相等的元素。count 表示删除的数量，为 0 表示全部移除</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/lset.html" target="_blank">LSET</a></td>
+<td>
+表示通过其索引设置列表中元素的值</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/ltrim.html" target="_blank">LTRIM</a></td>
+<td>
+保留列表中指定范围内的元素值</td>
+</tr>
+</tbody>
+</table>
+<h2>
+Set 命令</h2>
+Redis set 数据类型由键值对组成，这些键值对具有无序、唯一的性质，这与 Python 的 set 相似。当集合中最后一个元素被移除之后，该数据结构也会被自动删除，内存也同样会被收回。<br />
+<br />
+由于 set 集合可以实现去重，因此它有很多适用场景，比如用户抽奖活动，使用 set 集合可以保证同一用户不被第二次选中。<br />
+<br />
+Redis set 常用的命令如下所示：
+<table style="width:100%;">
+<tbody>
+<tr>
+<th>
+命令</th>
+<th>
+说明</th>
+</tr>
+<tr>
+<td>
+<a href="../redis2/sadd.html" target="_blank">SADD</a></td>
+<td>
+向集合中添加一个或者多个元素，并且自动去重</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/scard.html" target="_blank">SCARD</a></td>
+<td>
+返回集合中元素的个数</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/sdiff.html" target="_blank">SDIFF</a></td>
+<td>
+求两个或对多个集合的差集</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/sdiffstore.html" target="_blank">SDIFFSTORE</a></td>
+<td>
+求两个集合或多个集合的差集，并将结果保存到指定的集合(key)中</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/sinter.html" target="_blank">SINTER</a></td>
+<td>
+求两个或多个集合的交集</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/sinterstore.html" target="_blank">SINTERSTORE</a></td>
+<td>
+求两个或多个集合的交集，并将结果保存到指定的集合(key)中</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/smembers.html" target="_blank">SMEMBERS</a></td>
+<td>
+查看集合中所有元素</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/smove.html" target="_blank">SMOVE</a></td>
+<td>
+将集合中的元素移动到指定的集合中</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/spop.html" target="_blank">SPOP</a></td>
+<td>
+弹出指定数量的元素</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/srandmember.html" target="_blank">SRANDMEMBER</a></td>
+<td>
+随机从集合中返回指定数量的元素，默认返回 1个</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/srem.html" target="_blank">SREM</a></td>
+<td>
+删除一个或者多个元素，若元素不存在则自动忽略</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/sunion.html" target="_blank">SUNION</a></td>
+<td>
+求两个或者多个集合的并集</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/sunsionstore.html" target="_blank">SUNIONSTORE</a></td>
+<td>
+求两个或者多个集合的并集，并将结果保存到指定的集合(key)中</td>
+</tr>
+</tbody>
+</table>
+<h2>
+Zset 命令</h2>
+zset 是 Redis 提供的最具特色的数据类型之一，首先它是一个 set，这保证了内部 value 值的唯一性，其次它给每个 value 添加了一个 score（分值）属性，通过对分值的排序实现了有序化。比如用 zset 结构来存储学生的成绩，value 值代表学生的 ID，score 则是的考试成绩。我们可以对成绩按分数进行排序从而得到学生的的名次。<br />
+<br />
+下面列出了 zset 的常用命令，如下所示：
+<table style="width:100%">
+<tbody>
+<tr>
+<th>
+命令</th>
+<th>
+说明</th>
+</tr>
+<tr>
+<td>
+<a href="../redis2/zadd.html" target="_blank">ZADD</a></td>
+<td>
+用于将一个或多个成员添加到有序集合中，或者更新已存在成员的 score 值</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/zcard.html" target="_blank">ZCARD</a></td>
+<td>
+获取有序集合中成员的数量</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/zcount.html" target="_blank">ZCOUNT</a></td>
+<td>
+用于统计有序集合中指定 score 值范围内的元素个数</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/zincrby.html" target="_blank">ZINCRBY</a></td>
+<td>
+用于增加有序集合中成员的分值</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/zinterstore.html" target="_blank">ZINTERSTORE</a></td>
+<td>
+求两个或者多个有序集合的交集，并将所得结果存储在新的 key 中</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/zrange.html" target="_blank">ZRANGE</a></td>
+<td>
+返回有序集合中指定索引区间内的成员数量</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/zrangebylex.html" target="_blank">ZRANGEBYLEX</a></td>
+<td>
+返回有序集中指定字典区间内的成员数量</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/zrangebyscore.html" target="_blank">ZRANGEBYSCORE</a></td>
+<td>
+返回有序集合中指定分数区间内的成员</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/zrank.html" target="_blank">ZRANK</a></td>
+<td>
+返回有序集合中指定成员的排名</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/zrem.html" target="_blank">ZREM</a></td>
+<td>
+移除有序集合中的一个或多个成员</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/zremrangebyrank.html" target="_blank">ZREMRANGEBYRANK</a></td>
+<td>
+移除有序集合中指定排名区间内的所有成员</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/zremrangebyscore.html" target="_blank">ZREMRANGEBYSCORE</a></td>
+<td>
+移除有序集合中指定分数区间内的所有成员</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/zrevrange.html" target="_blank">ZREVRANGE</a></td>
+<td>
+返回有序集中指定区间内的成员，通过索引，分数从高到低</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/zrevrank.html" target="_blank">ZREVRANK</a></td>
+<td>
+返回有序集合中指定成员的排名，有序集成员按分数值递减(从大到小)排序</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/zscore.html" target="_blank">ZSCORE</a></td>
+<td>
+返回有序集中，指定成员的分数值</td>
+</tr>
+<tr>
+<td>
+<a href="../redis2/zunionstore.html" target="_blank">ZUNIONSTORE</a></td>
+<td>
+求两个或多个有序集合的并集，并将返回结果存储在新的 key 中</td>
+</tr>
+</tbody>
+</table>
+<br />
+</div>
+<div id="ggxc-weixin-listbottom" class="ggxc-box clearfix">
+<div class="left" style="width: 500px;">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。</p>
+<p>不定期发布学习路线+书籍文档+优质视频，为初学者指点迷津。</p>
+<p>绑定网站登录功能，再也不用担心密码丢失。</p>
+<p>编程11年，建站10年，创业7年，写作6年，既有硬知识，也有软技能。</p>
+<p>长期更新，坚持原创，敢说真话，凡事有态度。</p>
+</div>
+<div class="right" style="width: 120px; text-align:center;">
+<img width="120" src="../templets/new/images/material/qrcode_original.png" alt="公众号二维码" /><br>
+<span class="col-green">微信扫码即可关注</span>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 't_' + 406;
+window.arcId = "2fb6GPEPdC2FDyVdeZvd73VxmoRFQ/rqFLVlu2LVMmS4p8WrmvbBt1EDug";
+window.typeidChain = "406";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="../view/8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="../view/8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="../view/8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="../view/9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="../view/8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/redis_command/";
+window.nextPageURL = "/redis_command/keys/";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

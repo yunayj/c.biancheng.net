@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C++比较两个数组是否相等（详解版）</title>
+<meta name="description" content="不能使用 == 运算符与两个数组的名称来确定数组是否相等。以下代码似乎是在比较两个数组的内容，但实际上并不是。 int arrayA[] = { 5, 10, 15, 20, 25 };int arrayB[] = { 5, 10, 15, 20, 25 };if (array" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C++比较两个数组是否相等（详解版）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">不能使用 <code>==</code> 运算符与两个数组的名称来确定数组是否相等。以下代码似乎是在比较两个数组的内容，但实际上并不是。<br />
+<pre class="cpp">
+int arrayA[] = { 5, 10, 15, 20, 25 };
+int arrayB[] = { 5, 10, 15, 20, 25 };
+if (arrayA == arrayB) // 语句错误
+    cout &lt;&lt; &quot;The arrays are the same. \n&quot;;
+else
+    cout &lt;&lt; &quot;The arrays are not the same.\n&quot;;</pre>
+在对数组名称使用 <code>==</code> 运算符时，运算符会比较数组的开始内存地址，而不是数组的内容。这个代码中的两个数组显然会有不同的内存地址。因此，表达式 arrayA == arrayB 的结果为 false，代码将报告数组不相同。<br />
+<br />
+要比较两个数组的内容，则必须比较它们各自的元素。例如，请看以下代码：<br />
+<pre class="cpp">
+const int SIZE = 5;
+int arrayA[SIZE] = { 5, 10, 15, 20, 25 };
+int arrayB[SIZE] = { 5, 10, 15, 20, 25 };
+bool arraysEqual = true; // 标志变量
+int count = 0; //循环控制变量
+
+//确定元素是否包含相同的数据
+while (arraysEqual &amp;&amp; count &lt; SIZE)
+{
+    if (arrayA[count] != arrayB[count])
+        arraysEqual = false;
+    count++;
+}
+//显示合适的消息
+if (arraysEqual)
+    cout &lt;&lt; &quot;The arrays are equal.\n&quot;;
+else
+    cout &lt;&lt; &quot;The arrays are not equal.\n&quot;;</pre>
+此代码确定 arrayA 和 arrayB 是否包含相同的值。初始化为 true 的 bool 变量 arraysEqual 将表示数组是否相等。另一个初始化为 0 的变量 count 被用作循环计数器。<br />
+<br />
+接下来开始一个 <a href='180_2.html' target='_blank'>while 循环</a>。只要 arraysEqual 为 true 并且计数器变量 count 小于 SIZE，循环就会执行。在每次迭代中，它会比较数组中不同的对应元素。如果它找到两个具有不同值的相应元素，那么 arraysEqual 变量将设置为 false，这将允许退出循环而不检查更多值。<br />
+<br />
+循环完成后，if 语句将测试 arraysEqual 变量。如果变量仍然为 true，则说明没有发现差异，数组是相等的，然后就会显示一条消息指示该结论；否则，数组不相等，又会显示另外一条不同的消息。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="79_3.html" title="Go语言类型与接口的关系" target="_blank">Go语言类型与接口的关系</a></li>
+<li><a href="1082_2.html" title="Linux dmesg命令：显示开机信息" target="_blank">Linux dmesg命令：显示开机信息</a></li>
+<li><a href="vip_3232_2.html" title="Shell配置文件（配置脚本）的加载" target="_blank">Shell配置文件（配置脚本）的加载</a></li>
+<li><a href="5370_2.html" title="JS注释（多行注释+单行注释）" target="_blank">JS注释（多行注释+单行注释）</a></li>
+<li><a href="5581_2.html" title="JS字符串查找（6种方法）" target="_blank">JS字符串查找（6种方法）</a></li>
+<li><a href="5715_2.html" title="Go语言封装简介及实现细节" target="_blank">Go语言封装简介及实现细节</a></li>
+<li><a href="../ml_alg/dcision-cut_2.html" title="决策树算法和剪枝原理" target="_blank">决策树算法和剪枝原理</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 1418;
+window.arcId = "9f6b3PNVPXFH149jDKCm0XE9ivsQeyk/r5Lp6Nrs2bwfIDEs+ayMk+roUsI";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

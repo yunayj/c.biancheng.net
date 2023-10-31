@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Python爬虫入门教程：超级简单的Python爬虫教程</title>
+<meta name="description" content="这是一篇从实战出发，面向 0 基础学员的 Python 爬虫入门教程，只要耐心读完本文，30 分钟即可学会编写简单的 Python 爬虫。 本篇 Python 爬虫教程主要讲解了解网页、使用 requests 库抓取网" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Python爬虫入门教程：超级简单的Python爬虫教程</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">这是一篇详细介绍 <a href='../python/python.html' target='_blank'>Python</a> 爬虫入门的教程，从实战出发，适合初学者。读者只需在阅读过程紧跟文章思路，理清相应的实现代码，30 分钟即可学会编写简单的 Python 爬虫。<br />
+<br />
+这篇 Python 爬虫教程主要讲解以下 5 部分内容：
+<ol>
+<li>
+了解网页；</li>
+<li>
+使用 requests 库抓取网站数据；</li>
+<li>
+使用 Beautiful Soup 解析网页；</li>
+<li>
+清洗和组织数据；</li>
+<li>
+爬虫攻防战；</li>
+</ol>
+<h2>
+了解网页</h2>
+以中国旅游网首页（<a href="http://www.cntour.cn/" target="_blank">http://www.cntour.cn/</a>）为例，抓取中国旅游网首页首条信息（标题和链接），数据以明文的形式出面在源码中。在中国旅游网首页，按快捷键【Ctrl+U】打开源码页面，如图 1 所示。
+<div style="text-align: center;">
+<br />
+<img alt="" src="../uploads/allimg/190117/2-1Z11G63943S6.jpg" /><br />
+图 1 中国旅游网首页源码</div>
+<h3>
+认识网页结构</h3>
+网页一般由三部分组成，分别是 HTML（超文本标记语言）、CSS（层叠样式表）和 JScript（活动脚本语言）。<br />
+<h4>
+HTML</h4>
+HTML 是整个网页的结构，相当于整个网站的框架。带&ldquo;＜&rdquo;、&ldquo;＞&rdquo;符号的都是属于 HTML 的标签，并且标签都是成对出现的。<br />
+<br />
+常见的标签如下：<br />
+<p class="info-box">
+&lt;html&gt;..&lt;/html&gt; 表示标记中间的元素是网页<br />
+&lt;body&gt;..&lt;/body&gt; 表示用户可见的内容<br />
+&lt;div&gt;..&lt;/div&gt; 表示框架<br />
+&lt;p&gt;..&lt;/p&gt; 表示段落<br />
+&lt;li&gt;..&lt;/li&gt;表示列表<br />
+&lt;img&gt;..&lt;/img&gt;表示图片<br />
+&lt;h1&gt;..&lt;/h1&gt;表示标题<br />
+&lt;a href=&quot;&quot;&gt;..&lt;/a&gt;表示超链接</p>
+<h4>
+CSS</h4>
+CSS 表示样式，图 1 中第 13 行＜style type=＂text/css＂＞表示下面引用一个 CSS，在 CSS 中定义了外观。<br />
+<h4>
+JScript</h4>
+JScript 表示功能。交互的内容和各种特效都在 JScript 中，JScript 描述了网站中的各种功能。<br />
+<br />
+如果用人体来比喻，HTML 是人的骨架，并且定义了人的嘴巴、眼睛、耳朵等要长在哪里。CSS 是人的外观细节，如嘴巴长什么样子，眼睛是双眼皮还是单眼皮，是大眼睛还是小眼睛，皮肤是黑色的还是白色的等。JScript 表示人的技能，例如跳舞、唱歌或者演奏乐器等。<br />
+<h3>
+写一个简单的 HTML</h3>
+通过编写和修改 HTML，可以更好地理解 HTML。首先打开一个记事本，然后输入下面的内容：<br />
+<p class="info-box">
+&lt;html&gt;<br />
+&lt;head&gt;<br />
+&nbsp;&nbsp;&nbsp; &lt;title&gt; Python 3 爬虫与数据清洗入门与实战&lt;/title&gt;<br />
+&lt;/head&gt;<br />
+&lt;body&gt;<br />
+&nbsp;&nbsp;&nbsp; &lt;div&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;p&gt;Python 3爬虫与数据清洗入门与实战&lt;/p&gt;<br />
+&nbsp;&nbsp;&nbsp; &lt;/div&gt;<br />
+&nbsp;&nbsp;&nbsp; &lt;div&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ul&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;li&gt;&lt;a href=&quot;http://c.biancheng.net&quot;&gt;爬虫&lt;/a&gt;&lt;/li&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;li&gt;数据清洗&lt;/li&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/ul&gt;<br />
+&nbsp;&nbsp;&nbsp; &lt;/div&gt;<br />
+&lt;/body&gt;</p>
+输入代码后，保存记事本，然后修改文件名和后缀名为&quot;HTML.html&quot;；<br />
+<br />
+运行该文件后的效果，如图 2 所示。
+<div style="text-align: center;">
+<br />
+<img alt="" src="../uploads/allimg/190117/2-1Z11G64134V2.gif" /><br />
+图 2</div>
+<br />
+这段代码只是用到了 HTML，读者可以自行修改代码中的中文，然后观察其变化。<br />
+<h3>
+关于爬虫的合法性</h3>
+几乎每一个网站都有一个名为 robots.txt 的文档，当然也有部分网站没有设定 robots.txt。对于没有设定 robots.txt 的网站可以通过网络爬虫获取没有口令加密的数据，也就是该网站所有页面数据都可以爬取。如果网站有 robots.txt 文档，就要判断是否有禁止访客获取的数据。<br />
+<br />
+以淘宝网为例，在浏览器中访问 <a href="https://www.taobao.com/robots.txt" target="_blank">https://www.taobao.com/robots.txt</a>，如图&nbsp; 3 所示。
+<div style="text-align: center;">
+<br />
+<img alt="" src="../uploads/allimg/190117/2-1Z11G6422Ub.gif" /><br />
+图 3 淘宝网的robots.txt文件内容</div>
+<br />
+淘宝网允许部分爬虫访问它的部分路径，而对于没有得到允许的用户，则全部禁止爬取，代码如下：<br />
+<p class="info-box">
+User-Agent:*<br />
+Disallow:/</p>
+这一句代码的意思是除前面指定的爬虫外，不允许其他爬虫爬取任何数据。<br />
+<h2>
+使用 requests 库请求网站</h2>
+<h3>
+安装 requests 库</h3>
+首先在 PyCharm 中安装 requests 库，为此打开 PyCharm，单击&ldquo;File&rdquo;（文件）菜单，选择&ldquo;Setting for New Projects...&rdquo;命令，如图 4 所示。
+<div style="text-align: center;">
+<br />
+<img alt="" src="../uploads/allimg/190117/2-1Z11G64314Q6.jpg" /><br />
+图 4</div>
+<br />
+选择&ldquo;Project Interpreter&rdquo;（项目编译器）命令，确认当前选择的编译器，然后单击右上角的加号，如图 5 所示。
+<div style="text-align: center;">
+<br />
+<img alt="" src="../uploads/allimg/190117/2-1Z11G64341W4.jpg" /><br />
+图 5</div>
+<br />
+在搜索框输入：requests（注意，一定要输入完整，不然容易出错），然后单击左下角的&ldquo;Install Package&rdquo;（安装库）按钮。如图 6 所示：
+<div style="text-align: center;">
+<br />
+<img alt="" src="../uploads/allimg/190117/2-1Z11G64400193.jpg" /><br />
+图 6</div>
+<br />
+安装完成后，会在 Install Package 上显示&ldquo;Package&lsquo;requests&rsquo; installed successfully&rdquo;（库的请求已成功安装），如图 7 所示；如果安装不成功将会显示提示信息。
+<div style="text-align: center;">
+<br />
+<img alt="" src="../uploads/allimg/190117/2-1Z11G644192R.jpg" /><br />
+图 7 安装成功</div>
+<h3>
+爬虫的基本原理</h3>
+网页请求的过程分为两个环节：
+<ol>
+<li>
+Request （请求）：每一个展示在用户面前的网页都必须经过这一步，也就是向服务器发送访问请求。</li>
+<li>
+Response（响应）：服务器在接收到用户的请求后，会验证请求的有效性，然后向用户（客户端）发送响应的内容，客户端接收服务器响应的内容，将内容展示出来，就是我们所熟悉的网页请求，如图 8 所示。</li>
+</ol>
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/190117/2-1Z11G6451I08.gif" /><br />
+图 8 Response相应</div>
+<br />
+网页请求的方式也分为两种：
+<ol>
+<li>
+GET：最常见的方式，一般用于获取或者查询资源信息，也是大多数网站使用的方式，响应速度快。</li>
+<li>
+POST：相比 GET 方式，多了以表单形式上传参数的功能，因此除查询信息外，还可以修改信息。</li>
+</ol>
+<br />
+所以，在写爬虫前要先确定向谁发送请求，用什么方式发送。<br />
+<h3>
+使用 GET 方式抓取数据</h3>
+复制任意一条首页首条新闻的标题，在源码页面按【Ctrl+F】组合键调出搜索框，将标题粘贴在搜索框中，然后按【Enter】键。<br />
+<br />
+如图 8 所示，标题可以在源码中搜索到，请求对象是www.cntour.cn，请求方式是GET（所有在源码中的数据请求方式都是GET），如图 9 所示。
+<div style="text-align: center;">
+<br />
+<img alt="" src="../uploads/allimg/190117/2-1Z11G64620C9.jpg" /><br />
+图 9（<a href="../uploads/allimg/190117/2-1Z11G6464b94.jpg" target="_blank">点此查看高清大图</a>）</div>
+确定好请求对象和方式后，在 PyCharm 中输入以下代码：
+<pre class="python">
+import requests        #导入requests包
+url = &#39;http://www.cntour.cn/&#39;
+strhtml = requests.get(url)        #Get方式获取网页数据
+print(strhtml.text)</pre>
+运行结果如图 10 所示：
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/190117/2-1Z11G64I4104.jpg" /><br />
+图 10 运行结果效果图（<a href="../uploads/allimg/190117/2-1Z11G64K5445.jpg" target="_blank">点此查看高清大图</a>）</div>
+<br />
+加载库使用的语句是 import+库的名字。在上述过程中，加载 requests 库的语句是：import requests。<br />
+<br />
+用 GET 方式获取数据需要调用 requests 库中的 get 方法，使用方法是在 requests 后输入英文点号，如下所示：<br />
+<p class="info-box">
+requests.get</p>
+将获取到的数据存到 strhtml 变量中，代码如下：
+<p class="info-box">
+strhtml = request.get(url)</p>
+这个时候 strhtml 是一个 URL 对象，它代表整个网页，但此时只需要网页中的源码，下面的语句表示网页源码：
+<p class="info-box">
+strhtml.text</p>
+<h3>
+使用 POST 方式抓取数据</h3>
+首先输入有道翻译的网址：<a href="http://fanyi.youdao.com/" target="_blank">http://fanyi.youdao.com/</a>，进入有道翻译页面。<br />
+<br />
+按快捷键 F12，进入开发者模式，单击 Network，此时内容为空，如图 11 所示：
+<div style="text-align: center;">
+<br />
+<img alt="" src="../uploads/allimg/190117/2-1Z11G64ZU55.gif" /><br />
+图 11</div>
+<br />
+在有道翻译中输入&ldquo;我爱中国&rdquo;，单击&ldquo;翻译&rdquo;按钮，如图 12 所示：
+<div style="text-align: center;">
+<br />
+<img alt="" src="../uploads/allimg/190117/2-1Z11G6492K96.gif" /><br />
+图 12</div>
+<br />
+在开发者模式中，依次单击&ldquo;Network&rdquo;按钮和&ldquo;XHR&rdquo;按钮，找到翻译数据，如图 13 所示：
+<div style="text-align: center;">
+<br />
+<img alt="" src="../uploads/allimg/190117/2-1Z11G6494Y00.gif" /><br />
+图 13</div>
+<br />
+单击 Headers，发现请求数据的方式为 POST。如图 14 所示：
+<div style="text-align: center;">
+<br />
+<img alt="" src="../uploads/allimg/190117/2-1Z11GA00I57.gif" /><br />
+图 14</div>
+<br />
+找到数据所在之处并且明确请求方式之后，接下来开始撰写爬虫。<br />
+<br />
+首先，将 Headers 中的 URL 复制出来，并赋值给 url，代码如下：<br />
+<p class="info-box">
+url = &#39;http://fanyi.youdao.com/translate_o?smartresult=dict&amp;smartresult=rule&#39;</p>
+POST 的请求获取数据的方式不同于 GET，POST 请求数据必须构建请求头才可以。<br />
+<br />
+Form Data 中的请求参数如图 15 所示：
+<div style="text-align: center;">
+<br />
+<img alt="" src="../uploads/allimg/190117/2-1Z11GA041451.gif" /><br />
+图 15</div>
+<br />
+将其复制并构建一个新字典：
+<p class="info-box">
+From_data={&#39;i&#39;:&#39;我愛中國&#39;,&#39;from&#39;:&#39;zh-CHS&#39;,&#39;to&#39;:&#39;en&#39;,&#39;smartresult&#39;:&#39;dict&#39;,&#39;client&#39;:&#39;fanyideskweb&#39;,&#39;salt&#39;:&#39;15477056211258&#39;,&#39;sign&#39;:&#39;b3589f32c38bc9e3876a570b8a992604&#39;,&#39;ts&#39;:&#39;1547705621125&#39;,&#39;bv&#39;:&#39;b33a2f3f9d09bde064c9275bcb33d94e&#39;,&#39;doctype&#39;:&#39;json&#39;,&#39;version&#39;:&#39;2.1&#39;,&#39;keyfrom&#39;:&#39;fanyi.web&#39;,&#39;action&#39;:&#39;FY_BY_REALTIME&#39;,&#39;typoResult&#39;:&#39;false&#39;}</p>
+接下来使用 requests.post 方法请求表单数据，代码如下：
+<p class="info-box">
+import requests&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #导入requests包<br />
+response = requests.post(url,data=payload)</p>
+将字符串格式的数据转换成 JSON 格式数据，并根据<a href='../data_structure/data_structure.html' target='_blank'>数据结构</a>，提取数据，并将翻译结果打印出来，代码如下：<br />
+<pre class="python">
+import json
+content = json.loads(response.text)
+print(content[&#39;translateResult&#39;][0][0][&#39;tgt&#39;])</pre>
+使用 requests.post 方法抓取有道翻译结果的完整代码如下：<br />
+<pre class="python">
+import requests        #导入requests包
+import json
+def get_translate_date(word=None):
+    url = &#39;http://fanyi.youdao.com/translate_o?smartresult=dict&amp;smartresult=rule&#39;
+    From_data={&#39;i&#39;:word,&#39;from&#39;:&#39;zh-CHS&#39;,&#39;to&#39;:&#39;en&#39;,&#39;smartresult&#39;:&#39;dict&#39;,&#39;client&#39;:&#39;fanyideskweb&#39;,&#39;salt&#39;:&#39;15477056211258&#39;,&#39;sign&#39;:&#39;b3589f32c38bc9e3876a570b8a992604&#39;,&#39;ts&#39;:&#39;1547705621125&#39;,&#39;bv&#39;:&#39;b33a2f3f9d09bde064c9275bcb33d94e&#39;,&#39;doctype&#39;:&#39;json&#39;,&#39;version&#39;:&#39;2.1&#39;,&#39;keyfrom&#39;:&#39;fanyi.web&#39;,&#39;action&#39;:&#39;FY_BY_REALTIME&#39;,&#39;typoResult&#39;:&#39;false&#39;}
+    #请求表单数据
+    response = requests.post(url,data=From_data)
+    #将Json格式字符串转字典
+    content = json.loads(response.text)
+    print(content)
+    #打印翻译后的数据
+    #print(content[&#39;translateResult&#39;][0][0][&#39;tgt&#39;])
+if __name__==&#39;__main__&#39;:
+    get_translate_date(&#39;我爱中国&#39;)</pre>
+<h2>
+使用 Beautiful Soup 解析网页</h2>
+通过 requests 库已经可以抓到网页源码，接下来要从源码中找到并提取数据。Beautiful Soup 是 python 的一个库，其最主要的功能是从网页中抓取数据。Beautiful Soup 目前已经被移植到 bs4 库中，也就是说在导入 Beautiful Soup 时需要先安装 bs4 库。<br />
+<br />
+安装 bs4 库的方式如图 16 所示:
+<div style="text-align: center;">
+<br />
+<img alt="" src="../uploads/allimg/190117/2-1Z11GA15bD.gif" /><br />
+图 16</div>
+<br />
+安装好 bs4 库以后，还需安装 lxml 库。如果我们不安装 lxml 库，就会使用 Python 默认的解析器。尽管 Beautiful Soup 既支持 Python 标准库中的 HTML 解析器又支持一些第三方解析器，但是 lxml 库具有功能更加强大、速度更快的特点，因此笔者推荐安装 lxml 库。<br />
+<br />
+安装 Python 第三方库后，输入下面的代码，即可开启 Beautiful Soup 之旅：<br />
+<pre class="python">
+import requests        #导入requests包
+from bs4 import    BeautifulSoup
+url=&#39;http://www.cntour.cn/&#39;
+strhtml=requests.get(url)
+soup=BeautifulSoup(strhtml.text,&#39;lxml&#39;)
+data = soup.select(&#39;#main&gt;div&gt;div.mtop.firstMod.clearfix&gt;div.centerBox&gt;ul.newsList&gt;li&gt;a&#39;)
+print(data)</pre>
+代码运行结果如图 17 所示。
+<div style="text-align: center;">
+<br />
+<img alt="" src="../uploads/allimg/190117/2-1Z11GA244Q8.jpg" /><br />
+图 17（<a href="../uploads/allimg/190117/2-1Z11GA30cY.jpg" target="_blank">点此查看高清大图</a>）</div>
+<br />
+Beautiful Soup 库能够轻松解析网页信息，它被集成在 bs4 库中，需要时可以从 bs4 库中调用。其表达语句如下：
+<p class="info-box">
+from bs4 import BeautifulSoup</p>
+首先，HTML 文档将被转换成 Unicode 编码格式，然后 Beautiful Soup 选择最合适的解析器来解析这段文档，此处指定 lxml 解析器进行解析。解析后便将复杂的 HTML 文档转换成树形结构，并且每个节点都是 Python 对象。这里将解析后的文档存储到新建的变量 soup 中，代码如下：<br />
+<p class="info-box">
+soup=BeautifulSoup(strhtml.text,&#39;lxml&#39;)</p>
+接下来用 select（选择器）定位数据，定位数据时需要使用浏览器的开发者模式，将鼠标光标停留在对应的数据位置并右击，然后在快捷菜单中选择&ldquo;检查&rdquo;命令，如图 18 所示：
+<div style="text-align: center;">
+<br />
+<img alt="" src="../uploads/allimg/190117/2-1Z11GA40T17.gif" /><br />
+图 18</div>
+<br />
+随后在浏览器右侧会弹出开发者界面，右侧高亮的代码（参见图&nbsp; 19(b)）对应着左侧高亮的数据文本（参见图 19(a)）。右击右侧高亮数据，在弹出的快捷菜单中选择&ldquo;Copy&rdquo;➔&ldquo;Copy Selector&rdquo;命令，便可以自动复制路径。
+<div style="text-align: center;">
+<br />
+<img alt="" src="../uploads/allimg/190117/2-1Z11GA45JN.gif" /><br />
+图 19 复制路径</div>
+将路径粘贴在文档中，代码如下:<br />
+<p class="info-box">
+#main &gt; div &gt; div.mtop.firstMod.clearfix &gt; div.centerBox &gt; ul.newsList &gt; li:nth-child(1) &gt; a</p>
+由于这条路径是选中的第一条的路径，而我们需要获取所有的头条新闻，因此将 li：nth-child（1）中冒号（包含冒号）后面的部分删掉，代码如下：
+<p class="info-box">
+#main &gt; div &gt; div.mtop.firstMod.clearfix &gt; div.centerBox &gt; ul.newsList &gt; li &gt; a</p>
+使用 soup.select 引用这个路径，代码如下：<br />
+<p class="info-box">
+data = soup.select(&#39;#main &gt; div &gt; div.mtop.firstMod.clearfix &gt; div.centerBox &gt; ul.newsList &gt; li &gt; a&#39;)</p>
+<h2>
+清洗和组织数据</h2>
+至此，获得了一段目标的 HTML 代码，但还没有把数据提取出来，接下来在 PyCharm 中输入以下代码：<br />
+<pre class="python">
+for item in data:
+    result={
+        &#39;title&#39;:item.get_text(),
+        &#39;link&#39;:item.get(&#39;href&#39;)
+    }
+print(result)</pre>
+代码运行结果如图 20 所示：
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/190117/2-1Z11GA60R06.gif" /><br />
+图 20（<a href="../uploads/allimg/190117/2-1Z11GA629403.jpg" target="_blank">点此查看高清大图</a>）</div>
+<br />
+首先明确要提取的数据是标题和链接，标题在＜a＞标签中，提取标签的正文用 get_text() 方法。链接在＜a＞标签的 href 属性中，提取标签中的 href 属性用 get() 方法，在括号中指定要提取的属性数据，即 get(＇href＇)。<br />
+<br />
+从图 20 中可以发现，文章的链接中有一个数字 ID。下面用正则表达式提取这个 ID。需要使用的正则符号如下:
+<p class="info-box">
+\d匹配数字<br />
++匹配前一个字符1次或多次</p>
+在 Python 中调用正则表达式时使用 re 库，这个库不用安装，可以直接调用。在 PyCharm 中输入以下代码:
+<pre class="python">
+import re
+for item in data:
+    result={
+        &quot;title&quot;:item.get_text(),
+        &quot;link&quot;:item.get(&#39;href&#39;),
+        &#39;ID&#39;:re.findall(&#39;\d+&#39;,item.get(&#39;href&#39;))
+    }
+print(result)</pre>
+运行结果如图 21 所示：
+<div style="text-align: center;">
+<br />
+<img alt="" src="../uploads/allimg/190117/2-1Z11GAHKD.jpg" /><br />
+图 21</div>
+<br />
+这里使用 re 库的 findall 方法，第一个参数表示正则表达式，第二个参数表示要提取的文本。<br />
+<h2>
+爬虫攻防战</h2>
+爬虫是模拟人的浏览访问行为，进行数据的批量抓取。当抓取的数据量逐渐增大时，会给被访问的服务器造成很大的压力，甚至有可能崩溃。换句话就是说，服务器是不喜欢有人抓取自己的数据的。那么，网站方面就会针对这些爬虫者，采取一些反爬策略。<br />
+<br />
+服务器第一种识别爬虫的方式就是通过检查连接的 useragent 来识别到底是浏览器访问，还是代码访问的。如果是代码访问的话，访问量增大时，服务器会直接封掉来访 IP。<br />
+<br />
+那么应对这种初级的反爬机制，我们应该采取何种举措？<br />
+<br />
+还是以前面创建好的爬虫为例。在进行访问时，我们在开发者环境下不仅可以找到 URL、Form Data，还可以在 Request headers 中构造浏览器的请求头，封装自己。服务器识别浏览器访问的方法就是判断 keyword 是否为 Request headers 下的 User-Agent，如图 22 所示。
+<div style="text-align: center;">
+<br />
+<img alt="" src="../uploads/allimg/190117/2-1Z11GAR3P1.jpg" /><br />
+图 22</div>
+<br />
+因此，我们只需要构造这个请求头的参数。创建请求头部信息即可，代码如下：<br />
+<p class="info-box">
+headers={&#39;User-Agent&#39;:&#39;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36&#39;}<br />
+response = request.get(url,headers=headers)</p>
+写到这里，很多读者会认为修改 User-Agent 很太简单。确实很简单，但是正常人1秒看一个图，而个爬虫1秒可以抓取好多张图，比如 1 秒抓取上百张图，那么服务器的压力必然会增大。也就是说，如果在一个 IP 下批量访问下载图片，这个行为不符合正常人类的行为，肯定要被封 IP。<br />
+<br />
+其原理也很简单，就是统计每个IP的访问频率，该频率超过阈值，就会返回一个验证码，如果真的是用户访问的话，用户就会填写，然后继续访问，如果是代码访问的话，就会被封 IP。<br />
+<br />
+这个问题的解决方案有两个，第一个就是常用的增设延时，每 3 秒钟抓取一次，代码如下：
+<p class="info-box">
+import time<br />
+time.sleep(3)</p>
+但是，我们写爬虫的目的是为了高效批量抓取数据，这里设置 3 秒钟抓取一次，效率未免太低。其实，还有一个更重要的解决办法，那就是从本质上解决问题。<br />
+<br />
+不管如何访问，服务器的目的就是查出哪些为代码访问，然后封锁 IP。解决办法：为避免被封 IP，在数据采集时经常会使用代理。当然，requests 也有相应的 proxies 属性。<br />
+<br />
+首先，构建自己的代理 IP 池，将其以字典的形式赋值给 proxies，然后传输给 requests，代码如下：<br />
+<pre class="python">
+proxies={
+    &quot;http&quot;:&quot;http://10.10.1.10:3128&quot;,
+    &quot;https&quot;:&quot;http://10.10.1.10:1080&quot;,
+}
+response = requests.get(url, proxies=proxies)</pre>
+<h2>
+扩展阅读</h2>
+本文仅对 Python 爬虫及实现过程做了简明扼要地介绍，仅能使初学者对 python 爬虫有一个浅显的认识，并不能让你完全掌握 Python 爬虫。如果您想全面的学习 Python 爬虫的相关知识，可以跳转至<a href="../python_spider/python_spider.html">《Python爬虫教程入门到精通》</a>进行学习。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="559.html" title="C语言水仙花数，阿姆斯特朗数" target="_blank">C语言水仙花数，阿姆斯特朗数</a></li>
+<li><a href="vip_3365.html" title="KMP算法（快速模式匹配算法）C语言详解" target="_blank">KMP算法（快速模式匹配算法）C语言详解</a></li>
+<li><a href="5967.html" title="JS scroll事件：页面滚动" target="_blank">JS scroll事件：页面滚动</a></li>
+<li><a href="../jsp2/page.html" title="JSP page指令" target="_blank">JSP page指令</a></li>
+<li><a href="../redis2/setrange.html" title="Redis SETRANGE命令" target="_blank">Redis SETRANGE命令</a></li>
+<li><a href="9370.html" title="JS表单验证（附带示例）" target="_blank">JS表单验证（附带示例）</a></li>
+<li><a href="e0rriws.html" title="Python反编译工具pyinstxtractor.py" target="_blank">Python反编译工具pyinstxtractor.py</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 2011;
+window.arcId = "09085dY/4Oz0PonwPPoucQn2wTQPtRLuwqRysGcDDHLHyWZc1K9mJphK0TQ";
+window.typeidChain = "145|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="https://c.biancheng.net/templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

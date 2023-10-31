@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Linux查看内存使用情况方法汇总</title>
+<meta name="description" content="内存的管理和优化，是 Linux 系统性能优化的重要组成部分，换句话说，内存资源是否充足，会直接影响应用系统（包含操作系统和应用程序）的使用性能。 本节将介绍几个系统命令，通" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Linux查看内存使用情况方法汇总</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">内存的管理和优化，是 Linux 系统性能优化的重要组成部分，换句话说，内存资源是否充足，会直接影响应用系统（包含操作系统和应用程序）的使用性能。<br />
+<br />
+本节将介绍几个系统命令，通过它们，可以快速查看 Linux 系统中内存的使用状况。<br />
+<h2>
+Linux查看内存使用情况：free命令</h2>
+free 是监控 Linux 内存使用状况最常用的命令之一，有关该命令的基本用法，已经在《<a href="1083.html" target="_blank">Linux free命令</a>》一节中做了详细介绍，所以不再赘述，这里重点给大家讲解如何使用 free 命令查看系统内存的使用情况。<br />
+<br />
+下面是 free 命令在当前测试系统中的输出结果：
+<pre class="info-box">
+[root@localhost  ~]# free -m
+             total       used       free     shared    buffers     cached
+Mem:          2004        573       1431          0         47        201
+-/+ buffers/cache:        323       1680
+Swap:         1983          0       1983</pre>
+从输出结果可以看到，该系统共 2GB 内存，其中系统空闲内存还有 1431MB，并且 swap 交换分区还未使用，因此可以判断出当前系统的内存资源还非常充足。<br />
+<br />
+除此之外，free 命令还可以实时地监控内存的使用状况，通过使用 -s 选项，可以实现在指定的时间段内不间断地监控内存的使用情况。例如：<br />
+<pre class="info-box">
+[root@localhost ~]# free -m -s 5
+             total       used       free     shared    buffers     cached
+Mem:          2004        571       1433          0         47        202
+-/+ buffers/cache:        321       1683
+Swap:         1983          0       1983
+
+             total       used       free     shared    buffers     cached
+Mem:          2004        571       1433          0         47        202
+-/+ buffers/cache:        321       1683
+Swap:         1983          0       1983
+#省略后续输出</pre>
+要想实现动态地监控内存使用状况，除了使用 free 命令提供的 -s 选项，还可以借助 watch 命令。通过给 watch 命令后面添加需要运行的命令，watch 就会自行重复去运行这个命令（默认 2 秒执行一次），例如：
+<pre class="info-box">
+[root@localhost ~]# watch -n 3 -d free
+Every 3.0s: free                                        Tue Oct 29 03:05:43 2019
+
+             total       used       free     shared    buffers     cached
+Mem:       2052988     586504    1466484          0      49184     207360
+-/+ buffers/cache:     329960    1723028
+Swap:      2031608          0    2031608</pre>
+上面执行的命令中，-n 选项用于执行重复执行的间隔时间，-d 选项用于在显示数据时，高亮显示变动了的数据。<br />
+<h2>
+Linux查看内存使用情况：vmstat命令</h2>
+vmstat 命令在监控系统内存方面的功能很强大，有关此命令的基本用法，已经在《<a href="1081.html" target="_blank">Linux vmstat命令</a>》一节中做了详细介绍，这里重点讲解如何使用此命令查看内存的使用状况。<br />
+<br />
+下面是执行 vmstat 命令的输出结果：<br />
+<pre class="info-box">
+[root@localhost ~]# vmstat 2 3
+procs -----------memory---------- ---swap-- -----io---- --system-- -----cpu-----
+r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st
+0  0      0 1436128  53004 210744    0    0     7     0   13   14  0  0 100  0  0
+1  0      0 1436112  53004 210744    0    0     0     0  128  226  0  0 100  0  0
+0  0      0 1435988  53004 210744    0    0     0     0  144  220  1  0 99  0  0</pre>
+对于内存的监控，我们只需要重点关注 swpd、si 和 so 这 3 列。从此输出结果可以看出，当前系统中，虚拟内存没有使用，硬盘和内存之间没有交换数据，可见内存资源处于空闲状态。<br />
+<h2>
+Linux查看内存使用情况：sar命令</h2>
+sar 命令也可以用来监控 Linux 的内存使用状况，通过&ldquo;sar -r&rdquo;组合可以查看系统内存和交换空间的使用率。<br />
+<blockquote>
+<p>
+有关 sar 命令的基本用法，可以阅读《<a href="6212.html" target="_blank">Linux sar命令</a>》一文做详细了解。</p>
+</blockquote>
+如下是执行&ldquo;sar -r&rdquo;命令的输出结果：
+<pre class="info-box">
+[root@localhost ~]# sar -r 2 3
+Linux 2.6.32-431.el6.x86_64 (localhost)  10/29/2019  _x86_64_ (8 CPU)
+
+04:54:20 AM kbmemfree kbmemused  %memused kbbuffers  kbcached  kbcommit   %commit
+04:54:22 AM   1218760    834228     40.63     53228    424908    738312     18.08
+04:54:24 AM   1218744    834244     40.64     53228    424908    738312     18.08
+04:54:26 AM   1218712    834276     40.64     53228    424908    738312     18.08
+Average:      1218739    834249     40.64     53228    424908    738312     18.08</pre>
+此输出结果中，各个参数表示的含义如下：
+<ul>
+<li>
+kbmemfree：表示空闲的物理内存的大小；</li>
+<li>
+kbmemeused：表示已使用的物理内存的大小；</li>
+<li>
+%memused：表示已使用内存占总内存大小的百分比；</li>
+<li>
+kbbuffers：表示缓冲区所使用的物理内存的大小；</li>
+<li>
+kbcached：表示告诉缓存所使用的物理内存的大小；</li>
+<li>
+kbcommit 和 %commit：分别表示当前系统中应用程序使用的内存大小和百分比；</li>
+</ul>
+相比 free 命令，sar 命令的输出信息更加人性化，不仅给出了内存使用量，还给出了内存使用的百分比以及统计的平均值。比如说，仅通过 %commit 一项就可以得知，当前系统中的内存资源充足。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="814.html" title="Linux软件包（源码包和二进制包）" target="_blank">Linux软件包（源码包和二进制包）</a></li>
+<li><a href="vip_1799.html" title="C语言清空（刷新）缓冲区，从根本上消除那些奇怪的行为" target="_blank">C语言清空（刷新）缓冲区，从根本上消除那些奇怪的行为</a></li>
+<li><a href="2256.html" title="Python函数默认参数设置（超级详细）" target="_blank">Python函数默认参数设置（超级详细）</a></li>
+<li><a href="7226.html" title="MySQL函数简介" target="_blank">MySQL函数简介</a></li>
+<li><a href="../jsp2/javabean.html" title="JSP JavaBean的使用" target="_blank">JSP JavaBean的使用</a></li>
+<li><a href="2b3jm2t.html" title="GoLand搭建Go语言开发环境（图解）" target="_blank">GoLand搭建Go语言开发环境（图解）</a></li>
+<li><a href="90wdnhq.html" title="《精通Vue.js：Web前端开发技术详解（微课视频版）》PDF下载（高清完整版）" target="_blank">《精通Vue.js：Web前端开发技术详解（微课视频版）》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 6269;
+window.arcId = "30fehAdLMUnd8cQTQ/6S/xmMbD1cfBVrBZf957n599gvFp3dineUQNzRa2A";
+window.typeidChain = "210|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

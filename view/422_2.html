@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C++异常处理（try catch throw）完全攻略</title>
+<meta name="description" content="程序运行时常会碰到一些异常情况，例如： 做除法的时候除数为 0； 用户输入年龄时输入了一个负数； 用 new 运算符动态分配空间时，空间不够导致无法分配； 访问数组元素时，下标越" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C++异常处理（try catch throw）完全攻略</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">程序运行时常会碰到一些异常情况，例如：
+<ul>
+	<li>
+		做除法的时候除数为 0；</li>
+	<li>
+		用户输入年龄时输入了一个负数；</li>
+	<li>
+		用 new 运算符动态分配空间时，空间不够导致无法分配；</li>
+	<li>
+		访问数组元素时，下标越界；打开文件读取时，文件不存在。</li>
+</ul>
+<br />
+这些异常情况，如果不能发现并加以处理，很可能会导致程序崩溃。<br />
+<br />
+所谓&ldquo;处理&rdquo;，可以是给出错误提示信息，然后让程序沿一条不会出错的路径继续执行；也可能是不得不结束程序，但在结束前做一些必要的工作，如将内存中的数据写入文件、关闭打开的文件、释放动态分配的内存空间等。<br />
+<br />
+一发现异常情况就立即处理未必妥当，因为在一个函数执行过程中发生的异常，在有的情况下由该函数的调用者决定如何处理更加合适。尤其像库函数这类提供给程序员调用，用以完成与具体应用无关的通用功能的函数，执行过程中贸然对异常进行处理，未必符合调用它的程序的需要。<br />
+<br />
+此外，将异常分散在各处进行处理不利于代码的维护，尤其是对于在不同地方发生的同一种异常，都要编写相同的处理代码也是一种不必要的重复和冗余。如果能在发生各种异常时让程序都执行到同一个地方，这个地方能够对异常进行集中处理，则程序就会更容易编写、维护。<br />
+<br />
+鉴于上述原因，<a href='../cplus/cplus_2.html' target='_blank'>C++</a> 引入了异常处理机制。其基本思想是：函数 A 在执行过程中发现异常时可以不加处理，而只是&ldquo;拋出一个异常&rdquo;给 A 的调用者，假定为函数 B。<br />
+<br />
+拋出异常而不加处理会导致函数 A 立即中止，在这种情况下，函数 B 可以选择捕获 A 拋出的异常进行处理，也可以选择置之不理。如果置之不理，这个异常就会被拋给 B 的调用者，以此类推。<br />
+<br />
+如果一层层的函数都不处理异常，异常最终会被拋给最外层的 main 函数。main 函数应该处理异常。如果main函数也不处理异常，那么程序就会立即异常地中止。
+<h2>
+	C++异常处理基本语法</h2>
+C++ 通过 throw 语句和 try...catch 语句实现对异常的处理。throw 语句的语法如下：
+<p class="info-box">
+	throw&nbsp; 表达式;</p>
+该语句拋出一个异常。异常是一个表达式，其值的类型可以是基本类型，也可以是类。<br />
+<br />
+try...catch 语句的语法如下：
+<p class="info-box">
+	try {<br />
+	&nbsp;&nbsp;&nbsp; 语句组<br />
+	}<br />
+	catch(异常类型) {<br />
+	&nbsp;&nbsp;&nbsp; 异常处理代码<br />
+	}<br />
+	...<br />
+	catch(异常类型) {<br />
+	&nbsp;&nbsp;&nbsp; 异常处理代码<br />
+	}</p>
+catch 可以有多个，但至少要有一个。<br />
+<br />
+不妨把 try 和其后<code>{}</code>中的内容称作&ldquo;try块&rdquo;，把 catch 和其后<code>{}</code>中的内容称作&ldquo;catch块&rdquo;。<br />
+<br />
+try...catch 语句的执行过程是：
+<ul>
+	<li>
+		执行 try 块中的语句，如果执行的过程中没有异常拋出，那么执行完后就执行最后一个 catch 块后面的语句，所有 catch 块中的语句都不会被执行；</li>
+	<li>
+		如果 try 块执行的过程中拋出了异常，那么拋出异常后立即跳转到第一个&ldquo;异常类型&rdquo;和拋出的异常类型匹配的 catch 块中执行（称作异常被该 catch 块&ldquo;捕获&rdquo;），执行完后再跳转到最后一个 catch 块后面继续执行。</li>
+</ul>
+<br />
+例如下面的程序：
+<pre class="cpp">
+#include &lt;iostream&gt;
+u<a href='https://m.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+int main()
+{
+    double m ,n;
+    cin &gt;&gt; m &gt;&gt; n;
+    try {
+        cout &lt;&lt; &quot;before dividing.&quot; &lt;&lt; endl;
+        if( n == 0)
+            throw -1; //抛出int类型异常
+        else
+            cout &lt;&lt; m / n &lt;&lt; endl;
+        cout &lt;&lt; &quot;after dividing.&quot; &lt;&lt; endl;
+    }
+    catch(double d) {
+        cout &lt;&lt; &quot;catch(double) &quot; &lt;&lt; d &lt;&lt;  endl;
+    }
+    catch(int e) {
+        cout &lt;&lt; &quot;catch(int) &quot; &lt;&lt; e &lt;&lt; endl;
+    }
+    cout &lt;&lt; &quot;finished&quot; &lt;&lt; endl;
+    return 0;
+}</pre>
+程序的运行结果如下：<br />
+9 6↙<br />
+before dividing.<br />
+1.5<br />
+after dividing.<br />
+finished<br />
+<br />
+说明当 n 不为 0 时，try 块中不会拋出异常。因此程序在 try 块正常执行完后，越过所有的 catch 块继续执行，catch 块一个也不会执行。<br />
+<br />
+程序的运行结果也可能如下：<br />
+9 0↙<br />
+before dividing.<br />
+catch\(int) -1<br />
+finished<br />
+<br />
+当 n 为 0 时，try 块中会拋出一个整型异常。拋出异常后，try 块立即停止执行。该整型异常会被类型匹配的第一个 catch 块捕获，即进入<code>catch(int e)</code>块执行，该 catch 块执行完毕后，程序继续往后执行，直到正常结束。<br />
+<br />
+如果拋出的异常没有被 catch 块捕获，例如，将<code>catch(int e)</code>，改为<code>catch(char e)</code>，当输入的 n 为 0 时，拋出的整型异常就没有 catch 块能捕获，这个异常也就得不到处理，那么程序就会立即中止，try...catch 后面的内容都不会被执行。
+<h2>
+	能够捕获任何异常的 catch 语句</h2>
+如果希望不论拋出哪种类型的异常都能捕获，可以编写如下 catch 块：
+<p class="info-box">
+	catch(...) {<br />
+	&nbsp;&nbsp;&nbsp; ...<br />
+	}</p>
+这样的 catch 块能够捕获任何还没有被捕获的异常。例如下面的程序：
+<pre class="cpp">
+#include &lt;iostream&gt;
+using namespace std;
+int main()
+{
+    double m, n;
+    cin &gt;&gt; m &gt;&gt; n;
+    try {
+        cout &lt;&lt; &quot;before dividing.&quot; &lt;&lt; endl;
+        if (n == 0)
+            throw - 1;  //抛出整型异常
+        else if (m == 0)
+            throw - 1.0;  //拋出 double 型异常
+        else
+            cout &lt;&lt; m / n &lt;&lt; endl;
+        cout &lt;&lt; &quot;after dividing.&quot; &lt;&lt; endl;
+    }
+    catch (double d) {
+        cout &lt;&lt; &quot;catch (double)&quot; &lt;&lt; d &lt;&lt; endl;
+    }
+    catch (...) {
+        cout &lt;&lt; &quot;catch (...)&quot; &lt;&lt; endl;
+    }
+    cout &lt;&lt; &quot;finished&quot; &lt;&lt; endl;
+    return 0;
+}</pre>
+程序的运行结果如下：<br />
+9 0↙<br />
+before dividing.<br />
+catch (...)<br />
+finished<br />
+<br />
+当 n 为 0 时，拋出的整型异常被<code>catchy(...)</code>捕获。<br />
+<br />
+程序的运行结果也可能如下：<br />
+0 6↙<br />
+before dividing.<br />
+catch (double) -1<br />
+finished<br />
+<br />
+当 m 为 0 时，拋出一个 double 类型的异常。虽然<code>catch (double)</code>和<code>catch(...)</code>都能匹配该异常，但是<code>catch(double)</code>是第一个能匹配的 catch 块，因此会执行它，而不会执行<code>catch(...)</code>块。<br />
+<br />
+由于<code>catch(...)</code>能匹配任何类型的异常，它后面的 catch 块实际上就不起作用，因此不要将它写在其他 catch 块前面。
+<h2>
+	异常的再拋出</h2>
+如果一个函数在执行过程中拋出的异常在本函数内就被 catch 块捕获并处理，那么该异常就不会拋给这个函数的调用者（也称为&ldquo;上一层的函数&rdquo;）；如果异常在本函数中没有被处理，则它就会被拋给上一层的函数。例如下面的程序：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+class CException
+{
+public:
+    string msg;
+    CException(string s) : msg(s) {}
+};
+double Devide(double x, double y)
+{
+    if (y == 0)
+        throw CException(&quot;devided by zero&quot;);
+    cout &lt;&lt; &quot;in Devide&quot; &lt;&lt; endl;
+    return x / y;
+}
+int CountTax(int salary)
+{
+    try {
+        if (salary &lt; 0)
+            throw - 1;
+        cout &lt;&lt; &quot;counting tax&quot; &lt;&lt; endl;
+    }
+    catch (int) {
+        cout &lt;&lt; &quot;salary &lt; 0&quot; &lt;&lt; endl;
+    }
+    cout &lt;&lt; &quot;tax counted&quot; &lt;&lt; endl;
+    return salary * 0.15;
+}
+int main()
+{
+    double f = 1.2;
+    try {
+        CountTax(-1);
+        f = Devide(3, 0);
+        cout &lt;&lt; &quot;end of try block&quot; &lt;&lt; endl;
+    }
+    catch (CException e) {
+        cout &lt;&lt; e.msg &lt;&lt; endl;
+    }
+    cout &lt;&lt; &quot;f = &quot; &lt;&lt; f &lt;&lt; endl;
+    cout &lt;&lt; &quot;finished&quot; &lt;&lt; endl;
+    return 0;
+}</pre>
+程序的输出结果如下：<br />
+salary &lt; 0<br />
+tax counted<br />
+devided by zero<br />
+f=1.2<br />
+finished<br />
+<br />
+CountTa 函数拋出异常后自行处理，这个异常就不会继续被拋给调用者，即 main 函数。因此在 main 函数的 try 块中，CountTax 之后的语句还能正常执行，即会执行<code>f = Devide(3, 0);</code>。<br />
+<br />
+第 35 行，Devide 函数拋出了异常却不处理，该异常就会被拋给 Devide 函数的调用者，即 main 函数。拋出此异常后，Devide 函数立即结束，第 14 行不会被执行，函数也不会返回一个值，这从第 35 行 f 的值不会被修改可以看出。<br />
+<br />
+Devide 函数中拋出的异常被 main 函数中类型匹配的 catch 块捕获。第 38 行中的 e 对象是用复制构造函数初始化的。<br />
+<br />
+如果拋出的异常是派生类的对象，而 catch 块的异常类型是基类，那么这两者也能够匹配，因为派生类对象也是基类对象。<br />
+<br />
+虽然函数也可以通过返回值或者传引用的参数通知调用者发生了异常，但采用这种方式的话，每次调用函数时都要判断是否发生了异常，这在函数被多处调用时比较麻烦。有了异常处理机制，可以将多处函数调用都写在一个 try 块中，任何一处调用发生异常都会被匹配的 catch 块捕获并处理，也就不需要每次调用后都判断是否发生了异常。<br />
+<br />
+有时，虽然在函数中对异常进行了处理，但是还是希望能够通知调用者，以便让调用者知道发生了异常，从而可以作进一步的处理。在 catch 块中拋出异常可以满足这种需要。例如：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+int CountTax(int salary)
+{
+    try {
+        if( salary &lt; 0 )
+            throw string(&quot;zero salary&quot;);
+        cout &lt;&lt; &quot;counting tax&quot; &lt;&lt; endl;
+
+    }
+    catch (string s ) {
+        cout &lt;&lt; &quot;CountTax error : &quot; &lt;&lt; s &lt;&lt; endl;
+        throw; //继续抛出捕获的异常
+    }
+    cout &lt;&lt; &quot;tax counted&quot; &lt;&lt; endl;
+    return salary * 0.15;
+}
+int main()
+{
+    double f = 1.2;
+    try {
+        CountTax(-1);
+        cout &lt;&lt; &quot;end of try block&quot; &lt;&lt; endl;
+    }
+    catch(string s) {
+        cout &lt;&lt; s &lt;&lt; endl;
+    }
+    cout &lt;&lt; &quot;finished&quot; &lt;&lt; endl;
+    return 0;
+}</pre>
+程序的输出结果如下：<br />
+CountTax error:zero salary<br />
+zero salary<br />
+finished<br />
+<br />
+第 14 行的<code>throw;</code>没有指明拋出什么样的异常，因此拋出的就是 catch 块捕获到的异常，即 string(&quot;zero salary&quot;)。这个异常会被 main 函数中的 catch 块捕获。
+<h2>
+	函数的异常声明列表</h2>
+为了增强程序的可读性和可维护性，使程序员在使用一个函数时就能看出这个函数可能会拋出哪些异常，C++ 允许在函数声明和定义时，加上它所能拋出的异常的列表，具体写法如下：
+<p class="info-box">
+	void func() throw (int, double, A, B, C);</p>
+或
+<p class="info-box">
+	void func() throw (int, double, A, B, C){...}</p>
+上面的写法表明 func 可能拋出 int 型、double 型以及 A、B、C 三种类型的异常。异常声明列表可以在函数声明时写，也可以在函数定义时写。如果两处都写，则两处应一致。<br />
+<br />
+如果异常声明列表如下编写：
+<p class="info-box">
+	void func() throw ();</p>
+则说明 func 函数不会拋出任何异常。<br />
+<br />
+一个函数如果不交待能拋出哪些类型的异常，就可以拋出任何类型的异常。<br />
+<br />
+函数如果拋出了其异常声明列表中没有的异常，在编译时不会引发错误，但在运行时， Dev C++ 编译出来的程序会出错；用 Visual Studio 2010 编译出来的程序则不会出错，异常声明列表不起实际作用。
+<h2>
+	C++标准异常类</h2>
+C++ 标准库中有一些类代表异常，这些类都是从 exception 类派生而来的。常用的几个异常类如图 1 所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/180912/1-1P912101914246_2.jpg" /><br />
+	图1：常用的异常类</div>
+<br />
+bad_typeid、bad_cast、bad_alloc、ios_base::failure、out_of_range 都是 exception 类的派生类。C++ 程序在碰到某些异常时，即使程序中没有写 throw 语句，也会自动拋出上述异常类的对象。这些异常类还都有名为 what 的成员函数，返回字符串形式的异常描述信息。使用这些异常类需要包含头文件 stdexcept。<br />
+<br />
+下面分别介绍以上几个异常类。本节程序的输出以 Visual Studio 2010为准，Dev C++ 编译的程序输出有所不同。
+<h4>
+	1) bad_typeid</h4>
+使用 typeid 运算符时，如果其操作数是一个多态类的<a href='../c/80/80_2.html' target='_blank'>指针</a>，而该指针的值为 NULL，则会拋出此异常。
+<h4>
+	2) bad_cast</h4>
+在用 dynamic_cast 进行从多态基类对象（或引用）到派生类的引用的强制类型转换时，如果转换是不安全的，则会拋出此异常。程序示例如下：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+using namespace std;
+class Base
+{
+    virtual void func() {}
+};
+class Derived : public Base
+{
+public:
+    void Print() {}
+};
+void PrintObj(Base &amp; b)
+{
+    try {
+        Derived &amp; rd = dynamic_cast &lt;Derived &amp;&gt;(b);
+        //此转换若不安全，会拋出 bad_cast 异常
+        rd.Print();
+    }
+    catch (bad_cast &amp; e) {
+        cerr &lt;&lt; e.what() &lt;&lt; endl;
+    }
+}
+int main()
+{
+    Base b;
+    PrintObj(b);
+    return 0;
+}</pre>
+程序的输出结果如下：<br />
+Bad dynamic_cast!<br />
+<br />
+在 PrintObj 函数中，通过 dynamic_cast 检测 b 是否引用的是一个 Derived 对象，如果是，就调用其 Print 成员函数；如果不是，就拋出异常，不会调用 Derived::Print。
+<h4>
+	3) bad_alloc</h4>
+在用 new 运算符进行动态内存分配时，如果没有足够的内存，则会引发此异常。程序示例如下：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+using namespace std;
+int main()
+{
+    try {
+        char * p = new char[0x7fffffff];  //无法分配这么多空间，会抛出异常
+    }
+    catch (bad_alloc &amp; e)  {
+        cerr &lt;&lt; e.what() &lt;&lt; endl;
+    }
+    return 0;
+}</pre>
+程序的输出结果如下：<br />
+bad allocation<br />
+ios_base::failure<br />
+<br />
+在默认状态下，输入输出流对象不会拋出此异常。如果用流对象的 exceptions 成员函数设置了一些标志位，则在出现打开文件出错、读到输入流的文件尾等情况时会拋出此异常。此处不再赘述。
+<h4>
+	4) out_of_range</h4>
+用 vector 或 string 的 at 成员函数根据下标访问元素时，如果下标越界，则会拋出此异常。例如：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+using namespace std;
+int main()
+{
+    vector&lt;int&gt; v(10);
+    try {
+        v.at(100) = 100;  //拋出 out_of_range 异常
+    }
+    catch (out_of_range &amp; e) {
+        cerr &lt;&lt; e.what() &lt;&lt; endl;
+    }
+    string s = &quot;hello&quot;;
+    try {
+        char c = s.at(100);  //拋出 out_of_range 异常
+    }
+    catch (out_of_range &amp; e) {
+        cerr &lt;&lt; e.what() &lt;&lt; endl;
+    }
+    return 0;
+}</pre>
+程序的输出结果如下：<br />
+invalid vector &lt;T&gt; subscript<br />
+invalid string position<br />
+<br />
+如果将<code>v.at(100)</code>换成<code>v[100]</code>，将<code>s.at(100)</code>换成<code>s[100]</code>，程序就不会引发异常（但可能导致程序崩溃）。因为 at 成员函数会检测下标越界并拋出异常，而 operator[] 则不会。operator [] 相比 at 的好处就是不用判断下标是否越界，因此执行速度更快。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="3332_2.html" title="算法时间复杂度和空间复杂度" target="_blank">算法时间复杂度和空间复杂度</a></li>
+<li><a href="vip_5998_2.html" title="Python range()快速初始化数字列表" target="_blank">Python range()快速初始化数字列表</a></li>
+<li><a href="../python_spider/lxml_2.html" title="Python lxml库的安装和使用" target="_blank">Python lxml库的安装和使用</a></li>
+<li><a href="../spring/autowire-xml_2.html" title="Spring自动装配" target="_blank">Spring自动装配</a></li>
+<li><a href="../csharp/foreach_2.html" title="C# foreach循环" target="_blank">C# foreach循环</a></li>
+<li><a href="wlrfwml_2.html" title="Python Selenium库详解" target="_blank">Python Selenium库详解</a></li>
+<li><a href="p03c1q1_2.html" title="Go语言列表（list）的创建和使用" target="_blank">Go语言列表（list）的创建和使用</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 422;
+window.arcId = "bb9f5wijl6VcViZ+BP5czGRueMvYQprUNVrIfmNRGp71sxm2+vLmnAY59Q";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

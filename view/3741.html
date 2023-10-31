@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++11 lambda表达式精讲</title>
+<meta name="description" content="lambda 表达式是 C++11 最重要也最常用的一个特性之一，C# 3.5 和 Java 8 中就引入了 lambda 表达式。 lambda 来源于函数式编程的概念，也是现代编程语言的一个特点。C++11 这次终于把 lambda 加进" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++11 lambda表达式精讲</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">lambda 表达式是 <a href='../cplus/cplus.html' target='_blank'>C++</a>11 最重要也最常用的一个特性之一，<a href='../csharp/csharp.html' target='_blank'>C#</a> 3.5 和 <a href='../java/java_3.html' target='_blank'>Java</a> 8 中就引入了 lambda 表达式。<br />
+<br />
+lambda 来源于函数式编程的概念，也是现代编程语言的一个特点。C++11 这次终于把 lambda 加进来了。<br />
+<br />
+lambda表达式有如下优点：
+<ul>
+<li>
+声明式编程风格：就地匿名定义目标函数或函数对象，不需要额外写一个命名函数或者函数对象。以更直接的方式去写程序，好的可读性和可维护性。</li>
+<li>
+简洁：不需要额外再写一个函数或者函数对象，避免了代码膨胀和功能分散，让开发者更加集中精力在手边的问题，同时也获取了更高的生产率。</li>
+<li>
+在需要的时间和地点实现功能闭包，使程序更灵活。</li>
+</ul>
+<br />
+下面，先从 lambda 表达式的基本功能开始介绍它。
+<h2>
+lambda 表达式的概念和基本用法</h2>
+lambda 表达式定义了一个匿名函数，并且可以捕获一定范围内的变量。lambda 表达式的语法形式可简单归纳如下：
+<p class="info-box">
+[ capture ] ( params ) opt -&gt; ret { body; };</p>
+其中 capture 是捕获列表，params 是参数表，opt 是函数选项，ret 是返回值类型，body是函数体。<br />
+<br />
+因此，一个完整的 lambda 表达式看起来像这样：
+<pre class="cpp">
+auto f = [](int a) -&gt; int { return a + 1; };
+std::cout &lt;&lt; f(1) &lt;&lt; std::endl;  // 输出: 2</pre>
+可以看到，上面通过一行代码定义了一个小小的功能闭包，用来将输入加 1 并返回。<br />
+<br />
+在 C++11 中，lambda 表达式的返回值是通过前面介绍的《<a href="3727.html" target="_blank">C++返回值类型后置</a>》语法来定义的。其实很多时候，lambda 表达式的返回值是非常明显的，比如这个例子。因此，C++11 中允许省略 lambda 表达式的返回值定义：
+<p class="info-box">
+auto f = [](int a){ return a + 1; };</p>
+这样编译器就会根据 return 语句自动推导出返回值类型。<br />
+<br />
+需要注意的是，初始化列表不能用于返回值的自动推导：
+<p class="info-box">
+auto x1 = [](int i){ return i; };&nbsp; // OK: return type is int<br />
+auto x2 = [](){ return { 1, 2 }; };&nbsp; // error: 无法推导出返回值类型</p>
+这时我们需要显式给出具体的返回值类型。<br />
+<br />
+另外，lambda 表达式在没有参数列表时，参数列表是可以省略的。因此像下面的写法都是正确的：
+<p class="info-box">
+auto f1 = [](){ return 1; };<br />
+auto f2 = []{ return 1; };&nbsp; // 省略空参数表</p>
+<h2>
+使用 lambda 表达式捕获列表</h2>
+lambda 表达式还可以通过捕获列表捕获一定范围内的变量：
+<ul>
+<li>
+[] 不捕获任何变量。</li>
+<li>
+[&amp;] 捕获外部作用域中所有变量，并作为引用在函数体中使用（按引用捕获）。</li>
+<li>
+[=] 捕获外部作用域中所有变量，并作为副本在函数体中使用（按值捕获）。</li>
+<li>
+[=，&amp;foo] 按值捕获外部作用域中所有变量，并按引用捕获 foo 变量。</li>
+<li>
+[bar] 按值捕获 bar 变量，同时不捕获其他变量。</li>
+<li>
+[this] 捕获当前类中的 this <a href='../c/80/80.html' target='_blank'>指针</a>，让 lambda 表达式拥有和当前类成员函数同样的访问权限。如果已经使用了 &amp; 或者 =，就默认添加此选项。捕获 this 的目的是可以在 lamda 中使用当前类的成员函数和成员变量。</li>
+</ul>
+<br />
+下面看一下它的具体用法，如下所示。<br />
+<br />
+【实例】lambda 表达式的基本用法。
+<pre class="cpp">
+class A
+{
+    public:
+    int i_ = 0;
+    void func(int x, int y)
+    {
+        auto x1 = []{ return i_; };                    // error，没有捕获外部变量
+        auto x2 = [=]{ return i_ + x + y; };           // OK，捕获所有外部变量
+        auto x3 = [&amp;]{ return i_ + x + y; };           // OK，捕获所有外部变量
+        auto x4 = [this]{ return i_; };                // OK，捕获this指针
+        auto x5 = [this]{ return i_ + x + y; };        // error，没有捕获x、y
+        auto x6 = [this, x, y]{ return i_ + x + y; };  // OK，捕获this指针、x、y
+        auto x7 = [this]{ return i_++; };              // OK，捕获this指针，并修改成员的值
+    }
+};
+int a = 0, b = 1;
+auto f1 = []{ return a; };               // error，没有捕获外部变量
+auto f2 = [&amp;]{ return a++; };            // OK，捕获所有外部变量，并对a执行自加运算
+auto f3 = [=]{ return a; };              // OK，捕获所有外部变量，并返回a
+auto f4 = [=]{ return a++; };            // error，a是以复制方式捕获的，无法修改
+auto f5 = [a]{ return a + b; };          // error，没有捕获变量b
+auto f6 = [a, &amp;b]{ return a + (b++); };  // OK，捕获a和b的引用，并对b做自加运算
+auto f7 = [=, &amp;b]{ return a + (b++); };  // OK，捕获所有外部变量和b的引用，并对b做自加运算</pre>
+从上例中可以看到，lambda 表达式的捕获列表精细地控制了 lambda 表达式能够访问的外部变量，以及如何访问这些变量。<br />
+<br />
+需要注意的是，默认状态下 lambda 表达式无法修改通过复制方式捕获的外部变量。如果希望修改这些变量的话，我们需要使用引用方式进行捕获。<br />
+<br />
+一个容易出错的细节是关于 lambda 表达式的延迟调用的：
+<pre class="cpp">
+int a = 0;
+auto f = [=]{ return a; };      // 按值捕获外部变量
+a += 1;                         // a被修改了
+std::cout &lt;&lt; f() &lt;&lt; std::endl;  // 输出？</pre>
+在这个例子中，lambda 表达式按值捕获了所有外部变量。在捕获的一瞬间，a 的值就已经被复制到f中了。之后 a 被修改，但此时 f 中存储的 a 仍然还是捕获时的值，因此，最终输出结果是 0。<br />
+<br />
+如果希望 lambda 表达式在调用时能够即时访问外部变量，我们应当使用引用方式捕获。<br />
+<br />
+从上面的例子中我们知道，按值捕获得到的外部变量值是在 lambda 表达式定义时的值。此时所有外部变量均被复制了一份存储在 lambda 表达式变量中。此时虽然修改 lambda 表达式中的这些外部变量并不会真正影响到外部，我们却仍然无法修改它们。<br />
+<br />
+那么如果希望去修改按值捕获的外部变量应当怎么办呢？这时，需要显式指明 lambda 表达式为 mutable：<br />
+<pre class="cpp">
+int a = 0;
+auto f1 = [=]{ return a++; };             // error，修改按值捕获的外部变量
+auto f2 = [=]() mutable { return a++; };  // OK，mutable</pre>
+需要注意的一点是，被 mutable 修饰的 lambda 表达式就算没有参数也要写明参数列表。
+<h2>
+lambda 表达式的类型</h2>
+最后，介绍一下 lambda 表达式的类型。<br />
+<br />
+lambda 表达式的类型在 C++11 中被称为&ldquo;闭包类型（Closure Type）&rdquo;。它是一个特殊的，匿名的非 nunion 的类类型。<br />
+<br />
+因此，我们可以认为它是一个带有 operator() 的类，即仿函数。因此，我们可以使用 std::function 和 std::bind 来存储和操作 lambda 表达式：
+<pre class="cpp">
+std::function&lt;int(int)&gt;  f1 = [](int a){ return a; };
+std::function&lt;int(void)&gt; f2 = std::bind([](int a){ return a; }, 123);</pre>
+另外，对于没有捕获任何变量的 lambda 表达式，还可以被转换成一个普通的函数指针：
+<pre class="cpp">
+u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g func_t = int(*)(int);
+func_t f = [](int a){ return a; };
+f(123);</pre>
+lambda 表达式可以说是就地定义仿函数闭包的&ldquo;语法糖&rdquo;。它的捕获列表捕获住的任何外部变量，最终均会变为闭包类型的成员变量。而一个使用了成员变量的类的 operator()，如果能直接被转换为普通的函数指针，那么 lambda 表达式本身的 this 指针就丢失掉了。而没有捕获任何外部变量的 lambda 表达式则不存在这个问题。<br />
+<br />
+这里也可以很自然地解释为何按值捕获无法修改捕获的外部变量。因为按照 C++ 标准，lambda 表达式的 operator() 默认是 const 的。一个 const 成员函数是无法修改成员变量的值的。而 mutable 的作用，就在于取消 operator() 的 const。<br />
+<br />
+需要注意的是，没有捕获变量的 lambda 表达式可以直接转换为函数指针，而捕获变量的 lambda 表达式则不能转换为函数指针。看看下面的代码：
+<pre class="cpp">
+typedef void(*Ptr)(int*);
+Ptr p = [](int* p){delete p;};  // 正确，没有状态的lambda（没有捕获）的lambda表达式可以直接转换为函数指针
+Ptr p1 = [&amp;](int* p){delete p;};  // 错误，有状态的lambda不能直接转换为函数指针</pre>
+上面第二行代码能编译通过，而第三行代码不能编译通过，因为第三行的代码捕获了变量，不能直接转换为函数指针。
+<h2>
+声明式的编程风格，简洁的代码</h2>
+就地定义匿名函数，不再需要定义函数对象，大大简化了标准库算法的调用。比如，在 C++11 之前，我们要调用 for_each 函数将 vector 中的偶数打印出来，如下所示。<br />
+<br />
+【实例】lambda 表达式代替函数对象的示例。
+<pre class="cpp">
+class CountEven
+{
+    int&amp; count_;
+public:
+    CountEven(int&amp; count) : count_(count) {}
+    void operator()(int val)
+    {
+        if (!(val &amp; 1))       // val % 2 == 0
+        {
+            ++ count_;
+        }
+    }
+};
+std::vector&lt;int&gt; v = { 1, 2, 3, 4, 5, 6 };
+int even_count = 0;
+for_each(v.begin(), v.end(), CountEven(even_count));
+std::cout &lt;&lt; &quot;The number of even is &quot; &lt;&lt; even_count &lt;&lt; std::endl;</pre>
+这样写既烦琐又容易出错。有了 lambda 表达式以后，我们可以使用真正的闭包概念来替换掉这里的仿函数，代码如下：
+<pre class="cpp">
+std::vector&lt;int&gt; v = { 1, 2, 3, 4, 5, 6 };
+int even_count = 0;
+for_each( v.begin(), v.end(), [&amp;even_count](int val)
+        {
+            if (!(val &amp; 1))  // val % 2 == 0
+            {
+                ++ even_count;
+            }
+        });
+std::cout &lt;&lt; &quot;The number of even is &quot; &lt;&lt; even_count &lt;&lt; std::endl;</pre>
+lambda 表达式的价值在于，就地封装短小的功能闭包，可以极其方便地表达出我们希望执行的具体操作，并让上下文结合得更加紧密。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="5962.html" title="JS onload事件：页面完全加载完毕" target="_blank">JS onload事件：页面完全加载完毕</a></li>
+<li><a href="8053.html" title="GCC -std编译标准一览表" target="_blank">GCC -std编译标准一览表</a></li>
+<li><a href="../jsp2/include_command.html" title="JSP include指令" target="_blank">JSP include指令</a></li>
+<li><a href="../jstl/fn-substring.html" title="fn:substring()函数" target="_blank">fn:substring()函数</a></li>
+<li><a href="../pandas/sample.html" title="Pandas sample随机抽样" target="_blank">Pandas sample随机抽样</a></li>
+<li><a href="ulj465c.html" title="HTML是什么（入门必读）" target="_blank">HTML是什么（入门必读）</a></li>
+<li><a href="otrazpa.html" title="区块链凉了，直接劝退" target="_blank">区块链凉了，直接劝退</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 3741;
+window.arcId = "ea75Vp6hU8SOgj/X2nQcTp+3GcRa0fINhjJlozaaNyCQqtl5fRpoD85pVLE";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

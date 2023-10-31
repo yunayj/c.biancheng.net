@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>最短作业优先（SJF）调度算法（详解版）</title>
+<meta name="description" content="最短作业优先（SJF）调度算法 将每个进程与其下次 CPU 执行的长度关联起来。当 CPU 变为空闲时，它会被赋给具有最短 CPU 执行的进程。如果两个进程具有同样长度的 CPU 执行，那么可以" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>最短作业优先（SJF）调度算法（详解版）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body"><span style="color:#008000;">最短作业优先（SJF）调度算法</span>将每个进程与其下次 CPU 执行的长度关联起来。当 CPU 变为空闲时，它会被赋给具有最短 CPU 执行的进程。如果两个进程具有同样长度的 CPU 执行，那么可以由 <a href="1242_2.html" target="_blank">FCFS</a> 来处理。<br />
+<p class="info-box">
+	一个更为恰当的表示是<span style="color:#008000;">最短下次CPU执行算法</span>，这是因为调度取决于进程的下次 CPU 执行的长度，而不是其总的长度。我们使用 SJF 一词，主要由于大多数教科书和有关人员都这么称呼这种类型的调度策略。</p>
+举一个 SJF 调度的例子，假设有如下一组进程，CPU 执行长度以 ms 计：<br />
+<br />
+<table>
+	<tbody>
+		<tr>
+			<th>
+				进程</th>
+			<th>
+				执行时间</th>
+		</tr>
+		<tr>
+			<td>
+				P<sub>1</sub></td>
+			<td>
+				6</td>
+		</tr>
+		<tr>
+			<td>
+				P<sub>2</sub></td>
+			<td>
+				8</td>
+		</tr>
+		<tr>
+			<td>
+				P<sub>3</sub></td>
+			<td>
+				7</td>
+		</tr>
+		<tr>
+			<td>
+				P<sub>4</sub></td>
+			<td>
+				3</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+采用 SJF 调度，就会根据如下 Gantt 图来调度这些进程：<br />
+<div style="text-align: center;">
+	<br />
+	<img alt="" src="../uploads/allimg/181106/2-1Q1061333362D_2.gif" /><br />
+	&nbsp;</div>
+进程 P<sub>1</sub> 的等待时间是 3ms，进程 P<sub>2</sub> 的等待时间为 16ms，进程 P<sub>3</sub> 的等待时间为 9ms，进程 P<sub>4</sub> 的等待时间为 0ms。因此，平均等待时间为<code>（3 + 16 + 9 + 0)/4 = 7ms</code>。相比之下，如果使用 FCFS 调度方案，那么平均等待时间为 10.25ms。<br />
+<br />
+可以证明 SJF 调度算法是最优的。这是因为对于给定的一组进程，SJF 算法的平均等待时间最小。通过将短进程移到长进程之前，短进程的等待时间减少大于长进程的等待时间增加。因而，平均等待时间减少。<br />
+<br />
+<span style="color:#b22222;">SJF 算法的真正困难是如何知道下次 CPU 执行的长度。</span>对于批处理系统的长期（或作业）调度，可以将用户提交作业时指定的进程时限作为长度。在这种情况下，用户有意精确估计进程时间，因为低值可能意味着更快的响应（过小的值会引起时限超出错误，进而需要重新提交）。SJF 调度经常用于长期调度。<br />
+<br />
+虽然 SJF 算法是最优的，但是它不能在短期CPU 调度级别上加以实现，因为没有办法知道下次 CPU 执行的长度。一种方法是试图近似 SJF 调度。虽然不知道下一个 CPU 执行的长度，但是可以预测它。可以认为下一个 CPU 执行的长度与以前的相似。因此，通过计算下一个 CPU 执行长度的近似值，可以选择具有预测最短 CPU 执行的进程来运行。<br />
+<br />
+下次 CPU 执行通常预测为以前 CPU 执行的测量长度的指数平均。我们可以按下面的公式来计算指数平均。设 t<sub>n</sub> 为第 n 个 CPU 执行长度，设 &tau;<sub>n+1</sub> 为下次 CPU 执行预测值。因此，对于 &alpha;， 0&le;&alpha;&le;1，定义：<br />
+<p class="info-box">
+	&tau;<sub>n+1</sub> = &alpha;&tau;<sub>n</sub> + (1-&alpha;)&tau;<sub>n</sub></p>
+值 t<sub>n</sub> 包括最近信息，而 &tau;<sub>n</sub> 存储了过去历史。参数 &alpha; 控制最近和过去历史在预测中的权重：
+<ul>
+	<li>
+		如果 &alpha; = 0，那么 &tau;<sub>n+1</sub> = &tau;<sub>n</sub>，最近历史没有影响（当前情形为瞬态）；</li>
+	<li>
+		如果 &alpha; = 1，那么 &tau;<sub>n+1</sub> = t<sub>n</sub>，只有最近 CPU 执行才重要（过去历史被认为是陈旧的、无关的）。</li>
+	<li>
+		更为常见的是 &alpha; = 1/2，这样最近历史和过去历史同样重要。初始值可作为常量或系统的总体平均值。</li>
+</ul>
+图 1 为一个指数平均的例子，其中 &alpha;=1/2，&tau;<sub>0</sub>=10。
+<div style="text-align: center;">
+	<br />
+	<img alt="" src="../uploads/allimg/181106/2-1Q106133624550_2.gif" /><br />
+	图 1 下一个 CPU 执行长度的预测</div>
+<br />
+为了理解指数平均行为，通过替换 &tau;<sub>n</sub>，可以展开 &tau;<sub>n+1</sub>，从而得到：<br />
+<p class="info-box">
+	&tau;<sub>n+1</sub> = &alpha;t<sub>n</sub> + (1-&alpha;)&alpha;t<sub>n-1</sub> + &hellip;+ (l-&alpha;)<sup>j</sup>&alpha;t<sub>n-j</sub> + &hellip;+ (1-&alpha;)<sup>n+1</sup>&tau;<sub>0</sub></p>
+通常，由于 &alpha; 和（1-&alpha;）小于 1，所以后面项的权重比前面项的权重要小。<br />
+<br />
+<span style="color:#b22222;">SJF 算法可以是抢占的或非抢占的。</span>当一个新进程到达就绪队列而以前进程正在执行时，就需要选择了。新进程的下次 CPU 执行，与当前运行进程的尚未完成的 CPU 执行相比，可能还要小。抢占 SJF 算法会抢占当前运行进程，而非抢占 SJF 算法会允许当前运行进程以先完成 CPU 执行。抢占 SJF 调度有时称为<span style="color:#008000;">最短剩余时间优先调度</span>。<br />
+<br />
+举个例子，假设有以下 4 个进程，其 CPU 执行时间以 ms 计：<br />
+<br />
+<table>
+	<tbody>
+		<tr>
+			<th>
+				进程</th>
+			<th>
+				到达时间</th>
+			<th>
+				执行时间</th>
+		</tr>
+		<tr>
+			<td>
+				P<sub>1</sub></td>
+			<td>
+				0</td>
+			<td>
+				8</td>
+		</tr>
+		<tr>
+			<td>
+				P<sub>2</sub></td>
+			<td>
+				1</td>
+			<td>
+				4</td>
+		</tr>
+		<tr>
+			<td>
+				P<sub>3</sub></td>
+			<td>
+				2</td>
+			<td>
+				9</td>
+		</tr>
+		<tr>
+			<td>
+				P<sub>4</sub></td>
+			<td>
+				3</td>
+			<td>
+				5</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+如果进程按给定时间到达就绪队列，而且需要给定执行时间，那么产生的抢占 SJF 调度如以下 Gantt 图所示：
+<div style="text-align: center;">
+	<br />
+	<img alt="" src="../uploads/allimg/181106/2-1Q106133T0231_2.gif" /></div>
+<br />
+进程 P<sub>1</sub> 在时间 0 开始，因为这时只有进程 P<sub>1</sub>。进程 P<sub>2</sub> 在时间 1 到达。进程 P<sub>1</sub> 剩余时间（7ms）大于进程 P<sub>2</sub> 需要的时间（4ms），因此进程 P<sub>1</sub> 被抢占，而进程 P<sub>2</sub> 被调度。<br />
+<br />
+对于这个例子，平均等待时间为 <code>[(10-1) + (1-1) + (17-2) + (5-3)]/4 = 26/4 = 6.5ms</code>。如果使用非抢占 SJF 调度，那么平均等待时间为 7.75ms。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="906_2.html" title="Java数组简介：数组是什么？" target="_blank">Java数组简介：数组是什么？</a></li>
+<li><a href="6124_2.html" title="Goland 2019下载和安装（带破解补丁和汉化包）" target="_blank">Goland 2019下载和安装（带破解补丁和汉化包）</a></li>
+<li><a href="../maven2/exclusion-option_2.html" title="Maven排除依赖和可选依赖" target="_blank">Maven排除依赖和可选依赖</a></li>
+<li><a href="../maven2/private-server_2.html" title="Maven私服" target="_blank">Maven私服</a></li>
+<li><a href="../ml_alg/svm-application_2.html" title="Python Sklearn库SVM算法应用" target="_blank">Python Sklearn库SVM算法应用</a></li>
+<li><a href="nb3a3ir_2.html" title="C++数组指针（指向数组的指针）详解" target="_blank">C++数组指针（指向数组的指针）详解</a></li>
+<li><a href="1l38yo1_2.html" title="《HTML5从入门到精通（第3版）》PDF下载（高清完整版）" target="_blank">《HTML5从入门到精通（第3版）》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 1244;
+window.arcId = "a7bfWrRvonALG95enZNceZUOSW3HLQuZyWnmKyQfLqj/gubBHD7VuUv1ucw";
+window.typeidChain = "113|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

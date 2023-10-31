@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>grep命令_Linux grep命令：文本搜索工具（可使用正则表达式）</title>
+<meta name="description" content="Linux 系统中有很多很有名的搜索类命令，例如 find 命令、locate 命令、sed 命令，但还有三位兄弟是不得不提的，它们在搜索界的地位举足轻重，那就是 grep、egrep、fgrep 三兄弟。 为什么称" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="../view/niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>grep命令_Linux grep命令：文本搜索工具（可使用正则表达式）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">Linux 系统中有很多很有名的搜索类命令，例如 find 命令、locate 命令、sed 命令，但还有三位兄弟是不得不提的，它们在搜索界的地位举足轻重，那就是 grep、egrep、fgrep 三兄弟。<br />
+<br />
+为什么称它们为搜索三兄弟呢？大家看看下面的家谱就一目了然了。
+<div style="text-align: center;">
+	&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; grep<br />
+	&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;/&nbsp;&nbsp;&nbsp; \<br />
+	&nbsp; &nbsp; (选项)&nbsp;&nbsp; (-E)&nbsp;&nbsp; (-F)<br />
+	&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; \<br />
+	&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;egrep &nbsp; &nbsp; fgrep&nbsp;</div>
+<br />
+从上面的关系图可以看出，egrep 和 fgrep 都可以通过 grep 加上不同选项来实现，真是&ldquo;打断胳膊连着筋&rdquo;，血脉相亲的一家人啊。它们三兄弟，各有特点，如表 1 所示。<br />
+<table border="1">
+	<caption>
+		表1 各自特点</caption>
+	<tbody>
+		<tr>
+			<th>
+				命&nbsp;令</th>
+			<th>
+				是否支持正则</th>
+			<th>
+				支持的正则类型</th>
+		</tr>
+		<tr>
+			<th>
+				grep</th>
+			<td>
+				&radic;</td>
+			<td>
+				基本正则表达式</td>
+		</tr>
+		<tr>
+			<th>
+				egrep</th>
+			<td>
+				&radic;</td>
+			<td>
+				扩展正则表达式</td>
+		</tr>
+		<tr>
+			<th>
+				fgrep</th>
+			<td>
+				&times;</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+	</tbody>
+</table>
+<h2>
+	grep 入门招式</h2>
+grep 是能力最全面的，下面我们就先来学习 grep，围绕 /etc/passwd 文件来讲解 grep 的作用。
+<pre class="info-box">
+[root@roclinux ~]# cat /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+(中间省略数十行)
+apache:x:48:48:Apache:/var/www:/sbin/nologin
+test:x:502:502::/home/test:/bin/bash
+leo:x:503:503::/home/leo:/bin/bash
+roc:x:504:504::/home/roc:/bin/bash
+尝试搜索包含leo字符串的行：
+[root@roclinux ~]# grep --color &quot;leo&quot; /etc/passwd
+leo:x:503:503::/home/leo:/bin/bash</pre>
+<br />
+注意上面的<code>--color</code>选项，它的作用是高亮我们查找的字符串，这里，leo 字符串变成了红色字体。
+<h2>
+	grep 的反查技能</h2>
+下面来搜索不包含 leo 字符串的行。
+<pre class="info-box">
+# 使用-v选项
+[root@roclinux ~]# grep -v &quot;leo&quot; /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+(中间省略数十行)
+apache:x:48:48:Apache:/var/www:/sbin/nologin
+test:x:502:502::/home/test:/bin/bash
+roc:x:504:504::/home/roc:/bin/bash</pre>
+<br />
+我们使用<code>-v</code>选项实现了反查效果，可以看到，含有 leo 的行都没有展示出来。
+<h2>
+	grep 展示行号和统计行数</h2>
+有时，我们希望 grep 不仅能搜索到字符串，还能展示出它们位于文件的第几行，这时我们可以使用<code>-n</code>选项来实现这个效果。<br />
+<br />
+来看看包含 leo 的行位于文件的第几行。
+<pre class="info-box">
+# 使用选项 n
+[root@roclinux ~]# grep -n leo /etc/passwd
+29:leo:x:503:503::/home/leo:/bin/bash</pre>
+<br />
+大家注意观察输出内容的开头部分，leo 前的内容表示的就是行位置信息，原来是在第 29 行呀！<br />
+<br />
+另外一些时候，我们希望 grep 不要输出搜索到的行的内容，而是简单地告诉我们到底搜索到了多少行就好了，试试<code>-c</code>选项吧。
+<pre class="info-box">
+# 使用-c选项
+[root@roclinux ~]# grep -c leo /etc/passwd
+1</pre>
+输出很简单，这表示含有 leo 的行只有 1 行。
+<h2>
+	grep 能环顾四周</h2>
+我想搜索包含 leo 的行，但 grep 在输出时，最好能把 leo 所在行的上面或下面相邻的行也都展示出来。<br />
+<br />
+我们来看看 grep 是如何做到的。
+<pre class="info-box">
+[root@roclinux ~]# grep -A 1 leo passwd
+leo:x:503:503::/home/leo:/bin/bash
+roc:x:504:504::/home/roc:/bin/bash</pre>
+<br />
+上面示例中的<code>-A</code>选项，是 After 的缩写，表示除了展示匹配行之外，还要展示出匹配行下面的若干行。而示例中的 -A 1 则表示还展示匹配行下面一行的内容。
+<pre class="info-box">
+[root@roclinux ~]# grep -B 1 leo passwd
+test:x:502:502::/home/test:/bin/bash
+leo:x:503:503::/home/leo:/bin/bash</pre>
+<br />
+上面示例中的<code>-B</code>选项，是 Before 的缩写，表示除了展示匹配行之外，还要展示出匹配行上面的若干行。而示例中的 -B 1 则表示还展示匹配行上面一行的内容。
+<pre class="info-box">
+[root@roclinux ~]# grep -C 1 leo passwd
+test:x:502:502::/home/test:/bin/bash
+leo:x:503:503::/home/leo:/bin/bash
+roc:x:504:504::/home/roc:/bin/bash</pre>
+<br />
+上面示例中使用了<code>-C</code>选项，它是<code>-A</code>和<code>-B</code>选项的合体，表示除了展示匹配行之外，还要展示出匹配行上面和下面各若干行。而示例中的 -C 1 则表示还展示匹配行上面一行和下面一行的内容。
+<h2>
+	让 grep 不要区分大小写</h2>
+在搜索过程中，我们有时候希望不要区分字母的大小写，这样做可以提高搜索命中的概率，而-i选项则可以帮我们这个忙。
+<pre class="info-box">
+[root@roclinux ~]# grep -i &quot;LEO&quot; passwd
+leo:x:503:503::/home/leo:/bin/bash</pre>
+<br />
+看到了吧，即便我们把要搜索的字符串指定为全部大写的 LEO，仍然可以顺利地搜索到全部小写的 leo。
+<h2>
+	grep 处理多文件</h2>
+grep 命令可以一次搜索很多个文件，最常使用的一个场景就是：从大量的文件中找出含有特定字符的文件。下面我们来试验一下。
+<pre class="info-box">
+# 当前目录下有三个文件
+[roc@roclinux ~]$ ll
+total 12
+-rw-rw-r-- 1 roc roc 58 Mar 15 17:47 1.txt
+-rw-rw-r-- 1 roc roc 59 Mar 15 17:51 2.txt
+-rw-rw-r-- 1 roc roc 58 Mar 15 17:52 3.txt
+ 
+# 1.txt文件的内容如下
+[roc@roclinux ~]$ cat 1.txt
+this first file
+this file contain some import infomation.
+ 
+# 2.txt文件的内容如下
+[roc@roclinux ~]$ cat 2.txt
+this second file
+this file contain some import infomation.
+ 
+# 3.txt文件的内容如下
+[roc@roclinux ~]$ cat 3.txt
+this third file
+this file contain some import infomation.</pre>
+<br />
+我们的搜索需求是，找出内容中含有first单词的文件都有哪些。我们希望得到的是一个文件列表。
+<pre class="info-box">
+# 使用-l选项
+[roc@roclinux ~]$ grep -l &quot;first&quot; *.txt
+1.txt</pre>
+<br />
+原来只有 1.txt 文件中包含有 first 单词。如果我想找出不含 first 单词的文件都有哪些，该如何操作呢？
+<pre class="info-box">
+[roc@roclinux ~]$ grep -L &quot;first&quot; *.txt
+2.txt
+3.txt</pre>
+反向操作就要用反向选项，只需把 -l 变成 -L 即可。
+<h2>
+	grep 也正则</h2>
+上面讲解的内容，更多的是以普通字符串作为搜索对象的，接下来的内容里，我们会更多地设置一些复杂的搜索需求，让大家体会到正则的好处与威力。<br />
+<br />
+我们希望搜索/etc/passwd文件中开头是 leo 的行：
+<pre class="info-box">
+# ^表示行首
+[root@roclinux ~]# grep &#39;^leo&#39; /etc/passwd
+leo:x:503:503::/home/leo:/bin/bash</pre>
+<br />
+看到了吧，我们使用&ldquo;^leo&rdquo;表达了&ldquo;开头是 leo 的行&rdquo;，而 grep 也心领神会，帮我们找到了所求。<br />
+<br />
+那如果我们希望搜索 /etc/passwd 文件中行尾是 bash 的行呢？
+<pre class="info-box">
+# $ 表示行尾
+[root@roclinux ~]# grep &#39;bash$&#39; /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+cloud-user:x:500:500::/home/cloud-user:/bin/bash
+test:x:502:502::/home/test:/bin/bash
+leo:x:503:503::/home/leo:/bin/bash
+roc:x:504:504::/home/roc:/bin/bash</pre>
+使用&ldquo;bash$&rdquo;即可，你会发现正则表达式其实并不难。
+<h2>
+	有关&ldquo;词&rdquo;的知识</h2>
+我们希望搜索含有 bin 这个词的行，按照原来我们学到的知识，一定会这样来搜索：
+<pre class="info-box">
+[root@roclinux ~]# grep bin /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+(此处省略数十行)
+apache:x:48:48:Apache:/var/www:/sbin/nologin
+test:x:502:502::/home/test:/bin/bash
+leo:x:503:503::/home/leo:/bin/bash
+roc:x:504:504::/home/roc:/bin/bash</pre>
+<br />
+但是，你会发现，这样的搜索结果有一个问题，那就是连 sbin 这样的词也会被搜索出来，而我们并不想看到这样的结果。这个问题，算是一个比较难的问题了，需要我们了解&ldquo;词&rdquo;的定义，以及知道正则表达式中如何表示一个&ldquo;词&rdquo;。<br />
+<br />
+首先，正则表达式中的&ldquo;词（word）&rdquo;，一般是由字母、数字和下划线所组成的，且词与词之间通常使用空格、制表符或换行符分隔。举个例子，&ldquo;I love you.&rdquo;中的&ldquo;love&rdquo;就是一个&ldquo;词&rdquo;，但&ldquo;My gloves are red.&rdquo;中的&ldquo;love&rdquo;就不能称作一个&ldquo;词&rdquo;。<br />
+<br />
+在正则表达式中，我们通常用尖括号表示一个&ldquo;词&rdquo;，比如能够匹配&ldquo;I love you.&rdquo;，但不能匹配&ldquo;My gloves are red.&rdquo;。<br />
+<br />
+下面我们通过示例学习这个知识点：
+<pre class="info-box">
+#我们尝试匹配bin这个&ldquo;词&rdquo;
+[root@roclinux ~]# grep &#39;\&lt;bin\&gt;&#39; /etc/passwd --color
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+cloud-user:x:500:500::/home/cloud-user:/bin/bash
+test:x:502:502::/home/test:/bin/bash
+leo:x:503:503::/home/leo:/bin/bash
+roc:x:504:504::/home/roc:/bin/bash</pre>
+<br />
+我们通过使用<code>\&lt;</code>和<code>\&gt;</code>来准确匹配到了 bin 这个词，而 sbin 却被挡在了门外。<br />
+<br />
+其实，上面的方法还是有些复杂了，grep 中还有一个更加简单的方法来实现对&ldquo;词&rdquo;的搜索：
+<pre class="info-box">
+# 使用-w选项来搜索一个词
+[root@roclinux ~]# grep -w &#39;bin&#39; /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+cloud-user:x:500:500::/home/cloud-user:/bin/bash
+test:x:502:502::/home/test:/bin/bash
+leo:x:503:503::/home/leo:/bin/bash
+roc:x:504:504::/home/roc:/bin/bash</pre>
+<h2>
+	grep 的多条件查找</h2>
+如果我想查找以 root 为行首的或以 bash 为行尾的行，那应该怎么查找呢？这时就要有请我们的二师兄 egrep 来帮忙了。
+<pre class="info-box">
+[root@roclinux ~]# egrep &#39;^root|bash$&#39; passwd
+root:x:0:0:root:/root:/bin/bash
+cloud-user:x:500:500::/home/cloud-user:/bin/bash
+test:x:502:502::/home/test:/bin/bash
+leo:x:503:503::/home/leo:/bin/bash
+roc:x:504:504::/home/roc:/bin/bash</pre>
+<br />
+我们通过 egrep 命令实现了两个条件的搜索，其中&ldquo;|&rdquo;符号表示&ldquo;或&rdquo;，连接了两个搜索条件。<br />
+<br />
+同样的搜索需求，grep 就没有办法满足（除非使用-E选项）：
+<pre class="info-box">
+[root@roclinux ~]# grep &#39;^root|bash$&#39; passwd</pre>
+<br />
+这就是 grep 和 egrep的区别了，grep 的正则表达式是基本正则表达式，而 egrep 的正则表达式是扩展正则表达式，这两种表达式是有区别的，下面我们就一起来看看它们的区别。
+<h2>
+	基本正则表达式和扩展正则表达式</h2>
+世界上的正则表达式种类繁多且复杂，面对这样的状况，POSIX 将正则表达式进行了标准化，并把实现方法分为了两大类：
+<ul>
+	<li>
+		基本正则表达式（BRE）</li>
+	<li>
+		扩展正则表达式（ERE）</li>
+</ul>
+<br />
+两者的区别，更多的是元字符的区别。<br />
+<br />
+在基本正则表达式（BRE）中，只承认&ldquo;^&rdquo;、&ldquo;$&rdquo;、&ldquo;.&rdquo;、&ldquo;[&rdquo;、&ldquo;]&rdquo;、&ldquo;*&rdquo;这些是元字符，所有其他的字符都被识别为普通字符。<br />
+<br />
+而在扩展正则表达式（ERE）中，则在BRE的基础上增加了&ldquo;（&rdquo;、&ldquo;）&rdquo;、&ldquo;{&rdquo;、&ldquo;}&rdquo;、&ldquo;？&rdquo;和&ldquo;+&rdquo;、&ldquo;|&rdquo;等元字符。<br />
+<br />
+最后要特别说明的一点，只有在用反斜杠进行转义的情况下，字符&ldquo;（&rdquo;、&ldquo;）&rdquo;、&ldquo;{&rdquo;和&ldquo;}&rdquo;才会在扩展正则表达式（ERE）中被当作元字符处理，而在基本正则表达式（ERE）中，任何元字符前面加上反斜杠反而会使其被当作普通字符来处理。这样的设计，有些奇葩，同学们一定要记清楚哦。
+<h2>
+	三师弟 fgrep 最朴素</h2>
+grep 和 egrep 都支持正则表达式，但 fgrep 却完全不支持正则表达式。
+<pre class="info-box">
+#匹配到了好多行
+[root@roclinux ~]# grep -c &#39;^root&#39; /etc/passwd
+6688
+ 
+#一行都没有匹配到
+[root@roclinux ~]# fgrep -c &#39;^root&#39; /etc/passwd
+0</pre>
+这个示例证明了 fgrep 的确不支持正则表达式。那 fgrep 还有用武之地么？答案是肯定的。<br />
+<br />
+当我们搜索时，假如搜索字符串中包含了不少特殊字符，而这些特殊字符恰好又是正则表达式预留的字符，比如说&ldquo;^&rdquo;、&ldquo;$&rdquo;等，这时，我们就可以使用 fgrep 来避免烦琐的转义了，因为我们心里知道，在 fgrep 的眼里，没有特殊字符，都是普通字符。我们来看下面的示例。
+<pre class="info-box">
+#我们的roc.txt文件中有几个^和$
+[roc@roclinux ~]$ cat roc.txt
+^this third file
+^$this file contain some import infomation.
+ 
+# grep会尝试去找开头为this的行, 但并未找到
+[roc@roclinux ~]$ grep &#39;^this&#39; roc.txt
+ 
+# fgrep会老老实实地去找^this字符串, 它找到了
+[roc@roclinux ~]$ fgrep &#39;^this&#39; roc.txt
+^this third file</pre>
+<br />
+好了，洋洋洒洒的一篇 grep 三兄弟就介绍到这里了，要和三兄弟道别了，以后遇到搜索字符串的场景，可不要忘了它们三位哦！</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="../view/niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/1859_2.html" title="C语言变量的作用域，加深对全局变量和局部变量的理解" target="_blank">C语言变量的作用域，加深对全局变量和局部变量的理解</a></li>
+<li><a href="../view/6984_2.html" title="C++ auto类型推导完全攻略" target="_blank">C++ auto类型推导完全攻略</a></li>
+<li><a href="../view/vip_7679_2.html" title="C++多文件项目如何用g++命令执行？" target="_blank">C++多文件项目如何用g++命令执行？</a></li>
+<li><a href="../view/8533_2.html" title="Python视频教程汇总，从入门到精通（共12套）" target="_blank">Python视频教程汇总，从入门到精通（共12套）</a></li>
+<li><a href="../json/syntax_2.html" title="JSON语法规则" target="_blank">JSON语法规则</a></li>
+<li><a href="../view/qiie5z_2.html" title="C语言const关键字：定义常量" target="_blank">C语言const关键字：定义常量</a></li>
+<li><a href="../c/gets_2.html" title="C语言gets()：输入一个字符串" target="_blank">C语言gets()：输入一个字符串</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 695;
+window.arcId = "b70dYl6IEr0tycCVt7+gC26TdMiHS7LDNgyJPAIqvG2I3TzVczOHdv20Bg";
+window.typeidChain = "71|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="../view/8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="../view/8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="../view/8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="../view/9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="../view/8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

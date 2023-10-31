@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>图解TCP数据报结构以及三次握手（非常详细）</title>
+<meta name="description" content="TCP（Transmission Control Protocol，传输控制协议）是一种面向连接的、可靠的、基于字节流的通信协议，数据在传输前要建立连接，传输完毕后还要断开连接。 客户端在收发数据前要使用" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../socket/socket.html">socket</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href="2123.html">socket是什么</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href="2124.html">套接字有哪些类型</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href="vip_5864.html">面向连接和无连接的套接字到底有什么区别？</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href="2126.html">OSI网络七层模型</a>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href="2133.html">TCP/IP协议族</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href="2132.html">IP、MAC和端口号</a>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href="2128.html">Linux下的socket演示程序</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href="2129.html">Windows下的socket演示程序</a>
+</dd>
+<dd>
+<span class="channel-num">9</span>
+<a href="vip_5865.html">使用WSAStartup()函数加载DLL</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">10</span>
+<a href="2131.html">使用socket()函数创建套接字</a>
+</dd>
+<dd>
+<span class="channel-num">11</span>
+<a href="2344.html">bind()和connect()函数</a>
+</dd>
+<dd>
+<span class="channel-num">12</span>
+<a href="2345.html">listen()和accept()函数</a>
+</dd>
+<dd>
+<span class="channel-num">13</span>
+<a href="2346.html">send()/recv()和write()/read()函数</a>
+</dd>
+<dd>
+<span class="channel-num">14</span>
+<a href="vip_5866.html">socket编程实现回声客户端</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">15</span>
+<a href="vip_5867.html">如何让服务器端持续不断地监听客户端的请求？</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">16</span>
+<a href="2349.html">socket缓冲区以及阻塞模式</a>
+</dd>
+<dd>
+<span class="channel-num">17</span>
+<a href="2350.html">TCP粘包问题（数据的无边界性）</a>
+</dd>
+<dd>
+<span class="channel-num">18</span>
+<a href="2351.html">TCP数据报结构以及三次握手(图解)</a>
+</dd>
+<dd>
+<span class="channel-num">19</span>
+<a href="2352.html">TCP数据的传输过程</a>
+</dd>
+<dd>
+<span class="channel-num">20</span>
+<a href="2353.html">TCP四次握手断开连接（图解）</a>
+</dd>
+<dd>
+<span class="channel-num">21</span>
+<a href="vip_5868.html">如何优雅地断开TCP连接？</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">22</span>
+<a href="vip_5869.html">socket编程实现文件传输功能</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">23</span>
+<a href="vip_5871.html">网络数据传输时的大小端问题</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">24</span>
+<a href="vip_5870.html">在socket编程中使用域名</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">25</span>
+<a href="2358.html">再谈UDP和TCP</a>
+</dd>
+<dd>
+<span class="channel-num">26</span>
+<a href="2359.html">基于UDP的服务器端和客户端</a>
+</dd>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../socket/socket.html">socket</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>图解TCP数据报结构以及三次握手（非常详细）</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">TCP（Transmission Control Protocol，传输控制协议）是一种面向连接的、可靠的、基于字节流的通信协议，数据在传输前要建立连接，传输完毕后还要断开连接。<br />
+<br />
+客户端在收发数据前要使用 connect() 函数和服务器建立连接。建立连接的目的是保证IP地址、端口、物理链路等正确无误，为数据的传输开辟通道。<br />
+<br />
+TCP建立连接时要传输三个数据包，俗称<span style="color: #b22222">三次握手（Three-way Handshaking）</span>。可以形象的比喻为下面的对话：
+<ul>
+<li>
+[Shake 1] 套接字A：&ldquo;你好，套接字B，我这里有数据要传送给你，建立连接吧。&rdquo;</li>
+<li>
+[Shake 2] 套接字B：&ldquo;好的，我这边已准备就绪。&rdquo;</li>
+<li>
+[Shake 3] 套接字A：&ldquo;谢谢你受理我的请求。&rdquo;</li>
+</ul>
+<h2>
+TCP数据报结构</h2>
+我们先来看一下TCP数据报的结构：<br />
+<img alt="" src="../uploads/allimg/190219/1155315343-0.jpg" /><br />
+<br />
+带阴影的几个字段需要重点说明一下：<br />
+1) 序号：Seq（Sequence Number）序号占32位，用来标识从计算机A发送到计算机B的数据包的序号，计算机发送数据时对此进行标记。<br />
+<br />
+2)&nbsp;确认号：Ack（Acknowledge Number）确认号占32位，客户端和服务器端都可以发送，Ack = Seq + 1。<br />
+<br />
+3)&nbsp;标志位：每个标志位占用1Bit，共有6个，分别为 URG、ACK、PSH、RST、SYN、FIN，具体含义如下：
+<ul>
+<li>
+URG：紧急指针（urgent pointer）有效。</li>
+<li>
+ACK：确认序号有效。</li>
+<li>
+PSH：接收方应该尽快将这个报文交给应用层。</li>
+<li>
+RST：重置连接。</li>
+<li>
+SYN：建立一个新连接。</li>
+<li>
+FIN：断开一个连接。</li>
+</ul>
+<blockquote>
+对英文字母缩写的总结：Seq 是&nbsp;Sequence 的缩写，表示序列；Ack(ACK) 是&nbsp;Acknowledge 的缩写，表示确认；SYN 是&nbsp;Synchronous 的缩写，愿意是&ldquo;同步的&rdquo;，这里表示建立同步连接；FIN 是 Finish 的缩写，表示完成。</blockquote>
+<h2>
+连接的建立（三次握手）</h2>
+使用 connect() 建立连接时，客户端和服务器端会相互发送三个数据包，请看下图：<br />
+<img alt="" src="../uploads/allimg/190219/1155312401-1.jpg" /><br />
+<br />
+客户端调用 <a href='../socket/socket.html' target='_blank'>socket</a>() 函数创建套接字后，因为没有建立连接，所以套接字处于<code>CLOSED</code>状态；服务器端调用 listen() 函数后，套接字进入<code>LISTEN</code>状态，开始监听客户端请求。<br />
+<br />
+这个时候，客户端开始发起请求：<br />
+1) 当客户端调用 connect() 函数后，TCP协议会组建一个数据包，并设置 SYN 标志位，表示该数据包是用来建立同步连接的。同时生成一个随机数字 1000，填充&ldquo;序号（Seq）&rdquo;字段，表示该数据包的序号。完成这些工作，开始向服务器端发送数据包，客户端就进入了<code>SYN-SEND</code>状态。<br />
+<br />
+2) 服务器端收到数据包，检测到已经设置了 SYN 标志位，就知道这是客户端发来的建立连接的&ldquo;请求包&rdquo;。服务器端也会组建一个数据包，并设置 SYN 和 ACK 标志位，SYN 表示该数据包用来建立连接，ACK 用来确认收到了刚才客户端发送的数据包。<br />
+<br />
+服务器生成一个随机数 2000，填充&ldquo;序号（Seq）&rdquo;字段。2000 和客户端数据包没有关系。<br />
+<br />
+服务器将客户端数据包序号（1000）加1，得到1001，并用这个数字填充&ldquo;确认号（Ack）&rdquo;字段。<br />
+<br />
+服务器将数据包发出，进入<code>SYN-RECV</code>状态。<br />
+<br />
+3) 客户端收到数据包，检测到已经设置了 SYN 和 ACK 标志位，就知道这是服务器发来的&ldquo;确认包&rdquo;。客户端会检测&ldquo;确认号（Ack）&rdquo;字段，看它的值是否为 1000+1，如果是就说明连接建立成功。<br />
+<br />
+接下来，客户端会继续组建数据包，并设置 ACK 标志位，表示客户端正确接收了服务器发来的&ldquo;确认包&rdquo;。同时，将刚才服务器发来的数据包序号（2000）加1，得到 2001，并用这个数字来填充&ldquo;确认号（Ack）&rdquo;字段。<br />
+<br />
+客户端将数据包发出，进入<code>ESTABLISED</code>状态，表示连接已经成功建立。<br />
+<br />
+4) 服务器端收到数据包，检测到已经设置了 ACK 标志位，就知道这是客户端发来的&ldquo;确认包&rdquo;。服务器会检测&ldquo;确认号（Ack）&rdquo;字段，看它的值是否为 2000+1，如果是就说明连接建立成功，服务器进入<code>ESTABLISED</code>状态。<br />
+<br />
+至此，客户端和服务器都进入了<code>ESTABLISED</code>状态，连接建立成功，接下来就可以收发数据了。
+<h2>
+最后的说明</h2>
+三次握手的关键是要确认对方收到了自己的数据包，这个目标就是通过&ldquo;确认号（Ack）&rdquo;字段实现的。计算机会记录下自己发送的数据包序号 Seq，待收到对方的数据包后，检测&ldquo;确认号（Ack）&rdquo;字段，看<code>Ack = Seq + 1</code>是否成立，如果成立说明对方正确收到了自己的数据包。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="278.html" title="cin.get()：C++读取单个字符" target="_blank">cin.get()：C++读取单个字符</a></li>
+<li><a href="2243.html" title="Python break用法详解" target="_blank">Python break用法详解</a></li>
+<li><a href="vip_3499.html" title="Linux Shell trap命令：捕获信号" target="_blank">Linux Shell trap命令：捕获信号</a></li>
+<li><a href="4286.html" title="Python index()方法：检测字符串中是否包含某子串" target="_blank">Python index()方法：检测字符串中是否包含某子串</a></li>
+<li><a href="5419.html" title="什么是迭代器，Python迭代器及其用法" target="_blank">什么是迭代器，Python迭代器及其用法</a></li>
+<li><a href="6688.html" title="C++ array(STL array)容器用法详解" target="_blank">C++ array(STL array)容器用法详解</a></li>
+<li><a href="jl3flwp.html" title="Linux free命令：查看内存使用情况" target="_blank">Linux free命令：查看内存使用情况</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 2351;
+window.arcId = "5803D7GFdqVZXJ5QW8elSntsuTC8irTVzy/8NdWTtxYsIHXr19mUGL+YeHE";
+window.typeidChain = "153";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/view/2350.html";
+window.nextPageURL = "/view/2352.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

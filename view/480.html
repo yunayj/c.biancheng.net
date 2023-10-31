@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++ priority_queue(STL priority_queue)用法详解</title>
+<meta name="description" content="不出所料，priority_queue 容器适配器定义了一个元素有序排列的队列。默认队列头部的元素优先级最高。因为它是一个队列，所以只能访问第一个元素，这也意味着优先级最高的元素总是" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++ priority_queue(STL priority_queue)用法详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">不出所料，priority_queue 容器适配器定义了一个元素有序排列的队列。默认队列头部的元素优先级最高。因为它是一个队列，所以只能访问第一个元素，这也意味着优先级最高的元素总是第一个被处理。但是如何定义&ldquo;优先级&rdquo;完全取决于我们自己。如果一个优先级队列记录的是医院里等待接受急救的病人，那么病人病情的严重性就是优先级。如果队列元素是银行的借贷业务，那么借记可能会优先于信贷。<br />
+<br />
+priority_queue 模板有 3 个参数，其中两个有默认的参数；第一个参数是存储对象的类型，第二个参数是存储元素的底层容器，第三个参数是函数对象，它定义了一个用来决定元素顺序的断言。因此模板类型是：
+<pre class="cpp">
+template &lt;typename T, typename Container=std::vector&lt;T&gt;, typename Compare=std::less&lt;T&gt;&gt; class priority_queue</pre>
+如你所见，priority_queue 实例默认有一个 vector 容器。函数对象类型 less&lt;T&gt; 是一个默认的排序断言，定义在头文件 function 中，决定了容器中最大的元素会排在队列前面。fonction 中定义了&nbsp; greater&lt;T&gt;，用来作为模板的最后一个参数对元素排序，最小元素会排在队列前面。当然，如果指定模板的最巵一个参数，就必须提供另外的两个模板类型参数。
+<div style="text-align: center;">
+<br />
+<img alt="" src="../uploads/allimg/180913/2-1P913134031947.jpg" /><br />
+图 1</div>
+<br />
+图 1 中显示元素的方式反映了它们被检索的顺序。在 vector 中它们也可以不像这样排序。在讨论堆时，会解释原因。<br />
+<h2>
+创建 priority_queue</h2>
+可以如下所示生成一个空的优先级队列：
+<pre class="cpp">
+std::priority_queue&lt;std::string&gt; words; </pre>
+可以用适当类型的对象初始化一个优先级队列：
+<pre class="cpp">
+std::string wrds[] { &quot;one&quot;, &quot;two&quot;, &quot;three&quot;, &quot;four&quot;};
+std::priority_queue&lt;std::string&gt; words { std::begin(wrds),std:: end(wrds)}; // &quot;two&quot; &quot;three&quot; &quot;one&quot; &quot;four&quot; </pre>
+初始化列表中的序列可以来自于任何容器，并且不需要有序。优先级队列会对它们进行排序。<br />
+<br />
+拷贝构造函数会生成一个和现有对象同类型的 priority_queue 对象，它是现有对象的一个副本。例如：
+<pre class="cpp">
+std::priority_queue&lt;std::string&gt; copy_words {words}; // copy of words </pre>
+也有带右值引用参数的拷贝构造函数，它可以移动一个实参对象。<br />
+<br />
+当对容器内容反向排序时，最小的元素会排在队列前面，这时候需要指定 3 个模板类型参数：
+<pre class="cpp">
+std:: string wrds[] {&quot;one&quot;, &quot;two&quot;, &quot;three&quot;, &quot;four&quot;};
+std::priority_queue&lt;std::string, std::vector&lt;std::string&gt;,std: :greater&lt;std::string&gt;&gt; words1 {std::begin (wrds) , std:: end (wrds) }; //&quot;four&quot; &quot;one&quot; &quot;three&quot; &quot;two&quot;</pre>
+这会通过使用 operator&gt;() 函数对字符串对象进行比较，进而生成一个优先级队列，因此这会和它们在队列中的顺序相反。<br />
+<br />
+优先级队列可以使用任何容器来保存元素，只要容器有成员函数 front()、push_back()、pop_back()、size()、empty()。这显然包含了 deque 容器，因此这里也可以用 deque 来代替：
+<pre class="cpp">
+std::string wrds [] {&quot;one&quot;, &quot;two&quot;, &quot;three&quot;, &quot;four&quot;};
+std::priority_queue&lt;std::string, std::deque&lt;std::string&gt;&gt; words {std::begin(wrds), std::end(wrds)}; </pre>
+这个 words 优先级队列在 deque 容器中保存了一些 wrds 数组中的字符串，这里使用默认的比较断言，因此队列中的元素会和上面 word1 中元素的顺序相同。priority_queue 构造函数会生成一个和第二个类型参数同类型的容器来保存元素，这也是 priority_queue 对象的底层容器。<br />
+<br />
+可以生成 vector 或 deque 容器，然后用它们来初始化 priority_queue。下面展示了如何以 vector 的元素作为初始值来生成 priority_queue 对象：
+<pre class="cpp">
+std::vector&lt;int&gt; values{21, 22, 12, 3, 24, 54, 56};
+std::priority_queue&lt;int&gt; numbers {std::less&lt;int&gt;(),values};</pre>
+priority_queue 构造函数的第一个参数是一个用来对元素排序的函数对象，第二个参数是一个提供初始元素的容器。在队列中用函数对象对 vector 元素的副本排序。values 中元素的顺序没有变，但是优先级队列中的元素顺序变为：56 54 24 22 21 12 3。优先级队列中用来保存元素的容器是私有的，因此只能通过调用 priority_queue 对象的成员函数来对容器进行操作。构造函数的第一个参数是函数对象类型，它必须和指定的比较模板类型参数相同，函数对象类型默认是 less&lt;T&gt;。如果想使用不同类型的函数，需要指定全部的模板类型参数。例如：
+<pre class="cpp">
+std::priority_queue&lt;int, std::vector&lt;int&gt;,std::greater&lt;int&gt;&gt; numbersl {std::greater&lt;int&gt;(), values};</pre>
+第三个类型参数是一个比较对象类型。如果要指定这个参数，必须指定前两个参数&mdash;&mdash;元素类型和底层容器类型。<br />
+<h2>
+priority_queue 操作</h2>
+对 priority_queue 进行操作有一些限制：
+<ul>
+<li>
+push(const T&amp; obj)：将obj的副本放到容器的适当位置，这通常会包含一个排序操作。</li>
+<li>
+push(T&amp;&amp; obj)：将obj放到容器的适当位置，这通常会包含一个排序操作。</li>
+<li>
+emplace(T constructor a rgs...)：通过调用传入参数的构造函数，在序列的适当位置构造一个T对象。为了维持优先顺序，通常需要一个排序操作。</li>
+<li>
+top()：返回优先级队列中第一个元素的引用。</li>
+<li>
+pop()：移除第一个元素。</li>
+<li>
+size()：返回队列中元素的个数。</li>
+<li>
+empty()：如果队列为空的话，返回true。</li>
+<li>
+swap(priority_queue&lt;T&gt;&amp; other)：和参数的元素进行交换，所包含对象的类型必须相同。</li>
+</ul>
+<br />
+priority_queue 也实现了赋值运算，可以将右操作数的元素赋给左操作数；同时也定义了拷贝和移动版的赋值运算符。需要注意的是，priority_queue 容器并没有定义比较运算符。因为需要保持元素的顺序，所以添加元素通常会很慢。稍后会在堆(heaps)一节讨论 priority_queue 的内部操作。<br />
+<br />
+以下展示了如何将键盘输入的数据记录到 priority_queue 中：
+<pre class="cpp">
+std::priority_queue&lt;std::string&gt; words;
+std::string word; std::cout &lt;&lt; &quot;Enter words separated by spaces, enter Ctrl+Z on a separate line to end:\n&quot;;
+while (true)
+{
+    if ((std::cin &gt;&gt; word).eof())
+        break;
+    words.push(word);
+}</pre>
+按下 Ctrl+Z 组合键会在输入流中设置文件结束状态，因此可以用来结束循环输入。istream 对象的成员函数 operator&gt;&gt;() 返回一个输入流对象，因此我们可以用 if 条件表达式来调用 eof() 以检查 cin 的状态。这里会对输入单词进行排序，所以最大的单词总在 words 队列的前面&mdash;&mdash;自动对输入单词排序。<br />
+<br />
+priority_queue 没有迭代器。如果想要访问全部的元素，比如说，列出或复制它们，会将队列清空；priority_queue 和 queue 有相同的限制。如果想在进行这样的操作后，还能保存它的元素，需要先把它复制一份，这里可以使用一个不同类型的容器。下面展示了如何列出优先级队列 words 的内容：
+<pre class="cpp">
+std::priority_queue&lt;std::string&gt; words_copy {words}; // A copy for output
+while (!words_copy.empty())
+{
+    std:: cout &lt;&lt; words_copy.top () &lt;&lt;&quot; &quot;;
+    words_copy.pop();
+}
+std::cout &lt;&lt; std::endl;</pre>
+这里首先生成了一个 words 的副本，因为输出 words 会移除它的内容。输出 top() 返回的元素后，我们需要使用 pop() 来使下一个元素可访问。移除全部元素后，在循环条件中调用 empty() 以结束循环。也可以使用表达式 words_copy.size() 来控制循环，因为返回值会被隐式转换为布尔值，这样在 size() 返回 0 时，表达式的结果为 false。<br />
+<br />
+如果为 words 输入：
+<p class="info-box">
+one two three four five six seven<br />
+^Z</p>
+那么输出为：<br />
+<p class="info-box">
+two three six seven one four five</p>
+当然，如果需要多次输出 priority_queue 的内容，最好定义一个函数。这个函数应该是通用的，如下所示：<br />
+<pre class="cpp">
+template&lt;typename T&gt;
+
+void list_pq(std::priority_queue&lt;T&gt; pq, size_t count = 5)
+{
+    size_t n{count};
+    while (!pq. empty())
+    {
+        std::cout &lt;&lt; pq. top() &lt;&lt; &quot; &quot;;
+        pq.pop();
+        if (--n) continue;
+        std::cout &lt;&lt; std::endl;
+        n = count;
+    }
+    std::cout &lt;&lt; std::endl;
+}</pre>
+参数是以传值方式传入的，因此这里会处理一个优先级队列的副本。它是一个适用于任何类型容器的函数模板，只要容器实现了用于向 ostream 输出的 operator&lt;&lt;() 函数。如果没有设置第二个参数，默认每 5 个输出值一行。当然也可以定义一个适用于 queue 容器适配对象的函数模板。可以如下所示使用 priority_queue 的成员函数 emplace():<br />
+<pre class="cpp">
+words.emplace(&quot;nine&quot;);</pre>
+以字符串为参数调用 string 类的构造函数会在容器的适当位置生成一个对象。这比下面的语句更有效率：<br />
+<pre class="cpp">
+words.push(&quot;nine&quot;);</pre>
+这里编译器会在字符文字处插入一个 string 构造函数来生成 push() 的参数，然后以这个临时 string 对象作为参数调用 push()。push() 函数然后会调用 string 类的拷贝构造函数来将生成对象添加到容器中。我们把这些代码段组织成一个完整的程序：<br />
+<pre class="cpp">
+// Exerci<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g a priority queue container adapter
+#include &lt;iostream&gt; // For s<a href='https://c.biancheng.net/ref/tan.html' target='_blank'>tan</a>dard streams
+#include &lt;queue&gt; // For priority_queue&lt;T&gt;
+#include &lt;string&gt; // For string class
+using std::string;
+
+// List contents of a priority queue
+template&lt;typename T&gt;
+void list_pq(std::priority_queue&lt;T&gt; pq, size_t count = 5)
+{
+    size_t n {count};
+    while (!pq.empty())
+    {
+        std::cout &lt;&lt; pq.top() &lt;&lt; &quot; &quot;;
+        pq.pop();
+        if (--n) continue;
+        std::cout &lt;&lt; std::endl;
+        n = count;
+    }
+    std::cout &lt;&lt; std::endl;
+}
+
+int main()
+{
+    std::priority_queue&lt;std::string&gt; words;
+    std::string word;
+    std::cout &lt;&lt; &quot;Enter words separated by spaces, enter Ctrl+Z on a separate line to end:\n&quot;;
+    while (true)
+    {
+        if ((std::cin &gt;&gt; word).eof())
+            break;
+        words.push(word);
+    }
+    std::cout &lt;&lt; &quot;You entered &quot; &lt;&lt; words.size() &lt;&lt; &quot; words:&quot; &lt;&lt; std::endl;
+    list_pq(words);
+}</pre>
+运行结果为：
+<p class="info-box">
+Enter words separated by spaces, enter Ctrl+Z on a separate line to end:<br />
+one two three four five six seven eight nine ten eleven twelve<br />
+^Z<br />
+You entered 12 words:<br />
+two twelve three ten six<br />
+seven one nine four five<br />
+eleven eight</p>
+list_pq&lt;T&gt;() 函数模板实例的输出表明优先级队列对输出进行排序。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2413.html" title="MySQL创建数据库（CREATE DATABASE语句）" target="_blank">MySQL创建数据库（CREATE DATABASE语句）</a></li>
+<li><a href="../mysql/if.html" title="MySQL IF函数：判断" target="_blank">MySQL IF函数：判断</a></li>
+<li><a href="3608.html" title="Linux文件（目录）命名规则" target="_blank">Linux文件（目录）命名规则</a></li>
+<li><a href="vip_5063.html" title="Linux sed命令的高级玩法" target="_blank">Linux sed命令的高级玩法</a></li>
+<li><a href="7991.html" title="Django ModelForm用法详解" target="_blank">Django ModelForm用法详解</a></li>
+<li><a href="r0jktot.html" title="JS Promise用法详解（非常全面）" target="_blank">JS Promise用法详解（非常全面）</a></li>
+<li><a href="3tjfn2l.html" title="Java switch case语句的用法" target="_blank">Java switch case语句的用法</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 480;
+window.arcId = "d9c5Ole8SSxbTGyDGfiaUNzyainc40e00Oecey0D/JWAX9zL+spBKGNoww";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

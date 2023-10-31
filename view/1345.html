@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++ getline函数用法详解</title>
+<meta name="description" content="虽然可以使用 cin 和 运算符来输入字符串，但它可能会导致一些需要注意的问题。 当 cin 读取数据时，它会传递并忽略任何前导白色空格字符（空格、制表符或换行符）。一旦它接触到" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++ getline函数用法详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">虽然可以使用 cin 和 &gt;&gt; 运算符来输入字符串，但它可能会导致一些需要注意的问题。<br />
+<br />
+当 cin 读取数据时，它会传递并忽略任何前导白色空格字符（空格、制表符或换行符）。一旦它接触到第一个非空格字符即开始阅读，当它读取到下一个空白字符时，它将停止读取。以下面的语句为例：<br />
+<p class="info-box">
+cin &gt;&gt; namel;</p>
+可以输入 &quot;Mark&quot; 或 &quot;Twain&quot;，但不能输入 &quot;Mark Twain&quot;，因为 cin 不能输入包含嵌入空格的字符串。下面程序演示了这个问题：
+<pre class="cpp">
+// This program illustrates a problem that can occur if
+// cin is used to read character data into a string object.
+#include &lt;iostream&gt;
+#include &lt;string&gt; // Header file needed to use string objects
+u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+
+int main()
+{
+    string name;
+    string city;
+    cout &lt;&lt; &quot;Please enter your name: &quot;;
+    cin &gt;&gt; name;
+    cout &lt;&lt; &quot;Enter the city you live in: &quot;;
+    cin &gt;&gt; city;
+    cout &lt;&lt; &quot;Hello, &quot; &lt;&lt; name &lt;&lt; endl;
+    cout &lt;&lt; &quot;You live in &quot; &lt;&lt; city &lt;&lt; endl;
+    return 0;
+}</pre>
+程序输出结果：
+<p class="info-box">
+Please enter your name： John Doe<br />
+Enter the city you live in: Hello, John<br />
+You live in Doe</p>
+请注意，在这个示例中，用户根本没有机会输入 city 城市名。因为在第一个输入语句中，当 cin 读取到 John 和 Doe 之间的空格时，它就会停止阅读，只存储 John 作为 name 的值。在第二个输入语句中， cin 使用键盘缓冲区中找到的剩余字符，并存储 Doe 作为 city 的值。<br />
+<br />
+为了解决这个问题，可以使用一个叫做<span style="color:#008000;"> getline </span>的 <a href='../cplus/cplus.html' target='_blank'>C++</a> 函数。此函数可读取整行，包括前导和嵌入的空格，并将其存储在字符串对象中。<br />
+<br />
+getline 函数如下所示：<br />
+<p class="info-box">
+getline(cin, inputLine);</p>
+其中 cin 是正在读取的输入流，而 inputLine 是接收输入字符串的 string 变量的名称。下面的程序演示了 getline 函数的应用：
+<pre class="cpp">
+// This program illustrates using the getline function
+//to read character data into a string object.
+#include &lt;iostream&gt;
+#include &lt;string&gt; // Header file needed to use string objects
+using namespace std;
+
+int main()
+{
+    string name;
+    string city;
+    cout &lt;&lt; &quot;Please enter your name: &quot;;
+    getline(cin, name);
+    cout &lt;&lt; &quot;Enter the city you live in: &quot;;
+    getline(cin, city);
+    cout &lt;&lt; &quot;Hello, &quot; &lt;&lt; name &lt;&lt; endl;
+    cout &lt;&lt; &quot;You live in &quot; &lt;&lt; city &lt;&lt; endl;
+    return 0;
+}</pre>
+程序输出结果：
+<p class="info-box">
+Please enter your name: John Doe<br />
+Enter the city you live in: Chicago<br />
+Hello, John Doe<br />
+You live in Chicago</p>
+<h4>
+【扩展阅读】</h4>
+除了 getline() 全局函数外，C++ 还提供了一个同名的 getline() 成员函数，定义在 istream 类中，它也可以读取一行数据。这两个名称、功能都相同的函数，它们有什么区别，实际开发中应该用哪个，感兴趣的小伙伴请<span class="btn-more-info" keyword="getline成员函数" type="more">猛击这里</span>获取答案。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="470.html" title="C-Free 5.0下载地址和激活教程（图解）" target="_blank">C-Free 5.0下载地址和激活教程（图解）</a></li>
+<li><a href="2603.html" title="Python创建线程（2种方式）详解" target="_blank">Python创建线程（2种方式）详解</a></li>
+<li><a href="2884.html" title="UE4设置人物移动和人物视角" target="_blank">UE4设置人物移动和人物视角</a></li>
+<li><a href="../sql/rename-table.html" title="SQL重命名表" target="_blank">SQL重命名表</a></li>
+<li><a href="../matplotlib/pylab-module.html" title="PyLab绘制曲线图" target="_blank">PyLab绘制曲线图</a></li>
+<li><a href="../ml_alg/linear-indivisibility.html" title="SVM解决线性不可分问题" target="_blank">SVM解决线性不可分问题</a></li>
+<li><a href="el3rmuh.html" title="Go语言安装教程（Windows+Linux+macOS）" target="_blank">Go语言安装教程（Windows+Linux+macOS）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 1345;
+window.arcId = "d10bb01nLXc+fXfLxkZSfciGkE210VWTb22FrM+AkrYSHeep/MilDkcbd0s";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Django信号机制执行过程及其应用</title>
+<meta name="description" content="在上一节中，我们对 Django 的信号机制概念以及它的适用场景做了讲解，并且了解了 Django 框架中内置的信号，它们在执行某个动作的前后被触发，比如说 HTTP 建立和关闭；Django Model 使用" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../django/django.html">Django</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Django信号机制执行过程及其应用</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在上一节《<a href="8138_2.html" target="_blank">简述Django的信号机制</a>》中，我们对 Django 的信号机制概念以及它的适用场景做了讲解，并且了解了 Django 框架中内置的信号，它们在执行某个动作的前后被触发，比如说 HTTP 建立和关闭；Django Model 使用 save 方法保存模型实例前后，这些属于 Django 信号机制的基本内容，在本节我们会通过信号机制的执行过程以及它的实例应用，帮助大家更好的理解它。
+<h2>
+1. 内置信号执行过程</h2>
+<h4>
+1) 信号的发送方法</h4>
+我们知道 Django 信号的执行过程包括信号发送和信号的接收，在 Signal 中提供了两种发送信号的<span style="color: rgb(255, 0, 0);">方法</span>：send 和 send_robust，它们会区别对待 receiver 可能抛出的异常，send 方法不会捕获任何由 receiver 抛出的异常，所以使用 send 方法不能保证所有的 receiver 都会得到信号通知。而 send_robust 则可以捕获抛出的异常，可以保证所有的 receiver 都接收到信号的通知。这两个方法需要的参数相同，以 send_robust 为例：
+<pre class="python">
+def send_robust(self, sender, **named):
+    pass</pre>
+sender 标识信号的发送者，大多数情况下它是一个类对象；**named 用来指定任意数量的关键字参数，这些参数将会传递给 receiver。
+<h4>
+2) 接收信号执行回调函数</h4>
+接收信号，并执行回调函数，这里需要将回调函数注册到信号上。我们使用 Signal 提供的 connect 方法，定义如下：
+<pre class="python">
+def connect(self, receiver, sender=None, weak=True, dispatch_uid=None):
+    pass</pre>
+这个方法接受四个参数，但是只有 receiver 参数是必需的，我们分别对这些参数进行讲解：
+<ul>
+<li>
+receiver：<span style="color: rgb(255, 0, 0);">必须</span>要指定的回调函数，信号发送后，就会执行到这个函数。</li>
+<li>
+sender：信号的发送者，可以不提供。当回调函数只对特定的 sender 时，可以通过提供这个参数实现过滤。</li>
+<li>
+weak：默认值是 True，代表以弱引用的方式存储信号处理器。当&nbsp;receiver 是局部变量时，可能会被当做垃圾回收掉。为避免这种情况，可以设置为 False。</li>
+<li>
+dispatch_uid：用于指定 receiver 的唯一标识符，以防止信号多次发送的情况。</li>
+</ul>
+<h4>
+3) 断开信号连接</h4>
+Sginal 提供了一个与 connect 功能相反的方法 disconnect，用来断开信号的 receiver。函数定义如下：
+<pre class="python">
+def disconnect(self, receiver=None, sender=None, dispatch_uid=None):
+    pass</pre>
+可以看到它的定义和 connect 方法的参数是相似的，它的参数含义如下所示：
+<ul>
+<li>
+receiver：标识需要断开已注册的信号接收者，若你使用了dispatch_uid 去标识 receiver，那么这个参数可以是 None。</li>
+<li>
+sender：已注册的信号发送者。</li>
+<li>
+dispatch_uid：receiver的唯一标识符。</li>
+</ul>
+<h2>
+2. 内置信号的应用</h2>
+<h4>
+1) connect()方法实现信号注册</h4>
+下面我们对 Django 的内置信号进行简单的应用，场景如下，在视图的处理前后打印一些日志信息。<span style="color:#ff0000;">第一步</span>，在 index/views.py 文件中注册信号回调函数：
+<pre class="python">
+def request_started_callback(sender,**kwargs):
+    print(&quot;请求开始：%s&quot;%kwargs[&#39;environ&#39;])
+
+def request_finished_callback(sender,**kwargs):
+    print(&quot;请求完成&quot;)</pre>
+从上述代码可以看出它们就是普通的 Python 函数，它们接受一个 sender 参数和一个关键字参数 **kwargs，这也是 Django 规定的信号接收者的<span style="color:#ff0000;">固定格式</span>，我们可以从 kwargs 中获取到信号发送的关键字参数，如在 request_started_callback 中获取到 environ。定义完成了回调函数，接下来<span style="color:#ff0000;">第二步</span>就需要把相关的信号导入，<span style="color:#ff0000;">第三步</span>就是回调函数注册到信号上，如下所示：
+<pre class="python">
+from django.core.signals import request_started, request_finished
+request_started.connect(request_started_callback)
+request_finished.connect(request_finished_callback)
+</pre>
+<h4>
+2) receiver装饰器实现信号注册</h4>
+上面我们使用了 Sginal 的 connect 方法直接进行注册，当然还有一种方式就是使用装饰器的方式注册信号，如下所示：
+<pre class="python">
+from django.core.signals import request_started, request_finished #与http有关的内置信号
+from django.dispatch.dispatcher import receiver
+@receiver(request_started)
+def request_started_callback(sender,**kwargs):
+    #获取程序执行的环境信息
+    print(&quot;请求开始：%s&quot;%kwargs[&#39;environ&#39;])
+@receiver(request_finished)
+def request_finished_callback(sender,**kwargs):
+    print(&quot;请求完成&quot;)</pre>
+装饰器 receiver() 的第一个参数是可迭代的对象，可接受一个列表，其中每一个元素都是信号实例。<span style="color:#ff0000;">这两种方法选择其一即可</span>，完成了信号的注册以后，我们就可以访问以前定义的任何一个视图函数，在 CMD 命令行可以看到，视图函数的执行前后都打印了对应的内容，这就是内置信号应用的基本流程。
+<h2>
+3. 自定义信号应用</h2>
+上述我们详解介绍了 Django 内置的信号应用过程，即导入<span style="color: rgb(255, 0, 0);">内置信号、创建注册函数，信号中导入注册函数</span>，通过以上三个步骤就可以实现内置信号的应用。但是在某些场景下，内置信号无法满足开发者的需求，Django 也充分考虑到这一点，并提供了自定义信号的方法，使用了起来也非常的简单。<br />
+<br />
+场景如下：当你在某个网站成功注册以后，站点通常会给你填写的邮箱发送一封验证邮件，这个场景在 Django 的内置信号并没有涉及，下面我们就模拟这个过程的实现。自定义信号可以定义在项目任何一个位置，但是 Django 推荐我们已单独的文件呈现它，所以为了规范，我们在 user 应用下新建 signal.py 文件，编写如下代码：
+<pre class="python">
+import django.dispatch
+from django.dispatch import receiver
+#创建一个信号
+from user.models import User
+register_signal=django.dispatch.Signal(providing_args=[&quot;request&quot;,&quot;user&quot;])#触发的时候需要传递的参数
+#定义回调函数(即信号接收者)并使用装饰器进行注册
+@receiver(register_signal,dispatch_uid=&quot;register_callback&quot;)
+def register_callback(sender,**kwargs):
+    print(&quot;客户端地址：%s，邮件接收者：%s&quot;%(kwargs[&#39;request&#39;].META[&#39;REMOTE_ADDR&#39;],kwargs[&#39;user&#39;].email))</pre>
+我们在这个文件中实现了信号的创建，信号的接收以及通过 receiver() 完成了信号的注册，然后我们在 user/views.py 中定义一个视图函数：
+<pre class="python">
+from user.signals import register_signal
+def hello_my_signal(request):
+    #注意要和回调函数中的**kwargs的参数保持一致
+    #参数 sender（信号发送者指函数） **named（**kwargs参数相同）
+    register_signal.send(hello_my_signal,request=request,user=User.objects.get(username=&quot;admin&quot;))
+    print(&quot;注册成功已经发送邮件&quot;)
+    return HttpResponse(&#39;Hello signal&#39;) </pre>
+通过这个视图函数，我们模拟用户登录后发送邮件的情景。定义好路由映射，然后访问 127.0.0.1:8000/user/signal/，最后在 CMD 命令行输出如下结果：
+<p class="info-box">
+客户端地址：127.0.0.1，邮件接收者：admin@163.com</p>
+这样我们就通过了自定义信号模拟实现了上述场景中的功能。通过对内置信号执行过程介绍以及内置和自定义信号的实例应用，我们对 Django 的信号机制使用有了更加深入的理解，在下一节中我们将从 Python 语言的特性讲解 Django 信号机制的工作原理。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="6995.html" title="Java @Deprecated注解" target="_blank">Java @Deprecated注解</a></li>
+<li><a href="7197.html" title="C++ STL set emplace()和emplace_hint()方法详解" target="_blank">C++ STL set emplace()和emplace_hint()方法详解</a></li>
+<li><a href="vip_7298.html" title="Go语言适合做什么" target="_blank">Go语言适合做什么</a></li>
+<li><a href="vip_7681.html" title="文本打开方式和二进制打开方式的区别是什么？" target="_blank">文本打开方式和二进制打开方式的区别是什么？</a></li>
+<li><a href="vip_8360.html" title="MySQL忘记root密码后如何重置？" target="_blank">MySQL忘记root密码后如何重置？</a></li>
+<li><a href="9775.html" title="Access数据库简介" target="_blank">Access数据库简介</a></li>
+<li><a href="l0324ke.html" title="《Web前端设计从入门到实战（第2版）》PDF下载（高清完整版）" target="_blank">《Web前端设计从入门到实战（第2版）》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8139;
+window.arcId = "d9abxH6NrD4Xy9VjGK7ChKdqaWSoR4bUqK8o+q5sJ7HbqeSJX0RsndApz/Q";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

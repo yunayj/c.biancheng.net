@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Django QueryDict对象</title>
+<meta name="description" content="对于 Python 的字典类型，如果一个键对应多个值，那么，对应键只会保留最后一个值，但是 HTML 表单中，一个键对应多个值是很正常的事情，例如复选框 select 就是一种很常见的情况。" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../django/django.html">Django</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Django QueryDict对象</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">前述章节我们使用到了 request.GET 与 request.Post，在 HttpRequest 对象中，GET 与 POST 属性都是一个 QueryDict 的实例，而在 Django 中，QueryDict 被定义在 django.http.request 中可以使用如下方式引入。<br />
+<p class="info-box">
+from django.http.request import QueryDict</p>
+request.POST 和 request.GET 的 QueryDict 在一个正常的请求/响应循环中是不可变的。若要使其改变，需要使用 copy() 方法。<br />
+<br />
+我们说过&nbsp;QueryDict 是一个类字典，所以它实现了 Python 字典数据类型的所有标准方法。在 Python 的字典中，如果一个键对应多个值，那么，对应键只会保留<span style="color:#ff0000;">最后一个值</span>，但是若在 HTML 表单中，一个键对应多个值是很正常的事情，比如下拉复选框 &lt;select&gt; 就是这种情况。而 QueryDict 的存在就是为了解决这个问题的，它允许一个键对应多个值，且它在一次请求到响应的过程中是不可变的。<br />
+<h2>
+1. 初识QueryDict&nbsp;</h2>
+QueryDict 继承自 MultiValueDict，而MultiValueDict 又继承自字典（dict），所以说它们都是字典的子类。接下来就让我们看一看 MultiValueDict 中定义的重要方法。<br />
+<br />
+MultiValueDict 定义于 django/utils/datastructures.py 文件中，它也是 dict 的子类，用来处理多个值对应相同键的问题。同时，Django 在这个文件中还定义了一些其他的数据结构以适用于其他特定的场景。我们可以使用如下方式进行引入：<br />
+<p class="info-box">
+from django.utils.datastructures import MultiValueDict</p>
+在 MultiValueDict 类的注释中已经给出了常用的使用过程，如下所示：
+<pre class="info-box">
+&gt;&gt;&gt; d = MultiValueDict({&#39;name&#39;: [&#39;Adrian&#39;, &#39;Simon&#39;], &#39;position&#39;: [&#39;Developer&#39;]})
+&gt;&gt;&gt; d[&#39;name&#39;]
+&#39;Simon&#39;
+&gt;&gt;&gt; d.getlist(&#39;name&#39;)
+[&#39;Adrian&#39;, &#39;Simon&#39;]
+&gt;&gt;&gt; d.getlist(&#39;doesnotexist&#39;)
+[]
+&gt;&gt;&gt; d.getlist(&#39;doesnotexist&#39;, [&#39;Adrian&#39;, &#39;Simon&#39;])
+[&#39;Adrian&#39;, &#39;Simon&#39;]
+&gt;&gt;&gt; d.get(&#39;lastname&#39;, &#39;nonexistent&#39;)
+&#39;nonexistent&#39;
+&gt;&gt;&gt; d.setlist(&#39;lastname&#39;, [&#39;Holovaty&#39;, &#39;Willison&#39;])</pre>
+对于一个字典来说，最重要的当然是根据键获取值，而 MultiVauleDict 提供了三个重要方法，分别是：__getitem__、get、getlist。下面我们对上述三个方法做简单的介绍。
+<h4>
+1) __getitem __方法</h4>
+__getitem__是 Python 中的魔术方法，在 Python 中具有双下画线的方法都称作魔术方法。当类对象中定义了这个方法时，类实例就可以通过<code>[]</code>运算符取值。在这里MultiValueDict 是通过重写其父类 dict 来实现的，源码如下：
+<pre class="python">
+def __getitem__(self, key):
+    &quot;&quot;&quot;
+返回此键的最后一个数据值，如果是空列表，则返回[];
+如果没有找到，则引发键错误。
+    &quot;&quot;&quot;
+    try:
+        list_ = super().__getitem__(key)
+    except KeyError:
+        raise MultiValueDictKeyError(key)
+    try:
+        return list_[-1] #获取key对应值的最后一个
+    except IndexError:
+        return []</pre>
+若果 key 不存在时，会抛出异常即 MultiValueDictKeyError 异常；若当一个 key 有多个值时，获取最后一个值。我们在视图中使用 request.GET[&#39;a&#39;] 来获取 a 的值，就是使用了__getitem__方法。
+<h4>
+2) get方法</h4>
+我们也可以使用 request.GET.get(&#39;d&#39;,0) 获取 d 的值，但是它使用的是 MultValueDict 类中定义的 get 方法，其源码如下所示：
+<pre class="python">
+def get(self, key, default=None):
+    &quot;&quot;&quot;
+<span class="transSent" data-group="0-0" style="box-sizing: border-box;">返回传递的键的最后一个数据值。</span><span class="transSent" data-group="0-1" style="box-sizing: border-box;">如果键不存在</span>
+<span class="transSent" data-group="1-0" style="box-sizing: border-box;">或值为空列表，返回&#39; default &#39;。</span>
+    &quot;&quot;&quot;
+    try:
+        val = self[key]
+    except KeyError:
+        return default
+    if val == []:
+        return default
+    return val</pre>
+分析源码可以得知，它首先尝试使用<code> val=self[key]</code>获取 key 的值，如果获取不到则返回给定的默认值。但是你要注意这里捕获的异常是 KeyError，这个异常是 Python的标准异常类，而 MultiVauleDictKeyError 是它的一个子类。但是 get 和 __getitem__ 只能获取 key 的最后一个值，如果需要获取 key 的所有值就需要使用 getlist 方法。
+<h4>
+3) getlist方法</h4>
+这个方法同样也可以接受一个默认值，其内部实现了__getlist 方法，其源码如下所示：
+<pre class="python">
+def _getlist(self, key, default=None, force_list=False):
+    &quot;&quot;&quot;
+返回键值的列表。用于在内部操作值列表。
+如果force_list为真，返回值的新副本。
+    &quot;&quot;&quot;
+    try:
+        values = super().__getitem__(key)
+    except KeyError:
+        if default is None:
+            return []
+        return default
+    else:
+        if force_list:
+            values = list(values) if values is not None else None
+        return values
+</pre>
+首选对源码进行初步分析，_getlist调用父类的__getitem__方法获取 key 对应的 values，如果不存在 key，则考虑使用 default。最后，force_list 的作用是将 values 复制一份，并保存在 values 变量中。
+<h2>
+2. QueryDict 常用方法</h2>
+前面介绍了 QueryDict 继承自 MultiValueDict，那么它有实现了方法呢？首先看一下它的构造函数：<br />
+<p class="info-box">
+QueryDict.__init__(query_string=None, mutable=False, encoding=None)</p>
+其中 <span style="color:#ff0000;">mutable=False</span> 表示对象不可变，反之则可变。如果把 URL 中的查询字符串直接传递给 QueryDict，会得到如下结果：
+<pre class="python">
+In [1]: from django.http.request import QueryDict
+In [2]: QueryDict(&quot;a=1&amp;b=2&amp;c=3&quot;)
+Out[2]: &lt;QueryDict: {&#39;a&#39;: [&#39;1&#39;], &#39;b&#39;: [&#39;2&#39;], &#39;c&#39;: [&#39;3&#39;]}&gt;</pre>
+这就是通过&nbsp;QueryDict 构造函数实现，如果感兴趣的小伙伴可以研究一下它的源码，就可以知道它的代码逻辑了，在这里不做分析。下面我们介绍一下它的经常用到的方法。
+<h4>
+1) QueryDict.fromkeys()</h4>
+这个方法的作用是循环可迭代对象中的每个元素作为键值，并赋予同样的值，它的方法格式如下所示：
+<p class="info-box">
+QueryDict.fromkeys(iterable, value=&#39;&#39;, mutable=False, encoding=None)</p>
+实例如下：
+<pre class="python">
+In [4]: QueryDict.fromkeys([&#39;a&#39;,&#39;b&#39;,&#39;c&#39;],value=&quot;1&quot;)
+Out[4]: &lt;QueryDict: {&#39;a&#39;: [&#39;1&#39;], &#39;b&#39;: [&#39;1&#39;], &#39;c&#39;: [&#39;1&#39;]}&gt;</pre>
+<h4>
+2)&nbsp;QueryDict.pop(key)</h4>
+返回给定键的值的列表，并从QueryDict中移除该键。 如果键不存在，将引发KeyError。实例如下：
+<pre class="python">
+In [11]: QueryDict(&#39;a=1&amp;b=2&amp;c=3&#39;,mutable=True).pop(&quot;a&quot;)
+Out[11]: [&#39;1&#39;]</pre>
+<h4>
+3) QueryDict.popitem()</h4>
+删除 QueryDict 任意一个键，并返回二值元组，包含键和键的所有值的列表。默认移除最后一个键值对。假如是一个空的字典上调用时将引发 KeyError。实例如下：
+<pre class="python">
+In [12]: q = QueryDict(&#39;a=1&amp;a=2&amp;c=3&#39;, mutable=True)
+In [13]: q.popitem()
+Out[13]: (&#39;c&#39;, [&#39;3&#39;])</pre>
+<h4>
+4)&nbsp;QueryDict.items()</h4>
+类似 dict.items()，如果有重复项目，返回最近的一个，而不是都返回，它的返回值是一个列表包含的二元组。如下所示：
+<pre class="python">
+In [26]: q = QueryDict(&#39;a=1&amp;a=2&amp;a=3&#39;)
+In [27]: q.items()
+Out[27]: &lt;generator object MultiValueDict.items at 0x01594AF0&gt;
+In [28]: list(q.items())
+Out[28]: [(&#39;a&#39;, &#39;3&#39;)]</pre>
+<h4>
+5) QueryDict.values()</h4>
+类似 dict.values()，它的返回值是一个生成器对象，而且只返回最近的值，实例如下：
+<pre class="python">
+In [23]: q = QueryDict(&#39;a=1&amp;a=2&amp;a=3&#39;)
+In [24]: q.values()
+Out[24]: &lt;generator object MultiValueDict.values at 0x09D578F0&gt;
+In [25]: list(q.values())
+Out[25]: [&#39;3&#39;]</pre>
+<h4>
+6）QueryDict.urlencode(safe=None)</h4>
+url 的编码格式返回数据字符串。如下所示：
+<pre class="python">
+In [29]: q = QueryDict(&#39;a=2&amp;b=3&amp;b=5&#39;)
+In [30]: q.urlencode()
+Out[30]: &#39;a=2&amp;b=3&amp;b=5&#39;
+</pre>
+<p class="tip-box">
+提示：使用 safe 参数传递不需要编码的字符，如 q.urlencode(safe=&#39;?&#39;)。</p>
+<h4>
+7)&nbsp;QueryDict.update(dict)</h4>
+用新的 QueryDict 或字典更新当前 QueryDict。类似 dict.update()，但是追加内容，而不是更新并替换它们。如下示例：
+<pre class="python">
+In [31]: q = QueryDict(&#39;a=1&#39;, mutable=True)
+In [32]: q.update({&#39;a&#39;: &#39;2&#39;})
+In [33]:  q.getlist(&#39;a&#39;)
+Out[33]: [&#39;1&#39;, &#39;2&#39;]</pre>
+本节对 QueryDict 做了详细的讲解，分别从继承关系上进行了分析，大家看完本节，应该能够熟练掌握它的使用方法，而且对于类字典对象也不再感到陌生。当然还有一部分方法没有介绍，有兴趣的伙伴可以参阅官方文档《<a href="https://docs.djangoproject.com/zh-hans/2.2/ref/request-response/#querydict-objects">QueryDict Object</a>》进行学习。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="936.html" title="Shell history详解：查看历史命令" target="_blank">Shell history详解：查看历史命令</a></li>
+<li><a href="2230.html" title="C++ const成员变量和成员函数（常成员函数）" target="_blank">C++ const成员变量和成员函数（常成员函数）</a></li>
+<li><a href="4584.html" title="Go语言tar归档文件的读写操作" target="_blank">Go语言tar归档文件的读写操作</a></li>
+<li><a href="5909.html" title="C语言推箱子小游戏演示和说明" target="_blank">C语言推箱子小游戏演示和说明</a></li>
+<li><a href="../maven2/idea-maven-command.html" title="IDEA执行Maven命令" target="_blank">IDEA执行Maven命令</a></li>
+<li><a href="../redis2/zrangebylex.html" title="Redis ZRANGEBYLEX命令" target="_blank">Redis ZRANGEBYLEX命令</a></li>
+<li><a href="../spring_mvc/9670.html" title="Spring MVC @Controller和@RequestMapping注解" target="_blank">Spring MVC @Controller和@RequestMapping注解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7834;
+window.arcId = "2600sPVkBohLbzoECsIAK3q1kZW9hWuqf9kdqPFfQGrnY1kDFs7nYPGLvIE";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

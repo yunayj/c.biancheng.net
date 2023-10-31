@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Spring MVC数据格式化（Formatter）</title>
+<meta name="description" content="Spring MVC 框架的 FormatterT 与 ConverterS, T 一样，也是一个可以将一种数据类型转换成另一种数据类型的接口。不同的是，Formatter 的源类型必须是 String 类型，而 Converter 的源类型可以是任意" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="../view/niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Spring MVC数据格式化（Formatter）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">Spring MVC 框架的 Formatter&lt;T&gt; 与 Converter&lt;S, T&gt; 一样，也是一个可以将一种数据类型转换成另一种数据类型的接口。不同的是，Formatter 的源类型必须是 String 类型，而 Converter 的源类型可以是任意数据类型。Formatter 更适合 Web 层，而 Converter 可以在任意层中。所以对于需要转换表单中的用户输入的情况，应该选择 Formatter，而不是 Converter。<br />
+<br />
+在 Web 应用中由 HTTP 发送的请求数据到控制器中都是以 String 类型获取，因此在 Web 应用中选择 Formatter&lt;T&gt; 比选择 Converter&lt;S, T&gt; 更加合理。<br />
+<h2>
+内置的格式化转换器</h2>
+Spring MVC 提供了几个内置的格式化转换器，具体如下。
+<ul>
+<li>
+NumberFormatter：实现 Number 与 String 之间的解析与格式化。</li>
+<li>
+CurrencyFormatter：实现 Number 与 String 之间的解析与格式化（带货币符号）。</li>
+<li>
+PercentFormatter：实现 Number 与 String 之间的解析与格式化（带百分数符号）。</li>
+<li>
+DateFormatter：实现 Date 与 String 之间的解析与格式化。</li>
+</ul>
+<h2>
+自定义格式化转换器</h2>
+自定义格式化转换器就是编写一个实现 org.springframework.format.Formatter 接口的 Java 类。该接口声明如下。
+<pre class="java" shownum="false">
+public interface Formatter&lt;T&gt;</pre>
+这里的 T 表示由字符串转换的目标数据类型。该接口有 parse 和 print 两个接口方法，自定义格式化转换器类必须覆盖它们。
+<pre class="java" shownum="false">
+public T parse(String s, java.util.Locale locale)
+public String print(T object, java.util.Locale locale)</pre>
+parse 方法的功能是利用指定的 Locale 将一个 String 类型转换成目标类型，print 方法与之相反，用于返回目标对象的字符串表示。
+<h2>
+示例</h2>
+下面通过具体应用讲解自定义格式化转换器的用法，本节示例基于《<a href="controller-requestmapping.html" target="_blank">@Controller和@RequestMapping注解</a>》一节中的 springmvcDemo2 程序。<br />
+<h4>
+1. 创建实体类</h4>
+创建 net.biancheng.po 包，并在该包中创建 User 实体类，代码如下。
+<pre class="java">
+package net.biancheng.po;
+
+import java.util.Date;
+
+public class User {
+    private String name;
+    private Integer age;
+    private Double height;
+    private Date createDate;
+    /**省略setter和getter方法*/
+}</pre>
+<h4>
+2. 创建控制器类</h4>
+创建 net.biancheng.controller 包，并在该包中创建 FormatterController 控制器类，代码如下。
+<pre class="java">
+package net.biancheng.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import net.biancheng.po.User;
+
+@Controller
+public class FormatterController {
+    @RequestMapping(&quot;/formatter&quot;)
+    public String myFormatter(User us, Model model) {
+        model.addAttribute(&quot;user&quot;, us);
+        return &quot;showUser&quot;;
+    }
+}</pre>
+<h4>
+3. 创建自定义格式化转换器类</h4>
+创建 net.biancheng.formatter 包，并在该包中创建 MyFormatter 的自定义格式化转换器类，代码如下。
+<pre class="java">
+package net.biancheng.formatter;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import org.springframework.format.Formatter;
+import org.springframework.stereotype.Component;
+
+@Component
+public class MyFormatter implements Formatter&lt;Date&gt; {
+    SimpleDateFormat dateFormat = new SimpleDateFormat(&quot;yyyy-MM-dd&quot;);
+
+    public String print(Date object, Locale arg1) {
+        return dateFormat.format(object);
+    }
+
+    public Date parse(String source, Locale arg1) throws ParseException {
+        return dateFormat.parse(source); // Formatter只能对字符串转换
+    }
+}</pre>
+<h4>
+4. 注册格式化转换器</h4>
+在 springmvc-servlet.xml 配置文件中注册格式化转换器，具体代码如下：
+<pre class="xml">
+&lt;!--注册MyFormatter --&gt;
+&lt;bean id=&quot;conversionService&quot;
+    class=&quot;org.springframework.format.support.FormattingConversionServiceFactoryBean&quot;&gt;
+    &lt;property name=&quot;formatters&quot;&gt;
+        &lt;set&gt;
+            &lt;bean class=&quot;net.biancheng.formatter.MyFormatter&quot; /&gt;
+        &lt;/set&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;
+
+&lt;mvc:annotation-driven conversion-service=&quot;conversionService&quot; /&gt;</pre>
+<h4>
+5. 创建相关视图</h4>
+创建添加用户页面 addUser.jsp，代码如下。
+<pre class="xml">
+&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=UTF-8&quot;
+    pageEncoding=&quot;UTF-8&quot;%&gt;
+&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot;&gt;
+&lt;title&gt;添加用户&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;form action=&quot;${pageContext.request.contextPath}/formatter&quot; method=&quot;post&quot;&gt;
+        用户名：&lt;input type=&quot;text&quot; name=&quot;name&quot; /&gt;
+        &lt;br&gt;
+        年龄：&lt;input type=&quot;text&quot; name=&quot;age&quot; /&gt;
+        &lt;br&gt;
+        身高：&lt;input type=&quot;text&quot; name=&quot;height&quot; /&gt;
+        &lt;br&gt;
+        创建日期：&lt;input type=&quot;text&quot; name=&quot;createDate&quot; /&gt;
+        &lt;br&gt;
+        &lt;input type=&quot;submit&quot; value=&quot;提交&quot; /&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+创建信息显示页面 showUser.jsp，代码如下。
+<pre class="xml">
+&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=UTF-8&quot;
+    pageEncoding=&quot;UTF-8&quot;%&gt;
+&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot;&gt;
+&lt;title&gt;用户信息&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+    您创建的用户信息如下：
+    &lt;br /&gt;
+    &lt;!-- 使用EL表达式取出model中的user信息 --&gt;
+    用户名：${user.name }
+    &lt;br /&gt;
+    年龄：${user.age }
+    &lt;br /&gt;
+    身高：${user.height }
+    &lt;br /&gt;
+    创建日期：${user.createDate }
+
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+<h4>
+6. 测试运行</h4>
+访问地址：http://localhost:8080/springmvcDemo2/addUser。<br />
+<br />
+<div style="text-align: center;">
+<img alt="addUser.jsp" src="../uploads/allimg/210705/1522434J1-0.png" /><br />
+addUser.jsp</div>
+<br />
+<div style="text-align: center;">
+<img alt="showUser.jsp" src="../uploads/allimg/210705/1522435633-1.png" /><br />
+showUser.jsp</div>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="../view/niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/59.html" title="Go语言闭包（Closure）——引用了外部变量的匿名函数" target="_blank">Go语言闭包（Closure）——引用了外部变量的匿名函数</a></li>
+<li><a href="../view/vip_7707.html" title="熟练使用STL标准库是每个C++程序员的必备技能！" target="_blank">熟练使用STL标准库是每个C++程序员的必备技能！</a></li>
+<li><a href="../pandas/plot.html" title="Python Pandas绘图教程（详解版）" target="_blank">Python Pandas绘图教程（详解版）</a></li>
+<li><a href="../matplotlib/9284.html" title="Matplotlib中文乱码解决方案（两种方式）" target="_blank">Matplotlib中文乱码解决方案（两种方式）</a></li>
+<li><a href="../view/9412.html" title="分析第一个Qt程序" target="_blank">分析第一个Qt程序</a></li>
+<li><a href="../c/cbrt.html" title="C语言cbrt()：求立方根" target="_blank">C语言cbrt()：求立方根</a></li>
+<li><a href="../view/wlw44m1.html" title="C++ throw抛出异常用法详解" target="_blank">C++ throw抛出异常用法详解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8715;
+window.arcId = "c3caX8bg4ZO1XZwxcO4ERsMS7VFNaIh3mBoNKxa5s4A2i2XWOCje/Chdm2o";
+window.typeidChain = "456|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="../view/8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="../view/8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="../view/8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="../view/9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="../view/8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

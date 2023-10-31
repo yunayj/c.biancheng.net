@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>指针变量的初始化，C语言指针变量初始化详解</title>
+<meta name="description" content="本节来解决如何给一个指针变量初始化。即怎样使一个指针变量指向另一个变量。 前面章节中的某些程序实际上已经使用了，即可以用赋值语句使一个指针变量得到另一个变量的地址，" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>指针变量的初始化，C语言指针变量初始化详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">本节来解决如何给一个指针变量初始化。即怎样使一个指针变量指向另一个变量。<br />
+<br />
+前面章节中的某些程序实际上已经使用了，即可以用赋值语句使一个指针变量得到另一个变量的地址，从而使它指向该变量。比如：<br />
+<pre class="cpp">
+int i, *j;
+j = &amp;i;</pre>
+这样就将变量 i 的地址放到了指针变量 j 中，通过 i 的地址，j 就能找到 i 中的数据，所以 j 就&ldquo;指向&rdquo;了变量 i。其中 &amp; 是&ldquo;取地址运算符&rdquo;，与 scanf 中的 &amp; 是一样的概念；* 为&ldquo;指针运算符&rdquo;，功能是取其内部所存变量地址所指向变量中的内容。因为 j 是定义成指针型变量，所以 j 中只能存放变量的地址，所以变量i前一定要加 &amp;。需要注意的是，指针变量中只能存放地址，不要将一个整数或任何其他非地址类型的数据赋给一个指针变量。<br />
+<br />
+此外，还有两点需要注意：
+<ol>
+	<li>
+		j 不是 i，i 也不是 j。修改j的值不会影响i的值，修改 i 的值也不会影响 j 的值。j 是变量 i 的地址，而 i 是变量 i 里面的数据。一个是&ldquo;内存单元的地址&rdquo;，另一个是&ldquo;内存单元的内容&rdquo;。</li>
+	<li>
+		定义指针变量时的&ldquo;*j&rdquo;和程序中用到的&ldquo;*j&rdquo;含义不同。定义指针变量时的&ldquo;*j&rdquo;只是一个声明，此时的&ldquo;*&rdquo;仅表示该变量是一个指针变量，并没有其他含义。而且此时该指针变量并未指向任何一个变量，至于具体指向哪个变量要在程序中指定，即给指针变量初始化。而当指定 j 指向变量 i 之后，*j 就完全等同于 i 了，可以相互替换。</li>
+</ol>
+<br />
+下面给大家写一个程序：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int i = 3, *j;  //*j表示定义了一个指针变量j
+    j = &amp;i;
+    printf(&quot;*j = %d\n&quot;, *j);  //此时*j完全等同于i
+    printf(&quot;j = %d\n&quot;, j);    //j里面存储的是变量i的地址
+    return 0;
+}</pre>
+输出结果是：<br />
+*j = 3<br />
+j = 1245052<br />
+<br />
+下面再将上面这个程序修改一下：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int i = 3;
+    int *j = &amp;i;  //*j表示定义了一个指针变量j, 并将变量i的地址赋给它
+    printf(&quot;*j = %d\n&quot;, *j);  //此时*j完全等同于i
+    printf(&quot;j = %d\n&quot;, j);    //j里面存储的是变量i的地址
+    return 0;
+}</pre>
+输出结果是：<br />
+*j = 3<br />
+j = 1245052<br />
+<br />
+这个程序与第一个程序有什么不同？同样是将变量 i 的地址赋给指针变量 j，第一个程序是&ldquo;j=&amp;i；&rdquo;，而第二个程序是&ldquo;*j=&amp;i；&rdquo;。原因是，前者是定义指针变量后对它初始化，即先定义后初始化；而后者是定义指针变量时对它进行初始化，即定义时初始化。通过这个对比我们可以更鲜明地看出定义指针变量时的&ldquo;*j&rdquo;和程序中用到的&ldquo;*j&rdquo;含义的不同。<br />
+<br />
+那么指针变量和指针变量之间可不可以相互赋值呢？我们看看下面这个程序：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int *i, *j;
+    int k = 3;
+    i = &amp;k;
+    j = i;  //直接指针变量名之间进行赋值
+    printf(&quot;*j = %d\n&quot;, *j);  //此时*j完全等同于k
+    printf(&quot;j = %d\n&quot;, j);    // j里面存储的是变量k的地址
+    return 0;
+}</pre>
+输出结果是：<br />
+*j = 3<br />
+j = 1245044<br />
+<br />
+可见，可以直接将一个指针变量赋给另一个指针变量，只要将指针变量名赋给另一个指针变量名即可。但是需要注意的是：
+<ol>
+	<li>
+		这两个指针变量的基类型一定要相同。</li>
+	<li>
+		在赋值之前，赋值运算符&ldquo;=&rdquo;右边的指针变量必须是已经初始化过的。也就是说，切忌将一个没有初始化的指针变量赋给另一个指针变量。这是非常严重的语法错误。</li>
+</ol>
+<br />
+同样，也可以在定义指针变量时就给它赋初值：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int k = 3;
+    int *i = &amp;k;
+    int *j = i;
+    printf(&quot;*j = %d\n&quot;, *j);  //此时*j完全等同于k
+    printf(&quot;j = %d\n&quot;, j);    //j里面存储的是变量k的地址
+    return 0;
+}</pre>
+输出结果是：<br />
+*j = 3<br />
+j = 1245048<br />
+<br />
+注意，&ldquo;int*j=i；&rdquo;千万不要写成&ldquo;int*j=*i；&rdquo;。因为此时 *i 不是定义指针变量 i，而是完全等同于变量 k。所以 int 型变量不能赋给 int* 型的变量。<br />
+<h2>
+	指针常见错误</h2>
+<h4>
+	1) 引用未初始化的指针变量</h4>
+试图引用未初始化的指针变量是初学者最容易犯的错误。未初始化的指针变量就是&ldquo;野&rdquo;指针，它指向的是无效的地址。<br />
+<br />
+有些书上说：&ldquo;如果指针变量不初始化，那么它可能指向内存中的任何一个存储单元，这样就会很危险。如果正好指向存储着重要数据的内存单元，而且又不小心向这个内存单元中写入了数据，把原来的重要数据给覆盖了，这样就会导致系统崩溃。&rdquo;这种说法是不正确的！如果真是这样的话就是编译器的一个严重的 BUG！<br />
+<br />
+编译器的设计人员是不会允许这么大的 BUG 存在的。那么如果指针变量未初始化，编译器的设计人员是如何处理这个问题的呢？肯定不可能让它乱指。以V<a href='../cplus/cplus_2.html' target='_blank'>C++</a>6.0这个编译器为例，如果指针变量未初始化，那么编译器会让它指向一个固定的、不用的地址。下面来写一个程序：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int *p, *q;
+    printf(&quot;p = %#X\n&quot;, p);
+    printf(&quot;q = %#X\n&quot;, q);
+    return 0;
+}</pre>
+输出结果是：<br />
+p = 0XCCCCCCCC<br />
+q = 0XCCCCCCCC<br />
+<br />
+可见，在 VC++6.0 中只要指针变量未初始化，那么编译器就让它指向 0XCCCCCCCC 这个内存单元。而且这个内存单元是程序所不能访问的，访问就会触发异常，所以也不怕往里面写东西。<br />
+<br />
+而如果在 VS 2008 这个编译器中，程序虽然能编译通过，但是在运行的时候直接出错，它并不会像 VC++6.0 那样还能输出所指向的内存单元的地址。<br />
+<br />
+下面来看一个程序：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int i = 3, *j;
+    *j = i;
+    return 0;
+}</pre>
+程序中，j 是 int* 型的指针变量。j 中存放的应该是内存空间的地址，然后&ldquo;变量 i 赋给 *j&rdquo;表示将变量i中的值放到该地址所指向的内存空间中。但是现在 j 中并没有存放一个地址，程序中并没有给它初始化，那么它指向的就是 0XCCCCCCCC 这个内存单元。这个内存单元是不允许访问的，即不允许往里面写数据。而把 i 赋给 *j 就是试图往这个内存空间中写数据，程序执行时就会出错。但这种错误在编译的时候并不会报错，只有在执行的时候才会出错，即传说中的&ldquo;段错误&rdquo;。所以，一定要确保指针变量在引用之前已经被初始化为指向有效的地址。<br />
+<br />
+在实际编程中，这种错误常见的另一个地方是用 scanf 给指针变量所指向的内存单元赋值。我们看看下面这个程序：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int *i;
+    scanf(&quot;%d&quot;, i);
+    return 0;
+}</pre>
+该程序试图给指针变量 i 所指向的内存单元赋值。但现在指针变量 i 并没有初始化，所以程序执行时出错。所以同样，在使用 scanf 时必须要先给指针变量 i 初始化。比如像下面这样写：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int *i, j;
+    i = &amp;j;  //先给指针变量i初始化
+    scanf(&quot;%d&quot;, i);  //i本身就是地址, 所以不用加&amp;
+    printf(&quot;%d\n&quot;, *i);
+    return 0;
+}</pre>
+输出结果是：<br />
+10<br />
+10<br />
+<br />
+能不能使用 scanf 给指针变量初始化？指针变量里面存放的是地址，而内存中有数不清的单元，每个单元都有一个地址，你知道每个单元的地址吗？你知道哪些地址是空闲可用的，而哪些地址正存储着重要数据不能用吗？不知道的话怎么用scanf给它初始化呢？万一随便写一个地址正好是存储着非常重要的数据的内存单元地址，那系统就真的崩溃了！<br />
+<br />
+随着大家编程能力的不断提高，慢慢地就会发现，其实编程最重要、最核心的就是如何处理内存的问题，如何与内存打交道。<br />
+<h4>
+	2) 往一个存放NULL地址的指针变量里面写入数据</h4>
+这也是编程中最容易犯的错误，不仅是初学编程的，即使是有一些经验的程序员也会不小心犯这个错误。我们把前面的程序改一下：<br />
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int i = 3;
+    int *j = NULL;
+    *j = i;
+    return 0;
+}</pre>
+之前是没有给指针变量j初始化，现在初始化了，但是将它初始化为指向 NULL。NULL 也是一个指针变量。NULL 指向的是内存中地址为 0 的内存空间。以 32 位操作系统为例，内存单元地址的范围为 0x00000000~0xffff ffff。其中 0x00000000 就是 NULL 所指向的内存单元的地址。但是在操作系统中，该内存单元是不可用的。凡是试图往该内存单元中写入数据的操作都会被视为非法操作，从而导致程序错误。同样，这种错误在编译的时候也不会报错，只有在执行的时候才会出错。这种错误也属于&ldquo;段错误&rdquo;。<br />
+<br />
+然而虽然这么写是错误的，但是将一个指针变量初始化为指向 NULL，这在实际编程中是经常使用的。就跟前面讲普通变量在定义时给它初始化为 0 一样，指针变量如果在定义时不知道指向哪里就将其初始化为指向 NULL。只是此时要注意的是，在该指针变量指向有效地址之前不要往该地址中写入数据。也就是说，该指针变量还要二次赋值。<br />
+<br />
+既然不能往里面写数据，而且还容易犯错，为什么还要这样给它初始化呢？直接同前面定义普通变量时一样，在定义时也不初始化，等到后面知道该给它赋什么值时再给它赋值不行吗？可以！但还是建议大家将它初始化为 NULL，就同前面将普通变量在定义时初始化为 0 一样。这是很好的一种编程习惯。<br />
+<br />
+最后关于 NULL 再补充一点，NULL 是定义在 stdio.h 头文件中的符号常量，它表示的值是 0。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="107_2.html" title="Go语言互斥锁（sync.Mutex）和读写互斥锁（sync.RWMutex）" target="_blank">Go语言互斥锁（sync.Mutex）和读写互斥锁（sync.RWMutex）</a></li>
+<li><a href="380_2.html" title="C语言动态内存管理和动态内存分配" target="_blank">C语言动态内存管理和动态内存分配</a></li>
+<li><a href="858_2.html" title="Linux groupdel命令：刪除用户组" target="_blank">Linux groupdel命令：刪除用户组</a></li>
+<li><a href="3472_2.html" title="Shell过滤器" target="_blank">Shell过滤器</a></li>
+<li><a href="6138_2.html" title="PHP字符串拼接（连接）" target="_blank">PHP字符串拼接（连接）</a></li>
+<li><a href="6140_2.html" title="PHP字符串查找（4个函数）" target="_blank">PHP字符串查找（4个函数）</a></li>
+<li><a href="9860_2.html" title="电容是什么" target="_blank">电容是什么</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 214;
+window.arcId = "fba2lPhxIJ13KieL6OL4p0i3gkTMp6huAUm/MECR5uBGXCgU5b997ZeYJQ";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Redis watch命令——监控事务</title>
+<meta name="description" content="在 Redis 中使用 watch 命令可以决定事务是执行还是回滚。一般而言，可以在 multi 命令之前使用 watch 命令监控某些键值对，然后使用 multi 命令开启事务，执行各类对数据结构进行操作的命" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Redis watch命令——监控事务</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在 <a href='../redis/redis.html' target='_blank'>Redis</a> 中使用 watch 命令可以决定事务是执行还是回滚。一般而言，可以在 multi 命令之前使用 watch 命令监控某些键值对，然后使用 multi 命令开启事务，执行各类对<a href='../data_structure/data_structure.html' target='_blank'>数据结构</a>进行操作的命令，这个时候这些命令就会进入队列。<br />
+<br />
+当 Redis 使用 exec 命令执行事务的时候，它首先会去比对被 watch 命令所监控的键值对，如果没有发生变化，那么它会执行事务队列中的命令，提交事务；如果发生变化，那么它不会执行任何事务中的命令，而去事务回滚。无论事务是否回滚，Redis 都会去取消执行事务前的 watch 命令，这个过程如图 1 所示。<br />
+<div style="text-align: center;">
+<img alt="Redis执行事务过程" src="../uploads/allimg/190724/5-1ZH4122J5538.png" /><br />
+图 1&nbsp;&nbsp;Redis 执行事务过程</div>
+<br />
+Redis 参考了多线程中使用的 CAS（比较与交换，Compare And Swap）去执行的。在数据高并发环境的操作中，我们把这样的一个机制称为乐观锁。这句话还是比较抽象，也不好理解。<br />
+<br />
+所以先简要论述其操作的过程，当一条线程去执行某些业务逻辑，但是这些业务逻辑操作的数据可能被其他线程共享了，这样会引发多线程中数据不一致的情况。<br />
+<br />
+为了克服这个问题，首先，在线程开始时读取这些多线程共享的数据，并将其保存到当前进程的副本中，我们称为旧值（old value），watch 命令就是这样的一个功能。<br />
+<br />
+然后，开启线程业务逻辑，由 multi 命令提供这一功能。在执行更新前，比较当前线程副本保存的旧值和当前线程共享的值是否一致，如果不一致，那么该数据已经被其他线程操作过，此次更新失败。<br />
+<br />
+为了保持一致，线程就不去更新任何值，而将事务回滚；否则就认为它没有被其他线程操作过，执行对应的业务逻辑，exec 命令就是执行&ldquo;类似&rdquo;这样的一个功能。<br />
+<br />
+注意，&ldquo;类似&rdquo;这个字眼，因为不完全是，原因是 CAS 原理会产生 ABA 问题。所谓 ABA 问题来自于 CAS 原理的一个设计缺陷，它可能引发 ABA 问题，如表 1 所示。<br />
+<table>
+<caption>
+表 1 ABA问题</caption>
+<tbody>
+<tr>
+<th>
+时间顺序</th>
+<th>
+线程1</th>
+<th>
+线程2</th>
+<th>
+说明</th>
+</tr>
+<tr>
+<td>
+T1</td>
+<td>
+<div>
+X=A</div>
+</td>
+<td>
+&mdash;</td>
+<td>
+线程 1 加入监控 X</td>
+</tr>
+<tr>
+<td>
+T2</td>
+<td colspan="1" rowspan="4">
+复杂运算开始</td>
+<td>
+修改 X=B</td>
+<td>
+线程 2 修改 X，此刻为 B</td>
+</tr>
+<tr>
+<td>
+T3</td>
+<td>
+处理简单业务</td>
+<td>
+&mdash;</td>
+</tr>
+<tr>
+<td>
+T4</td>
+<td>
+修改 X=A</td>
+<td>
+线程 2 修改 X，此刻又变回 A</td>
+</tr>
+<tr>
+<td>
+T5</td>
+<td>
+结束线程 2</td>
+<td>
+线程 2 结束</td>
+</tr>
+<tr>
+<td>
+T6</td>
+<td>
+检测X=A，验证通过，提交事务</td>
+<td>
+&mdash;</td>
+<td>
+CAS 原理检测通过，因为和旧值保持一致</td>
+</tr>
+</tbody>
+</table>
+<br />
+在处理复杂运算的时候，被线程 2 修改的 X 的值有可能导致线程 1 的运算出错，而最后线程 2 将 X 的值修改为原来的旧值 A，那么到了线程 1 运算结束的时间顺序 T6，它将检测 X 的值是否发生变化，就会拿旧值 A 和当前的 X 的值 A 比对，结果是一致的，于是提交事务。<br />
+<br />
+然后在复杂计算的过程中 X 被线程 2 修改过了，这会导致线程 1 的运算出错。在这个过程中，对于线程 2 而言，X 的值的变化为 A-&gt;B-&gt;A，所以 CAS 原理的这个设计缺陷被形象地称为&ldquo;ABA 问题&rdquo;。<br />
+<br />
+仅仅记录一个旧值去比较是不足够的，还要通过其他方法避免 ABA 问题。常见的方法如 <a href='../hibernate/hibernate.html' target='_blank'>Hibernate</a> 对缓存的持久对象（PO）加入字段 version 值，当每次操作一次该 PO，则 version=version+1，这样采用 CAS 原理探测 version 字段，就能在多线程的环境中，排除 ABA 问题，从而保证数据的一致性。<br />
+<br />
+关于 CAS 和乐观锁的概念，本教程还会从更深层次讨论它们，暂时讨论到这里，当讨论完了 CAS 和乐观锁，读者再回头来看这个过程，就会有更深的理解了。<br />
+<br />
+从上面的分析可以看出，Redis 在执行事务的过程中，并不会阻塞其他连接的并发，而只是通过比较 watch 监控的键值对去保证数据的一致性，所以 Redis 多个事务完全可以在非阻塞的多线程环境中并发执行，而且 Redis 的机制是不会产生 ABA 问题的，这样就有利于在保证数据一致的基础上，提高高并发系统的数据读/写性能。<br />
+<br />
+下面演示一个成功提交的事务，如表 2 所示。<br />
+<table>
+<caption>
+表 2 事务检测</caption>
+<tbody>
+</tbody>
+<tbody>
+<tr>
+<th>
+时刻</th>
+<th>
+客户端</th>
+<th>
+说&nbsp; &nbsp;明</th>
+</tr>
+<tr>
+<td>
+T1</td>
+<td>
+set key1 value1</td>
+<td>
+初始化key1</td>
+</tr>
+<tr>
+<td>
+T2</td>
+<td>
+watch key1</td>
+<td>
+监控 key1 的键值对</td>
+</tr>
+<tr>
+<td>
+T3</td>
+<td>
+multi</td>
+<td>
+开启事务</td>
+</tr>
+<tr>
+<td>
+T4</td>
+<td>
+set key2 value2</td>
+<td>
+设置 key2 的值</td>
+</tr>
+<tr>
+<td>
+T5</td>
+<td>
+exec</td>
+<td>
+提交事务，Redis 会在这个时间点检测 key1 的值在 T2 时刻后，有没有被其他命令修改过，如果没有，则提交事务去执行</td>
+</tr>
+</tbody>
+</table>
+<br />
+这里我们使用了 watch 命令设置了一个 key1 的监控，然后开启事务设置 key2，直至 exec 命令去执行事务，这个过程和图 2 所演示的一样。<br />
+<div style="text-align: center;">
+<img alt="Redis执行事务" src="../uploads/allimg/190724/5-1ZH413163XZ.png" /><br />
+图 2&nbsp; 运行结果</div>
+<br />
+这里我们看到了一个事务的过程，而 key2 也在事务中被成功设置。下面将演示一个提交事务的案例，如表 3 所示。<br />
+<br />
+<table>
+<caption>
+表 3 提交事务</caption>
+<tbody>
+<tr>
+<th>
+时刻</th>
+<th>
+客户端1</th>
+<th>
+客户端2</th>
+<th>
+说&nbsp; &nbsp;明</th>
+</tr>
+<tr>
+<td>
+T1</td>
+<td>
+set key1 value1</td>
+<td>
+&nbsp;</td>
+<td>
+<div>
+客户端1：返回 OK</div>
+</td>
+</tr>
+<tr>
+<td>
+T2</td>
+<td>
+watch key1</td>
+<td>
+&nbsp;</td>
+<td>
+客户端1：监控 key1</td>
+</tr>
+<tr>
+<td>
+T3</td>
+<td>
+multi</td>
+<td>
+&nbsp;</td>
+<td>
+客户端1：开启事务</td>
+</tr>
+<tr>
+<td>
+T4</td>
+<td>
+set key2 value2</td>
+<td>
+&nbsp;</td>
+<td>
+客户端1：事务命令入列</td>
+</tr>
+<tr>
+<td>
+T5</td>
+<td>
+&mdash;&mdash;</td>
+<td>
+set key1 vall</td>
+<td>
+客户端2：修改 key1 的值</td>
+</tr>
+<tr>
+<td>
+T6</td>
+<td>
+exec</td>
+<td>
+&mdash;&mdash;</td>
+<td>
+客户端1：执行事务，但是事务会先检査在 T2 时刻被监控的 key1 是否被 其他命令修改过。<br />
+因为客户端 2 修改过，所以它会回滚事务，事实上如果客户端执行的是 set key1 value1 命令，它也会认为 key1 被修改过，然后返回（nil），所以是不会产生 ABA 问题的</td>
+</tr>
+</tbody>
+</table>
+<br />
+<div style="text-align: center;">
+<img alt="测试Redis事务回滚" src="../uploads/allimg/190724/5-1ZH4164F6352.png" style="border-width: 1px; border-style: solid;" /><br />
+图 3&nbsp;&nbsp;测试 Redis 事务回滚</div>
+<br />
+在表 3 中有比较详尽的说明，注意 T2 和 T6 时刻命令的说明，使用 Redis 事务要掌握这些内容。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_5046.html" title="Linux中一切皆文件[包含优缺点]" target="_blank">Linux中一切皆文件[包含优缺点]</a></li>
+<li><a href="7509.html" title="C++ search_n()函数用法（超级详细）" target="_blank">C++ search_n()函数用法（超级详细）</a></li>
+<li><a href="8273.html" title="Visio绘制E-R图和数据库模型图具体步骤" target="_blank">Visio绘制E-R图和数据库模型图具体步骤</a></li>
+<li><a href="../redis2/lset.html" title="Redis LSET命令" target="_blank">Redis LSET命令</a></li>
+<li><a href="../ml_alg/decision-tree.html" title="决策树分类算法（if-else原理）" target="_blank">决策树分类算法（if-else原理）</a></li>
+<li><a href="../pygame/rect.html" title="Pygame Rect区域位置（图解）" target="_blank">Pygame Rect区域位置（图解）</a></li>
+<li><a href="h03bznp.html" title="Go语言for循环的用法" target="_blank">Go语言for循环的用法</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 4544;
+window.arcId = "b3edTLo9QYVWhn3b4eRbJxUJ6vR09mWPytNGRH4ODyNmOyIdWLBnlpVgoz0";
+window.typeidChain = "297|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

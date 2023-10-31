@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Django模板变量精讲</title>
+<meta name="description" content="在上一节《Django 模板加载与响应》中我们详细讲述了" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../django/django_2.html">Django</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Django模板变量精讲</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在上一节《<a href="7525_5.html">Django 模板加载与响应</a>》中我们详细讲述了 模板与视图函数如何进行配合使用，同时我们介绍了加载与响应模板的两种方式，本节我们将着重讲解 Django 模板语言的语法。<br />
+<br />
+我们知道，模板是文本文件，比如我们常见的有 HTML、CSV、TXT 等。Django 模板语言的语法主要分为以下四个部分：
+<ul>
+	<li>
+		变量</li>
+	<li>
+		标签</li>
+	<li>
+		过滤器</li>
+	<li>
+		注释</li>
+</ul>
+<br />
+下面章节我们会对这四部分进行细致的讲解。<br />
+<h2>
+	1. 模板变量</h2>
+上一节内容中我们提到了模板变量，并且已经使用了它，如 {{name}}。Django 模板引擎通过 <code>context_processors</code>这个上下文处理器来完成字典提供的值（vaule）与模板变量之间的替换，也就是用字典的 vaule&ldquo;C语言中文网&rdquo;来替换模板文件 test.html 中的变量 {{name}}，这就好比字典中 key 到 vaule 的映射。而我们无需关心内部细节是如何让实现的，这些由 Django 框架自己完成。<br />
+<p class="tip-box">
+	提示：当在模板中遇到变量的时候，会根据视图函数来确定这个变量的值，然后将结果输出。</p>
+<h4>
+	1) 变量的命名规范</h4>
+Django 对于模板变量的命名规范没有太多的要求，可以使用任何字母、数字和下划线的组合来命名，且必须以字母或下划线开头，但是变量名称中不能有空格或者标点符号。
+<h4>
+	2）模板的变量语法</h4>
+如何理解模板的变量语法呢？其实它有四种不同的使用场景，分别如下所示：
+<ul>
+	<li>
+		索引 index 查询，如 {{变量名.index}}，其中 index 为int类型即索引下标；</li>
+	<li>
+		字典查询方法，{{变量名.key}} 其中 key 代表字典的键，如 a[&#39;b&#39;]；</li>
+	<li>
+		属性或方法查询，如 {{对象.方法}}&nbsp;，把圆点前的内容理解成一个对象，把圆点后的内容理解为对象里面的属性或者方法；</li>
+	<li>
+		函数调用，如 {{函数名}}。</li>
+</ul>
+<p class="tip-box">
+	注意：在模板中访问对象方法的时候，方法调用不需要加括号，而且只能够调用不带参数的方法；如果不希望自定义的方法被模板调用可以使用 alters_data=Ture 属性，放在方法的结束位置即可。下方代码注释掉地方做了展示，小伙伴们可以自行测试效果。</p>
+下面我们对上面变量的语法进行依次的说明，首先在 views.py 中添加如下代码：
+<pre class="python">
+def test_html(request):
+    a={} #创建空字典，模板必须以字典的形式进行传参
+    a[&#39;name&#39;]=&#39;C语言中文网&#39; 
+    a[&#39;course&#39;]=[&quot;Python&quot;,&quot;C&quot;,&quot;C++&quot;,&quot;Java&quot;]
+    a[&#39;b&#39;]={&#39;name&#39;:&#39;C语言中文网&#39;,&#39;address&#39;:&#39;http://c.biancheng.net/&#39;}
+    a[&#39;test_hello&#39;]=test_hello
+    a[&#39;class_obj&#39;]=Website()
+    return render(request,&#39;test_html.html&#39;,a)
+def test_hello():
+    return &#39;欢迎来到C语言中文网&#39;
+class Website:
+&nbsp;&nbsp;&nbsp; def Web_name(self):
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return &#39;Hello，C语言中文网!&#39;
+    #Web_name.alters_data=True #不让Website()方法被模板调用</pre>
+其次在 templates 目录下创建名为 test_html 的 html 文件，然后添加以下代码：
+<pre class="html">
+&lt;p&gt; 网站名字是{{ name }}&lt;/p&gt; //字典查询
+&lt;p&gt; 课程包含{{ course.1 }}&lt;/p&gt; //索引查询
+&lt;p&gt; 变量a是{{ b }}  &lt;p&gt;
+&lt;p&gt; a[&#39;address&#39;]是{{b.address}}  &lt;/p&gt;//字典查询
+&lt;p&gt; 函数fuction：{{ test_hello }}&lt;/p&gt; //函数方法调用
+&lt;p&gt; 类实例化对象：{{class_obj.Web_name}} &lt;/p&gt; //类方法调用
+</pre>
+然后在 urls.py 文件中添加路由配置，如下所示：
+<p class="info-box">
+	path(&#39;test_html/&#39;,views.test_html)</p>
+最后运行效果如图 1 所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="模板语法展示实例" src="../uploads/allimg/200414/9-200414140229309_2.png" /><br />
+	图1：模板语法实例展示</div>
+<h4>
+	3) 模板传参语法格式</h4>
+在视图函数中必须将变量封装到字典中才允许传递到模板上，语法格式如下：
+<pre class="python">
+#方式1
+def xxx_view(request)
+    dic = {
+        &quot;变量1&quot;:&quot;值1&quot;,
+        &quot;变量2&quot;:&quot;值2&quot;,
+    }
+    return render(request, &#39;xxx.html&#39;, dic)
+#方式2
+def xxx_view(request)
+        变量1=值1
+        变量2=值2
+    return render(request, &#39;xxx.html&#39;, locals())
+</pre>
+<p class="tip-box">
+	提示：locals() 返回当前函数作用域内全部局部变量形成的字典。即将变量与值对应形成字典，并把这个字典作为 locals() 的返回值来使用。</p>
+在下一节中，我们会对模板语言的另一个知识点模板标签展开讲解。 </div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="264_2.html" title="C++多态到底是什么（通俗易懂）" target="_blank">C++多态到底是什么（通俗易懂）</a></li>
+<li><a href="3415_2.html" title="重连通图及重连通分量" target="_blank">重连通图及重连通分量</a></li>
+<li><a href="vip_5040_2.html" title="Linux已经霸占了服务器领域！" target="_blank">Linux已经霸占了服务器领域！</a></li>
+<li><a href="6710_2.html" title="C++ STL array容器访问元素的几种方式" target="_blank">C++ STL array容器访问元素的几种方式</a></li>
+<li><a href="../redis2/randomkey_2.html" title="Redis RANDOMKEY命令" target="_blank">Redis RANDOMKEY命令</a></li>
+<li><a href="../spring/first-spring_2.html" title="第一个Spring程序" target="_blank">第一个Spring程序</a></li>
+<li><a href="stwk3z3_2.html" title="C++指针的定义和使用（入门必读）" target="_blank">C++指针的定义和使用（入门必读）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7547;
+window.arcId = "5831NC85sblrGlgUQ38CJt5FOI7tLesi+t1iCzwTHINEB5GLnD6I9Gkcy4A";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

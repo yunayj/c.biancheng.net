@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>进程间通信（IPC）：共享内存和消息队列原理详解</title>
+<meta name="description" content="操作系统内的并发执行进程可以是独立的也可以是协作的： 如果一个进程不能影响其他进程或受其他进程影响，那么该进程是独立的，换句话说，不与任何其他进程共享数据的进程是独" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>进程间通信（IPC）：共享内存和消息队列原理详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">操作系统内的并发执行进程可以是独立的也可以是协作的：
+<ul>
+	<li>
+		如果一个进程不能影响其他进程或受其他进程影响，那么该进程是独立的，换句话说，不与任何其他进程共享数据的进程是独立的；</li>
+	<li>
+		如果一个进程能影响其他进程或受其他进程所影响，那么该进程是协作的。换句话说，与其他进程共享数据的进程为协作进程。</li>
+</ul>
+<br />
+提供环境允许进程协作，具有许多理由：
+<ul>
+	<li>
+		<span style="color:#b22222;">信息共享</span>：由于多个用户可能对同样的信息感兴趣（例如共享文件），所以应提供环境以允许并发访问这些信息。</li>
+	<li>
+		<span style="color:#b22222;">计算加速</span>：如果希望一个特定任务快速运行，那么应将它分成子任务，而每个子任务可以与其他子任务一起并行执行。注意，如果要实现这样的加速，那么计算机需要有多个处理核。</li>
+	<li>
+		<span style="color:#b22222;">模块化</span>：可能需要按模块化方式构造系统，即将系统功能分成独立的进程或线程。</li>
+	<li>
+		<span style="color:#b22222;">方便</span>：即使单个用户也可能同时执行许多任务。例如，用户可以并行地编辑、收听音乐、编译。</li>
+</ul>
+<br />
+协作进程需要有一种<strong>进程间通信机制（简称 IPC）</strong>，以允许进程相互交换数据与信息。进程间通信有两种基本模型：<span style="color:#008000;">共享内存</span>和<span style="color:#008000;">消息传递（消息队列）</span>：
+<ul>
+	<li>
+		共享内存模型会建立起一块供协作进程共享的内存区域，进程通过向此共享区域读出或写入数据来交换信息。</li>
+	<li>
+		消息传递模型通过在协作进程间交换消息来实现通信。</li>
+</ul>
+<br />
+图 1 给出了这两种模型的对比。
+<div style="text-align: center;">
+	<br />
+	<img alt="通信模型" src="../uploads/allimg/181102/2-1Q1021345313P_2.gif" /><br />
+	图 1 通信模型</div>
+<div>
+	&nbsp;</div>
+上述两种模型在操作系统中都常见，而且许多系统也实现了这两种模型。消息传递对于交换较少数量的数据很有用，因为无需避免冲突。对于分布式系统，消息传递也比共享内存更易实现。共享内存可以快于消息传递，这是因为消息传递的实现经常采用系统调用，因此需要消耗更多时间以便内核介入。与此相反，共享内存系统仅在建立共享内存区域时需要系统调用；一旦建立共享内存，所有访问都可作为常规内存访问，无需借助内核。<br />
+<br />
+对具有多个处理核系统的最新研究表明，在这类系统上，消息传递的性能要优于共享内存。共享内存会有高速缓存一致性问题，这是由共享数据在多个高速缓存之间迁移而引起的。随着系统的处理核的数量的日益增加，可能导致消息传递作为 IPC 的首选机制。<br />
+<h2>
+	共享内存系统</h2>
+<span style="color:#b22222;">采用共享内存的进程间通信，需要通信进程建立共享内存区域。</span>通常，共享内存区域驻留在创建共享内存段的进程地址空间内。其他希望使用这个共享内存段进行通信的进程应将其附加到自己的地址空间。<br />
+<br />
+回忆一下，通常操作系统试图阻止一个进程访问另一进程的内存。共享内存需要两个或更多的进程同意取消这一限制，这样它们通过在共享区域内读出或写入来交换信息。数据的类型或位置取决于这些进程，而不是受控于操作系统。另外，进程负责确保它们不向同一位置同时写入数据。<br />
+<br />
+为了说明协作进程的概念，我们来看一看生产者-消费者问题，这是协作进程的通用范例。生产者进程生成信息，以供消费者进程消费。例如，编译器生成的汇编代码可供汇编程序使用，而且汇编程序又可生成目标模块以供加载程序使用。<br />
+<br />
+生产者-消费者问题同时还为客户机-服务器范例提供了有用的比喻。通常，将服务器当作生产者，而将客户机当作消费者。例如，一个 Web 服务器生成（提供）HTML 文件和图像，以供请求资源的 Web 客户浏览器使用（读取）。<br />
+<br />
+<span style="color:#b22222;">解决生产者-消费者问题的方法之一是采用共享内存。</span>为了允许生产者进程和消费者进程并发执行，应有一个可用的缓冲区，以被生产者填充和被消费者清空。这个缓冲区驻留在生产者进程和消费者进程的共享内存区域内。当消费者使用一项时，生产者可产生另一项。生产者和消费者必须同步，这样消费者不会试图消费一个尚未生产出来的项。<br />
+<br />
+缓冲区类型可分两种：
+<ul>
+	<li>
+		<span style="color:#008000;">无界缓冲区</span>没有限制缓冲区的大小。消费者可能不得不等待新的项，但生产者总是可以产生新项。</li>
+	<li>
+		<span style="color:#008000;">有界缓冲区</span>假设固定大小的缓冲区。对于这种情况，如果缓冲区空，那么消费者必须等待；并且如果缓冲区满，那么生产者必须等待。</li>
+</ul>
+<br />
+下面深入分析，有界缓冲区如何用于通过共享内存的进程间通信。以下变量驻留在由生产者和消费者共享的内存区域中：<br />
+<pre class="cpp">
+#define BUFFER_SIZE 10
+typedef struct {
+...
+}item；
+item buffer [BUFFER_SIZE];
+int in = 0;
+int out = 0;</pre>
+共享 buffer 的实现采用一个循环数组和两个逻辑指针：in 和 out。变量 in 指向缓冲区的下一个空位；变量 out 指向缓冲区的第一个满位。当 <code>in == out</code> 时，缓冲区为空；当 <code>(in + 1)%BUFFER SIZE == out</code> 时，缓冲区为满。<br />
+<br />
+生产者进程和消费者进程的代码为：
+<pre class="cpp">
+//生产者进程
+while (true) {
+/* produce an item in next .produced */
+while (((in + 1) %BUFFER_SIZE) == out)
+  ;/* do nothing */
+buffer [in] = next_produced;
+in = (in + 1) % BUFFER.SIZE;
+}
+
+//消费者进程
+item next_consumed;
+while (true) {
+while (in == out)
+;/* do nothing */
+next_consumed = buffer[out];
+out = (out + 1) %BUFFER_SIZE;
+/* consume the item in next-consumed */
+}</pre>
+生产者进程有一个局部变量 next_produced，以便存储生成的新项；消费者进程有一个局部变量 next_consumed，以便存储所要使用的新项。<br />
+<h2>
+	消息传递系统（消息队列）</h2>
+前面讲解了协作进程如何可以通过共享内存进行通信。此方案要求这些进程共享一个内存区域，并且应用程序开发人员需要明确编写代码，以访问和操作共享内存。达到同样效果的另一种方式是，操作系统提供机制，以便协作进程通过消息传递功能进行通信。<br />
+<br />
+消息传递提供一种机制，以便允许进程不必通过共享地址空间来实现通信和同步。对分布式环境（通信进程可能位于通过网络连接的不同计算机），这特别有用。<br />
+<br />
+例如，可以设计一个互联网的聊天程序以便聊天参与者通过交换消息相互通信。消息传递工具提供至少两种操作：send(message) 和 receive(message)。<br />
+<br />
+进程发送的消息可以是定长的或变长的。如果只能发送定长消息，那么系统级实现就简单。不过，这一限制使得编程任务更加困难。相反，变长消息要求更复杂的系统级实现，但是编程任务变得更为简单。在整个操作系统设计中，这种折中很常见。<br />
+<br />
+如果进程 P 和 Q 需要通信，那么它们必须互相发送消息和接收消息：它们之间要有通信链路。该链路的实现有多种方法。这里不关心链路的物理实现（如共享内存、硬件总线或网络等），而只关心链路的逻辑实现。<br />
+<br />
+这里有几个方法，用于逻辑实现链路和操作 send()/receive()：
+<ul>
+	<li>
+		直接或间接的通信;</li>
+	<li>
+		同步或异步的通信;</li>
+	<li>
+		自动或显式的缓冲;</li>
+</ul>
+<br />
+下面研究这些特征的相关问题。<br />
+<h4>
+	命名</h4>
+需要通信的进程应有一个方法，以便互相引用。它们可以使用直接或间接的通信。<br />
+<br />
+对于直接通信，需要通信的每个进程必须明确指定通信的接收者或发送者。采用这种方案，原语 send() 和 receive() 定义如下：<br />
+<ul>
+	<li>
+		send(P,message)：向进程P发送 message。</li>
+	<li>
+		receive(Q,message)：从进程 Q 接收 message。</li>
+</ul>
+<br />
+这种方案的通信链路具有以下属性：
+<ul>
+	<li>
+		在需要通信的每对进程之间，自动建立链路。进程仅需知道对方身份就可进行交流。</li>
+	<li>
+		每个链路只与两个进程相关。</li>
+	<li>
+		每对进程之间只有一个链路。</li>
+</ul>
+<br />
+这种方案展示了寻址的对称性，即发送和接收进程必须指定对方，以便通信。这种方案的一个变形采用寻址的非对称性，即只要发送者指定接收者，而接收者不需要指定发送者。采用这种方案，原语 send() 和 receive() 的定义如下：
+<ul>
+	<li>
+		send(P，message)：向进程 P 发送 message。</li>
+	<li>
+		receive(id, message)：从任何进程，接收 message，这里变量 id 被设置成与其通信进程的名称。</li>
+</ul>
+<br />
+这两个方案（对称和非对称的寻址）的缺点是：生成进程定义的有限模块化。更改进程的标识符可能需要分析所有其他进程定义。所有旧的标识符的引用都应找到，以便修改成为新标识符。通常，任何这样的硬编码技术（其中标识符需要明确指定），与下面所述的采用间接的技术相比要差。<br />
+<br />
+在间接通信中，通过邮箱或端口来发送和接收消息。邮箱可以抽象成一个对象，进程可以向其中存放消息，也可从中删除消息，每个邮箱都有一个唯一的标识符。<br />
+<br />
+例如，POSIX 消息队列采用一个整数值来标识一个邮箱。一个进程可以通过多个不同邮箱与另一个进程通信，但是两个进程只有拥有一个共享邮箱时才能通信。原语 send() 和 receive() 定义如下：
+<ul>
+	<li>
+		send(A, message)：向邮箱 A 发送 message。</li>
+	<li>
+		receive(A，message)：从邮箱 A 接收 message。</li>
+</ul>
+<br />
+对于这种方案，通信链路具有如下特点：
+<ul>
+	<li>
+		只有在两个进程共享一个邮箱时，才能建立通信链路。</li>
+	<li>
+		一个链路可以与两个或更多进程相关联。</li>
+	<li>
+		两个通信进程之间可有多个不同链路，每个链路对应于一个邮箱。</li>
+</ul>
+<br />
+现在假设进程 P1、P2 和 P3 都共享邮箱 A。进程 P1 发送一个消息到 A，而进程 P2 和 P3 都对 A 执行 receive()。哪个进程会收到 P1 发送的消息？<br />
+<br />
+答案取决于所选择的方案：
+<ul>
+	<li>
+		允许一个链路最多只能与两个进程关联。</li>
+	<li>
+		允许一次最多一个进程执行操作 receive ()。</li>
+	<li>
+		允许系统随意选择一个进程以便接收消息（即进程 P2 和 P3 两者之一都可以接收消息，但不能两个都可以）。系统同样可以定义一个算法来选择哪个进程是接收者（如轮转，进程轮流接收消息）。系统可以让发送者指定接收者。</li>
+</ul>
+<br />
+邮箱可以为进程或操作系统拥有。如果邮箱为进程拥有（即邮箱是进程地址空间的一部分)，那么需要区分所有者（只能从邮箱接收消息）和使用者（只能向邮箱发送消息）。由于每个邮箱都有唯一的标识符，所以关于谁能接收发到邮箱的消息没有任何疑问。当拥有邮箱的进程终止，那么邮箱消失。任何进程后来向该邮箱发送消息，都会得知邮箱不再存在。<br />
+<br />
+与此相反，操作系统拥有的邮箱是独立存在的；它不属于某个特定进程。因此，操作系统必须提供机制，以便允许进程进行如下操作：
+<ol>
+	<li>
+		创建新的邮箱。</li>
+	<li>
+		通过邮箱发送和接收消息。</li>
+	<li>
+		删除邮箱。</li>
+</ol>
+<br />
+创建新邮箱的进程缺省为邮箱的所有者。开始时，所有者是唯一能通过该邮箱接收消息的进程。不过，通过系统调用，拥有权和接收特权可以传给其他进程。当然，这样可以导致每个邮箱具有多个接收者。<br />
+<h4>
+	同步</h4>
+进程间通信可以通过调用原语 send() 和 receive() 来进行。实现这些原语有不同的设计方案。消息传递可以是阻塞或非阻塞，也称为同步或异步：
+<ul>
+	<li>
+		<span style="color:#b22222;">阻塞发送</span>：发送进程阻塞，直到消息由接收进程或邮箱所接收。</li>
+	<li>
+		<span style="color:#b22222;">非阻塞发送</span>：发送进程发送消息，并且恢复操作。</li>
+	<li>
+		<span style="color:#b22222;">阻塞接收</span>：接收进程阻塞，直到有消息可用。</li>
+	<li>
+		<span style="color:#b22222;">非阻塞接收</span>：接收进程收到一个有效消息或空消息。</li>
+</ul>
+<br />
+不同组合的 send() 和 receive() 都有可能。当 send() 和 receive() 都是阻塞的，则在发送者和接收者之间就有一个交会。当采用阻塞的 send() 和 receive()时，生产者-消费者问题的解决就简单了。生产者仅需调用阻塞 send() 并且等待，直到消息被送到接收者或邮箱。同样，当消费者调用 receive() 时，它会阻塞直到有一个消息可用。这种情况如下代码所示：
+<pre class="cpp">
+//采用消息传递的生产者进程
+message next_produced;
+while (true) {
+    /* produce an item in next_produced */
+    send (next_produced);
+}
+//采用消息队列的消费者进程
+message next_consumed;
+while (true) {
+    receive (next_consumed);
+    /* consume the item in next .consumed */
+}</pre>
+<h4>
+	缓存</h4>
+不管通信是直接的还是间接的，通信进程交换的消息总是驻留在临时队列中。简单地讲，队列实现有三种方法：<br />
+<ol>
+	<li>
+		零容量：队列的最大长度为 0。因此，链路中不能有任何消息处于等待。对于这种情况，发送者应阻塞，直到接收者接收到消息。</li>
+	<li>
+		有限容量：队列长度为有限的 n。因此，最多只能有 n 个消息驻留其中。如果在发送新消息时队列未满，那么该消息可以放在队列中（或者复制消息或者保存消息的指针），且发送者可以继续执行而不必等待。如果链路已满，那么发送者应阻塞，直到队列空间有可用的为止。</li>
+	<li>
+		无限容量：队列长度可以无限，因此，不管多少消息都可在其中等待。发送者从不阻塞。</li>
+</ol>
+<br />
+零容量情况称为<span style="color:#b22222;">无缓冲的消息系统</span>，其他情况称为<span style="color:#b22222;">自动缓冲的消息系统</span>。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1147_2.html" title="SELinux是什么" target="_blank">SELinux是什么</a></li>
+<li><a href="1308_2.html" title="C++ cout输出语句用法详解" target="_blank">C++ cout输出语句用法详解</a></li>
+<li><a href="1674_2.html" title="C语言入门书籍推荐，小白自学经典（免费下载）" target="_blank">C语言入门书籍推荐，小白自学经典（免费下载）</a></li>
+<li><a href="vip_5093_2.html" title="Linux RAID（磁盘阵列）完全攻略" target="_blank">Linux RAID（磁盘阵列）完全攻略</a></li>
+<li><a href="7580_2.html" title="Django模板过滤器用法详解" target="_blank">Django模板过滤器用法详解</a></li>
+<li><a href="../pillow/install_2.html" title="Pillow的下载与安装" target="_blank">Pillow的下载与安装</a></li>
+<li><a href="../linux/xbr3nhi_2.html" title="Linux发行版是什么？" target="_blank">Linux发行版是什么？</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 1208;
+window.arcId = "d75azRrW69E10P5MZuO8TAEy0EgercThOJT1Nc6gxBnG9zO8tnsTtm33kjs";
+window.typeidChain = "113|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

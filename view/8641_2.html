@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>线程终止执行的三种方法（Linux）</title>
+<meta name="description" content="多线程程序中，终止线程执行的方式有 3 种，分别是： 线程执行完成后，自行终止； 线程执行过程中遇到了 pthread_exit() 或者 return，也会终止执行； 线程执行过程中，接收到其它线程发" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>线程终止执行的三种方法（Linux）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">多线程程序中，终止线程执行的方式有 3 种，分别是：
+<ol>
+	<li>
+		线程执行完成后，自行终止；</li>
+	<li>
+		线程执行过程中遇到了 pthread_exit() 或者 return，也会终止执行；</li>
+	<li>
+		线程执行过程中，接收到其它线程发送的&ldquo;终止执行&rdquo;的信号，然后终止执行。</li>
+</ol>
+<br />
+三种方式中，第一种很容易理解，本节重点给大家讲解后两种方法。<br />
+<h2>
+	1、pthread_exit()</h2>
+在 C 语言中，return 关键字用于终止函数执行，必要时还能将函数的执行结果反馈给调用者。return 关键字不仅可以用于普通函数，线程函数中也可以使用它。<br />
+<br />
+<code>&lt;pthread.h&gt;</code>头文件中，提供有一个和 return 关键字相同功能的 pthread_exit() 函数。和之前不同，pthread_exit() 函数只适用于线程函数，而不能用于普通函数。<br />
+<br />
+pthread_exit() 函数的语法格式如下：
+<p class="info-box">
+	void pthread_exit(void *retval);</p>
+retval 是<code>void*</code>类型的指针，可以指向任何类型的数据，它指向的数据将作为线程退出时的返回值。如果线程不需要返回任何数据，将 retval 参数置为<code>NULL</code>即可。
+<blockquote>
+	<p>
+		注意，retval 指针不能指向函数内部的局部数据（比如局部变量）。换句话说，pthread_exit() 函数不能返回一个指向局部数据的指针，否则很可能使程序运行结果出错甚至崩溃。</p>
+</blockquote>
+通过一个样例，给大家演示 pthread_exit() 函数的用法（样例一）：
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+#include &lt;pthread.h&gt;
+
+//线程要执行的函数，arg 用来接收线程传递过来的数据
+void *ThreadFun(void *arg)
+{
+    //终止线程的执行，将&ldquo;http://c.biancheng.net&rdquo;返回
+    pthread_exit(&quot;http://c.biancheng.net&quot;); //返回的字符串存储在常量区，并非当前线程的私有资源
+    printf(&quot;*****************&quot;);//此语句不会被线程执行
+}
+
+int main()
+{
+    int res;
+    //创建一个空指针
+    void * thread_result;
+    //定义一个表示线程的变量
+    pthread_t myThread;
+
+    res = pthread_create(&amp;myThread, NULL, ThreadFun, NULL);
+    if (res != 0) {
+        printf(&quot;线程创建失败&quot;);
+        return 0;
+    }
+    //等待 myThread 线程执行完成，并用 thread_result 指针接收该线程的返回值
+    res = pthread_join(myThread, &amp;thread_result);
+    if (res != 0) {
+        printf(&quot;等待线程失败&quot;);
+    }
+    printf(&quot;%s&quot;, (char*)thread_result);
+    return 0;
+}</pre>
+假设程序存储在 thread.c 文件中，执行过程如下：
+<p class="info-box">
+	[root@localhost ~]# gcc thread.c -o thread.exe -lpthread<br />
+	[root@localhost ~]# ./thread.exe<br />
+	http://c.biancheng.net</p>
+不难看出，myThread 线程并没有执行 ThreadFun() 函数中最后一个 printf() 语句，从侧面验证了 pthread_exit() 函数的功能。此外，我们通过在主线程（main() 函数）调用 pthread_join() 函数，获取到了 myThread 线程返回的数据。
+<blockquote>
+	<p>
+		有关 pthread_join() 函数的功能和用法，我们会在《<a href="../thread/vip_8627_2.html" target="_blank">获取线程函数的返回值</a>》一节中给大家讲解。</p>
+</blockquote>
+<h4>
+	pthread_exit()和return的区别</h4>
+修改样例一中的程序，将第 8 行（调用 pthread_exit() ）代码替换成如下语句：
+<pre class="cpp">
+return &quot;http://c.biancheng.net&quot;;</pre>
+重新编译、执行此程序，会发现程序的执行结果和之前完全相同。这意味着当线程执行结束时，无论是采用 return 语句还是调用 pthread_exit() 函数，主线程中的 pthread_join() 函数都可以接收到线程的返回值。<br />
+<br />
+这就产生了一个问题，既然 return 关键字也适用于线程函数，&lt;pthread.h&gt; 头文件为什么还提供 pthread_exit() 函数，不是多此一举吗？<br />
+<br />
+首先，return 语句和 pthread_exit() 函数的含义不同，return 的含义是返回，它不仅可以用于线程执行的函数，普通函数也可以使用；pthread_exit() 函数的含义是线程退出，它专门用于结束某个线程的执行。<br />
+<br />
+在主线程（main() 函数）中，return 和 pthread_exit() 函数的区别最明显。举个例子：
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+#include &lt;pthread.h&gt;
+
+void *ThreadFun(void *arg)
+{
+    sleep(5);//等待一段时间
+    printf(&quot;http://c.biancheng.net\n&quot;);
+}
+
+int main()
+{
+    int res;
+    pthread_t myThread;
+    
+    res = pthread_create(&amp;myThread, NULL, ThreadFun, NULL);
+    if (res != 0) {
+        printf(&quot;线程创建失败&quot;);
+        return 0;
+    }
+    printf(&quot;C语言中文网\n&quot;);
+    return 0;
+}</pre>
+编译、执行此程序，输出结果为：
+<p class="info-box">
+	C语言中文网</p>
+通过执行结果可以看到，主线程正常执行结束，myThread 线程并没有输出指定的数据。原因很简单，主线程执行速度很快，主线程最后执行的 return 语句不仅会终止主线程执行，还会终止其它子线程执行。也就是说，myThread 线程还没有执行输出语句就被终止了。<br />
+<br />
+将上面程序中，main() 函数中的<code>return 0;</code>用如下语句替换：
+<pre class="cpp">
+pthread_exit(NULL);</pre>
+重新编译、执行程序，运行结果为：
+<p class="info-box">
+	C语言中文网<br />
+	http://c.biancheng.net</p>
+对比上面两个执行结果，可以得出的结论是：pthread_exit() 函数只会终止当前线程，不会影响其它线程的执行。
+<blockquote>
+	<p>
+		此外，pthread_exit() 函数还会自动调用线程清理程序（本质是一个由 pthread_cleanup_push() 指定的自定义函数），而 return 不具备这个能力。</p>
+</blockquote>
+总之，如果实际场景中想终止某个子线程，强烈建议大家使用 pthread_exit() 函数。终止主线程时，return 和 pthread_exit() 函数发挥的功能不同，可以根据需要自行选择。
+<h2>
+	2、pthread_cancel()</h2>
+多线程程序中，一个线程还可以向另一个线程发送&ldquo;终止执行&rdquo;的信号（后续称&ldquo;Cancel&rdquo;信号），这时就需要调用 pthread_cancel() 函数。<br />
+<br />
+pthread_cancel() 函数声明在<code>&lt;pthread.h&gt;</code>头文件中，语法格式如下：
+<p class="info-box">
+	int pthread_cancel(pthread_t thread);</p>
+参数 thread 用于接收 Cancel 信号的目标线程。<br />
+<br />
+如果 pthread_cancel() 函数成功地发送了 Cancel 信号，返回数字 0，否则返回非零数。对于因&ldquo;未找到目标线程&rdquo;导致的信号发送失败，函数返回 ESRCH 宏（定义在<code>&lt;errno.h&gt;</code>头文件中，该宏的值为整数 3）。
+<blockquote>
+	<p>
+		注意，pthread_cancel() 函数的功能仅仅是向目标线程发送 Cancel 信号，至于目标线程是否接收该信号，何时响应该信号，全由目标线程决定。我们会在《<a href="../thread/vip_8613_2.html" target="_blank">终止线程执行，千万别踩这个坑！</a>》一节给您做详细讲解。</p>
+</blockquote>
+对于接收 Cancel 信号后结束执行的目标线程，等同于该线程自己执行如下语句：
+<pre class="cpp">
+pthread_exit(PTHREAD_CANCELED);</pre>
+也就是说，当一个线程被强制终止执行时，它会返回<code>PTHREAD_CANCELED</code>这个宏（定义在<code>&lt;pthread.h&gt;</code>头文件中）。<br />
+<br />
+接下来通过一个样例，给大家演示 pthread_cancel() 函数的用法：
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+#include &lt;pthread.h&gt;
+#include &lt;stdlib.h&gt;     // sleep() 函数
+//线程执行的函数
+void * thread_Fun(void * arg) {
+    printf(&quot;新建线程开始执行\n&quot;);
+    sleep(10);
+}
+
+int main()
+{
+    pthread_t myThread;
+    void * mess;
+    int value;
+    int res;
+    //创建 myThread 线程
+    res = pthread_create(&amp;myThread, NULL, thread_Fun, NULL);
+    if (res != 0) {
+        printf(&quot;线程创建失败\n&quot;);
+        return 0;
+    }
+    sleep(1);
+    //向 myThread 线程发送 Cancel 信号
+    res = pthread_cancel(myThread);
+    if (res != 0) {
+        printf(&quot;终止 myThread 线程失败\n&quot;);
+        return 0;
+    }
+    //获取已终止线程的返回值
+    res = pthread_join(myThread, &amp;mess);
+    if (res != 0) {
+        printf(&quot;等待线程失败\n&quot;);
+        return 0;
+    }
+    //如果线程被强制终止，其返回值为 PTHREAD_CANCELED
+    if (mess == PTHREAD_CANCELED) {
+        printf(&quot;myThread 线程被强制终止\n&quot;);
+    }
+    else {
+        printf(&quot;error\n&quot;);
+    }
+    return 0;
+}</pre>
+假设程序编写在 thread.c 文件中，执行过程为：
+<p class="info-box">
+	[root@localhost ~]# gcc thread.c -o thread.exe -lpthread<br />
+	[root@localhost ~]# ./thread.exe<br />
+	新建线程开始执行<br />
+	myThread 线程被强制终止</p>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1041_2.html" title="Linux单用户模式（修改密码、运行级别）方法详解" target="_blank">Linux单用户模式（修改密码、运行级别）方法详解</a></li>
+<li><a href="2280_2.html" title="C++虚继承和虚基类详解" target="_blank">C++虚继承和虚基类详解</a></li>
+<li><a href="2554_2.html" title="MySQL AS：设置别名" target="_blank">MySQL AS：设置别名</a></li>
+<li><a href="7209_2.html" title="NumPy ndarray合并数组" target="_blank">NumPy ndarray合并数组</a></li>
+<li><a href="../numpy/statistic-function_2.html" title="NumPy统计函数" target="_blank">NumPy统计函数</a></li>
+<li><a href="../matplotlib/subplot_2.html" title="Matplotlib subplot()函数用法详解" target="_blank">Matplotlib subplot()函数用法详解</a></li>
+<li><a href="9415_2.html" title="Qt QLabel文本框的使用" target="_blank">Qt QLabel文本框的使用</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8641;
+window.arcId = "3c71Q0/YnD9EWgw+dyCv8v+2NKIP5Sv9UKGgmmKAr1EVpfm+bMHHgdB3ycI";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

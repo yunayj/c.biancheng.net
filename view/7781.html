@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++11 constexpr：验证是否为常量表达式（长篇神文）</title>
+<meta name="description" content="constexpr 是 C++ 11 标准新引入的关键字，不过在讲解其具体用法和功能之前，读者需要先搞清楚 C++ 常量表达式的含义。 所谓常量表达式，指的就是由多个（1）常量组成的表达式。换句话" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../cplus/11/11.html">C++11</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href="7751.html">C++ 11是什么，C++ 11标准的由来</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href="6984.html">C++ auto类型推导</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href="7151.html">C++ decltype类型推导</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href="vip_8670.html">汇总auto和decltype的区别</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href="3727.html">C++返回值类型后置</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href="vip_3729.html">C++11对模板实例化中连续右尖括号&gt;&gt;的改进</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href="3730.html">C++11使用using定义别名</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href="3734.html">C++11支持函数模板的默认模板参数</a>
+</dd>
+<dd>
+<span class="channel-num">9</span>
+<a href="vip_8692.html">C++11在函数模板和类模板中使用可变参数</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">10</span>
+<a href="8600.html">C++11 tuple元组</a>
+</dd>
+<dd>
+<span class="channel-num">11</span>
+<a href="3737.html">C++11列表初始化</a>
+</dd>
+<dd>
+<span class="channel-num">12</span>
+<a href="7818.html">C++11 lambda匿名函数</a>
+</dd>
+<dd>
+<span class="channel-num">13</span>
+<a href="7165.html">C++11非受限联合体（union）</a>
+</dd>
+<dd>
+<span class="channel-num">14</span>
+<a href="7759.html">C++11 for循环（基于范围的循环）详解</a>
+</dd>
+<dd>
+<span class="channel-num">15</span>
+<a href="vip_7760.html">使用C++11标准的for循环，这些坑千万别踩！</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">16</span>
+<a href="7781.html">C++11 constexpr：验证是否为常量表达式</a>
+</dd>
+<dd>
+<span class="channel-num">17</span>
+<a href="vip_8693.html">C++11 constexpr和const的区别</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">18</span>
+<a href="7809.html">C++11 long long超长整形详解</a>
+</dd>
+<dd>
+<span class="channel-num">19</span>
+<a href="7829.html">C++11右值引用</a>
+</dd>
+<dd>
+<span class="channel-num">20</span>
+<a href="vip_8694.html">C++11移动构造函数的功能和用法</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">21</span>
+<a href="7863.html">C++11 move()函数：将左值强制转换为右值</a>
+</dd>
+<dd>
+<span class="channel-num">22</span>
+<a href="8598.html">C++11引用限定符</a>
+</dd>
+<dd>
+<span class="channel-num">23</span>
+<a href="vip_8695.html">C++11完美转发及其实现</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">24</span>
+<a href="7887.html">C++11 nullptr：初始化空指针</a>
+</dd>
+<dd>
+<span class="channel-num">25</span>
+<a href="7898.html">C++11 shared_ptr智能指针</a>
+</dd>
+<dd>
+<span class="channel-num">26</span>
+<a href="vip_8672.html">C++11 unique_ptr智能指针</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">27</span>
+<a href="vip_8673.html">C++11 weak_ptr智能指针</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../cplus/11/11.html">C++11</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++11 constexpr：验证是否为常量表达式（长篇神文）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">constexpr 是 C++ 11 标准新引入的关键字，不过在讲解其具体用法和功能之前，读者需要先搞清楚 C++ 常量表达式的含义。<br />
+<br />
+所谓常量表达式，指的就是由多个（&ge;1）常量组成的表达式。换句话说，如果表达式中的成员都是常量，那么该表达式就是一个常量表达式。这也意味着，常量表达式一旦确定，其值将无法修改。<br />
+<br />
+实际开发中，我们经常会用到常量表达式。以定义数组为例，数组的长度就必须是一个常量表达式：
+<pre class="cpp">
+// 1)
+int url[10];//正确
+// 2)
+int url[6 + 4];//正确
+// 3)
+int length = 6;
+int url[length];//错误，length是变量</pre>
+上述代码演示了 3 种定义 url 数组的方式，其中第 1、2 种定义 url 数组时，长度分别为 10 和 6+4，显然它们都是常量表达式，可以用于表示数组的长度；第 3 种 url 数组的长度为 length，它是变量而非常量，因此不是一个常量表达式，无法用于表示数组的长度。<br />
+<blockquote>
+<p>
+常量表达式的应用场景还有很多，比如匿名枚举、switch-case 结构中的 case 表达式等，感兴趣的读者可自行编码测试，这里不再过多举例。</p>
+</blockquote>
+我们知道，C++ 程序的执行过程大致要经历编译、链接、运行这 3 个阶段。值得一提的是，常量表达式和非常量表达式的计算时机不同，非常量表达式只能在程序运行阶段计算出结果；而常量表达式的计算往往发生在程序的编译阶段，这可以极大提高程序的执行效率，因为表达式只需要在编译阶段计算一次，节省了每次程序运行时都需要计算一次的时间。<br />
+<br />
+对于用 C++ 编写的程序，性能往往是永恒的追求。那么在实际开发中，如何才能判定一个表达式是否为常量表达式，进而获得在编译阶段即可执行的&ldquo;特权&rdquo;呢？除了人为判定外，C++11 标准还提供有 constexpr 关键字。<br />
+<br />
+constexpr 关键字的功能是使指定的常量表达式获得在程序编译阶段计算出结果的能力，而不必等到程序运行阶段。C++ 11 标准中，constexpr 可用于修饰普通变量、函数（包括模板函数）以及类的构造函数。
+<blockquote>
+<p>
+注意，获得在编译阶段计算出结果的能力，并不代表 constexpr 修饰的表达式一定会在程序编译阶段被执行，具体的计算时机还是编译器说了算。</p>
+</blockquote>
+<h2>
+constexpr修饰普通变量</h2>
+C++11 标准中，定义变量时可以用 constexpr 修饰，从而使该变量获得在编译阶段即可计算出结果的能力。<br />
+<br />
+值得一提的是，使用 constexpr 修改普通变量时，变量必须经过初始化且初始值必须是一个常量表达式。举个例子：
+<pre class="cpp">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main()
+{
+    constexpr int num = 1 + 2 + 3;
+    int url[num] = {1,2,3,4,5,6};
+    couts&lt;&lt; url[1] &lt;&lt; endl;
+    return 0;
+}</pre>
+程序执行结果为：
+<p class="info-box">
+2</p>
+<blockquote>
+<p>
+读者可尝试将 constexpr 删除，此时编译器会提示&ldquo;url[num] 定义中 num 不可用作常量&rdquo;。</p>
+</blockquote>
+可以看到，程序第 6 行使用 constexpr 修饰 num 变量，同时将 &quot;1+2+3&quot; 这个常量表达式赋值给 num。由此，编译器就可以在编译时期对 num 这个表达式进行计算，因为 num 可以作为定义数组时的长度。<br />
+<br />
+有读者可能发现，将此示例程序中的 constexpr 用 const 关键字替换也可以正常执行，这是因为 num 的定义同时满足&ldquo;num 是 const 常量且使用常量表达式为其初始化&rdquo;这 2 个条件，由此编译器会认定 num 是一个常量表达式。
+<blockquote>
+<p>
+注意，const 和 constexpr 并不相同，关于它们的区别，我们会在下一节做详细讲解。</p>
+</blockquote>
+另外需要重点提出的是，当常量表达式中包含浮点数时，考虑到程序编译和运行所在的系统环境可能不同，常量表达式在编译阶段和运行阶段计算出的结果精度很可能会受到影响，因此 C++11 标准规定，浮点常量表达式在编译阶段计算的精度要至少等于（或者高于）运行阶段计算出的精度。
+<h2>
+constexpr修饰函数</h2>
+constexpr 还可以用于修饰函数的返回值，这样的函数又称为&ldquo;常量表达式函数&rdquo;。<br />
+<br />
+注意，constexpr 并非可以修改任意函数的返回值。换句话说，一个函数要想成为常量表达式函数，必须满足如下 4 个条件。<br />
+<br />
+1) 整个函数的函数体中，除了可以包含 using 指令、typedef 语句以及 static_assert 断言外，只能包含一条 return 返回语句。<br />
+<br />
+举个例子：
+<pre class="cpp">
+constexpr int display(int x) {
+    int ret = 1 + 2 + x;
+    return ret;
+}
+</pre>
+注意，这个函数是无法通过编译的，因为该函数的返回值用 constexpr 修饰，但函数内部包含多条语句。<br />
+<br />
+如下是正确的定义 display() 常量表达式函数的写法：
+<pre class="cpp">
+constexpr int display(int x) {
+    //可以添加 using 执行、typedef 语句以及 static_assert 断言
+    return 1 + 2 + x;
+}</pre>
+可以看到，display() 函数的返回值是用 constexpr 修饰的 int 类型值，且该函数的函数体中只包含一个 return 语句。<br />
+<br />
+2) 该函数必须有返回值，即函数的返回值类型不能是 void。<br />
+<br />
+举个例子：
+<pre class="cpp">
+constexpr void display() {
+    //函数体
+}</pre>
+像上面这样定义的返回值类型为 void 的函数，不属于常量表达式函数。原因很简单，因为通过类似的函数根本无法获得一个常量。<br />
+<br />
+3) 函数在使用之前，必须有对应的定义语句。我们知道，函数的使用分为&ldquo;声明&rdquo;和&ldquo;定义&rdquo;两部分，普通的函数调用只需要提前写好该函数的声明部分即可（函数的定义部分可以放在调用位置之后甚至其它文件中），但常量表达式函数在使用前，必须要有该函数的定义。<br />
+<br />
+举个例子：
+<pre class="cpp">
+#include &lt;iostream&gt;
+using namespace std;
+
+//普通函数的声明
+int noconst_dis(int x);
+//常量表达式函数的声明
+constexpr int display(int x);
+
+//常量表达式函数的定义
+constexpr int display(int x){
+    return 1 + 2 + x;
+}
+int main()
+{
+    //调用常量表达式函数
+    int a[display(3)] = { 1,2,3,4 };
+    cout &lt;&lt; a[2] &lt;&lt; endl;
+    //调用普通函数
+    cout &lt;&lt; noconst_dis(3) &lt;&lt; endl;
+    return 0;
+}
+//普通函数的定义
+int noconst_dis(int x) {
+    return 1 + 2 + x;
+}</pre>
+程序执行结果为：
+<p class="info-box">
+3<br />
+6</p>
+<blockquote>
+<p>
+读者可自行将 display() 常量表达式函数的定义调整到 main() 函数之后，查看编译器的报错信息。</p>
+</blockquote>
+可以看到，普通函数在调用时，只需要保证调用位置之前有相应的声明即可；而常量表达式函数则不同，调用位置之前必须要有该函数的定义，否则会导致程序编译失败。<br />
+<br />
+4) return 返回的表达式必须是常量表达式，举个例子：
+<pre class="cpp">
+#include &lt;iostream&gt;
+using namespace std;
+
+int num = 3;
+constexpr int display(int x){
+    return num + x;
+}
+int main()
+{
+    //调用常量表达式函数
+    int a[display(3)] = { 1,2,3,4 };
+    return 0;
+}</pre>
+该程序无法通过编译，编译器报&ldquo;display(3) 的结果不是常量&rdquo;的异常。<br />
+<br />
+常量表达式函数的返回值必须是常量表达式的原因很简单，如果想在程序编译阶段获得某个函数返回的常量，则该函数的 return 语句中就不能包含程序运行阶段才能确定值的变量。
+<blockquote>
+<p>
+注意，在常量表达式函数的 return 语句中，不能包含赋值的操作（例如 return x=1 在常量表达式函数中不允许的）。另外，用 constexpr 修改函数时，函数本身也是支持递归的，感兴趣的读者可自行尝试编码测试。</p>
+</blockquote>
+<h2>
+constexpr修饰类的构造函数</h2>
+对于 C++ 内置类型的数据，可以直接用 constexpr 修饰，但如果是自定义的数据类型（用 struct 或者 class 实现），直接用 constexpr 修饰是不行的。<br />
+<br />
+举个例子：
+<pre class="cpp">
+#include &lt;iostream&gt;
+using namespace std;
+
+//自定义类型的定义
+constexpr struct myType {
+    const char* name;
+    int age;
+    //其它结构体成员
+};
+
+int main()
+{
+    constexpr struct myType mt { &quot;zhangsan&quot;, 10 };
+    cout &lt;&lt; mt.name &lt;&lt; &quot; &quot; &lt;&lt; mt.age &lt;&lt; endl;
+    return 0;
+}</pre>
+此程序是无法通过编译的，编译器会抛出&ldquo;constexpr不能修饰自定义类型&rdquo;的异常。<br />
+<br />
+当我们想自定义一个可产生常量的类型时，正确的做法是在该类型的内部添加一个常量构造函数。例如，修改上面的错误示例如下：<br />
+<pre class="cpp">
+#include &lt;iostream&gt;
+using namespace std;
+
+//自定义类型的定义
+struct myType {
+    constexpr myType(char *name,int age):name(name),age(age){};
+    const char* name;
+    int age;
+    //其它结构体成员
+};
+
+int main()
+{
+    constexpr struct myType mt { &quot;zhangsan&quot;, 10 };
+    cout &lt;&lt; mt.name &lt;&lt; &quot; &quot; &lt;&lt; mt.age &lt;&lt; endl;
+    return 0;
+}</pre>
+程序执行结果为：
+<p class="info-box">
+zhangsan 10</p>
+可以看到，在 myType 结构体中自定义有一个构造函数，借助此函数，用 constexpr 修饰的 myType 类型的 my 常量即可通过编译。<br />
+<br />
+注意，constexpr 修饰类的构造函数时，要求该构造函数的函数体必须为空，且采用初始化列表的方式为各个成员赋值时，必须使用常量表达式。<br />
+<br />
+前面提到，constexpr 可用于修饰函数，而类中的成员方法完全可以看做是&ldquo;位于类这个命名空间中的函数&rdquo;，所以 constexpr 也可以修饰类中的成员函数，只不过此函数必须满足前面提到的 4 个条件。<br />
+<br />
+举个例子：
+<pre class="cpp">
+#include &lt;iostream&gt;
+using namespace std;
+
+//自定义类型的定义
+class myType {
+public:
+    constexpr myType(const char *name,int age):name(name),age(age){};
+    constexpr const char * getname(){
+        return name;
+    }
+    constexpr int getage(){
+        return age;
+    }
+private:
+    const char* name;
+    int age;
+    //其它结构体成员
+};
+
+int main()
+{
+    constexpr struct myType mt { &quot;zhangsan&quot;, 10 };
+    constexpr const char * name = mt.getname();
+    constexpr int age = mt.getage();
+    cout &lt;&lt; name &lt;&lt; &quot; &quot; &lt;&lt; age &lt;&lt; endl;
+    return 0;
+}</pre>
+程序执行结果为：
+<p class="info-box">
+zhangsan 10</p>
+<blockquote>
+<p>
+注意，C++11 标准中，不支持用 constexpr 修饰带有 virtual 的成员方法。</p>
+</blockquote>
+<h2>
+constexpr修饰模板函数</h2>
+C++11 语法中，constexpr 可以修饰模板函数，但由于模板中类型的不确定性，因此模板函数实例化后的函数是否符合常量表达式函数的要求也是不确定的。<br />
+<br />
+针对这种情况下，C++11 标准规定，如果 constexpr 修饰的模板函数实例化结果不满足常量表达式函数的要求，则 constexpr 会被自动忽略，即该函数就等同于一个普通函数。<br />
+<br />
+举个例子：<br />
+<pre class="cpp">
+#include &lt;iostream&gt;
+using namespace std;
+
+//自定义类型的定义
+struct myType {
+&nbsp;&nbsp;&nbsp; const char* name;
+&nbsp;&nbsp;&nbsp; int age;
+&nbsp;&nbsp;&nbsp; //其它结构体成员
+};
+//模板函数
+template&lt;typename T&gt;
+constexpr T dispaly(T t){
+&nbsp;&nbsp;&nbsp; return t;
+}
+
+int main()
+{
+&nbsp;&nbsp;&nbsp; struct myType stu{&quot;zhangsan&quot;,10};
+&nbsp;&nbsp;&nbsp; //普通函数
+&nbsp;&nbsp;&nbsp; struct myType ret = dispaly(stu);
+&nbsp;&nbsp;&nbsp; cout &lt;&lt; ret.name &lt;&lt; &quot; &quot; &lt;&lt; ret.age &lt;&lt; endl;
+&nbsp;&nbsp;&nbsp; //常量表达式函数
+&nbsp;&nbsp;&nbsp; constexpr int ret1 = dispaly(10);
+&nbsp;&nbsp;&nbsp; cout &lt;&lt; ret1 &lt;&lt; endl;
+&nbsp;&nbsp;&nbsp; return 0;
+}
+</pre>
+程序执行结果为：
+<p class="info-box">
+zhangsan 10<br />
+10</p>
+可以看到，示例程序中定义了一个模板函数 display()，但由于其返回值类型未定，因此在实例化之前无法判断其是否符合常量表达式函数的要求：
+<ul>
+<li>
+第 20 行代码处，当模板函数中以自定义结构体 myType 类型进行实例化时，由于该结构体中没有定义常量表达式构造函数，所以实例化后的函数不是常量表达式函数，此时 constexpr 是无效的；</li>
+<li>
+第 23 行代码处，模板函数的类型 T 为 int 类型，实例化后的函数符合常量表达式函数的要求，所以该函数的返回值就是一个常量表达式。</li>
+</ul>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1090.html" title="Linux at命令详解：定时执行任务" target="_blank">Linux at命令详解：定时执行任务</a></li>
+<li><a href="4773.html" title="Go语言工程结构详述" target="_blank">Go语言工程结构详述</a></li>
+<li><a href="vip_5062.html" title="Vim配置文件（.vimrc）详解" target="_blank">Vim配置文件（.vimrc）详解</a></li>
+<li><a href="7279.html" title="C++ STL插入迭代器适配器（insert_iterator）" target="_blank">C++ STL插入迭代器适配器（insert_iterator）</a></li>
+<li><a href="vip_8342.html" title="MySQL索引可以分为哪些类型？" target="_blank">MySQL索引可以分为哪些类型？</a></li>
+<li><a href="../jsp2/pagecontext.html" title="JSP pageContext对象" target="_blank">JSP pageContext对象</a></li>
+<li><a href="9424.html" title="Qt QHBoxLayout水平布局用法详解" target="_blank">Qt QHBoxLayout水平布局用法详解</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7781;
+window.arcId = "eaeduKWZvGkLw4/a6mGFo0YyYvuZX9UicOkj9h4rSWITb3j6OHJfWMn53aE";
+window.typeidChain = "337";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

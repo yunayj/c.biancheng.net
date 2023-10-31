@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C语言指针的运算</title>
+<meta name="description" content="本文讨论使用指针进行的运算，最重要的运算是获取指针所引用的对象或函数。也可以比较指针，使用指针来遍历一个内存区域。 使用指针读取与修改对象 间接运算符 * 生成内存中的位" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C语言指针的运算</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">本文讨论使用指针进行的运算，最重要的运算是获取指针所引用的对象或函数。也可以比较指针，使用指针来遍历一个内存区域。
+<h2>
+	使用指针读取与修改对象</h2>
+间接运算符 * 生成内存中的位置，该位置的地址存储在一个指针中。如果 ptr 是一个指针，那么 *ptr 就是 ptr 所指向的对象（或函数）。<br />
+<br />
+使用间接运算符有时候被称为<span style="color:#006400;">解引用</span>（dereferencing）<span style="color:#006400;">一个指针</span>。指针指向的内存位置被认为存储有一个对象，指针的类型决定了该对象的类型。例如，当用 int 指针获取一个特定内存位置，读出或写入的也是 int 类型的对象。<br />
+<br />
+<span style="color:#b22222;">与乘法运算符 * 不同，间接运算符 * 是一元运算符，也就是说，间接运算符只有一个操作数。</span>在例 1 中，ptr 指向变量 x。因此，表达式 *ptr 等效于变量 x 本身。<br />
+<br />
+【例1】解引用一个指针
+<pre class="cpp">
+double x, y, *ptr;    // 两个double变量和一个double指针
+ptr = &amp;x;                   // 使得ptr指向x
+*ptr = 7.8;             // 对变量x赋值7.8
+*ptr *= 2.5;            // 将x乘以2.5
+y = *ptr + 0.5;                 // 将加法x+0.5的结果赋值给y</pre>
+<br />
+<span style="color:#b22222;">不要混淆指针声明中的星号（*）和间接运算符。</span>声明中的语法可以被视为展示了如何使用指针。如下例所示：
+<pre class="cpp">
+double *ptr;</pre>
+<br />
+如上述声明，ptr 具有 double* 类型（读为：&ldquo;指向double的指针&rdquo;）。因此，表达式 *ptr 类型是 double。<br />
+<br />
+当然<span style="color:#b22222;">，间接运算符 * 必须匹配一个具有有效地址的指针</span>。这个用法要求在编写程序时需要特别小心！例 1 中，如果没有 ptr=&amp;x 为 ptr 分配有效地址，那么所有包含 *ptr 的语句都是没有意义的（解引用一个没有定义的指针），有可能会造成程序崩溃。<br />
+<br />
+<span style="color:#b22222;">一个指针变量，其本身也是内存中的一个对象，</span>也就是说，<span style="color:#b22222;">其他指针可以指向该指针。若想创建指针的指针，必须使用两个星号</span>，如下例所示：
+<pre class="cpp">
+char c = &#39;A&#39;, *cPtr = &amp;c, **cPtrPtr = &amp;cPtr;</pre>
+<br />
+表达式 *cPtrPtr 当前生成 char 指针 cPtr，而 **cPtrPtr 的值是 char 变量 c。图 1 展示了这样的关系。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/180907/3-1PZG2521E61_2.jpg" style="width: 407px; height: 73px;" /><br />
+	图1</div>
+<br />
+指针的指针不仅限于两个层次的间接运算。也可以根据自己的需要定义多个层次的间接运算。然而，不能通过多次使用地址运算符 &amp; 来取得指针的值：
+<pre class="cpp">
+char c = &#39;A&#39;, **cPtrPtr = &amp;(&amp;c);  // 错误!</pre>
+<br />
+上例中的第二个初始化语句是非法的：<span style="color:#b22222;">表达式（&amp;c）不可以作为 &amp; 的操作数，因为它不是一个左值。</span>换句话说，在本例中，不存在可以让 cPtrPtr 指向的 char 指针。<br />
+<br />
+如果将一个指针采用引用方式传入函数，以让函数可以修改该指针的值，那么该函数的参数就是指针的指针。下面简单的例子是一个函数，动态地创建一个新的记录，将其地址存储在一个指针变量中：
+<pre class="cpp">
+#include &lt;stdlib.h&gt;
+// 记录的类型：
+typedef struct { long key; /* ... */ } Record;
+_Bool newRecord( Record **ppRecord )
+{
+  *ppRecord = malloc( sizeof(Record) );
+  if ( *ppRecord != NULL )
+  {
+    /* ...初始化新记录的成员... */
+    return 1;
+  }
+  else
+    return 0;
+}</pre>
+<br />
+下列语句是调用函数 newRecord（）的一种可能方式：
+<pre class="cpp">
+Record *pRecord = NULL;
+if ( newRecord( &amp;pRecord) )
+{
+  /* ...pRecord现在指向了一个新的Record对象... */
+}</pre>
+<br />
+表达式 *pRecord 生成新的记录，并且（*pRecord）.key 是该记录中的 key 成员。表达式（*pRecord）.key 中的括号是有必要的，因为点运算符（.）比间接运算符（*）具有更高的优先级。<br />
+<br />
+不用上面运算符与括号结合的方式，也可以使用箭头运算符 -&gt; 来获取结构或联合的成员。如果 p 是一个指向结构或联合的指针，并且该结构或联合具有成员 m，那么表达式 p-&gt;m 等效于（*P）.m。因此，下面的语句将一个值赋值给 pRecord 所指的 key 成员：
+<pre class="cpp">
+pRecord-&gt;key = 123456L;</pre>
+<h2>
+	修改和比较指针</h2>
+<span style="color:#b22222;">除了使用赋值操作让一个指针引用一个给定的对象或函数，也可以使用算术运算来修改一个对象指针。</span>当进行指针算术运算（pointer arithmetic）时，编译器会自动在运算中采用指针所指类型的空间大小。<br />
+<br />
+对于指向对象的指针，可以进行下列的运算：<br />
+(1) 对一个指针执行整数加法和减法操作。<br />
+(2) 两个指针相减。<br />
+(3) 比较两个指针。<br />
+<br />
+<span style="color:#b22222;">当将两个指针相减时，这两个指针必须具有相同的基本类型，但是类型限定符则不需要一样。</span>而且，可以使用相等运算符（==和！=）来将任何指针与空指针常量比较，也可以将对象指针与 void 指针比较。<br />
+<br />
+这里所描述的三种指针运算，通常只针对指向数组元素的指针时才有用。为了展示这些运算的作用，假设有两个指针 p1 和 p2，它们都指向数组 a 内的元素：<br />
+<br />
+(1) 如果 p1 指向数组元素 a[i]，并且 n 是一个整数，那么表达式 p2=p1+n 的使得 p2 指向数组元素 a[i+n]（假设 i+n 仍在数组 a 的索引范围内）。<br />
+<br />
+(2) 减法 p2-p1 的结果是获得两个指针之间数组元素的数量，结果的类型是 ptrdiff_t。该类型定义在头文件 stddef.h 中，通常定义成 int。在赋值运算 p2=p1+n 之后，表达式 p2-p1 的值是 n。<br />
+<br />
+(3) 如果 p2 所引用的元素比 p1 所引用的元素具有更大的索引值，则 p1&lt;li=&quot;&quot;&gt;。<br />
+<br />
+<span style="color:#b22222;">因为一个数组的名称会隐式地转换为指向数组第一个元素的指针，所以可以把数组的下标表示法替换为指针算术</span>：<br />
+(1) 表达式 a+i 是指向 a[i] 的指针，而 *（a+i）的值是元素 a[i]。<br />
+(2) 表达式 p1-a 的结果是 p1 指向元素的索引值 i。<br />
+<br />
+在例 2 中，函数 selection_sortf（）对 float 元素数组进行排序，使用选择性排序算法。这个函数使用指针而非索引完成对 float 元素数组的排序，函数swapf（）维持不变。<br />
+<br />
+【例2】指针版本的函数 selection_sortf（）
+<pre class="cpp">
+// 函数swapf()交换两个float变量的值
+// 参数：两个指向float的指针
+inline void swapf( float *p1, float *p2 )
+{
+   float tmp = *p1; *p1 = *p2; *p2 = tmp;       // 交换*p1和*p2
+}
+// 函数selection_sortf()使用选择性排序算法，对float元素数组排序
+// 参数：一个float元素数组，以及它的长度
+void selection_sortf( float a[], int n )        // 对有n个float元素的数组a进行排序
+{
+  if ( n &lt;= 1 ) return;                              // 不进行排序
+  register float *last = a + n-1,               // 指向最后一个元素的指针
+                 *p,                            // 指向一个选定元素的指针
+                 *minPtr;                       // 指向当前最小值元素的指针
+  for ( ; a &lt; last; ++a )                    // 将指针遍历整个数组
+  {
+    minPtr = a;                                         // 在a所指的元素与最后一个元素之间
+    for ( p = a+1; p &lt;= last; ++p )          // 找到最小值元素
+      if ( *p &lt; *minPtr )
+        minPtr = p;
+    swapf( a, minPtr );                                 // 将最小值元素与a所指的元素交换
+  }
+}</pre>
+<br />
+<span style="color:#b22222;">通常来讲，指针版本的函数比使用索引版本的函数具有更高效率</span>，因为使用索引 i 获取数组 a 的元素，表达式为 a[i] 或 *（a+i），它涉及将 a 的地址加上 i*sizeof（元素类型）的值，以获得对应的数组元素地址。指针版本相比之下需要的运算就少得多了，因为<span style="color:#b22222;">指针本身可递增，不需要索引，并且指针直接指向所需的元素。</span></div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1418_2.html" title="C++比较两个数组是否相等（详解版）" target="_blank">C++比较两个数组是否相等（详解版）</a></li>
+<li><a href="2231_2.html" title="Python列表推导式（for表达式）及用法" target="_blank">Python列表推导式（for表达式）及用法</a></li>
+<li><a href="vip_3510_2.html" title="Bash Shell命令自动补全功能" target="_blank">Bash Shell命令自动补全功能</a></li>
+<li><a href="7369_3.html" title="Django模板系统" target="_blank">Django模板系统</a></li>
+<li><a href="../jstl/fn-substring_2.html" title="fn:substring()函数" target="_blank">fn:substring()函数</a></li>
+<li><a href="../matplotlib/bar_2.html" title="Matplotlib柱状图（代码+注释详解）" target="_blank">Matplotlib柱状图（代码+注释详解）</a></li>
+<li><a href="../csharp/directory_2.html" title="C#目录操作" target="_blank">C#目录操作</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 363;
+window.arcId = "8213Vtq78ZV5OQk5nCHQWKgQd0w15r18o8BKdGVdMSYXFZkavtiY0CRB3w";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

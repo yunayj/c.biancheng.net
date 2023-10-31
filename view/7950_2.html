@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Django项目实例详解(二)</title>
+<meta name="description" content="本节我们将继续以《Django项目实例详解(一)》为基础进行功能的拓展讲解，让他们充分的了解掌握 Django Web 开发的逻辑思路，本节代码依然较多，希望大家在学懂、看懂的基础上，要把这" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../django/django_2.html">Django</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Django项目实例详解(二)</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">本节我们将继续以《<a href="7903_4.html" target="_blank">Django项目实例详解(一)</a>》为基础进行功能的拓展讲解，让他们充分的了解掌握 Django Web 开发的逻辑思路，本节代码依然较多，希望大家在学懂、看懂的基础上，要把这些代码亲自去敲一遍，以增强自己的&ldquo;码感&rdquo;！本节内容将完成其余两个功能，即图书信息的更新功能与图书条目的删除功能。<br />
+<h2>
+	1. 实现更新书籍信息</h2>
+更改原有的书籍信息也是经常用到的功能，比如价格的调动等，那么下面就来实现这个功能，首先还是编写模板层页面，在 index\templates 中新建 update_book.html 页面，代码所下所示：
+<pre class="html">
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;更新书籍表&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;form action=&quot;/bookstore/update_book/{{ book.id }}/&quot; method=&quot;post&quot;&gt;
+    {% csrf_token %}
+&lt;!--    css3 disabled属性 不可选状态/禁用元素--&gt;
+    &lt;p&gt;
+        书籍名:&lt;input type=&quot;text&quot;  value=&quot;{{ book.title }}&quot; disabled=&quot;disabled&quot;&gt;
+    &lt;/p&gt;
+
+    &lt;p&gt;
+        零售价:&lt;input type=&quot;text&quot; value=&quot;{{ book.price }}&quot; name=&quot;price&quot;&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+        市场价:&lt;input type=&quot;text&quot; name=&quot;retail_price&quot; value=&quot;{{ book.retail_price }}&quot;&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+        出版社:&lt;input type=&quot;text&quot; value=&quot;{{ book.pub.pubname }}&quot; disabled=&quot;disabled&quot;&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+       &lt;input type=&quot;submit&quot; value=&quot;提交&quot;&gt;
+    &lt;/p&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt; 
+</pre>
+上述完成了 update_book.html 页面的编写，我们使用了 CSS3 的 disabled 属性，将 title 和 public 置于不可选择的状态，只允许修改零售价与市场价。接下来我们在 index\views.py 中编写视图层代码：
+<pre class="python">
+def update_book(request,book_id):
+    #用 book_id给每个书籍加上标记
+    #将其作为查找书籍的参数
+    book_id = int(book_id)
+    try:
+        book = Book.objects.get(id=book_id)
+    except Exception as e:
+        return HttpResponse(&#39;--没有找到任何书籍---&#39;)
+    if request.method==&#39;GET&#39;:
+        return render(request,&#39;index/update_book.html&#39;,locals())
+    elif request.method == &#39;POST&#39;:
+        price = request.POST.get(&#39;price&#39;)
+        retail_price=request.POST.get(&#39;retail_price&#39;)
+        if not price or not retail_price:
+            return HttpResponse(&#39;请输入更改后的零售价或市场价！&#39;)
+        price=float(price)
+        retail_price=float(retail_price)
+        # 修改对象属性值
+        book.price =price
+        book.retail_price=retail_price
+        # 存储更新后的状态
+        book.save()
+        #重定向至127.0.0.1:8000/index/all_book/
+        return HttpResponseRedirect(&#39;/index/all_book&#39;)
+    return HttpResponse(&quot;书籍信息更新功能&quot;)</pre>
+在上述代码中我们使用了动态 URL 的方式，book_id 作为动态参数起到了关联每个书籍条目的作用，每个书籍条目都具有唯一性的 id，这里选择它作为参数再合适不过了，最后我们要完成动态路由的配置，如下所示：<br />
+<p class="info-box">
+	urlpatterns=[path(&#39;update_book/&lt;int:book_id&gt;&#39;,views.update_book)]</p>
+在浏览器地址栏输入 127.0.0.1:8000/index/update/5 直接可以进入，书籍价格的修改页面，如下所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Django项目实例书籍信息更新" src="../uploads/allimg/200624/9-20062409525KB_2.gif" /><br />
+	图1：Django项目实例更新功能</div>
+<br />
+然后修改市场价也为 45.00，并提交数据，url 会自动跳转至 127.0.0.1:800/index/all_book/ 页面，如下所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Django项目实例书籍信息更新" src="../uploads/allimg/200624/9-200624100121D7_2.png" /><br />
+	图2：Django项目实例更新功能<br />
+	&nbsp;</div>
+如图 2 所示，可以看到价格已经发生了变化。那么如果直接点击 option 操作栏的更新按钮又会发生什么呢？结果可想而知，url 会自动跳转至书籍信息更改界面，之所以会这样请参见《<a href="7903_4.html" target="_blank">Django项目实例详解(一)</a>》一节，因为 &lt;a&gt; 标签的 href 属性已将链接到书籍信息的修改页面，所以当你想更改某条书籍信息的时候，可以直接点击相应的更新按钮即可。
+<h2>
+	2. 实现删除书籍条目信息</h2>
+现在实现本项目实例的最后一个功能，即书籍条目的删除功能，通过上一节《<a href="7903_4.html" target="_blank">Django项目实例详解(一)</a>》和本节共三个功能的讲解，我相信大家已经可以独立完成删除功能了，不过我们还是要给出代码，大家可以参照一下。首先还是在 index\templates 中新建 delete_book.html 页面，代码如下所示：
+<pre class="html">
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;删除书籍条目&lt;/title&gt;
+    &lt;style&gt;
+        input:not([type=&quot;submit&quot;]){
+       border:1px solid blue;
+                             }
+        input[type=&quot;submit&quot;]{
+        background:red;
+        }
+
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;form action=&quot;&quot; method=&quot;post&quot;&gt;
+    {% csrf_token %}
+    &lt;p&gt;
+        书籍名:&lt;input type=&quot;text&quot;  value=&quot;{{ book.title }}&quot; name=&quot;title&quot;&gt;
+    &lt;/p&gt;
+
+    &lt;p&gt;
+        零售价:&lt;input type=&quot;text&quot; value=&quot;{{ book.price }}&quot; name=&quot;price&quot;&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+        市场价:&lt;input type=&quot;text&quot; name=&quot;retail_price&quot; value=&quot;{{ book.retail_price }}&quot;&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+        出版社:&lt;input type=&quot;text&quot; value=&quot;{{ book.pub.pubname }}&quot; name=&quot;pub&quot;&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+       &lt;input type=&quot;submit&quot; value=&quot;确认删除&quot;&gt;
+    &lt;/p&gt;
+
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+编写完成后，在 index\views.py 中编写视图层逻辑代码，如下所示：
+<pre class="python">
+def delete_book(request,book_id):
+    book_id=int(book_id)
+    try:
+        book=Book.objects.get(id=book_id)
+    except Exception as e:
+        print(&#39;get查询出现了异常没找到数据&#39;,e)
+        return HttpResponse(&#39;这里没有任何书籍可以被删除&#39;)
+
+    if request.method==&quot;GET&quot;:
+        return render(request,&#39;index/delete_book.html&#39;,locals())
+    elif request.method==&quot;POST&quot;:
+        book.delete()
+        return HttpResponseRedirect(&quot;/index/all_book&quot;)
+    return HttpResponse(&quot;书籍条目信息删除功能&quot;)</pre>
+并配置路由映射关系，如下所示：<br />
+<p class="info-box">
+	urlpatterns=[path(&#39;delete_book/&lt;int:book_id&gt;&#39;,views.delete_book)]</p>
+访问 127.0.01:8000/index/all_book/ 可以直接点击 option 中对应书籍的删除功能，会得到如下页面：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Django实例项目书籍删除" src="../uploads/allimg/200624/9-200624124004135_2.png" /><br />
+	图3：Django实例项目书籍删除<br />
+	&nbsp;</div>
+点击确认删除，则 url 会重新定向到书籍展示页，大家会看到 Redis 书籍条目已经被删除了，如下所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Django实例项目书籍删除" src="../uploads/allimg/200624/9-20062412452GQ_2.gif" /><br />
+	图4：Django实例项目书籍删除<br />
+	&nbsp;</div>
+至此我们完成了 Django 小型图书管理项目的所有逻辑代码，实现了图书的增删改查操作，我们主要运用了一些前面讲过的知识，比如 ORM 模块、QuerySet CURD 操作以及 Django 模板语言应用等，我们将这些知识点进行串联讲解，目的是为了让学习 Django 的小伙伴拥有一个使用 Django 做 Web 开发的基本概念，在这个过程中大家初次领悟了业务逻辑的概念，而这个能力需要我们自身不断的提高。我只能告诉你成功没有捷径，唯有努力拼搏的人才会站到成功的顶峰。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../mysql/unix_timestamp_2.html" title="MySQL UNIX_TIMESTAMP函数：获取UNIX时间戳" target="_blank">MySQL UNIX_TIMESTAMP函数：获取UNIX时间戳</a></li>
+<li><a href="3875_2.html" title="Linux last和lastlog命令：查看过去登陆的用户信息" target="_blank">Linux last和lastlog命令：查看过去登陆的用户信息</a></li>
+<li><a href="vip_5882_2.html" title="学习小妙招，及时掌握Python更新动态" target="_blank">学习小妙招，及时掌握Python更新动态</a></li>
+<li><a href="../mongodb2/mongodump-mongorestore_2.html" title="MongoDB备份和恢复" target="_blank">MongoDB备份和恢复</a></li>
+<li><a href="../redis2/keys_2.html" title="Redis KEYS命令" target="_blank">Redis KEYS命令</a></li>
+<li><a href="recursion_2.html" title="递归算法" target="_blank">递归算法</a></li>
+<li><a href="ttjryi7_2.html" title="openpyxl使用教程（简明版）" target="_blank">openpyxl使用教程（简明版）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7950;
+window.arcId = "e474YpTij19be9di4RTG12Bzil4kbiOJUHz2J1I5d4P72K4xzkSHAlZR70w";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

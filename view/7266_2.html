@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>MySQL查看和修改事务隔离级别</title>
+<meta name="description" content="事务隔离的作用是避免并发操作时相互影响而导致数据的不一致性。所以为了保证数据的一致性，MySQL 引入了事务隔离的功能。 MySQL 事务隔离级别可能产生的结果如下表所示： 隔离级别" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>MySQL查看和修改事务隔离级别</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在《<a href="7265_2.html" target="_blank">MySQL事务隔离级别</a>》一节中我们了解了 MySQL 的事务隔离级别，本节主要介绍查看和修改事务隔离级别的几种方法。<br />
+<h2>
+	查看事务隔离级别</h2>
+在 MySQL 中，可以通过<code>show variables like &#39;%tx_isolation%&#39;</code>或<code>select @@tx_isolation;</code>语句来查看当前事务隔离级别。<br />
+<br />
+查看当前事务隔离级别的 SQL 语句和运行结果如下：
+<pre class="info-box">
+mysql&gt; show variables like &#39;%tx_isolation%&#39;;
++---------------+-----------------+
+| Variable_name | Value           |
++---------------+-----------------+
+| tx_isolation  | REPEATABLE-READ |
++---------------+-----------------+
+1 row in set, 1 warning (0.17 sec）
+mysql&gt; select @@tx_isolation;
++-----------------+
+| @@tx_isolation  |
++-----------------+
+| REPEATABLE-READ |
++-----------------+
+1 row in set, 1 warning (0.00 sec)</pre>
+结果显示，目前 MySQL 的事务隔离级别是 REPEATABLE-READ。<br />
+<br />
+另外，还可以使用下列语句分别查询全局和会话的事务隔离级别：
+<pre class="info-box">
+SELECT @@global.tx_isolation;
+SELECT @@session.tx_isolation;</pre>
+提示：在MySQL 8.0.3 中，tx_isolation 变量被 transaction_isolation 变量替换了。在 MySQL 8.0.3 版本中查询事务隔离级别，只要把上述查询语句中的 tx_isolation 变量替换成 transaction_isolation 变量即可。<br />
+<h2>
+	修改事务隔离级别</h2>
+MySQL 提供了 SET TRANSACTION 语句，该语句可以改变单个会话或全局的事务隔离级别。语法格式如下：
+<p class="info-box">
+	SET [SESSION | GLOBAL] TRANSACTION ISOLATION LEVEL {READ UNCOMMITTED | READ COMMITTED | REPEATABLE READ | SERIALIZABLE}</p>
+其中，SESSION 和 GLOBAL 关键字用来指定修改的事务隔离级别的范围：<br />
+<ul>
+	<li>
+		SESSION：表示修改的事务隔离级别将应用于当前 session（当前 cmd 窗口）内的所有事务；</li>
+	<li>
+		GLOBAL：表示修改的事务隔离级别将应用于所有 session（全局）中的所有事务，且当前已经存在的 session 不受影响；</li>
+	<li>
+		如果省略 SESSION 和 GLOBAL，表示修改的事务隔离级别将应用于当前 session 内的下一个还未开始的事务。</li>
+</ul>
+<br />
+任何用户都能改变会话的事务隔离级别，但是只有拥有 SUPER 权限的用户才能改变全局的事务隔离级别。<br />
+<br />
+如果使用普通用户修改全局事务隔离级别，就会提示需要超级权限才能执行此操作的错误信息，SQL 语句和运行结果如下：
+<pre class="info-box">
+C:\Users\leovo&gt;mysql -utestuser -p
+Enter password: ******
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 41
+Server version: 5.7.29-log MySQL Community Server (GPL)
+ 
+Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
+ 
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+ 
+Type &#39;help;&#39; or &#39;\h&#39; for help. Type &#39;\c&#39; to clear the current input statement.
+ 
+mysql&gt; SET GLOBAL TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+ERROR 1227 (42000): Access denied; you need (at least one of) the SUPER privilege(s) for this operation
+mysql&gt; SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+Query OK, 0 rows affected (0.00 sec)</pre>
+<h4>
+	示例 1</h4>
+使用 SET TRANSACTION 语句分别修改 session 和全局的事务隔离级别SQL 语句和运行结果如下：
+<pre class="info-box">
+mysql&gt;  select @@session.tx_isolation;
++------------------------+
+| @@session.tx_isolation |
++------------------------+
+| SERIALIZABLE           |
++------------------------+
+1 row in set, 1 warning (0.00 sec)
+
+mysql&gt; SET GLOBAL TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql&gt;  select @@global.tx_isolation;
++-----------------------+
+| @@global.tx_isolation |
++-----------------------+
+| REPEATABLE-READ       |
++-----------------------+
+1 row in set, 1 warning (0.00 sec)</pre>
+<br />
+还可以使用 set tx_isolation 命令直接修改当前 session 的事务隔离级别，SQL 语句和运行结果如下：
+<pre class="info-box">
+mysql&gt; set tx_isolation=&#39;READ-COMMITTED&#39;;
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+mysql&gt; select @@session.tx_isolation;
++------------------------+
+| @@session.tx_isolation |
++------------------------+
+| READ-COMMITTED         |
++------------------------+
+1 row in set, 1 warning (0.00 sec)</pre>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="205_2.html" title="函数的递归调用，C语言函数递归调用完全攻略" target="_blank">函数的递归调用，C语言函数递归调用完全攻略</a></li>
+<li><a href="491_2.html" title="C++ map的创建（STL map的创建）详解" target="_blank">C++ map的创建（STL map的创建）详解</a></li>
+<li><a href="666_2.html" title="GCC -c选项：只编译不链接，仅生成目标文件" target="_blank">GCC -c选项：只编译不链接，仅生成目标文件</a></li>
+<li><a href="../mongodb2/data-type_2.html" title="MongoDB数据类型汇总" target="_blank">MongoDB数据类型汇总</a></li>
+<li><a href="../mongodb2/auto-increment_2.html" title="MongoDB自动增长的实现" target="_blank">MongoDB自动增长的实现</a></li>
+<li><a href="../sql/injection_2.html" title="SQL注入简介" target="_blank">SQL注入简介</a></li>
+<li><a href="y0rd698_2.html" title="《Web前端实战——HTML+CSS+JavaScript全栈开发（微课视频版）》PDF下载（高清完整" target="_blank">《Web前端实战——HTML+CSS+JavaScript全栈开发（微课视频版）》PDF下载（高清完整</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7266;
+window.arcId = "1277aW8E7CeTjTLFRTwUg+cM3h4UUm+dgEZJfDSuq2gkkircPilI+aUs3/s";
+window.typeidChain = "345|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>大白话聊栈溢出（stack overflow）</title>
+<meta name="description" content="大家肯定都知道 Stack Overflow 这个网站吧，它是全球最大的技术问答网站，国内很多程序员也在使用。 官网网址是：https://stackoverflow.com/ Stack Overflow 这个名字，其实是一种程序的运行时（" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../hot/hot.html">推荐阅读</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>大白话聊栈溢出（stack overflow）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">大家肯定都知道 Stack Overflow 这个网站吧，它是全球最大的技术问答网站，国内很多程序员也在使用。
+<p class="tip-box">
+官网网址是：https://stackoverflow.com/</p>
+Stack Overflow 这个名字，其实是一种程序的运行时（runtime）错误，中文翻译过来叫做&ldquo;栈溢出&rdquo;。<br />
+<br />
+这里的栈（Stack），并不是数据结构中的栈，而是程序内存中的一个分段，或者说一个分区。<br />
+<br />
+一个程序可以使用很多内存，不同的内存有不同的作用，为了方便管理，操作系统会对程序的内存空间进行分区，把具有相同作用的内存都归纳到一个区域之中。
+<p class="tip-box">
+严格来说，这里的内存空间应该叫做&ldquo;虚拟地址空间&rdquo;，或者&ldquo;虚拟内存空间&rdquo;，不过为了照顾大部分初学者，站长就不照本宣科了。</p>
+例如，在经典的 32 位环境下，程序可以使用的内存为 4GB，Linux 会按照下图进行分区。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230527/15451354G-0.png" style="text-align: center;" /></div>
+<br />
+图片里的&ldquo;内核空间&rdquo;是被操作系统占用的，我们没法直接干预；图片里的&ldquo;保留区域&rdquo;也不用来存储数据，只用作一些特殊目的，比如，你可以让空指针指向这里。<br />
+<br />
+除了这两个区域，剩下的那些内存才是被我们自己编写的程序所占用的，也就是图中的①和②两个部分，这其中：
+<ul>
+<li>
+② 在程序运行期间会一直存在，直到程序销毁才能被释放；</li>
+<li>
+① 在程序运行期间会不断变化，它被不断地分配和释放。</li>
+</ul>
+<br />
+在第①部分中，有一个分段叫做<span style="color:#008000;">栈（Stack）</span>，它只在一种情况下才会被用到，就是发生函数调用。<br />
+<br />
+函数被调用的时候，有很多数据需要暂时压入栈中，也就是存储到栈中，包括：
+<ul>
+<li>
+我们在代码中定义的数据，比如实参、局部变量、局部数组、局部对象、返回值等，我们可以称它们为局部数据；</li>
+<li>
+还有我们在代码中看不到的数据，比如函数的返回地址、一系列寄存器的值等，这些都是函数调用所需要的隐藏数据。</li>
+</ul>
+<br />
+局部数据是我们在函数内部定义的，它们的作用域也仅限于函数内部，只有等到函数被真正调用时，才会被实际创建出来，也就是分配好内存。<br />
+<br />
+至于隐藏数据，是为了实现函数的调用过程，并保证在函数退出时能够恢复到调用之前的场景，而不得不额外增加的一些冗余数据。这些隐藏数据都由编译器分配，程序员自己是没法干预的。<br />
+<br />
+以上提到的所有这些被压入栈中的数据，通常被称为<span style="color:#008000;">栈帧（Stack Frame）</span>或者<span style="color:#008000;">函数活动记录（Activate Record）</span>。<br />
+<br />
+函数每调用一次，就会生成一个栈帧，这个过程被称为<span style="color:#008000;">函数入栈</span>；当函数调用结束时，栈帧就会被销毁，腾出内存来供其它函数使用，这个过程被称为<span style="color:#008000;">函数出栈</span>。<br />
+<br />
+调用开始时，先调用的函数先入栈，后调用的函数后入栈；调用结束时，后调用的函数先出栈，先调用的函数后出栈。你看，这和数据结构中栈的进出方式是一样的，所以这段内存区域才被叫做栈。<br />
+<br />
+这里有一个常识，就是一个线程拥有一个栈，栈中的数据是被当前线程独占的，其它线程不能访问。<br />
+<br />
+为了保证可以同时运行多个线程，比如几十个，或者成百上千个，编译器不会给单一线程分配太多的栈内存，一般也就 1MB~8MB。<br />
+<br />
+栈内存的大小在编译时就已经确定了，程序在运行期间不能改变，所以如果程序使用的栈内存超出最大值，就会发生<span style="color:#008000;">栈溢出（Stack Overflow）</span>错误。
+<p class="tip-box">
+栈内存的大小和编译器有关，编译器会为栈内存指定一个最大值，在 VC/VS 下，默认是 1M，在 C-Free 下，默认是 2M，在 Linux GCC 下，默认是 8M。当然，我们也可以通过参数来修改栈内存的大小。</p>
+一般情况下，栈内存都是够用的，但是如果遇到以下两种情况，栈内存就会捉襟见肘：
+<ul>
+<li>
+在函数内部定义了大规模的数据，比如定义了一个很大的数组；</li>
+<li>
+函数调用层次太深，导致栈帧持续堆积，比如函数的嵌套调用。</li>
+</ul>
+<br />
+这是发生栈溢出错误的典型场景。<br />
+<br />
+我们不妨来看一段代码：
+<pre class="cpp">
+int main(){
+    char str[1024*1024*2] = {0};
+    return 0;
+}</pre>
+我们使用 VS2010 的 Debug 模式进行编译，然后运行，就会出现如下错误：
+<div style="text-align: center;">
+<img src="../uploads/allimg/230527/1556204528-0.png" /></div>
+<br />
+这里我们定义了一个大规模数组，它需要占用 2MB 内存，而 VS 的栈内存默认只有 1MB，所以就发生了栈溢出错误。<br />
+<br />
+栈溢出是一种致命错误，发生栈溢出错误以后，我们的程序就没法再继续运行了，你只能关闭它，没有其它的挽救措施。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="221.html" title="C++类和对象的总结，拿去做笔记吧" target="_blank">C++类和对象的总结，拿去做笔记吧</a></li>
+<li><a href="596.html" title="C语言统计单词个数，单词个数算法" target="_blank">C语言统计单词个数，单词个数算法</a></li>
+<li><a href="2132.html" title="IP、MAC和端口号——网络通信中确认身份信息的三要素" target="_blank">IP、MAC和端口号——网络通信中确认身份信息的三要素</a></li>
+<li><a href="vip_5044.html" title="使用LiveCD从光盘直接运行Linux，无需安装" target="_blank">使用LiveCD从光盘直接运行Linux，无需安装</a></li>
+<li><a href="5624.html" title="Java程序员必须知道的学习路线" target="_blank">Java程序员必须知道的学习路线</a></li>
+<li><a href="7900.html" title="Anaconda下载和安装教程（图解）" target="_blank">Anaconda下载和安装教程（图解）</a></li>
+<li><a href="../pandas/fillna.html" title="Python Pandas缺失值处理" target="_blank">Python Pandas缺失值处理</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9954;
+window.arcId = "6019Q3FoOTLe+HoJDr2vEvC8upH2EGsbbZQaxeh32ZBKzjNr+6chv/j5FZY";
+window.typeidChain = "397";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

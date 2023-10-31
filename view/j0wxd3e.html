@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++重载=（赋值运算符）详解</title>
+<meta name="description" content="在 C++ 中，赋值运算符 = 是可以被重载的，重载后的 = 可以用于类对象之间的赋值。 重载 = 的语法格式如下： 类类型 operator=(参数); 重载函数的参数列表中只能有一个参数。类类型指的" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++重载=（赋值运算符）详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在 C++ 中，赋值运算符 = 是可以被重载的，重载后的 = 可以用于类对象之间的赋值。<br />
+<br />
+重载 = 的语法格式如下：<br />
+<pre class="info-box">
+类类型 &amp; operator=(参数);</pre>
+重载函数的参数列表中只能有一个参数。类类型指的是当前类的类型，也就是说，返回的是当前类的对象的引用。<br />
+<br />
+例如，为 MyClass 类重载 =：
+<pre class="cpp">
+class MyClass{
+public:
+    MyClass&amp; operator=(const MyClass &amp; obj); // 重载 = 赋值运算符
+}</pre>
+注意，重载 = 赋值运算符只能以成员函数的方式，而不能以全局函数（友元函数）的方式。<br />
+<br />
+默认情况下，如果不为类提供赋值运算符，编译器也会自动为其添加一个赋值运算符。不过编译器添加的赋值运算符，只是傻瓜式地将 obj 对象中各个成员变量的值赋值给目标对象（浅拷贝），当类中有指针成员变量的时候可能无法正常地工作。<br />
+<br />
+下面是一个使用 C++ 重载赋值运算符的完整实例：<br />
+<pre class="cpp">
+#include &lt;iostream&gt;
+
+class MyClass {
+private:
+    int* data;
+    int size;
+public:
+    MyClass(int size): size(size) {
+        data = new int[size];
+        // 初始化数组（可选）
+        for (int i = 0; i &lt; size; ++i) {
+            data[i] = 0;
+        }
+    }
+
+    // 重载赋值运算符
+    MyClass&amp; operator=(const MyClass&amp; other) {
+        if (this == &amp;other) {
+            return *this; // 处理自我赋值
+        }
+
+        delete[] data; // 释放当前对象的资源
+
+        size = other.size;
+        data = new int[size]; // 分配新资源
+
+        // 深拷贝数据
+        for (int i = 0; i &lt; size; ++i) {
+            data[i] = other.data[i];
+        }
+
+        return *this; // 返回*this以支持连续赋值
+    }
+
+    // 析构函数
+    ~MyClass() {
+        delete[] data;
+    }
+};
+
+int main() {
+    MyClass obj1(10);
+    MyClass obj2(20);
+    obj1 = obj2; // 使用重载的赋值运算符
+    return 0;
+}</pre>
+MyClass 类中对 = 赋值运算符进行了重载，重载函数中采用深拷贝的方式，使得每个对象都有其自己独立的 data 数组。<br />
+<br />
+重载 = 赋值运算符时，通常的做法是先释放对象当前持有的资源，然后分配新的资源，特别是无法保证被赋值对象（即other对象）和赋值对象（即*this对象）有相同大小的资源时，能有效避免越界访问、资源泄漏等问题。<br />
+<h2>
+赋值运算符VS拷贝构造函数</h2>
+赋值和复制构造函数是不同的，赋值发生在两个已有的对象之间，是用一个存在的对象的数据来设置另外一个对象，复制构造函数是用一个已经存在的对象来生成一个新对象。<br />
+<br />
+什么时候调用拷贝构造函数，什么时候调用赋值运算符重载函数，很多初学者分不清楚，下面以 MyClass 类为例帮读者区分这两个概念：<br />
+<pre class="cpp">
+MyClass c1(10); // 定义 c1 对象，调用有参构造函数
+MyClass c3 = c1; // 定义 c3 对象，调用拷贝构造函数
+MyClass c4(10);
+c4 = c3; // 用 c3 给 c4 赋值，调用赋值运算符重载函数</pre>
+也就是说，创建新的类对象时调用的是拷贝构造函数，已有的两个类对象之间的赋值过程调用的是赋值运算符重载函数。<br />
+<h2>
+总结</h2>
+赋值运算符只能以成员函数的方式重载，重载函数接收一个与当前类相同类型的参数，最终返回 *this 的引用。<br />
+<br />
+默认情况下，如果不手动为类提供赋值运算符，编译器也会自动为其添加一个赋值运算符，自动添加的赋值运算符是以浅拷贝的方式完成赋值的，而不是深拷贝。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="856.html" title="Linux groupadd命令：添加用户组" target="_blank">Linux groupadd命令：添加用户组</a></li>
+<li><a href="1770.html" title="C语言标识符、关键字、注释、表达式和语句" target="_blank">C语言标识符、关键字、注释、表达式和语句</a></li>
+<li><a href="4667.html" title="Python包（存放多个模块的文件夹）" target="_blank">Python包（存放多个模块的文件夹）</a></li>
+<li><a href="vip_5948.html" title="Eclipse+PyDec运行Python程序" target="_blank">Eclipse+PyDec运行Python程序</a></li>
+<li><a href="zqzhic.html" title="联邦学习介绍（非常详细）" target="_blank">联邦学习介绍（非常详细）</a></li>
+<li><a href="mnzqeo.html" title="C语言快速排序" target="_blank">C语言快速排序</a></li>
+<li><a href="../c/feof.html" title="C语言feof()：检测是否到达文件末尾" target="_blank">C语言feof()：检测是否到达文件末尾</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10350;
+window.arcId = "d9b0oAM23AWNV+FM4SCufDXIe1vOA2j9wOa3v98qJ4Q+VLuUX8l7oDqQJY/l";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

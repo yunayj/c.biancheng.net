@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C语言malloc函数：动态内存分配</title>
+<meta name="description" content="C语言中的 malloc 函数是一种动态内存分配函数，可以在程序运行时在堆上分配一段指定大小的内存空间，并返回指向该内存空间的指针。这个函数非常有用，特别是当我们需要创建动态" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C语言malloc函数：动态内存分配</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">C语言中的 malloc 函数是一种动态内存分配函数，可以在程序运行时在堆上分配一段指定大小的内存空间，并返回指向该内存空间的指针。这个函数非常有用，特别是当我们需要创建动态数据结构时，例如链表和树等。<br />
+<br />
+malloc 函数是 C语言标准库中的函数，其原型如下：<br />
+<pre class="c">
+void *malloc(size_t size);</pre>
+函数原型中，参数 size 指定需要分配的内存空间大小，以字节为单位。该函数返回的是一个 void 类型的指针，即 void *。因为 malloc 函数返回的是一个 void 指针，所以需要将其转换为需要的指针类型，例如 int *、char * 等。<br />
+<br />
+下面是一些使用 malloc 函数的示例：<br />
+<h4>
+1) 动态分配一维数组</h4>
+<pre class="c">
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main() {
+    int n, i;
+    printf(&quot;请输入数组长度：&quot;);
+    scanf(&quot;%d&quot;, &amp;n);
+    int *arr = (int*)malloc(n * sizeof(int));
+    for (i = 0; i &lt; n; i++) {
+        arr[i] = i + 1;
+    }
+    for (i = 0; i &lt; n; i++) {
+        printf(&quot;%d &quot;, arr[i]);
+    }
+    free(arr);
+    return 0;
+}</pre>
+上面的代码中，我们首先从用户输入中读取数组的长度 n，然后使用 malloc 函数动态分配了一个长度为 n 的整型数组。接着，我们使用 for 循环给数组中的每个元素赋值，并打印输出数组中的每个元素。最后，我们使用 free 函数释放了这段内存空间。<br />
+<br />
+这是程序的输出：<br />
+<p class="info-box">
+请输入数组长度：5<br />
+1 2 3 4 5</p>
+<h4>
+2) 动态分配二维数组</h4>
+<pre class="c">
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main() {
+    int m, n, i, j;
+    printf(&quot;请输入二维数组的行数和列数：&quot;);
+    scanf(&quot;%d%d&quot;, &amp;m, &amp;n);
+    int **arr = (int**)malloc(m * sizeof(int*));
+    for (i = 0; i &lt; m; i++) {
+        arr[i] = (int*)malloc(n * sizeof(int));
+        for (j = 0; j &lt; n; j++) {
+            arr[i][j] = i * n + j + 1;
+        }
+    }
+    for (i = 0; i &lt; m; i++) {
+        for (j = 0; j &lt; n; j++) {
+            printf(&quot;%d &quot;, arr[i][j]);
+        }
+        printf(&quot;\n&quot;);
+        free(arr[i]);
+    }
+    free(arr);
+    return 0;
+}</pre>
+上面的代码中，我们首先从用户输入中读取二维数组的行数 m 和列数 n，然后使用 malloc 函数动态分配了一个 m 行 n 列的整型数组。为了实现二维数组的动态分配，我们首先分配一个指针数组，其中每个元素都指向一行的数组，然后在循环中为每行分配一个 n 个整型元素的数组，并将该指针赋值给指针数组中的每个元素。<br />
+<br />
+接着，我们使用 for 循环给数组中的每个元素赋值，并打印输出数组中的每个元素。在输出完每行的元素后，我们使用 free 函数释放了该行数组所占的内存空间。<br />
+<br />
+这是程序的输出：<br />
+<p class="info-box">
+请输入二维数组的行数和列数：3 4<br />
+1 2 3 4<br />
+5 6 7 8<br />
+9 10 11 12</p>
+<h4>
+3) 动态分配结构体数组</h4>
+<pre class="c">
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+typedef struct {
+    char name[20];
+    int age;
+} Person;
+
+int main() {
+    int n, i;
+    printf(&quot;请输入人数：&quot;);
+    scanf(&quot;%d&quot;, &amp;n);
+    Person *people = (Person*)malloc(n * sizeof(Person));
+    for (i = 0; i &lt; n; i++) {
+        printf(&quot;请输入第%d个人的姓名和年龄：&quot;, i + 1);
+        scanf(&quot;%s%d&quot;, people[i].name, &amp;people[i].age);
+    }
+    for (i = 0; i &lt; n; i++) {
+        printf(&quot;第%d个人的姓名为%s，年龄为%d\n&quot;, i + 1, people[i].name, people[i].age);
+    }
+    free(people);
+    return 0;
+}</pre>
+上面的代码中，我们首先从用户输入中读取人数 n，然后使用 malloc 函数动态分配了一个长度为 n 的 Person 结构体数组。接着，我们使用 for 循环依次输入每个人的姓名和年龄，并打印输出每个人的姓名和年龄。最后，我们使用 free 函数释放了这段内存空间。<br />
+<br />
+这是程序的输出：<br />
+<p class="info-box">
+请输入人数：3<br />
+请输入第1个人的姓名和年龄：张三 20<br />
+请输入第2个人的姓名和年龄：李四 30<br />
+请输入第3个人的姓名和年龄：王五 40<br />
+第1个人的姓名为张三，年龄为20<br />
+第2个人的姓名为李四，年龄为30<br />
+第3个人的姓名为王五，年龄为40</p>
+<h4>
+4) 动态分配字符串</h4>
+<pre class="c">
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+int main() {
+    int n, i;
+    printf(&quot;请输入字符串的个数：&quot;);
+    scanf(&quot;%d&quot;, &amp;n);
+    char **strs = (char**)malloc(n * sizeof(char*));
+    for (i = 0; i &lt; n; i++) {
+        printf(&quot;请输入第%d个字符串：&quot;, i + 1);
+        char buf[100];
+        scanf(&quot;%s&quot;, buf);
+        strs[i] = (char*)malloc((strlen(buf) + 1) * sizeof(char));
+        strcpy(strs[i], buf);
+    }
+    for (i = 0; i &lt; n; i++) {
+        printf(&quot;%s\n&quot;, strs[i]);
+        free(strs[i]);
+    }
+    free(strs);
+    return 0;
+}</pre>
+上面的代码中，我们首先从用户输入中读取字符串的个数 n，然后使用 malloc 函数动态分配了一个长度为 n 的 char 指针数组。接着，我们使用 for 循环依次输入每个字符串，并使用 strlen 函数计算字符串长度，然后使用 malloc 函数动态分配一个足够大的 char 数组，再使用 strcpy 函数将输入的字符串拷贝到新分配的内存空间中。最后，我们使用 for 循环依次输出每个字符串，并使用 free 函数释放每个字符串所占的内存空间，最后使用 free 函数释放指针数组所占的内存空间。<br />
+<br />
+这是程序的输出：<br />
+<p class="info-box">
+请输入字符串的个数：3<br />
+请输入第1个字符串：hello<br />
+请输入第2个字符串：world<br />
+请输入第3个字符串：c programming<br />
+hello<br />
+world<br />
+c programming</p>
+<h4>
+5) 动态分配二维字符数组</h4>
+<pre class="c">
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main() {
+    int n, m, i, j;
+    printf(&quot;请输入二维字符数组的行数和列数：&quot;);
+    scanf(&quot;%d%d&quot;, &amp;n, &amp;m);
+    char **matrix = (char**)malloc(n * sizeof(char*));
+    for (i = 0; i &lt; n; i++) {
+        matrix[i] = (char*)malloc(m * sizeof(char));
+        printf(&quot;请输入第%d行的%d个字符：&quot;, i + 1, m);
+        for (j = 0; j &lt; m; j++) {
+            scanf(&quot; %c&quot;, &amp;matrix[i][j]);
+        }
+    }
+    for (i = 0; i &lt; n; i++) {
+        for (j = 0; j &lt; m; j++) {
+            printf(&quot;%c &quot;, matrix[i][j]);
+        }
+        printf(&quot;\n&quot;);
+        free(matrix[i]);
+    }
+    free(matrix);
+    return 0;
+}</pre>
+上面的代码中，我们首先从用户输入中读取二维字符数组的行数 n 和列数 m，然后使用 malloc 函数动态分配了一个长度为 n 的 char 指针数组。接着，我们使用 for 循环依次为每一行动态分配一个长度为 m 的 char 数组，并使用 for 循环依次输入每个字符。在每行字符输入完成后，我们使用 for 循环依次输出每个字符，并使用 free 函数释放每行所占的内存空间。最后，我们使用 free 函数释放指针数组所占的内存空间。<br />
+<br />
+这是程序的输出：<br />
+<p class="info-box">
+请输入二维字符数组的行数和列数：3 4<br />
+请输入第1行的4个字符：a b c d<br />
+请输入第2行的4个字符：e f g h<br />
+请输入第3行的4个字符：i j k l<br />
+a b c d<br />
+e f g h<br />
+i j k l</p>
+<h2>
+总结</h2>
+以上是关于 C语言中 malloc 函数的使用及示例代码的介绍。malloc 函数是 C语言中用于动态分配内存空间的重要函数，能够帮助我们更加灵活地管理内存空间。当我们需要动态分配数组、结构体、字符串或者二维数组时，都可以使用 malloc 函数来实现。在使用 malloc 函数时，我们需要注意动态分配的内存空间的大小，以及在使用完毕后要及时释放内存空间，避免内存泄漏问题。<br />
+<br />
+需要注意的是，使用 malloc 函数动态分配的内存空间不会自动初始化为 0。因此，在使用 malloc 函数动态分配内存空间后，我们需要根据实际情况手动初始化内存空间。另外，当我们使用 malloc 函数动态分配内存空间后，如果需要调整内存空间的大小，可以使用 realloc 函数来实现。<br />
+<br />
+在使用 malloc 函数时，我们需要对 malloc 函数的返回值进行判断，以确保内存分配成功。如果 malloc 函数返回的指针为 NULL，说明内存分配失败，此时我们需要考虑如何处理内存分配失败的情况，比如输出错误信息并退出程序。<br />
+<br />
+总之，malloc 函数是 C语言中非常重要的函数，熟练掌握 malloc 函数的使用可以帮助我们更加灵活地管理内存空间，提高程序的效率和稳定性。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_2278.html" title="C++多继承时的对象内存模型" target="_blank">C++多继承时的对象内存模型</a></li>
+<li><a href="5637.html" title="Java常用开发工具有哪些？" target="_blank">Java常用开发工具有哪些？</a></li>
+<li><a href="6241.html" title="LiteIDE搭建Go语言开发环境" target="_blank">LiteIDE搭建Go语言开发环境</a></li>
+<li><a href="7840.html" title="MySQL变量的定义和赋值" target="_blank">MySQL变量的定义和赋值</a></li>
+<li><a href="../redis2/sadd.html" title="Redis SADD命令" target="_blank">Redis SADD命令</a></li>
+<li><a href="9372.html" title="JS调试（Debug）教程[简明版]" target="_blank">JS调试（Debug）教程[简明版]</a></li>
+<li><a href="qbwgk8x.html" title="《Web前端开发——JavaScript+jQuery活页式教程》PDF下载（高清完整版）" target="_blank">《Web前端开发——JavaScript+jQuery活页式教程》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9927;
+window.arcId = "277djqIdi3c5znPPNfvLCLjoGY7wIN6shOQwWzMNhHHQwV0nmT3e2owgjo0";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

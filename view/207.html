@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>数组名作为函数参数传递，C语言数组作为函数参数传递详解</title>
+<meta name="description" content="本节开始，先问大家一个问题：要确定一个一维数组需要知道哪些信息？ 一个是数组的首地址，另一个是数组的长度。 这样就可以唯一地确定一个一维数组。因为数组是连续存放的，只" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>数组名作为函数参数传递，C语言数组作为函数参数传递详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">本节开始，先问大家一个问题：&ldquo;要确定一个一维数组需要知道哪些信息？&rdquo;<span style="color:#b22222;">一个是数组的首地址，另一个是数组的长度。</span>这样就可以唯一地确定一个一维数组。因为数组是连续存放的，只要知道数组的首地址和数组的长度就能找到这个数组中所有的元素。<br />
+<br />
+因此，要想通过实参和形参将一个数组从主调函数传到被调函数，那么只需要传递这两个信息即可。对于一维数组来说，其数组名就表示一维数组的首地址。所以只需要传递数组名和数组长度这两个参数就可以将数组从主调函数传入被调函数中。<br />
+<br />
+当数组名作为函数的实参时，形参列表中也应定义相应的数组（或用指针变量），且定义数组的类型必须与实参数组的类型一致，如果不一致就会出错。但形参中定义的数组无须指定数组的长度，而是再定义一个参数用于传递数组的长度。所以在传递实参的时候，数组名和数组长度也只能用两个参数分开传递，而不能写在一起。因为即使写在一起，系统在编译时也只是检查数组名，并不会检查数组长度。所以数组长度要额外定义一个变量进行传递。<br />
+<br />
+综上所述，当将数组从一个函数传到另一个函数中时，并不是将数组中所有的元素一个一个传过来（那样效率就太低了）。而是将能够唯一确定一个数组的信息传过来，即数组名（数组首地址）和数组长度。此时主调函数和被调函数操作的就是同一个数组。<br />
+<br />
+下面来写一个程序：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int AddArray(int array[], int n);  //函数声明
+int main(void)
+{
+    int a[] = {1, 2, 3, 4, 5, 6, 7, 8};
+    int size = sizeof(a) / sizeof(a[0]);  /*数组所占内存总大小除以该数组中一个元素所占内存的大小, 从而得到数组元素的个数*/
+    printf(&quot;sum = %d\n&quot;, AddArray(a, size));
+    return 0;
+}
+int AddArray(int array[], int n)  //形参数组中不需要写长度
+{
+    int i, sum = 0;
+    for (i=0; i&lt;n; ++i)
+    {
+        sum += array[i];
+    }
+    return sum;
+}</pre>
+输出结果是：<br />
+sum = 36<br />
+<br />
+再问大家一个问题：&ldquo;前面讲过，当对数组名使用 sizeof 时可以求出整个数组在内存中所占的字节数。那么上面这个程序中，对被调函数 AddArray 中的数组 array 使用 sizeof 得到的值会是多少？&rdquo;<br />
+<br />
+有人会说，实参数组 a 占 32 字节，实参 a 传给形参 array，所以 array 也占 32 字节。但实际上，array 只占 4 字节。下面写一个程序看一下：<br />
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int AddArray(int array[]);  //函数声明
+int main(void)
+{
+    int a[] = {1, 2, 3, 4, 5, 6, 7, 8};
+    AddArray(a);
+    return 0;
+}
+int AddArray(int array[])
+{
+    printf(&quot;sizeof(array) = %d\n&quot;, sizeof(array));
+    return 0;
+}</pre>
+输出结果是：<br />
+sizeof(array) = 4<br />
+<br />
+因为数组名做函数参数时，只是将实参数组的&ldquo;首地址&rdquo;传给了形参数组。此时被调函数 AddArray 中的数组 array 本质上是一个指针变量，里面存放的是主调函数中数组 a 的地址。指针变量也是一个变量类型。不同于前面所讲的其他变量类型，指针变量里面存放的不是一般的数据，而是地址。在 C 语言中，指针变量所占的字节数都是 4。所以对 array 使用 sizeof 求出的就是 4（但有些显示求出的可能是 8，这跟操作系统有关）。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2041.html" title="C语言const的用法详解，C语言常量定义详解" target="_blank">C语言const的用法详解，C语言常量定义详解</a></li>
+<li><a href="../mysql/if.html" title="MySQL IF函数：判断" target="_blank">MySQL IF函数：判断</a></li>
+<li><a href="vip_6074.html" title="利用面向对象思想实现搜索引擎" target="_blank">利用面向对象思想实现搜索引擎</a></li>
+<li><a href="../maven2/exclusion-option.html" title="Maven排除依赖和可选依赖" target="_blank">Maven排除依赖和可选依赖</a></li>
+<li><a href="hin2pj.html" title="日志（Log）到底是什么？" target="_blank">日志（Log）到底是什么？</a></li>
+<li><a href="../c/erf.html" title="C语言erf()：计算误差函数" target="_blank">C语言erf()：计算误差函数</a></li>
+<li><a href="r0w7l31.html" title="Vue ref()函数的用法" target="_blank">Vue ref()函数的用法</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 207;
+window.arcId = "dafag6Juw0JWs/moXBovGNdYOshAyiNaZbFs/oMBIFWkgwuMvFqT3JQQ9Q";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

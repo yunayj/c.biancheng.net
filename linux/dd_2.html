@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>dd命令_Linux dd命令：复制（拷贝）文件，并对原文件进行转换</title>
+<meta name="description" content="dd，是 device driver 的缩写，它可以称得上是Linux 世界中的搬运工，它用来读取设备、文件中的内容，并原封不动地复制到指定位置。 当我们用 dd 命令读取 /dev/null 文件时，就可以创造出" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="../view/niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>dd命令_Linux dd命令：复制（拷贝）文件，并对原文件进行转换</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">dd，是 device driver 的缩写，它可以称得上是&ldquo;Linux 世界中的搬运工&rdquo;，它用来读取设备、文件中的内容，并原封不动地复制到指定位置。<br />
+<br />
+当我们用 dd 命令读取 /dev/null 文件时，就可以创造出空洞文件，而如果你的磁盘足够大，你甚至可以创造出一个宇宙黑洞呢！
+<h2>
+	备份磁盘并恢复</h2>
+好记性不如烂笔头，好硬盘不如常备份。硬盘的损坏虽然是个小概率事件，但是一旦发生却会带来灾难性的后果。对重要数据进行备份，不仅是一个好习惯，更体现了对别人对自己负责的态度。<br />
+<br />
+写到这里，突然意识到我的硬盘里面存有很多珍贵的资料，一想到可能会因为磁盘故障而永远失去它们，心里就不禁一颤，赶紧把数据备份提上日程吧！<br />
+<br />
+之前看过一些介绍 dd 的文章，例子中基本都是使用 hda、hdb 这种 IDE 接口的硬盘，其实现在的主流硬盘已经是 SATA 接口的了，下面我要备份的硬盘是 dev/sda，它就是块 SATA 盘。
+<pre class="info-box">
+[root@roclinux ~]# dd if=/dev/sda of=/root/sda.img</pre>
+<br />
+这个命令将 sda 盘备份到指定文件 /root/sda.img 中去，其中用到了如下两个选项：
+<ul>
+	<li>
+		if=文件名：指定输入文件名或者设备名，如果省略&ldquo;if=文件名&rdquo;，则表示从标准输入读取。</li>
+	<li>
+		of=文件名：指定输出文件名或者设备名，如果省略&ldquo;of=文件名&rdquo;，则表示写到标准输出。</li>
+</ul>
+<br />
+通过上面的 dd 命令，我们得到了 sda.img 文件，它就是已经备份好了的磁盘映像文件，里面存储着 /dev/sda 整块硬盘的内容。<br />
+<br />
+在未来的某天，假如 /dev/sda 硬盘真的出现了故障，我们就可以将曾经备份的 sda.img 复制到另一台电脑上，并将其恢复到指定的 sdb 盘中去。
+<pre class="info-box">
+[root@roclinux ~]# dd if=/root/sda.img of=/dev/sdb</pre>
+<br />
+如果能把目标硬盘直接连接到我们现在的电脑上，并让系统识别到这块新硬盘，例如识别成 /dev/sdc，那么我们可以直接使用 dd 命令将 sda 盘复制到 sdc 中去。这种用法既可以用来整盘备份，也可以用来快速复制系统环境。下面来看看具体的命令：
+<pre class="info-box">
+[root@roclinux ~]# dd if=/dev/sda of=/dev/sdc</pre>
+<br />
+对 dd 来说，所有设备和文件都一视同仁，所谓的&ldquo;备份&rdquo;和&ldquo;恢复&rdquo;，dd 都认为是一种内容的复制。dd 操作就是简单的按字节复制。简单、直观，就是我对 dd 的最直接的感受。
+<h2>
+	备份时进行压缩</h2>
+数据没有压缩就进行整盘备份，势必需要很大的备份空间，从而导致备份成本升高。这对于备份场景来说，是低效能的表现。<br />
+<br />
+假如遇到磁盘空间不足，连备份操作都没办法圆满完成：
+<pre class="info-box">
+#看, 报出了磁盘空间不足的警告
+[root@roclinux ~]# dd if=/dev/sda of=/root/sda.img
+dd: writing to &#39;/root/sda.img&#39;: No space left on device</pre>
+<br />
+其实我们在使用 dd 做备份时，可以使用 gzip 或者 bzip2 压缩算法进行数据压缩处理，这样可以大大减少我们的磁盘空间用量，也就降低了备份成本。<br />
+<br />
+下面就使用 gzip 压缩算法配合 dd 命令来备份 /dev/sda 盘：
+<pre class="info-box">
+#没有指定of则表示输出到标准输出
+[root@roclinux ~]# dd if=/dev/sda | gzip &gt; /root/sda.img.gz</pre>
+<br />
+然后再将其恢复到 /dev/sdb 盘中去，方法如下：
+<pre class="info-box">
+#没有指定if就表示从标准输入读取</pre>
+<br />
+下面我们更换 bzip2 压缩算法配合 dd 命令再来实现一遍上面示例的效果：
+<pre class="info-box">
+[root@roclinux ~]# dd if=/dev/sda | bzip2 &gt; disk.img.bz2
+[root@roclinux ~]# bzip2 -dc /root/sda.img.gz | dd of=/dev/sdc</pre>
+<h2>
+	分区、内存、软盘一个都不能少</h2>
+在上面的内容中，介绍的都是备份整盘的知识，那如果只是想备份某一个分区的数据，应该如何操作呢？<br />
+<br />
+卖了一个关子，其实在 dd 命令看来，备份整盘和备份分区，在命令形式上并没有区别，我们来看示例：
+<pre class="info-box">
+[root@roclinux ~]# dd if=/dev/sda2 of=/root/sda_part1.img</pre>
+<br />
+同理，将内存中的数据整体备份，照样可以如法炮制：
+<pre class="info-box">
+[root@roclinux ~]# dd if=/dev/mem of=/root/mem.img</pre>
+<br />
+随着科技的飞速发展，无论是台式机还是笔记本，都已经取消了软驱和光驱设备，软盘和光盘也已经接近灭绝的边缘，很多九零后们应该都不知道软驱为何物了吧。<br />
+<br />
+所以接下来要介绍的软盘、光盘备份法，权当是追忆过去吧，谨以此内容来怀念我们逝去的青春。
+<pre class="info-box">
+#备份软盘
+[root@roclinux ~]# dd if=/dev/fd0 of=/root/fd0.img count=1 bs=1440k
+ 
+#备份光盘
+[root@roclinux ~]# dd if=/dev/cdrom of=/root/cd.img</pre>
+<br />
+对于 dd 命令来说，除了 if、of 两个选项之外，还应该掌握下面这两个重要选项：
+<ul>
+	<li>
+		bs=N：设置单次读入或单次输出的数据块（block）的大小为 N 个字节。当然也可以使用 ibs 和 obs 选项来分别设置。</li>
+	<li>
+		ibs=N：单次读入的数据块（block）的大小为 N 个字节，默认为 512 字节。</li>
+	<li>
+		obs=N：单次输出的数据块（block）的大小为 N 个字节，默认为 512 字节。</li>
+	<li>
+		count=N：表示总共要复制 N 个数据块（block）。</li>
+</ul>
+<br />
+所以这里备份的软盘大小是 1440kB，可以看出这是一块 3 寸盘，其大小为 1.44MB。为了追忆青春，我们再来一起看看软盘的样子。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/180925/3-1P9251J123S9_2.jpg" /></div>
+<h2>
+	备份磁盘的 MBR</h2>
+MBR，是 Master Boot Record，即硬盘的主引导记录，MBR 一旦损坏，分区表也就被破坏，数据大量丢失，系统就再也无法正常引导了，真是不堪设想啊！所以，对 MBR 的定期备份是十分必要的，在紧急关头，把它比喻成一颗救死扶伤的速效救心丸，也绝不为过。<br />
+<br />
+一块磁盘的第一个扇区的 512 个字节所存储的正是这块磁盘的 MBR 信息，我们尝试用 dd 命令备份 MBR：
+<pre class="info-box">
+[root@roclinux ~]# dd if=/dev/sda of=/root/sda_mbr.img count=1 bs=512</pre>
+<br />
+如果未来遇到分区表损坏的情况，我们用曾经备份的 MBR 信息写回磁盘，就能起到立竿见影的效果。下面来一起看看如何将 MBR 写回硬盘：
+<pre class="info-box">
+[root@roclinux ~]# dd if=/root/sda_mbr.img of=/dev/sda</pre>
+<br />
+方法是不是比你想象得要简单，即使是面对 MBR 如此重要的敏感数据，dd 命令也是闲庭信步，信手拈来。
+<h2>
+	使用 /dev/zero 和 /dev/null 来测试磁盘</h2>
+本段落开始前，我们要为大家介绍两位新朋友：
+<ul>
+	<li>
+		/dev/null，也叫空设备，小名&ldquo;无底洞&rdquo;。任何写入它的数据都会被无情抛弃。</li>
+	<li>
+		/dev/zero，可以产生连续不断的 null 的流（二进制的零流），用于向设备或文件写入 null 数据，一般用它来对设备或文件进行初始化。</li>
+</ul>
+<br />
+我们可以观察下面两个命令的执行时间，来计算出硬盘的读、写性能：
+<pre class="info-box">
+#向磁盘上写一个大文件, 来看写性能
+[root@roclinux ~]# dd if=/dev/zero bs=1024 count=1000000 of=/root/1Gb.file
+ 
+#从磁盘上读取一个大文件, 来看读性能
+[root@roclinux ~]# dd if=/root/1Gb.file bs=64k | dd of=/dev/null</pre>
+<br />
+上面命令生成了一个 1GB 的文件 1Gb.file，下面我们配合 time 命令，可以看出不同的块大小数据的写入时间，从而可以测算出到底块大小为多少时可以实现最佳的写入性能。
+<pre class="info-box">
+[root@roclinux ~]# time dd if=/dev/zero bs=1024 count=1000000 of=/root/1Gb.file
+[root@roclinux ~]# time dd if=/dev/zero bs=2048 count=500000 of=/root/1Gb.file
+[root@roclinux ~]# time dd if=/dev/zero bs=4096 count=250000 of=/root/1Gb.file
+[root@roclinux ~]# time dd if=/dev/zero bs=8192 count=125000 of=/root/1Gb.file</pre>
+<h2>
+	利用 /dev/urandom 进行格式化</h2>
+除了 /dev/null 和 /dev/zero 之外，还有一个很重要的文件，即 /dev/urandom，它是&ldquo;随机数设备&rdquo;，它的本领就是可以生成理论意义上的随机数。<br />
+<br />
+如果我们想清除硬盘里的某些机密数据，就可以使用 /dev/urandom 这个随机数生成器来产生随机数据，写到磁盘上，以确保将磁盘原始数据完全覆盖掉。
+<pre class="info-box">
+[root@roclinux ~]# dd if=/dev/urandom of=/dev/sda</pre>
+<br />
+好了，有关 dd 的故事就介绍到这里了。虽然我们不能创造出真正的宇宙黑洞，但学习了这么多的实用技能，也算不虚此行啦！</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="../view/niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/231_2.html" title="memset函数及其用法，C语言memset函数详解" target="_blank">memset函数及其用法，C语言memset函数详解</a></li>
+<li><a href="../view/1132_2.html" title="LNMP安装的前期准备（LNMP一键安装包下载）" target="_blank">LNMP安装的前期准备（LNMP一键安装包下载）</a></li>
+<li><a href="../view/2559_2.html" title="MySQL WHERE：条件查询" target="_blank">MySQL WHERE：条件查询</a></li>
+<li><a href="../view/2593_2.html" title="MySQL创建存储过程（CREATE PROCEDURE）" target="_blank">MySQL创建存储过程（CREATE PROCEDURE）</a></li>
+<li><a href="../view/4162_2.html" title="Linux（Ubuntu）系统安装Python" target="_blank">Linux（Ubuntu）系统安装Python</a></li>
+<li><a href="../view/4745_2.html" title="Java Map.containsKey()方法：判断Map集合对象中是否包含指定的键名" target="_blank">Java Map.containsKey()方法：判断Map集合对象中是否包含指定的键名</a></li>
+<li><a href="../css3/opacity_2.html" title="CSS透明度（opacity）" target="_blank">CSS透明度（opacity）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 694;
+window.arcId = "9e62zl5HasVWZTkZtr+6wysfwICJfgqVeXE+I3NcADCpxtrSsPoz/PyWaA";
+window.typeidChain = "71|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="../view/8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="../view/8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="../view/8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="../view/9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="../view/8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

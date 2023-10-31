@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>JS call()、apply()和bind()的区别</title>
+<meta name="description" content="JavaScript 中的函数也是对象，相当于调用了 Function() 构造函数所创建的对象，所以每个函数都继承了 Function.prototype 对象中的属性和方法，其中有3个重要的方法：call()、apply()和bind()，这" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>JS call()、apply()和bind()的区别</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">JavaScript 中的函数也是对象，相当于调用了 Function() 构造函数所创建的对象，所以每个函数都继承了 Function.prototype 对象中的属性和方法，其中有3个重要的方法：call()、apply()和bind()，这3种方法与 <a href="i0jb7nn_2.html" target="_blank" title="JS this到底指向什么？">this</a> 有关系。
+<h2>
+	1. call()</h2>
+在 JS 中，函数中的 call() 方法用于调用该函数，它接收两个参数，第1个用于设置函数内部 this 的指向，第2个参数是一个变长参数，接收多个逗号分隔的参数并传递给原函数。<br />
+<br />
+例如使用 call() 改变 this 指向，代码如下：
+<pre class="javascript">
+function sum(prop1,prop2){
+    return this[prop1]+this[prop2];
+}
+const obj={a:1,b:2};
+const result=sum.call(obj,&quot;a&quot;,&quot;b&quot;);
+result;  //3</pre>
+示例中首先定义了普通函数 sum()，它用于给对象中的两个属性进行求和，两个参数为进行求和计算的属性名，因为属性名是使用变量动态表示的，所以这里使用了<code>[]</code>访问对象中的属性。<br />
+<br />
+如果直接调用该函数 sum(&quot;a&quot;,&quot;b&quot;)，则会返回 NaN，因为这样调用函数，里边的 this 指向的是全局对象，而全局对象中并没有 a 和 b 这两个属性，所以其结果是两个 undefined 相加。<br />
+<br />
+后面定义了 obj 对象，里边有 a 和 b 属性，然后通过调用 sum() 原型对象中的 call() 方法，把 obj 作为函数的 this 传递进去，这样就能成功地访问这两个属性，然后返回了正确的结果3。<br />
+<br />
+使用 call() 方法还可以实现链式调用构造函数。假如有两个构造函数，它们有同样的初始化代码，那么可以把它们抽离成一个公共的构造函数，再在这两个构造函数中通过 call() 来调用这个公共的构造函数，call() 中的 this 分别设置为两个构造函数的 this，这样它们还是指向各自新创建的对象。<br />
+<br />
+例如有两个创建消息对象的构造函数，一个用于创建文本消息，另一个用于创建表情消息，它们都有 message 消息内容和 sender 发送者属性，但是有不同的 msgType 消息类别属性，用于区分消息，此时就可以把初始化 message 和 sender 的代码抽离成公共的构造函数，然后各自初始化 msgType，代码如下：
+<pre class="javascript">
+function Message(message, sender){
+    this.message = message;
+    this.sender = sender;
+}
+
+function TextMessage(message, sender){
+    Message.cal1(this, message, sender);
+    this.msgType = &quot;文本消息&quot;;
+}
+
+function EmojMessage(message, sender){
+    Message.cal1(this, message, sender);
+    this.msgType = &quot;表情消息&quot;;
+}
+
+const txtMsg = new TextMessage(&quot;你好&quot;, &quot;张三&quot;);
+const emjMsg = new EmojMessage(&quot;^_^&quot;，&quot;李四&quot;);
+
+console.log(txtMsg.message, txtMsg.msgType);
+console.log(emjMsg.message, emjMsg.msgType);
+//你好 文本消息
+//^_^表情消息</pre>
+可以看到，Message() 构造函数中的 message 和 sender 属性，以及 TextMessage() 和 EmojMessage() 构造函数中的 msgType 属性都正确地赋给了新创建的对象。
+<h2>
+	2. apply()</h2>
+JS 中的 apply() 方法与 call() 方法的作用几乎一模一样，但是 apply() 的第2个参数接收的是一个数组，而不是变长参数，通过这个特性，可以把接收多个参数的函数转换成使用一个数组接收参数的函数。<br />
+<br />
+例如，数组中的 push() 方法接收多个参数，把这些参数作为新的元素追加到数组中，此时就可以使用 apply() 方法，把一个数组追加到当前数组中，代码如下：
+<pre class="javascript" showmenu="false" shownum="false">
+const arr1=[1,2,3];
+const arr2=[4,5,6];
+arr1.push.apply(arr1,arr2);
+arr1;  //[1,2,3,4,5,6]</pre>
+<br />
+在 ES6 中，还可以使用 spread 扩展运算符进行同样的操作：
+<pre class="javascript" showmenu="false" shownum="false">
+arr1.push(...arr2)</pre>
+不过在一些旧的 JavaScript 的代码中，还是可以看到很多使用 apply() 的方式，这里只需知道它的用法就可以了，其他的应用场景跟 call() 保持一致。<br />
+<br />
+另外在学习 Array-like 类数组的结构时，应知道它不能直接使用数组中的方法，因为它与数组对象本身没有继承关系，但是通过 apply() 或 call() 可以间接地调用数组中的方法。<br />
+<br />
+例如使用数组中的 push() 方法还可以给类数组结构添加新元素，而且更重要的是，它还能自动增长类数组中的 length 属性的值，代码如下：
+<pre class="javascript" showmenu="false" shownum="false">
+let arrLike={0:&quot;a&quot;,1:&quot;b&quot;,2:&quot;c&quot;,length:3};
+Array.prototype.push.apply(arrLike,[&quot;d&quot;,&quot;e&quot;,&quot;f&quot;]);
+arrLike;  //{0:&quot;a&quot;,1:&quot;b&quot;,2:&quot;c&quot;,3:&quot;d&quot;,4:&quot;e&quot;,5:&quot;f&quot;,length:6}</pre>
+<br />
+同理，pop() 也可以在类数组结构中用于删除它里边的属性，并自动减少 length 属性的值。<br />
+<br />
+其他的方法例如 forEach()、map() 等也可以如此调用，下方示例演示了如何使用 forEach() 遍历类数组结构，因为这里只给 forEach() 传递了一个回调函数作为参数，所以下例使用 call() 来演示它的用法，代码如下：
+<pre class="javascript" showmenu="false" shownum="false">
+let arrLike={0:&quot;a&quot;,1:&quot;b&quot;,2:&quot;c&quot;,length:3};
+Array.prototype.forEach.call(arrLike,v=&gt;console.log(v));</pre>
+输出结果为<br />
+a<br />
+b<br />
+c<br />
+<br />
+使用数组中的 slice() 方法还能把类数组转换为普通数组的形式，只需忽略 slice() 方法的参数，这种使用方法在 rest 运算符出现以前非常普遍，用于把函数中的 arguments 类数组结构转换为数组，然后就可以使用数组中的方法来操作参数了，代码如下：
+<pre class="javascript">
+function f(){
+    const args=Array.prototype.slice.apply(arguments);
+    args.forEach(arg=&gt;{
+        console.log(arg);
+    })
+}
+f(1,2,3);</pre>
+输出结果如下：<br />
+1<br />
+2<br />
+3<br />
+<br />
+其他的方法，例如 shift()、unshift()、reverse()、includes() 等，也都可以使用 call() 或 apply() 应用到类数组对象中。
+<h2>
+	3. bind()</h2>
+在 JS 中，bind() 与 call() 类似，用于给函数绑定 this，并通过变长参数给函数传递参数，不同之处在于，使用 bind() 会创建并返回一个新的函数，这个函数并不会立即被执行，而是需要在合适的地方进行调用。<br />
+<br />
+下方示例展示了使用 bind() 给函数绑定 this 指向的过程，代码如下：
+<pre class="javascript">
+const obj={
+    a:1,
+    f(b){
+        return this.a+b;
+    },
+};
+const f=obj.f;
+console.log(f(10));        //NaN
+const boundF=f.bind(obj);
+console.log(boundF(10));   //11</pre>
+代码中使用常量 f 保存了 obj 对象中的 f() 方法的引用，直接调用它会丢失 this 对 obj 的指向，所以 f 中的 this.a 会变成 undefined，其结果就成了 NaN，按之前判断 this 的原则，在调用 f(10) 时，左侧没有内容，因为它的 this 指向的就是全局对象，而全局对象里并没有 a 这个变量。<br />
+<br />
+后面使用了 bind() 方法，把 obj 作为 this 绑定到了 f() 函数中，之后再调用它就可以访问 obj 中 a 属性的值了。<br />
+<br />
+在这个例子中，可以看到并没有使用 bind() 给 f() 传递参数，这样后边再调用的时候需要手动传递参数。不过，也可以在使用 bind() 的时候给函数传递参数，除了传递全部参数之外，还可以只传递一部分参数，后续参数在调用的时候再进行传递，这种使用 bind() 传递了部分参数的函数称为部分传递参数函数（Partially Applied Function）。<br />
+<br />
+例如，假设有一个构建文件路径字符串的函数，接收目录和文件名两个参数，如果目录是确定的，则可以使用 bind() 把目录参数确定好，然后在返回的新函数中传递文件名参数，代码如下：
+<pre class="javascript">
+function buildPath(dir,fileName){
+    return `${dir}/${fileName}`;
+}
+const usr=buildPath.bind(null, &quot;/usr&quot;);
+console.log(usr(&quot;image.jpg&quot;));  ///usr/image.jpg</pre>
+这种用法和<a href="qlr3y9y_2.html" target="_blank">柯里化</a>类似，只是柯里化需要在函数内部返回一系列接收1个参数的子函数，并且可以捕获内部的状态，而使用 bind() 则只能保存参数，且只有在最后调用新创建的函数时，函数中的代码才会被执行。<br />
+<br />
+不过，利用 bind() 和 apply() 可以把任何一个函数转换为柯里化的形式，代码如下：
+<pre class="javascript">
+function curry(func){
+    return function_curry(...args){
+        if(args.length&gt;=func.length){
+            return func.apply(null,args);
+        }else{
+            return_curry.bind(null,...args);
+        }
+    };
+}</pre>
+curry() 接收一个函数作为参数，并返回柯里化后的新函数，新函数的执行过程如下：
+<ol>
+	<li>
+		如果接收的参数数量大于或等于原函数中参数的数量，即参数已经传递完毕，则直接返回最后执行的结果。</li>
+	<li>
+		如果数量小于原函数中参数的数量，则使用 bind() 创建一个新函数，并加上新传递的参数。</li>
+	<li>
+		重复第 ① 步。</li>
+</ol>
+<br />
+代码中的 func.length 用于获取函数参数的数量，因为函数本身也是对象，它内部有这个属性。在使用返回的新函数时，能够以完全柯里化的形式调用，也能以部分柯里化的方式调用，代码如下：
+<pre class="javascript">
+function add(a,b,c){
+    return a+b+c;
+}
+const addCurry=curry(add);
+console.log(addCurry(2)(4)(10));  //16
+console.log(addCurry(1,3)(6));    //10
+console.log(addCurry(4)(5,7));    //16</pre>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1041_2.html" title="Linux单用户模式（修改密码、运行级别）方法详解" target="_blank">Linux单用户模式（修改密码、运行级别）方法详解</a></li>
+<li><a href="2301_2.html" title="C++ typeid运算符：获取类型信息" target="_blank">C++ typeid运算符：获取类型信息</a></li>
+<li><a href="3372_2.html" title="行逻辑链接的顺序表（压缩存储稀疏矩阵）详解" target="_blank">行逻辑链接的顺序表（压缩存储稀疏矩阵）详解</a></li>
+<li><a href="4015_2.html" title="response.sendRedirect()实现重定向（页面跳转）" target="_blank">response.sendRedirect()实现重定向（页面跳转）</a></li>
+<li><a href="7463_2.html" title="MySQL LEFT/RIGHT JOIN：外连接" target="_blank">MySQL LEFT/RIGHT JOIN：外连接</a></li>
+<li><a href="8064_2.html" title="extern &quot;C&quot;：实现C++和C的混合编程" target="_blank">extern &quot;C&quot;：实现C++和C的混合编程</a></li>
+<li><a href="70r5e7t_2.html" title="MySQL字符串类型（超级详细）" target="_blank">MySQL字符串类型（超级详细）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10161;
+window.arcId = "95d7R+819dgqZq62LUBGVM/gi4ikwa6dOgwGOEX4CR/Jv7BNv0xsR/XiMxl/";
+window.typeidChain = "309|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

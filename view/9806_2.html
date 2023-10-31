@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>HBase数据库简介（非常详细）</title>
+<meta name="description" content="传统的数据处理主要使用关系数据库（MySQL、Oracle等）来完成，不过关系数据库在面对大规模的数据存储时明显力不从心。比如，在有关高并发操作和海量数据统计运算的应用中，关系数" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>HBase数据库简介（非常详细）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">传统的数据处理主要使用关系数据库（MySQL、Oracle等）来完成，不过关系数据库在面对大规模的数据存储时明显力不从心。比如，在有关高并发操作和海量数据统计运算的应用中，关系数据库的性能就明显下降。<br />
+<br />
+大数据时代的数据规模大、增长快、格式多样，因此传统的关系数据库已经不能适应新的需求。在这样的背景下，非关系数据库开始成为主流的选择。为了更大地拓展数据库的存储潜力，谷歌（Google）公司首先研发了 BigTable，这就是 HBase 的原型。<br />
+<br />
+HBase 是用 Java 编程语言实现的一个开源的非关系型分布式数据库，它参考了谷歌的 BigTable 数据建模白皮书。<br />
+<br />
+HBase 是 Apache 软件基金会的 Hadoop 项目的一部分，运行于 HDFS 之上，为 Hadoop 提供类似于 BigTable 规模的服务。因此，它能以容错方式存储海量的稀疏数据。
+<blockquote>
+	<p>
+		稀疏数据是指数据库中的二维表内含有大量空值的数据。</p>
+</blockquote>
+HBase 是一个高可靠、高性能、面向列、可伸缩的分布式数据库，主要用来存储非结构化和半结构化的松散数据，设计它的目的就是用于处理非常庞大的表&mdash;&mdash;通过水平扩展的方式，用计算机集群就可以处理由超过 10 亿行数据和数百万列元素所组成的数据表。<br />
+<br />
+HBase 有许多功能支持线性和模块化扩展，HBase 集群通过添加托管在商用服务器上的 RegionServer 进行扩展。例如，一个集群从 10 台 RegionServer 扩展到 20 台，它的存储和处理能力都会翻倍。<br />
+<br />
+以下是 HBase 的发展历程：
+<ul>
+	<li>
+		2006 年谷歌公司发表 BigTable 白皮书。</li>
+	<li>
+		2006 年开始开发 HBase。</li>
+	<li>
+		2008 年 HBase 成为 Hadoop 的子项目，刚开始它只是 Hadoop 的一部分。</li>
+	<li>
+		2010 年 HBase 成为 Apache 的顶级项目。HBase 几乎实现了 BigTable 的所有特性。</li>
+</ul>
+<h2>
+	HBase的特征</h2>
+HBase有如下几个重要特征：
+<h4>
+	强一致性</h4>
+HBase具有读写强一致性的特征，但HBase的数据存储不是采用&ldquo;最终一致性&rdquo;的，所以它非常适用于高效计算、聚合之类的任务。
+<h4>
+	Hadoop集成</h4>
+HBase 支持开箱即用的 HDFS 作为其分布式文件系统。
+<h4>
+	故障转移</h4>
+HBase 支持自动的 RegionServer 故障转移。
+<h4>
+	自动分片</h4>
+HBase 中的表通过 Region 分布在集群上，而且 Region 会随着数据的增长自动拆分和重新分布。
+<h4>
+	并行处理</h4>
+HBase 支持通过 MapReduce 进行大规模并行处理，将 HBase 用作源和接收器。
+<h4>
+	块缓存和布隆过滤器</h4>
+HBase 支持用于大容量查询优化的块缓存和布隆过滤器。
+<h4>
+	多种语言的API</h4>
+HBase 支持使用 Java 的 API 来编程进行数据的存取，还支持使用 Thrift 语言和 REST 语言的 API 来编程进行数据的存取。
+<h2>
+	HBase的优缺点</h2>
+作为一种数据存储产品，自然具有优点和缺点。<br />
+<br />
+下面是 HBase 的优点：
+<ul>
+	<li>
+		在传统的关系数据库中，如果数据结构发生了变化，就需要停机维护，而且需要修改表结构，而在 HBase 中数据表内的列可以做到动态增加，并且列为空的时候不存储数据，从而节省存储空间。</li>
+	<li>
+		HBase 适合存储 PB 数量级的海量数据，PB 级的数据在只采用廉价 PC 来存储的情况下，也可以在几十到一百毫秒内返回数据。这与 HBase 的极易扩展息息相关，正因如此，HBase 为海量数据的存储提供了便利。</li>
+	<li>
+		传统的通用关系数据库无法应对在数据规模剧增时导致的系统扩展性问题和性能问题。HBase 可以做到自动切分数据，并且会随着数据的增长自动地拆分和重新分布。</li>
+	<li>
+		HBase 可以提供高并发的读写操作，而且可以利用廉价的计算机来处理超过 10 亿行的表数据。</li>
+	<li>
+		HBase 具有可伸缩性，如果当前集群的处理能力明显下降，可以增加集群的服务器数量来维持甚至提高处理能力。</li>
+</ul>
+<br />
+上述是 HBase 的优点，对于一名优秀的开发者而言，不仅需要知道待选择产品的优点，还需要知道其缺点，唯有如此才能在技术选型时根据不同的业务选择出合适的产品。以下是 HBase 的缺点：
+<ul>
+	<li>
+		不能支持条件查询，只支持按照 RowKey（行键）来查询，也就是只能按照主键来查询。这样在设计 RowKey 时，就需要完美的方案以设计出符合业务的查询。</li>
+	<li>
+		HBase 不能支持 Master（主）服务器的故障切换，当 Master 宕机后，整个存储系统就会挂掉，不能提供正常的服务。</li>
+	<li>
+		查询 HBase 时不支持通过 SQL 语句进行查询。</li>
+</ul>
+<h2>
+	HBase与关系数据库的区别</h2>
+这里从下面 6 点介绍 HBase 和关系数据库的区别：<br />
+<h4>
+	数据类型</h4>
+关系数据库采用关系模型，具有丰富的数据类型和存储方式；HBase 采用了更加简单的数据模型，它把数据存储为未经解释的字符串。<br />
+<h4>
+	数据操作</h4>
+关系数据库中包含了丰富的操作，其中包含了复杂的多表连接等；HBase 操作不存在复杂的表与表之间的关系，只有简单的插入、查询、删除、清空等，因为 HBase 在设计上就避免了复杂的表和表之间的关系。<br />
+<h4>
+	存储模式</h4>
+关系数据库是基于行模式存储的；HBase 是基于列模式存储的，每个列族都由几个文件保存，不同列族的文件是分离的。<br />
+<h4>
+	数据索引</h4>
+关系数据库通常可以针对不同列构建复杂的多个索引，以提高数据的访问性能；HBase 只有一个索引，通过巧妙的 RowKey 设计，HBase 中的所有访问方法，或者通过 RowKey 访问，或者通过 RowKey 扫描，使得整个系统的运行速度不会减慢。<br />
+<h4>
+	数据维护</h4>
+在关系数据库中，更新操作会用最新的当前值去替换记录中原来的旧值，旧值被覆盖后就不存在了；在 HBase 中执行更新操作时，并不会删除旧值，而是生成一个新值，旧值仍然保留。<br />
+<h4>
+	可伸缩性</h4>
+关系数据库很难实现横向扩展，纵向扩展的空间也比较有限；HBase 是为了实现灵活的水平扩展而开发的，所以能够通过在集群中增加或者减少硬件数量的方式轻松实现性能的伸缩。<br />
+<h2>
+	HBase的应用场景</h2>
+Hadoop 是高性能、高稳定、可管理的大数据应用平台。Hadoop 实现了一个分布式文件系统（Hadoop Distributed File System，HDFS）。HDFS 具有高容错性，被设计部署在低廉的硬件上，为应用程序访问数据提供了高吞吐量，因而适用于那些有着超大数据集的应用程序。<br />
+<br />
+HBase 的存储是基于 Hadoop 的，HBase 具有超强的扩展性和大吞吐量，采用的存储方式为 Key-Value（键-值）方式，故而即使数据量增大也几乎不会导致查询性能的下降。<br />
+<br />
+当然，我们也需要注意到，数据分析是 HBase 的弱项，因为 HBase 不支持表关联，所以当我们想实现 group by 或者 order by 时，需要编写很多的代码来实现 MapReduce。<br />
+<br />
+正因为如此，我们才需要更合理地使用 HBase。下面是笔者根据自己的工作经验给出的一些使用 HBase 的建议，希望这些建议对于读者的技术选型有所助益。<br />
+<h4>
+	1) 数据量超千万，可以选择使用HBase</h4>
+一般而言，如果单表的数据量只有百万的数量级或者更少，则不建议使用 HBase，而应该考虑关系数据库是否能够满足应用的需求。<br />
+<br />
+如果单表数据量超过千万或者有十亿、百亿的数量级，并且伴有较高并发的存取应用，则可以考虑使用 HBase，这样可以充分利用分布式存储系统的优势。<br />
+<h4>
+	2) 数据分析需求不多，可以选择使用HBase</h4>
+虽然说 HBase 是一个面向列的数据库，但是它与真正的列式存储系统（比如 Parquet、Kudu等）又有所区别，再加上自身存储架构的设计，使得 HBase 并不擅长做数据分析。所以如果业务需求是为了做数据分析，比如做报表，那么不建议使用 HBase。<br />
+<h4>
+	3) 实时根据主键查询，可以选择使用HBase</h4>
+HBase 是一个 Key-Value 数据库，默认对 RowKey 做了索引优化，所以即使数据量非常庞大，根据 RowKey 查询的效率也会很高。但是，如果还需要根据其他条件进行查询，则不建议使用 HBase。<br />
+<h4>
+	4) 多表连接查询，不建议使用HBase</h4>
+HBase 是 NoSQL 产品中的一种，它也具有 NoSQL 的缺点，就是不能进行连表查询等操作，也就是说，如果业务场景是需要事务支持、复杂的关联查询，则不建议使用 HBase。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_2321_2.html" title="C++函数模板的实参推断" target="_blank">C++函数模板的实参推断</a></li>
+<li><a href="2405_2.html" title="Python __doc__属性：查看文档" target="_blank">Python __doc__属性：查看文档</a></li>
+<li><a href="../c/exp_2.html" title="C语言exp()函数：返回以e的x次幂（次方）" target="_blank">C语言exp()函数：返回以e的x次幂（次方）</a></li>
+<li><a href="vip_8323_2.html" title="MySQL数据库文件存放目录结构详解" target="_blank">MySQL数据库文件存放目录结构详解</a></li>
+<li><a href="../jstl/fn-length_2.html" title="fn:length()函数" target="_blank">fn:length()函数</a></li>
+<li><a href="../matplotlib/twin-axes_2.html" title="Matplotlib双轴图" target="_blank">Matplotlib双轴图</a></li>
+<li><a href="20rfsc1_2.html" title="MySQL日期类型（DATETIME、DATE、TIMESTAMP、TIME和YEAR）" target="_blank">MySQL日期类型（DATETIME、DATE、TIMESTAMP、TIME和YEAR）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9806;
+window.arcId = "b4482kcJsHwShrzSdNqwTfqvP4c+Rf/ajTjV+xf5ps7/rCetXdxfkC+tLjo";
+window.typeidChain = "441|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

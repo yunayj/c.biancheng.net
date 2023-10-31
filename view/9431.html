@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Qt实现学生信息管理系统</title>
+<meta name="description" content="本节我们教大家用 Qt 实现一个带界面的学生信息管理系统，完成后的系统主界面如下图所示： 图 1 学生信息管理系统主界面 该学生信息管理系统将学生信息保存到文件中，用户借助界" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Qt实现学生信息管理系统</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">本节我们教大家用 Qt 实现一个带界面的学生信息管理系统，完成后的系统主界面如下图所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211028/1F2344A3-0.gif" /><br />
+图 1 学生信息管理系统主界面</div>
+<br />
+该学生信息管理系统将学生信息保存到文件中，用户借助界面上的表格、列表、按钮、输入框等控件，可以对学生信息进行查看、添加、删除、查找、更改、保存等操作。
+<h2>
+学生信息管理系统的界面设计</h2>
+整个学生信息管理系统，需要设计两个界面，一个是图 1 所示的主界面，另一个是添加学生信息的界面，如下图所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211028/1F2343623-1.gif" /><br />
+图 2 添加学生信息界面</div>
+<br />
+主界面的设计实现思路是：将 QHBoxLayout 作为主界面的布局工具，内部添加两个 QGroupBox 分组框，从而将整个界面一分为二：
+<ul>
+<li>
+左边的分组框中添加一个 QTableWidget 表格控件，如果想让表格控件的尺寸随着主窗口尺寸的变化而变化，可以将 QTableWidget 框架添加到某个布局工具中（比如 QHBoxLayout、QVBoxLayout 等）。</li>
+<li>
+右边的分组框中，向&nbsp;QVBoxLayout 先后添加一个 QListWidget 和 QGridLayout，从而将右侧分组框分为上下两部分。在 QGridLayout 中放置添加、删除、保存、退出按钮以及一个 QLineEdit 单行输入框。</li>
+</ul>
+<br />
+由此，主窗口就设计完成了。<br />
+<br />
+设计图 2 所示的添加学生信息界面非常简单，只需要自定义一个继承自 QDialog 的窗口类，用 QVBoxLayout 作为该窗口的布局工具，并依次将 QFormLayout 和 QHBoxLayout 添加到 QVBoxLayout 中：
+<ul>
+<li>
+向 QFormLayout 中添加多个单行输入框；</li>
+<li>
+向 QHBoxLayout 中添加两个按钮。</li>
+</ul>
+<br />
+由此，添加学生信息的窗口就设计完成了。
+<h2>
+学生信息管理系统的功能实现</h2>
+整个学生信息管理系统，由以下几个文件构成：<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211028/1F234J09-2.gif" /><br />
+图 4 项目结构</div>
+各个文件的作用分别是：
+<ul>
+<li>
+StuInfoFile.pro：项目文件，整个项目的实现并没有手动修改此文件中的内容；</li>
+<li>
+main.cpp：整个项目的主程序文件，用来启动主界面；</li>
+<li>
+MainWidget.h 和 MainWidget.cpp：自定义的窗口类（继承自 QWdiget），实现图 1 所示的主界面，并完成主界面中所有控件的功能；</li>
+<li>
+EditStuMessBox.h 和 EditStuMessBox.cpp：自定义的窗口类（继承自 QDialog），实现图 2 所示的界面，并完成添加学生信息界面的功能；</li>
+<li>
+Tool.h 和 Tool.cpp：包含一些公共的宏定义和函数；</li>
+<li>
+image.qrc：为项目中的窗口添加 icon 图标。</li>
+</ul>
+<br />
+整个项目的实现过程，需要重点说明的有以下几点：
+<h4>
+1、合理使用信号和槽</h4>
+对于关联在一起的信号函数和槽函数，有些场景中，需要调用 disconnect() 暂时取消它们之间的连接，后续再重新关联它们。<br />
+<br />
+例如在本项目中，MainWidget.cpp 文件 flushTable() 函数的功能是更新 QTableWidget 表格控件中显示的学生信息。更新学生信息之前，需要调用 disconnect() 函数切断 cellChanged() 信号函数与其它所有槽函数的关联，然后才能正常更新数据，更新完成后再恢复 cellChanged() 与其它槽函数的关联。<br />
+<br />
+之所以更新数据前必须切断 cellChanged() 与其它槽函数的关联，是因为更新表格数据会不断地触发 cellChanged() 信号，最终会导致程序崩溃。
+<h4>
+2、从文件中删除和更改某个学生信息</h4>
+实现对学生信息的&ldquo;增删查改&rdquo;操作中，删除和修改学生信息的实现过程更复杂一些，本项目中采取的实现方法是：不断地从 student.txt 文件中读取学生信息，判断读取到的学生信息是否需要删除或修改，如果不需要，则直接写入 student_temp.txt 文件；反之如果需要删除，则直接将读取到的信息丢弃，如果需要修改，则将修改后的学生信息写入到 student_temp.txt 文件中。<br />
+<br />
+最终，student_temp.txt 文件中存储的就是最新的学生信息，我们可以将 student.txt 文件中的内容删除，然后将 student_temp.txt 文件中的内容拷贝到 student.txt 文件中，最后删除 student_temp.txt 文件；也可以直接删除 student.txt 文件，然后将 student_temp.txt 文件的名称改为 student.txt，本项目中采用的是第二种方法。<br />
+<h4>
+3、为项目添加图标</h4>
+图 4 中，image.qrc 文件是用来为项目添加图标的，本项目选用的是 C 语言中文网的 icon 图标，就存储在当前项目的文件夹内，如下图所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211028/1F2345b8-3.gif" /><br />
+图 5 项目的所有文件</div>
+<br />
+首先，我们要在项目中新建一个后缀名为 qrc 的文件，鼠标移动到项目名上右击选择&ldquo;添加新文件&rdquo;，Qt Creator 会弹出如下对话框：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211028/1F2344A3-4.gif" /><br />
+图 6 创建 qrc 文件</div>
+<br />
+选择 &quot;Qt -&gt; Qt Rescource File&quot;，可以创建一个 qrc 文件。在此基础上，在 image.qrc 上右击选择&ldquo;添加现有文件&rdquo;，选中项目中的 logo.ico 图标，就被成功地将图标添加到项目中。<br />
+<br />
+接下来，哪个界面需要添加图标，直接调用 setWindowIcon() 方法即可，例如：
+<pre class="cpp" shownum="false">
+setWindowIcon(QIcon(&quot;:/logo.ico&quot;));</pre>
+<blockquote>
+<p>
+icon 图标的存储路径可以通过右击项目中的 logo.ico 图标，选择 &quot;Copy Path &quot;:logo.ico&quot; 即可获得。</p>
+</blockquote>
+<h2>
+学生信息管理系统实现源码</h2>
+点击<a href="../uploads/soft/211028/StuInfoFile.zip">学生信息管理系统</a>，即可下载整个项目的实现源码。下载完成后，依次完成以下操作即可运行项目：
+<ul>
+<li>
+打开 Qt Creator 并创建一个不带 ui 文件的新&nbsp;Qt Widget Application 项目，删除项目中默认生成的所有源文件；</li>
+<li>
+找到存储新项目的文件夹，将下载的文件全部拷贝到文件夹内；</li>
+<li>
+在 Qt Creator 中逐一将这些源码文件添加到项目里（项目名上右键选择&ldquo;添加现有文件&rdquo;）；</li>
+<li>
+手动添加 icon 图标。</li>
+</ul>
+<br />
+源码中有非常详尽的注释，再结合本文对整个项目的介绍，很容易可以搞清楚每段代码的含义和作用，这里不再一一解释。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1069.html" title="Linux常用信号（进程间通信）及其含义" target="_blank">Linux常用信号（进程间通信）及其含义</a></li>
+<li><a href="1386.html" title="C++函数默认参数（详解版）" target="_blank">C++函数默认参数（详解版）</a></li>
+<li><a href="2596.html" title="MySQL删除存储过程（DROP PROCEDURE）" target="_blank">MySQL删除存储过程（DROP PROCEDURE）</a></li>
+<li><a href="4397.html" title="Spring MVC中@Controller和@RequestMapping注解详解" target="_blank">Spring MVC中@Controller和@RequestMapping注解详解</a></li>
+<li><a href="vip_7299.html" title="Go语言和其它编程语言的对比" target="_blank">Go语言和其它编程语言的对比</a></li>
+<li><a href="vip_8320.html" title="当前市场对数据库程序员的需求如何？待遇如何？" target="_blank">当前市场对数据库程序员的需求如何？待遇如何？</a></li>
+<li><a href="../servlet2/listener.html" title="Servlet Listener（监听器）" target="_blank">Servlet Listener（监听器）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9431;
+window.arcId = "be44N6FksnU3qINd95jaQwkl7anzUkmWW3VPXAxkdntiwtCfvhSsLNSZ5eQ";
+window.typeidChain = "294|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

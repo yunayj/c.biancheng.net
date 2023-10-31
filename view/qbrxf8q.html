@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++析构函数详解</title>
+<meta name="description" content="C++ 提供了一系列用于资源管理和对象生命周期控制的机制，其中析构函数（Destructor）就是一个重要的部分。 在 C++ 中，创建对象的时候会调用构造函数，相应地在释放对象的时候会调用" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++析构函数详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">C++ 提供了一系列用于资源管理和对象生命周期控制的机制，其中析构函数（Destructor）就是一个重要的部分。<br />
+<br />
+在 C++ 中，创建对象的时候会调用构造函数，相应地在释放对象的时候会调用析构函数。同构造函数一样，析构函数也是类中一个特殊的成员函数，并且也是由编译器自动调用的。<br />
+<br />
+虽然很多初学者可能觉得析构函数不常用，但了解其工作原理与应用场景是深入理解 C++ 的关键。本节重点介绍析构函数的定义和使用。<br />
+<h2>
+析构函数的定义</h2>
+和构造函数相反，当类对象脱离它的作用域时（例如对象所在的函数已调用完毕），编译器会自动执行析构函数。<br />
+<br />
+析构函数通常用来做&ldquo;清理善后&rdquo;的工作，例如在建立对象时用 new 开辟了一片内存空间，对象被销毁时应手动用 delete 释放，释放的工作就可以放在析构函数里。<br />
+<br />
+析构函数的名称和类名相同，但前面加有波浪号<code>~</code>。与构造函数相反，析构函数没有参数，也不能被重载。<br />
+<br />
+例如：
+<pre class="cpp">
+class MyClass {
+public:
+    // 构造函数
+    MyClass() {
+        // 分配资源
+    }
+   
+    // 析构函数
+    ~MyClass() {
+        // 释放资源
+    }
+};</pre>
+如果不在类中手动定义析构函数，那么编译器也会自动添加一个析构函数，不过这个由编译器添加的析构函数不进行任何操作。因此，如果有一些需要自己去释放的东西，比如释放堆空间、关闭文件句柄等，就一定要手动定义析构函数。<br />
+<br />
+使用析构函数时，还需要注意以下两点：
+<ul>
+<li>
+如果一个类有基类或成员对象，其析构函数会自动调用基类和成员对象的析构函数。</li>
+<li>
+析构函数应该是虚函数，特别是在基类中，以支持多态。</li>
+</ul>
+<h2>
+完整实例</h2>
+下面的实例演示了一个名为 Person 的简单类，该类动态分配一个字符数组来存储名字，并在析构函数中释放这个数组。<br />
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;cstring&gt;
+
+class Person {
+public:
+    // 构造函数
+    Person(const char* name) {
+        this-&gt;name = new char[strlen(name) + 1];
+        strcpy(this-&gt;name, name);
+        std::cout &lt;&lt; name &lt;&lt; &quot; is born!&quot; &lt;&lt; std::endl;
+    }
+
+    // 析构函数
+    ~Person() {
+        std::cout &lt;&lt; name &lt;&lt; &quot; is gone!&quot; &lt;&lt; std::endl;
+        delete[] name;
+    }
+
+private:
+    char* name;
+};
+
+int main() {
+    {
+        Person p1(&quot;Alice&quot;);
+        Person p2(&quot;Bob&quot;);
+    } // p1 和 p2 的析构函数在这里调用
+
+    Person* p3 = new Person(&quot;Charlie&quot;);
+    delete p3; // p3 的析构函数在这里调用
+
+    return 0;
+}</pre>
+输出结果为：
+<p class="info-box">
+Alice is born!<br />
+Bob is born!<br />
+Bob is gone!<br />
+Alice is gone!<br />
+Charlie is born!<br />
+Charlie is gone!</p>
+示例中创建了 3 个 Person 对象，因此会调用 3 次构造函数，相应地也会调用 3 次析构函数。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="596.html" title="C语言统计单词个数，单词个数算法" target="_blank">C语言统计单词个数，单词个数算法</a></li>
+<li><a href="vip_5097.html" title="使用mdadm命令来配置RAID" target="_blank">使用mdadm命令来配置RAID</a></li>
+<li><a href="5857.html" title="Java二维数组详解" target="_blank">Java二维数组详解</a></li>
+<li><a href="8191.html" title="GDB watch命令：监控变量值的变化" target="_blank">GDB watch命令：监控变量值的变化</a></li>
+<li><a href="8640.html" title="计算机二级证书到底有没有用？需要报考吗？" target="_blank">计算机二级证书到底有没有用？需要报考吗？</a></li>
+<li><a href="../mybatis/core-object.html" title="MyBatis核心对象" target="_blank">MyBatis核心对象</a></li>
+<li><a href="9in9o7.html" title="机器学习的分类及其典型算法（非常全面）" target="_blank">机器学习的分类及其典型算法（非常全面）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10346;
+window.arcId = "d3607wv1WYUGy7rEcsWCTzYROEFdhTH86ERtLpJ77XOArQn5RyZdiu4AHqaa";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>什么是指针，C语言指针概述</title>
+<meta name="description" content="要明白什么是指针，必须先要弄清楚数据在内存中是如何存储的，又是如何被读取的。 如果在程序中定义了一个变量，在对程序进行编译时，系统就会为这个变量分配内存单元。编译系" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>什么是指针，C语言指针概述</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">要明白什么是指针，必须先要弄清楚数据在内存中是如何存储的，又是如何被读取的。<br />
+<br />
+如果在程序中定义了一个变量，在对程序进行编译时，系统就会为这个变量分配内存单元。编译系统根据程序中定义的变量类型分配一定长度的空间。内存的基本单元是字节，一字节有8位。每字节都有一个编号，这个编号就是&ldquo;地址&rdquo;，它相当于旅馆的房间号。在地址所标示的内存单元中存放的数据，就相当于在该旅馆房间中居住的旅客。<br />
+<br />
+大家一定要弄清楚&ldquo;<span style="color:#b22222;">内存单元的地址</span>&rdquo;和&ldquo;<span style="color:#b22222;">内存单元的内容</span>&rdquo;这两个概念的区别，即&ldquo;房间号&rdquo;和&ldquo;房间内所住客人&rdquo;的区别。在程序中一般是通过变量名来对内存单元进行存取操作的。其实程序经过编译以后已经将变量名转换为变量的地址，对变量值的存取都是通过地址进行的。这种按变量地址存取变量的方式称为直接访问方式。<br />
+<br />
+还有一种间接访问的方式，即变量中存放的是另一个变量的地址。也就是说，变量中存放的不是数据，而是数据的地址。就跟寻宝一样，可能你按藏宝图千辛万苦找到的宝藏不是金银珠宝，而是另一张藏宝图。按C语言的规定，可以在程序中定义整型变量、实型变量、字符型变量，也可以定义这样一种特殊的变量，它是存放地址的。<br />
+<br />
+由于通过地址能找到所需的变量单元，所以可以说，地址&ldquo;指向&rdquo;该变量单元。如同一个房间号指向某一个房间一样，只要告诉房间号就能找到房间的位置。因此在C语言中，将地址形象地称为&ldquo;指针&rdquo;，意思就是通过它能找到以它为地址的内存单元。<br />
+<br />
+所以，<span style="color:#b22222;">一个变量的地址就称为该变量的指针</span>。指针就是地址，而地址就是内存单元的编号。它是一个从零开始的、操作受限的非负整数。<br />
+<br />
+为什么是操作受限的？因为非负整数与非负整数可以加减乘除，但是指针和指针只能进行相减运算，不能进行其他运算，因为没有意义。而且进行相减运算也是有条件的：只有同一块空间中的地址才能相减。而且两个指针变量相减之后的结果是一个常量，而不是指针型变量，即相减的结果是这两个地址之间元素的个数，而不是地址的个数。这个后面还会再讲。<br />
+<br />
+内存中一个单元指的是一字节，一字节有 8 位。每根地址总线都有两种状态：0 和 1。两根地址总线就有 4 种组合，能控制4个内存单元；三根地址总线就有 8 种组合，能控制 8 个内存单元；n 根地址总线就有 2<sup>n</sup> 种组合，能控制 2<sup>n</sup> 个内存单元。那么 CPU 总共是通过几根地址总线对内存进行处理的？一般的计算机是 32 位的，即 32 根地址总线，那么就能够控制 2<sup>32</sup> 个内存单元，即 2<sup>32</sup> 字节。<br />
+<br />
+2<sup>32</sup>B=4GB，所以 32 位系统的计算机只能控制 4GB 的内存。前面讨论为什么内存不做得同硬盘一样大，原因就在这里。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_2303.html" title="C++静态绑定和动态绑定，彻底理解多态" target="_blank">C++静态绑定和动态绑定，彻底理解多态</a></li>
+<li><a href="5537.html" title="Python GIL全局解释器锁详解（深度剖析）" target="_blank">Python GIL全局解释器锁详解（深度剖析）</a></li>
+<li><a href="../jstl/fmt-bundle-message.html" title="&lt;fmt:bundle&gt;和&lt;fmt:message&gt;标签" target="_blank">&lt;fmt:bundle&gt;和&lt;fmt:message&gt;标签</a></li>
+<li><a href="../ml_alg/naive-bayes.html" title="朴素贝叶斯分类算法原理" target="_blank">朴素贝叶斯分类算法原理</a></li>
+<li><a href="9394.html" title="HTML &lt;iframe&gt;标签：内联框架" target="_blank">HTML &lt;iframe&gt;标签：内联框架</a></li>
+<li><a href="7qnlo6.html" title="C语言scanf函数" target="_blank">C语言scanf函数</a></li>
+<li><a href="anqhqm.html" title="Python函数和方法的区别" target="_blank">Python函数和方法的区别</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 211;
+window.arcId = "a3a7ceSz8hVDf/fFNlqDErxn43w3yMAv2Fv4KYfvU0QmmaHBNrC6OI8Tgg";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Java停止（终止）线程详解版</title>
+<meta name="description" content="停止线程是在多线程开发中很重要的技术点，掌握此技术可以对线程的停止进行有效的处理。停止线程在 Java 语言中并不像 break 语句那样干脆，需要一些技巧性的处理。 使用 Java 内置支" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Java停止（终止）线程详解版</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">停止线程是在多线程开发中很重要的技术点，掌握此技术可以对线程的停止进行有效的处理。停止线程在 <a href='../java/java_3.html' target='_blank'>Java</a> 语言中并不像 break 语句那样干脆，需要一些技巧性的处理。<br />
+<br />
+使用 Java 内置支持多线程的类设计多线程应用是很常见的事情，然而，多线程给开发人员带来了一些新的挑战，如果处理不好就会导致超出预期的行为并且难以定位错误。<br />
+<br />
+本节将讨论如何更好地停止一个线程。<span style="color:#b22222;">停止一个线程意味着在线程处理完任务之前停掉正在做的操作，也就是放弃当前的操作。</span>虽然这看起来非常简单，但是必须做好防范措施，以便达到预期的效果。<br />
+<br />
+停止一个线程可以使用 Threadstop() 方法，但最好不用它。虽然它确实可以停止一个正在运行的线程，但是这个方法是不安全的，而且已被弃用作废了，在将来的 Java 版本中，这个方法将不可用或不被支持。<br />
+<br />
+大多数停止一个线程的操作使用 Thread.interrupt() 方法，尽管方法的名称是&ldquo;停止，中止&rdquo;的意思，但这个方法不会终止一个正在运行的线程，还需要加入一个判断才可以完成线程的停止。关于此知识点在后面有专门的章节进行介绍。<br />
+<br />
+<span style="color:#b22222;">在 Java 中有以下 3 种方法可以终止正在运行的线程：</span>
+<ol>
+<li>
+使用退出标识，使线程正常退出，也就是当 run() 方法完成后线程终止。</li>
+<li>
+使用 stop() 方法强行终止线程，但是不推荐使用这个方法，因为 stop() 和 suspend() 及 resume() 一样，都是作废过期的方法，使用它们可能产生不可预料的结果。</li>
+<li>
+使用 interrupt() 方法中断线程。</li>
+</ol>
+<h2>
+停止不了的线程</h2>
+<span style="color:#b22222;">interrupt() 方法的作用是用来停止线程，但 intermpt() 方法的使用效果并不像循环结构中 break 语句那样，可以马上停止循环。</span>调用 intermpt() 方法仅仅是在当前线程中打了一个停止的标记，并不是真的停止线程。
+<h4>
+例 1</h4>
+下面通过一个案例演示 interrupt() 方法停止线程的用法。案例用到的线程非常简单，仅仅是实现输出从 1~10000 的整数，代码如下：
+<pre class="cpp">
+package ch14;
+public class MyThread13 extends Thread
+{
+    @Override 
+    public void run()
+    { 
+        super.run(); 
+        for (int i=0;i&lt;10000;i++)
+        { 
+            System.out.println(&quot;i=&quot;+(i+1)); 
+        } 
+    } 
+}</pre>
+<br />
+在调用 intermpt() 方法停止 MyThread13 线程之前，首先进行了一个 100 毫秒的休眠。主线程的代码如下：
+<pre class="cpp">
+package ch14;
+public class Test17
+{
+    public static void main(String[] args)
+    { 
+        try
+        { 
+            MyThread13 thread=new MyThread13();      //创建MyThread13线程类实例
+            thread.start();    //启动线程
+            Thread.sleep(100);    //延时100毫秒
+            thread.interrupt();    //停止线程
+        }
+        catch(InterruptedException e)
+        { 
+            System.out.println(&quot;main catch&quot;); 
+            e.printStackTrace(); 
+        } 
+    }
+}</pre>
+<br />
+主线程的运行结果如下所示。从中可以看到，虽然在延时 100 毫秒后调用 intermpt() 方法停止了 thread 线程，但是该线程仍然执行完成输出 10000 行信息。
+<pre class="info-box">
+i=1
+i=2
+...
+i=9999
+i=10000</pre>
+<h2>
+判断线程是不是停止状态</h2>
+在介绍如何停止线程的知识点前，先来看一下如何判断线程的状态是不是停止的。在 Java 的 SDK 中，Thread.java 类里提供了两种方法。
+<ol>
+<li>
+<code>this.interrupted()</code>：测试当前线程是否已经中断。</li>
+<li>
+<code>this.islnterrupted()</code>：测试线程是否已经中断。</li>
+</ol>
+<br />
+那么这两个方法有什么区别呢？先来看看 this.intermpted() 方法的解释：测试当前线程是否已经中断，当前线程是指运行 this.interrupted() 方法的线程。为了对此方法有更深入的了解，下面通过一个案例进行说明。
+<h4>
+例 2</h4>
+假设 MyThread14 线程类的代码如下：
+<pre class="cpp">
+package ch14;
+public class MyThread14 extends Thread
+{
+    @Override 
+    public void run()
+    { 
+        super.run(); 
+        for(int i=0;i&lt;10000;i++)
+        { 
+            System.out.println(&quot;i=&quot;+(i+1)); 
+        } 
+    } 
+}</pre>
+<br />
+主线程的代码如下：
+<pre class="cpp">
+package ch14;
+public class Test18
+{
+    public static void main(String[] args)
+    {
+        try
+        {
+            MyThread14 thread=new MyThread14();
+            thread.start();    //启动线程
+            Thread.sleep(100);    //延时100毫秒
+            thread.interrupt();    //停止线程
+            //Thread.currentThread().interrupt();
+            System.out.println(&quot;是否停止1？=&quot;+thread.interrupted());
+            System.out.println(&quot;是否停止2？=&quot;+thread.interrupted());
+        }
+        catch(InterruptedException e)
+        {
+            System.out.println(&quot;main catch&quot;);
+            e.printStackTrace();
+        }
+        System.out.println(&quot;end!&quot;);
+    }
+}</pre>
+<br />
+程序运行后的结果如下所示。
+<pre class="info-box">
+i=1
+i=2
+...
+i=9999
+i=10000
+是否停止1？=false
+是否停止2？=false
+end!</pre>
+<br />
+在主线程中是在 thread 对象上调用以下代码来停止 thread 对象所代表的线程。
+<pre class="cpp">
+thread.interrupt();</pre>
+<br />
+后面又使用以下代码来判断 thread 对象所代表的线程是否停止。
+<pre class="cpp">
+System.out.println(&quot;是否停止 1 ? =&quot;+thread.interrupted());
+System.out.println(&quot;是否停止 2 ? =&quot;+thread.interrupted());</pre>
+<br />
+从控制台打印的结果来看，线程并未停止，这也就证明了 interrupted() 方法的解释：测试当前线程是否已经中断。这个&ldquo;当前线程&rdquo;是 main，它从未中断过，所以打印的结果是两个 false。<br />
+<br />
+那么如何使 main 线程产生中断效果呢？再来看一下如下的代码：
+<pre class="cpp">
+public static void main(String[] args)
+{
+    Thread.currentThread().interrupt();
+    System.out.println(&quot; 是否停止 1 ? =&quot;+Thread.interrupted());
+    System.out.println(&quot; 是否停止 2 ? =&quot;+Thread.interrupted());
+    System.out.println(&quot;end!&quot;);
+}</pre>
+<br />
+程序运行后的结果如下所示。
+<pre class="info-box">
+是否停止 1 ? =true
+是否停止 2 ? =false end!</pre>
+<br />
+从上述的结果来看，intermpted() 方法的确用来判断出当前线程是不是停止状态。但为什么第二个布尔值是 false 呢？查看一下官方帮助文档中对 interrupted() 方法的解释如下（斜体显示）：<br />
+测试当前线程是否已经中断。线程的中断状态由该方法清除。换句话说，如果连续两次调用该方法，则第二次调用将返回 false（在第一次调用已清除了其中断状态之后，且第二次调用检验完中断状态前，当前线程再次中断的情况除外）。<br />
+<br />
+文档已经解释得很详细，<span style="color:#b22222;">intermpted() 方法具有清除状态的功能，所以第二次调用 interrupted() 方法返回的值是 false。</span><br />
+<br />
+介绍完 interrupted() 方法后再来看一下 isInterrupted() 方法。isInterrupted() 方法的声明如下：
+<pre class="info-box">
+public boolean isInterrupted()</pre>
+<br />
+从声明中可以看出 isIntermpted() 方法不是 static 的。仍然以 MyThread14 线程为例，这里使用 isInterrupted() 方法来判断线程是否停止，具体代码如下：
+<pre class="cpp">
+package ch14;
+public class Test18
+{
+    public static void main(String[] args)
+    {
+        try
+        {
+            MyThread14 thread=new MyThread14();
+            thread.start();
+            Thread.sleep(100);
+            thread.interrupt();
+            System.out.println(&quot;是否停止1？=&quot;+thread.isInterrupted());
+            System.out.println(&quot;是否停止2？=&quot;+thread.isInterrupted());
+        }
+        catch(InterruptedException e)
+        {
+            System.out.println(&quot;main catch&quot;);
+            e.printStackTrace();
+        }
+        System.out.println(&quot;end!&quot;);
+    }
+}</pre>
+<br />
+程序运行结果如下所示。
+<pre class="info-box">
+i=498
+是否停止1？=true
+i=499
+是否俜止2？=true
+i=500
+end!
+i=501
+i=502</pre>
+<br />
+从程序的运行结果中可以看到，isInterrupted() 方法并未清除状态标识，所以打印了两个 true。经过上面示例的验证总结一下这两个方法。
+<ol>
+<li>
+this.interrupted()：测试当前线程是否已经是中断状态，执行后具有将状态标识清除为 false 的功能。</li>
+<li>
+this.islnterrupted()：测试线程 Thread 对象是否已经是中断状态，但不清除状态标识。</li>
+</ol>
+<h2>
+异常法停止线程</h2>
+有了前面学习过的知识，就可在线程中用 for 语句来判断线程是否为停止状态，如果是停止状态，则后面的代码不再运行。
+<h4>
+例 3</h4>
+下面的线程类 MyThread15 演示了在线程中使用 for 循环，并在循环中调用 intermpted() 方法判断线程是否停止。
+<pre class="cpp">
+package ch14;
+public class MyThread15 extends Thread
+{
+    @Override
+    public void run()
+    {
+        super.run();
+        for(int i=0;i&lt;500000;i++)
+        {
+            if(this.interrupted())
+            {    //如果当前线程处于停止状态
+                System.out.println(&quot;已经是停止状态了!我要退出了!&quot;);
+                break;
+            }
+            System.out.println(&quot;i=&quot;+(i+1));
+        }
+    }
+}</pre>
+<br />
+接下来编写启动 MyThread15 线程的代码，主线程代码如下：
+<pre class="cpp">
+package ch14;
+public class Test19
+{
+    public static void main(String[] args)
+    {
+        try
+        { 
+            MyThread15 thread=new MyThread15(); 
+            thread.start();    //启动线程
+            Thread.sleep(2000);    //延时2000毫秒
+            thread.interrupt();    //停止线程
+        }
+        catch(InterruptedException e)
+        {    //捕捉线程停止异常
+            System.out.println(&quot;main catch&quot;); 
+            e.printStackTrace(); 
+        } 
+        System.out.println(&quot;end!&quot;);    //主线程结束时输出
+    }
+}</pre>
+<br />
+上述代码启动 MyThread15 线程后延时 2000 毫秒，之后将线程停止。为避免主线程崩溃使用 catch 捕捉了 InterruptedException 异常，此时会输出&ldquo;main catch&rdquo;。在主线程执行结束后会输出&ldquo;end!&rdquo;。程序执行的输出结果如下所示。
+<pre class="info-box">
+......
+i=271597
+i=271598
+已经是停止状态了!我要退出了!
+end!</pre>
+<br />
+从程序执行的结果可以看到，在示例中虽然停止了线程，但如果 for 语句下面还有语句，还是会继续运行的。<br />
+<br />
+下面对 MyThread15 线程进行修改，如下所示是 run() 方法的代码：
+<pre class="cpp">
+public void run()
+{ 
+    super.run(); 
+    for(int i=0;i&lt;500000;i++)
+    { 
+        if(this.interrupted())
+        { 
+            System.out.println(&quot;已经是停止状态了!我要退出了!&quot;); 
+            break; 
+        } 
+        System.out.println(&quot;i=&quot;+(i+1)); 
+    } 
+    System.out.println(&quot;我被输出，如果此代码是for又继续运行，线程并未停止！&quot;); 
+}</pre>
+<br />
+此时的运行效果如下所示，说明线程仍然在继续运行。
+<pre class="info-box">
+......
+i=233702
+i=233703
+end!
+已经是停止状态了!我要退出了!
+我被输出，如果此代码是for又继续运行，线程并未停止！</pre>
+<br />
+那该如何解决线程停止后，语句仍然继续运行的问题呢？解决的办法是在线程中捕捉线程停止异常，如下为修改后的 run() 方法代码。
+<pre class="cpp">
+public void run()
+{ 
+    super.run(); 
+    try
+    { 
+        for(int i=0;i&lt;500000;i++)
+        { 
+            if(this.interrupted())
+            { 
+                System.out.println(&quot;已经是停止状态了!我要退出了!&quot;); 
+                throw new InterruptedException(); 
+            } 
+            System.out.println(&quot;i=&quot; + (i + 1)); 
+        } 
+        System.out.println(&quot;我在for下面&quot;); 
+    }
+    catch(InterruptedException e)
+    { 
+        System.out.println(&quot;进MyThread15.java类run方法中的catch了！&quot;); 
+        e.printStackTrace(); 
+    } 
+}</pre>
+<br />
+再次运行程序，当线程处于停止状态后，如果 for 循环中的代码继续执行将会拋出 InterruptedException 异常，运行结果如下所示。
+<pre class="info-box">
+......
+i=251711
+i=251712
+i=251713
+已经是停止状态了!我要退出了!
+end!
+进MyThread15.java类run方法中的catch了！
+java.lang.InterruptedException
+    at text.MyThread.run(MyThread.java:16)</pre>
+<h2>
+在休眠中停止</h2>
+如果线程在 sleep() 状态下停止，会是什么效果呢？
+<h4>
+例 4</h4>
+下面通过一个案例来演示这种情况。如下所示为案例中使用的 MyThread16 线程类代码。
+<pre class="cpp">
+package ch14;
+public class MyThread16 extends Thread
+{
+    @Override
+    public void run()
+    {
+        super.run();
+        try
+        {
+            System.out.println(&quot;run begin&quot;);
+            Thread.sleep(200000);
+            System.out.println(&quot;run end&quot;);
+        }
+        catch(InterruptedException e)
+        {
+            System.out.println(&quot;在休眠中被停止!进入catch!&quot;+this.isInterrupted());
+            e.printStackTrace();
+        }
+    }
+}</pre>
+<br />
+调用 MyThread16 线程的主线程代码如下：
+<pre class="cpp">
+package ch14;
+public class Test20
+{
+    public static void main(String[] args)
+    {
+        try
+        {
+            MyThread16 thread=new MyThread16();
+            thread.start();
+            Thread.sleep(200);
+            thread.interrupt();
+        }
+        catch(InterruptedException e)
+        {
+            System.out.println(&quot;main catch&quot;);
+            e.printStackTrace();
+        }
+        System.out.println(&quot;end!&quot;);
+    }
+}</pre>
+<br />
+在上述代码中启动 MyThread16 线程后休眠了 200 毫秒，之后调用 interrupt() 方法停止线程，运行结果如下所示。
+<pre class="info-box">
+run begin
+end!
+在休眠中被停止!进入catch!false
+java.lang.InterruptedException: sleep interrupted
+    at java.lang.Thread.sleep(Native Method)
+    at text.MyThread.run(MyThread.java:12)</pre>
+<br />
+从运行结果来看，如果在休眠状态下停止某一线程则会拋出进入 InterruptedException 异常，所以会进入 catch 语句块清除停止状态值，使之变成 false。
+<h4>
+例 5</h4>
+这个示例是先休眠再停止线程，下面再编写一个案例来演示先停止再休眠线程的情况。案例使用的 MyThread17 线程类代码如下：
+<pre class="cpp">
+package ch14;
+public class MyThread17 extends Thread
+{
+    @Override
+    public void run()
+    {
+        super.run();
+        try
+        {
+            for(int i=0;i&lt;1000;i++)
+            {
+                System.out.println(&quot;i=&quot;+(i+1));
+            }
+            System.out.println(&quot;run begin&quot;);
+            Thread.sleep(200);
+            System.out.println(&quot;run end&quot;);
+        }
+        catch(InterruptedException e)
+        {
+            System.out.println(&quot;先停止，再遇到了sleep!进入catch!&quot;);
+            e.printStackTrace();
+        }
+    }
+}</pre>
+<br />
+使用 MyThread17 线程的主线程代码如下：
+<pre class="cpp">
+package ch14;
+public class Test21
+{
+    public static void main(String[] args)
+    {
+        MyThread17 thread=new MyThread17();
+        thread.start();
+        thread.interrupt();
+        System.out.println(&quot;end!&quot;);
+    }
+}</pre>
+<br />
+在上述代码中启动 MyThread17 线程后没有进行延时，马上调用 interrupt() 方法进行停止线程，但是在 MyThread17 线程中有一个 200 毫秒的延时。运行程序后，首先会看到下所示的输出，说明主线程执行完毕。
+<pre class="info-box">
+end!
+i=1
+i=2
+i=3
+i=4
+i=5
+i=6
+......</pre>
+<br />
+稍等片刻后，将会看到如下所示的异常，说明线程停止了。
+<pre class="info-box">
+......
+i=999
+i=1000
+run begin
+先停止，再遇到了sleep!进入catch!
+java.lang.InterruptedException: sleep interrupted
+    at java.lang.Thread.sleep(Native Method)
+    at text.MyThread.run(MyThread.java:16)</pre>
+<h2>
+强制停止线程</h2>
+<span style="color:#b22222;">调用 stop() 方法可以在任意情况下强制停止一个线程。</span>下面通过一个案例来演示 stop() 停止线程的方法。
+<pre class="cpp">
+package ch14;
+public class MyThread18 extends Thread
+{
+    private int i=0;
+    @Override
+    public void run()
+    {
+        try
+        {
+            while (true)
+            {
+                i++;
+                System.out.println(&quot;i=&quot; + i);
+                Thread.sleep(1000);
+            }
+        }
+        catch(InterruptedException e)
+        {
+            //TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+}</pre>
+<br />
+如上述代码所示，MyThread18 线程中包含一个死循环，该循环每隔 1000 毫秒执行一次，每次将 i 的值递增 1 并输出。<br />
+<br />
+调用 MyThread18 线程的主线程代码如下：
+<pre class="cpp">
+package ch14;
+public class Test22
+{
+    @SuppressWarnings(&quot;deprecation&quot;)
+    public static void main(String[] args)
+    {
+        try
+        {
+            MyThread18 thread=new MyThread18();
+            thread.start();
+            Thread.sleep(8000);
+            thread.stop();
+        }
+        catch(InterruptedException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+}</pre>
+<br />
+如上述代码所示，MyThread18 线程在启动后有一个 8000 毫秒的延时，在这段时间内会循环 9 次，之后 stop() 方法被执行从而线程停止。运行后的输出如下所示。
+<pre class="info-box">
+i=1
+i=2
+i=3
+i=4
+i=5
+i=6
+i=7
+i=8
+i=9</pre>
+<br />
+<span style="color:#b22222;">注意：调用 stop() 方法时会抛出 java.lang.ThreadDeath 异常，但在通常情况下，此异常不需要显式地捕捉。</span>
+<h2>
+释放锁的不良后果</h2>
+从 JDK 1.6 以后 stop() 方法已经被作废，因为如果强制让线程停止则有可能使一些清理性的工作得不到完成。另外一个情况就是对锁定的对象进行了&ldquo;解锁&rdquo;，导致数据得不到同步的处理，出现数据不一致的问题。<br />
+<br />
+<span style="color:#b22222;">使用 stop() 释放锁将会给数据造成不一致性的结果。</span>如果出现这样的情况，程序处理的数据就有可能遭到破坏，最终导致程序执行的流程错误，一定要特别注意。
+<h4>
+例 6</h4>
+下面通过一个案例来演示这种情况。案例使用了一个名为 SynchronizedObject 的实体类，该类代码如下：
+<pre class="cpp">
+package ch14;
+public class SynchronizedObject
+{
+    private String username=&quot;root&quot;;
+    private String password=&quot;root&quot;;
+    public String getUsername()
+    {
+        return username;
+    }
+    public void setUsername(String username)
+    {
+        this.username=username;
+    }
+    public String getPassword()
+    {
+        return password;
+    }
+    public void setPassword(String password)
+    {
+        this.password=password;
+    }
+    synchronized public void printString(String username,String password)
+    {
+        try
+        {
+            this.username=username;
+            Thread.sleep(100000);
+            this.password=password;
+        }
+        catch(InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+    }
+}</pre>
+<br />
+如上述代码所示，SynchronizedObject 类包含用户名和密码两个成员，printString() 方法用于对这两个成员进行赋值，但是在设置密码之前有一个休眠时间。<br />
+<br />
+下面编写一个线程来对 SynchronizedObject 类进行实例化，并调用 printString() 方法。线程代码如下：
+<pre class="cpp">
+package ch14;
+public class MyThread19 extends Thread
+{
+    private SynchronizedObject object;
+    public MyThread19(SynchronizedObject object)
+    {
+        super();
+        this.object=object;
+    }
+    @Override
+    public void run()
+    {
+        object.printString(&quot;admin&quot;,&quot;123456&quot;);
+    }
+}</pre>
+<br />
+接下来编写主线程代码如下：
+<pre class="cpp">
+package ch14;
+public class Test23
+{
+    public static void main(String[] args)
+    { 
+        try
+        { 
+            SynchronizedObject object=new SynchronizedObject(); 
+            MyThread19 thread=new MyThread19(object); 
+            thread.start(); 
+            Thread.sleep(500); 
+            thread.stop(); 
+            System.out.println(&quot;用户名：&quot;+object.getUsername());
+            System.out.println(&quot;密码：&quot;+object.getPassword()); 
+        }
+        catch(InterruptedException e)
+        { 
+            e.printStackTrace();
+        } 
+    } 
+}</pre>
+<br />
+在上述代码中创建一个 SynchronizedObject 类实例，并将该实例作为参数传递给 MyThread19 线程。MyThread19 线程启动后将立即调用 object.printString(&#39;fadminn,&quot;123456&quot;) 方法，而在 printString() 方法内有一个较长时间的休眠。该休眠时间大于主线程的休眠时间，所以主线程会继续往下执行，当执行到 stop() 方法时线程被强制停止。<br />
+<br />
+程序最后的运行结果如下所示。
+<pre class="info-box">
+用户名：admin
+密码：root</pre>
+<br />
+由于 stop() 方法已经在中被标明是&ldquo;作废/过期&rdquo;的方法，显然它在功能上具有缺陷，所以不建议在程序中使用 stop() 方法。
+<h2>
+使用 return 停止线程</h2>
+除了上面介绍的方法外，还<span style="color:#b22222;">可以将 intermpt() 方法与 return 结合使用来实现停止线程的效果。</span>
+<h4>
+例 7</h4>
+下面通过一个案例来演示这种情况。如下所示为案例中使用 MyThread20 线程类的代码。
+<pre class="cpp">
+package ch14;
+public class MyThread20 extends Thread
+{
+    @Override
+    public void run()
+    {
+        while (true)
+        {
+            if (this.isInterrupted())
+            {
+                System.out.println(&quot;停止了!&quot;);
+                return;
+            }
+            System.out.println(&quot;timer=&quot;+System.currentTimeMillis());
+        }
+    }
+}</pre>
+<br />
+调用 MyThread20 线程的主线程代码如下：
+<pre class="cpp">
+package ch14;
+public class Test24
+{
+    public static void main(String[] args) throws InterruptedException
+    {
+        MyThread20 t=new MyThread20();
+        t.start();
+        Thread.sleep(2000);
+        t.interrupt();
+    }
+}</pre>
+<br />
+程序执行后的结果如下所示。
+<pre class="info-box">
+......
+timer=1540977194784
+timer=1540977194784
+timer=1540977194784
+timer=1540977194784
+timer=1540977194784
+停止了!</pre>
+<br />
+从程序的执行结果中可以看到成功停止了线程，不过还是建议使用&ldquo;拋异常&rdquo;的方法来实现线程的停止，因为在 catch 块中还可以将异常向上拋，使线程停止的事件得以传播。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="112.html" title="Go语言结构体标签（Struct Tag）" target="_blank">Go语言结构体标签（Struct Tag）</a></li>
+<li><a href="6797.html" title="Java使用Lambda表达式遍历Iterator迭代器" target="_blank">Java使用Lambda表达式遍历Iterator迭代器</a></li>
+<li><a href="../nexus/create-repository.html" title="Nexus创建仓库" target="_blank">Nexus创建仓库</a></li>
+<li><a href="../nexus/offline-indexs.html" title="Nexus离线更新中央仓库索引" target="_blank">Nexus离线更新中央仓库索引</a></li>
+<li><a href="9622.html" title="曝光一下阿里的工资待遇和职位级别" target="_blank">曝光一下阿里的工资待遇和职位级别</a></li>
+<li><a href="el3eii6.html" title="C++ switch case语句详解" target="_blank">C++ switch case语句详解</a></li>
+<li><a href="r0w7l31.html" title="Vue ref()函数的用法" target="_blank">Vue ref()函数的用法</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 1186;
+window.arcId = "ab76c2Iwx1ZSWETvuNFiMIruo+cyY+pIbSYHG+LMWPsCAHq8Aj8ADwqb+KU";
+window.typeidChain = "192|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

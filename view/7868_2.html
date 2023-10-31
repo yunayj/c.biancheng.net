@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C++11完美转发及实现方法详解</title>
+<meta name="description" content="C++11 标准为 C++ 语言引入右值引用语法的同时，还解决了一个 C++ 98/03 标准长期存在的短板，即如何在函数模板中实现函数参数的完美转发？ 所谓完美转发，是指函数模板中，在不改变函" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C++11完美转发及实现方法详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">C++11 标准为 C++ 引入右值引用语法的同时，还解决了一个 C++ 98/03 标准长期存在的短板，即使用简单的方式即可在函数模板中实现参数的完美转发。那么，什么是完美转发？它为什么是 C++98/03 标准存在的一个短板？C++11 标准又是如何为 C++ 弥补这一短板的？别急，本节将就这些问题给读者做一一讲解。<br />
+<br />
+首先解释一下什么是完美转发，它指的是函数模板可以将自己的参数&ldquo;完美&rdquo;地转发给内部调用的其它函数。所谓完美，即不仅能准确地转发参数的值，还能保证被转发参数的左、右值属性不变。
+<blockquote>
+	<p>
+		在 C++ 中，一个表达式不是左值就是右值。有关如何判断一个表达式是左值还是右值，可阅读《<a href="7829_2.html" target="_blank">C++右值引用</a>》一文做详细了解。</p>
+</blockquote>
+举个例子：
+<pre class="cpp">
+template&lt;typename T&gt;
+void function(T t) {
+    otherdef(t);
+}</pre>
+如上所示，function() 函数模板中调用了 otherdef() 函数。在此基础上，完美转发指的是：如果 function() 函数接收到的参数 t 为左值，那么该函数传递给 otherdef() 的参数 t 也是左值；反之如果 function() 函数接收到的参数 t 为右值，那么传递给 otherdef() 函数的参数 t 也必须为右值。<br />
+<br />
+显然，function() 函数模板并没有实现完美转发。一方面，参数 t 为非引用类型，这意味着在调用 function() 函数时，实参将值传递给形参的过程就需要额外进行一次拷贝操作；另一方面，无论调用 function() 函数模板时传递给参数 t 的是左值还是右值，对于函数内部的参数 t 来说，它有自己的名称，也可以获取它的存储地址，因此它永远都是左值，也就是说，传递给 otherdef() 函数的参数 t 永远都是左值。总之，无论从那个角度看，function() 函数的定义都不&ldquo;完美&rdquo;。
+<blockquote>
+	<p>
+		读者可能会问，完美转发这样严苛的参数传递机制，很常用吗？C++98/03 标准中几乎不会用到，但 C++11 标准为 C++ 引入了右值引用和移动语义，因此很多场景中是否实现完美转发，直接决定了该参数的传递过程使用的是拷贝语义（调用拷贝构造函数）还是移动语义（调用移动构造函数）。</p>
+</blockquote>
+<br />
+事实上，C++98/03 标准下的 C++ 也可以实现完美转发，只是实现方式比较笨拙。通过前面的学习我们知道，C++ 98/03 标准中只有左值引用，并且可以细分为非 const 引用和 const 引用。其中，使用非 const 引用作为函数模板参数时，只能接收左值，无法接收右值；而 const 左值引用既可以接收左值，也可以接收右值，但考虑到其 const 属性，除非被调用函数的参数也是 const 属性，否则将无法直接传递。<br />
+<br />
+这也就意味着，单独使用任何一种引用形式，可以实现转发，但无法保证完美。因此如果使用 C++ 98/03 标准下的 C++ 语言，我们可以采用函数模板重载的方式实现完美转发，例如：
+<pre class="cpp">
+#include &lt;iostream&gt;
+using namespace std;
+
+//重载被调用函数，查看完美转发的效果
+void otherdef(int &amp; t) {
+    cout &lt;&lt; &quot;lvalue\n&quot;;
+}
+void otherdef(const int &amp; t) {
+    cout &lt;&lt; &quot;rvalue\n&quot;;
+}
+
+//重载函数模板，分别接收左值和右值
+//接收右值参数
+template &lt;typename T&gt;
+void function(const T&amp; t) {
+    otherdef(t);
+}
+//接收左值参数
+template &lt;typename T&gt;
+void function(T&amp; t) {
+    otherdef(t);
+}
+
+int main()
+{
+    function(5);//5 是右值
+    int  x = 1;
+    function(x);//x 是左值
+    return 0;
+}</pre>
+程序执行结果为：
+<p class="info-box">
+	rvalue<br />
+	lvalue</p>
+从输出结果中可以看到，对于右值 5 来说，它实际调用的参数类型为 const T&amp; 的函数模板，由于 t 为 const 类型，所以 otherdef() 函数实际调用的也是参数用 const 修饰的函数，所以输出&ldquo;rvalue&rdquo;；对于左值 x 来说，2 个重载模板函数都适用，C++编译器会选择最适合的参数类型为 T&amp; 的函数模板，进而 therdef() 函数实际调用的是参数类型为非 const 的函数，输出&ldquo;lvalue&rdquo;。<br />
+<br />
+显然，使用重载的模板函数实现完美转发也是有弊端的，此实现方式仅适用于模板函数仅有少量参数的情况，否则就需要编写大量的重载函数模板，造成代码的冗余。为了方便用户更快速地实现完美转发，C++ 11 标准中允许在函数模板中使用右值引用来实现完美转发。<br />
+<br />
+C++11 标准中规定，通常情况下右值引用形式的参数只能接收右值，不能接收左值。但对于函数模板中使用右值引用语法定义的参数来说，它不再遵守这一规定，既可以接收右值，也可以接收左值（此时的右值引用又被称为&ldquo;<span style="color:#008000;">万能引用</span>&rdquo;）。<br />
+<br />
+仍以 function() 函数为例，在 C++11 标准中实现完美转发，只需要编写如下一个模板函数即可：
+<pre class="cpp">
+template &lt;typename T&gt;
+void function(T&amp;&amp; t) {
+    otherdef(t);
+}</pre>
+此模板函数的参数 t 既可以接收左值，也可以接收右值。但仅仅使用右值引用作为函数模板的参数是远远不够的，还有一个问题继续解决，即如果调用 function() 函数时为其传递一个左值引用或者右值引用的实参，如下所示：<br />
+<pre class="cpp">
+int n = 10;
+int &amp; num = n;
+function(num); // T 为 int&amp;
+
+int &amp;&amp; num2 = 11;
+function(num2); // T 为 int &amp;&amp;</pre>
+其中，由 function(num) 实例化的函数底层就变成了 function(int &amp; &amp; t)，同样由 function(num2) 实例化的函数底层则变成了 function(int &amp;&amp; &amp;&amp; t)。要知道，C++98/03 标准是不支持这种用法的，而 C++ 11标准为了更好地实现完美转发，特意为其指定了新的类型匹配规则，又称为引用折叠规则（假设用 A 表示实际传递参数的类型）：
+<ul>
+	<li>
+		当实参为左值或者左值引用（A&amp;）时，函数模板中 T&amp;&amp; 将转变为 A&amp;（A&amp; &amp;&amp; = A&amp;）；</li>
+	<li>
+		当实参为右值或者右值引用（A&amp;&amp;）时，函数模板中 T&amp;&amp; 将转变为 A&amp;&amp;（A&amp;&amp; &amp;&amp; = A&amp;&amp;）。</li>
+</ul>
+<blockquote>
+	<p>
+		读者只需要知道，在实现完美转发时，只要函数模板的参数类型为 T&amp;&amp;，则 C++ 可以自行准确地判定出实际传入的实参是左值还是右值。</p>
+</blockquote>
+通过将函数模板的形参类型设置为 T&amp;&amp;，我们可以很好地解决接收左、右值的问题。但除此之外，还需要解决一个问题，即无论传入的形参是左值还是右值，对于函数模板内部来说，形参既有名称又能寻址，因此它都是左值。那么如何才能将函数模板接收到的形参连同其左、右值属性，一起传递给被调用的函数呢？<br />
+<br />
+C++11 标准的开发者已经帮我们想好的解决方案，该新标准还引入了一个模板函数 forword&lt;T&gt;()，我们只需要调用该函数，就可以很方便地解决此问题。仍以 function 模板函数为例，如下演示了该函数模板的用法：
+<pre class="cpp">
+#include &lt;iostream&gt;
+using namespace std;
+
+//重载被调用函数，查看完美转发的效果
+void otherdef(int &amp; t) {
+    cout &lt;&lt; &quot;lvalue\n&quot;;
+}
+void otherdef(const int &amp; t) {
+    cout &lt;&lt; &quot;rvalue\n&quot;;
+}
+
+//实现完美转发的函数模板
+template &lt;typename T&gt;
+void function(T&amp;&amp; t) {
+    otherdef(forward&lt;T&gt;(t));
+}
+
+int main()
+{
+    function(5);
+    int  x = 1;
+    function(x);
+    return 0;
+}</pre>
+程序执行结果为：
+<p class="info-box">
+	rvalue<br />
+	lvalue</p>
+注意程序中第 12~16 行，此 function() 模板函数才是实现完美转发的最终版本。可以看到，forword() 函数模板用于修饰被调用函数中需要维持参数左、右值属性的参数。<br />
+<br />
+总的来说，在定义模板函数时，我们采用右值引用的语法格式定义参数类型，由此该函数既可以接收外界传入的左值，也可以接收右值；其次，还需要使用 C++11 标准库提供的 forword() 模板函数修饰被调用函数中需要维持左、右值属性的参数。由此即可轻松实现函数模板中参数的完美转发。&nbsp;<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="469_2.html" title="Turbo C 2.0使用教程（使用Turbo C 2.0编写C语言程序）" target="_blank">Turbo C 2.0使用教程（使用Turbo C 2.0编写C语言程序）</a></li>
+<li><a href="751_2.html" title="Java return语句" target="_blank">Java return语句</a></li>
+<li><a href="5995_2.html" title="JS XMLHttpRequest入门教程（非常详细）" target="_blank">JS XMLHttpRequest入门教程（非常详细）</a></li>
+<li><a href="6449_2.html" title="IP地址分配（静态分配+动态分配+零配置）" target="_blank">IP地址分配（静态分配+动态分配+零配置）</a></li>
+<li><a href="../mongodb2/map-reduce_2.html" title="MongoDB MapReduce" target="_blank">MongoDB MapReduce</a></li>
+<li><a href="../jstl/sql-query_2.html" title="&lt;sql:query&gt;标签" target="_blank">&lt;sql:query&gt;标签</a></li>
+<li><a href="../json/what-is-jsonp_2.html" title="JSONP是什么？" target="_blank">JSONP是什么？</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7868;
+window.arcId = "ef3e6KEtw28vlIwTAytVAf6JDgKRduS019nmfCrM8Ete1BTynfYE+4Ndq+I";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

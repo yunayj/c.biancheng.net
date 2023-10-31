@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>MySQL日期类型（DATETIME、DATE、TIMESTAMP、TIME和YEAR）</title>
+<meta name="description" content="MySQL 中有多种表示日期的数据类型，主要有 DATETIME、DATE、TIMESTAMP、TIME 和 YEAR。 例如，当只记录年信息的时候，可以只使用 YEAR 类型，而没有必要使用 DATE。每一个类型都有合法的取值范" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>MySQL日期类型（DATETIME、DATE、TIMESTAMP、TIME和YEAR）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">MySQL 中有多种表示日期的数据类型，主要有 DATETIME、DATE、TIMESTAMP、TIME 和 YEAR。<br />
+<br />
+例如，当只记录年信息的时候，可以只使用 YEAR 类型，而没有必要使用 DATE。每一个类型都有合法的取值范围，当指定确实不合法的值时，系统将&ldquo;零&rdquo;值插入到数据库中。<br />
+<br />
+本节将介绍 MySQL 日期和时间类型的使用方法，下表列出了 MySQL 中的日期与时间类型。<br />
+<br />
+<table>
+<caption>
+表 1 日期与时间数据类型</caption>
+<tbody>
+<tr>
+<th>
+类型名称</th>
+<th>
+日期格式</th>
+<th>
+日期范围</th>
+<th>
+存储需求</th>
+</tr>
+<tr>
+<td>
+YEAR</td>
+<td>
+YYYY</td>
+<td>
+1901-2155</td>
+<td>
+1 字节</td>
+</tr>
+<tr>
+<td>
+TIME</td>
+<td>
+HH:MM:SS</td>
+<td>
+-838:59:59~838:59:59</td>
+<td>
+3 字节</td>
+</tr>
+<tr>
+<td>
+DATE</td>
+<td>
+YYYY-MM-DD</td>
+<td>
+1000-01-01~9999-12-31</td>
+<td>
+3 字节</td>
+</tr>
+<tr>
+<td>
+DATETIME</td>
+<td>
+YYYY-MM-DD HH:MM:SS</td>
+<td>
+1000-01-01 00:00:00~9999-12-31 23:59:59</td>
+<td>
+8 字节</td>
+</tr>
+<tr>
+<td>
+TIMESTAMP</td>
+<td>
+YYYY-MM-DD HH:MM:SS</td>
+<td>
+1970-01-01 00:00:01 UTC~2038-01-19 03:14:07 UTC</td>
+<td>
+4 字节</td>
+</tr>
+</tbody>
+</table>
+<h2>
+1、YEAR</h2>
+YEAR 类型是一个单字节类型，用于表示年，在存储时只需要 1 字节。<br />
+<br />
+指定 YEAR 值的格式有很多种，如下所示：<br />
+1) 以 4 位字符串或者 4 位数字格式表示的 YEAR，范围为 1901~2155。输入格式为&ldquo;YYYY&rdquo;或者 YYYY。例如，输入&#39;2010&#39;或 2010，插入到数据库的值均为 2010。<br />
+<br />
+2) 以 2 位字符串格式表示的 YEAR，范围为 00~99。00~69 和 70~99 范围的值分别被转换为 2000~2069 和 1970~1999 范围的 YEAR 值。0 与 00 的作用相同。插入超过取值范围的值将被转换为 2000。<br />
+<br />
+3) 以 2 位数字表示的 YEAR，范围为 1~99。1~69 和 70~99 范围的值分别被转换为 2001~2069 和 1970~1999 范围的 YEAR 值。注意：这里的 0 值将被转换为 0000，而不是 2000。<br />
+<br />
+两位整数范围与两位字符串范围稍有不同。例如：插入 2000 年，读者可能会使用数字格式的 0 表示 YEAR，实际上，插入数据库的值为 0000，而不是所希望的 2000。只有使用字符串格式的&#39;0&#39;或&#39;00&#39;，才可以被正确地解释为 2000。非法 YEAR 值将被转换为 0000。<br />
+<br />
+【实例】创建数据表 tmp3，定义数据类型为 YEAR 的字段 y，向表中插入值 2010、&#39;2010&#39;、&#39;2166&#39;，SQL 语句如下：<br />
+① 首先创建表 tmp3：
+<pre class="sql" showmenu="false" shownum="false">
+CREATE TABLE tmp3(y YEAR);</pre>
+② 向表中插入数据：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; INSERT INTO tmp3 values(2010),(&#39;2010&#39;);</pre>
+③ 再次向表中插入数据：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; INSERT INTO tmp3 values (&#39;2166&#39;);
+ERROR 1264 (22003): Out of range value for column &#39;y&#39; at row 1</pre>
+④ 语句执行之后，MySQL 给出了一条错误提示，使用SHOW查看错误信息：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; SHOW WARNINGS;
++---------+------+----------------------------------------------+
+| Level   | Code | Message                                      |
++---------+------+----------------------------------------------+
+| Error   | 1264 | Out of range value for column &#39;y&#39; at row 1;  |
++---------+------+----------------------------------------------+</pre>
+可以看到，插入的第 3 个值&#39;2166&#39;超过了 YEAR 类型的取值范围，此时不能正常执行插入操作，查看结果：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; SELECT * FROM tmp3;
++------+
+| y    |
++------+
+| 2010 |
+| 2010 |
++------+</pre>
+由结果可以看到，当插入值为数值类型的 2010 或者字符串类型的&#39;2010&#39;时，都能正确地储存到数据库中；而当插入值&#39;2166&#39;时，由于超出了 YEAR 类型的取值范围，因此不能插入值。<br />
+<br />
+【实例】向 tmp3 表中 y 字段插入 2 位字符串表示的 YEAR 值，分别为&#39;0&#39;、&#39;00&#39;、&#39;77&#39;和&#39;10&#39;，SQL 语句如下：<br />
+① 删除表中的数据：
+<pre class="sql" showmenu="false" shownum="false">
+DELETE FROM tmp3;</pre>
+② 向表中插入数据：
+<pre class="sql" showmenu="false" shownum="false">
+INSERT INTO tmp3 values(&#39;0&#39;),(&#39;00&#39;),(&#39;77&#39;),(&#39;10&#39;);</pre>
+③ 查看结果：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; SELECT * FROM tmp3;
++------+
+| y    |
++------+
+| 2000 |
+| 2000 |
+| 1977 |
+| 2010 |
++------+</pre>
+由结果可以看到，字符串 &#39;0&#39; 和 &#39;00&#39; 的作用相同，分别都转换成了 2000 年；&#39;77&#39; 转换为 1977；&#39;10&#39; 转换为 2010。<br />
+<br />
+【实例】向 tmp3 表中 y 字段插入 2 位数字表示的 YEAR 值，分别为 0、78 和 11，SQL 语句如下：<br />
+① 删除表中的数据：
+<pre class="sql" showmenu="false" shownum="false">
+DELETE FROM tmp3;</pre>
+② 向表中插入数据：
+<pre class="sql" showmenu="false" shownum="false">
+INSERT INTO tmp3 values(0),(78),(11);</pre>
+③ 查看结果：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; SELECT * FROM tmp3;
++------+
+| y    |
++------+
+| 0000 |
+| 1978 |
+| 2011 |
++------+</pre>
+由结果可以看到，0 被转换为 0000，78 被转换为 1978，11 被转换为 2011。<br />
+<h2>
+2、TIME</h2>
+TIME 类型用在只需要时间信息的值，在存储时需要 3 字节，格式为&ldquo;HH:MM:SS&rdquo;。其中，HH 表示小时，MM 表示分钟，SS 表示秒。<br />
+<br />
+TIME 类型的取值范围为：-838:59:59~838:59:59，小时部分的取值范围会如此大的原因是 TIME 类型不仅可以用于表示一天的时间（必须小于 24 小时），还可以用于表示某个事件过去的时间或两个事件之间的时间间隔（可以大于 24 小时，或者为负）。<br />
+<br />
+指定 TIME 值的格式有很多种，包括：<br />
+1) &ldquo;D HH:MM:SS&rdquo; 格式的字符串。可以使用下面任何一种&ldquo;非严格&rdquo;的语法：&ldquo;HH:MM:SS&rdquo;&ldquo;HH:MM&rdquo;&ldquo;D HH:MM&rdquo;&ldquo;D HH&rdquo;或&ldquo;SS&rdquo;。这里的 D 表示日，可以取 0~24 之间的值。在插入数据库时，D 被转换为小时保存，格式为&ldquo;D*24 + HH&rdquo;。<br />
+<br />
+2) &ldquo;HHMMSS&rdquo;格式的、没有间隔符的字符串或者 HHMMSS 格式的数值，假定是有意义的时间。例如：&#39;101112&#39;被理解为 10:11:12，但&#39;109712&#39;是不合法的（它有一个没有意义的分钟部分），存储时将变为 00:00:00。<br />
+<br />
+为 TIME 列分配简写值时应该注意，如果没有冒号，MySQL 解释值时会假定最右边的两位表示秒（MySQL 解释 TIME 值为过去的时间而非当天的时间）。例如，读者可能认为&#39;1112&#39;和 1112 表示 11:12:00（11 点 12 分），但 MySQL 将它们解释为 00:11:12（11 分 12 秒）。同样地，&#39;12&#39; 和 12 被解释为 00:00:12。相反地，如果 TIME 值中使用冒号则肯定被看作当天的时间。也就是说，&#39;11:12&#39; 表示 11:12:00，而不是 00:11:12。<br />
+<br />
+【实例】创建数据表 tmp4，定义数据类型为 TIME 的字段 t，向表中插入值 &#39;10:05:05&#39;、&#39;23:23&#39;，&#39;2 10:10&#39;、&#39;3 02&#39;、&#39;10&#39;，SQL 语句如下：<br />
+① 创建表 tmp4：
+<pre class="sql" showmenu="false" shownum="false">
+CREATE TABLE tmp4(t TIME);</pre>
+② 向表中插入数据：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; INSERT INTO tmp4 values(&#39;10:05:05&#39;), (&#39;23:23&#39;), (&#39;2 10:10&#39;), (&#39;3 02&#39;),(&#39;10&#39;);</pre>
+查看结果：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; SELECT * FROM tmp4;
++----------+
+| t        |
++----------+
+| 10:05:05 |
+| 23:23:00 |
+| 58:10:00 |
+| 74:00:00 |
+| 00:00:10 |
++----------+</pre>
+由结果可以看到，&#39;10:05:05&#39; 被转换为 10:05:05；&#39;23:23&#39; 被转换为 23:23:00；&#39;2 10:10&#39; 被转换为 58:10:00，&#39;3 02&#39; 被转换为 74:00:00；&#39;10&#39; 被转换成 00:00:10。<br />
+<br />
+在使用&ldquo;D HH&rdquo;格式时，小时一定要使用双位数值，如果是小于 10 的小时数，应在前面加 0。<br />
+<br />
+【实例】向表 tmp4 中插入值&#39;101112&#39;、111213、&#39;0&#39;、107010，SQL 语句如下：<br />
+① 删除表中的数据：
+<pre class="sql" showmenu="false" shownum="false">
+DELETE FROM tmp4;</pre>
+② 向表中插入数据：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt;INSERT INTO tmp4 values(&#39;101112&#39;),(111213),( &#39;0&#39;);</pre>
+③ 再向表中插入数据：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt;INSERT I?NTO tmp4 values ( 107010);
+ERROR 1292 (22007): Incorrect time value: &#39;107010&#39; for column &#39;t&#39; at row 1</pre>
+④ 可以看到，在插入数据时，MySQL 给出了一个错误提示信息，使用&ldquo;SHOW WARNINGS;&rdquo;查看错误信息，如下所示：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; show warnings;
++---------+------+------------------------------------------------------+
+| Level   | Code | Message                                              |
++---------+------+------------------------------------------------------+
+| Error   | 1292 |Incorrect time value: &#39;107010&#39; for column &#39;t&#39; at row 1|
++---------+------+------------------------------------------------------+</pre>
+可以看到，第二次在插入记录的时候，数据超出了范围，原因是 107010 的分钟部分超过了60（分钟部分是不会超过 60 的）。结果如下：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; SELECT * FROM tmp4;
++----------+
+| t        |
++----------+
+| 10:11:12 |
+| 11:12:13 |
+| 00:00:00 |
++----------+</pre>
+由结果可以看到，&#39;101112&#39; 被转换为 10:11:12；111213 被转换为 11:12:13；&#39;0&#39; 被转换为 00:00:00；因为 107010 是不合法的值，所以不能被插入。<br />
+<br />
+也可以使用系统日期函数向 TIME 字段列插入值。<br />
+<br />
+【实例】向 tmp4 表中插入系统当前时间，SQL 语句如下：<br />
+① 删除表中的数据：
+<pre class="sql" showmenu="false" shownum="false">
+DELETE FROM tmp4;</pre>
+② 向表中插入数据：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; INSERT INTO tmp4 values (CURRENT_TIME) ,(NOW());</pre>
+查看结果：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; SELECT * FROM tmp4;
++----------+
+| t        |
++----------+
+| 08:43:51 |
+| 08:43:51 |
++----------+</pre>
+由结果可以看到，获取系统当前的日期时间插入到 TIME 类型的列 t，因为读者输入语句的时间不确定，所以获取的值可能与这里的不同，但都是系统当前的日期时间值。<br />
+<h2>
+3、DATE类型</h2>
+DATE 类型用在仅需要日期值时，没有时间部分，在存储时需要 3 字节。日期格式为&ldquo;YYYY-MM-DD&rdquo;。其中，YYYY 表示年，MM 表示月，DD 表示日。<br />
+<br />
+在给 DATE 类型的字段赋值时，可以使用字符串类型或者数字类型的数据插入，只要符合 DATE 的日期格式即可：<br />
+<br />
+1) 以&ldquo;YYYY-MM-DD&rdquo;或者&ldquo;YYYYMMDD&rdquo;字符串格式表示的日期，取值范围为 1000-01-01~9999-12-3。例如，输入&ldquo;2012-12-31&rdquo;或者&ldquo;20121231&rdquo;，插入数据库的日期都为 2012-12-31。<br />
+<br />
+2) 以&ldquo;YY-MM-DD&rdquo;或者&ldquo;YYMMDD&rdquo;字符串格式表示的日期，在这里 YY 表示两位的年值。包含两位年值的日期会令人模糊，因为不知道世纪。MySQL 使用以下规则解释两位年值：00~69 范围的年值转换为 2000~2069；70~99 范围的年值转换为 1970~1999。例如，输入&ldquo;12-12-31&rdquo;，插入数据库的日期为 2012-12-31；输入&ldquo;981231&rdquo;，插入数据的日期为 1998-12-31。<br />
+<br />
+3) 以 YY-MM-DD 或者 YYMMDD 数字格式表示的日期，与前面相似，00~69 范围的年值转换为 2000~2069，70~99 范围的年值转换为 1970~1999。例如，输入 12-12-31 插入数据库的日期为 2012-12-31；输入 981231，插入数据的日期为 1998-12-31。<br />
+<br />
+4) 使用 CURRENT_DATE 或者 NOW()，插入当前系统日期。<br />
+<br />
+【实例】创建数据表 tmp5，定义数据类型为 DATE 的字段 d，向表中插入&ldquo;YYYY-MM-DD&rdquo;和&ldquo;YYYYMMDD&rdquo;字符串格式日期，SQL 语句如下：<br />
+① 创建表tmp5：
+<pre class="sql" showmenu="false" shownum="false">
+MySQL&gt; CREATE TABLE tmp5(d DATE);</pre>
+② 向表中插入&ldquo;YYYY-MM-DD&rdquo;和&ldquo;YYYYMMDD&rdquo;字符串格式日期：
+<pre class="sql" showmenu="false" shownum="false">
+MySQL&gt; INSERT INTO tmp5 values(&#39;1998-08-08&#39;),(&#39;19980808&#39;),(&#39;20101010&#39;);</pre>
+查看插入结果：
+<pre class="sql" showmenu="false" shownum="false">
+MySQL&gt; SELECT * FROM tmp5;
++------------+
+| d          |
++------------+
+| 1998-08-08 |
+| 1998-08-08 |
+| 2010-10-10 |
++------------+</pre>
+可以看到，各个不同类型的日期值都正确地插入到了数据表中。<br />
+<br />
+【实例】向 tmp5 表中插入&ldquo;YY-MM-DD&rdquo;和&ldquo;YYMMDD&rdquo;字符串格式日期，SQL 语句如下：<br />
+① 删除表中的数据：
+<pre class="sql" showmenu="false" shownum="false">
+DELETE FROM tmp5;</pre>
+② 向表中插入&ldquo;YY-MM-DD&rdquo;和&ldquo;YYMMDD&rdquo;字符串格式日期：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; INSERT INTO tmp5 values (&#39;99-09-09&#39;),( &#39;990909&#39;), (&#39;000101&#39;) ,(&#39;111111&#39;);</pre>
+查看插入结果：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; SELECT * FROM tmp5;
++-------------+
+| d           |
++-------------+
+| 1999-09-09  |
+| 1999-09-09  |
+| 2000-01-01  |
+| 2011-11-11  |
++-------------+</pre>
+<br />
+【实例】向 tmp5 表中插入 YYYYMMDD 和 YYMMDD 数字格式日期，SQL 语句如下：<br />
+① 删除表中的数据：
+<pre class="sql" showmenu="false" shownum="false">
+DELETE FROM tmp5;</pre>
+② 向表中插入 YYYYMMDD 和 YYMMDD 数字格式日期：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; INSERT INTO tmp5 values (19990909),(990909), (000101) ,(111111);</pre>
+查看插入结果：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; SELECT * FROM tmp5;
++-------------+
+| d           |
++-------------+
+| 1999-09-09  |
+| 1999-09-09  |
+| 2000-01-01  |
+| 2011-11-11  |
++-------------+</pre>
+<br />
+【实例】向 tmp5 表中插入系统当前日期，SQL 语句如下：<br />
+① 删除表中的数据：
+<pre class="sql" showmenu="false" shownum="false">
+DELETE FROM tmp5;</pre>
+② 向表中插入系统当前日期：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; INSERT INTO tmp5 values( CURRENT_DATE() ),( NOW() );</pre>
+③ 查看插入结果：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; SELECT * FROM tmp5;
++-------------+
+| d           |
++-------------+
+| 2022-03-09  |
+| 2022-03-09  |
++-------------+</pre>
+CURRENT_DATE 只返回当前日期值，不包括时间部分；NOW() 函数返回日期和时间值，在保存到数据库时，只保留了其日期部分。<br />
+<br />
+MySQL 允许&ldquo;不严格&rdquo;语法：任何标点符号都可以用作日期部分之间的间隔符。例如，&ldquo;98-11-31&rdquo;、&ldquo;98.11.31&rdquo;、&ldquo;98/11/31&rdquo;和&ldquo;98@11@31&rdquo;是等价的，这些值都可以正确地插入到数据库中。<br />
+<h2>
+4、DATETIME</h2>
+DATETIME 类型用于需要同时包含日期和时间信息的值，在存储时需要 8 字节。日期格式为 YYYY-MM-DD HH:MM:SS。其中，YYYY 表示年，MM 表示月，DD 表示日，HH 表示小时，MM 表示分钟，SS 表示秒。<br />
+<br />
+在给 DATETIME 类型的字段赋值时，可以使用字符串类型或者数字类型的数据插入，只要符合 DATETIME 的日期格式即可。<br />
+1) 以&ldquo;YYYY-MM-DD HH:MM:SS&rdquo;或者&ldquo;YYYYMMDDHHMMSS&rdquo;字符串格式表示的值，取值范围为1000-01-01 00:00:00~9999-12-3 23:59:59。例如，输入&ldquo;2012-12-31 05:05:05&rdquo;或者&ldquo;20121231050505&rdquo;，插入数据库的 DATETIME 值都为 2012-12-31 05: 05: 05。<br />
+<br />
+2) 以&ldquo;YY-MM-DD HH:MM:SS&rdquo;或者&ldquo;YYMMDDHHMMSS&rdquo;字符串格式表示的日期，在这里 YY 表示两位的年值。与前面相同，00~69 范围的年值转换为 2000~2069，70~99 范围的年值转换为 1970~1999。例如，输入&ldquo;12-12-31 05:05:05&rdquo;，插入数据库的 DATETIME 为 2012-12-31 05:05:05；输入&ldquo;980505050505&rdquo;，插入数据库的 DATETIME 为 1998-05-05 05: 05: 05。<br />
+<br />
+3) 以 YYYYMMDDHHMMSS 或者 YYMMDDHHMMSS 数字格式表示的日期和时间。例如，输入&ldquo;20121231050505&rdquo;，插入数据库的 DATETIME 为 2012-12-31 05:05:05；输入&ldquo;981231050505&rdquo;，插入数据的 DATETIME 为 1998-12-31 05: 05: 05。<br />
+<br />
+【实例】创建数据表 tmp6，定义数据类型为 DATETIME 的字段 dt，向表中插入&ldquo;YYYY-MM-DD HH:MM:SS&rdquo;和&ldquo;YYYYMMDDHHMMSS&rdquo;字符串格式日期和时间值，SQL 语句如下：<br />
+① 创建表 tmp6：
+<pre class="sql" showmenu="false" shownum="false">
+CREATE TABLE tmp6(dt DATETIME);</pre>
+② 向表中插入&ldquo;YYYY-MM-DD HH:MM:SS&rdquo;和&ldquo;YYYYMMDDHHMMSS&rdquo;格式日期：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; INSERT INTO tmp6 values(19990909090909), (101010101010);</pre>
+查看插入结果：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; SELECT * FROM tmp6;
++------------------------+
+| dt                     |
++------------------------+
+| 1998-08-08 08:08:08    |
+| 1998-08-08 08:08:08    |
+| 2010-10-10 10:10:10    |
++------------------------+</pre>
+可以看到，各个不同类型的日期值都正确地插入到了数据表中。<br />
+<br />
+【实例】向 tmp6 表中插入&ldquo;YY-MM-DD HH:MM:SS&rdquo;和&ldquo;YYMMDDHHMMSS&rdquo;字符串格式日期和时间值，SQL 语句如下：<br />
+① 删除表中的数据：
+<pre class="sql" showmenu="false" shownum="false">
+DELETE FROM tmp6;</pre>
+② 向表中插入&ldquo;YY-MM-DD HH:MM:SS&rdquo;和&ldquo;YYMMDDHHMMSS&rdquo;格式日期：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; INSERT INTO tmp6 values(&#39;99-09-09 09:09:09&#39;),(&#39;990909090909&#39;),(&#39;101010101010&#39;);</pre>
+查看插入结果：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; SELECT * FROM tmp6;
++-------------------------+
+| dt                   |
++-------------------------+
+| 1999-09-09 09:09:09     |
+| 1999-09-09 09:09:09     |
+| 2010-10-10 10:10:10     |
++-------------------------+</pre>
+<br />
+【实例】向 tmp6 表中插入&ldquo;YYYYMMDDHHMMSS&rdquo;和&ldquo;YYMMDDHHMMSS&rdquo;数字格式日期和时间值，SQL 语句如下：<br />
+① 删除表中的数据：
+<pre class="sql" showmenu="false" shownum="false">
+DELETE FROM tmp6;</pre>
+② 向表中插入&ldquo;YYYYMMDDHHMMSS&rdquo;和&ldquo;YYMMDDHHMMSS&rdquo;数字格式日期和时间：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; INSERT INTO tmp6 values(19990909090909), (101010101010);</pre>
+查看插入结果：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; SELECT * FROM tmp6;
++--------------------------+
+| dt                       |
++--------------------------+
+| 1999-09-09 09:09:09      |
+| 2010-10-10 10:10:10      |
++-------------------------+</pre>
+<br />
+【实例】向 tmp6 表中插入系统当前日期和时间值，SQL 语句如下：<br />
+① 删除表中的数据：
+<pre class="sql" showmenu="false" shownum="false">
+DELETE FROM tmp6;</pre>
+② 向表中插入系统当前日期：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; INSERT INTO tmp6 values( NOW() );</pre>
+查看插入结果：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; SELECT * FROM tmp6;
++-------------------------+
+| dt                      |
++-------------------------+
+| 2022-03-15 17:07:30     |
++-------------------------+</pre>
+NOW() 函数返回当前系统的日期和时间值，格式为&ldquo;YYYY-MM-DD HH:MM:SS&rdquo;。<br />
+<br />
+MySQL 允许&ldquo;不严格&rdquo;语法：任何标点符号都可以用作日期部分或时间部分之间的间隔符。例如，98-12-31 11:30:45、98.12.31 11+30+45、98/12/31 11*30*45 和 98@12@31 11^30^45 是等价的，这些值都可以正确地插入数据库。<br />
+<h2>
+5、TIMESTAMP</h2>
+TIMESTAMP 的显示格式与 DATETIME 相同，显示宽度固定在 19 个字符，日期格式为&ldquo;YYYY-MM-DD HH:MM:SS&rdquo;，在存储时需要 4 字节。<br />
+<br />
+TIMESTAMP 列的取值范围小于 DATETIME 的取值范围，为 1970-01-01 00:00:01 UTC~2038-01-19 03:14:07 UTC。其中，UTC（Coordinated Universal Time）为世界标准时间，因此在插入数据时，要保证在合法的取值范围内。<br />
+<br />
+【实例】创建数据表 tmp7，定义数据类型为 TIMESTAMP 的字段 ts，向表中插入值 19950101010101、950505050505、1996-02-02 02:02:02、97@03@03 03@03@03、121212121212、NOW()，SQL 语句如下：<br />
+① 创建数据表 tmp7：
+<pre class="sql" showmenu="false" shownum="false">
+CREATE TABLE tmp7(ts TIMESTAMP);</pre>
+② 向表中插入数据：
+<pre class="sql" showmenu="false" shownum="false">
+INSERT INTO tmp7 values (&#39;19950101010101&#39;),
+(&#39;950505050505&#39;),
+(&#39;1996-02-02 02:02:02&#39;),
+(&#39;97@03@03 03@03@03&#39;),
+(121212121212),
+( NOW() );</pre>
+查看插入结果：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt;SELECT * FROM tmp7;
++---------------------+
+| ts                  |
++---------------------+
+| 1995-01-01 01:01:01 |
+| 1995-05-05 05:05:05 |
+| 1996-02-02 02:02:02 |
+| 1997-03-03 03:03:03 |
+| 2012-12-12 12:12:12 |
+| 2022-03-09 17:08:25 |
++---------------------+</pre>
+由结果可以看到，&ldquo;19950101010101&rdquo;被转换为 1995-01-01 01:01:01；&ldquo;950505050505&rdquo;被转换为 1995-05-05 05:05:05；&ldquo;1996-02-02 02:02:02&rdquo;被转换为 1996-02-02 02:02:02；&ldquo;97@03@03 03@03@03&rdquo;被转换为 1997-03-03 03:03:03；121212121212 被转换为 2012-12-12 12:12:12；NOW() 被转换为系统当前日期时间 2022-03-09 17:08:25。<br />
+<br />
+TIMESTAMP 与 DATETIME 除了存储字节和支持的范围不同外，还有一个最大的区别就是：DATETIME 在存储日期数据时，按实际输入的格式存储，即输入什么就存储什么，与时区无关；而 TIMESTAMP 值的存储是以 UTC（世界标准时间）格式保存的，存储时对当前时区进行转换，检索时再转换回当前时区。查询时，不同时区显示的时间值是不同的。<br />
+<br />
+【实例】向 tmp7 表中插入当前日期，查看插入值，更改时区为东 10 区，再次查看插入值，SQL 语句如下：<br />
+① 删除表中的数据：
+<pre class="sql" showmenu="false" shownum="false">
+DELETE FROM tmp7;</pre>
+② 向表中插入系统当前日期：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; INSERT INTO tmp7
+values( NOW() );</pre>
+③ 查看当前时区下的日期值：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; SELECT * FROM tmp7;
++-------------------------+
+| ts                      |
++-------------------------+
+| 2022-03-09 17:12:20     |
++-------------------------+</pre>
+④ 查询结果为插入时的日期值。我国读者所在时区一般为东 8 区，下面修改当前时区为东 10 区，SQL 语句如下：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; set time_zone=&#39;+10:00&#39;;</pre>
+⑤ 再次查看插入时的日期值：
+<pre class="sql" showmenu="false" shownum="false">
+mysql&gt; SELECT * FROM tmp7;
++-------------------------+
+| ts                   |
++-------------------------+
+| 2022-03-09 19:12:20     |
++-------------------------+</pre>
+由结果可以看到，因为东 10 区时间比东 8 区快 2 个小时，所以查询的结果经过时区转换之后，显示的值增加了 2 小时。类似地，如果时区每减小一个值，则查询显示的日期中的小时数减 1。<br />
+<br />
+如果为一个 DATETIME 或 TIMESTAMP 对象分配一个 DATE 值，那么结果值的时间部分将被设置为&ldquo;00:00:00&rdquo;，因为 DATE 值未包含时间信息。如果为一个 DATE 对象分配一个 DATETIME 或 TIMESTAMP 值，那么结果值的时间部分将被删除，因为 DATE 值未包含时间信息。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="834.html" title="Java截取新闻标题" target="_blank">Java截取新闻标题</a></li>
+<li><a href="1345.html" title="C++ getline函数用法详解" target="_blank">C++ getline函数用法详解</a></li>
+<li><a href="2353.html" title="图解TCP四次握手断开连接" target="_blank">图解TCP四次握手断开连接</a></li>
+<li><a href="vip_7365.html" title="Go语言实现RSA和AES加解密" target="_blank">Go语言实现RSA和AES加解密</a></li>
+<li><a href="7409.html" title="MySQL IS NULL：空值查询" target="_blank">MySQL IS NULL：空值查询</a></li>
+<li><a href="../jsp2/include.html" title="JSP include动作" target="_blank">JSP include动作</a></li>
+<li><a href="ht3a8f6.html" title="C++ queue容器适配器用法详解" target="_blank">C++ queue容器适配器用法详解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10424;
+window.arcId = "e9ceGghfEbzcWj/8M4jdGWrBs6iohxxoXA+NtaDob+VDqfsNTZEqVfwarDaf";
+window.typeidChain = "345|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

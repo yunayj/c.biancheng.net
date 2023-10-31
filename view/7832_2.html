@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Django Form表单API详解</title>
+<meta name="description" content="Django 表单系统功能非常强大，它可以实现对字段的验证，而且还可以根据字段定义生成 HTML，在本节我们通过一些 Form 表单的 API，对上述功能进行详细的讲解，通过本节知识的学习，你" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../django/django.html">Django</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Django Form表单API详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">Django 表单系统功能非常强大，它可以实现对字段的验证，而且还可以根据字段定义生成 HTML，在本节我们通过一些 Form 表单的 API，对上述功能进行详细的讲解，通过本节知识的学习，你会对 Django 表单系统有更加深入的认识，在本节中我们会穿插介绍一些小的应用实例以便于读者更好的理解这些 API 。
+<h2>
+1. Form表单检查数据绑定</h2>
+在《<a href="7765_2.html" target="_blank">Django表单系统初体验</a>》中我们使用类的方式创建了一个登陆表单，并在视图函数中，通过是实例化类对象，成功的创建了一张用户登录表单。
+<pre class="python">
+from django import forms
+class LoginForm(forms.Form):
+    username=forms.CharField(label=&quot;用户名&quot;,min_length=6,max_length=12)
+    password=forms.CharField(label=&quot;用户密码&quot;,min_length=8)</pre>
+在实际的开发工作中使用类的方式是非常方便，可以帮助开发者减少编写重复的代码的工作，而且代码也显得更为整洁，所以这种方式也是我们推荐使用的。
+<h4>
+1) Form.is_bound</h4>
+Django Form 表单有两种表现形式：一种是该表单绑定了数据，那么它就可以实现表单数据的验证并生成数据渲染的 HTML 表单；而另外一种是未绑定数据的，由于不存在数据所以直接生成空白的 HTML 表单。如果需要绑定数据，需要使用<span style="color: rgb(255, 0, 0);">字典</span>的形式传递待绑定的数据。实例如下所示：
+<pre class="python">
+In [1]: from django import forms
+    ...: class LoginForm(forms.Form):
+    ...:     title=forms.CharField(label=&quot;书名&quot;)
+In [2]: f= LoginForm()#未绑定数据
+In [3]: f.is_bound #检查是否绑定数据
+Out[3]: False
+In [4]: f= LoginForm({&quot;title&quot;:&quot;jango&quot;})#字典传递数据
+In [5]: f.is_bound
+Out[15]: True #已经绑定数据</pre>
+在此字典中，键是字段名称即 title，该字段名称与 LoginForm 类中的属性相对应。这些值是您要验证的数据。这些数据通常是字符串，但是有时也要看具体的 Field 字段类型，因为此时数据类型会有所不同。在上述代码中，我们使用 is_bound() 来区分表单是否绑定了数据。若返回 True 则说明绑定了数据，反之则未绑定。<br />
+<p class="tip-box">
+如果你有一个绑定的 Form 实例，但是你想更改数据或者你想给一个未绑定的 Form 表单绑定一些数据，此时你需要创建一个新 Form 实例。因为 Form 实例一旦创建，它的数据将不可变。</p>
+那么各位小伙伴可以试一试，如果传递的是个空字典又会怎么样呢？猜一猜它的返回值是 True 还是 False 呢？<br />
+<p class="tip-box">
+提示：传递空字典会创建具有空数据的绑定形式。</p>
+<h2>
+2. Form表单验证数据方法</h2>
+<h4>
+1) Form.clean()</h4>
+前面介绍过对于单个 Field 字段有 clean() 方法，它起到得到&ldquo;清洁的数据&rdquo;的作用，而这里的 clean() 是对于整个 HTML 表单来讲的，这一点需要大家注意。通常该方法用于自定义验证功能。如果想实现自定义验证机制，那么你需要重写这个 clean 方法。实例如下所示：
+<pre class="python">
+from django import forms
+class ContactForm(forms.Form):
+    def clean(self):
+        cleaned_data = super().clean() #继承clean()方法
+        username= cleaned_data.get(&quot;username&quot;) #获取值
+        password = cleaned_data.get(&quot;password&quot;)
+        if username and password: #两者必须同时满足才可以
+            if &quot;Mrcao&quot; not in username: #验证用户名字
+                raise forms.ValidationError(
+                       &quot;USE is  error or password 
+                   is error&quot;
+                )</pre>
+<h4>
+2)&nbsp;Form.is_valid()</h4>
+Form 对象的主要任务是验证数据。对于绑定的 Form 实例调用 is_valid() 方法来验证指定的数据是否有效并符合规则，若有效则返回一个布尔值 True。实例如下所示：
+<pre class="python">
+In [1]: from django import forms
+   ...: class LoginForm(forms.Form):
+   ...:     title=forms.CharField(label=&quot;书名&quot;)
+   ...:
+In [2]: f=LoginForm({&#39;title&#39;:&#39;Django&#39;})
+In [3]: f.is_valid()
+Out[3]: True</pre>
+<br />
+若将 title 的传递值设置为<code style="font-size: 14px;">&quot;&quot;</code>的时候，则返回值是 False，因为 CharField 的 required 参数规定了此字段是必填项。所以这里的验证输入值是无效值。示例如下所示：
+<pre class="python">
+In [1]: from django import forms
+   ...: class LoginForm(forms.Form):
+   ...:     title=forms.CharField(label=&quot;书名&quot;)
+In [2]: f=LoginForm({&#39;title&#39;:&#39;Django&#39;})
+In [3]: f=LoginForm({&#39;title&#39;:&#39;&#39;})
+In [4]: f.is_valid()
+Out[4]: False
+</pre>
+<h2>
+3. Form表单处理字段错误信息方法</h2>
+<h4>
+1) Form.add_error(field, error)</h4>
+它代表向表单特定字段添加错误信息。field 参数为字段的名称。如果值为None，error 将作为 Form.non_field_errors() 的一个非字段错误即没有该字段相关联的错误类型。
+<h4>
+2)&nbsp;Form.has_error(field, code=None)</h4>
+判断某个字段是否具有指定 code 的错误。当 code 为 None 时，如果字段有任何错误它都将返回 True。这里的 code 代表字段的参数，比如 required、invalid 等，我们可以通过&nbsp;Form.errors.as_json(escape_html=False) 来看一下（该方法用于返回 JSON序列化后的错误信息字典），实例如下：
+<pre class="python">
+In [10]: f.errors.as_json()
+Out[10]: &#39;{&quot;title&quot;: [{&quot;message&quot;: &quot;\\u8fd9\\u4e2a\\u5b57\\u6bb5\\u662f\\u5fc5\\u586b\\u9879\\u3002&quot;, &quot;code&quot;: &quot;required&quot;}]}&#39;
+In [11]: f.errors.as_data()#返回一个字典，它将字段映射到原始的ValidationError实例
+Out[11]: {&#39;title&#39;: [ValidationError([&#39;这个字段是必填项。&#39;])]}
+In [12]: f.has_error(field=&quot;title&quot;,code=&quot;required&quot;)
+Out[12]: True
+</pre>
+<h2>
+4.&nbsp;Form表单检查数据是否被修改</h2>
+<h4>
+1) Form.has_changed()</h4>
+当你需要检查表单的数据是否从初始数据发生改变时，可以使用has_changed()方法。
+<pre class="python">
+In [19]: f=LoginForm({&quot;title&quot;:&quot;Python&quot;},initial={&#39;title&#39;:&#39;Django&#39;})
+In [20]: f.has_changed()
+Out[20]: True</pre>
+<h4>
+2) Form.changed_data</h4>
+它返回的是有变化的字段的列表。实例如下所示：
+<pre class="python">
+class LoginForm(forms.Form):
+    title=forms.CharField(label=&quot;书名&quot;)
+    user=forms.CharField(label=&quot;用户名&quot;)
+f=LoginForm({&quot;title&quot;:&quot;c++&quot;,&quot;user&quot;:&quot;yanchangsheng&quot;},initial={&quot;title&quot;:&quot;Django&quot;,&quot;user&quot;:&quot;caoxuesong&quot;})
+if f.has_changed():
+    print(&quot;-&quot;.join(f.changed_data))
+输出结果是：title-user</pre>
+<h2>
+5. 访问Form表单中的字段方法</h2>
+<h4>
+1) Form.fields.values()</h4>
+通过 fileds 属性访问表单的字段,它的返回值是字段的对象。实例如下所示：
+<pre class="python">
+f.fields.values()
+odict_values([&lt;django.forms.fields.CharField object at 0x087404F0&gt;, &lt;django.forms.fields.CharField object at 0x08740C30&gt;])
+f.fields[&#39;title&#39;]
+&lt;django.forms.fields.CharField at 0x87404f0&gt;
+</pre>
+<h2>
+6. cleaned_data实现数据访问</h2>
+当一个 Form 实例创建成功后，我们就可以使用 cleaned_data 属性访问干净的数据，为什么要说干净的数据呢，因为这个数据将数据转换成 Python 字典的格式，更易于我们阅读，示例如下所示：<br />
+<pre class="python">
+In [1]: f.cleaned_data
+Out[1]: {&#39;title&#39;: &#39;c++&#39;, &#39;user&#39;: &#39;yanchangsheng&#39;}</pre>
+如上所示通过&nbsp;cleaned_data 属性实现字段值数据的访问，不过在正常的逻辑中，我们先会使用 is_valid() 方法对输入数据的合法性进行验证，然后再使用该属性得到干净的数据，若验证时存在<span style="color: rgb(255, 0, 0);">不合法</span>的数据，cleaned_data 方法将会自动清洗掉不它们，<span style="color: rgb(255, 0, 0);">只显示合法</span>的数据。
+<h2>
+7. Form表单输出为HTML</h2>
+<h4>
+1) print()方法输出表单</h4>
+将 Form 渲染成 HTML 代码方法非的简单只需要 print() 即可，默认情况下，根据 form 类中字段的编写顺序，在 HTML 中以同样的顺序罗列。如下所以：
+<pre class="python">
+In [2]: f=LoginForm()
+In [3]: print(f)
+&lt;tr&gt;&lt;th&gt;&lt;label for=&quot;id_title&quot;&gt;书名:&lt;/label&gt;&lt;/th&gt;&lt;td&gt;&lt;input type=&quot;text&quot; name=&quot;title&quot; required id=&quot;id_title&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;&lt;label for=&quot;id_user&quot;&gt;用户名:&lt;/label&gt;&lt;/th&gt;&lt;td&gt;&lt;input type=&quot;text&quot; name=&quot;user&quot; required id=&quot;id_user&quot;&gt;&lt;/td&gt;&lt;/tr&gt;</pre>
+不过在输出 HTML 时有以下注意事项：<br />
+<ul>
+<li>
+为了灵活性，输出不包含&lt;table&gt;和&lt;/table&gt;、&lt;form&gt;和&lt;/form&gt;以及&lt;input type=&quot;submit&quot;&gt;标签。 需要我们自己手动添加。</li>
+<li>
+每个字段类型都由一个默认的 HTML 标签展示。注意，这些只是默认的，可以使用 Widget 特别指定。</li>
+<li>
+每个 HTML标签的 name 属性名直接从 LoginForm 类中获取。</li>
+<li>
+form 使用 HTML5 语法，顶部需添加 &lt;!DOCTYPE html&gt; 说明。</li>
+<li>
+&lt;table&gt;输出是 print 表单时的默认调用 as_table() 输出表格，但其他输出样式也可用。它们都可以作为表单对象上的方法使用。</li>
+</ul>
+<h4>
+2) 使用as_p()与as_ul()渲染HTML</h4>
+上面我们介绍过，当 print() 输出的时候默认使用 as_table() 方法，这是 Form 表单对象的默认的输出格式。当然我们也可以使用其他方式进行输出，比如 as_p() 或者as_ul() 方法。实例如下所示：
+<pre class="python">
+In [1]: f.as_p()
+Out[1]: &#39;&lt;p&gt;&lt;label for=&quot;id_title&quot;&gt;书名:&lt;/label&gt; &lt;input type=&quot;text&quot; name=&quot;title&quot; required id=&quot;id_title&quot;&gt;&lt;/p&gt;\n&lt;p&gt;&lt;label for=&quot;id_user&quot;&gt;用户名:&lt;/label&gt; &lt;input type=&quot;text&quot; name=&quot;user&quot; required id=&quot;id_user&quot;&gt;&lt;/p&gt;&#39;
+In [2]: f.as_ul()
+Out[2]: &#39;&lt;li&gt;&lt;label for=&quot;id_title&quot;&gt;书名:&lt;/label&gt; &lt;input type=&quot;text&quot; name=&quot;title&quot; required id=&quot;id_title&quot;&gt;&lt;/li&gt;\n&lt;li&gt;&lt;label for=&quot;id_user&quot;&gt;用户名:&lt;/label&gt; &lt;input type=&quot;text&quot; name=&quot;user&quot; required id=&quot;id_user&quot;&gt;&lt;/li&gt;&#39;</pre>
+<h2>
+8. 实现错误信息添加CSS样式</h2>
+如果为表单中的错误信息添加颜色或者加粗效果，那么会让其提示更加醒目，这时候就需要为其添加 CSS 样式。Django Form 表单提供了 Form.error_css_class 和 Form.required_css_class 这两个属性，使用它们就可以实现上述功能。实例如下所示：
+<pre class="python">
+In [6]: class LoginForm(forms.Form):
+    ...:     error_css_class=&quot;error&quot;
+    ...:     required_css_class=&quot;required&quot;
+    ...:     title=forms.CharField(label=&quot;书名&quot;)
+    ...:     user=forms.CharField(label=&quot;用户名&quot;)
+    ...: f=LoginForm({&quot;title&quot;:&quot;c++&quot;,&quot;user&quot;:&quot;yanchangsheng&quot;},initial={&quot;title&quot;:&quot;Django&quot;,&quot;user&quot;:&quot;caoxuesong&quot;})
+In [5]: print(f)
+#按as_table()输出表格添加 required属性
+&lt;tr class=&quot;required&quot;&gt;&lt;th&gt;&lt;label class=&quot;required&quot; for=&quot;id_title&quot;&gt;书名:&lt;/label&gt;&lt;/th&gt;&lt;td&gt;&lt;input type=&quot;text&quot; name=&quot;title&quot; value=&quot;c++&quot; required id=&quot;id_title&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr class=&quot;required&quot;&gt;&lt;th&gt;&lt;label class=&quot;required&quot; for=&quot;id_user&quot;&gt;用户名:&lt;/label&gt;&lt;/th&gt;&lt;td&gt;&lt;input type=&quot;text&quot; name=&quot;user&quot; value=&quot;yanchangsheng&quot; required id=&quot;id_user&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+#通过label_tag(attrs={})设置属性名
+In [8]: f[&#39;title&#39;].label_tag(attrs={&#39;class&#39;: &#39;bar&#39;})
+Out[8]: &#39;&lt;label class=&quot;bar required&quot; for=&quot;id_title&quot;&gt;书名:&lt;/label&gt;&#39;</pre>
+本节我们对 Django Form 表单中的常用 API 做了讲解，内容也许有点对，不过结合应用实例理解起来应该还算简单，如果你意犹未尽想继续深入学习 Form 表单的 API ，那么我建议你参考官方文档《<a href="http://docs.djangoproject.com/zh-hans/2.2/ref/forms/api/#configuring-form-elements-html-id-attributes-and-label-tags" target="_blank">Form API</a>》。在下一节《<a href="7928_2.html">Django Form表单完整使用流程</a>》我们将使用这几节中学到的知识，完成一个完整的 Form 表单使用流程。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="445.html" title="C++ list(STL list)排序及合并元素方法详解" target="_blank">C++ list(STL list)排序及合并元素方法详解</a></li>
+<li><a href="2336.html" title="C++深拷贝和浅拷贝（深复制和浅复制）完全攻略" target="_blank">C++深拷贝和浅拷贝（深复制和浅复制）完全攻略</a></li>
+<li><a href="vip_3239.html" title="Shell函数返回值精讲" target="_blank">Shell函数返回值精讲</a></li>
+<li><a href="vip_7352.html" title="Go语言Telnet回音服务器——TCP服务器的基本结构" target="_blank">Go语言Telnet回音服务器——TCP服务器的基本结构</a></li>
+<li><a href="../css3/transition.html" title="CSS transition（过渡效果）详解" target="_blank">CSS transition（过渡效果）详解</a></li>
+<li><a href="../csharp/queue.html" title="C# Queue：队列" target="_blank">C# Queue：队列</a></li>
+<li><a href="j0wt2bw.html" title="JS call()、apply()和bind()的区别" target="_blank">JS call()、apply()和bind()的区别</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7832;
+window.arcId = "abafUOOsUQc9Y5FFdtGdqvWzrfosD3nWExs7JBfwT6tfrfEivQ2akjdu0kE";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

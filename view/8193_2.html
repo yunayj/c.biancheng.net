@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Django项目编写单元测试用例</title>
+<meta name="description" content="《》一节我们主要讲解了Python 标准库模块 unittest 的基本使用方法，在 Django 中编程单元测试代码就非常简单了，在我们使用 startapp 命令创建应用的时候，你会发现有一个 tests.py 文件，" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../django/django.html">Django</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Django项目编写单元测试用例</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">《<a href="8186_2.html" target="_blank">Python unittest模块实现单元测试</a>》一节我们主要讲解了Python 标准库模块 unittest 的基本使用方法，本节讲解如何在 Django 项目中编程单元测试代码，其实当我们使用 startapp 命令创建 app 应用的时候，你就会发现有一个 tests.py 文件，这个文件就是 Django 提供给开发者做单元测试的，在这个文件中给出了测试类需要继承的基类 TestCase，其中 django.test.TestCase 是 unittest.TestCase 的<span style="color: rgb(255, 0, 0);">一个子类</span>，实现了数据库访问以及 HTTP 请求等测试功能。<br />
+<br />
+针对一个项目而言，因为它的模块众多，所以在做测试的时候为了更加直观、方便，我们通常在应用下创建一个测试目录用来承载不同模块的测试用例，按照模块的类别为不同的功能函数定义测试代码，如 test_models.py、test_vierws.py 分别指的是模层与视图层，以这样的命名方式来对文件命名。本节为了方便演示，我们只在 tests.py 中编写测试单元代码。<br />
+<h2>
+1.项目单元测试常用方法</h2>
+接下来介绍不同场景下 Django 项目单元测试的实现方法以及执行测试用例的命令。我们以 index 应用为例，介绍三类最常见的测试场景：基础功能测试、模型测试、视图测试。
+<h4>
+1) 基础功能测试</h4>
+基础功能测试即不涉及 Django 模块的逻辑功能，它和《<a href="8186_2.html" target="_blank">Python unittest模块实现单元测试</a>》一节中使用 unittest 模块实现的测试用例基本是类似的，只不过我们在这里继承的是 Django 中的测试模块即 unittest.TestCase 的子类&nbsp;&nbsp;django.test.TestCase 。当然如果你愿意也可以继承 unittest.TestCase，不过不推荐。我们在 index/tests.py 中编写如下代码，实现两数加和的测试用例：
+<pre class="python">
+from django.test import TestCase
+class ExampleTest(TestCase):
+    def test_addition(self):
+        def addition(x,y):
+            return x+y
+        self.assertEqual(addition(1,1),2,&#39;ass is failed&#39;) #断言函数加和运算
+</pre>
+<h4>
+2) 模型测试</h4>
+模型测试就是对 Model 的增删改查进行测试，测试类必须继承自 django.test.TestCase，它会在执行测试用例之前创建数据库，并在执行测试用例之后销毁。下面我们进行简单的测试用例代码说明，如下所示：
+<pre class="python">
+from index.models import Book, PubName
+    def test_model(self):
+        pub1=PubName.objects.create(pubname=&quot;程序帮出版社&quot;) #创建pubname实例，
+        book=Book.objects.create(title=&#39;Servlet&#39;,price=&#39;35.00&#39;, retail_price=&#39;35.00&#39;,pub=pub1)
+        self.assertTrue(book is not None)
+        self.assertNotEqual(Book.objects.count(),8)#使用断言判断
+        self.assertEqual(Book.objects.count(),9)</pre>
+上述代码，我门做一下简单剖析，我们定义了 test_model 函数，并创建了普通用户以及书籍类实例对象，之后还是和之前操作一样，我们是使用断言的方式对今天的测试代码进行了有效的测试。
+<p class="tip-box">
+虽然这里涉及到了数据库操作，但是该操作并不会影响数据库中原有数据。这些测试用例是相互隔离的，每一个测试用例都运行在一个事务中。</p>
+<h4>
+3) 视图层测试</h4>
+视图层测试相比其他的项目单元测试方法略显复杂一点点，在这里需要引入测试客户端，它提供了 get、post 等方法实现了对视图的访问，测试客户端被封装在了如下模块中即 django.test.Client。测试类的每一个测试方法都可以直接使用测试客户端 self.client。每一个测试方法都会新建一个测试客户端，并且彼此之间互不影响，下面我们编写如下示例：
+<pre class="python">
+from index.models import Book, PubName
+    def test_view(self):
+        pub1=PubName.objects.create(pubname=&quot;机械工业出版社&quot;)
+        book=Book.objects.create(title=&#39;Jsp&#39;,price=&#39;25.00&#39;, retail_price=&#39;25.00&#39;,pub=pub1)
+        response=self.client.get(&#39;/index/update_book/%d/&#39;% book.id)
+        response[&#39;X-Token&#39;]=&#39;C语言中文网&#39; #自定义响应头
+        self.assertEqual(response.status_code,200)
+        self.assertEqual(response[X-Token],&#39;C语言中文网&#39;,&#39;it is not same&#39;)</pre>
+我们使用 self.client.get 方法实现了对相应视图函数的访问，然后使用断言的方法，并调用 response 响应对象的方法或者属性进行了相关的测试。
+<h2>
+2. 项目中执行测试用例命令</h2>
+Django 提供了住专门的命令用来执行测试，命令如下所示：<br />
+<p class="info-box">
+python manage.py test</p>
+我们可以在项目的 manage.py 文件目录下直接执行此命令，但是该命令会将所有的测试结果都输出，如果你的每个应用下都做了单元测试，这显然会给你造成很错乱的感觉，所以我们可以使用下面的命令进行相关的测试输出：
+<ul>
+<li>
+执行 index 应用下的所有测试用例： python manage.py test index。</li>
+<li>
+执行 index应用下 tests 模块下定义的测试用例：&nbsp; python manage.py test.index.tests。</li>
+<li>
+直接执行 tests.py 文件下测试类：python manage.py test index.tests.ExampleTest。</li>
+<li>
+直接执行测试类下某个测试方法：python manage.py test index.tests.ExampleTest.test_view。</li>
+</ul>
+<br />
+由此可见 test 命令之后可以提供指定的参数来执行测试用例，比如一个 Python 包、模块、测试类或者一个测试方法。我们还可以加上 -v 参数来更加详细的显示测试过程，不仅如此可以使用数字 0、1、2、3 来指定详细程度，数字越大表示输出越详细，只有这 4 个级别可选则，命令如下所示：<br />
+<p class="info-box">
+python manage.py test -v 1 index.tests</p>
+如何你启动测试命令后，出现如下错误：<br />
+<p class="info-box">
+django.db.utils.InternalError: (1366, &quot;Incorrect...</p>
+这就们还需要在 settings.py 的 DATABASES 选项中添加如下配置：
+<pre class="python">
+&#39;TEST&#39;: {
+        &#39;CHARSET&#39;: &#39;utf8&#39;,
+         &#39;COLLATION&#39;: &#39;utf8_general_ci&#39;}</pre>
+最后我们执行测试命令可得到如下的输出结果：
+<pre class="python">
+C:\Users\Administrator\Book\BookStore&gt;python manage.py test index.tests
+Creating test database for alias &#39;default&#39;...
+System check identified no issues (0 silenced).
+.PubName object (1)
+增加了新的书籍
+F增加了新的书籍
+F
+======================================================================
+FAIL: test_model (index.tests.ExampleTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File &quot;C:\Users\Administrator\Book\BookStore\index\tests.py&quot;, line 26, in test_model
+    self.assertEqual(Book.objects.count(),9)
+AssertionError: 1 != 9
+======================================================================
+FAIL: test_view (index.tests.ExampleTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File &quot;C:\Users\Administrator\Book\BookStore\index\tests.py&quot;, line 34, in test_view
+    self.assertEqual(response[&#39;X-Token&#39;],&#39;C语言中文网&#39;,&#39;it is not same&#39;)
+AssertionError: &#39;=?utf-8?b?Q+ivreiogOS4reaWh+e9kQ==?=&#39; != &#39;C语言中文网&#39;
+- =?utf-8?b?Q+ivreiogOS4reaWh+e9kQ==?=
++ C语言中文网
+: it is not same
+----------------------------------------------------------------------
+Ran 3 tests in 0.033s
+
+FAILED (failures=2)
+Destroying test database for alias &#39;default&#39;...
+
+</pre>
+Django 项目的单元测试到这里就讲解完毕了，我们通过三节知识的讲解，让大家认识了什么是单元测试、单元测试模块 unittest 是如何应用的以及 Python unittest 模块如何在 Django 中进行使用，希望大家通过这些介绍掌握知识的精髓。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="474.html" title="VS“无法查找或打开PDB文件”是怎么回事？如何解决" target="_blank">VS“无法查找或打开PDB文件”是怎么回事？如何解决</a></li>
+<li><a href="781.html" title="Linux zip命令：压缩文件或目录" target="_blank">Linux zip命令：压缩文件或目录</a></li>
+<li><a href="1296.html" title="Java编程规范（命名规则）" target="_blank">Java编程规范（命名规则）</a></li>
+<li><a href="7390.html" title="MySQL ORDER BY：对查询结果排序" target="_blank">MySQL ORDER BY：对查询结果排序</a></li>
+<li><a href="bnqm7x.html" title="Word给汉子加拼音" target="_blank">Word给汉子加拼音</a></li>
+<li><a href="7lwxiox.html" title="Vue v-model双向绑定表单数据详解" target="_blank">Vue v-model双向绑定表单数据详解</a></li>
+<li><a href="olj8c1l.html" title="《Web前端测试与集成》PDF下载（高清完整版）" target="_blank">《Web前端测试与集成》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8193;
+window.arcId = "048d2Jp+6fENxurwhLm34cr2m3JEDM+ymYplKao7nMGNuv83NbXDaEoQcQ0";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

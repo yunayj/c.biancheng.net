@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>信号量及其使用和实现(超详细)</title>
+<meta name="description" content="互斥锁，我们刚刚讨论过了，通常认为是最简单的同步工具。本节将会讨论一个更棒的工具，它的功能类似于互斥锁，但是它能提供更为高级的方法，以便进程能够同步活动。 一个信号" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>信号量及其使用和实现(超详细)</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">互斥锁，我们刚刚讨论过了，通常认为是最简单的同步工具。本节将会讨论一个更棒的工具，它的功能类似于互斥锁，但是它能提供更为高级的方法，以便进程能够同步活动。<br />
+<br />
+一个信号量 S 是个整型变量，它除了初始化外只能通过两个标准原子操作：wait () 和 signal() 来访问：
+<ul>
+	<li>
+		操作 wait() 最初称为 P（荷兰语proberen，测试）；</li>
+	<li>
+		操作 signal() 最初称为 V（荷兰语verhogen，增加）；</li>
+</ul>
+<br />
+可按如下来定义wait ():<br />
+<pre class="cpp">
+wait(S){
+    while (S &lt;= 0)
+        ;// busy wait
+    S--；
+}</pre>
+可按如下来定义signal()：<br />
+<pre class="cpp">
+signal(S) {
+    S++;
+}</pre>
+在 wait() 和 signal() 操作中，信号量整数值的修改应不可分割地执行。也就是说，当一个进程修改信号量值时，没有其他进程能够同时修改同一信号量的值。另外，对于 wait(S)，S 整数值的测试（S &lt; 0）和修改（S--）也不能被中断。<br />
+<br />
+首先，我们看看如何使用信号量。<br />
+<h2>
+	信号量的使用</h2>
+操作系统通常区分计数信号量与二进制信号量。计数信号量的值不受限制，而二进制信号量的值只能为 0 或 1。因此，二进制信号量类似于互斥锁。事实上，在没有提供互斥锁的系统上，可以使用二进制信号量来提供互斥。<br />
+<br />
+计数信号量可以用于控制访问具有多个实例的某种资源。信号量的初值为可用资源数量。当进程需要使用资源时，需要对该信号量执行 wait() 操作（减少信号量的计数)。当进程释放资源时，需要对该信号量执行 signal() 操作（增加信号量的计数）。当信号量的计数为 0 时，所有资源都在使用中。之后，需要使用资源的进程将会阻塞，直到计数大于 0。<br />
+<br />
+我们也可以使用信号量来解决各种同步问题。例如，现有两个并发运行的进程：P1 有语句 S1 而 P2 有语句 S2。假设要求只有在 S1 执行后才能执行 S2。我们可以轻松实现这一要求：让 P1 和 P2 共享同一信号量 synch，并且初始化为 0。<br />
+<br />
+在进程 P1 中，插入语句：<br />
+<p class="info-box">
+	S1;<br />
+	signal (synch);</p>
+在进程 P2 中，插入语句：<br />
+<p class="info-box">
+	wait (synch);<br />
+	S2;</p>
+因为 synch 初始化为 0，只有在 P1 调用 signal(synch) ，即 S1 语句执行之后，P2 才会执行 S2。<br />
+<h2>
+	信号量的实现</h2>
+回想一下，互斥锁实现具有忙等待。刚才描述的信号量操作 wait() 和 signal()，也有同样问题。<br />
+<br />
+为了克服忙等待需要，可以这样修改信号量操作 wait() 和 signal() 的定义：当一个进程执行操作 wait() 并且发现信号量值不为正时，它必须等待。然而，该进程不是忙等待而是阻塞自己。阻塞操作将一个进程放到与信号量相关的等待队列中，并且将该进程状态切换成等待状态。然后，控制转到 CPU 调度程序，以便选择执行另一个进程。<br />
+<br />
+等待信号量 S 而阻塞的进程，在其他进程执行操作 signal() 后，应被重新执行。进程的重新执行是通过操作 wakeup() 来进行的，它将进程从等待状态改为就绪状态。然而，进程被添加到就绪队列。（取决于 CPU 调度算法，CPU 可能会也可能不会从正在运行的进程切换到新的就绪进程。）<br />
+<br />
+为了实现这样定义的信号量，我们按如下定义信号量：<br />
+<pre class="cpp">
+typedef struct {
+    int value;
+    struct process *list;
+} semaphore;</pre>
+每个信号量都有一个整数 value 和一个进程链表 list。当一个进程必须等待信号量时，就被添加到进程链表。操作 signal() 从等待、进程链表上取走一个进程，并加以唤醒。<br />
+<br />
+现在，信号量操作 wait() 可以定义如下：<br />
+<pre class="cpp">
+wait(semaphore *S) {
+    S-&gt;value--;
+    if (S-&gt;value &lt; 0) {
+        add this process to S-&gt;list;
+        block();
+    }
+}</pre>
+而信号量操作 signal() 可定义如下：<br />
+<pre class="cpp">
+signal(semaphore *S) {
+    S-&gt;value++;
+    if (S-&gt;value &lt;= 0) {
+        remove a process P from S-&gt;list;
+        wakeup(P);
+    }
+}</pre>
+操作 block() 挂起调用它的进程。操作 wakeup(P) 重新启动阻塞进程 P 的执行。这两个操作都是由操作系统作为基本系统调用来提供的。<br />
+<br />
+注意，这样实现的信号量的值可以是负数，而在具有忙等待的信号量经典定义下，信号量的值不能为负。如果信号量的值为负，那么它的绝对值就是等待它的进程数。出现这种情况源于，在实现操作 wait() 时互换了递减和测试的顺序。<br />
+<br />
+通过每个进程控制块 PCB 的一个链接字段，等待进程的链表可以轻松实现。每个信号量包括一个整数和一个 PCB 链表指针。向链表中增加和删除进程以便确保有限等待的一种方法采用 FIFO 队列，这里的信号量包括队列的首指针和尾指针。然而，一般来说，链表可以使用任何排队策略。信号量的正确使用不依赖于信号量链表的特定排队策略。<br />
+<br />
+关键的是，信号量操作应原子执行。我们应保证：对同一信号量，没有两个进程可以同时执行操作 wait() 和 signal()。这是一个临界区问题。<br />
+<br />
+对于单处理器环境，在执行操作 wait() 和 signal() 时，可以简单禁止中断。这种方案在单处理器环境下能工作，这是因为一旦中断被禁用，不同进程指令不会交织在一起。只有当前运行进程一直执行，直到中断 被重新启用并且调度程序重新获得控制。<br />
+<br />
+对于多处理器环境，每个处理器的中断都应被禁止；否则，在不同处理器上不同的运行进程可能会以任意不同方式一起交织执行。每个处理器中断的禁止会很困难，也会严重影响性能。因此，SMP 系统应提供其他加锁技术，如 compare_and__swap() 或自旋锁，以确保 wait() 与 signal() 原子执行。<br />
+<br />
+重要的是，对于这里定义的操作 wait() 和 signal()，我们并没有完全取消忙等待。我们只是将忙等待从进入区移到临界区。此外，我们将忙等待限制在操作 wait() 和 signal() 的临界区内，这些区比较短（如经合理编码，它们不会超过 10 条指令）。因此，临界区几乎不被占用，忙等待很少发生，而且所需时间很短。对于应用程序，存在一种完全不同的情况，即临界区可能很长（数分钟或数小时）或几乎总是被占用。在这种情况下，忙等待极为低效。<br />
+<h2>
+	死锁与饥饿</h2>
+具有等待队列的信号量实现可能导致这样的情况：两个或多个进程无限等待一个事件，而该事件只能由这些等待进程之一来产生。当出现这样的状态时，这些进程就为<span style="color:#008000;">死锁</span>。<br />
+<br />
+为了说明起见，假设有一个系统，它有两个进程 P0 和 P1，每个访问共享信号量 S 和 Q，这两个信号量的初值均为 1:<br />
+<table>
+	<tbody>
+		<tr>
+			<th>
+				P<sub>0</sub></th>
+			<th>
+				P<sub>1</sub></th>
+		</tr>
+		<tr>
+			<td>
+				wait(S);&nbsp;</td>
+			<td>
+				wait(Q);</td>
+		</tr>
+		<tr>
+			<td>
+				wait(Q);&nbsp;&nbsp;</td>
+			<td>
+				wait(S);</td>
+		</tr>
+		<tr>
+			<td>
+				signal(S);</td>
+			<td>
+				signal(Q);</td>
+		</tr>
+		<tr>
+			<td>
+				signal(Q);</td>
+			<td>
+				signal(S);</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+假设 P<sub>0</sub> 执行 wait(S)，接着 P<sub>1</sub> 执行 wait(Q)。当 P<sub>0</sub> 执行 wait(Q) 时，它必须等待直到 P<sub>1</sub> 执行 signal(Q)。类似地，当 P<sub>1</sub> 执行 wait(S) 时，它必须等待直到 P<sub>0</sub> 执行 signal(S)。由于这两个操作 signal() 都不能执行，这样 P<sub>0</sub> 和 P<sub>1</sub> 就死锁了。<br />
+<br />
+我们说一组进程处于死锁状态：组内的每个进程都等待一个事件，而该事件只可能由组内的另一个进程产生。这里主要关心的事件是资源的获取和释放。然而，其他类型的事件也能导致死锁。<br />
+<br />
+与死锁相关的另一个问题是无限阻塞或饥饿，即进程无限等待信号量。如果对与信号量有关的链表按 LIFO 顺序来增加和删除进程，那么可能发生无限阻塞。<br />
+<h2>
+	优先级的反转</h2>
+如果一个较高优先级的进程需要读取或修改内核数据，而且这个内核数据当前正被较低优先级的进程访问（这种串联方式可涉及更多进程），那么就会出现一个调度挑战。由于内核数据通常是用锁保护的，较高优先级的进程将不得不等待较低优先级的进程用完资源。如果较低优先级的进程被较高优先级的进程抢占，那么情况变得更加复杂。<br />
+<br />
+比如，假设有三个进程 L、M 和 H，它们的优先级顺序为 <code>L&lt;M&lt;H</code>。假定进程 H 需要资源 R，而 R 目前正在被进程 L 访问。通常，进程 H 将等待 L 用完资源 R。但是，现在假设进程 M 进入可运行状态，从而抢占进程 L。间接地，具有较低优先级的进程 M，影响了进程 H 应等待多久，才会使得进程 L 释放资源 R。<br />
+<br />
+这个问题称为<span style="color:#008000;">优先级反转</span>。它只出现在具有两个以上优先级的系统中，因此一个解决方案是只有两个优先级。然而，这对于大多数通用操作系统是不够的。通常，这些系统在解决问题时采用优先级继承协议。<br />
+<br />
+根据这个协议，所有正在访问资源的进程获得需要访问它的更高优先级进程的优先级，直到它们用完了有关资源为止。当它们用完时，它们的优先级恢复到原始值。在上面的示例中，优先级继承协议将允许进程 L 临时继承进程 H 的优先级，从而防止进程 M 抢占执行。当进程 L 用完资源 R 时，它将放弃继承的进程 H 的优先级，以采用原来的优先级。因为资源 R 现在可用，进程 H（而不是进程 M）会接下来运行。<br />
+<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="36_2.html" title="Go语言计算字符串长度——len()和RuneCountInString()" target="_blank">Go语言计算字符串长度——len()和RuneCountInString()</a></li>
+<li><a href="vip_2273_2.html" title="C++继承时的对象内存模型" target="_blank">C++继承时的对象内存模型</a></li>
+<li><a href="3593_2.html" title="汇编语言ROL（循环左移）指令：将操作数所有位都向左移" target="_blank">汇编语言ROL（循环左移）指令：将操作数所有位都向左移</a></li>
+<li><a href="7540_2.html" title="HTML &lt;table&gt;标签（表格）" target="_blank">HTML &lt;table&gt;标签（表格）</a></li>
+<li><a href="../pandas/statistical-functions_2.html" title="Python Pandas统计函数" target="_blank">Python Pandas统计函数</a></li>
+<li><a href="../tkinter/scrollbar-widget_2.html" title="Tkinter Scrollbar滚动条控件" target="_blank">Tkinter Scrollbar滚动条控件</a></li>
+<li><a href="9801_2.html" title="IP协议是什么（超级详细）" target="_blank">IP协议是什么（超级详细）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 1232;
+window.arcId = "97cb4N4MI3IvYiUNt6RzLGj3fne2dxgX8h5R4RpzP+T3h1wyMcd/OAW27Tc";
+window.typeidChain = "113|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

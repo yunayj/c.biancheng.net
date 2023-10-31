@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>汇编语言PUSH和POP指令（压栈和出栈）</title>
+<meta name="description" content="汇编里把一段内存空间定义为一个栈，栈总是先进后出，栈的最大空间为 64K。由于 栈 是由高到低使用的，所以新压入的数据的位置更低，ESP 中的指针将一直指向这个新位置，所以 ES" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>汇编语言PUSH和POP指令（压栈和出栈）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">汇编里把一段内存空间定义为一个栈，栈总是先进后出，栈的最大空间为 64K。由于 &quot;栈&quot; 是由高到低使用的，所以新压入的数据的位置更低，ESP 中的指针将一直指向这个新位置，所以 ESP 中的地址数据是动态的。<br />
+<h2>
+PUSH 指令</h2>
+PUSH 指令首先减少 ESP 的值，再将源操作数复制到堆栈。操作数是 16 位的，则 ESP 减 2，操作数是 32 位的，则 ESP 减 4。PUSH 指令有 3 种格式：<br />
+<p class="info-box">
+PUSH reg/mem16<br />
+PUSH reg/mem32<br />
+PUSH inm32</p>
+<h2>
+POP指令</h2>
+POP 指令首先把 ESP 指向的堆栈元素内容复制到一个 16 位或 32 位目的操作数中，再增加 ESP 的值。如果操作数是 16 位的，ESP 加 2，如果操作数是 32 位的，ESP 加 4：<br />
+<p class="info-box">
+POP reg/mem16<br />
+POP reg/mem32</p>
+<h2>
+PUSHFD 和 POPFD 指令</h2>
+PUSHFD 指令把 32 位 EFLAGS 寄存器内容压入堆栈，而 POPFD 指令则把栈顶单元内容弹出到 EFLAGS 寄存器：<br />
+<p class="info-box">
+pushfd<br />
+popfd</p>
+不能用 MOV 指令把标识寄存器内容复制给一个变量，因此，PUSHFD 可能就是保存标志位的最佳途径。有些时候保存标志寄存器的副本是非常有用的，这样之后就可以恢复标志寄存器原来的值。通常会用 PUSHFD 和 POPFD 封闭一段代码：<br />
+<p class="info-box">
+pushfd&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;保存标志寄存器<br />
+;<br />
+;任意语句序列<br />
+;<br />
+popfd&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;恢复标志寄存器</p>
+当用这种方式使用入栈和出栈指令时，必须确保程序的执行路径不会跳过 POPFD 指令。当程序随着时间不断修改时，很难记住所有入栈和出栈指令的位置。因此，精确的文档就显得至关重要！<br />
+<br />
+一种不容易出错的保存和恢复标识寄存器的方法是：将它们压入堆栈后，立即弹出给一个变量：<br />
+<pre class="asm">
+.data
+saveFlags DWORD ?
+.code
+pushfd                    ;标识寄存器内容入栈
+pop saveFLags             ;复制给一个变量</pre>
+下述语句从同一个变量中恢复标识寄存器内容：<br />
+<pre class="asm">
+push saveFlags            ;被保存的标识入栈
+popfd                     ;复制给标识寄存器</pre>
+<h2>
+PUSHAD，PUSHA，POPAD 和 POPA</h2>
+PUSHAD 指令按照 EAX、ECX、EDX、EBX、ESP（执行 PUSHAD 之前的值）、EBP、ESI 和 EDI 的顺序，将所有 32 位通用寄存器压入堆栈。<br />
+<br />
+POPAD 指令按照相反顺序将同样的寄存器弹出堆栈。与之相似，PUSHA 指令按序（AX、CX、DX、BX、SP、BP、SI 和 DI）将 16 位通用寄存器压入堆栈。<br />
+<br />
+POPA 指令按照相反顺序将同样的寄存器弹出堆栈。在 16 位模式下，只能使用 PUSHA 和 POPA 指令。<br />
+<br />
+如果编写的过程会修改 32 位寄存器的值，则在过程开始时使用 PUSHAD 指令，在结束时使用 POPAD 指令，以此保存和恢复寄存器的内容。示例如下列代码段所示：<br />
+<pre class="asm">
+MySub PROC
+    pushad                 ;保存通用寄存器的内容
+    .
+    .
+    mov eax,...
+    mov edx,...
+    mov ecx,...
+    .
+    .
+    popad                   ;恢复通用寄存器的内容
+    ret
+MySub ENDP</pre>
+必须要指岀，上述示例有一个重要的例外：过程用一个或多个寄存器来返回结果时，不应使用 PUSHA 和 PUSHAD。假设下述 ReadValue 过程用 EAX 返回一个整数；调用 POPAD 将会覆盖 EAX 中的返回值：<br />
+<pre class="asm">
+ReadValue PROC
+    pushad                    ;保存通用寄存器的内容
+    .
+    .
+    mov eax rreturn_value
+    .
+    .
+    popad                    ;覆盖 EAX !
+    ret
+ReadValue ENDP</pre>
+<h2>
+示例：字符串反转</h2>
+现在查看名为 RevStr 的程序：在一个字符串上循环，将每个字符压入堆栈，再把这些字符从堆栈中弹出（相反顺序），并保存回同一个字符串变量。由于堆栈是 LIFO（后进先出）结构，字符串中的字母顺序就发生了翻转：<br />
+<pre class="asm">
+;字符串翻转（Revstr.asm）
+.386
+.model flat,stdcall
+.stack 4096
+ExitProcess PROTO,dwExitCode:DWORD
+
+.data
+aName BYTE &quot;Abraham Lincoln&quot;,0
+nameSize = ($-aName)-1
+
+.code
+main PROC
+;将名字压入堆栈
+    mov ecx,nameSize
+    mov esi,0
+
+L1:    movzx eax,aName[esi]        ;获取字符
+    push eax                       ;压入堆栈
+    inc esi
+    loop L1
+;将名字逆序弹出堆栈
+;并存入aName数组
+    mov ecx,nameSize
+    mov esi,0
+
+L2:    pop eax                        ;获取字符
+    mov aName[esi],al                 ;存入字符串
+    inc esi
+    loop L2
+
+    INVOKE ExitProcess,0
+main ENDP
+END main</pre>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="739.html" title="执行Shell脚本（多种方法）" target="_blank">执行Shell脚本（多种方法）</a></li>
+<li><a href="1834.html" title="C语言字符串处理函数" target="_blank">C语言字符串处理函数</a></li>
+<li><a href="vip_7321.html" title="Go语言函数的底层实现" target="_blank">Go语言函数的底层实现</a></li>
+<li><a href="9382.html" title="HTML标签的语法格式" target="_blank">HTML标签的语法格式</a></li>
+<li><a href="9831.html" title="TCP/IP协议介绍（超级详细）" target="_blank">TCP/IP协议介绍（超级详细）</a></li>
+<li><a href="knnink.html" title="Java SE、Java EE和Java ME的区别" target="_blank">Java SE、Java EE和Java ME的区别</a></li>
+<li><a href="1b3j74w.html" title="Word设置页码（非常详细）" target="_blank">Word设置页码（非常详细）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 3534;
+window.arcId = "a5dfXrfwAumTWOfysWSxDeeUSAiC9hKlzptH5Vsvc8ifuRPMkgJ6oRhGqp8";
+window.typeidChain = "448|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>神经网络分类算法原理详解</title>
+<meta name="description" content="通过对上一节内容的学习，透过人工神经网络的发展历程，掌握了人工神经网络的基本结构，本节将主要围绕反向传播算法对人工神经网络的分类原理进行介绍。 与传统的机器学习学习" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="../view/niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+	<div id="sidebar" class="toggle-target">
+	<div id="contents">
+		<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="ml_alg_2.html">机器学习算法</a></dt>
+		<dd>
+        	<span class="channel-num">1</span>
+        	<a href="what-is-ai_2.html">什么是人工智能</a>
+        </dd>
+<dd>
+        	<span class="channel-num">2</span>
+        	<a href="term_2.html">机器学习常用术语</a>
+        </dd>
+<dd>
+        	<span class="channel-num">3</span>
+        	<a href="env_2.html">机器学习环境搭建</a>
+        </dd>
+<dd>
+        	<span class="channel-num">4</span>
+        	<a href="linear-regression_2.html">线性回归算法</a>
+        </dd>
+<dd>
+        	<span class="channel-num">5</span>
+        	<a href="linear-model_2.html">构建线性模型</a>
+        </dd>
+<dd>
+        	<span class="channel-num">6</span>
+        	<a href="hypothesis-loss_2.html">数学解析线性回归</a>
+        </dd>
+<dd>
+        	<span class="channel-num">7</span>
+        	<a href="gradient-descent_2.html">梯度下降求极值</a>
+        </dd>
+<dd>
+        	<span class="channel-num">8</span>
+        	<a href="sklearn-linear_2.html">sklearn实现线性回归</a>
+        </dd>
+<dd>
+        	<span class="channel-num">9</span>
+        	<a href="logistic-regression_2.html">Logistic回归算法</a>
+        </dd>
+<dd>
+        	<span class="channel-num">10</span>
+        	<a href="analysis-logistic_2.html">数学解析Logistic算法</a>
+        </dd>
+<dd>
+        	<span class="channel-num">11</span>
+        	<a href="sklearn-logistic_2.html">应用Logistic回归算法</a>
+        </dd>
+<dd>
+        	<span class="channel-num">12</span>
+        	<a href="knn_2.html">KNN最邻近分类算法</a>
+        </dd>
+<dd>
+        	<span class="channel-num">13</span>
+        	<a href="sklearn-knn_2.html">sklearn实现KNN分类算法</a>
+        </dd>
+<dd>
+        	<span class="channel-num">14</span>
+        	<a href="bayes-theorem_2.html">理解贝叶斯公式</a>
+        </dd>
+<dd>
+        	<span class="channel-num">15</span>
+        	<a href="naive-bayes_2.html">朴素贝叶斯分类算法原理</a>
+        </dd>
+<dd>
+        	<span class="channel-num">16</span>
+        	<a href="sklearn-bayes_2.html">朴素贝叶斯算法应用</a>
+        </dd>
+<dd>
+        	<span class="channel-num">17</span>
+        	<a href="decision-tree_2.html">决策树算法if-else原理</a>
+        </dd>
+<dd>
+        	<span class="channel-num">18</span>
+        	<a href="conditions_2.html">选择决策树判别条件</a>
+        </dd>
+<dd>
+        	<span class="channel-num">19</span>
+        	<a href="comentropy_2.html">信息熵是什么</a>
+        </dd>
+<dd>
+        	<span class="channel-num">20</span>
+        	<a href="dcision-cut_2.html">决策树算法和剪枝原理</a>
+        </dd>
+<dd>
+        	<span class="channel-num">21</span>
+        	<a href="sklearn-decision_2.html">sklearn决策树分类算法</a>
+        </dd>
+<dd>
+        	<span class="channel-num">22</span>
+        	<a href="svm_2.html">初识支持向量机SVM分类算法</a>
+        </dd>
+<dd>
+        	<span class="channel-num">23</span>
+        	<a href="linear-indivisibility_2.html">SVM解决线性不可分问题</a>
+        </dd>
+<dd>
+        	<span class="channel-num">24</span>
+        	<a href="math-svm_2.html">从数学角度理解SVM分类算法</a>
+        </dd>
+<dd>
+        	<span class="channel-num">25</span>
+        	<a href="svm-application_2.html">SVM分类算法应用及实现</a>
+        </dd>
+<dd>
+        	<span class="channel-num">26</span>
+        	<a href="what-is-kmeans_2.html">什么是K-means聚类算法</a>
+        </dd>
+<dd>
+        	<span class="channel-num">27</span>
+        	<a href="kmeans-theory_2.html">K-means聚类算法原理解析</a>
+        </dd>
+<dd>
+        	<span class="channel-num">28</span>
+        	<a href="kmeans-application_2.html">K-means聚类算法的应用以及实现</a>
+        </dd>
+<dd>
+        	<span class="channel-num">29</span>
+        	<a href="what-is-ann_2.html">人工神经网络是什么</a>
+        </dd>
+<dd>
+        	<span class="channel-num">30</span>
+        	<a href="ann-principle_2.html">神经网络分类算法原理详解</a>
+        </dd>
+<dd>
+        	<span class="channel-num">31</span>
+        	<a href="ann-application_2.html">神经网络分类算法的应用及其实现</a>
+        </dd>
+<dd>
+        	<span class="channel-num">32</span>
+        	<a href="ensemble-learning_2.html">什么是集成学习算法</a>
+        </dd>
+<dd>
+        	<span class="channel-num">33</span>
+        	<a href="random-forest_2.html">集成学习应用：随机森林算法</a>
+        </dd>
+
+	</div>
+</div>
+	<div id="article-wrap">
+		<div id="article">
+			<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="ml_alg_2.html">机器学习算法</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+			<h1>神经网络分类算法原理详解</h1>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+			<div id="arc-body">通过《<a href="what-is-ann_2.html">人工神经网络是什么</a>》一节，我们了解了神经网络的发展历程，同时掌握了人工神经网络的基本结构。在本节将主要围绕&ldquo;反向传播算法&rdquo;对人工神经网络的分类原理进行讲解。<br />
+<br />
+在神经网络算法还没流行前，机器学习领域最受关注的算法是&ldquo;支持向量机算法（即 SVM 算法）&rdquo;，如今神经网络方兴未艾，您也许会好奇，神经网络各层的原理和结构都高度相似，为什么要堆叠这么多的神经网络层呢？就好比为什么单层感知器模型不能解决异或问题，但只要加上隐藏层就能解决呢？到底是谁赋予了神经网络如此奇妙的魔力。<br />
+<br />
+一般来说，神经网络的层数越多，网络模型的学习能力就越强，就越能拟合复杂的数据分布。但这只是一种理想状态，因为随着网络的加深，也会带来其他问题，比如计算的难度也会增加，同时模型理解起来也比较晦涩。因此选择恰当的网络层数去解决适合的场景，这是神经网络算法中的难点。
+<h2>
+	神经网络工作流程</h2>
+下面通过一个简单的示例来理解神经网络究竟是如何工作的：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="神经网络工作流程" src="../uploads/allimg/220420/145R04410-0_2.gif" /><br />
+	图1：人工神经网络模型</div>
+<br />
+如图 1 所示， A、B、C、D 是四位盲人，他们要玩&ldquo;盲人摸象&rdquo;的游戏。在数据集中有以下四个动物：大象、野猪、犀牛、麋鹿。四个人中 A、B、C 负责去摸动物（即动物特征），D 负责汇总分析 A、B、C 传递给他的信息，同时还会有人告诉 D，这一轮他们摸到是什么动物。此外，规定只有当 A、B、C 三个人摸到一下三个特征的时候向 D 汇报：
+<pre class="info-box">
+特征一：像一根柱子（腿部）
+特征二：像一把蒲扇（耳朵）
+特征三：像一条鞭子（尾巴）</pre>
+注意，游戏在理想状态下进行的，不考虑其他外界因素。下面按照有监督学习的流程，先训练再预测。摸动物的过程，其实就是获取动物部位特征的过程，因为有 4 只动物，因此此处需要轮询 4 次，下面是四轮完成后 D 汇总的信息，如下所示：
+<pre class="info-box">
+第一次，大象：
+A：像一根柱子（腿部）
+B：像一把蒲扇（耳朵）
+C：像一条鞭子（尾巴）
+第二次，野猪：
+B：像一把蒲扇
+C：像一条鞭子
+第三次，犀牛：
+A：像一把蒲扇
+C：像一条鞭子
+第四次，麋鹿：
+C：像一条鞭子</pre>
+通过对上述汇总信息的分析，D 认为，C 汇报的最没有价值（即权重小），因为无论是不是大象，他所汇报的内容都是一样的。D 认为，相比之下，A 和 B 的报告更有价值（权重大），但各自汇报也会有错误的时候。经过 D 研究发现，只要将 A 和 B信息进行汇总，当两人同时说摸到【柱子和蒲扇】时，那么被摸的动物就是大象，这样即便是盲人也能通过精诚团结摸出大象来。<br />
+<br />
+对于上述示例来说，A/B/C/D 其实构成了一个简单的神经网络模型，它们就想当于四个神经元，A/B/C 负责去&ldquo;摸&rdquo;，也就是回去不同维度的输入数据，构成了神经网络的输入层。当它们三个人获取数据后都会告诉 D，通过 D 汇总分析，给出最终预测结果，即判断是不是大象，这相当于神经网络的输出层。神经网络能够把分散的信息进行汇总，从而提取出最有价值、权威的信息。若只是将网络中的一个独立节点拎出来都是以偏概全，比如 C 认为尾巴像鞭子的都是大象，这显然不合理的。<br />
+<br />
+神经网络通过赋予输入信息不同的权重值来区别不同信息的重要程度。在模型训练过程中通过调节线性函数的相应权值，增加有价值信息的输入权值，降低其他价值信息较低的输入权值，这是【调优权值】的核心思想，通过上述方法能够提高网络模型预测的预测准确率。<br />
+<p class="tip-box">
+	神经元节点的个数和层数越多，神经网络的表达能力就越强，或者说拟合数据的能力就越强，这也是神经网络算法与其他机器学习学习算法相比，为什么适合处理图像识别、语音识别等复杂任务的根本原因。</p>
+<h2>
+	反向传播算法</h2>
+在神经网络模型中有两个重要部件，分别是：激活函数和反向传播 BP 算法，关于激活函数的相关概念，在《<a href="what-is-ann_2.html" target="_blank">人工神经网络是什么</a>》一节已经做了相关介绍，那到底什么是反向传播算法呢？在讲解反向传播之前，有必要先了解一下正向传播的概念。<br />
+<br />
+我们知道，人工神经网络是由一个个的神经元节点构成的，这些节点的作用就是负责接受和传导信息，如同大脑神经元一样，接受外接刺激，传递兴奋信号。<br />
+<br />
+在一个人工神经网络模型中，从输入层开始，传递到输出层，最后返回结果，这种信号传播方式被称为&ldquo;正向传播&rdquo;（或称前向运算、前向传播）。在神经网络模型中，若输入一层层的传递下去的，直到输出层产生输出，正向传播就结束了。<br />
+<br />
+反向传播的与前向传播类似，但由于传播方向相反，因此被称为反向传播算法（简称 BP 算法），该算法最早出现在 20 世纪 60 年代，但当时并没有引起重视，直到 1986 年经 Hinton 等人进行了重新描述，才再次进入大众的视野。该算法成功解决了少数层神经网络【权值参数】计算的问题。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="前向运算和反向传播" src="../uploads/allimg/220420/145R06233-1_2.gif" /><br />
+	图2：前向运算和反向传播示意图</div>
+<h4>
+	1) 反向传播原理</h4>
+反向传播算法（BP）是一种有监督学习算法，即通过有标记的训练数据来学习，它是训练人工神经网络模型的常用方法之一。简单的来说，BP 算法就是从错误中学习，直至将错误程度降到最低时结束，从而提高模型的可靠性。<br />
+<br />
+BP 算法的学习过程由正向传播过程和反向传播过程两部分组成。在正向传播过程中，输入信息通过输入层经隐含层，逐层处理并传向输出层，如果输出值与标记值存在误差，则将误差由输出层经隐藏层向输入层传播（即反向传播），并在这个过程中利用梯度下降算法对神经元的各个权值参数进行调优，当误差达到最小时，网络模型训练结束，也即反向传播结束。流程图如下所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="反向传播算法" src="../uploads/allimg/220420/145R0BG-2_2.gif" /><br />
+	图3：神经网络模型训练</div>
+<br />
+对上述过程进行总结：输入层接受一个输入数据 x，同时初始化一个权重参数 &omega;，通过隐藏层计算之后，由输出层输出结果，前向运算完成。之后，将输出层结果与标记值进行比较，获取偏差值，将此偏差值由输出层向输入层传播（反向传播阶段），这个阶段利用梯度下降算法对权值参数进行反复调优，当偏差值最小时，获得一组最优的权值参数（&omega;）。
+<h4>
+	2) 应用示例</h4>
+现有如下神经网络模型，由三层组成，分别是输入层，隐藏层，输出层，并以 Sigmoid 函数为神经网络的激活函数。下面看看反向传播算法是如何运算的，又是如何实现参数调优的。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="反向传播案例" src="../uploads/allimg/220420/145R02391-3_2.gif" /><br />
+	图4：神经网络模型</div>
+<br />
+首先对网络模型的数据做一下简单说明：
+<pre class="info-box">
+输入层：i1=0.05，i2 = 0.1
+
+初始化权值参数：w1=0.15，w2=0.2，w3=0.25，w4=0.3，w5=0.4，w6=0.45，w7=0.5，w8=0.55
+
+输出层标记值（即期望值）：o1=0.01，o2=0.99
+
+偏置项权重值：b1=0.35，b2=0.6</pre>
+下面使用反向传播算法使真实输出与标记值尽可能地接近，即真实值与标记值的偏差值最小。按照上述流程我们一步步进行计算。<br />
+<br />
+<strong><span style="color:#008000;">前向运算阶段</span></strong>：输入层 --&gt; 隐藏层 --&gt;输出层，计算神经元 H1 的权值加和：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="权值加和" src="../uploads/allimg/220420/145R01530-4_2.gif" /></div>
+<br />
+将初始化数据带入上述公式，可得以下结果：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/220420/145R0I61-5_2.gif" /></div>
+<br />
+隐藏层神经元的 H1 的输出结果，注意此结果需要经过激活函数映射：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="激活函数映射结果" src="../uploads/allimg/220420/145R01011-6_2.gif" /></div>
+<br />
+同理依照上述方法可以计算出 H2 神经元输出，其结果如下：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/220420/145R06044-7_2.gif" /></div>
+<br />
+下面计算输出层 O1 真实输出结果，如下所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/220420/145R03253-8_2.gif" /></div>
+<br />
+将数据带入上述公式，经过激活函数映射，求得输出层 O1 的结果：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/220420/145R0Eb-9_2.gif" /></div>
+<br />
+同理，按照上述方法可以计算出 O2 真实的输出结果：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="输出层输出结果" src="../uploads/allimg/220420/145R01954-10_2.gif" /></div>
+<p>
+	<br />
+	通过上述运算可以得出：输出的实际结果与标记值相差甚远，计算结果是 [0.75136507,0.772928465]，而实际上标记值是 [0.01,0.99]。 接下来使用反向传播算法，迭代更新权值，重新计算输出。</p>
+<p>
+	<br />
+	<strong><span style="color:#008000;">反向传播阶段</span></strong>，输出层 --&gt; 隐藏层 --&gt; 输入层，首先使用 MSE 均方误差公式计算总误差：<br />
+	&nbsp;</p>
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/220420/145R01431-11_2.gif" /></div>
+<p class="tip-box">
+	注意：MSE 是一种衡量&ldquo;平均误差&rdquo;较为方便的方法，MSE 可以评价数据的变化程度，MSE 的值越小，说明预测模型的泛化能力越好。</p>
+经上述计算求出了总误差（E<sub>total</sub>），这个值是由神经网络中所有节点&ldquo;共同&rdquo;组成的。因此就要计算每个神经元节点到底&ldquo;贡献&rdquo;了多少偏差值，这是反向传播算法要解决的核心问题，当然解决方法也很简单，即求偏导数，比如求 A 节点贡献了多少损失值，我们就对该节点求偏导数即可。<br />
+<br />
+我们以 w<sub>5&nbsp;</sub>为例对其进行调整，要知道 w5 对于整体误差到底产生多少影响，这里采用链式法则求偏导数，如下所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="链式法则" src="../uploads/allimg/220420/145R01336-12_2.gif" /></div>
+<br />
+要想求得 w<sub>5</sub> 的偏导数，需要对另外三部分别求偏导数，如下所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="求偏导数" src="../uploads/allimg/220420/145R052S-13_2.gif" /></div>
+<br />
+将上述三部分的结果相乘就可以得到 w<sub>5&nbsp;</sub>的偏导数，其结果值为 0.082167041。最后使用<strong><span style="color:#008000;">梯度下降算法</span></strong>更新 w<sub>5&nbsp;</sub>参数值，如下所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="更新权值" src="../uploads/allimg/220420/145R02C9-14_2.gif" /></div>
+<p class="tip-box">
+	注意： &eta; 是梯度下降算法中的学习率，此处取值 0.5，在前面讲解梯度下降算法时已经做了相关介绍，参考《<a href="gradient-descent_2.html">梯度下降求极值</a>》。</p>
+这样就完成了 w<sub>5&nbsp;</sub>权值更新，同理，依照上述方法可以完成 w<sub>6</sub>、w<sub>7</sub>、w<sub>8 </sub>&nbsp;更新。<br />
+<br />
+上述过程只是输出层向隐藏层传播，当计算出更新的权值后，开始由隐藏层向输入层传播，并依次更新 w<sub>1</sub>、w<sub>2</sub>、w<sub>3</sub>、w<sub>4</sub>，这样就完成了第一轮的权值更新。可以看出，通过第一轮权值更新后，总误差由 0.298371109 下降至 0.291027924，在迭代 10000 次后，总误差为 0.000035085，输出值为 [0.015912196, 0.984065734]，已经非常逼近期望值 [0.01, 0.99]。<br />
+<h2>
+	总结</h2>
+神经网络分类算法是一种有监督学习算法，使用神经网络分类算法，大致需要以下五步：
+<ul>
+	<li>
+		初始化神经网络中所有神经元节点的权值；</li>
+	<li>
+		输入层接收输入，通过正向传播产生输出；</li>
+	<li>
+		根据输出的预测值，结合实际值计算偏差；</li>
+	<li>
+		输出层接收偏差，通过反向传播机制（逆向反推）让所有神经元更新权值；</li>
+	<li>
+		从第 2 步到第 4 步是一次完整的训练模型的过程，重复该过程，直到偏差值最小。</li>
+</ul>
+<br />
+神经网络算法通过反向传播机制让所有神经元实现了权值更新，当我们不断迭代上述训练过程，直到偏差值最小，最终就会得到一个最优的网络模型，实现了对数据的最佳拟合。<br />
+</div>
+			<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="../view/niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/143_3.html" title="C89（C90）、C99、C11——C语言的三套标准" target="_blank">C89（C90）、C99、C11——C语言的三套标准</a></li>
+<li><a href="../view/2377_2.html" title="GCC -S选项：生成汇编文件" target="_blank">GCC -S选项：生成汇编文件</a></li>
+<li><a href="../view/vip_5912_2.html" title="C语言扫雷小游戏源码下载和思路解析" target="_blank">C语言扫雷小游戏源码下载和思路解析</a></li>
+<li><a href="../view/7525_4.html" title="Django模板加载与响应" target="_blank">Django模板加载与响应</a></li>
+<li><a href="what-is-ann_2.html" title="人工神经网络是什么" target="_blank">人工神经网络是什么</a></li>
+<li><a href="../view/vtwb0nm_2.html" title="MySQL修改字段名" target="_blank">MySQL修改字段名</a></li>
+<li><a href="../view/lt3tq1i_2.html" title="Go语言数组的定义和使用（非常详细）" target="_blank">Go语言数组的定义和使用（非常详细）</a></li>
+</ul>
+</div>
+		</div>
+		
+	</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9637;
+window.arcId = "904cealxYyon2b3BhfkASkiycFfQRQsOvthk5ohY0MaSjHlJ+bDQUcD8YGg";
+window.typeidChain = "427";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="../view/8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="../view/8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="../view/8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="../view/9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="../view/8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/ml_alg/what-is-ann.html";
+window.nextPageURL = "/ml_alg/ann-application.html";
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

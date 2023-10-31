@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Celery框架入门教程（简明版）</title>
+<meta name="description" content="通常，Python 程序运行过程中，如果要执行耗时的任务，但又不希望主程序被阻塞，常见的方法是采用多线程。但是当并发量过大时，多线程压力很大，必须要用线程池来限制并发个数，" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Celery框架入门教程（简明版）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">通常，Python 程序运行过程中，如果要执行耗时的任务，但又不希望主程序被阻塞，常见的方法是采用多线程。但是当并发量过大时，多线程压力很大，必须要用线程池来限制并发个数，而且多线程对共享资源的使用也很麻烦。<br />
+<br />
+我们也可以使用协程，但是协程是在同一线程内执行的，如果一个任务本身需要执行很长时间，而不是因为等待 IO 被挂起，那其他协程照样无法运行。
+<h2 class="center">
+	一、Celery 简介</h2>
+Celery 是一个基于 Python 开发的分布式异步消息队列，可以实现任务的异步处理，适合一些并行任务，可以实现 Web 业务代码的解耦。<br />
+<br />
+Celery 采用多进程方式，能够有效利用多核 CPU，并且 Celery 封装了常见任务队列的各种操作，我们可以用 Celery 提供的接口快速实现并管理一个分布式的异步任务队列。<br />
+<br />
+Celery 具备如下几个显著的优点。
+<ul>
+	<li>
+		简单：熟悉 Celery 的工作流程后，配置使用简单。</li>
+	<li>
+		高可用：当任务执行失败或发生连接中断，Celery 会自动尝试重新执行任务。</li>
+	<li>
+		快速：一个单进程的 Celery 每分钟可处理上百万个任务，并且只需要毫秒级的延迟。</li>
+	<li>
+		灵活：几乎 Celery 的各个组件都可以被扩展和定制。</li>
+</ul>
+<h3>
+	1. 基本概念</h3>
+虽然 Celery 是用 Python 实现的，但提供了其他常用语言的接口支持。在运行 Celery 之前，我们需要先明白几个概念。
+<h4>
+	1) 消息代理（broker，也称消息中间件）</h4>
+接受任务生产者发送的任务消息，存进队列并按序分发给任务消费者。<br />
+<br />
+Celery 本身不提供消息代理服务，但是可以集成第三方提供的消息中间件。常见的 Brokers 有 RabbitMQ、Redis、ZooKeeper 等，但适用于生产环境的只有 RabbitMQ 和 Redis。
+<h4>
+	2) 任务结果存储/后端（result store/backend）</h4>
+顾名思义就是存储结果的地方，队列中的任务执行完的结果或者状态需要被任务生产者知道，所以需要一个存储这些结果的地方。<br />
+<br />
+Celery 默认支持 Redis、RabbitMQ、MongoDB、Django ORM、SQLAlchemy 等方式存储。
+<h4>
+	3) 任务执行者（worker）</h4>
+即执行任务的消费者，通常会在多台服务器运行多个消费者来提高执行效率。
+<h4>
+	4) 任务（task）</h4>
+即我们想在队列中执行的任务，一般由用户或其他操作将任务入队，然后交由任务执行者处理。
+<h3>
+	2. 架构设计</h3>
+Celery 的架构如图1所示，主要由消息中间件、任务执行者和任务执行结果存储3部分组成。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Celery 的架构" src="../uploads/allimg/230827/1-230RG13P4114_2.png" /><br />
+	图1：Celery 的架构</div>
+<br />
+Celery 的基本工作就是管理任务，分配任务到不同的服务器，并且取得结果。<br />
+<br />
+Celery 本身不能解决服务器之间的通信，所以，RabbitMQ 或 Redis 作为一个消息队列管理工具，与 Celery 集成，负责处理服务器之间的通信任务。<br />
+<br />
+Celery 没有消息存储功能，它需要介质，如 RabbitMQ、Redis、MySQL 和 MongoDB。<br />
+<br />
+在图1中，用户应用（任务发布方）发布任务到 Broker，通常使用 RabbitMQ 或 Redis 来存储任务，然后调用任务执行单元进行工作，最后把结果通过后端（如 Redis）来存储，最后用户应用根据需要取出结果。
+<h3>
+	3. 应用场景</h3>
+Celery 是一个强大的分布式任务队列的异步处理框架，它可以让任务的执行完全脱离主程序，甚至可以被分配到其他主机上运行。<br />
+<br />
+Celery 的主要应用场景如下：
+<ul>
+	<li>
+		我们在开发过程中经常遇到需要使用异步任务的场景，例如一个 Web 请求中有运行时间很长的业务运算（发送短信、邮件，消息推送，音视频处理等），如果不采用异步任务，会阻塞当前的任务请求，影响用户体验。此时，我们可以将耗时操作提交给 Celery 异步执行。</li>
+	<li>
+		当有多种不同的任务，例如视频上传和压缩任务、照片压缩上传任务等，这些任务的优先级不同，需要使用不同的任务执行者去处理。Celery 可以定时执行某件事情，并在执行完成后通知任务生成者，也可以实现在运维场景下针对几百台机器批量执行某些命令或者任务。</li>
+</ul>
+<h4>
+	关于&nbsp;APScheduler</h4>
+APScheduler 是一个基于 Quartz 的 Python 定时任务框架，它实现了 Quartz 的所有功能，提供了基于日期、固定时间间隔和 crontab 类型的任务，并且可以持久化任务。<br />
+<br />
+APScheduler 提供了多种不同的调度器，方便开发人员根据自己的实际需要使用，同时提供了不同的存储机制，方便与 Redis 数据库等第三方的外部持久化工具协同工作。<br />
+<br />
+总之，APScheduler 功能强大且非常易用。
+<h2 class="center">
+	二、使用Celery</h2>
+本教程我们先安装 Celery，再介绍 Celery 的参数，然后再讲解 Celery 的使用。
+<h3>
+	1. 安装部署</h3>
+Celery 涉及任务队列和结果存储，故需要安装 RabbitMQ 或 Redis，这里我们使用 Redis。<br />
+<br />
+我们先安装 Redis，重点是安装必要的 Python 库，可以通过命令行也可以直接在 PyCharm 中下载安装。本教程采用的 Celery 版本是 5.2.3。<br />
+<br />
+我们可以通过命令行方式下载和安装指定版本：
+<pre class="info-box">
+# 安装Celery
+pip install celery==5.2.3
+# 因为后端采用的是Redis，所以需要安装Redis
+pip install redis==4.2.0
+# flower组件可以通过Web进行对Celery进行监控，但它不是必需的
+pip install flower==1.0.0</pre>
+<h4>
+	Celery 监控</h4>
+flower 是 Python 的用于监控 Celery 的库，它可以在 Web 页面实时显示 Celery 任务执行者的状态、任务的状态等。<br />
+<br />
+flower 还提供了 REST API 用于第三方应用直接触发任务执行、获取任务执行结果等，这极大地扩展了 Celery 的应用范围，例如一个 Java 应用可以通过 flower 的 REST API 使用 Celery 的异步任务系统。
+<h3>
+	2. 参数说明</h3>
+使用 Celery 涉及的参数配置较多，核心参数配置说明如表1所示。
+<p class="tip-box">
+	注意，参数名称要大写。</p>
+<table>
+	<caption>
+		表1：核心参数配置说明</caption>
+	<tbody>
+		<tr>
+			<th>
+				参数配置示例</th>
+			<th>
+				配置说明</th>
+		</tr>
+		<tr>
+			<td>
+				BROKER_URL = &#39;amqp://username:passwd@<br />
+				host:port/虚拟主机名&#39;</td>
+			<td>
+				消息中间件的地址，建议采用 RabbitMQ 的方式。</td>
+		</tr>
+		<tr>
+			<td>
+				CELERY_RESULT_BACKEND=&#39;redis://username:passwd@host:port/db&#39;</td>
+			<td>
+				指定结果的存储地址。</td>
+		</tr>
+		<tr>
+			<td>
+				CELERY_TASK_SERIALIZER=&#39;msgpack&#39;</td>
+			<td>
+				指定任务的序列化方式。</td>
+		</tr>
+		<tr>
+			<td>
+				CELERY_TASK_RESULT_EXPIRES=60*60*24</td>
+			<td>
+				任务过期时间，即 Celery 任务执行结果的超时时间。</td>
+		</tr>
+		<tr>
+			<td>
+				CELERY_ACCEPT_CONTENT=[&quot;msgpack&quot;]</td>
+			<td>
+				指定任务接受的序列化类型。</td>
+		</tr>
+		<tr>
+			<td>
+				CELERY_ACKS_LATE=True</td>
+			<td>
+				是否需要确认任务发送完成，这一项对性能有影响。</td>
+		</tr>
+		<tr>
+			<td>
+				CELERY_MESSAGE_COMPRESSION=&#39;zlib&#39;</td>
+			<td>
+				压缩方案选择，可以是 zlib 或 bzip2，默认为没有压缩。</td>
+		</tr>
+		<tr>
+			<td>
+				CELERYD_TASK_TIME_LIMIT=5</td>
+			<td>
+				规定完成任务的时间，在5秒内完成任务，否则执行该任务的任务执行者将被杀死，任务移交给父进程。</td>
+		</tr>
+		<tr>
+			<td>
+				CELERYD_CONCURRENCY=4</td>
+			<td>
+				任务执行者的并发数，默认为服务器的内核数目，可以使用命令行参数<code>-c</code>指定数目。</td>
+		</tr>
+		<tr>
+			<td>
+				CELERYD_PREFETCH_MULTIPLIER=4</td>
+			<td>
+				任务执行者每次从消息中间件预取的任务数量。</td>
+		</tr>
+		<tr>
+			<td>
+				CELERYD_MAX_TASKS_PER_CHILD=40</td>
+			<td>
+				每个任务执行者执行多少任务会死掉，默认为无限。</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+Celery 支持多种的数据序列化方式，常见的数据序列化方式如表2所示。通常，为了保持跨语言的兼容性和速度，我们一般采用 msgpack 或 JSON 方式。<br />
+<br />
+<table>
+	<caption>
+		表2：常见的数据序列化方式</caption>
+	<tbody>
+		<tr>
+			<th>
+				序列化方式</th>
+			<th>
+				说明</th>
+		</tr>
+		<tr>
+			<td>
+				binary</td>
+			<td>
+				二进制序列化方式，Python 的 pickle 库默认的序列化方式。</td>
+		</tr>
+		<tr>
+			<td>
+				JSON</td>
+			<td>
+				支持多种语言，可用于跨语言方案，但不支持自定义的类对象。</td>
+		</tr>
+		<tr>
+			<td>
+				msgpack</td>
+			<td>
+				二进制的类 JSON 序列化方式，但比 JSON 方式的数据结构更小，运行速度更快。</td>
+		</tr>
+		<tr>
+			<td>
+				yaml</td>
+			<td>
+				表达能力更强，支持的数据类型比 JSON 方式多，但是 Python 客户端的性能不如 JSON 方式。</td>
+		</tr>
+	</tbody>
+</table>
+<h3>
+	3. 基本使用</h3>
+Celery 的使用过程很简单：
+<ul>
+	<li>
+		先通过命令确定异步任务函数，生产者会把函数名和相关参数传给消息中间件；</li>
+	<li>
+		然后通过命令启动 Celery，实现任务执行者对消息队列的监听。</li>
+</ul>
+<br />
+下面我们使用 Redis 来展示，Redis 在使用的时候充当两个角色，一个是消息中间件，另一个是存储结果的数据库。<br />
+<br />
+基本使用主要有如下5个步骤。<br />
+<br />
+1) 创建项目celeryDemo。<br />
+<br />
+2) 创建异步任务执行文件 celery_task，文件内容如代码清单3所示。<br />
+<br />
+代码清单3：celery_task
+<pre class="python">
+# -*- coding: utf-8 -*-
+# @Project : celeryDemo
+# @File    : celery_task.py
+# @Date    : 2023-08-26
+　
+import celery
+import time
+backend = &#39;redis://127.0.0.1:6379/1&#39;     # 设置Redis的1数据库来存放结果
+broker = &#39;redis://127.0.0.1:6379/2&#39;      # 设置Redis的2数据库来存放消息中间件
+cel = celery.Celery(&#39;test&#39;, backend=backend, broker=broker)
+    # 参数说明：第一个是Celery的名字，Celery和哪个项目相关就命名哪个
+    # 后面两个关键字参数用于指定消息中间件和结果存放位置。
+@cel.task
+def send_email(name):
+    print(&quot;向%s发送邮件...&quot; % name)
+    time.sleep(5)
+    print(&quot;向%s发送邮件完成&quot; % name)
+    return &quot;ok&quot;
+
+@cel.task
+def send_msg(name):
+    print(&quot;向%s发送短信...&quot; % name)
+    time.sleep(5)
+    print(&quot;向%s发送短信完成&quot; % name)
+return &quot;ok&quot;</pre>
+<br />
+3) 使用命令启动Celery：
+<p class="info-box">
+	celery --app=demo worker -l INFO</p>
+<br />
+4) 执行测试函数。建立一个文件，使用如下代码测试 Celery 异步函数：
+<pre class="python">
+from celery_task import send_email, send_msg
+result1 = send_email.delay(&quot;张三&quot;)
+print(result1.id)
+result2 = send_email.delay(&quot;李四&quot;)
+print(result2.id)
+result3 = send_email.delay(&quot;王五&quot;)
+print(result3.id)
+result4 = send_email.delay(&quot;赵六&quot;)
+print(result4.id)</pre>
+注意，运行的结果不是异步函数的返回值，而是一个 ID，因为 Celery 会将函数进行异步处理，处理结果会存放至指定的数据库，而我们取值需要使用 ID。<br />
+<br />
+5) 异步获取结果如下：
+<pre class="python">
+from celery.result import AsyncResult
+from celery_task import cel
+async_result=AsyncResult(id=&quot;275f43a8-a5bb-4822-9a90-8be3feeb3b4&quot;, app=cel)
+if async_result.successful():
+    result = async_result.get()
+    print(result)
+    # result.forget() # 将结果删除
+elif async_result.failed():
+    print(&#39;执行失败&#39;)
+elif async_result.status == &#39;PENDING&#39;:
+    print(&#39;任务等待中被执行&#39;)
+elif async_result.status == &#39;RETRY&#39;:
+    print(&#39;任务异常后正在重试&#39;)
+elif async_result.status == &#39;STARTED&#39;:
+    print(&#39;任务已经开始被执行&#39;)</pre>
+说明：执行失败的效果是代码有错但是异步不停止，还是会执行获得 ID，但是当获取结果时，async_result.failed() 为真。如果要演示记得重启 Celery，否则修改不生效。
+<h3>
+	4. 进阶用法</h3>
+除了基本用法，接下来，我们讲解3个进阶用法。<br />
+<br />
+1) 装饰器 @app.task 实际上将一个正常的函数修饰成一个 Task 对象，所以这里可以给修饰器加上参数来决定修饰后的 Task 对象的属性。<br />
+<br />
+我们先让被修饰的函数成为 Task 对象的绑定方法，这相当于被修饰的函数成了 Task 的实例方法，可以调用 self 获取当前 task 实例的很多状态和属性。<br />
+<br />
+2) 任务执行后，根据任务状态执行不同操作，这需要复写 Task 的 on_failure、on_success 等方法。示例如下：
+<pre class="python">
+# tasks.py
+# 继承Task类
+class MyTask(Task):
+    def on_success(self, retval, task_id, args, kwargs):
+        print &#39;task done: {0}&#39;.format(retval)
+        return super(MyTask, self).on_success(retval, task_id, args, kwargs)
+    def on_failure(self, exc, task_id, args, kwargs, einfo):
+        print &#39;task fail, reason: {0}&#39;.format(exc)
+        return super(MyTask, self).on_failure(exc, task_id, args, kwargs, einfo)
+@app.task(base=MyTask)
+def add(x, y):
+    return x + y</pre>
+上面的代码通过 celery -A tasks worker --loglevel=info 运行任务执行者，根据任务状态执行不同操作，分别执行我们自定义的 on_failure 方法和 on_success 方法。<br />
+<br />
+3) 任务状态回调。<br />
+<br />
+在实际场景中，获得任务状态是很常见的需求，当执行耗时时间较长的任务时，想获得任务的实时进度，需要自定义一个任务状态来说明进度并手动更新状态，从而告诉回调函数当前任务的进度。
+<h2 class="center">
+	三、封装示例</h2>
+Celery 可以和很多程序结合，Flask 是 Python 中有名的轻量级同步 Web 框架，在一些开发中，可能会遇到需要长时间处理的任务，此时就需要使用异步的方式来实现，让长时间任务在后台运行，先将本次请求的响应状态返回给前端，不让前端界面卡顿，当异步任务处理好后，如果需要返回状态，再将状态返回。<br />
+<br />
+下面示例展示了一个长时间运行的任务，用户通过浏览器启动一个或者多个长时间运行的任务，通过浏览器页面可以查询执行中的所有任务的状态，页面会显示每一个任务的状态消息，当任务完成时会显示任务的执行结果。<br />
+<br />
+图2是示例项目 myCelery 的项目结构。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="myCelery 的项目结构" src="../uploads/allimg/230827/1-230RG13T3319_2.png" /><br />
+	图2：myCelery 的项目结构</div>
+<br />
+在安装相关的依赖和 Redis 中间件后，结合 Flask 使用 Celery，主要有如下5步。<br />
+<br />
+1) 配置并实例化 Celery 和 Flask 对象，并做配置绑定。Flask 与 Celery 整合不需要任何插件，Flask 应用使用 Celery 只需要初始化 Celery 客户端即可，示例如代码清单4所示。<br />
+<br />
+代码清单4：celeryApp
+<pre class="python">
+# -*- coding: utf-8 -*-
+# @Time : 2023/8/26 6:49 下午
+# @Project : myCelery
+# @File : celeryApp.py
+# @Version: Python3.9.8
+　
+from flask import Flask
+from celery import Celery, platforms
+from urllib.parse import quote
+　
+REDIS_IP = &#39;172.21.26.54&#39;
+REDIS_DB = 0
+# 若密码中出现了特殊的字符，建议用quote()进行转义，直接赋值会导致后续读取失败
+PASSWORD = quote(&#39;hutong123456&#39;)
+# 创建Flask的一个实例
+flask_app = Flask(__name__)
+　
+# 配置Celery的backend和broker，只需要在初始化Flask应用时加入这行代码，将下面的配置信息写入应用的配置文件
+# 使用Redis作为消息代理
+flask_app.config[&#39;CELERY_BROKER_URL&#39;] = &#39;redis://:{}@{}:6379/{}&#39;.format(PASSWORD, REDIS_IP, REDIS_DB)
+# 把任务结果保存在Redis中
+flask_app.config[&#39;CELERY_RESULT_BACKEND&#39;] = &#39;redis://:{}@{}:6379/{}&#39;.format(PASSWORD, REDIS_IP, REDIS_DB)
+platforms.C_FORCE_ROOT = True  # 解决根用户不能启动Celery的问题
+# CELERY_ACCEPT_CONTENT = [&#39;application/json&#39;]
+# CELERY_TASK_SERIALIZER = &#39;json&#39;
+# CELERY_RESULT_SERIALIZER = &#39;json&#39;
+　
+# 创建一个Celery实例
+celery_app = Celery(flask_app.name,
+                    broker=flask_app.config[&#39;CELERY_BROKER_URL&#39;],
+                    backend=flask_app.config[&#39;CELERY_RESULT_BACKEND&#39;],
+                    include=[&#39;task&#39;, &#39;task2&#39;])
+celery_app.conf.update(flask_app.config)
+celery_app.autodiscover_tasks()
+　
+if __name__ == &#39;__main__&#39;:
+    pass</pre>
+Celery 通过创建一个 Celery 类对象来初始化，传入 Flask 应用的名称、消息代理的连接 URL、存储结果的 URL 以及包含的 task 任务列表。URL 放在 flask_app.config 中的 CELERY_BROKER_URL 和 CELERY_RESULT_BACKEND 的键值。<br />
+<br />
+另外，Celery 的其他配置可以直接用 celery_app.conf.update (flask_app.config) 通过 Flask 的配置直接传递。<br />
+<br />
+2) 用实例化的对象去关联执行任务的方法，通常通过 Python 的装饰器实现。任何作为后台异步任务的函数只需要用 @celery.task 装饰器装饰即可，即在需要异步执行的方法上使用 @celery.task 装饰器。示例如代码清单5所示。<br />
+<br />
+代码清单5：task
+<pre class="python">
+# -*- coding: utf-8 -*-
+# @Time : 2023/8/26 9:58 上午
+# @Project : myCelery
+# @File : task.py
+# @Version: Python3.9.8
+　
+from celeryApp import celery_app
+import time
+　
+# 这里定义一个后台任务task，异步执行装饰器为@celery_app.task
+@celery_app.task(bind=True)
+def long_task(self):
+    total = 100
+    for i in range(total):
+        # 自定义状态state为waiting..，另外添加元数据meta，模拟任务当前的进度状态
+        self.update_state(state=&#39;waiting..&#39;, meta={&#39;current&#39;: i, &#39;total&#39;: total, })
+        # 使用sleep模拟耗时的业务处理
+        time.sleep(1)
+    # 任务处理完成后，自定义返回结果
+    return {&#39;current&#39;: 100, &#39;total&#39;: 100, &#39;result&#39;: &#39;completed&#39;}</pre>
+因为前面配置定义的 Celery 的实例化对象名称叫 celery_app，所以在装饰器的时候要用 @celery_app.task。<br />
+<br />
+对于这个任务，通过在 Celery 装饰器中添加 bind=True 参数，让 Celery 发送一个 self 参数到自身，并使用它（self）来记录状态更新。self.update_state() 调用 Celery 如何接受这些任务更新。<br />
+<br />
+Celery 有一些内置的状态，如 STARTED、SUCCESS 等，也支持自定义状态。代码中使用一个叫作 PROGRESS 的自定义状态，还可以有一个附件的元数据，该元数据是字典类型，包含目前和总的迭代数以及随机生成的状态消息。客户端可以使用这些数据来显示进度信息。每迭代一次休眠一秒，以模拟正在做一些工作。当循环退出，返回一个字典，这个字典包含更新迭代计数器、最后的状态消息和结果。<br />
+<br />
+Celery 中常见的任务状态如表3所示。<br />
+<br />
+<table hei="44">
+	<caption>
+		表3：Celery 中常见的任务状态</caption>
+	<tbody>
+		<tr>
+			<th>
+				参数</th>
+			<th>
+				说明</th>
+		</tr>
+		<tr>
+			<td>
+				PENDING</td>
+			<td>
+				任务等待中</td>
+		</tr>
+		<tr>
+			<td>
+				STARTED</td>
+			<td>
+				任务已开始</td>
+		</tr>
+		<tr>
+			<td>
+				SUCCESS</td>
+			<td>
+				任务执行成功</td>
+		</tr>
+		<tr>
+			<td>
+				FAILURE</td>
+			<td>
+				任务执行失败</td>
+		</tr>
+		<tr>
+			<td>
+				RETRY</td>
+			<td>
+				任务将被重试</td>
+		</tr>
+		<tr>
+			<td>
+				REVOKED</td>
+			<td>
+				任务取消</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+3) 制作Flask的视图，演示调用和触发任务，并查看结果。通过 Flask，在浏览器中触发调用任务并查看异步执行的结果，这需要添加路由视图，示例如代码清单6所示。<br />
+<br />
+代码清单6：webFlask
+<pre class="python">
+# -*- coding: utf-8 -*-
+# @Time : 2023/8/26 10:42 上午
+# @Project : myCelery
+# @File : webFlask.py
+# @Version: Python3.9.8
+　
+from flask import jsonify, url_for
+from celeryApp import flask_app
+from task import long_task
+　
+# 通过在浏览器中输入ip:port/longtask触发异步任务
+@flask_app.route(&#39;/longtask&#39;, methods=[&#39;GET&#39;])
+def longtask():
+    # 发送或触发异步任务，通过调用apply_async函数，生成AsyncResult对象
+    task = long_task.apply_async()
+    print(&#39;task id : {}&#39;.format(task.task_id))
+    # task_id和id一样的
+    # print(&#39;task id : {}&#39;.format(task.id))
+    # url_for重定向到taskstatus()
+    return jsonify({&quot;msg&quot;: &quot;success&quot;}), 202, {&#39;Location&#39;: url_for(&#39;taskstatus&#39;,
+                                           task_id=task.task_id)}
+# 通过在浏览器中输入ip:port/status/&lt;task_id&gt;查询异步任务的执行状态
+@flask_app.route(&#39;/status/&lt;task_id&gt;&#39;)
+def taskstatus(task_id):
+    # 获取异步任务的结果
+    task = long_task.AsyncResult(task_id)
+    print(&#39;执行中的 task id ：{}&#39;.format(task))
+    # 等待处理
+    if task.state == &#39;PENDING&#39;:
+        response = {
+            &#39;state&#39;: task.state,
+            &#39;current&#39;: 0,
+            &#39;total&#39;: 100
+        }
+    # 执行中
+    elif task.state != &#39;FAILURE&#39;:
+        print(&#39;task info : {}&#39;.format(task.info))
+        # task.info 和 task.result是一样的
+        # print(&#39;task info : {}&#39;.format(task.result))
+        response = {
+            &#39;state&#39;: task.state,
+            &#39;current&#39;: task.info.get(&#39;current&#39;, 0),
+            &#39;total&#39;: task.info.get(&#39;total&#39;, 100)
+        }
+        # task中定义了执行成功后返回的结果包含result字符
+        if &#39;result&#39; in task.info:
+            response[&#39;result&#39;] = task.info[&#39;result&#39;]
+    else:
+        # 后台任务出错
+        response = {
+            &#39;state&#39;: task.state,
+            &#39;current&#39;: task.info.get(&#39;current&#39;, 0),
+            &#39;total&#39;: 100
+        }
+    return jsonify(response)
+　
+if __name__ == &#39;__main__&#39;:
+    # 运行Flask
+    flask_app.run()</pre>
+在上述代码中，Flask 应用能够请求执行这个后台任务，如 task=long_task.apply_async()，不直接调用任务函数，而是通过 apply_async() 调用任务函数。其中，long_task() 函数就是在一个 worker 进程中运行的任务。<br />
+<br />
+使用 apply_async()，我们可以添加参数给 Celery，告诉 Celery 如何执行后台任务，一个有用的参数就是要求任务在未来的某一时刻执行。例如，这个调用将安排任务在大约1分钟后运行：
+<p class="info-box">
+	apply_async(args=[10, 20], countdown=60)</p>
+调用 apply_async() 后会返回一个 AsyncResult 对象，通过这个对象可以获取任务状态的信息，AsyncResult 对象的属性或函数如表4所示。<br />
+<div>
+	&nbsp;</div>
+<table>
+	<caption>
+		表4：AsyncResult 对象的属性或方法</caption>
+	<tbody>
+		<tr>
+			<th>
+				属性或函数</th>
+			<th>
+				具体含义</th>
+		</tr>
+		<tr>
+			<td>
+				state</td>
+			<td>
+				返回任务状态</td>
+		</tr>
+		<tr>
+			<td>
+				task_id</td>
+			<td>
+				返回任务ID</td>
+		</tr>
+		<tr>
+			<td>
+				result</td>
+			<td>
+				返回任务执行结果，等同于调用get()方法</td>
+		</tr>
+		<tr>
+			<td>
+				ready()</td>
+			<td>
+				判断任务是否完成</td>
+		</tr>
+		<tr>
+			<td>
+				info()</td>
+			<td>
+				获取任务信息</td>
+		</tr>
+		<tr>
+			<td>
+				wait(seconds)</td>
+			<td>
+				等待N秒后获取结果</td>
+		</tr>
+		<tr>
+			<td>
+				successful()</td>
+			<td>
+				判断任务是否成功</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+正如我们所见，浏览器需要发起一个请求到 /longtask 来启动一个或多个任务。响应使用状态码 202 通常是在 REST API 中使用，用来表明一个请求正在进行中。<br />
+<br />
+另外也添加了 Location 头，值为一个客户端用来获取状态信息的 URL。这个 URL 指向一个叫作 taskstatus 的 Flask 路由，并且通过动态的要素 task_id 来获取异步任务的执行状态。<br />
+<br />
+在 Flask 应用中访问任务状态，路由 taskstatus 负责报告后台任务提供的状态更新。为了能够访问任务的数据，我们重新创建任务对象，该对象是 AsyncResult 类的实例，使用 URL 中的 task_id。<br />
+<br />
+第一个 if 代码块是当任务还没有开始的时候（PENDING状态），在这种情况下暂时没有状态信息，需要手动制造一些数据。接下来，elif 代码块返回后台的任务的状态信息，任务提供的信息可以通过 task.info 获得。如果数据中包含键 result，则意味着这是最终的结果并且任务已经结束，需要把这些信息加入响应。最后，else 代码块是任务执行失败的情况，这种情况下 task.info 中会包含异常的信息。<br />
+<br />
+4) 通过命令启动和验证。首先启动 worker 执行任务，命令如下：
+<p class="info-box">
+	celery -A celeryAPP.celery_app worker --loglevel=info</p>
+其中，参数<code>-A</code>后是我们创建的 Celery 的初始化实例对象名称，包含对应的任务，worker 表示该实例就是任务执行者。另外，该命令需要在项目工程目录下执行，即本示例的 myCelery 目录。<br />
+<br />
+Celery 任务启动成功如图3所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Celery任务启动成功" src="../uploads/allimg/230827/1-230RG13913S6_2.png" /><br />
+	图3：Celery任务启动成功</div>
+<br />
+在图3中，我们可以看到 transport 和 results 的地址信息，以及 tasks 下的两个任务。<br />
+<br />
+其他常见的 Celery 命令：
+<pre class="python">
+# 后台启动worker进程，参数-l指定worker输出的日志级别
+celery multi start worker_1 -A appcelery -l info
+# 重启worker进程
+celery multi restart worker_1 -A appcelery -l info
+# 立刻停止worker进程，如果无法停止，则加上参数-A
+celery multi stop worker_1
+# 任务执行完，停止
+celery multi stopwait worker_1
+# 查看进程数
+celery status -A appcelery</pre>
+<br />
+若 Celery 的日志输出的配置，若想在任务中输出日志，最好的方法如下：
+<pre class="python">
+from celery.utils.log import get_task_logger
+lg = get_task_logger(__name__)
+@celery.task
+def log_test():
+    lg.debug(&quot;in log_test()&quot;)</pre>
+但是仅如此我们会发现所有的日志最后都出现在 shell 窗口的 stdout 中，所以必须在启动 Celery 的时候使用<code>-f</code>选项来指定输出文件，如下：
+<p class="info-box">
+	celery -A main.celery worker -l debug -f log/celery/celery_task.log &amp;</p>
+然后，启动 Flask，调用异步任务和获取异步任务执行状态，我们只需要在 PyCharm 中运行 webFlask 程序即可，运行成功后如图4所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Celery 结合 Flask 启动" src="../uploads/allimg/230827/1-230RG1393S35_2.png" /><br />
+	图4：Celery 结合 Flask 启动</div>
+<br />
+接下来，通过浏览器触发 longtask 模拟的耗时任务，如图5所示，在浏览器输入地址后，会直接返回代码中预定义的消息。另外，此时已经触发异步任务，若点击多次，则会产生多条任务。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="在浏览器中触发 longtask 模拟的耗时任务" src="../uploads/allimg/230827/1-230RG13959225_2.png" /><br />
+	图5：在浏览器中触发 longtask 模拟的耗时任务</div>
+<br />
+5) 监控和查看后台异步任务执行情况。我们可以进入 Redis，查看队列任务，发现有4条，使用 get 命令可以查看具体某一条任务的执行状态，如图6所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="查看队列任务" src="../uploads/allimg/230827/1-230RG140222N_2.png" /><br />
+	图6：查看队列任务</div>
+<br />
+我们也可以通过浏览器查看，异步任务的3个时刻的执行状态如图7、图8和图9所示，可以发现 current 的值是动态变化的。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="异步任务状态1" src="../uploads/allimg/230827/1-230RG14044151_2.png" /><br />
+	图7：异步任务状态1<br />
+	<br />
+	<img alt="异步任务状态2" src="../uploads/allimg/230827/1-230RG14059626_2.png" /><br />
+	图8：异步任务状态2<br />
+	<br />
+	<img alt="异步任务状态3" src="../uploads/allimg/230827/1-230RG14111202_2.png" /><br />
+	图9：异步任务状态3</div>
+<br />
+最后，通过 flower 可以统筹监控所有的任务队列情况，执行命令如下：
+<p class="info-box">
+	celery -A celeryApp.celery_app flower --port=5556 --basic_auth=admin:admin</p>
+结果如图10所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="监控任务队列" src="../uploads/allimg/230827/1-230RG1412E26_2.png" /><br />
+	图10：监控任务队列</div>
+<br />
+执行成功后，在浏览器中输入 http://localhost:5556，输入用户名和密码（admin/admin）登录，任务消费者如图11，任务名称如图12所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="任务消费者" src="../uploads/allimg/230827/1-230RG14142S5_2.png" /><br />
+	图11：任务消费者<br />
+	<br />
+	<img alt="任务名称" src="../uploads/allimg/230827/1-230RG1415C39_2.png" /><br />
+	图12：任务名称</div>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1121_2.html" title="Linux zlib和libpng安装（LAMP环境搭建）" target="_blank">Linux zlib和libpng安装（LAMP环境搭建）</a></li>
+<li><a href="5911_2.html" title="C语言扫雷小游戏演示和说明" target="_blank">C语言扫雷小游戏演示和说明</a></li>
+<li><a href="7191_2.html" title="MySQL比较运算符一览表（带解析）" target="_blank">MySQL比较运算符一览表（带解析）</a></li>
+<li><a href="7521_2.html" title="C++ lower_bound()函数用法详解" target="_blank">C++ lower_bound()函数用法详解</a></li>
+<li><a href="../jstl/c-if_2.html" title="&lt;c:if&gt;标签" target="_blank">&lt;c:if&gt;标签</a></li>
+<li><a href="../sql/inner-join_2.html" title="SQL INNER JOIN：内连接" target="_blank">SQL INNER JOIN：内连接</a></li>
+<li><a href="9623_2.html" title="某大厂码农说：拓展社交圈子只需要4个字" target="_blank">某大厂码农说：拓展社交圈子只需要4个字</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10321;
+window.arcId = "442b+QazpqDjlrx4dmGWJl4tC7fGpLW4FBVXzUVzdmE18aFaOGWICHlGmZoS";
+window.typeidChain = "145|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

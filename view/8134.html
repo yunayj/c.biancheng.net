@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Django中的缓存机制及其实现方法</title>
+<meta name="description" content="在本教程的第一章节的《》" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../django/django.html">Django</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Django中的缓存机制及其实现方法</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在本教程的《<a href="7383_2.html" target="_blank">Django Cache缓存系统</a>》一节中，我们对 Django 缓存系统做了基本的介绍，那么它在 Django 中是如何进行应用呢，在本节将对 Django 的缓存系统展开详细的描述，从它的缓存机制、使用场景以及如何进行配置，在本节中你将认识到什么是强缓存、什么是协商缓存，最后我们通过实际举例对缓存的使用进行说明，下面我们就正式开始本节的内容。
+<h2>
+1. 缓存机制的分类</h2>
+我们已经了解了 Django 为什么使用缓存的原因，即避免服务器通对高频率的同样请求，反复的进行计算并去数据库获取相应的数据，这样容易导致服务器过载，并浪费服务器资源。Django 的缓存很好的节解决了这一问题。
+<h4>
+1) MemCache缓存实现流程</h4>
+缓存将一个某个 views 视图函数的返回值保存至内存或者 memcached 中，若在时间约定范围内该用户又对此视图发起了请求，则不再去执行 views 中的操作，而是直接从内存或者 Redis 中获取之前已经缓存的数据，并将其返回给浏览器，这也是动态网站使用缓存的常用流程。<br />
+<br />
+这里须需要<span style="color:#ff0000;">大家注意</span>，Memcached <span style="color:#ff0000;">不是</span> Django 自带的模块，而是需要你自己安装、配置和启动服务；Memcached 安装后，用 Python 操作 Memcached 的依赖库，最常用的是 python-memcached 和 pylibmc。但是现在也多了另外一种选择也就是 Redis，它是基于内存的缓存型数据库，同时支持数据序列化相比而言更加安全，我们推荐使用。<br />
+<br />
+<font color="#ff0000">Redis&nbsp;</font>的工作流程总结如下：先检查客户端的请求数据是否在 Redis 中，如有，直接把请求数据返回，不再对数据库进行任何操作；如果请求的数据不在 Redis 中，就去查数据库，把从数据库中获取的数据返回给客户端，同时把数据缓存一份到 Redis 中；每次更新数据库的同时更新 Redis 中的数据，保证与数据库的一致性。<br />
+<h4>
+2) Django中的缓存机制</h4>
+Django 中提供多种缓存机制，如需使用需要在 settings.py 文件中进行配置，Django 提供了六种常用的缓存机制，如下所示：
+<ul>
+<li>
+开发调试缓存</li>
+<li>
+本地内存缓存</li>
+<li>
+数据库缓存</li>
+<li>
+文件缓存</li>
+<li>
+Memcache缓存（使用python-memcached模块）</li>
+<li>
+Memcache缓存（使用pylibmc模块）</li>
+</ul>
+<br />
+在这里我们对几种缓存机制进行介绍，分别是数据库缓存、文件缓存、本地内存缓存，下面我们介绍它们在 settings.py 文件中是如何进行配置的，数据库缓存的配置如下所示：
+<pre class="python">
+#数据缓存机制
+CACHES = {
+    &#39;default&#39;: {
+        &#39;BACKEND&#39;:&#39;django.core.cache.backends.db.DatabaseCache&#39;, #数据库引擎
+        &#39;TIMEOUT&#39;:300, #缓存超时时间（默认300秒，None表示永不过期，0表示立即过期）
+        &#39;LOCATION&#39;: &#39;my_cache_table&#39;,
+        &#39;MAX_ENTRIES&#39;: 3,  # 当前最大缓存数
+        &#39;CULL_FREQUENCY&#39;: 3,  # 缓存到达最大个数之后，剔除缓存个数的比例，即 1/CULL_FREQUENCY（默认3）
+    }
+}</pre>
+这里还有最红要的一步操作就是创建缓存数据表，使用如下命令：<br />
+<p class="info-box">
+python manage.py createcachetable my_cache_table</p>
+基于本教程中使用数据库进行缓存其实是非常鸡肋的，因为我们之所以使用缓存就是为了减少数据库的查询，但是企业环境下的数据库如果非常高速、高效，那么你可以使用这种机制，我们在这里简单讲解一下它的基本配置。大家注意各种缓存机制在 settings.py 文件的配置都是相差无几的。文件系统缓存的配置如下所示：
+<pre class="python">
+#基于window
+CACHES = {
+    &#39;default&#39;: {
+        &#39;BACKEND&#39;: &#39;django.core.cache.backends.filebased.FileBasedCache&#39;,
+        &#39;LOCATION&#39;: &#39;c:/foo/bar&#39;, #若是 Linux 路径写为 /home/cnet/cachetest
+    }
+}</pre>
+文件缓存机制，也是 Django 为我们提供的一种执行缓存的方法，不过这种方法相较数据库而言更慢，不过有总比没有强，在你无路可走的时候，为了实现达到缓存的目的也可以使用。<br />
+<br />
+下面我们介绍最后一种也就是基于<span style="color:#ff0000;">本地内存的缓存机制</span>，大家知道内存的交互读写速度非常之快，所以内存资源也相当的珍贵，使用这种缓存机制也再合适不过了。
+<pre class="python">
+# 此缓存将内容保存至内存的变量中
+CACHES = {
+    &#39;default&#39;:{
+    &#39;BACKEND&#39;: &#39;django.core.cache.backends.locmem.LocMemCache&#39;,
+    &#39;LOCATION&#39;: &#39;unique-snowflake&#39;,#给缓存放置的内存区设置一个名字
+    }
+}</pre>
+<h2>
+2. Django中使用缓存的方式</h2>
+在 Django 中我们可以使用如下方式直接对缓存进行应用，前两者是通过装饰器实现的，最后一个是通过模板标签实现的：
+<ul>
+<li>
+在视图View中使用</li>
+<li>
+在路由URL中使用</li>
+<li>
+在模板中使用</li>
+</ul>
+<br />
+它们的使用方式分别如下所示：
+<pre class="python">
+from django.views.decorators.cache import cache_page
+@cache_page(60*30)#以秒为单位
+def my_view(request):
+    ...</pre>
+在 django.views.decorators.cache 定义了一个自动缓存视图响应结果的装饰器 cache_page，这个装饰器接受一个参数：timeout 以秒为单位。在上例中，my_view() 视图的结果将被缓存 30 分钟，也可以写为 60*30。在路由中使用缓存的格式如下：
+<pre class="python">
+from django.views.decorators.cache import cache_page
+​
+urlpatterns = [
+    path(&#39;foo/&#39;, cache_page(60)(my_view)),
+]</pre>
+在模板中也可以使用缓存，也叫模板碎片缓存，如下所示：
+<pre class="html">
+{% load cache %}
+{% cache 500 bar request.user.username %}
+    .. bar for logged in user ..
+{% endcache %}</pre>
+我们要在模版的顶部位置添加 {% load cache %}，同样它也需要 {% endcache %} 结尾。模板标签 {% cache %} 将在设定的时间内，缓存标签块中包含的内容。它最少需要两个参数：依次为缓存时间（以秒为单位）以及要被缓存的片段起的名称（bar）。<br />
+<h2>
+3. Django缓存的实例应用</h2>
+<h4>
+1) 视图函数中使用装饰器</h4>
+通过上面的讲解我们对 Django 缓存机制与实现方法有了深入的了解，下面我们通过简单的例子进行测试，看看它是如何进行应用的。我们通过获取当前时间戳，来证明缓存机制的存在作用。
+<pre class="python">
+#在缓存有效时间内不会阻塞，直到缓存过期重新阻塞3秒
+@cache_page(60) #缓存有效时间60s
+def test_cache(request):
+    t1=time.time() #得到当前时间戳
+    time.sleep(3) #阻塞三秒
+    html=&#39;t1 is %s&#39;%(t1)
+    return HttpResponse(html)</pre>
+配置好路由映射关系，然后访问 127.0.0.1:8000/index/test_cache ，发现第一次请求时会阻塞三秒，然后再缓存期间请求页面则不需要阻塞，直到缓存过期重新阻塞。<br />
+<br />
+我们可以通过谷歌浏览器 F12 查看它的响应头，其中的 Cache-Control: max-age=60 代表了最大的过期时间为 60s，它是 HTTP1.1 的产物，而另外一个&nbsp;Expires 同样代表过期时间，只不过它属于 HTTP1.0 时代，可以把前者看做是后者的补充。
+<h4>
+2) 在path中使用cache_page()</h4>
+同样我们也可以在 url 中使用缓存的装饰器，方法如下所示：
+<pre class="python">
+from django.views.decorators.cache import cache_page
+path(&#39;test_cache/&#39;,cache_page(15)(views.test_cache))</pre>
+使用这种范式的时候，记得要把视图函数中的装饰器取消。
+<h4>
+3) 实现模板中碎片化缓存</h4>
+编写如下视图函数以及 test_cache.html 页面，如下所示:
+<pre class="python">
+#视图函数
+def test_time(request):
+    if request.method==&#39;GET&#39;:
+        return render(request,&#39;index/test_cache.html&#39;)
+    elif request.method==&#39;POST&#39;:
+        t1 = time.time()  # 得到当前时间戳
+        time.sleep(3)  # 阻塞三秒
+        return render(request,&#39;index/test_cache.html&#39;,locals())</pre>
+test_cache.html&nbsp;模板页面如下所示：
+<pre class="html">
+&lt;form action=&quot;/index/test_time/&quot; method=&quot;post&quot;&gt;
+    {% csrf_token %}
+{% load cache %}
+{% cache 30 test %}
+&lt;p&gt;我是缓存的 {{ t1 }}&lt;/p&gt;
+{% endcache %}
+&lt;h4&gt;
+    我是没有缓存的{{ t1 }}
+&lt;/h4&gt;
+&lt;input type=&quot;submit&quot; value=&quot;提交&quot;&gt;
+&lt;/form&gt;</pre>
+配置好路由后，访问 127.0.0.1:8000/index/test_time，点击提交按钮后，你会发现有缓存的 t1 时间戳只有在 30s 以后才会改变，因为在这 30s 内它读取的都是已缓存模板片段内容。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="909.html" title="Linux quota和repquota命令查询磁盘配额方法详解" target="_blank">Linux quota和repquota命令查询磁盘配额方法详解</a></li>
+<li><a href="1771.html" title="C语言加减乘除运算" target="_blank">C语言加减乘除运算</a></li>
+<li><a href="5392.html" title="Go语言time包：时间和日期" target="_blank">Go语言time包：时间和日期</a></li>
+<li><a href="vip_7662.html" title="Linux如何查看CPU运行状态？" target="_blank">Linux如何查看CPU运行状态？</a></li>
+<li><a href="vip_7715.html" title="C++ list容器底层存储结构（详解版）" target="_blank">C++ list容器底层存储结构（详解版）</a></li>
+<li><a href="../ml_alg/naive-bayes.html" title="朴素贝叶斯分类算法原理" target="_blank">朴素贝叶斯分类算法原理</a></li>
+<li><a href="../c/isascii.html" title="C语言isascii()：判断一个字符是否为ASCII码字符" target="_blank">C语言isascii()：判断一个字符是否为ASCII码字符</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8134;
+window.arcId = "0756g+LzxRua4FfDfZ3Q5gSDy0yr5Ec+opXdbHowrkgl1ZAouhBtRz09rZQ";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

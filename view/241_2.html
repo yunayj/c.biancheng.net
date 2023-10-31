@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>结构体的声明，定义及其初始化，C语言结构体完全攻略</title>
+<meta name="description" content="结构体很重要，初学者一定要掌握。比如存储一个班级学生的信息，肯定包括姓名、学号、性别、年龄、成绩、家庭地址等项。这些项都是具有内在联系的，它们是一个整体，都表示同" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>结构体的声明，定义及其初始化，C语言结构体完全攻略</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">结构体很重要，初学者一定要掌握。比如存储一个班级学生的信息，肯定包括姓名、学号、性别、年龄、成绩、家庭地址等项。这些项都是具有内在联系的，它们是一个整体，都表示同一个学生的信息。但如果将它们定义成相互独立的变量的话，就无法反映它们的内在联系：<br />
+<pre class="cpp">
+char name[20];   //姓名
+int num;         //学号
+char sex;        //性别
+int age;         //年龄
+float score;     //成绩
+char addr[30];   //家庭住址</pre>
+而且问题是这样写的话，只是定义了一个学生，如果要定义第二个学生就要再写一遍。这样不仅麻烦，而且很容易混淆。要是能定义一个变量，而且这个变量正好包含这六个项，即将它们合并成一个整体的话就好了。<br />
+<br />
+结构体就是为了解决这个问题而产生的。<span style="color:#b22222;">结构体是将不同类型的数据按照一定的功能需求进行整体封装，封装的数据类型与大小均可以由用户指定。</span><br />
+<br />
+之前讲的那些基本数据类型只能满足一些基本的要求，只能表示具有单一特性的简单事物。但是对于一些有很多特性的复杂事物，每一个特性就是一个基本类型。这个复杂的事物是由很多基本类型组合在一起而生成的一个比较复杂的类型。这时就需要运用结构体。<br />
+<h2>
+	声明结构体类型</h2>
+声明一个结构体类型的一般形式为：
+<p class="info-box">
+	struct结构体名<br />
+	{<br />
+	&nbsp;&nbsp;&nbsp; 成员列表<br />
+	}；</p>
+比如将学生的信息定义成结构体：
+<pre class="cpp">
+struct STUDENT
+{
+char name[20];
+int num;
+char sex;
+int age;
+float score;
+char addr[30];
+};  //最后的分号千万不能省略</pre>
+说明：<br />
+1) 最后的分号千万不能省略。为了防止最后忘记分号，最好先将框架写出来，写的时候直接把分号加上：
+<p class="info-box">
+	struct STUDENT<br />
+	{};</p>
+然后再将大括号打开：
+<p class="info-box">
+	struct STUDENT<br />
+	{<br />
+	};</p>
+再在里面书写内容。<br />
+<br />
+2) 结构体类型是由一些基本数据类型组合而成的新的数据类型。因为结构体类型中的成员是由程序员人为定义的，所以结构体类型是由我们人为定义的数据类型。<br />
+<br />
+3) struct 是声明结构体类型时必须使用的关键字，不能省略。&ldquo;结构体&rdquo;这个词是根据英文单词 structure 译出的。<br />
+<br />
+4) struct STUDENT 是定义的数据类型的名字，它向编译系统声明这是一个&ldquo;结构体类型&rdquo;，包括 name、num、sex、age、score、addr 等不同类型的项。<br />
+<br />
+5) struct STUDENT 与系统提供的 int、char、float、double 等标准类型名一样，都是数据类型，具有同样的作用，都是用来定义变量的。<br />
+<br />
+但结构体类型和系统提供的标准类型又有所不同：&ldquo;结构体类型&rdquo;不仅要求指定该类型为&ldquo;结构体类型&rdquo;，即 struct，而且要求指定该类型为某一&ldquo;特定的&rdquo;结构体类型，即&ldquo;结构体名&rdquo;。因为只有 struct 才是关键字，而&ldquo;结构体名&rdquo;是由编程人员自己命名的。所以说，&ldquo;结构体类型&rdquo;不是由系统提供的，而是由编程人员自己指定的。<br />
+<br />
+这也就意味着，根据&ldquo;结构体名&rdquo;的不同，可以定义无数种&ldquo;具体的&rdquo;、&ldquo;特定的&rdquo;结构体类型。所以结构体类型并非是固定的一种类型。而 int 型、char 型、float 型、double 型都是固定的类型。<br />
+<br />
+6) &ldquo;结构体名&rdquo;的命名规范是全部使用大写字母。<br />
+<br />
+7) &ldquo;结构体名&rdquo;是结构体类型的标志。花括号内是该结构体的各个成员，它们共同组成一个整体。对各个成员都要进行类型声明，如：
+<pre class="cpp">
+char name[20];
+int num;
+char sex;
+int age;
+float score;
+char addr[30];</pre>
+成员名的命名规则与变量名相同。<br />
+<br />
+8) 声明结构体类型仅仅是声明了一个类型，系统并不为之分配内存，就如同系统不会为类型 int 分配内存一样。只有当使用这个类型定义了变量时，系统才会为变量分配内存。所以在声明结构体类型的时候，不可以对里面的变量进行初始化。<br />
+<h2>
+	定义结构体变量</h2>
+以上只是声明了一个数据类型&mdash;&mdash;&ldquo;结构体类型&rdquo;。它只是一个类型，与 int、char、float、double 一样，并没有具体的数据，系统也不会给它分配实际的内存单元。要想在程序中使用&ldquo;结构体类型&rdquo;数据，必须要定义&ldquo;结构体类型变量&rdquo;，并在其中存放具体的数据。就比如：
+<pre class="cpp">
+int a;</pre>
+其中 int 是类型，而 a 是用这个类型定义的变量。结构体也是一样的，上一节只是声明了一个类型，而本小节要使用这个类型来定义变量，就这么简单。一个是类型，一个是用这个类型定义的变量。<br />
+<br />
+定义结构体类型变量有两种方法。<br />
+<br />
+第一种方法是先声明&ldquo;结构体类型&rdquo;，再定义&ldquo;结构体类型变量&rdquo;。这种方式比较自由！<br />
+<br />
+结构体类型的声明和函数声明一样，如果在所有函数，包括main函数的前面进行声明，那么就可以在所有函数中直接用它来定义变量；但如果是在某个函数中进行声明，那么只能在该函数中用它来定义变量。<br />
+<br />
+一般我们都是在所有函数前面声明结构体类型，就同我们希望在所有函数中都可以使用int来定义变量一样。但是正如前面所讲，不建议使用全局变量，所以同样我们也不建议使用结构体类型定义的全局变量。我们都是在所有函数前对结构体类型进行声明，然后在某个函数中再定义局部的结构体类型变量。<br />
+<br />
+比如在所有函数前定义了一个结构体类型 struct STUDENT，那么就可以在所有函数中使用它来定义局部的结构体类型变量。如：<br />
+<pre class="cpp">
+struct STUDENT stud1, stud2;</pre>
+stud1 和 stud2 就是我们定义的结构体变量名。定义了结构体变量之后，系统就会为之分配内存单元。与前面讲的局部变量一样，如果 stud1 和 stud2 是在某个函数中定义的局部变量，那么就只能在该函数中使用。在其他函数中可以定义重名的结构体变量而不会相互产生影响。<br />
+<br />
+第二种方法是在声明结构体类型的同时定义结构体变量。这就意味着，如果你在所有函数前声明结构体类型，那么定义的变量就是全局变量；而如果要定义局部变量，那么就只能在某个函数中对结构体类型进行声明，从而导致只能在这个函数中使用这个类型。<br />
+<br />
+那么声明的时候是如何定义变量的呢？我们知道，声明的时候最后有个一分号，就在那个分号前写上你想定义的变量名就行了，如：
+<pre class="cpp">
+struct STUDENT
+{
+char name[20];
+int num;
+char sex;
+int age;
+float score;
+char addr[30];
+}stud;</pre>
+这样就声明了一个结构体类型，并用这个类型定义了一个结构体变量 stud。这个变量是一个全局变量。<br />
+<br />
+&ldquo;结构体类型&rdquo;的声明和使用与函数的定义和使用有所不同，函数的定义可以放在调用处的后面，只需在前面声明一下即可。但是&ldquo;结构体类型&rdquo;的声明必须放在&ldquo;使用结构体类型定义结构体变量&rdquo;的前面。<br />
+<br />
+如果程序规模比较大，往往会将结构体类型的声明集中放到一个以 .h 为后缀的头文件中。哪个源文件需要用到此结构体类型，只要用 #include 命令将该头文件包含到该文件中即可，这样做便于修改和使用。<br />
+<h2>
+	结构体变量可进行哪些运算</h2>
+结构体变量不能相加、不能相减，也不能相互乘除，但结构体变量可以相互赋值。也就是说，可以将一个结构体变量赋给另一个结构体变量。但前提是这两个结构体变量的结构体类型必须相同。<br />
+<h2>
+	结构体变量的引用</h2>
+定义了结构体变量之后就可以在程序中对它进行引用，但是结构体变量的引用同一般变量的引用不一样。因为结构体变量中有多个不同类型的成员，所以结构体变量不能整体引用，只能一个成员一个成员地进行引用。<br />
+<br />
+1) 不能将一个结构体变量作为一个整体进行引用，只能分别单独引用它内部的成员，引用方式为：<br />
+<p class="info-box">
+	结构体变量名.成员名</p>
+如果成员名是一个变量名，那么引用的就是这个变量的内容；如果成员名是一个数组名，那么引用的就是这个数组的首地址。<br />
+<br />
+&ldquo;.&rdquo;是&ldquo;成员运算符&rdquo;，它在所有运算符中优先级最高，因此可以将 student1.num 作为一个整体来看待。我们可以直接对变量的成员进行操作，例如：
+<pre class="cpp">
+student1.num = 1207041;</pre>
+2) 如果结构体类型中的成员也是一个结构体类型，则要用若干个&ldquo;.&rdquo;，一级一级地找到最低一级的成员。因为只能对最低级的成员进行操作。<br />
+<br />
+这种&ldquo;结构体成员也是结构体变量&rdquo;的形式就有一些 <a href='../cplus/cplus_2.html' target='_blank'>C++</a> 中&ldquo;封装&rdquo;的味道了。其实结构体本身就是一种封装，即将不同的数据类型封装在同一个类型中。当结构体成员也是结构体变量的时候，完全可以将结构体成员释放出来，比如：
+<pre class="cpp">
+struct AGE
+{
+    int year;
+    int month;
+    int day;
+};
+struct STUDENT
+{
+    char name[20];
+    int num;
+    struct AGE birthday;
+    float score;
+};</pre>
+完全可以写成：
+<pre class="cpp">
+struct STUDENT
+{
+    char name[20];
+    int num;
+    int year;
+    int month;
+    int day;
+    float score;
+};</pre>
+但这样看起来很长、很乱。而使用结构体将 year、month、day 封装起来，代码看起来就会好很多。因为 year、month、day 都是生日的组成部分，所以将它们进行进一步的封装可以使代码看起来很整齐，很有层次感，便于操作。<br />
+<br />
+3) 可以引用&ldquo;结构体变量成员&rdquo;的地址，也可以引用&ldquo;结构体变量&rdquo;的地址。如&ldquo;&amp;student1.num&rdquo;和&ldquo;&amp;student1&rdquo;，前者表示 student1.num 这个成员在内存中的首地址，后者表示结构体变量 student1 在内存中的首地址。<br />
+<br />
+在 C 语言中，结构体变量的首地址就是结构体第一个成员的首地址。所以 &amp;student1 就等价于第一个成员 name 的首地址，而 name 是一个数组，数组名表示的就是数组的首地址。所以 &amp;student1 和 student1.name 是等价的。但是要注意的是，它们的等价指的仅仅是&ldquo;它们表示的是同一个内存空间的地址&rdquo;，但它们的类型是不同的。&amp;student1 是结构体变量的地址 ，是 struct STUDENT* 型的；而 student1.name 是数组名，所以是 char* 型的。类型的不同导致它们在程序中不能相互替换。<br />
+<br />
+4) 结构体变量的引用方式决定了：
+<ol>
+	<li>
+		&ldquo;结构体变量名&rdquo;可以与&ldquo;结构体成员名&rdquo;同名。</li>
+	<li>
+		&ldquo;结构体变量名&rdquo;可以与&ldquo;结构体名&rdquo;同名。</li>
+	<li>
+		&ldquo;两个结构体类型定义的结构体变量中的成员可以同名&rdquo;。就比如定义了一个结构体类型用于存放学生的信息，里面有成员&ldquo;char name[20]；&rdquo;，那么如果又定义了一个结构体类型用于存放老师的信息，那么里面也可以有成员&ldquo;char name[20]；&rdquo;。</li>
+</ol>
+<br />
+因为结构体成员在引用时，必须要使用&ldquo;结构体变量名.成员名&rdquo;的方式来引用，通过引用就可以区分它们，所以不会产生冲突，因此可以同名！只要不冲突，都可以重名！但是两个结构体变量名就不可以重名了，因为无法区分它们，就会产生冲突。当然这里说的是在同一个作用域内，如果在一个函数中定义一个局部变量a，那么在另一个函数中当然也可以定义一个局部变量a。它们互不影响。<br />
+<br />
+下面写一个程序：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+struct AGE
+{
+    int year;
+    int month;
+    int day;
+};
+struct STUDENT
+{
+    char name[20];
+    int num;
+    struct AGE birthday;  //就有点类似于C++中的封装了
+    float score;
+};
+int main(void)
+{
+    struct STUDENT student1 = {&quot;小明&quot;, 1207041, {1989, 3, 29}, 100};
+    printf(&quot;name : %s\n&quot;, student1.name);
+    printf(&quot;birthday : %d-%d-%d\n&quot;, student1.birthday.year, student1.birthday.month, student1.birthday.day);
+    printf(&quot;num : %d\n&quot;, student1.num);
+    printf(&quot;score : %.1f\n&quot;, student1.score);
+    return 0;
+}</pre>
+输出结果是：<br />
+name : 小明<br />
+birthday : 1989-3-29<br />
+num : 1207041<br />
+score : 100.0<br />
+<br />
+程序中，虽然我们前面说&ldquo;&amp;student1 和 student1.name是等价的&rdquo;，但第 18 行不能像下面这样写。
+<pre class="cpp">
+printf(&quot;name : %s\n&quot;, &amp;student1);</pre>
+原因是 %s 要求输出参数要么是字符数组名，要么是字符指针变量名，总之是 char* 型的。而 &amp;student1 和 student1.name 在前面讲过，虽然它们是等价的，但它们的等价指的仅仅是&ldquo;它们表示的是同一个内存空间的地址&rdquo;，但它们的类型是不同的。&amp;student1 是 struct STUDENT* 型的，而 student1.name 是 char* 型的，所以只能写 student1.name。<br />
+<br />
+但是有的编译器写 &amp;student1 就可以通过，而有的编译器则只会产生警告。这种&ldquo;可错可不错&rdquo;的写法大家不要使用，按规范书写可移植性才强。<br />
+<h2>
+	结构体变量的初始化</h2>
+结构体白能量的初始化方式有两种，可以在定义的时候或定义之后对结构体变量进行初始化。<br />
+<br />
+一般情况下我们都是在定义的时候对它进行初始化，因为那样比较方便。如果定义之后再进行初始化，那就只能一个一个成员进行赋值，就同数组一样。<br />
+<br />
+下面先介绍如何在定义的时候进行初始化。在定义结构体变量时对其进行初始化，只要用大括号&ldquo;{}&rdquo;括起来，然后按结构体类型声明时各项的顺序进行初始化即可。各项之间用逗号分隔。如果结构体类型中的成员也是一个结构体类型，则要使用若干个&ldquo;{}&rdquo;一级一级地找到成员，然后对其进行初始化。<br />
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+struct AGE
+{
+    int year;
+    int month;
+    int day;
+};
+struct STUDENT
+{
+    char name[20];
+    int num;
+    struct AGE birthday;
+    float score;
+};
+int main(void)
+{
+    struct STUDENT student1 = {&quot;小明&quot;, 1207041, {1989, 3, 29}, 100};
+    return 0;
+}</pre>
+注意，同字符、字符数组的初始化一样，如果是字符那么就用单引号括起来，如果是字符串就用双引号括起来。<br />
+<br />
+第二种方式是定义后再初始化，我们将上面的程序改一下即可：<br />
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+# include &lt;string.h&gt;
+struct AGE
+{
+    int year;
+    int month;
+    int day;
+};
+struct STUDENT
+{
+    char name[20];  //姓名
+    int num;  //学号
+    struct AGE birthday;  /*用struct AGE结构体类型定义结构体变量birthday, 即生日*/
+    float score;  //分数
+};
+int main(void)
+{
+    struct STUDENT student1;  /*用struct STUDENT结构体类型定义结构体变量student1*/
+    strcpy(student1.name, &quot;小明&quot;);  //不能写成&amp;student1
+    student1.num = 1207041;
+    student1.birthday.year = 1989;
+    student1.birthday.month = 3;
+    student1.birthday.day = 29;
+    student1.score = 100;
+    printf(&quot;name : %s\n&quot;, student1.name);  //不能写成&amp;student1
+    printf(&quot;num : %d\n&quot;, student1.num);
+    printf(&quot;birthday : %d-%d-%d\n&quot;, student1.birthday.year, student1.birthday.month, student1.birthday.day);
+    printf(&quot;score : %.1f\n&quot;, student1.score);
+    return 0;
+}</pre>
+输出结果是：<br />
+name : 小明<br />
+num : 1207041<br />
+birthday : 1989-3-29<br />
+score : 100.0<br />
+<br />
+除此之外，我们还可以使用 scanf() 从键盘输入对结构体变量进行初始化：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+struct AGE
+{
+    int year;
+    int month;
+    int day;
+};
+struct STUDENT
+{
+    char name[20];
+    int num;
+    struct AGE birthday;
+    float score;
+};  //分号不能省
+int main(void)
+{
+    struct STUDENT student1;  /*用struct STUDENT结构体类型定义结构体变量student1*/
+    printf(&quot;请输入姓名：&quot;);
+    scanf(&quot;%s&quot;, student1.name);  //不能写成&amp;student1
+    printf(&quot;请输入学号：&quot;);
+    scanf(&quot;%d&quot;, &amp;student1.num);
+    printf(&quot;请输入生日：&quot;);
+    scanf(&quot;%d&quot;, &amp;student1.birthday.year);
+    scanf(&quot;%d&quot;, &amp;student1.birthday.month);
+    scanf(&quot;%d&quot;, &amp;student1.birthday.day);
+    printf(&quot;请输入成绩：&quot;);
+    scanf(&quot;%f&quot;, &amp;student1.score);
+    printf(&quot;name: %s\n&quot;, student1.name);  //不能写成&amp;student1
+    printf(&quot;num: %d\n&quot;, student1.num);
+    printf(&quot;birthday: %d-%d-%d\n&quot;, student1.birthday.year, student1.birthday.month, student1.birthday.day);
+    printf(&quot;score: %.1f\n&quot;, student1.score);
+    return 0;
+}</pre>
+输出结果是：<br />
+请输入姓名：小明请输入学号：1207041请输入生日：1989 3 29请输入成绩：100<br />
+name: 小明<br />
+num: 1207041<br />
+birthday: 1989-3-29<br />
+score: 100.0<br />
+<br />
+假如有一个数组，数组名是 a。我们知道 a 表示的就是这个数组的首地址，但是有些编译器会对数组名 a 取地址，即 &amp;a 也等同于数组的首地址。虽然这么写从语法的角度是没有意义的，但程序却是正确的。所以上面程序中
+<pre class="cpp">
+scanf(&quot;%s&quot;,student1.name);</pre>
+也可以这么写：
+<pre class="cpp">
+scanf(&quot;%s&quot;, &amp;student1.name);</pre>
+虽然在编译器中，&amp;student1.name 代表的也是 name 的首地址，但是不建议初学者这么写，原因如下：
+<ol>
+	<li>
+		这么写没有语法意义。</li>
+	<li>
+		它只是编译器自己规定的，并不是所有的编译器都会这样定义，所以这么写不具备通用性。</li>
+	<li>
+		这么写可读性很差，让人感到困惑且郁闷。</li>
+</ol>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="253_2.html" title="C语言历史，C语言与UNIX系统的关系" target="_blank">C语言历史，C语言与UNIX系统的关系</a></li>
+<li><a href="2070_2.html" title="C语言fgets和fputs函数的用法详解（以字符串的形式读写文件）" target="_blank">C语言fgets和fputs函数的用法详解（以字符串的形式读写文件）</a></li>
+<li><a href="3595_2.html" title="汇编语言ROR（循环右移）指令：将操作数所有位都向右移" target="_blank">汇编语言ROR（循环右移）指令：将操作数所有位都向右移</a></li>
+<li><a href="7809_2.html" title="C++11 long long超长整形详解" target="_blank">C++11 long long超长整形详解</a></li>
+<li><a href="7912_3.html" title="Django Form表单内置字段详解" target="_blank">Django Form表单内置字段详解</a></li>
+<li><a href="../jstl/c-set_2.html" title="&lt;c:set&gt;标签" target="_blank">&lt;c:set&gt;标签</a></li>
+<li><a href="2t39qow_2.html" title="《你必须知道的495个C语言问题》PDF下载（高清完整版）" target="_blank">《你必须知道的495个C语言问题》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 241;
+window.arcId = "938akk029mplpl17TMjSH1mWFvr69nOCZvMLY3K9s/bSRCFUy4CoHb5XaQ";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

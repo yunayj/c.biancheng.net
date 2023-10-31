@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Java数据类型转换（自动类型转换+强制类型转换）</title>
+<meta name="description" content="我们知道，每个变量都有自己特定的数据类型，那么如果一个数值跟变量的数据类型不匹配，能不能将该数值赋值给变量呢？ 答案是可以的，因为 Java 中的变量可以进行数据类型转换。" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Java数据类型转换（自动类型转换+强制类型转换）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">我们知道，每个变量都有自己特定的数据类型，那么如果一个数值跟变量的数据类型不匹配，能不能将该数值赋值给变量呢？<br />
+<br />
+答案是可以的，因为 Java 中的变量可以进行数据类型转换。<br />
+<h2>
+自动类型转换</h2>
+在下面的程序，我们把一个整数赋给 double 类型的变量：
+<pre class="java">
+public class Test {
+   public static void main(String[] args) {
+      int num = 10;
+      double num2 = num;
+      System.out.println(num2);
+   }
+}</pre>
+运行结果为：
+<p class="info-box">
+10.0</p>
+可以看到，打印的结果是 10.0，即整数 10 现在已经变成了小数 10.0。<br />
+<br />
+虽然从结果来看数值并没有改变，但在计算机底层是两种完全不同的数据类型。由原来的 int 类型变为 double 类型，这一过程叫作自动类型转换，即程序会自动去识别数据类型并完成转换。<br />
+<br />
+注意，自动类型转换对参与的数据类型是有要求的，并不是所有的数据类型之间都可以完成自动转换，只能由低字节向高字节进行转换，反之则不行。<br />
+<br />
+上面的示例中，double 类型的存储空间为 8 字节，int 类型的存储空间为 4 字节，所以 int 类型可以自动转为 double 类型，但 double 类型不能自动转为 int 类型。<br />
+<br />
+同时，浮点型（double、float）描述数值的精度比整型（short、int、long）高，或者说浮点型可以对数值进行更精确的描述，所以整型数据类型也可以自动转为浮点型，即使 long 为 8 字节，float 为 4 字节，不满足只能由低字节向高字节进行转换的原则，也同样可以完成自动转换。<br />
+<br />
+我们说的自动类型转换只包括所有数值类型，不包括 char 和 boolean。基本数据类型自动转换的关系为：
+<p class="info-box">
+byte -&gt; short -&gt; int -&gt; long -&gt; float -&gt; double</p>
+举个简单的例子：
+<pre class="java">
+public class Test {
+   public static void main(String[] args) {
+      byte num1 = 10;
+      short num2 = num1;
+      int num3 = num2;
+      long num4 = num3;
+      float num5 = num4;
+      double num6 = num5;
+      System.out.println(num1);
+      //依次打印num2、num3、num4、num5、num6
+   }
+}</pre>
+运行结果为：
+<p class="info-box">
+10<br />
+10<br />
+10<br />
+10<br />
+10.0<br />
+10.0</p>
+<h2>
+强制类型转换</h2>
+前面提到 int 类型可以自动转为 double 类型，而 double 类型不能自动转为 int 类型，这句话其实是不严谨的，严格意义上来讲是错的。<br />
+<br />
+实际上，double 类型可以转为 int 类型，只不过程序不会自动完成，需要我们手动干预进行强制转换。<br />
+<br />
+分析如下的代码：
+<pre class="java">
+public class Test {
+   public static void main(String[] args) {
+      double num = 10.5;
+      int num2 = (int) num;
+      System.out.println(num2);
+   }
+}</pre>
+运行结果为：
+<p class="info-box">
+10</p>
+通过结果可以看到 double 在转为 int 时会造成精度损失，由 10.5 变成了 10，小数点后全部丢弃，将浮点型数值强转为整型时，只保留小数点左边的数值，不会按照四舍五入的方式来完成整数位的进位。<br />
+<br />
+使用 Eclipse 进行编程，遇到不能自动转换数据类型的情况时，Eclipse 会自动提示错误并给出解决方案，如下图所示。
+<ul>
+<li>
+Add cast to &lsquo;int&rsquo;：进行强制类型转换，点击之后会自动补全强制类型转换的代码。</li>
+<li>
+Change type of &lsquo;num2&rsquo;to &lsquo;double&rsquo;：将 num2 的数据类型改为 double。</li>
+<li>
+Change type of &lsquo;num&rsquo;to &lsquo;int&rsquo;：将 num 的数据类型改为 int。</li>
+</ul>
+<br />
+第 2 项和第 3 项都是将变量的数据类型进行修改，使得赋值变量和被赋值变量的数据类型保持一致，也可以解决不能自动转换的问题。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1000.html" title="Java方法重写" target="_blank">Java方法重写</a></li>
+<li><a href="4731.html" title="Java List.contains()方法：判断列表中是否包含指定元素" target="_blank">Java List.contains()方法：判断列表中是否包含指定元素</a></li>
+<li><a href="5359.html" title="JavaScript中的几个重要概念" target="_blank">JavaScript中的几个重要概念</a></li>
+<li><a href="5601.html" title="Eclipse快捷键大全" target="_blank">Eclipse快捷键大全</a></li>
+<li><a href="vip_7306.html" title="Go语言map的多键索引——多个数值条件可以同时查询" target="_blank">Go语言map的多键索引——多个数值条件可以同时查询</a></li>
+<li><a href="../matplotlib/subplot2grid.html" title="Matplotlib subplot2grid()函数详解" target="_blank">Matplotlib subplot2grid()函数详解</a></li>
+<li><a href="../c/fprintf.html" title="C语言fprintf()：将数据格式化写入到文件中" target="_blank">C语言fprintf()：将数据格式化写入到文件中</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10382;
+window.arcId = "5e15KCI31MmBuivcRip6fkxMXcBKKQh/K0H3AllB1fkWaYAuJAmLXEEKc2YL";
+window.typeidChain = "192|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

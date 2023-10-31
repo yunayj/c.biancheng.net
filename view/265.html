@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++多态的好处和作用（用实例说话）</title>
+<meta name="description" content="在面向对象的程序设计中，使用多态能够增强程序的可扩充性，即程序需要修改或增加功能时，只需改动或增加较少的代码。此外，使用多态也能起到精简代码的作用。本节通过两个实" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++多态的好处和作用（用实例说话）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在面向对象的程序设计中，使用多态能够增强程序的可扩充性，即程序需要修改或增加功能时，只需改动或增加较少的代码。此外，使用多态也能起到精简代码的作用。本节通过两个实例来说明多态的作用。
+<h2>
+游戏程序实例</h2>
+游戏软件的开发最能体现面向对象设计方法的优势。游戏中的人物、道具、建筑物、场景等都是很直观的对象，游戏运行的过程就是这些对象相互作用的过程。每个对象都有自己的属性和方法，不同对象也可能有共同的属性和方法，特别适合使用继承、多态等面向对象的机制。下面就以&ldquo;魔法门&rdquo;游戏为例来说明多态在增加程序可扩充性方面的作用。<br />
+<br />
+&ldquo;魔法门&rdquo;游戏中有各种各样的怪物，如骑士、天使、狼、鬼，等等。每个怪物都有生命力、攻击力这两种属性。怪物能够互相攻击。一个怪物攻击另一个怪物时，被攻击者会受伤；同时，被攻击者会反击，使得攻击者也受伤。但是一个怪物反击的力量较弱，只是其自身攻击力的 1/2。<br />
+<br />
+怪物主动攻击、被敌人攻击和实施反击时都有相应的动作。例如，骑士的攻击动作是挥舞宝剑，而火龙的攻击动作是喷火；怪物受到攻击会嚎叫和受伤流血，如果受伤过重，生命力被减为 0，则怪物就会倒地死去。<br />
+<br />
+针对:这个游戏，该如何编写程序，才能使得游戏版本升级、要增加新的怪物时，原有的程序改动尽可能少呢？换句话说，如何才能使程序的可扩充性更好呢？<br />
+<br />
+然而，无论是否使用多态，均应使每种怪物都有一个类与之对应，每个怪物就是一个对象。而且，怪物的攻击、反击和受伤等动作都是通过对象的成员函数实现的，因此需要为每个类编写 Attack、FightBack 和 Hurted 成员函数。<br />
+<br />
+Attack 成员函数表现攻击动作，攻击某个怪物并调用被攻击怪物的 Hurted 成员函数，以减少被攻击怪物的生命值，同时也调用被攻击怪物的 FightBack 成员函数，遭受被攻击怪物的反击。<br />
+<br />
+Hurted 成员函数减少自身生命值，并表现受伤动作。<br />
+<br />
+FightBack 成员函数表现反击动作，并调用被反击对象的 Hurted 成员函数，使被反击对象受伤。<br />
+<br />
+下面对比使用多态和不使用多态两种写法，来看看多态在提高程序可扩充性方面的作用。<br />
+<br />
+先介绍不用多态的写法。假定用 CDmgon 类表示龙，用 CWolf 类表示狼，用 CGhost 类表示鬼，则 CDragon 类的写法大致如下（其他类的写法与之类似）：
+<pre class="cpp">
+class CDragon
+{
+private:
+    int power;  //攻击力
+    int lifeValue;  //生命值
+public:
+    void Attack(CWolf * p);  //攻击&ldquo;狼&rdquo;的成员函数
+    void Attack(CGhost* p);  //攻击&ldquo;鬼&rdquo;的成员函数
+                             //&hellip;&hellip;其他 Attack 重载函数
+                             //表现受伤的成员函数
+    void Hurted(int nPower);
+    void FightBack(CWolf * p);  //反击&ldquo;狼&rdquo;的成员函数
+    void FightBack(CGhost* p);  //反击&ldquo;鬼&rdquo;的成员函数
+                                //......其他FightBack重载函数
+};</pre>
+各成员函数的写法如下：
+<pre class="cpp">
+void CDragon::Attack(CWolf* p)
+{
+    p-&gt;Hurted(power);
+    p-&gt;FightBack(this);
+}
+void CDragon::Attack(CGhost* p)
+{
+    p-&gt;Hurted(power);
+    p-&gt;FightBack(this);
+}
+void CDragon::Hurted(int nPower)
+{
+    lifeValue -= nPower;
+}
+void CDragon::FightBack(CWolf* p)
+{
+    p-&gt;Hurted(power / 2);
+}
+void CDragon::FightBack(CGhost* p)
+{
+    p-&gt;Hurted(power / 2);
+}</pre>
+第 1 行，Attack 函数的参数 p 指向被攻击的 CWolf 对象。<br />
+<br />
+第 3 行，在 p 所指向的对象上面执行 Hurted 成员函数，使被攻击的&ldquo;狼&rdquo;对象受伤。调用 Hurted 成员函数时，参数是攻击者&ldquo;龙&rdquo;对象的攻击力。<br />
+<br />
+第 4 行，以指向攻击者自身的 this <a href='../c/80/80.html' target='_blank'>指针</a>为参数，调用被攻击者的 FightBack 成员函数，接受被攻击者的反击。<br />
+<br />
+在真实的游戏程序中，CDragon 类的 Attack 成员函数中还应包含表现&ldquo;龙&rdquo;在攻击时的动作和声音的代码。<br />
+<br />
+第 13 行，一个对象的 Hurted 成员函数被调用会导致该对象的生命值减少，减少的量等于攻击者的攻击力。当然，在真实的程序中，Hurted 成员函数还应包含表现受伤时动作的代码，以及生命值如果减至小于或等于零，则倒地死去的代码。<br />
+<br />
+第 17 行，p 指向的是实施攻击者。对攻击者进行反击，实际上就是调用攻击者的 Hurted 成员函数使其受伤。其受到的伤害的大小等于实施反击者的攻击力的一半（反击的力量不如主动攻击大）。当然，FightBack 成员函数中其实也应包含表现反击动作的代码。<br />
+<br />
+实际上，如果游戏中有 n 种怪物，CDragon 类中就会有 n 个 Attack 成员函数，用于攻击 n 种怪物。当然，也会有 71 个 FightBack 成员函数（这里假设两条龙也能互相攻击）。对于其他类，如 CWolf 类等，也是这样。<br />
+<br />
+以上为非多态的实现方法。如果游戏版本升级，增加了新的怪物&ldquo;雷鸟&rdquo;，假设其类名为 CThunderBird，则程序需要做哪些改动呢？<br />
+<br />
+除了编写一个 CThiinderBird 类外，所有的类都需要增加以下两个成员函数，用以对&ldquo;雷鸟&rdquo;实施攻击，以及在被&ldquo;雷鸟&rdquo;攻击时对其进行反击：
+<pre class="cpp">
+void Attack(CThunderBird* p);
+void FightBack(CThunderBird* p);</pre>
+这样，在怪物种类多的时候，工作量会比较大。<br />
+<br />
+实际上，在非多态的实现中，使代码更精简的做法是将 CDragon、CWolf 等类的共同特点 抽取出来，形成一个 CCreature 类，然后再从 CCreature 类派生出 CDragon、CWolf 等类。但是由于每种怪物进行攻击、反击和受伤时的表现动作不同，CDmgon、CWdf 这些类还要实现各自的 Hurted 成员函数，以及一系列 Attack、FightBack 成员函数。因此，如果没有利用多态机制，那么即便引人基类 CCreature，对程序的可扩充性也没有太大帮助。<br />
+<br />
+下面再来看看，如果使用多态机制编写这个程序，在要新增 CThunderBird 类时，程序改动的情况。使用多态的写法如下：设置一个基类 CCreature，概括所有怪物的共同特点。所有具体的怪物类，如 CDragon、CWolf、CGhost 等，均从 CCreature 类派生而来。下面是 CCreature 类的写法：
+<pre class="cpp">
+class CCreature {  //&ldquo;怪物&rdquo;类
+protected:
+    int lifeValue, power;
+public:
+    virtual void Attack(CCreature* p) {};
+    virtual void Hurted(int nPower) {};
+    virtual void FightBack(CCreature* p) {};
+};</pre>
+可以看到，基类 CCreature 中只有一个 Attack 成员函数，也只有一个 FightBack 成员函数。<br />
+<br />
+实际上，所有 CCreature 类的派生类也都只有一个 Attack 成员函数和一个 FightBack 成员函数。例如，CDragon 类的写法如下：
+<pre class="cpp">
+class CDragon : public CCreature
+{
+public:
+    virtual void Attack(CCreature* p) {
+        p-&gt;Hurted(power);
+        p-&gt;FightBack(this);
+    }
+    virtual int Hurted(int nPower) {
+        lifeValue -= nPower;
+    }
+    virtual int FightBack(CCreature* p) {
+        p-&gt;Hurted(power / 2);
+    }
+};</pre>
+CDragon 类的成员函数中省略了表现动作和声音的那部分代码。其他类的写法和 CDragon 类类似，只是实现动作和声音的代码不同。如何实现动画的动作和声音不是本书要讲述的内容。<br />
+<br />
+在上述多态的写法中，当需要增加新怪物&ldquo;雷鸟&rdquo;时，只需要编写新类 CThunderBird 即可，不需要在已有的类中专门为新怪物增加 void Attack(CThunderBird * p) 和 void FightBack(CThunderBird* p) 这两个成员函数。也就是说，其他类根本不用修改。这样一来，和前面非多态的实现方法相比，程序的可扩充性当然大大提高了。实际上，即便不考虑可扩充性的问题，程序本身也比非多态的写法大大精简了。<br />
+<br />
+为什么 CDragon 等类只需要一个 Attack 函数，就能够实现对所有怪物的攻击呢？<br />
+<br />
+假定有以下代码片段：
+<pre class="cpp">
+CDragon dragon;
+CWolf wolf;
+CGhost ghost;
+CThunderBird bird;
+Dragon.Attack(&amp;wolf);
+Dragon.Attack(&amp;ghost);
+Dragon.Attack(&amp;bird);</pre>
+根据赋值兼容规则，上面第 5、6、7 行中的参数都与基类指针类型 CCreature* 相匹配，所以编译没有问题。从 5、6、7 三行进入 CDragon::Attack 函数后，执行 p-&gt; Hurted(power) 语句时，p 分别指向的是 wolf、ghost 和 bird，根据多态的规则，分别调用的就是 CWolf::Hurted、CGhost::Hurted 和 CBird: Hurted 函数。<br />
+<br />
+FightBack 函数的情况和 Attack 函数类似，不再赘述。
+<h2>
+几何形体程序实例</h2>
+例题：编写一个几何形体处理程序，输入几何形体的个数以及每个几何形体的形状和参数，要求按面积从小到大依次输出每个几何形体的种类及面积。假设几何形体的总薮不超过 100 个。<br />
+<br />
+例如，输入<br />
+4<br />
+R 3 5<br />
+C 9<br />
+T 3 4 5<br />
+R 2 2<br />
+<br />
+表示一共有 4 个几何形体，第一个是矩形（R 代表矩形），宽度和高度分别是 3 和 5；第二个是圆形（C 代表圆形），半径是 9；第三个是三角形（T代表三角形），三条边的长度分别是 3,4,5；第四个是矩形，宽度和高度都是 2。<br />
+<br />
+应当输出：<br />
+Rec<a href='https://c.biancheng.net/ref/tan.html' target='_blank'>tan</a>gle:4<br />
+Triangle:6<br />
+Rectangle:15<br />
+Circle:254.34<br />
+<br />
+该程序可以运用多态机制编写，不但便于扩充（添加新的几何形体），还能够节省代码量。程序如下：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;cmath&gt;
+u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+class CShape  //基类：形体类
+{
+    public:
+        virtual double Area() { };  //求面积
+        virtual void PrintInfo() { }; //显示信息
+};
+class CRectangle:public CShape  //派生类：矩形类
+{
+    public:
+        int w,h;     //宽和高
+        virtual double Area();
+        virtual void PrintInfo();
+};
+class CCircle:public CShape  //派生类：圆类
+{
+    public:
+        int r;      //半径
+        virtual double Area();
+        virtual void PrintInfo();
+};
+class CTriangle:public CShape //派生类：三角形类
+{
+    public:
+        int a,b,c;      //三边长
+        virtual double Area();
+        virtual void PrintInfo();
+};
+double CRectangle::Area()  {
+    return w * h;
+}
+void CRectangle::PrintInfo()  {
+    cout &lt;&lt; &quot;Rectangle:&quot; &lt;&lt; Area() &lt;&lt; endl;
+}
+double CCircle::Area()  {
+    return 3.14 * r * r ;
+}
+void CCircle::PrintInfo()  {
+    cout &lt;&lt; &quot;Circle:&quot; &lt;&lt; Area() &lt;&lt; endl;
+}
+double CTriangle::Area()  {   //根据海伦公式计算三角形面积
+    double p = ( a + b + c) / 2.0;
+    return sqrt(p * ( p - a)*(p- b)*(p - c));
+}
+void CTriangle::PrintInfo()  {
+    cout &lt;&lt; &quot;Triangle:&quot; &lt;&lt; Area() &lt;&lt; endl;
+}
+CShape *pShapes[100]; //用来存放各种几何形体，假设不超过100个
+int MyCompare(const void *s1, const void *s2)  //定义排序规则的函数
+{
+    CShape **p1 = (CShape **)s1; //s1是指向指针的指针,其指向的指针为CShape* 类型
+    CShape **p2 = ( CShape **)s2;
+    double a1 = (*p1)-&gt;Area(); //p1指向几何形体对象的指针, *p1才指向几何形体对象
+    double a2 = (*p2)-&gt;Area();
+    if( a1 &lt; a2 )
+        return -1;   //面积小的排前面
+    else if (a2 &lt; a1)
+        return 1;
+    else
+        return 0;
+}
+int main()
+{
+    int i; int n;
+    CRectangle *pr; CCircle *pc; CTriangle *pt;
+    cin &gt;&gt; n;
+    for( i = 0;i &lt; n;++i ) {
+        char c;
+        cin &gt;&gt; c;
+        switch(c) {
+            case &#39;R&#39;: //矩形
+            pr = new CRectangle();
+            cin &gt;&gt; pr-&gt;w &gt;&gt; pr-&gt;h;
+            pShapes[i] = pr;
+            break;
+             case &#39;C&#39;: //圆
+            pc  = new CCircle();
+            cin &gt;&gt; pc-&gt;r;
+            pShapes[i] = pc;
+            break;
+            case &#39;T&#39;: //三角形
+            pt = new CTriangle();
+            cin &gt;&gt; pt-&gt;a &gt;&gt; pt-&gt;b &gt;&gt; pt-&gt;c;
+            pShapes[i] = pt;
+            break;
+        }
+    }
+    qsort(pShapes,n,sizeof(Cshape *),MyCompare);
+    for(i = 0;i &lt;n;++i) {
+        pShapes[i]-&gt;PrintInfo();
+        delete pShapes[i]; //释放空间
+    }
+    return 0;
+}</pre>
+程序涉及三种几何形体。如果不使用多态，就需要用三个数组分别存放三种几何形体，不但编码麻烦，而且如果以后要增加新的几何形体，就要增加新的数组，扩充性不好。<br />
+<br />
+本程序将所有几何形体的共同点抽象出来，形成一个基类 CShape，CRectangle、CCircle 等各种几何形体类都由 CShape 类派生而来。每个类都有各自的计算面积函数 Area 和显示信息函数 PrintInfo，这两个函数在所有类中都有，而且都是虚函数。<br />
+<br />
+第 50 行定义了一个 CShape * pShapes[100] 数组。由于基类指针也能指向派生类对象，因此，每输入一个几何形体，就动态分配一个与该形体对应的类的对象（第 74、79、84 行）， 然后将该对象的指针存入 pShapes 数组（第 76、81、86 行）。总之，pShapes 数组中的元素可能指向 CRectangle 对象，也可能指向 CCircle 对象，还可能指向 CTriangle 对象。<br />
+<br />
+第 90 行对 pShapes 数组进行排序。排序的规则是按数组元素所指向的对象的面积从小到大排序。注意，待排序的数组元素是指针而不是对象，因此调用 qsort 时的第三个参数是 sizeof (CShape *)，而不是 sizeof(CShape)。<br />
+<br />
+在定义排序规则的 MyCompare 函数中，形参 s1（s2 与 s1 类似）指向的是待排序的数组元素，数组元素是指针，因而 s1 是指向指针的指针，其指向的指针是 CShape* 类型。*s1是数组元素，即指向对象的指针，**s1才是几何形体对象。<br />
+<br />
+由于 s1 是 void* 类型的，*s1 无定义，因此要先将 s1 转换为 CShape** 类型的指针 p1（第 53 行），此后，*p1 即是一个 CShape* 类型的指针，*p1 指向一个几何形体对象，通过<code>(*p1)-&gt;Area()</code>就能求该对象的面积了（第 55 行）。<code>(* p1) -&gt; Area();</code>这条语句是多态的，因为 *p1 是基类指针，Area 是虚函数。程序运行到此时，*p1 指向哪种对象，就会调用相应类的计算面积函数 Area，正确求得其面积。<br />
+<br />
+如果不使用多态，就需要将不同形体的面积一一求出来，存到另外一个数组中，然后再排序，排序后还要维持面积值和其所属的几何形体的对应关系&mdash;&mdash;这显然是比较麻烦的。<br />
+<br />
+多态的作用还体现在第 91、92 行。只要用一个循环遍历排好序的 pShapes 数组，并通过数组元素调用 PrintInfo 虚函数，就能正确执行不同形体对象的 PrintInfo 成员函数，输出形体对象的信息。<br />
+<br />
+上面这个使用了多态机制的程序，不但编码比较简单，可扩充性也较好。如果程序需要增加新的几何形体类，所要做的事情也只是从 CShape 类派生出新类，然后在第 72 行的 switch 语句中加入一个分支即可。<br />
+<br />
+第 93 行释放动态分配的对象。按照本程序的写法，这条语句是有一些问题的。具体是什么问题，如何解决，将在《虚析构函数》一节中解释。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="72.html" title="Go语言类型内嵌和结构体内嵌" target="_blank">Go语言类型内嵌和结构体内嵌</a></li>
+<li><a href="4273.html" title="Python dir()和help()帮助函数" target="_blank">Python dir()和help()帮助函数</a></li>
+<li><a href="6126.html" title="PHP switch case语句" target="_blank">PHP switch case语句</a></li>
+<li><a href="vip_7654.html" title="深度剖析Linux硬链接和软链接，直击它们的本质！" target="_blank">深度剖析Linux硬链接和软链接，直击它们的本质！</a></li>
+<li><a href="vip_9756.html" title="手机上运行Python程序" target="_blank">手机上运行Python程序</a></li>
+<li><a href="x0wroqj.html" title="C# goto语句的用法（附带示例）" target="_blank">C# goto语句的用法（附带示例）</a></li>
+<li><a href="j0wt2bw.html" title="JS call()、apply()和bind()的区别" target="_blank">JS call()、apply()和bind()的区别</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 265;
+window.arcId = "a7acWGgC8Ye1OL7jE7+gUsKUPUa7+MccEYTDNUVUS3GxnBdkA+Vl1y221w";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

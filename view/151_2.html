@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C++拷贝构造函数（复制构造函数）详解</title>
+<meta name="description" content="复制构造函数是构造函数的一种，也称拷贝构造函数，它只有一个参数，参数类型是本类的引用。复制构造函数的参数可以是 const 引用，也可以是非 const 引用。 一般使用前者，这样既" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C++拷贝构造函数（复制构造函数）详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body"><span style="color:#008000;">复制构造函数</span>是构造函数的一种，也称<span style="color:#008000;">拷贝构造函数</span>，它只有一个参数，参数类型是本类的引用。<br />
+<br />
+复制构造函数的参数可以是 const 引用，也可以是非 const 引用。 一般使用前者，这样既能以常量对象（初始化后值不能改变的对象）作为参数，也能以非常量对象作为参数去初始化其他对象。一个类中写两个复制构造函数，一个的参数是 const 引用，另一个的参数是非 const 引用，也是可以的。<br />
+<br />
+如果类的设计者不写复制构造函数，编译器就会自动生成复制构造函数。大多数情况下，其作用是实现从源对象到目标对象逐个字节的复制，即使得目标对象的每个成员变量都变得和源对象相等。编译器自动生成的复制构造函数称为&ldquo;<span style="color:#008000;">默认复制构造函数</span>&rdquo;。<br />
+<br />
+注意，默认构造函数（即无参构造函数）不一定存在，但是复制构造函数总是会存在。<br />
+<br />
+下面是一个复制构造函数的例子。
+<pre class="cpp">
+#include&lt;iostream &gt;
+u<a href='https://m.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+class Complex
+{
+public:
+    double real, imag;
+    Complex(double r, double i) {
+        real= r; imag = i;
+    }
+};
+int main(){
+    Complex cl(1, 2);
+    Complex c2 (cl);  //用复制构造函数初始化c2
+    cout&lt;&lt;c2.real&lt;&lt;&quot;,&quot;&lt;&lt;c2.imag;  //输出 1,2
+    return 0;
+}</pre>
+第 13 行给出了初始化 c2 的参数，即 c1。只有编译器自动生成的那个默认复制构造函数的参数才能和 c1 匹配，因此，c2 就是以 c1 为参数，调用默认复制构造函数进行初始化的。初始化的结果是 c2 成为 c1 的复制品，即 c2 和 c1 每个成员变量的值都相等。<br />
+<br />
+如果编写了复制构造函数，则默认复制构造函数就不存在了。下面是一个非默认复制构造函数的例子。
+<pre class="cpp">
+#include&lt;iostream&gt;
+using namespace std;
+class Complex{
+public:
+    double real, imag;
+    Complex(double r,double i){
+        real = r; imag = i;
+    }
+    Complex(const Complex &amp; c){
+        real = c.real; imag = c.imag;
+        cout&lt;&lt;&quot;Copy Constructor called&quot;&lt;&lt;endl ;
+    }
+};
+
+int main(){
+    Complex cl(1, 2);
+    Complex c2 (cl);  //调用复制构造函数
+    cout&lt;&lt;c2.real&lt;&lt;&quot;,&quot;&lt;&lt;c2.imag;
+    return 0;
+}</pre>
+程序的输出结果是：<br />
+Copy Constructor called<br />
+1,2<br />
+<br />
+第 9 行，复制构造函数的参数加不加 const 对本程序來说都一样。但加上 const 是更好的做法，这样复制构造函数才能接受常量对象作为参数，即才能以常量对象作为参数去初始化别的对象。<br />
+<br />
+第 17 行，就是以 c1 为参数调用第 9 行的那个复制构造函数初始化的。该复制构造函数执行的结果是使 c2 和 c1 相等，此外还输出<code>Copy Constructor called</code>。<br />
+<br />
+可以想象，如果将第 10 行删去或改成<code>real = 2*c.real; imag = imag + 1;</code>，那么 c2 的值就不会等于 c1 了。也就是说，自己编写的复制构造函数并不一定要做复制的工作（如果只做复制工作，那么使用编译器自动生成的默认复制构造函数就行了）。但从习惯上来讲，复制构造函数还是应该完成类似于复制的工作为好，在此基础上还可以根据需要做些別的操作。<br />
+<br />
+构造函数不能以本类的对象作为唯一参数，以免和复制构造函数相混淆。例如，不能写如下构造函数：
+<p class="info-box">
+	Complex (Complex c) {...}</p>
+<h2>
+	复制构造函数被调用的三种情况</h2>
+复制构造函数在以下三种情况下会被调用。<br />
+<br />
+1) 当用一个对象去初始化同类的另一个对象时，会引发复制构造函数被调用。例如，下面的两条语句都会引发复制构造函数的调用，用以初始化 c2。
+<pre class="cpp">
+Complex c2(c1);
+Complex c2 = c1;</pre>
+这两条语句是等价的。<br />
+<br />
+注意，第二条语句是初始化语句，不是赋值语句。赋值语句的等号左边是一个早已有定义的变量，赋值语句不会引发复制构造函数的调用。例如：
+<pre class="cpp">
+Complex c1, c2; c1 = c2 ;
+c1=c2;</pre>
+这条语句不会引发复制构造函数的调用，因为 c1 早已生成，已经初始化过了。<br />
+<br />
+2) 如果函数 F 的参数是类 A 的对象，那么当 F 被调用时，类 A 的复制构造函数将被调用。换句话说，作为形参的对象，是用复制构造函数初始化的，而且调用复制构造函数时的参数，就是调用函数时所给的实参。
+<pre class="cpp">
+#include&lt;iostream&gt;
+using namespace std;
+class A{
+public:
+    A(){};
+    A(A &amp; a){
+        cout&lt;&lt;&quot;Copy constructor called&quot;&lt;&lt;endl;
+    }
+};
+
+void Func(A a){ }
+
+int main(){
+    A a;
+    Func(a);
+    return 0;
+}</pre>
+程序的输出结果为：<br />
+Copy constructor called<br />
+<br />
+这是因为 Func 函数的形参 a 在初始化时调用了复制构造函数。<br />
+<br />
+前面说过，函数的形参的值等于函数调用时对应的实参，现在可以知道这不一定是正确的。如果形参是一个对象，那么形参的值是否等于实参，取决于该对象所属的类的复制构造函数是如何实现的。例如上面的例子，Func 函数的形参 a 的值在进入函数时是随机的，未必等于实参，因为复制构造函数没有做复制的工作。<br />
+<br />
+以对象作为函数的形参，在函数被调用时，生成的形参要用复制构造函数初始化，这会带来时间上的开销。如果用对象的引用而不是对象作为形参，就没有这个问题了。但是以引用作为形参有一定的风险，因为这种情况下如果形参的值发生改变，实参的值也会跟着改变。<br />
+<br />
+如果要确保实参的值不会改变，又希望避免复制构造函数带来的开销，解决办法就是将形参声明为对象的 const 引用。例如：
+<pre class="cpp">
+void Function(const Complex &amp; c)
+{
+    ...
+}</pre>
+这样，Function 函数中出现任何有可能导致 c 的值被修改的语句，都会引发编译错误。<br />
+<br />
+思考题：在上面的 Function 函数中，除了赋值语句，还有什么语句有可能改变 c 的值？例如，是否允许通过 c 调用 Complex 的成员函数？<br />
+<br />
+3) 如果函数的返冋值是类 A 的对象，则函数返冋时，类 A 的复制构造函数被调用。换言之，作为函数返回值的对象是用复制构造函数初始化 的，而调用复制构造函数时的实参，就是 return 语句所返回的对象。例如下面的程序：
+<pre class="cpp">
+#include&lt;iostream&gt;
+using namespace std;
+class A {
+public:
+    int v;
+    A(int n) { v = n; };
+    A(const A &amp; a) {
+        v = a.v;
+        cout &lt;&lt; &quot;Copy constructor called&quot; &lt;&lt; endl;
+    }
+};
+
+A Func() {
+    A a(4);
+    return a;
+}
+
+int main() {
+    cout &lt;&lt; Func().v &lt;&lt; endl;
+    return 0;
+}</pre>
+程序的输出结果是：<br />
+Copy constructor called<br />
+4<br />
+<br />
+第19行调用了 Func 函数，其返回值是一个对象，该对象就是用复制构造函数初始化的， 而且调用复制构造函数时，实参就是第 16 行 return 语句所返回的 a。复制构造函数在第 9 行确实完成了复制的工作，所以第 19 行 Func 函数的返回值和第 14 行的 a 相等。<br />
+<br />
+需要说明的是，有些编译器出于程序执行效率的考虑，编译的时候进行了优化，函数返回值对象就不用复制构造函数初始化了，这并不符合 <a href='../cplus/cplus_2.html' target='_blank'>C++</a> 的标准。上面的程序，用 Visual Studio 2010 编译后的输出结果如上所述，但是在 Dev C++ 4.9 中不会调用复制构造函数。把第 14 行的 a 变成全局变量，才会调用复制构造函数。对这一点，读者不必深究。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="864_2.html" title="Java正则表达式验证电话号码" target="_blank">Java正则表达式验证电话号码</a></li>
+<li><a href="1041_2.html" title="Linux单用户模式（修改密码、运行级别）方法详解" target="_blank">Linux单用户模式（修改密码、运行级别）方法详解</a></li>
+<li><a href="1415_2.html" title="C++数组初始化方法详解" target="_blank">C++数组初始化方法详解</a></li>
+<li><a href="vip_2103_2.html" title="用一个实例来深入剖析函数进栈出栈的过程" target="_blank">用一个实例来深入剖析函数进栈出栈的过程</a></li>
+<li><a href="2225_2.html" title="Python for循环及用法详解" target="_blank">Python for循环及用法详解</a></li>
+<li><a href="3990_2.html" title="Go语言的特性有哪些？" target="_blank">Go语言的特性有哪些？</a></li>
+<li><a href="5816_2.html" title="Java字符串查找（3种方法）" target="_blank">Java字符串查找（3种方法）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 151;
+window.arcId = "83f9cXsWAX2Tiu2+wJq6oUocRQPc2JvC+yQQx7UdS9yG/0Jbey0d8LXUJw";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

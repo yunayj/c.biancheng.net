@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>汉诺塔问题（分治+源码+动画演示）</title>
+<meta name="description" content="汉诺塔问题常用分治算法解决，本文会以动画的方式讲解汉诺塔问题的解决思路，还给大家提供了解决哈诺塔问题的C/C++、Java、Python程序，初学者也能玩转汉诺塔问题。" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>汉诺塔问题（分治+源码+动画演示）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">汉诺塔问题源自印度一个古老的传说，印度教的&ldquo;创造之神&rdquo;梵天创造世界时做了 3 根金刚石柱，其中的一根柱子上按照从小到大的顺序摞着 64 个黄金圆盘。梵天命令一个叫婆罗门的门徒将所有的圆盘移动到另一个柱子上，移动过程中必须遵守以下规则：
+<ul>
+<li>
+每次只能移动柱子最顶端的一个圆盘；</li>
+<li>
+每个柱子上，小圆盘永远要位于大圆盘之上；</li>
+</ul>
+<br />
+图 1 给您展示了包含 3 个圆盘的汉诺塔问题：<br />
+&nbsp;
+<p style="text-align: center;">
+<img alt="" src="../uploads/allimg/210820/2-210R01009132Y.gif" /></p>
+<p style="text-align: center;">
+图 1 汉诺塔问题</p>
+<br />
+一根柱子上摞着 3 个不同大小的圆盘，那么在不违反规则的前提下，如何将它们移动到另一个柱子上呢？图 2 给大家提供了一种实现方案：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210820/2-210R0100929200.gif" /><br />
+图 2 汉诺塔问题的解决方案</div>
+<blockquote>
+<p>
+汉诺塔问题中，3 个圆盘至少需要移动 7 次，移动 n 的圆盘至少需要操作 2<sup>n</sup>-1 次。</p>
+</blockquote>
+在汉诺塔问题中，当圆盘个数不大于 3 时，多数人都可以轻松想到移动方案，随着圆盘数量的增多，汉诺塔问题会越来越难。也就是说，圆盘的个数直接决定了汉诺塔问题的难度，解决这样的问题可以尝试用<a href="../algorithm/divide-and-conquer.html" target="_blank">分治算法</a>，将移动多个圆盘的问题分解成多个移动少量圆盘的小问题，这些小问题很容易解决，从而可以找到整个问题的解决方案。<br />
+<h2>
+分治算法解决汉诺塔问题</h2>
+为了方便讲解，我们将 3 个柱子分别命名为起始柱、目标柱和辅助柱。实际上，解决汉诺塔问题是有规律可循的：<br />
+1) 当起始柱上只有 1 个圆盘时，我们可以很轻易地将它移动到目标柱上；<br />
+<br />
+2) 当起始柱上有 2 个圆盘时，移动过程如下图所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210820/2-210R01009515I.gif" /><br />
+图 3 移动两个圆盘</div>
+<br />
+移动过程是：先将起始柱上的 1 个圆盘移动到辅助柱上，然后将起始柱上遗留的圆盘移动到目标柱上，最后将辅助柱上的圆盘移动到目标柱上。<br />
+<br />
+3) 当起始柱上有 3 个圆盘时，移动过程如图 2 所示，仔细观察会发现，移动过程和 2 个圆盘的情况类似：先将起始柱上的 2 个圆盘移动到辅助柱上，然后将起始柱上遗留的圆盘移动到目标柱上，最后将辅助柱上的圆盘移动到目标柱上。<br />
+<br />
+通过分析以上 3 种情况的移动思路，可以总结出一个规律：对于 n 个圆盘的汉诺塔问题，移动圆盘的过程是：
+<ol>
+<li>
+将起始柱上的 n-1 个圆盘移动到辅助柱上；</li>
+<li>
+将起始柱上遗留的 1 个圆盘移动到目标柱上；</li>
+<li>
+将辅助柱上的所有圆盘移动到目标柱上。</li>
+</ol>
+<br />
+由此，n 个圆盘的汉诺塔问题就简化成了 n-1 个圆盘的汉诺塔问题。按照同样的思路，n-1 个圆盘的汉诺塔问题还可以继续简化，直至简化为移动 3 个甚至更少圆盘的汉诺塔问题。<br />
+<br />
+如下为分治算法解决汉诺塔问题的伪代码：
+<pre class="info-box">
+// num 表示移动圆盘的数量，source、target、auxiliary 分别表示起始柱、目标柱和辅助柱
+hanoi(num , source , target , auxiliary): 
+    if num == 1:     // 如果圆盘数量仅有 1 个，则直接从起始柱移动到目标柱
+        print(从 source 移动到 target)
+    else:
+        // 递归调用 hanoi 函数，将 num-1 个圆盘从起始柱移动到辅助柱上，整个过程的实现可以借助目标柱
+        hanoi(num-1 , source , auxiliary , target)
+        // 将起始柱上剩余的最后一个大圆盘移动到目标柱上
+        print(从 source 移动到 target) 
+        // 递归调用 hanoi 函数，将辅助柱上的 num-1 圆盘移动到目标柱上，整个过程的实现可以借助起始柱               
+        hanoi(n-1 , auxiliary , target , source)</pre>
+<h2>
+汉诺塔问题的代码实现</h2>
+根据伪代码，我们为大家编写好了相应的 C 语言、Java 以及 Python 程序。<br />
+<br />
+如下是解决汉诺塔问题的 C 语言程序：
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+void hanoi(int num, char sou, char tar,char aux) {
+    //统计移动次数
+    static int i = 1;
+    //如果圆盘数量仅有 1 个，则直接从起始柱移动到目标柱
+    if (num == 1) {
+        printf(&quot;第%d次:从 %c 移动至 %c\n&quot;, i, sou, tar);
+        i++;
+    }
+    else {
+        //递归调用 hanoi() 函数，将 num-1 个圆盘从起始柱移动到辅助柱上
+        hanoi(num - 1, sou, aux, tar);
+        //将起始柱上剩余的最后一个大圆盘移动到目标柱上
+        printf(&quot;第%d次:从 %c 移动至 %c\n&quot;, i, sou, tar);
+        i++;
+        //递归调用 hanoi() 函数，将辅助柱上的 num-1 圆盘移动到目标柱上
+        hanoi(num - 1, aux, tar, sou);
+    }
+}
+
+int main()
+{
+    //以移动 3 个圆盘为例，起始柱、目标柱、辅助柱分别用 A、B、C 表示
+    hanoi(3, &#39;A&#39;, &#39;B&#39;, &#39;C&#39;);
+    return 0;
+}</pre>
+<br />
+如下是解决汉诺塔问题的 Java 程序：
+<pre class="java">
+public class Demo {
+    // 统计移动次数
+    public static int i = 1;
+
+    public static void hanoi(int num, char sou, char tar, char sux) {
+        // 如果圆盘数量仅有 1 个，则直接从起始柱移动到目标柱
+        if (num == 1) {
+            System.out.println(&quot;第&quot; + i + &quot;次:从&quot; + sou + &quot;移动到&quot; + tar);
+            i++;
+        } else {
+            // 递归调用 hanoi() 函数，将 num-1 个圆盘从起始柱移动到辅助柱上
+            hanoi(num - 1, sou, sux, tar);
+            // 将起始柱上剩余的最后一个大圆盘移动到目标柱上
+            System.out.println(&quot;第&quot; + i + &quot;次:从&quot; + sou + &quot;移动到&quot; + tar);
+            i++;
+            // 递归调用 hanoi() 函数，将辅助柱上的 num-1 圆盘移动到目标柱上
+            hanoi(num - 1, sux, tar, sou);
+        }
+    }
+
+    public static void main(String[] args) {
+        // 以移动 3 个圆盘为例，起始柱、目标柱、辅助柱分别用 A、B、C 表示
+        hanoi(3, &#39;A&#39;, &#39;B&#39;, &#39;C&#39;);
+    }
+}</pre>
+<br />
+如下是解决汉诺塔问题的 Python 程序：
+<pre class="python">
+#记录移动次数
+i = 1
+def hanoi(num,sou,tar,aux):
+    global i
+    if num==1:
+        print(&quot;第%d次:从 %c 移动至 %c&quot; % (i, sou, tar))
+        i=i+1
+    else:
+        #递归调用 hanoi() 函数，将 num-1 个圆盘从起始柱移动到辅助柱上
+        hanoi(num - 1, sou, aux, tar)
+        #将起始柱上剩余的最后一个大圆盘移动到目标柱上
+        print(&quot;第%d次:从 %c 移动至 %c&quot; % (i, sou, tar))
+        i=i+1
+        #递归调用 hanoi() 函数，将辅助柱上的 num-1 圆盘移动到目标柱上
+        hanoi(num - 1, aux, tar, sou)
+
+#以移动 3 个圆盘为例，起始柱、目标柱、辅助柱分别用 A、B、C 表示
+hanoi(3, &#39;A&#39;, &#39;B&#39;, &#39;C&#39;);</pre>
+<br />
+以上程序的执行结果均为：
+<p class="info-box">
+第1次:从 A 移动至 B<br />
+第2次:从 A 移动至 C<br />
+第3次:从 B 移动至 C<br />
+第4次:从 A 移动至 B<br />
+第5次:从 C 移动至 A<br />
+第6次:从 C 移动至 B<br />
+第7次:从 A 移动至 B</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="849.html" title="Linux usermod命令：修改用户信息" target="_blank">Linux usermod命令：修改用户信息</a></li>
+<li><a href="../mysql/subtime.html" title="MySQL SUBTIME函数：时间减法运算" target="_blank">MySQL SUBTIME函数：时间减法运算</a></li>
+<li><a href="vip_5101.html" title="Linux数据备份介质的选择" target="_blank">Linux数据备份介质的选择</a></li>
+<li><a href="../mybatis/sql-dynamic.html" title="MyBatis动态SQL" target="_blank">MyBatis动态SQL</a></li>
+<li><a href="../mybatis/bind.html" title="MyBatis bind标签" target="_blank">MyBatis bind标签</a></li>
+<li><a href="../matplotlib/subplots.html" title="Matplotlib subplots()函数详解" target="_blank">Matplotlib subplots()函数详解</a></li>
+<li><a href="../springcloud/nacos.html" title="Nacos：Spring Cloud Alibaba服务注册与配置中心（非常详细）" target="_blank">Nacos：Spring Cloud Alibaba服务注册与配置中心（非常详细）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9100;
+window.arcId = "9e3dvcjXlRnvYAVR+70l6cyU6aZ2YK7Dt/5UbFozduDpZOYNgzWQYJlxkB0";
+window.typeidChain = "457|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

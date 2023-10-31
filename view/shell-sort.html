@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>希尔排序算法</title>
+<meta name="description" content="前面给大家介绍了 插入排序算法 ，通过将待排序序列中的元素逐个插入到有序的子序列中，最终使整个序列变得有序。下图所示的动画演示了插入排序的整个过程： 图 1 插入排序算法" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>希尔排序算法</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">前面给大家介绍了<a href="../algorithm/insertion-sort.html" target="_blank">插入排序算法</a>，通过将待排序序列中的元素逐个插入到有序的子序列中，最终使整个序列变得有序。下图所示的动画演示了插入排序的整个过程：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210820/2-210R0104HD32.gif" /><br />
+图 1 插入排序算法</div>
+<br />
+观察动画不难发现，插入排序算法是通过比较元素大小和交换元素存储位置实现排序的，比较大小和移动元素的次数越多，算法的效率就越差。<br />
+<br />
+希尔排序算法又叫<span style="color:#008000;">缩小增量排序算法</span>，是一种更高效的插入排序算法。和普通的插入排序算法相比，希尔排序算法减少了移动元素和比较元素大小的次数，从而提高了排序效率。<br />
+<br />
+希尔排序算法的实现思路是：
+<ul>
+<li>
+将待排序序列划分成多个子序列，使用普通的插入排序算法对每个子序列进行排序；</li>
+<li>
+按照不同的划分标准，重复执行第一步；</li>
+<li>
+使用普通的插入排序算法对整个序列进行排序。</li>
+</ul>
+<br />
+按照这个思路，我们尝试对 {35, 33, 42, 10, 14, 19, 27, 44} 做升序排序，具体的实现流程是：<br />
+1) 间隔 4 个元素，将整个序列划分为 4 个子序列：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210820/2-210R01140321T.gif" /></div>
+<br />
+采用插入排序算法分别对 {35, 14}、{33, 19}、{42, 27}、{10, 44} 进行排序，最终生成的新序列为：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210820/2-210R01140533F.gif" /></div>
+<br />
+2) 间隔 2 个元素，再次划分整个序列：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210820/2-210R0114112C4.gif" /></div>
+<br />
+采用插入排序算法分别对 {14, 27, 35, 42} 和 {19, 10, 33, 44} 进行排序：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210820/2-210R0114134105.gif" /></div>
+<br />
+3) 采用插入排序算法对整个序列进行一次排序，过程如下：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210820/2-210R0114151L8.gif" /></div>
+<h2>
+序列的划分方法</h2>
+待排序序列如何进行划分，划分多少次，都会影响到希尔排序算法的执行效率。<br />
+<br />
+希尔排序算法没有固定的划分标准，这里给大家推荐一种常用的方法，套用如下伪代码：
+<pre class="info-box">
+输入 list           //输入待排序序列
+interval &lt;- 1    // 初始值为 1
+while interval &lt; length(list) / 3:    // length(list) 表示待排序序列的长度
+    interval = interval * 3 + 1</pre>
+经过计算得出的 interval 的值，就是首次划分序列采用的标准。<br />
+<br />
+后续划分整个序列，套用如下公式：
+<p class="info-box">
+interval = (interval-1)/3</p>
+比如说计算第二次划分序列的标准，只需将第一次划分序列时计算得到的 interval 代入公式，求出的新 interval 值就是第二次采用的划分标准。<br />
+<h2>
+希尔排序算法的具体实现</h2>
+实现希尔排序算法的伪代码如下：
+<pre class="info-box">
+// list 为待排序序列
+shell_sort(list):
+    len &lt;- length(list)  // 记录 list 序列中的元素个数
+    //初始化间隔数为 1
+    interval &lt;- 1
+    //计算最大间隔数
+    while interval &lt; len/3:
+        interval &lt;- interval * 3 + 1
+    //根据间隔数，不断划分序列，并对各子序列排序
+    while interval &gt; 0:
+        //对各个子序列做直接插入排序
+        for i &lt;- interval to len:
+            temp &lt;- list[i]
+            j &lt;- i
+            while j &gt; interval - 1 &amp;&amp; list[j - interval] &ge; temp:
+                list[j] &lt;- list[j - interval]
+                j &lt;- j - interval
+            if j != i:
+                list[j] &lt;- temp
+        //计算新的间隔数，继续划分序列
+        interval &lt;- (interval - 1)/3
+return  list</pre>
+<br />
+结合伪代码，如下是用希尔排序算法对&nbsp;{35, 33, 42, 10, 14, 19, 27, 44} 实现升序排序的 C 语言程序：
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+#define N 8   //设定待排序序列中的元素个数
+//list[N] 为存储待排序序列的数组
+void shell_sort(int list[N]) {
+    int temp, i, j;
+    //初始化间隔数为 1
+    int interval = 1;
+    //计算最大间隔
+    while (interval &lt; N / 3) {
+        interval = interval * 3 + 1;
+    }
+    //根据间隔数，不断划分序列，并对各子序列排序
+    while (interval &gt; 0) {
+        //对各个子序列做直接插入排序
+        for (i = interval; i &lt; N; i++) {
+            temp = list[i];
+            j = i;
+            while (j &gt; interval - 1 &amp;&amp; list[j - interval] &gt;= temp) {
+                list[j] = list[j - interval];
+                j -= interval;
+            }
+            if(j != i){
+                list[j] = temp;
+            }
+        }
+        //计算新的间隔数，继续划分序列
+        interval = (interval - 1) / 3;
+    }
+}
+int main() {
+    int i;
+    int list[N] = { 35,33,42,10,14,19,27,44 };
+    //对待排序序列做希尔排序
+    shell_sort(list);
+    //输出已排序序列
+    for (i = 0; i &lt; N; i++) {
+        printf(&quot;%d &quot;, list[i]);
+    }
+}</pre>
+<br />
+如下是用希尔排序算法对 {35, 33, 42, 10, 14, 19, 27, 44} 实现升序排序的 Java 程序：
+<pre class="java">
+public class Demo {
+    // list[N] 为存储待排序序列的数组
+    public static void shell_sort(int[] list) {
+        int length = list.length;
+        // 初始化间隔数为 1
+        int interval = 1;
+        // 计算最大间隔
+        while (interval &lt; length / 3) {
+            interval = interval * 3 + 1;
+        }
+        // 根据间隔数，不断划分序列，并对各子序列排序
+        while (interval &gt; 0) {
+            // 对各个子序列做直接插入排序
+            for (int i = interval; i &lt; length; i++) {
+                int temp = list[i];
+                int j = i;
+                while (j &gt; interval - 1 &amp;&amp; list[j - interval] &gt;= temp) {
+                    list[j] = list[j - interval];
+                    j -= interval;
+                }
+                if (j != i) {
+                    list[j] = temp;
+                }
+            }
+            // 计算新的间隔数，继续划分序列
+            interval = (interval - 1) / 3;
+        }
+    }
+
+    public static void main(String[] args) {
+        int[] list = { 35, 33, 42, 10, 14, 19, 27, 44 };
+        shell_sort(list);
+        // 输出已排好序的序列
+        for (int i = 0; i &lt; list.length; i++) {
+            System.out.print(list[i] + &quot; &quot;);
+        }
+    }
+}</pre>
+<br />
+如下是用希尔排序算法对 {35, 33, 42, 10, 14, 19, 27, 44} 实现升序排序的 Python 程序：
+<pre class="python">
+#待排序序列
+list = [35,33,42,10,14,19,27,44]
+def shell_sort():
+    length = len(list)
+    # 初始化间隔数为 1
+    interval = 1
+    # 计算最大间隔
+    while interval &lt; (int)(length / 3):
+        interval = interval * 3 + 1
+    # 根据间隔数，不断划分序列，并对各子序列排序
+    while interval &gt; 0:
+        # 对各个子序列做直接插入排序
+        for i in range(interval , length):
+            temp = list[i]
+            j = i
+            while j &gt; interval - 1 and list[j - interval] &gt;= temp:
+                list[j] = list[j - interval]
+                j = j - interval
+            if j != i:
+                list[j] = temp
+        # 计算新的间隔数，继续划分序列
+        interval = (int)((interval - 1)/3)
+# 对待排序序列做希尔排序
+shell_sort()
+# 输出已排好序的序列
+for i in list:
+    print(i,end=&quot; &quot;)</pre>
+<br />
+以上程序的输出结果均为：
+<p class="info-box">
+10 14 19 27 33 35 42 44</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="912.html" title="Linux setquota命令详解：非交互式设置磁盘配额" target="_blank">Linux setquota命令详解：非交互式设置磁盘配额</a></li>
+<li><a href="1298_2.html" title="Java Eclipse下载安装教程" target="_blank">Java Eclipse下载安装教程</a></li>
+<li><a href="4742.html" title="Java List.size()方法：返回列表中元素的个数" target="_blank">Java List.size()方法：返回列表中元素的个数</a></li>
+<li><a href="5394.html" title="Go语言包的基本概念" target="_blank">Go语言包的基本概念</a></li>
+<li><a href="6259.html" title="PHP getimagesize()：获取图像大小" target="_blank">PHP getimagesize()：获取图像大小</a></li>
+<li><a href="3bj4moj.html" title="git rebase -i命令：压缩历史" target="_blank">git rebase -i命令：压缩历史</a></li>
+<li><a href="xtjua0b.html" title="《Easy C++(第5版)》PDF下载（高清完整版）" target="_blank">《Easy C++(第5版)》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9111;
+window.arcId = "0ac6YWJ3UkwVj6rw+rBKqKURWqZcKzKBINg0rE3+D/uyIyc2ybJuRZB9YMQ";
+window.typeidChain = "457|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

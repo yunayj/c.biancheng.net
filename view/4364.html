@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>MyBatis中的insert、update、delete和sql标签</title>
+<meta name="description" content="insert 元素用于映射插入语句，MyBatis 执行完一条插入语句后将返回一个整数表示其影响的行数。它的属性与 select 元素的属性大部分相同，在本节讲解它的几个特有属性。 keyProperty：该属" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>MyBatis中的insert、update、delete和sql标签</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">这节我们来讲 MyBatis 中的 &lt;insert&gt;、&lt;update&gt;、&lt;delete&gt; 和 &lt;sql&gt; 元素。
+<h2>
+&lt;insert&gt;元素</h2>
+&lt;insert&gt; 元素用于映射插入语句，MyBatis 执行完一条插入语句后将返回一个整数表示其影响的行数。它的属性与 &lt;select&gt; 元素的属性大部分相同，在本节讲解它的几个特有属性。
+<ul>
+<li>
+keyProperty：该属性的作用是将插入或更新操作时的返回值赋给 PO 类的某个属性，通常会设置为主键对应的属性。如果是联合主键，可以将多个值用逗号隔开。</li>
+<li>
+keyColumn：该属性用于设置第几列是主键，当主键列不是表中的第 1 列时需要设置。如果是联合主键，可以将多个值用逗号隔开。</li>
+<li>
+useGeneratedKeys：该属性将使 MyBatis 使用 JDBC 的 getGeneratedKeys（）方法获取由数据库内部产生的主键，例如 <a href='../mysql/mysql_3.html' target='_blank'>MySQL</a>、SQL Server 等自动递增的字段，其默认值为 false。</li>
+</ul>
+<h4>
+1）主键（自动递增）回填</h4>
+MySQL、SQL Server 等数据库的表格可以采用自动递增的字段作为主键，有时可能需要使用这个刚刚产生的主键，用于关联其他业务。<br />
+<br />
+首先为 com.mybatis 包中的 SQL 映射文件 UserMapper.xml 中 id 为 addUser 的 &lt;insert&gt; 元素添加 keyProperty 和 useGeneratedKeys 属性，具体代码如下：
+<p class="info-box">
+&lt;!--添加一个用户，成功后将主键值返回填给uid(po的属性)--&gt;<br />
+&lt;insert id=&quot;addUser&quot; parameterType=&quot;com.po.MyUser&quot; keyProperty=&quot;uid&quot; useGeneratedKeys=&quot;true&quot;&gt;<br />
+&nbsp; &nbsp; insert into user (uname,usex) values(#{uname},#{usex})<br />
+&lt;/insert&gt;</p>
+然后在 com.controller 包的 UserController 类中进行调用，具体代码如下：
+<pre class="java">
+// 添加一个用户
+MyUser addmu = new MyUser();
+addmu.setUname(&quot;陈恒&quot;);
+addmu.setUsex(&quot;男&quot;);
+int add = userDao.addUser(addmu);
+System.out.println(&quot;添加了&quot; + add + &quot;条记录&quot;);
+System.out.println(&quot;添加记录的主键是&quot; + addmu.getUid());</pre>
+<h4>
+2）自定义主键</h4>
+如果在实际工程中使用的数据库不支持主键自动递增（例如 Oracle），或者取消了主键自动递增的规则，可以使用 MyBatis 的 &lt;selectKey&gt; 元素来自定义生成主键。具体配置示例代码如下：
+<pre class="xml">
+&lt;!-- 添加一个用户，#{uname}为 com.mybatis.po.MyUser 的属性值 --&gt;
+&lt;insert id=&quot;insertUser&quot; parameterType=&quot;com.po.MyUser&quot;&gt;
+    &lt;!-- 先使用selectKey元素定义主键，然后再定义SQL语句 --&gt;
+    &lt;selectKey keyProperty=&quot;uid&quot; resultType=&quot;Integer&quot; order=&quot;BEFORE&quot;&gt;
+    select if(max(uid) is null,1,max(uid)+1) as newUid from user)
+    &lt;/selectKey&gt;
+    insert into user (uid,uname,usex) values(#{uid},#{uname},#{usex})
+&lt;/insert&gt;</pre>
+在执行上述示例代码时，&lt;selectKey&gt; 元素首先被执行，该元素通过自定义的语句设置数据表的主键，然后执行插入语句。<br />
+<br />
+&lt;selectKey&gt; 元素的 keyProperty 属性指定了新生主键值返回给 PO 类（com.po.MyUser）的哪个属性。<br />
+<ul>
+<li>
+order 属性可以设置为 BEFORE 或 AFTER。</li>
+<li>
+BEFORE 表示先执行 &lt;selectKey&gt; 元素然后执行插入语句。</li>
+<li>
+AFTER 表示先执行插入语句再执行 &lt;selectKey&gt; 元素。</li>
+</ul>
+<h2>
+&lt;update&gt;与&lt;delete&gt;元素</h2>
+&lt;update&gt; 和 &lt;delete&gt; 元素比较简单，它们的属性和 &lt;insert&gt; 元素、&lt;select&gt; 元素的属性差不多，执行后也返回一个整数，表示影响了数据库的记录行数。配置示例代码如下：
+<pre class="xml">
+&lt;!-- 修改一个用户 --&gt;
+&lt;update id=&quot;updateUser&quot; parameterType=&quot;com.po.MyUser&quot;&gt;
+    update user set uname = #{uname},usex = #{usex} where uid = #{uid}
+&lt;/update&gt;
+&lt;!-- 删除一个用户 --&gt;
+&lt;delete id=&quot;deleteUser&quot; parameterType=&quot;Integer&quot;&gt;
+    delete from user where uid = #{uid}
+&lt;/delete&gt;</pre>
+<h2>
+&lt;sql&gt; 元素</h2>
+&lt;sql&gt; 元素的作用在于可以定义 SQL 语句的一部分（代码片段），以方便后面的 SQL 语句引用它，例如反复使用的列名。<br />
+<br />
+在 MyBatis 中只需使用 &lt;sql&gt; 元素编写一次便能在其他元素中引用它。配置示例代码如下：<br />
+<pre class="xml">
+&lt;sql id=&quot;comColumns&quot;&gt;id,uname,usex&lt;/sql&gt;
+&lt;select id=&quot;selectUser&quot; resultType=&quot;com.po.MyUser&quot;&gt;
+    select &lt;include refid=&quot;comColumns&quot;&gt; from user
+&lt;/select&gt;</pre>
+在上述代码中使用 &lt;include&gt; 元素的 refid 属性引用了自定义的代码片段。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="150.html" title="C++对象数组中使用构造函数" target="_blank">C++对象数组中使用构造函数</a></li>
+<li><a href="842.html" title="Linux /etc/gshadow文件内容解析" target="_blank">Linux /etc/gshadow文件内容解析</a></li>
+<li><a href="6793.html" title="Java使用Lambda表达式遍历Collection集合" target="_blank">Java使用Lambda表达式遍历Collection集合</a></li>
+<li><a href="vip_8318.html" title="明白了MySQL内部结构才能成为高手！" target="_blank">明白了MySQL内部结构才能成为高手！</a></li>
+<li><a href="../css3/gradient.html" title="CSS渐变色（颜色渐变）10分钟入门" target="_blank">CSS渐变色（颜色渐变）10分钟入门</a></li>
+<li><a href="../spring/annotation-aspectj.html" title="Spring使用AspectJ进行AOP开发（基于注解）" target="_blank">Spring使用AspectJ进行AOP开发（基于注解）</a></li>
+<li><a href="../csharp/generic.html" title="C#泛型（Generic）" target="_blank">C#泛型（Generic）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 4364;
+window.arcId = "135atsODtCFEzv8FdSjQEBou9JTlLYSa9B5dqtTDY+aXZh0UP1lHSNTqyp4";
+window.typeidChain = "192|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

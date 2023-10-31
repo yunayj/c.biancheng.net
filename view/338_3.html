@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C++迭代器（STL迭代器）iterator详解</title>
+<meta name="description" content="要访问顺序容器和关联容器中的元素，需要通过迭代器进行。迭代器是一个变量，相当于容器和操纵容器的算法之间的中介。迭代器可以指向容器中的某个元素，通过迭代器就可以读写" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C++迭代器（STL迭代器）iterator详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">要访问顺序容器和关联容器中的元素，需要通过&ldquo;迭代器（iterator）&rdquo;进行。迭代器是一个变量，相当于容器和操纵容器的算法之间的中介。迭代器可以指向容器中的某个元素，通过迭代器就可以读写它指向的元素。从这一点上看，迭代器和<a href='../c/80/80_2.html' target='_blank'>指针</a>类似。<br />
+<br />
+迭代器按照定义方式分成以下四种。<br />
+<br />
+1) 正向迭代器，定义方法如下：
+<p class="info-box">
+	容器类名::iterator&nbsp; 迭代器名;</p>
+<br />
+2) 常量正向迭代器，定义方法如下：
+<p class="info-box">
+	容器类名::const_iterator&nbsp; 迭代器名;</p>
+<br />
+3) 反向迭代器，定义方法如下：
+<p class="info-box">
+	容器类名::reverse_iterator&nbsp; 迭代器名;</p>
+<br />
+4) 常量反向迭代器，定义方法如下：
+<p class="info-box">
+	容器类名::const_reverse_iterator&nbsp; 迭代器名;</p>
+<h2>
+	迭代器用法示例</h2>
+通过迭代器可以读取它指向的元素，<code>*迭代器名</code>就表示迭代器指向的元素。通过非常量迭代器还能修改其指向的元素。<br />
+<br />
+迭代器都可以进行<code>++</code>操作。反向迭代器和正向迭代器的区别在于：
+<ul>
+	<li>
+		对正向迭代器进行<code>++</code>操作时，迭代器会指向容器中的后一个元素；</li>
+	<li>
+		而对反向迭代器进行<code>++</code>操作时，迭代器会指向容器中的前一个元素。</li>
+</ul>
+<br />
+下面的程序演示了如何通过迭代器遍历一个 vector 容器中的所有元素。
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+u<a href='https://m.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+int main()
+{
+    vector&lt;int&gt; v;  //v是存放int类型变量的可变长数组，开始时没有元素
+    for (int n = 0; n&lt;5; ++n)
+        v.push_back(n);  //push_back成员函数在vector容器尾部添加一个元素
+    vector&lt;int&gt;::iterator i;  //定义正向迭代器
+    for (i = v.begin(); i != v.end(); ++i) {  //用迭代器遍历容器
+        cout &lt;&lt; *i &lt;&lt; &quot; &quot;;  //*i 就是迭代器i指向的元素
+        *i *= 2;  //每个元素变为原来的2倍
+    }
+    cout &lt;&lt; endl;
+    //用反向迭代器遍历容器
+    for (vector&lt;int&gt;::reverse_iterator j = v.rbegin(); j != v.rend(); ++j)
+        cout &lt;&lt; *j &lt;&lt; &quot; &quot;;
+    return 0;
+}</pre>
+程序的输出结果是：<br />
+0 1 2 3 4<br />
+8 6 4 2 0<br />
+<br />
+第 6 行，vector 容器有多个构造函数，如果用无参构造函数初始化，则容器一开始是空的。<br />
+<br />
+第 10 行，begin 成员函数返回指向容器中第一个元素的迭代器。++i 使得 i 指向容器中的下一个元素。end 成员函数返回的不是指向最后一个元素的迭代器，而是指向最后一个元素后面的位置的迭代器，因此循环的终止条件是<code>i != v.end()</code>。<br />
+<br />
+第 16 行定义了反向迭代器用以遍历容器。反向迭代器进行<code>++</code>操作后，会指向容器中的上一个元素。rbegin 成员函数返回指向容器中最后一个元素的迭代器，rend 成员函数返回指向容器中第一个元素前面的位置的迭代器，因此本循环实际上是从后往前遍历整个数组。<br />
+<br />
+如果迭代器指向了容器中最后一个元素的后面或第一个元素的前面，再通过该迭代器访问元素，就有可能导致程序崩溃，这和访问 NULL 或未初始化的指针指向的地方类似。<br />
+<br />
+第 10 行和第 16 行，写<code>++i</code>、<code>++j</code>相比于写<code>i++</code>、<code>j++</code>，程序的执行速度更快。回顾<code>++</code>被重载成前置和后置运算符的例子如下：
+<pre class="cpp">
+CDemo CDemo::operator++ ()
+{  //前置++
+    ++n;
+    return *this;
+}
+CDemo CDemo::operator ++(int k)
+{  //后置++
+    CDemo tmp(*this);  //记录修改前的对象
+    n++;
+    return tmp;  //返回修改前的对象
+}</pre>
+后置<code>++</code>要多生成一个局部对象 tmp，因此执行速度比前置的慢。同理，迭代器是一个对象，<a href='../stl/stl_2.html' target='_blank'>STL</a> 在重载迭代器的<code>++</code>运算符时，后置形式也比前置形式慢。在次数很多的循环中，<code>++i</code>和<code>i++</code>可能就会造成运行时间上可观的差别了。因此，本教程在前面特别提到，对循环控制变量i，要养成写<code>++i</code>、不写<code>i++</code>的习惯。<br />
+<br />
+注意，容器适配器 stack、queue 和 priority_queue 没有迭代器。容器适配器有一些成员函数，可以用来对元素进行访问。
+<h2>
+	迭代器的功能分类</h2>
+不同容器的迭代器，其功能强弱有所不同。容器的迭代器的功能强弱，决定了该容器是否支持 STL 中的某种算法。例如，排序算法需要通过随机访问迭代器来访问容器中的元素，因此有的容器就不支持排序算法。<br />
+<br />
+常用的迭代器按功能强弱分为输入、输出、正向、双向、随机访问五种，这里只介绍常用的三种。<br />
+<br />
+1) 正向迭代器。假设 p 是一个正向迭代器，则 p 支持以下操作：++p，p++，*p。此外，两个正向迭代器可以互相赋值，还可以用<code>==</code>和<code>!=</code>运算符进行比较。<br />
+<br />
+2) 双向迭代器。双向迭代器具有正向迭代器的全部功能。除此之外，若 p 是一个双向迭代器，则<code>--p</code>和<code>p--</code>都是有定义的。<code>--p</code>使得 p 朝和<code>++p</code>相反的方向移动。<br />
+<br />
+3) 随机访问迭代器。随机访问迭代器具有双向迭代器的全部功能。若 p 是一个随机访问迭代器，i 是一个整型变量或常量，则 p 还支持以下操作：
+<ul>
+	<li>
+		p+=i：使得 p 往后移动 i 个元素。</li>
+	<li>
+		p-=i：使得 p 往前移动 i 个元素。</li>
+	<li>
+		p+i：返回 p 后面第 i 个元素的迭代器。</li>
+	<li>
+		p-i：返回 p 前面第 i 个元素的迭代器。</li>
+	<li>
+		p[i]：返回 p 后面第 i 个元素的引用。</li>
+</ul>
+<br />
+此外，两个随机访问迭代器 p1、p2 还可以用 &lt;、&gt;、&lt;=、&gt;= 运算符进行比较。<code>p1&lt;p2</code>的含义是：p1 经过若干次（至少一次）<code>++</code>操作后，就会等于 p2。其他比较方式的含义与此类似。<br />
+<br />
+对于两个随机访问迭代器 p1、p2，表达式<code>p2-p1</code>也是有定义的，其返回值是 p2 所指向元素和 p1 所指向元素的序号之差（也可以说是 p2 和 p1 之间的元素个数减一）。<br />
+<br />
+表1所示为不同容器的迭代器的功能。<br />
+<br />
+<table>
+	<caption>
+		表1：不同容器的迭代器的功能</caption>
+	<tbody>
+		<tr>
+			<th>
+				容器</th>
+			<th>
+				迭代器功能</th>
+		</tr>
+		<tr>
+			<td>
+				vector</td>
+			<td>
+				随机访问</td>
+		</tr>
+		<tr>
+			<td>
+				deque</td>
+			<td>
+				随机访问</td>
+		</tr>
+		<tr>
+			<td>
+				list</td>
+			<td>
+				双向</td>
+		</tr>
+		<tr>
+			<td>
+				set / multiset</td>
+			<td>
+				双向</td>
+		</tr>
+		<tr>
+			<td>
+				map / multimap</td>
+			<td>
+				双向</td>
+		</tr>
+		<tr>
+			<td>
+				stack</td>
+			<td>
+				不支持迭代器</td>
+		</tr>
+		<tr>
+			<td>
+				queue</td>
+			<td>
+				不支持迭代器</td>
+		</tr>
+		<tr>
+			<td>
+				priority_queue</td>
+			<td>
+				不支持迭代器</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+例如，vector 的迭代器是随机迭代器，因此遍历 vector 容器有以下几种做法。下面的程序中，每个循环演示了一种做法。<br />
+<br />
+【实例】遍历 vector 容器。
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+int main()
+{
+    vector&lt;int&gt; v(100); //v被初始化成有100个元素
+    for(int i = 0;i &lt; v.size() ; ++i) //size返回元素个数
+        cout &lt;&lt; v[i]; //像普通数组一样使用vector容器
+    vector&lt;int&gt;::iterator i;
+    for(i = v.begin(); i != v.end (); ++i) //用 != 比较两个迭代器
+        cout &lt;&lt; * i;
+    for(i = v.begin(); i &lt; v.end ();++i) //用 &lt; 比较两个迭代器
+        cout &lt;&lt; * i;
+    i = v.begin();
+    while(i &lt; v.end()) { //间隔一个输出
+        cout &lt;&lt; * i;
+        i += 2; // 随机访问迭代器支持 &quot;+= 整数&quot;  的操作
+    }
+}</pre>
+list 容器的迭代器是双向迭代器。假设 v 和 i 的定义如下：
+<pre class="cpp">
+list&lt;int&gt; v;
+list&lt;int&gt;::const_iterator i;</pre>
+则以下代码是合法的：
+<pre class="cpp">
+for(i=v.begin(); i!=v.end(); ++i)
+cout &lt;&lt; *i;</pre>
+以下代码则不合法：
+<pre class="cpp">
+for(i=v.begin(); i&lt;v.end(); ++i)
+cout &lt;&lt; *i;</pre>
+因为双向迭代器不支持用&ldquo;&lt;&rdquo;进行比较。以下代码也不合法：
+<pre class="cpp">
+for(int i=0; i&lt;v.size(); ++i)
+cout &lt;&lt; v[i];</pre>
+因为 list 不支持随机访问迭代器的容器，也不支持用下标随机访问其元素。<br />
+<br />
+在 <a href='../cplus/cplus_2.html' target='_blank'>C++</a> 中，数组也是容器。数组的迭代器就是指针，而且是随机访问迭代器。例如，对于数组 int a[10]，int * 类型的指针就是其迭代器。则 a、a+1、a+2 都是 a 的迭代器。
+<h2>
+	迭代器的辅助函数</h2>
+STL 中有用于操作迭代器的三个函数模板，它们是：
+<ul>
+	<li>
+		advance(p, n)：使迭代器 p 向前或向后移动 n 个元素。</li>
+	<li>
+		dis<a href='https://m.biancheng.net/ref/tan.html' target='_blank'>tan</a>ce(p, q)：计算两个迭代器之间的距离，即迭代器 p 经过多少次 + + 操作后和迭代器 q 相等。如果调用时 p 已经指向 q 的后面，则这个函数会陷入死循环。</li>
+	<li>
+		iter_swap(p, q)：用于交换两个迭代器 p、q 指向的值。</li>
+</ul>
+<br />
+要使用上述模板，需要包含头文件 algorithm。下面的程序演示了这三个函数模板的 用法。
+<pre class="cpp">
+#include &lt;list&gt;
+#include &lt;iostream&gt;
+#include &lt;algorithm&gt; //要使用操作迭代器的函数模板，需要包含此文件
+using namespace std;
+int main()
+{
+    int a[5] = { 1, 2, 3, 4, 5 };
+    list &lt;int&gt; lst(a, a+5);
+    list &lt;int&gt;::iterator p = lst.begin();
+    advance(p, 2);  //p向后移动两个元素，指向3
+    cout &lt;&lt; &quot;1)&quot; &lt;&lt; *p &lt;&lt; endl;  //输出 1)3
+    advance(p, -1);  //p向前移动一个元素，指向2
+    cout &lt;&lt; &quot;2)&quot; &lt;&lt; *p &lt;&lt; endl;  //输出 2)2
+    list&lt;int&gt;::iterator q = lst.end();
+    q--;  //q 指向 5
+    cout &lt;&lt; &quot;3)&quot; &lt;&lt; distance(p, q) &lt;&lt; endl;  //输出 3)3
+    iter_swap(p, q); //交换 2 和 5
+    cout &lt;&lt; &quot;4)&quot;;
+    for (p = lst.begin(); p != lst.end(); ++p)
+        cout &lt;&lt; *p &lt;&lt; &quot; &quot;;
+    return 0;
+}</pre>
+程序的输出结果是：<br />
+1) 3<br />
+2) 2<br />
+3) 3<br />
+4) 1 5 3 4 2<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="255_2.html" title="C++派生类的构造函数和析构函数" target="_blank">C++派生类的构造函数和析构函数</a></li>
+<li><a href="288_2.html" title="C语言位运算符" target="_blank">C语言位运算符</a></li>
+<li><a href="../linux/tmux_2.html" title="tmux命令_Linux tmux命令：一个窗口操作多个会话" target="_blank">tmux命令_Linux tmux命令：一个窗口操作多个会话</a></li>
+<li><a href="1282_2.html" title="Java是什么？Java的特点有哪些？" target="_blank">Java是什么？Java的特点有哪些？</a></li>
+<li><a href="2422_2.html" title="MySQL INT、TINYINT、SMALLINT、MEDIUMINT、BIGINT（整数类型）" target="_blank">MySQL INT、TINYINT、SMALLINT、MEDIUMINT、BIGINT（整数类型）</a></li>
+<li><a href="vip_8524_2.html" title="GCC分步编译C++程序（汇总版）" target="_blank">GCC分步编译C++程序（汇总版）</a></li>
+<li><a href="../matplotlib/the-first-plot_2.html" title="第一个Matplotlib绘图程序" target="_blank">第一个Matplotlib绘图程序</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 338;
+window.arcId = "4487ONvTf3j2ojrGi8VgkUaRttwQ1HDaa3azmGDvU3bA4d9udQNUdF9g1g";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

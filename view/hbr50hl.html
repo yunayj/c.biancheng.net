@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Vue父组件给子组件传值（超级详细）</title>
+<meta name="description" content="在 Vue.js 中，可以在定义子组件中定义多个 prop 属性，用来接收父组件传过来的数据。也就是说，父组件可以通过子组件的 prop 属性，给子组件传递值。 定义一个 ViewCount 组件，显示通过" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Vue父组件给子组件传值（超级详细）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在 Vue.js 中，可以在定义子组件中定义多个 prop 属性，用来接收父组件传过来的数据。也就是说，父组件可以通过子组件的 prop 属性，给子组件传递值。<br />
+<br />
+定义一个 ViewCount 组件，显示通过 propCount 传入的值。在 vm 根实例组件中，注册并且使用 ViewCount 组件，显示单击按钮累计的单击次数，代码如下：<br />
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+    &lt;button v-on:click=&quot;clickMe&quot;&gt;单击我&lt;/button&gt;
+    &lt;!-- 使用ViewCount组件显示单击次数 --&gt;
+    &lt;view-count :prop-count=&quot;count&quot;&gt;&lt;/view-count&gt;
+&lt;/div&gt;
+
+&lt;template id=&quot;viewCountTemplate&quot;&gt;
+    &lt;div&gt;{{ propCount }}&lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script type=&quot;text/javascript&quot;&gt;
+
+    const ViewCount = {
+        props: [&#39;propCount&#39;],
+        template: &#39;#viewCountTemplate&#39;
+    }
+
+    const vm = new Vue({
+        el: &#39;#app&#39;,
+        components: {
+            &#39;view-count&#39;: ViewCount
+        },
+        data: {
+            count: 0
+        },
+        methods: {
+            clickMe() {
+                this.count++;
+            }
+        }
+    });
+
+&lt;/script&gt;</pre>
+传值的语法如下：
+<pre class="info-box">
+&lt;子组件名称:prop 属性名称=&quot;表达式&quot;&gt;&lt;/子组件名称&gt;</pre>
+或者：
+<pre class="info-box">
+&lt;子组件名称 v-bind:prop 属性名称=&quot;表达式&quot;&gt;&lt;/子组件名称&gt;</pre>
+<h2>
+prop的大小写</h2>
+HTML 中的 attribute 名对大小写不敏感，所以浏览器会把所有大写字符解释为小写字符。这意味着当开发人员使用 DOM 中的模板时，用 camelCase（驼峰命名法）命名的 prop 名需要使用其等价的 kebab-case（短横线分隔命名法）命名，代码如下：<br />
+<pre class="html">
+Vue.component(&#39;sub-component&#39;, {
+    // 在 JavaScript 中使用的是 camelCase
+    props: [&#39;postTitle&#39;],
+    template: &#39;&lt;h3&gt;{{ postTitle }}&lt;/h3&gt;&#39;
+});
+
+// 在 HTML 中使用的是 kebab-case
+&lt;sub-component :post-title=&quot;hello&quot;&gt;&lt;/sub-component&gt;</pre>
+<h2>
+prop的数据类型</h2>
+prop 除了支持数字和 string 类型外，还支持其他类型，代码如下：
+<pre class="html">
+props: {
+    title: String,
+    likes: Number,
+    isPublished: Boolean,
+    commentIds: Array,
+    author: Object,
+    callback: Function,
+    contactsPromise: Promise
+}</pre>
+这不仅为组件提供了使用参考文档，还会在它们遇到错误的类型时从浏览器的 JavaScript 控制台提示用户。使用方式和说明的样例代码如下。<br />
+<h4>
+1) 传入一个数字</h4>
+<pre class="html">
+&lt;!-- 即便&lsquo;42&rsquo;是静态的，仍然需要v-bind来告诉Vue.js --&gt;
+&lt;!-- 这是一个JavaScript表达式而不是一个字符串. --&gt;
+&lt;sub-component v-bind:likes=&quot;42&quot;&gt;&lt;/sub-component&gt;
+
+&lt;!-- 用一个变量进行动态赋值. --&gt;
+&lt;sub-component v-bind:likes=&quot;post.likes&quot;&gt;&lt;/sub-component&gt;</pre>
+<h4>
+2) 传入一个布尔值</h4>
+<pre class="html">
+&lt;!-- 包含该prop没有值的情况在内，都意味着true --&gt;
+&lt;sub-component is-published&gt;&lt;/sub-component&gt;
+
+&lt;!-- 即便&#39;false&#39;是静态的，仍然需要&#39;v-bind&#39;来告诉Vue.js --&gt;
+&lt;!-- 这是一个JavaScript表达式而不是一个字符串. --&gt;
+&lt;sub-component v-bind:is-published=&quot;false&quot;&gt;&lt;/sub-component&gt;
+
+&lt;!-- 用一个变量进行动态赋值. --&gt;
+&lt;sub-component v-bind:is-published=&quot;post.isPublished&quot;&gt;&lt;/sub-component&gt;</pre>
+<h4>
+3) 传入一个数组</h4>
+<pre class="html">
+&lt;!-- 即便数组是静态的，我们仍然需要&#39;v-bind&#39;来告诉Vue.js --&gt;
+&lt;!-- 这是一个JavaScript表达式而不是一个字符串. --&gt;
+&lt;sub-component v-bind:comment-ids=&quot;[234, 266, 273]&quot;&gt;&lt;/sub-component&gt;
+
+&lt;!-- 用一个变量进行动态赋值. --&gt;
+&lt;sub-component v-bind:comment-ids=&quot;post.commentIds&quot;&gt;&lt;/sub-component&gt;</pre>
+<h4>
+4) 传入一个对象</h4>
+<pre class="html">
+&lt;!-- 即便对象是静态的，仍然需要&#39;v-bind&#39;来告诉Vue.js --&gt;
+&lt;!-- 这是一个JavaScript表达式而不是一个字符串. --&gt;
+&lt;sub-component v-bind:author=&quot;{ name: &#39;Veronica&#39;, company: &#39;Meridian Dynamics&#39; }&quot;&gt;&lt;/sub-component&gt;
+
+&lt;!-- 用一个变量进行动态赋值. --&gt;
+&lt;sub-component v-bind:author=&quot;post.author&quot;&gt;&lt;/sub-component&gt;</pre>
+<h4>
+5) 传入一个对象的所有property</h4>
+如果开发人员要将一个对象的所有 property 都作为 prop 传入，则可以使用不带参数的 v-bind（取代 v-bind：prop-name）。将 user 对象的所有属性传递到组件中，代码如下：
+<pre class="html">
+&lt;template id=&quot;subUserId&quot;&gt;
+    &lt;div&gt;
+        &lt;p&gt;name: {{ userAttr.name }}&lt;/p&gt;
+        &lt;p&gt;age: {{ userAttr.age }}&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;div id=&quot;app&quot;&gt;
+    &lt;!-- 传入用户对象 --&gt;
+    &lt;user-component :user=&quot;user&quot;&gt;&lt;/user-component&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+    Vue.component(&#39;user-component&#39;, {
+        props: [&#39;userAttr&#39;],
+        template: &#39;#subUserId&#39;
+    });
+
+    const vm = new Vue({
+        el: &quot;#app&quot;,
+        data: {
+            user: {
+                name: &#39;张三&#39;,
+                age: 12
+            }
+        }
+    });
+&lt;/script&gt;</pre>
+<h2>
+prop单向数据流</h2>
+所有的 prop 都使其父子 prop 之间形成了一个单向下行绑定：父级 prop 的更新会向下流动到子组件中，但是反过来则不行。这样会防止从子组件意外变更父级组件的状态，从而导致应用的数据流向难以理解。<br />
+<br />
+另外，每次父级组件发生变更时，子组件中所有的 prop 都将被刷新为最新的值。这意味着开发人员不应该在一个子组件的内部改变 prop。如果这样做了，Vue.js 则会在浏览器的控制台中发出警告。<br />
+<br />
+这里有两种常见的试图变更一个prop的情形：<br />
+<br />
+1) 使用 prop attribute 将一个初始值传递给子组件的本地属性，子组件直接操作本地属性。<br />
+<br />
+2) 在子组件中定义计算属性，基于 prop attribute 传入的值进行计算处理。<br />
+<br />
+代码如下：<br />
+<pre class="html">
+&lt;!-- 定义模板 --&gt;
+&lt;template id=&quot;templateIn&quot;&gt;
+    &lt;div&gt;
+        &lt;!-- 初始值方式 --&gt;
+        &lt;p&gt;
+            &lt;span&gt;传入的 counter: {{ counter }}&lt;/span&gt;&lt;br&gt;
+            sub Counter: &lt;input v-model=&quot;subCounter&quot; /&gt;&lt;br&gt;
+            &lt;span&gt;子组件更新 counter: {{ subCounter }}&lt;/span&gt;
+        &lt;/p&gt;
+       
+        &lt;!-- 计算属性方式 --&gt;
+        &lt;p&gt;
+            &lt;span&gt;传入的 size: {{ size }}&lt;/span&gt;&lt;br&gt;
+            subSize: &lt;input v-model=&quot;computeSize&quot; /&gt;&lt;br&gt;
+            &lt;span&gt;子组件更新 size: {{ computeSize }}&lt;/span&gt;
+        &lt;/p&gt;
+    &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;div id=&quot;app&quot;&gt;
+    counter: &lt;input v-model=&quot;counter&quot; /&gt;&lt;br&gt;
+    size: &lt;input v-model=&quot;size&quot; /&gt;
+    &lt;sub-test :counter=&quot;counter&quot; :size=&quot;size&quot;&gt;&lt;/sub-test&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+    const subVue = {
+        props: [&#39;counter&#39;, &#39;size&#39;],  // 定义prop属性接收父组件的值
+        data: function() {
+            return {
+                subCounter: this.counter  // 给本地属性赋值
+            };
+        },
+        computed: {
+            computeSize: {
+                get: function() {
+                    return &#39;result -&gt; &#39; + this.size;
+                },
+                set: function(newValue) {
+                    // 不能响应到父组件，会抛出异常
+                    this.size = newValue.slice(&#39;result -&gt; &#39;.length);
+                }
+            }
+        },
+        template: &#39;#templateIn&#39;
+    };
+
+    const vm = new Vue({
+        el: &quot;#app&quot;,
+        data: {
+            counter: 12,
+            size: 10
+        },
+        components: {
+            &#39;sub-test&#39;: subVue
+        }
+    });
+&lt;/script&gt;</pre>
+<h2>
+prop属性验证</h2>
+开发人员还可以为组件的 prop 指定验证要求。如果有一个需求没有被满足，则 Vue.js 会在浏览器控制台中警告。这在开发一个会被别人用到的组件时尤其有帮助。<br />
+<br />
+为了定制 prop 的验证方式，开发人员可以为 props 中的值提供一个带有验证需求的对象，而不是一个字符串数组，代码如下：<br />
+<pre class="html">
+&lt;!-- 定义模板 --&gt;
+&lt;template id=&quot;templateIn&quot;&gt;
+    &lt;div&gt;
+        &lt;span&gt;{{ attr1 }}&lt;/span&gt;&lt;br&gt;
+        &lt;span&gt;{{ attr2 }}&lt;/span&gt;&lt;br&gt;
+        &lt;span&gt;{{ attr3 }}&lt;/span&gt;&lt;br&gt;
+        &lt;span&gt;{{ attr4 }}&lt;/span&gt;&lt;br&gt;
+        &lt;span&gt;{{ attr5.message }}&lt;/span&gt;&lt;br&gt;
+        &lt;span&gt;{{ attr6 }}&lt;/span&gt;&lt;br&gt;
+    &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;div id=&quot;app&quot;&gt;
+    &lt;son-component
+        :attr1=&quot;a1&quot;
+        :attr2=&quot;a2&quot;
+        :attr3=&quot;a3&quot;
+        :attr4=&quot;a4&quot;
+        :attr5=&quot;a5&quot;
+        :attr6=&quot;a6&quot;&gt;
+    &lt;/son-component&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+    const SonComponent = {
+        props: {
+            attr1: Number,
+            attr2: [String, Number],
+            attr3: {
+                type: String,
+                required: true
+            },
+            attr4: {
+                type: Number,
+                default: 10
+            },
+            attr5: {
+                type: Object,
+                default: function() {
+                    return { message: &#39;hello&#39; };
+                }
+            },
+            attr6: {
+                type: String,
+                validator: function(value) {
+                    // 这个值必须匹配下列字符串中的一个
+                    return [&quot;success&quot;, &quot;warning&quot;, &quot;danger&quot;].indexOf(value) !== -1;
+                }
+            }
+        },
+        template: &#39;#templateIn&#39;
+    };
+
+    const vm = new Vue({
+        el: &quot;#app&quot;,
+        components: {
+            SonComponent
+        },
+        data: {
+            a1: 1,
+            a2: &#39;hello&#39;,
+            a3: &#39;world&#39;,
+            a4: 11,
+            a5: { message: &quot;hai&quot; },
+            a6: &#39;success&#39;
+        }
+    });
+&lt;/script&gt;</pre>
+当 prop 验证失败时，Vue.js 将会发出一个控制台警告。<br />
+<br />
+实例的属性是在对象创建之前进行验证的，所以实例的属性（如 data 和 computed）在 default 和 validator 函数中不可用。<br />
+<br />
+prop 支持的类型包括：String、Number、Boolean、Array、Object、Date、Function、Symbol，同时支持自定义的构造函数，能使用 instanceof 进行确认，代码如下：<br />
+<pre class="html">
+&lt;!-- 定义模板 --&gt;
+&lt;template id=&quot;template1&quot;&gt;
+    &lt;div&gt;
+        {{ personAttr.firstName }} {{ personAttr.lastName }}
+    &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;div id=&quot;app&quot;&gt;
+    &lt;son-component :person-attr=&quot;person&quot;&gt;&lt;/son-component&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+    function Person(first, last) {
+        this.firstName = first;
+        this.lastName = last;
+    }
+
+    const SonComponent = {
+        template: &#39;#template1&#39;,
+        props: {
+            personAttr: {
+                type: Person,
+                validator: function(value) {
+                    return value instanceof Person;
+                }
+            }
+        }
+    };
+
+    const vm = new Vue({
+        el: &quot;#app&quot;,
+        components: {
+            SonComponent
+        },
+        data: {
+            person: new Person(&quot;san&quot;, &quot;zhang&quot;)
+        }
+    });
+&lt;/script&gt;</pre>
+<h2>
+非prop的attribute</h2>
+组件可以接受任意的 attribute，而这些 attribute 会被添加到这个组件的根元素上。<br />
+<br />
+显式定义的 prop 适用于向一个子组件传入信息，这也是 Vue.js 中推荐的做法，即向子组件传值的方式，然而组件库的作者并不总能预见组件会被用于怎样的场景。这也是为什么组件可以接受任意的 attribute，而这些 attribute 会被添加到这个组件的根元素上。<br />
+<br />
+如下例子中的 son-component 组件的 notprop 属性，没有在 son-component 的 props 属性中定义，但是会被直接渲染到子组件的根元素（div元素）中，代码如下：<br />
+<pre class="html">
+&lt;!-- 定义模板 --&gt;
+&lt;template id=&quot;template1&quot;&gt;
+    &lt;div class=&quot;subClass&quot; name=&quot;subName&quot;&gt;子组件&lt;/div&gt;
+&lt;/template&gt;
+
+&lt;div id=&quot;app&quot;&gt;
+    &lt;son-component
+        :notprop=&quot;notPropValue&quot;
+        :class=&quot;clsValue&quot;
+        :name=&quot;nameValue&quot;&gt;
+    &lt;/son-component&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+    const SonComponent = {
+        template: &#39;#template1&#39;
+    };
+
+    const vm = new Vue({
+        el: &quot;#app&quot;,
+        data: {
+            notPropValue: &quot;hello&quot;,
+            clsValue: &quot;parentClass&quot;,
+            nameValue: &quot;parentName&quot;
+        },
+        components: {
+            SonComponent
+        }
+    });
+
+    vm.$data.notPropValue = &quot;hai&quot;;
+&lt;/script&gt;</pre>
+渲染代码如下：<br />
+<pre class="info-box">
+&lt;div notprop=&quot;hai&quot; class=&quot;parentclass subclass&quot; name=&quot;parentName&quot;&gt;子组件&lt;/div&gt;</pre>
+div 中的 notprop=&quot;hai&quot; 是从 son-component：notprop=&quot;notPropValue&quot;/son-component 传递过去的。<br />
+<h4>
+1) 替换／合并已有的attribute</h4>
+如果在子组件中也定义了非 prop 的 attribute，同时在使用组件的时候也定义了该 attribute，这时候最后的值，存在替换/合并问题。class 和 style 的值会被合并，其他属性值会被替换。<br />
+<br />
+如上面的代码中，在 son-component 组件中定义了 class=&quot;subClass&quot;name=&quot;subName&quot;，同时在组件使用的时候定义了：class=&quot;clsValue&quot;和：name=&quot;nameValue&quot;，最后渲染的结果是 class=&quot;parentClass subClass&quot;和name=&quot;parentName&quot;。class 属性的值被合并了，而 name 属性的值只有一个：外面的值被替换了组件里面的 name 值。<br />
+<h4>
+2) 禁用Attribute继承</h4>
+如果开发人员不希望组件的根元素继承 attribute，则可以在组件的选项中设置 inheritAttrs：false<br />
+<br />
+因为继承的 attribute 只能作用到根元素上，如果需要将 attribute 继承到子组件的非根元素上，则可以使用 v-bind=&quot;$attrs&quot; 将 attribute 绑定到子元素的非根元素上，代码如下：<br />
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+    &lt;son-component test=&quot;Value&quot; required placeholder=&quot;请输入姓名&quot;&gt;&lt;/son-component&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+Vue.component(&#39;SonComponent&#39;, {
+    inheritAttrs: false,
+    template: &#39;&lt;div&gt;&lt;input type=&quot;text&quot; v-bind=&quot;$attrs&quot;/&gt;&lt;/div&gt;&#39;
+});
+
+const vm = new Vue({
+    el: &#39;#app&#39;
+});
+&lt;/script&gt;</pre>
+<blockquote>
+<p>
+注意，class 和 style 属性不在作用范围。</p>
+</blockquote>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="111.html" title="Go语言通过反射获取结构体的成员类型" target="_blank">Go语言通过反射获取结构体的成员类型</a></li>
+<li><a href="117.html" title="Go语言通过类型信息创建实例" target="_blank">Go语言通过类型信息创建实例</a></li>
+<li><a href="3362.html" title="串的堆分配存储结构" target="_blank">串的堆分配存储结构</a></li>
+<li><a href="4755.html" title="Java Set.contains()方法：判断Set集合是否包含指定的对象" target="_blank">Java Set.contains()方法：判断Set集合是否包含指定的对象</a></li>
+<li><a href="6854.html" title="Java一对多关系示例" target="_blank">Java一对多关系示例</a></li>
+<li><a href="../css3/background.html" title="CSS background（背景）" target="_blank">CSS background（背景）</a></li>
+<li><a href="7lj7dxh.html" title="《C语言程序设计教程(第3版)》吉顺如PDF下载（高清完整版）" target="_blank">《C语言程序设计教程(第3版)》吉顺如PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10417;
+window.arcId = "58732YRdj46APMHGAxFVgx3ISm56TI+C/jf/6tqbqYcT6D2+sku6G2iH3+cZ";
+window.typeidChain = "309|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

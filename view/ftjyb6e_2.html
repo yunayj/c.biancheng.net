@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Vue子组件给父组件传值详解</title>
+<meta name="description" content="组件的 prop 属性只能实现父组件向子组件传值，在实际的前端项目中，需要实现子组件将值传给父组件。Vue.js 提供了 3 种机制，实现子组件将值传给父组件。 1、使用$emit方法调用父组件" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Vue子组件给父组件传值详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">组件的 prop 属性只能实现父组件向子组件传值，在实际的前端项目中，需要实现子组件将值传给父组件。Vue.js 提供了 3 种机制，实现子组件将值传给父组件。<br />
+<h2>
+	1、使用$emit方法调用父组件方法传值</h2>
+在 Vue.js 的父组件中，可以通过 v-on 指令，给子组件的指定事件绑定一个函数，在子组件中，用 $emit 方法触发自己的事件，从而执行被绑定的函数。<br />
+<br />
+$emit 方法的第 1 个参数是一个字符串，对应 v-on 指定的事件名称，父组件中使用 v-on 给 son-component 组件的 parent-method 事件绑定了定义在父组件中 parentMethod 函数，在 son-component 的 toTest 函数中，使用 this.$emit(&#39;parent-method&#39;) 方式触发 parent-method 事件，执行 parentMethod 方法，实现父组件中的 count 自增，代码如下：<br />
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+  &lt;son-component v-on:parent-method=&quot;parentMethod&quot;&gt;&lt;/son-component&gt;
+  &lt;br /&gt;
+  &lt;div&gt;{{ count }}&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;template id=&quot;sonComponent&quot;&gt;
+  &lt;button v-on:click=&quot;toTest&quot;&gt;单击子组件&lt;/button&gt;
+&lt;/template&gt;
+
+&lt;script type=&quot;text/javascript&quot;&gt;
+const SonComponent = {
+  template: &#39;#sonComponent&#39;,
+  methods: {
+    toTest() {
+      this.$emit(&#39;parent-method&#39;);
+    }
+  }
+};
+
+const vm = new Vue({
+  el: &#39;#app&#39;,
+  components: {
+    SonComponent
+  },
+  data: {
+    count: 0
+  },
+  methods: {
+    parentMethod() {
+      this.count++;
+    }
+  }
+});
+&lt;/script&gt;</pre>
+$emit 方法必须有一个参数指定要触发的事件，同时支持更多的可选参数，通过这些参数，子组件可以将自己的数据传递给事件绑定的方法，而绑定的方法是定义在父组件中的，所以就可以间接地使用 $emit 方法，将子组件中的数据传递给父组件。<br />
+<br />
+在 son-component 子组件的 toTest 方法中，通过第 2 个参数给父组件中绑定的 parentMethod 方法传递 count 的递增幅度 step，代码如下：
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+  &lt;son-component v-on:parent-method=&quot;parentMethod&quot;&gt;&lt;/son-component&gt;
+  &lt;br /&gt;
+  &lt;div&gt;{{ count }}&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;template id=&quot;sonComponent&quot;&gt;
+  &lt;button v-on:click=&quot;toTest&quot;&gt;单击子组件&lt;/button&gt;
+&lt;/template&gt;
+
+&lt;script type=&quot;text/javascript&quot;&gt;
+const SonComponent = {
+  template: &#39;#sonComponent&#39;,
+  methods: {
+    toTest() {
+      this.$emit(&#39;parent-method&#39;, 2);
+    }
+  }
+};
+
+const vm = new Vue({
+  el: &#39;#app&#39;,
+  components: {
+    SonComponent
+  },
+  data: {
+    count: 0
+  },
+  methods: {
+    parentMethod(step) {
+      this.count += step;
+    }
+  }
+});
+&lt;/script&gt;</pre>
+<h2>
+	2、调用父组件的方法传值</h2>
+prop 属性的数据类型支持 Function，利用这个特点，开发人员可以在父组件中定义一个 Function 类型的 prop 属性，给子组件传递一个函数对象，在子组件中调用这个函数，通过函数的参数，可以将子组件中的数据传递给父组件。<br />
+<br />
+父组件基于子组件的 funcData prop 属性，给子组件 son-component 传递 increment 函数对象，在子组件 son-component的toTest 方法中，调用传入的 increment 函数，并且传入参数 step 的值，代码如下：<br />
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+  &lt;son-component v-bind:func-data=&quot;increment&quot;&gt;&lt;/son-component&gt;
+  &lt;br /&gt;
+  {{ count }}
+&lt;/div&gt;
+
+&lt;template id=&quot;sonComponentTemplate&quot;&gt;
+  &lt;button v-on:click=&quot;toTest&quot;&gt;单击递增&lt;/button&gt;
+&lt;/template&gt;
+
+&lt;script type=&quot;text/javascript&quot;&gt;
+const SonComponent = {
+  template: &#39;#sonComponentTemplate&#39;,
+  props: {
+    funcData: {
+      type: Function
+    }
+  },
+  methods: {
+    toTest() {
+      this.funcData(2);
+    }
+  }
+};
+
+const vm = new Vue({
+  el: &#39;#app&#39;,
+  components: {
+    SonComponent
+  },
+  data: {
+    count: 0
+  },
+  methods: {
+    increment(step) {
+      this.count += step;
+    }
+  }
+});
+&lt;/script&gt;</pre>
+<h2>
+	3、使用v-model实现父子组件的数据同步</h2>
+v-model 指令可以实现 input 输入框同组件数据属性双向同步，改变输入框的值，此值能自动被同步到 Vue.js 实例对象中。同样，改变 Vue.js 实例对象的数据属性，此数据属性也能自动被同步到 input 输入框，代码如下：
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+  name: {{ name }}&lt;br /&gt;
+  &lt;input v-model=&quot;name&quot; /&gt;&lt;br /&gt;
+&lt;/div&gt;
+
+&lt;script type=&quot;text/javascript&quot;&gt;
+const vm = new Vue({
+  el: &#39;#app&#39;,
+  data: {
+    name: &#39;&#39;
+  }
+});
+&lt;/script&gt;</pre>
+实际上，v-model 是 v-bind：value 和 v-on：input 两个指令的组合：
+<ul>
+	<li>
+		v-bind：value 指令将 Vue.js 实例对象的数据属性绑定到 input 元素的 value 属性；</li>
+	<li>
+		v-on：input 指令给 input 元素的 input 事件绑定一个函数，该函数将 input 输入框的 value 属性值赋给 Vue.js 实例对象的数据属性。</li>
+</ul>
+<br />
+input 元素中的 b-bind：value=&#39;name&#39;，将 name 数据属性的值绑定到 input 的 value 属性上，这样 input 输入框就可以实时显示 name 数据属性的值了。<br />
+<br />
+input 元素中的 v-on：input=&quot;demoInputChange（$event）&quot; 将 demoInputChange 函数绑定到 input 元素的 input 事件上，并且传入了当前的事件对象，当 input 事件触发时自动执行 demoInputChange 函数，将 input 的 value 属性的值赋给 name 数据属性，从而实现了 input 元素中的 value 同 Vue.js 实例对象中的 name 数据属性的双向绑定，代码如下：<br />
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+  name: {{ name }}&lt;br /&gt;
+  &lt;input v-bind:value=&quot;name&quot; v-on:input=&quot;demoInputChange($event)&quot; /&gt;&lt;br /&gt;
+&lt;/div&gt;
+
+&lt;script type=&quot;text/javascript&quot;&gt;
+const vm = new Vue({
+  el: &#39;#app&#39;,
+  data: {
+    name: &#39;&#39;
+  },
+  methods: {
+    demoInputChange(event) {
+      this.name = event.target.value;
+    }
+  }
+});
+&lt;/script&gt;</pre>
+既然 v-bind 和 v-on 的组合可以实现 input 元素的 value 属性同 Vue.js 实例对象的数据属性的双向绑定，同样可以用在子组件上，实现子组件的 value 和数据属性的双向绑定，代码如下：<br />
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+  &lt;!-- 子组件使用v-bind和v-on:input的组合 --&gt;
+  age: {{ age }}&lt;br /&gt;
+  &lt;son-component v-bind:age=&quot;age&quot; v-on:input=&quot;sonChange&quot;&gt;&lt;/son-component&gt;
+&lt;/div&gt;
+
+&lt;template id=&quot;sonComponentTemplate&quot;&gt;
+  &lt;input type=&quot;text&quot; v-bind:value=&quot;age&quot; v-on:input=&quot;toChange($event)&quot; /&gt;
+&lt;/template&gt;
+
+&lt;script type=&quot;text/javascript&quot;&gt;
+const SonComponent = {
+  template: &#39;#sonComponentTemplate&#39;,
+  props: [&#39;age&#39;],
+  methods: {
+    toChange(event) {
+      this.$emit(&#39;input&#39;, event.target.value);
+    }
+  }
+};
+
+const vm = new Vue({
+  el: &#39;#app&#39;,
+  components: {
+    SonComponent
+  },
+  data: {
+    age: 0
+  },
+  methods: {
+    sonChange(age) {
+      this.age = age;
+    }
+  }
+});
+&lt;/script&gt;</pre>
+使用 v-model 合并子组件的 v-bind 和 v-on 指令，代码如下：<br />
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+  &lt;!-- 子组件使用v-bind和v-on:input的组合 --&gt;
+  age: {{ age }}&lt;br /&gt;
+  &lt;son-component v-model=&quot;age&quot;&gt;&lt;/son-component&gt;
+&lt;/div&gt;
+
+&lt;template id=&quot;sonComponentTemplate&quot;&gt;
+  &lt;input type=&quot;text&quot; v-bind:value=&quot;age&quot; v-on:input=&quot;toChange($event)&quot; /&gt;
+&lt;/template&gt;
+
+&lt;script type=&quot;text/javascript&quot;&gt;
+const SonComponent = {
+  template: &#39;#sonComponentTemplate&#39;,
+  props: [&quot;age&quot;],
+  methods: {
+    toChange(event) {
+      this.$emit(&#39;input&#39;, event.target.value);
+    }
+  }
+};
+
+const vm = new Vue({
+  el: &#39;#app&#39;,
+  components: {
+    SonComponent
+  },
+  data: {
+    age: 0
+  }
+});
+&lt;/script&gt;</pre>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1145_2.html" title="Shell exit命令：退出当前进程" target="_blank">Shell exit命令：退出当前进程</a></li>
+<li><a href="3175_2.html" title="Linux Shell命令提示符" target="_blank">Linux Shell命令提示符</a></li>
+<li><a href="3877_2.html" title="学习QML还是C++？" target="_blank">学习QML还是C++？</a></li>
+<li><a href="5613_2.html" title="Java标识符和关键字" target="_blank">Java标识符和关键字</a></li>
+<li><a href="vip_7065_2.html" title="Java static的常见问题和使用误区" target="_blank">Java static的常见问题和使用误区</a></li>
+<li><a href="../csharp/this_2.html" title="C# this关键字" target="_blank">C# this关键字</a></li>
+<li><a href="vbjbe8q_2.html" title="Redis MSETNX命令的基本用法" target="_blank">Redis MSETNX命令的基本用法</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10418;
+window.arcId = "08d4IM3OEYXPa8Q5dQlaNE4ftbXL051pwxDrNZMQoOtfkWmVoQAuOxkv0lVb";
+window.typeidChain = "309|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

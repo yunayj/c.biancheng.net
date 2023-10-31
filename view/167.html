@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++成员对象和封闭类详解</title>
+<meta name="description" content="一个类的成员变量如果是另一个类的对象，就称之为成员对象。包含成员对象的类叫封闭类（enclosed class）。 封闭类构造函数的初始化列表 当封闭类的对象生成并初始化时，它包含的成" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++成员对象和封闭类详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">一个类的成员变量如果是另一个类的对象，就称之为&ldquo;成员对象&rdquo;。包含成员对象的类叫封闭类（enclosed class）。
+<h2>
+封闭类构造函数的初始化列表</h2>
+当封闭类的对象生成并初始化时，它包含的成员对象也需要被初始化，这就会引发成员对象构造函数的调用。如何让编译器知道，成员对象到底是用哪个构造函数初始化的呢？这可以通过在定义封闭类的构造函数时，添加初始化列表的方式解决。<br />
+<br />
+在构造函数中添加初始化列表的写法如下：
+<p class="info-box">
+类名::构造函数名(参数表): 成员变量1(参数表), 成员变量2(参数表), ...<br />
+{<br />
+&nbsp;&nbsp;&nbsp; ...<br />
+}</p>
+<code>:</code>和<code>{</code>之间的部分就是初始化列表。初始化列表中的成员变量既可以是成员对象，也可以是基本类型的成员变量。对于成员对象，初始化列表的&ldquo;参数表&rdquo;中存放的是构造函数的参数（它指明了该成员对象如何初始化）。对于基本类型成员变量，&ldquo;参数表&rdquo;中就是一个初始值。<br />
+<br />
+&ldquo;参数表&rdquo;中的参数可以是任何有定义的表达式，该表达式中可以包括变量甚至函数调用等，只要表达式中的标识符都是有定义的即可。例如：
+<pre class="cpp">
+#include &lt;iostream&gt;
+u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+class CTyre  //轮胎类
+{
+private:
+    int radius;  //半径
+    int width;  //宽度
+public:
+    CTyre(int r, int w) : radius(r), width(w) { }
+};
+class CEngine  //引擎类
+{
+};
+class CCar {  //汽车类
+private:
+    int price;  //价格
+    CTyre tyre;
+    CEngine engine;
+public:
+    CCar(int p, int tr, int tw);
+};
+CCar::CCar(int p, int tr, int tw) : price(p), tyre(tr, tw)
+{
+};
+int main()
+{
+    CCar car(20000, 17, 225);
+    return 0;
+}</pre>
+第 9 行的构造函数添加了初始化列表，将 radius 初始化成 r，width 初始化成 w。这种写法比在函数体内用 r 和 w 对 radius 和 width 进行赋值的风格更好。建议对成员变量的初始化都使用这种写法。<br />
+<br />
+CCar 是一个封闭类，有两个成员对象：tyre 和 engine。在编译第 27 行时，编译器需要知道 car 对象中的 tyre 和 engine 成员对象该如何初始化。<br />
+<br />
+编评器已经知道这里的 car 对象是用上面的 CCar(int p, int tr, int tw) 构造函数初始化的，那么 tyre 和 engine 该如何初始化，就要看第 22 行 CCar(int p,int tr,int tw) 后面的初始化列表了。该初始化列表表明，tyre 应以 tr 和 tw 作为参数调用 CTyre(intr, hit w) 构造函数初始化，但是并没有说明 engine 该如何处理。在这种情况下，编译器就认为 engine 应该用 CEngine 类的无参构造函数初始化。而 CEngine 类确实有一个编译器自动生成的默认无参构造函数，因此，整个 car 对象的初始化问题就都解决了。<br />
+<br />
+总之，生成封闭类对象的语句一定要让编译器能够弄明白其成员对象是如何初始化的，否则就会编译错误。<br />
+<br />
+在上面的程序中，如果 CCar 类的构造函数没有初始化列表，那么第 27 行就会编译出错，因为编译器不知道该如何初始化 car.tyre 对象，因为 CTyre 类没有无参构造函数，而编译器又找不到用来初始化 car.tyre 对象的参数。<br />
+<br />
+封闭类对象生成时，先执行所有成员对象的构造函数，然后才执行封闭类自己的构造函数。成员对象构造函数的执行次序和成员对象在类定义中的次序一致，与它们在构造函数初始化列表中出现的次序无关。<br />
+<br />
+当封闭类对象消亡时，先执行封闭类的析构函数，然后再执行成员对象的析构函数，成员对象析构函数的执行次序和构造函数的执行次序相反，即先构造的后析构，这是 <a href='../cplus/cplus.html' target='_blank'>C++</a> 处理此类次序问题的一般规律。<br />
+<br />
+例如下面的程序：
+<pre class="cpp">
+#include&lt;iostream&gt;
+using namespace std;
+class CTyre {
+public:
+    CTyre() { cout &lt;&lt; &quot;CTyre constructor&quot; &lt;&lt; endl; }
+    ~CTyre() { cout &lt;&lt; &quot;CTyre destructor&quot; &lt;&lt; endl; }
+};
+class CEngine {
+public:
+    CEngine() { cout &lt;&lt; &quot;CEngine constructor&quot; &lt;&lt; endl; }
+    ~CEngine() { cout &lt;&lt; &quot;CEngine destructor&quot; &lt;&lt; endl; }
+};
+class CCar {
+private:
+    CEngine engine;
+    CTyre tyre;
+public:
+    CCar() { cout &lt;&lt; &quot;CCar constructor&quot; &lt;&lt; endl; }
+    ~CCar() { cout &lt;&lt; &quot;CCar destructor&quot; &lt;&lt; endl; }
+};
+int main() {
+    CCar car;
+    return 0;
+}</pre>
+运行结果：<br />
+CEngine constructor<br />
+CTyre constructor<br />
+CCar constructor<br />
+CCar destructor<br />
+CTyre destructor<br />
+CEngine destructor<br />
+<br />
+封闭类的对象初始化时，要先执行成员对象的构造函数，是因为封闭类的构造函数中有可能用到成员对象。如果此时成员对象还没有初始化，那就不合理了。<br />
+<br />
+思考题：为什么封闭类对象消亡时，要先执行封闭类的析构函数，然后才执行成员对象的析构函数？
+<h2>
+封闭类的复制构造函数</h2>
+封闭类的对象，如果是用默认复制构造函数初始化的，那么它包含的成员对象也会用复制构造函数初始化。例如下而的程序：
+<pre class="cpp">
+#include &lt;iostream&gt;
+using namespace std;
+class A
+{
+public:
+    A() { cout &lt;&lt; &quot;default&quot; &lt;&lt; endl; }
+    A(A &amp;a) { cout &lt;&lt; &quot;copy&quot; &lt;&lt; endl; }
+};
+class B
+{
+    A a;
+};
+int main()
+{
+    B b1, b2(b1);
+    return 0;
+}</pre>
+程序的输出结果是：<br />
+default<br />
+copy<br />
+<br />
+说明 b2.a 是用类 A 的复制构造函数初始化的，而且调用复制构造函数时的实参就是 b1.a。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="100.html" title="Go语言带缓冲的通道" target="_blank">Go语言带缓冲的通道</a></li>
+<li><a href="331.html" title="C++容器（STL容器）" target="_blank">C++容器（STL容器）</a></li>
+<li><a href="5475.html" title="JS条件运算符（?:）详解" target="_blank">JS条件运算符（?:）详解</a></li>
+<li><a href="5904.html" title="C语言贪吃蛇小游戏演示和说明" target="_blank">C语言贪吃蛇小游戏演示和说明</a></li>
+<li><a href="7236.html" title="C++ unordered_map迭代器的用法" target="_blank">C++ unordered_map迭代器的用法</a></li>
+<li><a href="../c/fflush.html" title="C语言fflush()：清空缓冲区" target="_blank">C语言fflush()：清空缓冲区</a></li>
+<li><a href="jtwuakq.html" title="《极简C++(案例·视频)》PDF下载（高清完整版）" target="_blank">《极简C++(案例·视频)》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 167;
+window.arcId = "8816Y4iNutJJb0E8F4hGgVjbDrTKIUW1Q7CUE9sntV0cLPAwyK7eDwfgQg";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

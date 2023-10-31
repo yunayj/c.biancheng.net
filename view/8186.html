@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Python unittest模块实现单元测试</title>
+<meta name="description" content="通过上一节《单元测试是什么？》我们对单元测试的概念有了基本的了解，我们知道 Django 的单元测试是基于 unittest 模块实现的。所以在本节我们将使用该模块编写测试用例代码，在单" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../django/django.html">Django</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Python unittest模块实现单元测试</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">通过上一节《<a href="8185_2.html" target="_blank">单元测试是什么？</a>》我们对单元测试的概念有了基本的了解，我们知道 Django 的单元测试是基于 Python 的标准库模块 unittest 实现的。所以在本节我们将使用该模块编写测试用例代码，在单元测试过程中必须使用断言。unittest 单元测试框架中的 TestCase 类提供了很多断言方法，便于检验测试是否满足预期结果，并能在断言失败后抛出失败的原因。了解该模块的基本使用方法，从而对单元测试的测试流程有更深的理解。<br />
+<p class="tip-box">
+断言(assert)，表示为一些布尔表达式编写代码时，开发人员总是会在某些特定点做出一些假设，来判断程序是否达到预期。</p>
+<h2>
+1. 编写测试用例代码</h2>
+<h4>
+1) 编写待测功能函数</h4>
+首先需要我们定义一个待测的功能函数，在 index 应用下新建 test.py 文件，定义一个传递分数就能够进行评级的功能函数，如下所示：
+<pre class="python">
+def score_grade(score):
+    if not isinstance(score,int):
+        raise TypeError(&quot;你应该输入一个整数类型&quot;)
+    if not (0&lt;=score&lt;=100):
+        raise Exception(&quot;你输入的整数范围应该在0-100之间&quot;)
+    if 0&lt;=score&lt;60:
+        return &quot;D&quot;
+    elif 60&lt;=score&lt;=75:
+        return &#39;C&#39;
+    elif 75&lt;score&lt;=85:
+        return &#39;B&#39;
+    else:
+        return &#39;A&#39;</pre>
+上面的代码就不做解释了，非常简单易懂。编写单元测试，需要从 unittest.TestCase 继承。使用 unittest 单元测试框架的时候，需要注意 unittest 规定只有以 test 开头的方法才是测试方法，所以我们使用的时候要注意命名规则，编写下面代码：
+<pre class="python">
+import unittest
+class TestScore(unittest.TestCase):
+    def test_exception(self):
+        with self.assertRaises(TypeError):
+            score_grade(&#39;x&#39;)
+    def test_score(self):
+        self.assertEqual(score_grade(86),&#39;A&#39;)
+        self.assertNotEqual(score_grade(86),&#39;B&#39;)
+        self.assertTrue(score_grade(86) is &#39;A&#39;)
+</pre>
+我们对上述代码做一下解析：我们定义了一个测试类 TestScore，它继承自 unittest.TestCase 即测试用例类。可以这样理解，每一个继承 TestCase 类的子类里面实现的具体的方法（也就是以 test 开头的方法）都是一条测试用例。
+<h4>
+2) unittest提供的断言方法</h4>
+上面定义的 test_exception 与 test_score 都是测试用例，它们都使用了 unittest 提供的断言方法，从而得到最终的测试结果，常用的断言方法如下所示：<br />
+<br />
+<table cellpadding="1" cellspacing="1">
+<tbody>
+<tr>
+<th>
+断言方法</th>
+<th>
+含义</th>
+</tr>
+<tr>
+<td>
+assertEqual(first,second,msg=None)</td>
+<td>
+测试first == second，否则抛出断言异常信息msg；</td>
+</tr>
+<tr>
+<td>
+assertNotEqual(first,second,msg = None)</td>
+<td>
+测试first!=second，否则抛异常信息msg；</td>
+</tr>
+<tr>
+<td>
+assertTrue(expr,msg=None)</td>
+<td>
+测试表达式expr为True，否则抛出断言异常信息msg；</td>
+</tr>
+<tr>
+<td>
+assertFalse(expr,msg=None)</td>
+<td>
+测试表达式expr为False，否则抛出断言异常信息msg；</td>
+</tr>
+<tr>
+<td>
+assertIs(a,b,msg=None)</td>
+<td>
+测试a和b是同一对象，否则抛出断言异常信息msg；</td>
+</tr>
+<tr>
+<td>
+assertIsNot(a,b,msg=None)</td>
+<td>
+测试a和b不是同一对象，否则抛出断言异常信息msg；</td>
+</tr>
+<tr>
+<td>
+assertIsNone(expr,msg=None)</td>
+<td>
+测试表达式expr结果为None，否则抛出断言异常信息msg；</td>
+</tr>
+<tr>
+<td>
+assertIsNotNone(expr,msg=None)</td>
+<td>
+测试表达式expr结果不为None,否则抛出断言信息异常；</td>
+</tr>
+<tr>
+<td>
+assertIn(a,b,msg=None)</td>
+<td>
+测试a包含在b中，否则抛出断言异常信息msg；</td>
+</tr>
+<tr>
+<td>
+assertIsInstance(obj,cls,msg=None)</td>
+<td>
+断言obj为cls类型，否则抛出断言异常信息msg；</td>
+</tr>
+<tr>
+<td>
+assertRaisesRegexp(exc,r[,fun,*args,**kwds])</td>
+<td>
+测试函数fun(*args,**kwds)抛出exc异常，同时可以用正则r去匹配异常信息exc，否则抛出断言异常；</td>
+</tr>
+<tr>
+<td>
+assertRaises(exc[,fun,*args,**kwds])</td>
+<td>
+测试函数fun(*args,**kwds)抛出exc异常，否则抛出断言异常；</td>
+</tr>
+</tbody>
+</table>
+<h2>
+2. 执行单元测试的方法</h2>
+我们可以使用 unittest 单元测试模块提供的方法来执行单元测试，如下所示：<br />
+<pre class="info-box">
+python -m unittest test</pre>
+如果只想执行 TestScore 类中定义的测试用例，可以使用如下方式：<br />
+<pre class="info-box">
+python -m unittest test.TestScore</pre>
+最终的执行结果如下所示：
+<pre class="info-box">
+C:\Users\Administrator\Book\BookStore&gt;python -m unittest
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.001s
+OK</pre>
+若最终显示结果为 OK 表示测试成功，并且上面信号还包含了执行测试方法的个数和执行所需的时间，如果测试不通过呢？我们可以进行以下稍微的改动，将 test_score中的第一个断言更改为，如下所示：<br />
+<pre class="python">
+self.assertEqual(score_grade(86),&#39;B&#39;)</pre>
+当我们再去执行测试的时候，就会得到如下结果：
+<pre class="info-box">
+C:\Users\Administrator\Book\BookStore&gt;python -m unittest
+.F
+======================================================================
+FAIL: test_score (index.test.TestScoreGrade)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File &quot;C:\Users\Administrator\Book\BookStore\index\test.py&quot;, line 24, in test_score
+    self.assertEqual(score_grade(86),&#39;B&#39;)
+AssertionError: &#39;A&#39; != &#39;B&#39;
+- A
++ B
+----------------------------------------------------------------------
+Ran 2 tests in 0.001s
+
+FAILED (failures=1)</pre>
+从返回结果可以得知其中有一个测试用例失败了，用例名称是 test_score，并且给出了失败的原因 AssertionError: &#39;A&#39; != &#39;B&#39;。<br />
+<br />
+在下一节中，我们将完成如何针对 Django 项目编写单元测试代码，Django 对于单元测试环节做了哪些支持呢？在编写过程中又需要开发者注意哪些地方呢？这些知识点在下一节将逐一给大家揭晓。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="716.html" title="dd命令安装Linux" target="_blank">dd命令安装Linux</a></li>
+<li><a href="1746.html" title="C语言程序的错误和警告" target="_blank">C语言程序的错误和警告</a></li>
+<li><a href="1859.html" title="C语言变量的作用域，加深对全局变量和局部变量的理解" target="_blank">C语言变量的作用域，加深对全局变量和局部变量的理解</a></li>
+<li><a href="7198.html" title="C++ STL set删除数据：erase()和clear()方法" target="_blank">C++ STL set删除数据：erase()和clear()方法</a></li>
+<li><a href="../redis2/spop.html" title="Redis SPOP命令" target="_blank">Redis SPOP命令</a></li>
+<li><a href="../css3/column.html" title="CSS column（多列布局）" target="_blank">CSS column（多列布局）</a></li>
+<li><a href="../pandas/fillna.html" title="Python Pandas缺失值处理" target="_blank">Python Pandas缺失值处理</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8186;
+window.arcId = "e58aXEgnepLGqQ/rObVlI48Kdua8zzyKB93p8z5lq3Nq69WWz1UnHCgOjmo";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

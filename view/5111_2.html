@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Go语言CSP：通信顺序进程简述</title>
+<meta name="description" content="当进行和 Go语言有关讨论的时候，经常听到人们抛出 CSP 这个缩写。在某些环境下 CSP 经常被赞美成 Go语言成功的原因以及并发编程的万能钥匙。它让不知道 CSP 的人开始认为计算机科学" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+	<div id="sidebar" class="toggle-target">
+	<div id="contents">
+		<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../golang/golang_2.html">Go语言</a></dt>
+		
+			<dd>
+				<span class="channel-num">1</span>
+				<a href='../golang/intro/intro_2.html'>Go语言简介</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">2</span>
+				<a href='../golang/syntax/syntax_2.html'>Go语言基本语法</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">3</span>
+				<a href='../golang/container/container_2.html'>Go语言容器</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">4</span>
+				<a href='../golang/flow_control/flow_control_2.html'>流程控制</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">5</span>
+				<a href='../golang/func/func_2.html'>Go语言函数</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">6</span>
+				<a href='../golang/struct/struct_2.html'>Go语言结构体</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">7</span>
+				<a href='../golang/interface/interface_2.html'>Go语言接口</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">8</span>
+				<a href='../golang/package/package_2.html'>Go语言包（package）</a>
+			</dd>
+		<dd class="this"> <span class="channel-num">9</span> <a href="../golang/concurrent/concurrent_2.html">Go语言并发</a> </dd><dl class="dl-sub"><dd>9.1 <a href="4356_2.html">Go语言并发简述</a></dd><dd>9.2 <a href="93_2.html">Go语言轻量级线程</a></dd><dd>9.3 <a href="4357_2.html">Go语言并发通信</a></dd><dd>9.4 <a href="4358_2.html">Go语言竞争状态</a></dd><dd>9.5 <a href="94_2.html">Go语言调整并发的运行性能</a></dd><dd>9.6 <a href="95_2.html">并发和并行的区别</a></dd><dd>9.7 <a href="96_2.html">goroutine和coroutine的区别</a></dd><dd>9.8 <a href="97_2.html">Go语言通道（chan）</a></dd><dd>9.9 <a href="98_2.html">示例：并发打印</a></dd><dd>9.10 <a href="99_2.html">Go语言单向通道</a></dd><dd>9.11 <a href="4359_2.html">Go语言无缓冲的通道</a></dd><dd>9.12 <a href="100_2.html">Go语言带缓冲的通道</a></dd><dd>9.13 <a href="4361_2.html">Go语言channel超时机制</a></dd><dd>9.14 <a href="vip_7348_2.html">Go语言通道的多路复用</a><span class="iconfont iconfont-vip2"></span></dd><dd>9.15 <a href="vip_7349_2.html">Go语言模拟远程过程调用</a><span class="iconfont iconfont-vip2"></span></dd><dd>9.16 <a href="vip_7350_2.html">示例：使用通道响应计时器的事件</a><span class="iconfont iconfont-vip2"></span></dd><dd>9.17 <a href="vip_7351_2.html">Go语言关闭通道后继续使用通道</a><span class="iconfont iconfont-vip2"></span></dd><dd>9.18 <a href="4362_2.html">Go语言多核并行化</a></dd><dd>9.19 <a href="vip_7352_2.html">Go语言Telnet回音服务器</a><span class="iconfont iconfont-vip2"></span></dd><dd>9.20 <a href="vip_7353_2.html">检测代码在并发环境下可能出现的问题</a><span class="iconfont iconfont-vip2"></span></dd><dd>9.21 <a href="107_2.html">互斥锁和读写互斥锁</a></dd><dd>9.22 <a href="108_2.html">Go语言等待组</a></dd><dd>9.23 <a href="4786_2.html">死锁、活锁和饥饿概述</a></dd><dd>9.24 <a href="vip_7354_2.html">示例：封装qsort快速排序函数</a><span class="iconfont iconfont-vip2"></span></dd><dd>9.25 <a href="5111_2.html">Go语言CSP：通信顺序进程简述</a></dd><dd>9.26 <a href="5408_2.html">示例：聊天服务器</a></dd><dd>9.27 <a href="vip_7355_2.html">高效地使用Go语言并发特性</a><span class="iconfont iconfont-vip2"></span></dd><dd>9.28 <a href="vip_7356_2.html">使用select切换协程</a><span class="iconfont iconfont-vip2"></span></dd><dd>9.29 <a href="vip_7357_2.html">Go语言加密通信</a><span class="iconfont iconfont-vip2"></span></dd></dl>
+			<dd>
+				<span class="channel-num">10</span>
+				<a href='../golang/reflect/reflect_2.html'>Go语言反射</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">11</span>
+				<a href='../golang/102/102_2.html'>Go语言文件处理</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">12</span>
+				<a href='../golang/build/build_2.html'>Go语言编译与工具</a>
+			</dd>
+		
+	</div>
+</div>
+	<div id="article-wrap">
+		<div id="article">
+			<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../golang/golang_2.html">Go语言</a> &gt; <a href="../golang/concurrent/concurrent_2.html">Go语言并发</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+			<h1>Go语言CSP：通信顺序进程简述</h1>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+			<div id="arc-body">Go实现了两种并发形式，第一种是大家普遍认知的多线程共享内存，其实就是 <a href='../java/java_2.html' target='_blank'>Java</a> 或 <a href='../cplus/cplus_2.html' target='_blank'>C++</a> 等语言中的多线程开发；另外一种是Go语言特有的，也是Go语言推荐的 CSP（communicating sequential processes）并发模型。<br />
+<br />
+CSP 并发模型是上个世纪七十年代提出的，用于描述两个独立的并发实体通过共享 channel（管道）进行通信的并发模型。<br />
+<br />
+Go语言就是借用 CSP 并发模型的一些概念为之实现并发的，但是Go语言并没有完全实现了 CSP 并发模型的所有理论，仅仅是实现了 process 和 channel 这两个概念。<br />
+<br />
+process 就是Go语言中的 goroutine，每个&nbsp;goroutine 之间是通过 channel 通讯来实现数据共享。<br />
+<br />
+这里我们要明确的是&ldquo;并发不是并行&rdquo;。并发更关注的是程序的设计层面，并发的程序完全是可以顺序执行的，只有在真正的多核 CPU 上才可能真正地同时运行；并行更关注的是程序的运行层面，并行一般是简单的大量重复，例如 GPU 中对图像处理都会有大量的并行运算。<br />
+<br />
+为了更好地编写并发程序，从设计之初Go语言就注重如何在编程语言层级上设计一个简洁安全高效的抽象模型，让开发人员专注于分解问题和组合方案，而且不用被线程管理和信号互斥这些烦琐的操作分散精力。<br />
+<br />
+在并发编程中，对共享资源的正确访问需要精确地控制，在目前的绝大多数语言中，都是通过加锁等线程同步方案来解决这一困难问题，而Go语言却另辟蹊径，它将共享的值通过通道传递（实际上多个独立执行的线程很少主动共享资源）。<br />
+<br />
+并发编程的核心概念是同步通信，但是同步的方式却有多种。先以大家熟悉的互斥量 sync.Mutex 来实现同步通信，示例代码如下所示：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;sync&quot;
+)
+
+func main() {
+    var mu sync.Mutex
+
+    go func() {
+        fmt.Println(&quot;C语言中文网&quot;)
+        mu.Lock()
+    }()
+
+    mu.Unlock()
+}</pre>
+由于 mu.Lock() 和 mu.Unlock() 并不在同一个 Goroutine 中，所以也就不满足顺序一致性内存模型。同时它们也没有其他的同步事件可以参考，也就是说这两件事是可以并发的。<br />
+<br />
+因为可能是并发的事件，所以 main() 函数中的 mu.Unlock() 很有可能先发生，而这个时刻 mu 互斥对象还处于未加锁的状态，因而会导致运行时异常。<br />
+<br />
+下面是修复后的代码：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;sync&quot;
+)
+func main() {
+    var mu sync.Mutex
+
+    mu.Lock()
+    go func() {
+        fmt.Println(&quot;C语言中文网&quot;)
+        mu.Unlock()
+    }()
+
+    mu.Lock()
+}</pre>
+修复的方式是在 main() 函数所在线程中执行两次 mu.Lock()，当第二次加锁时会因为锁已经被占用（不是递归锁）而阻塞，main() 函数的阻塞状态驱动后台线程继续向前执行。<br />
+<br />
+当后台线程执行到 mu.Unlock() 时解锁，此时打印工作已经完成了，解锁会导致 main() 函数中的第二个 mu.Lock() 阻塞状态取消，此时后台线程和主线程再没有其他的同步事件参考，它们退出的事件将是并发的，在 main() 函数退出导致程序退出时，后台线程可能已经退出了，也可能没有退出。虽然无法确定两个线程退出的时间，但是打印工作是可以正确完成的。<br />
+<br />
+使用 sync.Mutex 互斥锁同步是比较低级的做法，我们现在改用无缓存通道来实现同步：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;fmt&quot;
+)
+
+func main() {
+    done := make(chan int)
+
+    go func() {
+        fmt.Println(&quot;C语言中文网&quot;)
+        &lt;-done
+    }()
+
+    done &lt;- 1
+}</pre>
+根据Go语言内存模型规范，对于从无缓存通道进行的接收，发生在对该通道进行的发送完成之前。因此，后台线程<code style="font-size: 14px;">&lt;-done&nbsp;</code>接收操作完成之后，main 线程的<code style="font-size: 14px;">done &lt;- 1&nbsp;</code>发送操作才可能完成（从而退出 main、退出程序），而此时打印工作已经完成了。<br />
+<br />
+上面的代码虽然可以正确同步，但是对通道的缓存大小太敏感，如果通道有缓存，就无法保证 main() 函数退出之前后台线程能正常打印了，更好的做法是将通道的发送和接收方向调换一下，这样可以避免同步事件受通道缓存大小的影响：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;fmt&quot;
+)
+
+func main() {
+    done := make(chan int, 1) // 带缓存通道
+
+    go func() {
+        fmt.Println(&quot;C语言中文网&quot;)
+        done &lt;- 1
+    }()
+
+    &lt;-done
+}</pre>
+对于带缓存的通道，对通道的第 K 个接收完成操作发生在第 K+C 个发送操作完成之前，其中 C 是通道的缓存大小。虽然通道是带缓存的，但是 main 线程接收完成是在后台线程发送开始但还未完成的时刻，此时打印工作也是已经完成的。<br />
+<br />
+基于带缓存通道，我们可以很容易将打印线程扩展到 N 个，下面的示例是开启 10 个后台线程分别打印：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;fmt&quot;
+)
+
+func main() {
+    done := make(chan int, 10) // 带10个缓存
+
+    // 开N个后台打印线程
+    for i := 0; i &lt; cap(done); i++ {
+        go func() {
+            fmt.Println(&quot;C语言中文网&quot;)
+            done &lt;- 1
+        }()
+    }
+
+    // 等待N个后台线程完成
+    for i := 0; i &lt; cap(done); i++ {
+        &lt;-done
+    }
+}</pre>
+对于这种要等待 N 个线程完成后再进行下一步的同步操作有一个简单的做法，就是使用 sync.WaitGroup 来等待一组事件：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;sync&quot;
+)
+
+func main() {
+    var wg sync.WaitGroup
+
+    // 开N个后台打印线程
+    for i := 0; i &lt; 10; i++ {
+        wg.Add(1)
+
+        go func() {
+            fmt.Println(&quot;C语言中文网&quot;)
+            wg.Done()
+        }()
+    }
+
+    // 等待N个后台线程完成
+    wg.Wait()
+}</pre>
+其中 wg.Add(1) 用于增加等待事件的个数，必须确保在后台线程启动之前执行（如果放到后台线程之中执行则不能保证被正常执行到）。当后台线程完成打印工作之后，调用 wg.Done() 表示完成一个事件，main() 函数的 wg.Wait() 是等待全部的事件完成。</div>
+			<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="4_2.html" title="Go语言的性能如何？" target="_blank">Go语言的性能如何？</a></li>
+<li><a href="2931_2.html" title="Linux yum是什么，yum源配置（网络yum源和本地yum源）" target="_blank">Linux yum是什么，yum源配置（网络yum源和本地yum源）</a></li>
+<li><a href="4593_2.html" title="什么是异常处理，Python常见异常类型（入门必读）" target="_blank">什么是异常处理，Python常见异常类型（入门必读）</a></li>
+<li><a href="5591_2.html" title="Java中JVM、JRE和JDK三者有什么区别和联系？" target="_blank">Java中JVM、JRE和JDK三者有什么区别和联系？</a></li>
+<li><a href="7256_2.html" title="PHP标记（4种风格）" target="_blank">PHP标记（4种风格）</a></li>
+<li><a href="vip_8259_2.html" title="如何判断单链表为有环链表？" target="_blank">如何判断单链表为有环链表？</a></li>
+<li><a href="0bwg0bf_2.html" title="《程序设计简明教程(C语言版)》PDF下载（高清完整版）" target="_blank">《程序设计简明教程(C语言版)》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+		</div>
+		
+	</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 5111;
+window.arcId = "ce3dTAGYJ3IGtNaDkDj4HPhzt4FV7NBshhHE8ehbRSG4jB9oXUCX45wgMKE";
+window.typeidChain = "12|1";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/view/vip_7354.html";
+window.nextPageURL = "/view/5408.html";
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

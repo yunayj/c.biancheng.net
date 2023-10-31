@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C语言联合（union）的定义和初始化</title>
+<meta name="description" content="当定义结构对象时，如果没有显式地初始化它们，则会采用一般初始化规则：如果该结构对象属于动态存储类型，那么其成员具有不确定的初始值。另一方面，如果结构对象具有静态存" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C语言联合（union）的定义和初始化</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">当定义结构对象时，如果没有显式地初始化它们，则会采用一般初始化规则：如果该结构对象属于动态存储类型，那么其成员具有不确定的初始值。另一方面，如果结构对象具有静态存储周期，那么其非指针成员初始值是 0，其指针成员初始值是空指针。<br />
+<br />
+不同于结构成员&mdash;&mdash;它们在结构中都具有单独的内存位置，联合成员则共享同一个内存位置。也就是说，<span style="color:#b22222;">联合中的所有成员都是从相同的内存地址开始</span>。因此，可以定义一个拥有许多成员的联合，但是同一时刻只能有一个成员允许含有一个值。联合让程序员可以方便地通过不同方式使用同一个内存位置。
+<h2>
+	定义联合（union）</h2>
+<span style="color:#b22222;">联合的定义方式与结构是一样的，只是把关键字 struct 改成 union</span>：
+<p class="info-box">
+	union [标签名称]{成员声明列表};</p>
+<br />
+下面的例子定义了一个名为Data的联合类型，它有 3 个成员：i、x 和 str：
+<pre class="cpp">
+union Data { int i; double x; char str[16]; };</pre>
+<br />
+这种类型的对象可以存储一个整数、一个浮点数或一个短字符串。下面的声明定义了一个 union Data 类型的对象 var 和一个 unionData 类型的数组 myData，它有 100 个元素（联合的空间大小为它最大成员的空间大小）：
+<pre class="cpp">
+union Data var, myData[100];</pre>
+<br />
+<span style="color:#b22222;">如果想获得联合的空间大小，可以使用 sizeof 运算符。</span>对上例来说，sizeof（var）会返回 16，而 sizeof（myData）则返回 1600。<br />
+<br />
+如图 1 所示，联合中所有成员都是从内存中同一个地址开始的。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/180907/3-1PZG61231195_2.jpg" style="width: 519px; height: 75px;" /><br />
+	图 1</div>
+<br />
+为展示联合和结构的差异，看看下面定义的 struct Record，它具有成员 i、x 和 str：
+<pre class="cpp">
+struct Record { int i; double x; char str[16]; };</pre>
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/180907/3-1PZG61432963_2.jpg" style="width: 682px; height: 69px;" /><br />
+	图 2</div>
+如图 2 所示，结构对象中每个成员使用内存中的不同位置。<br />
+<br />
+<span style="color:#b22222;">获取联合成员的方式和获取结构成员的方式一样。唯一的差异在于，当改变一个联合成员的值时，实际上修改了该联合所有成员的值。</span>下面的一些例子使用联合对象 var 和 myData：
+<pre class="cpp">
+var.x = 3.21;
+var.x += 0.5;
+strcpy( var.str, &quot;Jim&quot; );                       // 占用了var.x的内存位置
+myData[0].i = 50;
+for ( int i = 0; i &lt; 50; ++i )
+  myData[i].i = 2 * i;</pre>
+<br />
+<span style="color:#b22222;">与结构一样，每个联合类型的成员都拥有各自的命名空间。</span>所以在上例最后的语句中，索引变量 i 和联合成员 i 代表两个不同的对象。<br />
+<br />
+程序员要确保联合对象的内存内容被正确地解释和使用。联合内成员的类型不同，允许程序员采用不同的方式解释内存中的同一组字节值。例如，下面的循环使用联合来展示一个 double 值在内存中的存储形式：
+<pre class="cpp">
+var.x = 1.25;
+for ( int i = sizeof(double) － 1; i &gt;= 0; --i )
+  printf( &quot;%02X &quot;, (unsigned char)var.str[i] );</pre>
+<br />
+该循环从 var.x 的最高位字节开始，生成下面的输出：
+<p class="info-box">
+	3F F4 00 00 00 00 00 00</p>
+<h2>
+	初始化联合（union）</h2>
+<span style="color:#b22222;">与结构类似，通过初始化列表（initialization list）来初始化联合对象。</span>但是，<span style="color:#b22222;">对联合来说，列表只有一个初始化器</span>（initializer）。<br />
+<br />
+与结构一样，C99 允许在初始化器中使用成员指示符来指示哪个成员被初始化。而且，如果初始化器没有成员指示符，那么就与联合内的第一个成员关联。具有自动存储类的联合对象也可以使用已有的同类型对象来初始化。下面是一些初始化例子：
+<pre class="cpp">
+union Data var1 = { 77 },
+           var2 = { .str = &quot;Mary&quot; },
+           var3 = var1,
+           myData[100] = { {.x= 0.5}, { 1 }, var2 };</pre>
+<br />
+数组 myData 中的元素如果没有指定初始化器，会被隐式地初始化为 0 值。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="753_2.html" title="Linux权限位（超详细）" target="_blank">Linux权限位（超详细）</a></li>
+<li><a href="3427_2.html" title="顺序查找算法详解（包含C语言实现代码）" target="_blank">顺序查找算法详解（包含C语言实现代码）</a></li>
+<li><a href="3431_2.html" title="二叉排序树（二叉查找树）及C语言实现" target="_blank">二叉排序树（二叉查找树）及C语言实现</a></li>
+<li><a href="6894_2.html" title="Java 9新增的不可变集合" target="_blank">Java 9新增的不可变集合</a></li>
+<li><a href="../mybatis/where_2.html" title="MyBatis where标签" target="_blank">MyBatis where标签</a></li>
+<li><a href="../pandas/timedelta_2.html" title="Padans Timedelta时间差" target="_blank">Padans Timedelta时间差</a></li>
+<li><a href="../csharp/multidimensional-array_2.html" title="C#二维数组与多维数组" target="_blank">C#二维数组与多维数组</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 375;
+window.arcId = "7b2ckfG25eZUokjtGLw8qi7pKbz4GXwr9IaTnGHT5iwykqnwfBRiqSO4fg";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

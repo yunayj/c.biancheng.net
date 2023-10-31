@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Python requests使用教程（简明版）</title>
+<meta name="description" content="我们只要把网页链接输入浏览器里，浏览器就会返回一个界面给我们，TA 的背后的原理是怎么样的 ？比如，在浏览器的搜索栏输入 baidu.com，得到的是百度首页。 拷贝baidu.com 这个网页链" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Python requests使用教程（简明版）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">我们只要把网页链接输入浏览器里，浏览器就会返回一个界面给我们，TA 的背后的原理是怎么样的 ？比如，在浏览器的搜索栏输入 baidu.com，得到的是百度首页。<br />
+<br />
+拷贝&nbsp;baidu.com 这个网页链接，再粘贴到浏览器的地址栏，发现链接好像多了点东西。
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/191009/1-191009160952154.gif" /></div>
+<br />
+最开头有一个 https，https 是最常用的协议，也是最容易忽略的协议；www.baidu.com 是域名（如同互联网上的门牌号）。<br />
+<br />
+其实最早期的互联网协议是 HTTP 协议，但是目前很多网站都已经升级到了 HTTPS 协议。HTTPS 在 HTTP 的基础上增强了安全，对传输的数据进行了加密，可以防止敏感信息被盗取、防止网页被劫持、增加恶意攻击的难度等。HTTPS 的缺点是需要付费，而且会稍微增加服务器的负担。<br />
+<br />
+当我们将一个链接输入浏览器，浏览器才能找到这个网站，对吧。<br />
+<br />
+他们之间做了什么呢，我们要用爬虫代替浏览器，就必先弄明白浏览器做了什么！<br />
+<br />
+浏览器接受链接后，会寻找链接的地址，这个地址的主人也是一台电脑（不过是超级电脑，也叫<span style="color:#008000;">服务器</span>，支持大量文件的存储和计算），我们访问的网页就是这台电脑（服务器）上的某个文件，如果文件被删除了，我们就找不到啦。<br />
+<br />
+浏览器找到服务器后，会发送一个<span style="color:#008000;">请求</span>过去，告诉服务器我们需要访问上面文件。<br />
+<br />
+服务器收到请求后，会把文件发送给浏览器，这一步叫<span style="color:#008000;">响应</span>。<br />
+<br />
+<span style="color:#008000;">先请求后响应</span>，用爬虫程序实现发送请求接受服务器的响应，就是我们的任务啦。
+<h2>
+网页请求方式</h2>
+一般而言，我们所用的 HTTP 协议或 HTTPS 协议，使用的请求方式只有 GET 方式和 POST 方式。
+<ul>
+<li>
+GET 方式： 访问某个网页前不需要在浏览器里输入链接之外的东西，因为我们只是想向服务器获取一些资源，可能就是一个网页。</li>
+<li>
+POST 方式：访问某个网页前需要在浏览器里输入链接之外的东西，因为这些信息是服务器需要的。 比如在线翻译，我们需要输入点英文句子，服务器才能翻译吧。</li>
+</ul>
+<br />
+实现请求，会涉及到了网络方面的内容，知识比较枯燥。<br />
+<br />
+但 <a href='../python/python.html' target='_blank'>Python</a> 就是第三方库比较多，因此，我们并不需要实现TA底层的细节了。<br />
+<br />
+实现请求，只需要引入一个&nbsp;<span style="color:#008000;">requests</span> 模块即可。
+<h2>
+使用 requests 模块</h2>
+对于很多读者来说，requests 可能是一个比较陌生的模块，大家一般会提出以下几个方面的问题：
+<ul>
+<li>
+当前模块有哪些相关函数/方法能调用 ？</li>
+<li>
+如果有相关函数/方法，需要输入什么 ？</li>
+<li>
+因为 Python 是一门面向对象编程的语言，万事万物皆对象；我们面对的数据本质也是对象哦，所以啊，得明白我们爬取的数据有什么方法和属性（对象都是有方法和属性的）。</li>
+</ul>
+<br />
+今天才入门，所以我会替你解答上面的所有疑问。<br />
+<br />
+对于第一个问题，requests 库中的 get() 方法能向服务器发送了一个请求，请求类型为 HTTP 协议的 GET 方式；post() 方法，也能向服务器发送一个请求，请求类型是 HTTP 协议的 POST 方式，您大可根据访问的网页而定。
+<h4>
+访问网页</h4>
+第二、三个问题，在代码里再说。实战一波就会了，不是吗？
+<pre class="python">
+import requests
+# 引入 requests，实现请求
+
+URL = &#39;http://c.biancheng.net/uploads/course/python_spider/191009.html&#39;
+# 输入在浏览器的网址
+
+res = requests.get(URL)
+# 发送 GET 方式的请求，并把返回的结果(响应)存储在 res 变量里头
+# 答第二个问题，get() 方法需要输入一个网页链接
+
+print(type(res))
+# 是时候回答第三个问题了，通过 type 查看返回的数据是什么对象。</pre>
+打印结果 :<br />
+class &#39;requests.models.Response&#39;<br />
+<br />
+最关键的就是最后一个，Response 就是响应数据 res 的对象类型。<br />
+<br />
+好，既然已经知道 res 是一个 Response 对象了，我们也就可以去了解TA的相应属性和方法了。<br />
+<br />
+<table>
+<thead>
+<tr>
+<th>
+属性</th>
+<th>
+功能</th>
+<th>
+例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Response.status_code</td>
+<td>
+检查请求是否成功</td>
+<td>
+200 代表正常，404 代表网页不存在。</td>
+</tr>
+<tr>
+<td>
+Response.encoding</td>
+<td>
+定义编码</td>
+<td>
+如果编码不对，网页就会乱码的。</td>
+</tr>
+<tr>
+<td>
+Response.content</td>
+<td>
+把数据转成二进制</td>
+<td>
+用于获取图片、音频类的数据。</td>
+</tr>
+<tr>
+<td>
+Response.text</td>
+<td>
+把数据转为字符串</td>
+<td>
+用于获取文本、网页原代码类的数据。</td>
+</tr>
+</tbody>
+</table>
+<br />
+因为我们要获取的数据是文本类，因此使用的属性是 Response.text。
+<p class="info-box">
+print(res.text) # res 就是 Response 对象，.text 把数据转为字符串</p>
+比较的完整代码：
+<pre class="python">
+import requests
+# 引入 requests，实现请求
+
+URL = &#39;http://c.biancheng.net/uploads/course/python_spider/191009.html&#39;
+# 输入在浏览器的网址
+
+res = requests.get(URL)
+# 发送 GET 方式的请求，并把返回的结果(响应)存储在 res 变量里头
+
+print(res.text)
+# res 就是 Response 对象，文本类对象使用.text 把数据转为字符串形式再输出</pre>
+发过来的数据，居然是乱码......<br />
+<img alt="" src="../uploads/allimg/191009/1-191009161ZLU.gif" /><br />
+<br />
+看来，我们需要设置可接收的编码，使用 Response.encoding 即可：
+<p class="info-box">
+res.encoding = &#39;utf-8&#39; # 设置可接收的编码为 utf-8</p>
+关于编码的知识请看：
+<ul>
+<li>
+<a href="vip_1730.html" target="_blank">Unicode字符集，将全世界的文字存储到计算机</a></li>
+<li>
+<a href="vip_1729.html" target="_blank">GB2312编码和GBK编码，将中文存储到计算机</a></li>
+</ul>
+<br />
+多数情况下，网站的编码不是 utf-8 就是 gbk。<br />
+<br />
+下面是改进的 Python 代码：
+<pre class="python">
+import requests
+# 引入 requests，实现请求
+
+URL = &#39;http://c.biancheng.net/uploads/course/python_spider/191009.html&#39;
+# 输入在浏览器的网址
+
+res = requests.get(URL)
+# 发送 GET 方式的请求，并把返回的结果(响应)存储在 res 变量里头
+
+res.encoding = &#39;utf-8&#39;
+# 设置可接收的编码为 utf-8
+
+file = open(&#39;《全身在格斗中的作用》.txt&#39;, &#39;a+&#39;)
+# 创建一个名为《全身在格斗中的作用》的txt文档，指针放在文件末尾，追加内容。（Python 基础语法)
+
+file.write(res.text)
+# 将把 Reponse 对象的内容以 [字符串] 的形式写入文件
+
+
+file.close()
+# 关闭文档</pre>
+<h4>
+下载图片</h4>
+现在我们下载一个图片，瞄中一个图片，如果您看的不认真，小心[杰森&middot;斯坦森]的飞刀哦。
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/191009/1-191009162420B7.gif" /></div>
+<br />
+按照请求过程，我们先获取数据即拿到图片的地址。
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/191009/1-191009162534292.gif" /></div>
+<br />
+鼠标右键点开蓝色高能的拷贝图像地址，这个就是参数URL啦。网页链接：<a href="https://gss2.bdstatic.com/9fo3dSag_xI4khGkpoWK1HF6hhy/baike/c0%3Dbaike220%2C5%2C5%2C220%2C73/sign=a8ecb87e13dfa9ece9235e4503b99c66/6a600c338744ebf84073be5ddbf9d72a6059a756.jpg" target="_blank">https://gss2.bdstatic.com/9fo3dSag_xI4khGkpoWK1HF6hhy/baike/c0%3Dbaike220%2C5%2C5%2C220%2C73/sign=a8ecb87e13dfa9ece9235e4503b99c66/6a600c338744ebf84073be5ddbf9d72a6059a756.jpg</a><br />
+<br />
+获取图片的 Python 代码长这样：
+<pre class="python">
+import requests
+
+URL = &#39;https://gss2.bdstatic.com/9fo3dSag_xI4khGkpoWK1HF6hhy/baike/c0%3Dbaike220%2C5%2C5%2C220%2C73/sign=a8ecb87e13dfa9ece9235e4503b99c66/6a600c338744ebf84073be5ddbf9d72a6059a756.jpg&#39;
+
+res = requests.get(URL)
+# 发出请求，并把返回的结果放在变量res中
+ 
+photo = open(&#39;Be careful.jpg&#39;,&#39;wb&#39;)
+# 新建了一个文件Be careful.jpg，这里的文件没加路径，会被保存在程序运行的当前目录下。
+
+photo.write(res.content)
+# 将 Reponse 对象的内容以 [二进制数据] 的形式写入文件
+
+photo.close()
+# 关闭文档</pre>
+<h4>
+【作业】下载音频/音乐</h4>
+这是一个作业，请读者自己完成。
+<p class="tip-box">
+Tips：下载音乐和下载图片的思路代码几乎是一样的，只是 URL 的不同。</p>
+下载音乐的地址是 https://developer.baidu.com/vcast，这个链接是百度的文字转语音平台，生成的语音（格式同音乐）也可爬。<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/191012/1-191012100405454.gif" /></div>
+<br />
+生成的链接：<a href="http://vcast-resource.cdn.bcebos.com/vcast-resource/de76312e-af16-4c02-a9c9-cea509719f89.mp3" target="_blank">http://vcast-resource.cdn.bcebos.com/vcast-resource/de76312e-af16-4c02-a9c9-cea509719f89.mp3</a>（这个格式是 mp3 的，和音乐的一样，您可以自己生成一个）<br />
+<br />
+因为这个音频只是随手生成的，所以音频的链接随时会挂掉的，那个时候，我们访问这个链接就会出错。如果网页正常，我们就能获取数据，反之则不能。<br />
+<br />
+在爬虫中通常使用 Response 对象的 status_code 属性检查请求是否成功。
+<p class="info-box">
+print(res.status_code) # 查看网页状态，200 表示正常</p>
+200 表示成功，其TA的情况也分别对应着某个数，具体请看 <a href="https://baike.baidu.com/item/HTTP%E7%8A%B6%E6%80%81%E7%A0%81/5053660?fr=aladdin" target="_blank">HTTP 状态码</a>。
+<h2>
+小结</h2>
+本节讲解了 Python requests 模块的简单使用，阅读完本节你就可以快速上手了。<br />
+<br />
+对比以上三段代码，发现只有网址和 Reponse 对象的方法变了，这个方法就是 Reponse.text 和 Reponse.content。
+<ul>
+<li>
+Reponse.text 是用于下载文本（网页源代码）。html 语言即网页源代码，您可以理解为和 TXT 文档一样，只是加了些格式所以功能就独特。</li>
+<li>
+Reponse.content 是用于下载视频、音频、图片，这些都是二进制存储的。</li>
+</ul>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="121.html" title="go run命令——编译并运行" target="_blank">go run命令——编译并运行</a></li>
+<li><a href="600.html" title="C++ is_permutation（STL is_permutation）算法详解" target="_blank">C++ is_permutation（STL is_permutation）算法详解</a></li>
+<li><a href="6228.html" title="PHP array_values()：获取数组中所有元素的值" target="_blank">PHP array_values()：获取数组中所有元素的值</a></li>
+<li><a href="../maven2/coordinate.html" title="Maven坐标" target="_blank">Maven坐标</a></li>
+<li><a href="../redis2/hset.html" title="Redis HSET命令" target="_blank">Redis HSET命令</a></li>
+<li><a href="../redis2/srem.html" title="Redis SREM命令" target="_blank">Redis SREM命令</a></li>
+<li><a href="b0wgkzj.html" title="《Web前端开发技术实验与实践——HTML、CSS、JavaScript》PDF下载（高清完整版）" target="_blank">《Web前端开发技术实验与实践——HTML、CSS、JavaScript》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 5895;
+window.arcId = "a2ffmkdjlu74+03x0hEU1dTzHMeBHAqiOY5JAJLWSt+Qk5a5iOtH2u9Rqsc";
+window.typeidChain = "145|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="https://c.biancheng.net/templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

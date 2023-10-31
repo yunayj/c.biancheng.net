@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" /> 
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="Cache-Control" content="no-store, must-revalidate" />
+<meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT" />
+<meta http-equiv="expires" content="0" />
+<link rel="shortcut icon" href="../favicon_4.ico" />
+<link href="../templets/default/style/common.css" rel="stylesheet" />
+<title>KMP算法完全攻略（C语言实现）</title>
+<meta name="keywords" content="KMP,算法,完全攻略,语言,实现,KMP,算法," />
+<meta name="description" content="快速模式匹配算法 ，简称 KMP 算法 ，是在 BF 算法基础上改进得到的算法。 学过 BF 算法的读者应该知道，该算法的实现思想很简单，就是傻瓜式 地将模式串（假定为子串的串）与主串" />
+</head>
+<body>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../data_biancheng_default.html">
+<img height="26" src="../templets/default/images/logo_monkey.png" alt="数据结构与算法教程Logo" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li><a href="../data_biancheng_default.html">教程首页</a></li>
+<li><a href="212_2.html">购买教程（带答疑）</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="glyphicon"></span></span>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="glyphicon glyphicon-option-vertical" aria-hidden="true"></span>教程目录</dt>
+<dd>
+<span class="channel-num">1</span>
+<a href='../intro/intro.html'>数据结构概述</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href='../linear_list/linear_list.html'>线性表</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href='../stack_queue/stack_queue.html'>栈和队列</a>
+</dd>
+<dd class="this"> <span class="channel-num">4</span> <a href="../string/string.html">字符串</a> </dd><dl class="dl-sub"><dd>4.1 <a href="303.html">串存储结构是什么</a></dd><dd>4.2 <a href="304_2.html">串的定长顺序存储结构</a></dd><dd>4.3 <a href="305_2.html">串的堆分配存储结构</a></dd><dd>4.4 <a href="178.html">串的块链存储</a></dd><dd>4.5 <a href="179_2.html">BF算法（串模式匹配算法）</a></dd><dd>4.6 <a href="306.html">KMP算法（快速模式匹配算法）</a></dd><dd>4.7 <a href="vip_307.html">继续优化KMP算法，匹配效率有质的提升！</a><span class="glyphicon glyphicon-usd"></span></dd><dd>4.8 <a href="vip_308.html">为什么KMP算法的主串指针不用回退？</a><span class="glyphicon glyphicon-usd"></span></dd><dd>4.9 <a href="vip_228.html">[项目实践]字符过滤系统</a><span class="glyphicon glyphicon-usd"></span></dd></dl>
+<dd>
+<span class="channel-num">5</span>
+<a href='../array_list/array_list.html'>数组和广义表</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href='../tree/tree.html'>树</a>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href='../graph/graph.html'>图</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href='../search/search.html'>查找算法</a>
+</dd>
+<dd>
+<span class="channel-num">9</span>
+<a href='../sort/sort.html'>排序算法</a>
+</dd>
+<dd>
+<span class="channel-num">10</span>
+<a href='../out_sort/out_sort.html'>外部排序算法</a>
+</dd>
+<dd>
+<span class="channel-num">11</span>
+<a href='../memory/memory_3.html'>动态内存管理</a>
+</dd>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div id="arc-info">
+阅读：<span class="click">0</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+作者：解学武
+</div>
+<h1>KMP算法完全攻略（C语言实现）</h1>
+<div class="pre-next-page pre-next-detail clearfix">
+<span class="pre left"><span class="glyphicon glyphicon-menu-left"></span> <a href="179_2.html">BF算法（串模式匹配算法）</a></span>
+<span class="next right"><a href="vip_307.html">继续优化KMP算法，匹配效率有质的提升！</a> <span class="glyphicon glyphicon-menu-right"></span></span>
+</div>
+<div class="pre-next-page pre-next-brief clearfix">
+<span class="pre left"><span class="glyphicon glyphicon-menu-left"></span> <a href="306.html#">上一节</a></span>
+<span class="next right"><a href="306.html#">下一节</a> <span class="glyphicon glyphicon-menu-right"></span></span>
+</div>
+<script type="text/javascript">window.prePageURL = "/view/179.html";window.nextPageURL = "/view/vip_307.html";</script>
+<div id="arc-body"><span style="color: rgb(0, 128, 0);">快速模式匹配算法</span>，简称&nbsp;<span style="color: rgb(0, 128, 0);">KMP 算法</span>，是在 <u><a href='179_2.html' target='_blank'>BF 算法</a></u>基础上改进得到的算法。<br />
+<br />
+学过 BF 算法的读者应该知道，该算法的实现思想很简单，就是&nbsp;&quot;傻瓜式&quot; 地将模式<u><a href='303.html' target='_blank'>串</a></u>（假定为子串的串）与主串中的字符一一匹配。KMP 算法不一样，它可以略过一些原本就不可能成功的匹配过程，提高模式匹配的效率。<br />
+<br />
+例如，对主串 A（&quot;ABCABCE&quot;）和模式串 B（&quot;ABCE&quot;）进行模式匹配，KMP 算法只需要匹配 2 次。
+<div style="text-align: center;">
+<br />
+<img alt="第一次人为模式匹配" src="../uploads/allimg/220724/091HA0B-0.gif" /><br />
+<u><a href='321_2.html' target='_blank'>图</a></u> 1 第一次人为模式匹配</div>
+<br />
+图 1b) 显示第一次匹配失败，从整个匹配过程可以获得的信息是：模式串中 &quot;ABC&quot; 和主串对应的字符相同，但模式串中的字符 &#39;A&#39; 与 &#39;B&#39; 和 &#39;C&#39; 不同。这也就意味着，下次模式匹配时没必要再让串 B 中的 &#39;A&#39; 与主串中的字符 &#39;B&#39; 和 &#39;C&#39; 一一匹配，它们绝不可能相等。<br />
+<br />
+因此第二次模式匹配开始前，我们改变指针 j 的指向，如图 2a) 所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="第二次人为模式匹配" src="../uploads/allimg/220724/091H63D7-1.gif" /><br />
+图 2 第二次人为模式匹配</div>
+<br />
+图 2a) 中，模式串直接跳过主串中的第 2、3 个字符，从第 4 个字符处开始第二次模式匹配，最终匹配成功。KMP 算法的整个匹配过程只进行了 2 次，而如果用 BF 算法需要匹配 4 次。<br />
+<br />
+<span style="color:#b22222;">和 BF 算法相比，KMP 算法只需要移动指针 j 的位置，可以略过一些原本就不可能成功的匹配过程，减少匹配的次数，提高模式匹配的效率。</span><br />
+<h2>
+模式串指针的重定位</h2>
+对于初学者而言，KMP 算法最大的难点是：当模式匹配失败后，如何修改指针 j 的位置。<br />
+<br />
+<span style="color:#b22222;">请大家先记住一句话：指针 j 的新位置只和模式串有关，与主串无关。</span>接下来通过一个实例，给大家演示如何只通过模式串确定指针 j 的位置。<br />
+<br />
+例如，将图 1a) 的模式串 B 改为 &quot;ABCAE&quot;，第一次匹配的过程如下图所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="模式匹配过程示意图" src="../uploads/allimg/220724/091HB3H-2.gif" /><br />
+图 3 模式匹配过程示意图</div>
+<br />
+注意观察图 3a)，匹配失败时模式串中字符 &#39;E&#39; 前的 &#39;A&#39; 与模式串开头的 &#39;A&#39; 相等，因此我们可以将指针 j 指向模式串中的第 2 个字符，下次直接从 i 和 j 的位置开始匹配，这就是 KMP 算法重定位指针 j 的方法。<br />
+<br />
+也就是说，模式匹配失败后指针 j 的新位置可以通过匹配失败位置前的字符计算得出（比如图 3a) 中的 &quot;ABCA&quot;）。进一步讲，只要给定一个模式串，我们就可以确定匹配失败后指针 j 的新位置。<br />
+<br />
+当模式串和主串进行模式匹配时，模式串中的每个字符都可能导致匹配失败，而失败后指针 j 的新位置是可以计算出来的。模式串中有多少个字符，就可以计算出多少个指针 j 的新位置，它们是一一对应的关系。我们通常会各个字符对应的 j 的新位置存储到一个<u><a href='309_2.html' target='_blank'>数组</a></u>中，并给这个数组起名为 Next 数组，数组中的值统称为 next 值。<br />
+<h2>
+Next数组</h2>
+模式串中各个字符对应的 next 值的计算方式是，取该字符前面的字符串（不包含自己），其前缀字符串和后缀字符串相同字符的个数再 +1 就是该字符对应的 next 值。<br />
+<p class="info-box">
+<span style="color: rgb(0, 128, 0);">前缀字符串</span>指的是位于模式串起始位置的字符串，例如模式串 &quot;ABCD&quot;，则 &quot;A&quot;、&quot;AB&quot;、&quot;ABC&quot; 都属于前缀字符串；<span style="color: rgb(0, 128, 0);">后缀字符串</span>指的是位于串结尾处的字符串，还拿模式串 &quot;ABCD&quot; 来说，&quot;D&quot;、&quot;CD&quot;、&quot;BCD&quot; 为后缀字符串。</p>
+<span style="color: rgb(178, 34, 34);">注意，模式串中第一个字符对应的值为 0，第二个字符对应的值是 1 ，这是固定不变的。</span>因此，图 3 的模式串 &quot;ABCAE&quot; 中各个字符对应的 next 值如图 4 所示：
+<div style="text-align: center;">
+<br />
+<img alt="模式串对应的 next 数组" src="../uploads/allimg/220724/091H62D3-3.gif" /><br />
+图 4 模式串对应的 next 数组</div>
+<br />
+各个字符对应 next 值的计算过程是：
+<ul>
+<li>
+第三个字符 &#39;C&#39;：在前面的字符串&nbsp;&quot;AB&quot; 中，前缀字符串和后缀字符串相等个数为 0，0 + 1 = 1，所以字符 &#39;C&#39; 对应的 next 值为 1。</li>
+<li>
+第四个字符 &#39;A&#39;：在前面的字符串&nbsp;&quot;ABC&quot; 中，前缀字符串和后缀字符串相等个数为 0，0 + 1 = 1，所以字符 &#39;A&#39; 对应的 next 值为 1。</li>
+<li>
+第五个字符 &#39;E&#39;：在前面的字符串&nbsp;&quot;ABCA&quot; 中，前缀字符串和后缀字符串相等个数为 1，1 + 1 = 2，所以字符 &#39;E&#39; 对应的 next 值为 2。</li>
+</ul>
+<br />
+从图 4 中的数据可以看出，当字符 &#39;E&#39; 匹配失败时，指针 j 指向模式串数组中第 2 个字符，即 &#39;B&#39;，和图 3 不谋而合。<br />
+<br />
+那么，如果编写程序计算出模式串对应的 NEXT 数组呢？<br />
+<br />
+可以设计这样一个算法：刚开始时令 j 指向模式串中第 1 个字符（j=1），i 指向第 2 个字符（i=2）。接下来，对每个字符做同样的操作：
+<ul>
+<li>
+如果 i 和 j 指向的字符相等，则 i 后面第一个字符的 next 值为 j+1，同时 i 和 j 做自加 1 操作，为求下一个字符的 next 值做准备；</li>
+<li>
+如果 i 和 j 指向的字符不相等，则执行&nbsp;j=next[j] 修改 j 的指向，然后以同样的方法对比 i 和 j 指向的字符，以此类推。当&nbsp;j 的值为 0 时，将 i 后面第一个字符的 next 值置为 1。</li>
+</ul>
+<br />
+例如，计算模式串 &quot;aaacd&quot; 对应的 NEXT 数组，实现过程为：<br />
+1) 前两个字符对应的 next 值分别为 0 和 1（j=1, i=2）；<br />
+<br />
+2) 由于 i 和 j 指向的字符相等，所以第三个字符 &#39;a&#39; 的 next 值为 j +1 = 2，同时 i 和 j 各自加 1（此时 j=2，i=3）。<br />
+<br />
+<div style="text-align: center;">
+<img alt="i和j指向字符相等" src="../uploads/allimg/220724/091H64D8-4.gif" /><br />
+图 5 i 和 j 指向字符相等</div>
+<br />
+3)&nbsp;由于 i 和 j 指向的字符相等，所以第四个字符 &#39;c&#39; 的 next 值为 j +1 = 3，同时 i 和 j 各自加 1（此时 j=3，i=4）。<br />
+<br />
+<div style="text-align: center;">
+<img alt="i和j指向字符仍相等" src="../uploads/allimg/220724/091H64926-5.gif" /><br />
+图 6 i 和 j 指向字符仍相等</div>
+<br />
+4）此时 i 和 j 指向的字符不相等，执行 j = next[j] 修改 j 的指向，如图 7 所示：
+<div style="text-align: center;">
+<br />
+<img alt="" src="../uploads/allimg/220724/091HA209-6.gif" /><br />
+图 7 执行 j=next[j] 操作</div>
+<br />
+从上图可以看到，i 和 j 指向的字符又不相同，继续执行 j = next[j]，如图 8 所示：
+<div style="text-align: center;">
+<br />
+<img alt="" src="../uploads/allimg/220724/091H63303-7.gif" /><br />
+图 8 继续执行 j=next[j] 的操作</div>
+<br />
+由于 j 和 i 指向的字符仍不相等，继续执行 j=next[j] 得到 j=0，字符 &#39;d&#39; 对应的 next 值为 1。
+<blockquote>
+<p>
+实际上，当第一次比较 i 和 j 不相等时，意味着匹配失败位置前的最长前缀和后缀字符串不相同；执行 j=next[j] 后，i 和 j 仍不相等，意味着匹配失败位置前的次长前缀和后缀字符串也不相同，以此类推。当 j = 0 时，意味着匹配失败位置前没有相等的前缀和后缀字符串。</p>
+</blockquote>
+这里给出上述思想实现 NEXT 数组的 C 语言代码：
+<pre class="cpp">
+void Next(char* T, int* next) {
+    int i = 1;
+    int j = 0;
+    next[1] = 0;
+    //next[2]=1 可以通过第一次循环直接得出
+    while (i &lt; strlen(T)) {
+        if (j == 0 || T[i - 1] == T[j - 1]) {
+            i++;
+            j++;
+            next[i] = j;
+        }
+        else {
+            j = next[j];
+        }
+    }
+}</pre>
+学会计算模式串中每个字符对应的 next 值之后，KMP 算法的实现过程就容易理解了。<br />
+<h2>
+KMP 算法的实现</h2>
+假设主串 A 为 &quot;ababcabcacbab&quot;，模式串 B 为 &quot;abcac&quot;，KMP 算法进行模式匹配的过程为：<br />
+<br />
+<ul>
+<li>
+第一次匹配如图 9&nbsp;所示，匹配结果失败，指针 j 移动至 next[j] 的位置；
+<div style="text-align: center;">
+<br />
+<img alt="第一次匹配示意图" src="../uploads/allimg/220724/091HB959-8.gif" /><br />
+图 9 第一次匹配示意图<br />
+&nbsp;</div>
+</li>
+<li>
+第二次匹配如图 10&nbsp;所示，匹配结果失败，执行 j=next[j] 操作：
+<div style="text-align: center;">
+<br />
+<img alt="第二次匹配示意图" src="../uploads/allimg/220724/091HAN6-9.gif" /><br />
+图 10&nbsp;第二次匹配示意图<br />
+&nbsp;</div>
+</li>
+<li>
+第三次匹配成功，如图 11&nbsp;所示：
+<div style="text-align: center;">
+<br />
+<img alt="第三次匹配示意图" src="../uploads/allimg/220724/091HB235-10.gif" /><br />
+图 11&nbsp;第三次匹配示意图</div>
+</li>
+</ul>
+<br />
+使用 KMP 算法只需匹配 3 次，而同样的问题使用 BF 算法则需匹配 6 次才能完成。<br />
+<br />
+KMP 算法的完整 C 语言实现代码为：
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+void Next(char* T, int* next) {
+    int j = 0;
+    int i = 1;
+    next[1] = 0;
+    while (i &lt; strlen(T)) {
+        if (j == 0 || T[i - 1] == T[j - 1]) {
+            i++;
+            j++;
+            next[i] = j;
+        }
+        else {
+            j = next[j];
+        }
+    }
+}
+int KMP(char* S, char* T) {
+    int next[10];
+    int i = 1;
+    int j = 1;
+    Next(T, next);//根据模式串T,初始化next数组
+    while (i &lt;= strlen(S) &amp;&amp; j &lt;= strlen(T)) {
+        //j==0:代表模式串的第一个字符就和当前测试的字符不相等；S[i-1]==T[j-1],如果对应位置字符相等，两种情况下，指向当前测试的两个指针下标i和j都向后移
+        if (j == 0 || S[i - 1] == T[j - 1]) {
+            i++;
+            j++;
+        }
+        else {
+            j = next[j];//如果测试的两个字符不相等，i不动，j变为当前测试字符串的next值
+        }
+    }
+    if (j &gt; strlen(T)) {//如果条件为真，说明匹配成功
+        return i - (int)strlen(T);
+    }
+    return -1;
+}
+int main() {
+    int i = KMP(&quot;ababcabcacbab&quot;, &quot;abcac&quot;);
+    printf(&quot;%d&quot;, i);
+    return 0;
+}</pre>
+运行结果为：
+<p class="info-box">
+6</p>
+</div>
+<div class="pre-next-page pre-next-detail clearfix">
+<span class="pre left"><span class="glyphicon glyphicon-menu-left"></span> <a href="179_2.html">BF算法（串模式匹配算法）</a></span>
+<span class="next right"><a href="vip_307.html">继续优化KMP算法，匹配效率有质的提升！</a> <span class="glyphicon glyphicon-menu-right"></span></span>
+</div>
+<div class="pre-next-page pre-next-brief clearfix">
+<span class="pre left"><span class="glyphicon glyphicon-menu-left"></span> <a href="306.html#">上一节</a></span>
+<span class="next right"><a href="306.html#">下一节</a> <span class="glyphicon glyphicon-menu-right"></span></span>
+</div>
+<script type="text/javascript">window.prePageURL = "/view/179.html";window.nextPageURL = "/view/vip_307.html";</script>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 306;
+window.arcId = "c70dqFK+tuf9gHF20Dou0Z7vAMZXBAhcV6xlsl5h9yb1v7sdwSQPqfyXyA";
+window.siteId = 1;
+window.cmsTempletsVer = "1.2";
+</script>
+<div id="footer">
+<ul id="nav-bottom" class="clearfix">
+<li><a href="267.html" target="_blank">联系方式</a></li>
+<li><a href="212_2.html" target="_blank">购买教程（带答疑）</a></li>
+</ul>
+</div>
+<script src="../templets/default/script/jquery1.12.4.min.js"></script>
+<script src="../templets/default/script/jquery.snippet.js"></script>
+<script src="../templets/default/script/common.js"></script>
+<span style="display:none;"><script src="https://s22.cnzz.com/z_stat.php?id=1273514649&web_id=1273514649" language="JavaScript"></script></span>
+</body>
+</html>

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>CSS :focus伪类选择器用法详解</title>
+<meta name="description" content="CSS :focus 是一个从 IE8 浏览器开始支持的伪类，它可以匹配当前处于聚焦状态的元素。 例如，高亮显示处于聚焦状态的 textarea 输入框的边框： textarea { border: 1px solid #ccc;}textarea:focus { bo" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>CSS :focus伪类选择器用法详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">CSS :focus 是一个从 IE8 浏览器开始支持的伪类，它可以匹配当前处于聚焦状态的元素。<br />
+<br />
+例如，高亮显示处于聚焦状态的 &lt;textarea&gt; 输入框的边框：
+<pre class="css">
+textarea {
+   border: 1px solid #ccc;
+}
+textarea:focus {
+   border-color: HighLight;
+}</pre>
+这样的方式相信大家都用过，接下来深入介绍相关知识。<br />
+<h2>
+:focus伪类匹配机制</h2>
+与 :active 伪类不同，:focus 伪类默认只能匹配特定的元素，包括：
+<ul>
+<li>
+非 disabled 状态的表单元素，如 &lt;input&gt; 输入框、&lt;select&gt; 下拉框、&lt;button&gt; 按钮等；</li>
+<li>
+包含 href 属性的 &lt;a&gt; 元素；</li>
+<li>
+&lt;area&gt; 元素，不过可以生效的 CSS 属性有限；</li>
+<li>
+HTML5 中的 &lt;summary&gt; 元素。</li>
+</ul>
+<br />
+除上述特定元素之外，其他 HTML 元素应用 :focus 伪类是无效的，例如：
+<pre class="css">
+body:focus {
+   background-color: skyblue;
+}</pre>
+此时点击页面，&lt;body&gt; 元素不会有背景色的变化（IE 浏览器的表现有问题，请忽略），虽然此时的 document.activeElement 就是 &lt;body&gt; 元素。<br />
+<br />
+如何让普通元素也能响应 :focus 伪类呢？设置了 HTML contenteditable 属性的普通元素可以应用 :focus 伪类，例如：
+<pre class="html">
+&lt;div contenteditable=&quot;true&gt;&lt;/div&gt;
+&lt;div contenteditable=&quot;plaintext-only&quot;&gt;&lt;/div&gt;</pre>
+因为此时 &lt;div&gt; 元素是一个类似 &lt;textarea&gt; 元素的输入框。<br />
+<br />
+设置了 HTML tabindex 属性的普通元素也可以应用 :focus 伪类，例如，下面 3 种写法都是可以的：
+<pre class="html">
+&lt;div tabindex=&quot;-1&quot;&gt;内容&lt;/div&gt;
+&lt;div tabindex=&quot;0&quot;&gt;内容&lt;/div&gt;
+&lt;div tabindex=&quot;1&quot;&gt;内容&lt;/div&gt;</pre>
+如果期望 &lt;div&gt; 元素可以被 Tab 键索引，且被点击的时候可以触发 :focus 伪类样式，则使用 tabindex=&quot;0&quot;；如果不期望 &lt;div&gt; 元素可以被 Tab 键索引，且只在它被点击的时候触发 :focus 伪类样式，则使用 tabindex=&quot;-1&quot;。对于普通元素，不存在使用自然数作为 tabindex 属性值的场景。<br />
+<br />
+既然普通元素也可以响应 :focus 伪类，是不是可以利用这种特性实现任意元素的点击下拉效果呢？<br />
+<br />
+如果纯展示下拉内容，无交互效果是可以的，例如，实现点击二维码图标时显示完整二维码图片的交互效果：
+<pre class="info-box">
+&lt;img src=&quot;icon-qrcode.svg&quot; tabindex=&quot;0&quot;&gt;
+&lt;img class=&quot;img-qrcode&quot; src=&quot;qrcode.png&quot;&gt;
+
+.img-qrcode {
+   position: absolute;
+   display: none;
+}
+:focus + .img-qrcode {
+   display: inline;
+}</pre>
+点击小图标，二维码图片会显示（如下图所示），点击空白处，图片又会隐藏，这正是我们需要的效果。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230922/2-2309221452249A.gif" /><br />
+图 1 点击小图标显示二维码图片</div>
+<br />
+但实际上，使用 :focus 控制元素的显隐并不完美，在 iOS Safari 浏览器下，元素一旦处于 focus 状态，除非点击其他可聚焦元素来转移 focus 焦点，否则这个元素会一直保持 focus 状态。各个桌面浏览器、Android 浏览器均无此问题。不过这个问题也好解决，只需要对祖先容器元素设置 tabindex=&quot;-1&quot;，同时取消该元素的 outline 样式，代码示意如下：<br />
+<pre class="css">
+&lt;body&gt;
+   &lt;div class=&quot;container&quot; tabindex=&quot;-1&quot;&gt;&lt;/div&gt;
+&lt;/body&gt;
+.container {
+   outline: 0 none;
+}</pre>
+这样，点击二维码图标以外的元素时就会把焦点转移到 .container 元素上，iOS Safari 浏览器的交互就表现正常了。如果在使用 JavaScript 进行开发的时候遇到 iOS Safari 浏览器不触发 blur 事件的问题，也可以用这种方法解决。需要注意的是，tabindex=&quot;-1&quot; 设置在 &lt;body&gt; 元素上是无效的。<br />
+<br />
+但这个方法只适用于纯展示的下拉效果，如果下拉浮层内部有其他交互效果，此方法就有问题，要么失焦，要么焦点转移，都会导致下拉浮层的消失。遇到这种场景，可以使用整体焦点伪类 :focus-within。<br />
+<br />
+最后强调一点，一个页面最多有一个焦点元素，这就意味着一个页面最多只会有一个元素响应 :focus 伪类样式。<br />
+<h2>
+:focus伪类与outline轮廓</h2>
+先来看看下面这样糟糕的样式代码：<br />
+<pre class="css">
+* { outline: 0 none; }</pre>
+或者
+<pre class="css">
+a { outline: 0 none; }</pre>
+在多年前的 IE 浏览器时代，点击任意链接或者按钮时都会出现一个虚框轮廓，影响美观。在 Chrome 浏览器下，当设置了背景的 &lt;button&gt; 元素、&lt;summary&gt; 元素以及设置了 tabindex 属性的普通元素被点击的时候，也会显示浏览器默认的外发光轮廓（现在的 Chrome 浏览器已经修改了这个交互设计）。<br />
+<br />
+于是就有人想到将 outline 重置为 none，其出发点是好的，也是可以理解的，但是结果是糟糕的，既没必要，又带来了不良的用户体验。<br />
+<br />
+说没必要是因为所有浏览器都已经优化了控件元素的 outline 交互体验，也就是点击链接或按钮时不会有轮廓，只有键盘访问时才会有。<br />
+<br />
+说不良的用户体验，指的是一旦设置了 outline:none，这些控件元素再也无法使用键盘进行无障碍访问。这是由于在默认情况下，当用户使用 Tab 键或者方向键遍历链接和按钮元素的时候，会让这些元素处于 focus 状态，同时触发 outline 样式的渲染，要么是外发光效果，要么是虚框效果，但是如果这些元素的 outline 轮廓被清除，那么用户使用键盘访问网页的时候，根本无法知道现在到底哪个元素处于 focus 状态，从而迷失在页面上，这是极其糟糕的用户体验。<br />
+<br />
+有人可能会说：&ldquo;我也不想重置 outline 属性，但是浏览器默认的轮廓效果太难看了，达不到产品和设计要求啊&rdquo;。实际上，不是说 outline 属性不能重置，而是一定要确保元素匹配 :focus 伪类的时候有明显的样式变化。<br />
+<br />
+例如，如果希望聚焦表单输入框的时候呈现的不是黑色边框或外发光效果，而是边框高亮显示，则可以：
+<pre class="css">
+textarea:focus {
+   outline: 0 none;
+   border-color: HighLight;
+}</pre>
+在实际开发过程中，难免会遇到需要模拟浏览器原生聚焦轮廓的场景，Chrome 浏览器下是外发光或者黑色粗轮廓（取决于操作系统和浏览器的版本），IE 浏览器和 Firefox 浏览器下则是虚点。理论上，使用如下 CSS 代码是最准确的：<br />
+<pre class="css">
+:focus {
+   outline: 1px dotted;
+   outline: 5px auto -webkit-focus-ring-color;
+}</pre>
+对于一些小图标，可能会设置 color:transparent，还有一些按钮的文字颜色稍浅，这会导致 IE 浏览器和 Firefox 浏览器下虚框轮廓不可见，因此，在实际开发的时候，建议指定虚线颜色：
+<pre class="css">
+:focus {
+   outline: 1px dotted HighLight;
+   outline: 5px auto -webkit-focus-ring-color;
+}</pre>
+<h2>
+CSS:focus伪类与键盘无障碍访问</h2>
+:focus 伪类与键盘无障碍访问密切相关，因此，实际上需要使用 :focus 伪类的场景比预想的多。<br />
+<h4>
+1) 为什么不建议使用 &lt;span&gt; 或 &lt;div&gt; 按钮</h4>
+&lt;span&gt; 元素或者 &lt;div&gt; 元素也能模拟按钮的 UI 效果，但并不建议使用。一来原生的 &lt;button&gt; 元素可以触发表单提交行为，使表单可以原生支持 Enter 键；二来原生的 &lt;button&gt; 元素天然可以被键盘聚焦，确保我们的页面可以纯键盘无障碍访问。<br />
+<br />
+但是 &lt;span&gt; 或者 &lt;div&gt; 按钮是没有上面这些行为的，如果要支持这些比较好的原生特性，要么需要额外的 JavaScript 代码，要么需要额外的 HTML 属性设置。例如，tabindex=&quot;0&quot; 支持 Tab 键索引，role=&quot;button&quot; 支持屏幕阅读器识别等。<br />
+<br />
+总之，使用 &lt;span&gt; 或者 &lt;div&gt; 模拟按钮的 UI 效果是一件高成本低收益的事情，不到万不得已，没有使用 &lt;span&gt; 或者 &lt;div&gt; 模拟按钮的理由。如果你认为按钮本身的兼容性不够好，可以使用 &lt;label&gt; 元素模拟，使用 for 属性进行关联，例如：<br />
+<pre class="info-box">
+&lt;input id=&quot;submit&quot; type=&quot;submit&quot;&gt;
+&lt;label class=&quot;button&quot; for=&quot;submit&quot;&gt;提交&lt;/label&gt;
+[type=&quot;submit&quot;] {
+   position: absolute;
+   clip: rect(0 0 0 0);
+}
+.button {
+   /* 按钮样式... */
+}
+/* focus轮廓转移 */
+:focus + .button {
+   outline: 1px dotted HighLight;
+   outline: 5px auto -webkit-focus-ring-color;
+}</pre>
+使用 &lt;label&gt; 元素模拟按钮的效果既保留了语义和原生行为，视觉上又完美兼容。<br />
+<h4>
+2) 模拟表单元素的键盘可访问性</h4>
+[type=&quot;radio&quot;]、[type=&quot;checkbox&quot;]、[type=&quot;range&quot;] 类型的 &lt;input&gt; 元素的 UI 往往不符合网站的设计风格，需要自定义样式，常规实现一般都没问题，关键是很多开发人员会忘了键盘的无障碍访问。<br />
+<br />
+以 [type=&quot;checkbox&quot;] 复选框为例：
+<pre class="html">
+&lt;input id=&quot;checkbox&quot; type=&quot;checkbox&quot;&gt;
+&lt;label class=&quot;checkbox&quot; for=&quot;checkbox&quot;&gt;提交&lt;/label&gt;</pre>
+我们需要隐藏原生的 [type=&quot;checkbox&quot;] 复选框，使用关联的 &lt;label&gt; 元素自定义的复选框样式（如果不需要兼容 IE 和 IE Edge 浏览器，则无须 &lt;label&gt; 元素模拟）。<br />
+<br />
+关键 CSS 代码如下：
+<pre class="css">
+[type=&quot;checkbox&quot;] {
+   position: absolute;
+   clip: rect(0 0 0 0);
+}
+.checkbox {
+   border: 1px solid gray;
+}
+/* 聚焦时记得高亮显示自定义输入框 */
+:focus + .checkbox {
+   border-color: skyblue;
+}</pre>
+这类自定义实现有两个关键点：<br />
+① 对于原生复选框元素的隐藏，要么设置透明度 opacity:0，要么剪裁，千万不要使用 visibility:hidden 或者 display:none 进行隐藏，虽然 IE9 及以上版本的浏览器的功能是正常的，但是这两种隐藏是无法被键盘聚焦，键盘不可访问。<br />
+<br />
+② 不要忘记在原生复选框聚焦的时候高亮显示自定义的输入框元素，可以是边框高亮，或者外发光，通常都使用相邻兄弟选择符（+）实现，特殊情况下也可以使用兄弟选择符（~），如高亮多个元素时。<br />
+<br />
+市面上有不少 UI 框架，如何区分品质？很简单，使用 Tab 键索引页面元素，如果输入框有高亮显示，则这个 UI 框架比较专业，如果什么反应都没有，建议换一种 UI 框架。<br />
+<h4>
+3) 容易忽略的鼠标光标经过行为的键盘可访问性</h4>
+键盘的可访问性在介绍 :hover 伪类的时候提过，需要同时设置 :focus 伪类来提高键盘的可访问性，如图 2 所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230922/2-230922145446233.gif" /><br />
+图 2 设置:focus伪类以增强键盘的可访问性</div>
+<br />
+这里再介绍另一种非常容易被忽略的影响用户体验的交互实现。<br />
+<br />
+为了版面的整洁，列表中的操作按钮默认会隐藏，当鼠标光标经过列表的时候才显示，如下图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230922/2-230922145503552.gif" /><br />
+图 3 鼠标光标经过时显示列表按钮</div>
+<br />
+很多人在实现的时候并没有考虑很多，直接使用 display:none 隐藏或者 visibility: hidden 隐藏，结果导致无法通过键盘使隐藏的控件元素显示，因为这两种隐藏方式会使元素无法被聚焦，如何应对这种情况呢？<br />
+<br />
+可以试试使用 opacity（透明度）控制内容的显隐，这样就可以通过 :focus 伪类使按钮在被键盘聚焦的时候可见，例如：
+<pre class="css">
+tr .button {
+   opacity: 0;
+}
+tr:hover .button,
+tr .button:focus {
+   opacity: 1;
+}</pre>
+效果如下图所示。
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230922/2-230922145526335.gif" /><br />
+图 4 focus时也能显示列表按钮</div>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="158.html" title="C语言代码规范（编程规范）" target="_blank">C语言代码规范（编程规范）</a></li>
+<li><a href="1062.html" title="Linux ps命令详解：查看正在运行的进程" target="_blank">Linux ps命令详解：查看正在运行的进程</a></li>
+<li><a href="2541.html" title="Python pathlib模块用法详解" target="_blank">Python pathlib模块用法详解</a></li>
+<li><a href="7597.html" title="HTML复选框" target="_blank">HTML复选框</a></li>
+<li><a href="7632.html" title="Django路由反向解析与命名空间" target="_blank">Django路由反向解析与命名空间</a></li>
+<li><a href="../mongodb2/data-model.html" title="MongoDB数据模型" target="_blank">MongoDB数据模型</a></li>
+<li><a href="9757.html" title="Sublime Text运行Python程序（包含下载和安装）" target="_blank">Sublime Text运行Python程序（包含下载和安装）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10502;
+window.arcId = "c07ew4VxfiNvesiIm5G8J8LQ64fXL0S8TAN8DZnGvuACgjfnTuWmfSFcQ6Mf";
+window.typeidChain = "121|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

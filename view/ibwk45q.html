@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++函数模板的重载</title>
+<meta name="description" content="和普通函数一样，函数模板也可以重载。重载的函数模板，模板名称相同，但函数形参列表不同。 例如： template typename TypeType min(const Type*, int); // 注意第二个参数template typename TypeType" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++函数模板的重载</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">和普通函数一样，函数模板也可以重载。重载的函数模板，模板名称相同，但函数形参列表不同。<br />
+<br />
+例如：
+<pre class="cpp">
+template &lt;typename Type&gt;
+Type min(const Type*, int); // 注意第二个参数
+
+template &lt;typename Type&gt;
+Type min(Type, Type);   //两个参数类型相同</pre>
+在上述定义中，两个模板的模板形参相同，都是一个类型（typename Type），模板名称也相同，都是 min。但函数形参列表不一样，一个是 (const Type *, int)，另一个是(Type, Type)，所以这两个函数模板是重载的。<br />
+<blockquote>
+<p>
+同函数重载一样，函数模板的返回类型不作为重载的判断条件。</p>
+</blockquote>
+下面的主函数的定义说明了前面定义的两个模板如何使用：<br />
+<pre class="cpp">
+#include &lt;cmath&gt;
+
+int main()
+{
+    int ia[1024];
+    int ival = min(ia, 1024);   // Type == int; min(const int*, int)
+    double dval = min(1.1, 2.2); // Type == double; min(double, double)
+    return 0;
+
+}</pre>
+在上述主函数的定义中，第 6 行的第二个参数是一个整型数 1024，从定义上来讲，此处更适合第一个函数模板，所以该处的调用得到的模板实例就是第一个模板的实例。<br />
+<br />
+如果存在多个候选的模板，那么在实参推演过程中，编译器倾向于选择那些函数实参跟形参类型相近的模板。例如在上面的例子中，实参 1024 是一个整型，而候选函数模板中，其中一个的形参也是整型，那么该模板就会被选来进行实例化。<br />
+<br />
+尽管定义重载函数模板同定义重载函数一样简单，但二者也有不同。重载函数没有二义性的问题，而重载函数模板则可能导致二义性。<br />
+<br />
+仍以上面的重载模板 min 为例，使其既可以支持类型参数相同的情况，也可以支持类型参数不同的情况：<br />
+<pre class="cpp">
+template &lt;typename T&gt;
+int min(T, T) { /* ...... */ }  //两个参数类型相同的函数模板
+
+template &lt;typename T, typename U&gt;
+int min(T, U);  //两个参数类型不相同的函数模板</pre>
+如果以如下的形式使用函数模板，将会导致二义性：<br />
+<pre class="cpp" shownum="false">
+min(1024, 512);</pre>
+因为在这个例子中，编译器无法决定到底该实例化哪个模板。第二个函数模板，虽然其模板参数声明为两个类型（T 和 U），但并没有限制这两个类型必须不同，所以语句&ldquo;min(1024, 512);&rdquo;也可以看做是调用第二个模板的实例。显然这样做会引起与第一个模板的冲突，从而导致编译错误。<br />
+<br />
+但是，在这种情况下其实可以不必重载函数模板。因为所有能够匹配 min(T, T) 的调用，也完全可以匹配 min(T, U)。所以应该只提供 min(T, U) 的声明，而 min(T, T) 应该被删除。<br />
+<br />
+在某些情况下，尽管可以采用重载函数模板，但在进行程序设计时，仍然应当尽量少地使用，以避免不小心带来的二义性。
+<h2>
+实例演示函数模板重载</h2>
+下面的例子展示了函数模板重载的一种应用：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+// 基本模板
+template &lt;typename T&gt;
+void display(T value) {
+    std::cout &lt;&lt; &quot;Basic template: &quot; &lt;&lt; value &lt;&lt; std::endl;
+}
+
+// 重载1：接受两个参数的版本
+template &lt;typename T&gt;
+void display(T value1, T value2) {
+    std::cout &lt;&lt; &quot;Overloaded template with two parameters: &quot; &lt;&lt; value1 &lt;&lt; &quot;, &quot; &lt;&lt; value2 &lt;&lt; std::endl;
+}
+
+// 重载2：接受一个std::string和一个T类型的参数
+template &lt;typename T&gt;
+void display(std::string message, T value) {
+    std::cout &lt;&lt; message &lt;&lt; &quot;: &quot; &lt;&lt; value &lt;&lt; std::endl;
+}
+
+int main() {
+    int a = 1;
+    double b = 2.0;
+    std::string str = &quot;Hello&quot;;
+
+    // 使用基本模板
+    display(a);
+
+    // 使用接受两个参数的重载版本
+    display(a, a);
+
+    // 使用接受一个std::string和一个T类型的参数的重载版本
+    display(&quot;Custom message&quot;, a);
+
+    return 0;
+}</pre>
+输出结果为：
+<p class="info-box">
+Basic template: 1<br />
+Overloaded template with two parameters: 1, 1<br />
+Custom message: 1</p>
+在这个例子中，display() 函数有以下几种不同的模板重载：
+<ul>
+<li>
+一个基本的模板，接受一个类型为 T 的参数；</li>
+<li>
+一个接受两个类型为 T 的参数的重载版本；</li>
+<li>
+一个接受一个 std::string 和一个类型为 T 的参数的重载版本。</li>
+</ul>
+<br />
+在 main() 函数中，我们对这些不同版本的 display() 函数进行了调用，以展示函数模板重载的工作方式。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="219.html" title="C++类成员的访问范围（C++ private、public、protected）" target="_blank">C++类成员的访问范围（C++ private、public、protected）</a></li>
+<li><a href="297.html" title="C语言逗号运算符(，)" target="_blank">C语言逗号运算符(，)</a></li>
+<li><a href="1991.html" title="C语言指针变量的定义和使用（精华）" target="_blank">C语言指针变量的定义和使用（精华）</a></li>
+<li><a href="5537.html" title="Python GIL全局解释器锁详解（深度剖析）" target="_blank">Python GIL全局解释器锁详解（深度剖析）</a></li>
+<li><a href="../nexus/create-repository.html" title="Nexus创建仓库" target="_blank">Nexus创建仓库</a></li>
+<li><a href="i0wwms9.html" title="Python raise语句（抛出异常）" target="_blank">Python raise语句（抛出异常）</a></li>
+<li><a href="9lry9ns.html" title="Redis HEXISTS命令的用法" target="_blank">Redis HEXISTS命令的用法</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10334;
+window.arcId = "e369qXLpC8ADabejGNofMe9R0oLPOif83defjI40gEZ6/58EYh+tltCMRkzc";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

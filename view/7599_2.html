@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Django模板标签完整攻略</title>
+<meta name="description" content="前面我们用了三节的内容重点讲解了，模板语言中经常用到的几个标签 if、for 以及 url。在本节" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../django/django_2.html">Django</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Django模板标签完整攻略</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">前面我们用了三节的内容重点讲解了模板语言中使用频率较高到的三个标签 if、for 以及 url。在本节我们将其余标签选择性的讲解，学习 Django 框架的时候，要学会抓住知识重点，这是提高学习效率的一种有效途径。
+<h2>
+	1. 模板标签攻略</h2>
+<h4>
+	1) 判断变量值是否相等</h4>
+判断两个变量的值是否相等，也是一种很常见的需求，我们使用 ifequal 标签来进行判断，它 endifequal 标签成对出现，当然也可以使用 if 标签配合比较运算符来实现，所以这个标签也显的很鸡肋，Django官方的解释是，为了简化操作过程所以提供了这个标签，所以这就要看大家的喜好，自己决定是否使用它吧。它的语法格式如下:<br />
+<p class="info-box">
+	{% ifequal n1 n2 %}<br />
+	...代码块1<br />
+	{% else %}<br />
+	...代码块2<br />
+	{% endifequal %}</p>
+n1 与 n2 的值相等的，那么就执行代码块 1，如果不等就执行代码块 2，示例如下：
+<pre class="python">
+In [1]: from django.template import Template,Context
+In [2]: t=Template(&quot;&quot;&quot;
+   ...: {% ifequal n1 n2 %}
+   ...:  &lt;p&gt;{{ n1 }} equal {{ n2 }}&lt;/p&gt;
+   ...: {% else %}
+   ...:   &lt;p&gt;{{ n1 }} not equal {{ n2 }} &lt;/p&gt;
+   ...: {% endifequal %}
+   ...: &quot;&quot;&quot;)
+   ...: t.render(Context({&#39;n1&#39;:&#39;python&#39;,&#39;n2&#39;:&#39;python&#39;}))
+Out[3]: &#39;&lt;p&gt;python equal python&lt;/p&gt;&#39;</pre>
+此处的 n1与 n2 的值属于模板变量，如使用硬编码时也可以是整数、小数或者字符串，如下所示<br />
+<p class="info-box">
+	{% ifequal variable 1 %}<br />
+	{% ifequal variable 1.23 %}<br />
+	{% ifequal variable &quot;bar&quot; %}</p>
+但是 Python 的字典类型、列表类型、布尔类型，不能用在 {% ifequal %} 中，以下是错误的使用方法：<br />
+<p class="info-box">
+	{% ifequal variable True %}<br />
+	{% ifequal variable [1, 2, 3] %}<br />
+	{% ifequal variable {&#39;key&#39;: &#39;value&#39;} %}</p>
+<h4>
+	2) extends模板继承标签</h4>
+extends 标签表示模板继承的标签，它通常会与{ block }标签一起使用，有具体两种使用法:
+<ul>
+	<li>
+		{% extends &quot;base.html&quot; %} 继承名为 &quot;base.html&quot; 的父模板；</li>
+	<li>
+		{％ extends&nbsp;<span style="background-color: rgb(248, 248, 248);">variable&nbsp;</span>％} 使用 variable 变量表示的模版。</li>
+</ul>
+<br />
+模板继承在 Django 模板语言中也是非常重要的知识，我们将会对其做单独的讲解。
+<h4>
+	3) load加载标签或过滤器</h4>
+load 标签用于在模板中加载自定义模板标签集或者过滤器，可以加载项目中的静态文件，格式使用如下：<br />
+<p class="info-box">
+	{% load static %} 加载静态文件</p>
+<h4>
+	4) ifchanged标签的使用</h4>
+从循环的最后一次迭代检查值是否已更改。{% ifchanged %} 标签每次循环都将对应的值与上一次值进行对比，若发现前后两者的值不同，就会将更改后的值显示出来，我们通过具体的例子进行说明：
+<pre class="python">
+In [1]: t=Template(&quot;&quot;&quot;
+    ...: {% for name in webnames %}
+    ...:     {% ifchanged %}
+    ...:     {{name.1|add:&#39;ioe&#39;}}
+    ...:     {% endifchanged %}
+    ...: {% endfor %}    
+    ...: &quot;&quot;&quot;)
+    ...: t.render(Context({&#39;webnames&#39;:[[&#39;Python&#39;,&#39;Flask&#39;],&#39;java&#39;,&#39;c语言&#39;]}))
+Out[1]: &#39;\n\n Flaskioe\n aioe\n 语ioe \n\n&#39;</pre>
+通过输出结果可以看出， ifchanged 标签将更改后的值进行了显示，而其余未更改的部分则没有进行输出。add 为模板的过滤器，这里表示给 name 的相对应变量值进行了字符串拼接的操作。
+<h4>
+	5) csrf_token标签使用</h4>
+一个防止 CSRF 攻击（跨站点请求伪造）的标签，对于 CSRF 攻击可以参见百度百科《<a href="https://baike.baidu.com/item/%E8%B7%A8%E7%AB%99%E8%AF%B7%E6%B1%82%E4%BC%AA%E9%80%A0/13777878?fromtitle=CSRF&amp;fromid=2735433&amp;fr=aladdin">跨站请求伪造</a>》自行了解，不过此标签在后续相关章节还会使用到。<br />
+<h4>
+	6) cycle标签的使用</h4>
+每次遇到此标签时，都会产生一个 cycle 自带的参数。第一个参数在第一次遇到时产生，第二个参数在第二次遇到时产生，依此类推。一旦所有参数用尽，标记将循环到第一个参数并再次产生它。cycle 标签在循环中特别有用：
+<pre class="python">
+#cycle的参数为字符串，用引号引起来
+In [17]: t=Template(&quot;&quot;&quot;
+    ...: {% for i in some_list %}
+    ...:     &lt;tr class=&quot;{% cycle &#39;row1&#39; &#39;row2&#39; %}&quot;&gt;
+    ...:         &lt;p&gt;{{ i }}&lt;/p&gt;
+    ...:     &lt;/tr&gt;^M
+    ...: {% endfor %}
+    ...: &quot;&quot;&quot;)
+    ...: t.render(Context({&#39;some_list&#39;:[&#39;Python&#39;,&#39;Flask&#39;]}))
+Out[17]: &#39;\n\n&lt;tr class=&quot;row1&quot;&gt;\n&lt;p&gt;Python&lt;/p&gt;&lt;/tr&gt; &lt;tr class=&quot;row2&quot;&gt;\n&lt;p&gt;Flask&lt;/p&gt;&lt;/tr&gt;\n\n&#39;
+#cycle参数为变量，需要用字典为其赋值
+In [18]: t=Template(&quot;&quot;&quot;
+    ...: {% for i in some_list %}
+    ...:     &lt;tr class=&quot;{% cycle rowvalue1 rowvalue2 %}&quot;&gt;
+    ...:         &lt;p&gt;{{ i }}&lt;/p&gt;
+    ...:     &lt;/tr&gt;
+    ...: {% endfor %}
+    ...: &quot;&quot;&quot;)
+    ...: t.render(Context({&#39;some_list&#39;:[&#39;Python&#39;,&#39;Flask&#39;],&#39;rowvalue1&#39;:&#39;row1&#39;,&#39;rowvalue2&#39;:&#39;row2&#39;}))
+Out[18]: &#39;\n\n&lt;tr class=&quot;row1&quot;&gt;\n&lt;p&gt;Python&lt;/p&gt;\n&lt;/tr&gt;  &lt;tr class=&quot;row2&quot;&gt;\n&lt;p&gt;Flask&lt;/p&gt;\n&lt;/tr&gt;\n\n&#39;</pre>
+字符串和变量也可以在 cycle 标签中混合使用，我们就不加赘述。在某些情况下，你可能只希望引用循环的当前值而不包含下一个值。为此，只需使用&ldquo; as&rdquo;为标签起个别名即可，格式如下所示：<br />
+<p class="info-box">
+	{% cycle &#39;row1&#39; &#39;row2&#39; as rowcolors %}</p>
+当需要在模板中插入被引用的当前值的时候，我们可以通过别名来引用，将其作为上下文的变量。如下所示：
+<pre class="html">
+&lt;tr&gt;
+    &lt;td class=&quot;{% cycle &#39;row1&#39; &#39;row2&#39; as rowcolors %}&quot;&gt;...&lt;/td&gt;
+    &lt;td class=&quot;{{ rowcolors }}&quot;&gt;...&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td class=&quot;{% cycle rowcolors %}&quot;&gt;...&lt;/td&gt;
+    &lt;td class=&quot;{{ rowcolors }}&quot;&gt;...&lt;/td&gt;
+&lt;/tr&gt;</pre>
+cycle 标签也可与 resetcycle 标签配合使用，resetcycle 表示重置上一个循环，遇到此标签时，将从 cycle 标签的第一个参数重新开始， cycle 还提供了关键字 silent，正如它英语含义一样，它表示不输入参数值，只显示循环周期的内容，即不会给 class 属性赋值。实例如下所示：
+<pre class="python">
+In [20]: t=Template(&quot;&quot;&quot;
+    ...: {% for o in some_list %}
+    ...:     &lt;tr class=&quot;{% cycle rowvalue1 rowvalue2 as rowcolor silent %}&quot;&gt;
+    ...:         &lt;p&gt;{{ o }}&lt;/p&gt;
+    ...:     &lt;/tr&gt;
+    ...: {% endfor %}
+    ...: &quot;&quot;&quot;)
+    ...: t.render(Context({&#39;some_list&#39;:[&#39;Python&#39;,&#39;Flask&#39;],&#39;rowvalue1&#39;:&#39;row1&#39;,&#39;rowvalue&#39;:&#39;row2&#39;},autoescape=False ))
+Out[20]: &#39;\n\n    &lt;tr class=&quot;&quot;&gt;\n&lt;p&gt;Python&lt;/p&gt;\n&lt;/tr&gt;  &lt;tr class=&quot;&quot;&gt;\n  &lt;p&gt;Flask&lt;/p&gt;\n &lt;/tr&gt;\n\n&#39; </pre>
+<h2>
+	2. 模板语言的注释</h2>
+如同 HTML 和其他的语言例如 Python 一样，Django 模板系统也允许注释。 注释使用<code>{# #} </code>的格式，示例如下：<br />
+<p class="info-box">
+	{# This is a comment #}</p>
+注释的内容不会在模板渲染时输出，但是在很多情况下，由于要注释的内容非常多并且需要跨行，比如要增加代码逻辑描述等，这时使用这方式就不是很方便。为了解决上述问题，Django 提供了 comment 标签，用来快速实现多行注释，使用方法如下：<br />
+<p class="info-box">
+	{% comment %}<br />
+	...要被注释的内容放在两个标签中间<br />
+	{% endcomment %}</p>
+<h2>
+	3. 国际化标签</h2>
+Django 还提供了国际化模板标签，以控制国际化的各个方面 。这些标签允许对翻译、格式和时区转换进行精细控制。如下所示：
+<h4>
+	1) i18n语言转换</h4>
+该库允许在模板中指定可翻译文本。要启用它，请将设置 USE_I18N=True，然后加载使用 {% load i18n %}<br />
+<h4>
+	2) l10n本地化</h4>
+该库可控制模板中值的本地化。您只需要使用即可加载库，但通常会设置为 USE_L10N=True，以便默认情况下本地化处于活动状态。使用 {% load l10n %} 加载。<br />
+<h4>
+	3) tz 时区转换</h4>
+该库可控制模板中的时区转换。像一样l10n，但通常还需要将其设置为 USE_TZ=True 默认情况下转换为本地时间。使用 {% load tz %} 加载。<br />
+<p class="tip-box">
+	提示：使用国际化标签，需要更改 setting.py 配置文件，根据上述要求进行相应更改即可。</p>
+Django 官网提供了所有内置标签以及第三方标签库的使用方法，如果大家感兴趣可以参见如下网址：<a href="https://docs.djangoproject.com/en/2.2/ref/templates/builtins/">https://docs.djangoproject.com/en/2.2/ref/templates/builtins/</a>，虽然有些标签不经常使用，但是可以作为知识拓展进行了解。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="4440_2.html" title="go clean命令——清除编译文件" target="_blank">go clean命令——清除编译文件</a></li>
+<li><a href="../mongodb2/rockmongo_2.html" title="MongoDB管理工具RockMongo" target="_blank">MongoDB管理工具RockMongo</a></li>
+<li><a href="../redis2/zinterstore_2.html" title="Redis ZINTERSTORE命令" target="_blank">Redis ZINTERSTORE命令</a></li>
+<li><a href="../python_spider/cookie-login_2.html" title="Python爬虫实现Cookie模拟登录" target="_blank">Python爬虫实现Cookie模拟登录</a></li>
+<li><a href="9367_2.html" title="JS History对象：获取浏览历史" target="_blank">JS History对象：获取浏览历史</a></li>
+<li><a href="../c/fread_2.html" title="C语言fread()：从文件中读取一个数据块" target="_blank">C语言fread()：从文件中读取一个数据块</a></li>
+<li><a href="ul3x9g5_2.html" title="C++纯虚函数和抽象类" target="_blank">C++纯虚函数和抽象类</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7599;
+window.arcId = "e4b91nmb24+0TcEhSxbAswPPuDiqPRfN66ye3wh9De/2yIBXB7lWvHRqYrc";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="https://m.biancheng.net/templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

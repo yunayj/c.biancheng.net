@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>MySQL UPDATE多表关联更新</title>
+<meta name="description" content="MySQL 可以基于多表查询更新数据。如下是 MySQL 多表 UPDATE 在实践中的几种不同写法。对于多表的 UPDATE 操作需要慎重，建议在更新之前，先使用 SELECT 语句查询验证下要更新的数据与自己" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>MySQL UPDATE多表关联更新</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">MySQL 可以基于多表查询更新数据。对于多表的 UPDATE 操作需要慎重，建议在更新前，先使用 SELECT 语句查询验证更新的数据与自己期望的是否一致。<br />
+<br />
+下面我们建两张表，一张表为 product 表，用来存放产品信息，其中有产品价格字段 price；另外一张表是 product_price 表。现要将 product_price 表中的价格字段 price 更新为 product 表中价格字段 price 的 80%。<br />
+<br />
+操作前先分别查看两张表的数据，SQL 语句和运行结果如下：
+<pre class="info-box">
+mysql&gt; SELECT * FROM product;
++----+-----------+-----------------------+-------+----------+
+| id | productid | productname           | price | isdelete |
++----+-----------+-----------------------+-------+----------+
+|  1 |      1001 | C语言中文网Java教程   |   100 |        0 |
+|  2 |      1002 | C语言中文网MySQL教程  |   110 |        0 |
+|  3 |      1003 | C语言中文网Python教程 |   120 |        0 |
+|  4 |      1004 | C语言中文网C语言教程  |   150 |        0 |
+|  5 |      1005 | C语言中文网GoLang教程 |   160 |        0 |
++----+-----------+-----------------------+-------+----------+
+5 rows in set (0.02 sec)
+
+mysql&gt; SELECT * FROM product_price;
++----+-----------+-------+
+| id | productid | price |
++----+-----------+-------+
+|  1 |      1001 |  NULL |
+|  2 |      1002 |  NULL |
+|  3 |      1003 |  NULL |
+|  4 |      1004 |  NULL |
+|  5 |      1005 |  NULL |
++----+-----------+-------+
+5 rows in set (0.01 sec)</pre>
+下面是 MySQL 多表更新在实践中的几种不同写法。执行不同的&nbsp;SQL 语句，仔细观察 SQL 语句执行后表中数据的变化，很容易就能理解多表联合更新的用法。<br />
+<h4>
+1. 使用UPDATE</h4>
+在 MySQL 中，可以使用&ldquo;UPDATE table1 t1,table2,...,table n&rdquo;的方式来多表更新，SQL 语句和运行结果如下：
+<pre class="info-box">
+mysql&gt; UPDATE product p, product_price pp SET pp.price = p.price * 0.8 WHERE p.productid= pp.productId;
+Query OK, 5 rows affected (0.02 sec)
+Rows matched: 5  Changed: 5  Warnings: 0
+
+mysql&gt; SELECT * FROM product_price;
++----+-----------+-------+
+| id | productid | price |
++----+-----------+-------+
+|  1 |      1001 |    80 |
+|  2 |      1002 |    88 |
+|  3 |      1003 |    96 |
+|  4 |      1004 |   120 |
+|  5 |      1005 |   128 |
++----+-----------+-------+
+5 rows in set (0.00 sec)</pre>
+<h4>
+2.&nbsp;通过INNER JOIN</h4>
+另外一种方法是使用 INNER JOIN 来多表更新。SQL 语句如下：
+<pre class="info-box">
+mysql&gt; UPDATE product p INNER JOIN product_price pp ON p.productid= pp.productid SET pp.price = p.price * 0.8;
+Query OK, 5 rows affected (0.09 sec)
+Rows matched: 5  Changed: 5  Warnings: 0
+
+mysql&gt; SELECT * FROM product_price;
++----+-----------+-------+
+| id | productid | price |
++----+-----------+-------+
+|  1 |      1001 |    80 |
+|  2 |      1002 |    88 |
+|  3 |      1003 |    96 |
+|  4 |      1004 |   120 |
+|  5 |      1005 |   128 |
++----+-----------+-------+
+5 rows in set (0.00 sec)</pre>
+<h4>
+3.&nbsp;通过LEFT JOIN</h4>
+也可以使用 LEFT JOIN 来做多表更新，如果 product_price 表中没有产品价格记录的话，将 product 表的 isdelete 字段设置为 1。在 product 表添加 1006 商品，且不在 product_price 表中添加对应信息，SQL 语句如下。<br />
+<pre class="info-box">
+mysql&gt; UPDATE product p LEFT JOIN product_price pp ON p.productid= pp.productid SET p.isdelete = 1 WHERE pp.productid IS NULL;
+Query OK, 1 row affected (0.04 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql&gt; SELECT * FROM product;
++----+-----------+-----------------------+-------+----------+
+| id | productid | productname           | price | isdelete |
++----+-----------+-----------------------+-------+----------+
+|  1 |      1001 | C语言中文网Java教程   |   100 |        0 |
+|  2 |      1002 | C语言中文网MySQL教程  |   110 |        0 |
+|  3 |      1003 | C语言中文网Python教程 |   120 |        0 |
+|  4 |      1004 | C语言中文网C语言教程  |   150 |        0 |
+|  5 |      1005 | C语言中文网GoLang教程 |   160 |        0 |
+|  6 |      1006 | C语言中文网Spring教程 |  NULL |        1 |
++----+-----------+-----------------------+-------+----------+
+6 rows in set (0.00 sec)</pre>
+<h4>
+4. 通过子查询</h4>
+也可以通过子查询进行多表更新，SQL 语句和执行过程如下：
+<pre class="info-box">
+mysql&gt; UPDATE product_price pp SET price=(SELECT price*0.8 FROM product WHERE productid = pp.productid);
+Query OK, 5 rows affected (0.00 sec)
+Rows matched: 5  Changed: 5  Warnings: 0
+
+mysql&gt; SELECT * FROM product_price;
++----+-----------+-------+
+| id | productid | price |
++----+-----------+-------+
+|  1 |      1001 |    80 |
+|  2 |      1002 |    88 |
+|  3 |      1003 |    96 |
+|  4 |      1004 |   120 |
+|  5 |      1005 |   128 |
++----+-----------+-------+
+5 rows in set (0.00 sec)</pre>
+另外，上面的几个例子都是在两张表之间做关联，只更新一张表中的记录。MySQL 也可以同时更新两张表，如下语句就同时修改了两个表。<br />
+<p class="info-box">
+UPDATE product p INNER JOIN product_price pp ON p.productid= pp.productid SET pp.price = p.price * 0.8, p.dateUpdate = CURDATE()</p>
+两张表做关联，同时更新了 product_price 表的 price 字段和 product 表的 dateUpdate 两个字段。<br />
+<blockquote>
+<p>
+日常开发中，一般都是用单表 UPDATE 语句，很少写多表关联的 UPDATE。</p>
+</blockquote>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="886.html" title="Linux umount命令：卸载文件系统" target="_blank">Linux umount命令：卸载文件系统</a></li>
+<li><a href="vip_7339.html" title="Go语言单例模式简述" target="_blank">Go语言单例模式简述</a></li>
+<li><a href="vip_8322.html" title="安装MySQL后，如何判断是否已安装成功" target="_blank">安装MySQL后，如何判断是否已安装成功</a></li>
+<li><a href="8632.html" title="Linux信号量详解" target="_blank">Linux信号量详解</a></li>
+<li><a href="../redis2/srem.html" title="Redis SREM命令" target="_blank">Redis SREM命令</a></li>
+<li><a href="9860.html" title="电容是什么" target="_blank">电容是什么</a></li>
+<li><a href="clwb2op.html" title="Python __debug__内置变量的用法" target="_blank">Python __debug__内置变量的用法</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8286;
+window.arcId = "e032834bMvwnOv2Zq2e1tQfLXconh7yZwb3h8tumlDu88xTgro11cjqiOK4";
+window.typeidChain = "345|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

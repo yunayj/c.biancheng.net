@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>PHP函数参数传递的四种方式</title>
+<meta name="description" content="在调用函数时，需要向函数传递参数，被传入函数的参数称为实参，而函数定义的参数称为形参。而向函数传递参数的方式有四种，分别是值传递、引用传递、默认参数和可变长度参数" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>PHP函数参数传递的四种方式</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在调用函数时，需要向函数传递参数，被传入函数的参数称为实参，而函数定义的参数称为形参。而向函数传递参数的方式有四种，分别是值传递、引用传递、默认参数和可变长度参数。<br />
+<h2>
+1. 值传递</h2>
+值传递是 PHP 中函数的默认传值方式，也称为&ldquo;拷贝传值&rdquo;。顾名思义值传递的方式会将实参的值复制一份再传递给函数的形参，所以在函数中操作参数的值并不会对函数外的实参造成影响。因此如果不希望函数修改实参的值，就可以通过值传递的方式。<br />
+<br />
+【示例】下面定义一个简单的函数，函数有两个参数，在函数中交换参数的值。
+<pre class="php">
+&lt;?php
+    function swap($a, $b){
+        echo &#39;函数内，交换前 $a = &#39;.$a.&#39;, $b = &#39;.$b.&#39;&lt;br&gt;&#39;;
+        $temp = $a;
+        $a = $b;
+        $b = $temp;
+        echo &#39;函数内，交换后 $a = &#39;.$a.&#39;, $b = &#39;.$b.&#39;&lt;br&gt;&#39;;
+    }
+
+    $x = 5;
+    $y = 7;
+    echo &#39;函数外，交换前 $x = &#39;.$x.&#39;, $y = &#39;.$y.&#39;&lt;br&gt;&#39;;
+    swap($x, $y);
+    echo &#39;函数外，交换后 $x = &#39;.$x.&#39;, $y = &#39;.$y;
+?&gt;</pre>
+运行结果如下：
+<p class="info-box">
+函数外，交换前 $x = 5, $y = 7<br />
+函数内，交换前 $a = 5, $b = 7<br />
+函数内，交换后 $a = 7, $b = 5<br />
+函数外，交换后 $x = 5, $y = 7</p>
+通过运行结果可以看到，在函数内，数值确实是交换了，而在函数外部，数值却没有变化。因此可以说，函数的值传递只是传递变量的副本。那么要是想让函数能够操作函数外实参的话，就需要使用引用传递的方式了。<br />
+<h2>
+2. 引用传递</h2>
+参数的引用传递就是把实参的内存地址复制一份，然后传递给函数的形参，实参和形参都指向同一个内存地址，因此函数对形参的操作，会影响到函数外的实参。<br />
+<br />
+按引用传递就是将实参的内存地址传递到函数的形参中。因此实参和形参指向的是同一个内存地址。这时在函数内部的所有操作都会影响到函数外实参的值。引用传递的方式就是在值传递的基础上加上一个<code>&amp;</code>符号，如下所示：<br />
+<p class="info-box">
+function name (&amp;参数1, &amp;参数2, ..., &amp;参数3) {<br />
+&nbsp;&nbsp;&nbsp; ...&nbsp;&nbsp;&nbsp;&nbsp;<br />
+}</p>
+【示例】将上面示例的代码略作调整，使用引用传递的方式向 swap 函数中传递参数，代码如下所示：
+<pre class="php">
+&lt;?php
+    function swap(&amp;$a, &amp;$b){
+        echo &#39;函数内，交换前 $a = &#39;.$a.&#39;, $b = &#39;.$b.&#39;&lt;br&gt;&#39;;
+        $temp = $a;
+        $a = $b;
+        $b = $temp;
+        echo &#39;函数内，交换后 $a = &#39;.$a.&#39;, $b = &#39;.$b.&#39;&lt;br&gt;&#39;;
+    }
+
+    $x = 5;
+    $y = 7;
+    echo &#39;函数外，交换前 $x = &#39;.$x.&#39;, $y = &#39;.$y.&#39;&lt;br&gt;&#39;;
+    swap($x, $y);
+    echo &#39;函数外，交换后 $x = &#39;.$x.&#39;, $y = &#39;.$y;
+?&gt;</pre>
+运行结果如下：
+<p class="info-box">
+函数外，交换前 $x = 5, $y = 7<br />
+函数内，交换前 $a = 5, $b = 7<br />
+函数内，交换后 $a = 7, $b = 5<br />
+函数外，交换后 $x = 7, $y = 5</p>
+<h2>
+3. 默认参数</h2>
+默认参数就是给函数的某个或多个形式参数指定一个默认的值，如果调用函数时不传入对应的值，那么函数就会使用这个默认值，这样可以避免调用时出现没有参数的错误，也可以使一些程序显得更加合理。如果传入对应的参数，就会替换这个默认值。<br />
+<br />
+函数的默认参数如下所示：
+<p class="info-box">
+function name ($str = &#39;C语言中文网&#39;, $url) {<br />
+&nbsp;&nbsp;&nbsp; echo $str;&nbsp;&nbsp;<br />
+}</p>
+其中，形式参数 $str 后面的&ldquo;C语言中文网&rdquo;就是它的默认值，形参与默认值之间需要使用<code>=</code>连接。&nbsp;<br />
+<br />
+【示例】下面来定义一个具有默认参数的函数，如下所示：
+<pre class="php">
+&lt;?php
+    function add($a, $b=56){
+        echo $a.&#39; + &#39;.$b.&#39; = &#39;.($a+$b).&#39;&lt;br&gt;&#39;;
+    }
+
+    add(11);
+    add(37, 29);
+?&gt;</pre>
+运行结果如下：
+<p class="info-box">
+11 + 56 = 67<br />
+37 + 29 = 66</p>
+默认参数也可以是多个，而且<span style="color:#b22222;">默认参数必须放在非默认参数右边</span>，并且指定默认参数的值必须是一个具体的值，如数字、字符串，而不能是一个变量。<br />
+<br />
+【示例】下面来定义一个具有多个默认参数的函数，如下所示：<br />
+<pre class="php">
+&lt;?php
+    function add($a, $b=33, $c=57){
+        echo $a.&#39; + &#39;.$b.&#39; + &#39;.$c.&#39; = &#39;.($a+$b+$c).&#39;&lt;br&gt;&#39;;
+    }
+
+    add(11);
+    add(31, 22);
+    add(64, 9, 7);
+?&gt;</pre>
+运行结果如下：
+<p class="info-box">
+11 + 33 + 57 = 101<br />
+31 + 22 + 57 = 110<br />
+64 + 9 + 7 = 80</p>
+<h2>
+4. 可变长度参数</h2>
+在 PHP 5.6 及以后的版本中，函数的形式参数可使用<code> &hellip; </code>来表示函数可接受一个可变数量的参数，可变参数将会被当作一个数组传递给函数。示例如下：
+<pre class="php">
+&lt;?php
+    function test(...$arr){
+        print_r($arr);
+    }
+    echo &#39;&lt;pre&gt;&#39;;
+    test(1, 2, 3, 4);
+    test(5, 6, 7, 8, 9, 10);
+?&gt;</pre>
+运行结果如下：
+<p class="info-box">
+Array<br />
+(<br />
+&nbsp;&nbsp;&nbsp; [0] =&gt; 1<br />
+&nbsp;&nbsp;&nbsp; [1] =&gt; 2<br />
+&nbsp;&nbsp;&nbsp; [2] =&gt; 3<br />
+&nbsp;&nbsp;&nbsp; [3] =&gt; 4<br />
+)<br />
+Array<br />
+(<br />
+&nbsp;&nbsp;&nbsp; [0] =&gt; 5<br />
+&nbsp;&nbsp;&nbsp; [1] =&gt; 6<br />
+&nbsp;&nbsp;&nbsp; [2] =&gt; 7<br />
+&nbsp;&nbsp;&nbsp; [3] =&gt; 8<br />
+&nbsp;&nbsp;&nbsp; [4] =&gt; 9<br />
+&nbsp;&nbsp;&nbsp; [5] =&gt; 10<br />
+)</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="575.html" title="C语言判断闰年，即判断年份是否为闰年" target="_blank">C语言判断闰年，即判断年份是否为闰年</a></li>
+<li><a href="1025.html" title="Java实例内部类" target="_blank">Java实例内部类</a></li>
+<li><a href="7606.html" title="C++ get()和put()读写文件详解" target="_blank">C++ get()和put()读写文件详解</a></li>
+<li><a href="vip_7684.html" title="C++如何管理输出缓冲区？" target="_blank">C++如何管理输出缓冲区？</a></li>
+<li><a href="../nexus/deployment.html" title="部署构件到Nexus" target="_blank">部署构件到Nexus</a></li>
+<li><a href="../redis/sentinel-model.html" title="Redis集群：Sentinel哨兵模式（详细图解）" target="_blank">Redis集群：Sentinel哨兵模式（详细图解）</a></li>
+<li><a href="9643.html" title="大厂打工VS自由职业，哪个更香？" target="_blank">大厂打工VS自由职业，哪个更香？</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7287;
+window.arcId = "9a7b0H6h894Qze46GLRpvRq6gdLMdqk0NeW8MO3MuMOo40w8fylsn97kNzM";
+window.typeidChain = "322|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

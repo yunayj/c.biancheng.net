@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Django CBV基类View源码解析</title>
+<meta name="description" content="前述章节中我们讲解了 Django 中编写视图层代码的两种方式，一种是基于函数即 FBV，另外一种是 CBV 即基于类的" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../django/django_2.html">Django</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Django CBV基类View源码解析</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">前述章节《<a href="7763_4.html">Django的FBV与CBV模式</a>》中我们讲解了 Django 中编写视图层函数的两种方式，一种是基于函数即 FBV，另外一种是 CBV 即基于类的视图函数。在本节，我们对类视图中所继承的 View 源码进一步分析，帮助大家更好的理解类视图。若以后在项目中使用它就会更加得心应手。<br />
+<br />
+View 定义于 django/views/generic/base.py 文件中，其功能实现主要依赖于三个重要的方法分别如下所示：
+<ul>
+	<li>
+		dispatch</li>
+	<li>
+		as_view</li>
+	<li>
+		http_method_not_allowed</li>
+</ul>
+下面我们根据源码依次对这个三个方法进行分析。<br />
+<h2>
+	1. http_method_not_allowed方法</h2>
+这个方法返回 HttpResponseNotAllowed（405）响应，属于继承 HttpResponse 的子类，表示当前的请求类型不被支持。它在 View 类中的源码如下所示：
+<pre class="python">
+class View:
+    def http_method_not_allowed(self, request, *args, **kwargs):
+        logger.warning(
+            &#39;Method Not Allowed (%s): %s&#39;, request.method, request.path,
+            extra={&#39;status_code&#39;: 405, &#39;request&#39;: request}
+        )
+        return HttpResponseNotAllowed(self._allowed_methods())</pre>
+比如当一个类视图函数之定义了 get 方法，而没有定义 post 方法，那么这个类视图函数接收到 post 的请求的时候，由于找不到相对应的 post 的定义，就会通过另一个方法 dispatch 分发到 http_method_not_allowed 方法中。<br />
+<h2>
+	2. dispatch方法分析</h2>
+dispatch 方法根据 HTTP 请求类型调用 View 中的同名函数，实现了请求的分发，源码如下所示：
+<pre class="python">
+class View： 
+  def dispatch(self, request, *args, **kwargs):
+        if request.method.lower() in self.http_method_names:
+            handler = getattr(self, request.method.lower(), self.http_method_not_allowed)
+        else:
+            handler = self.http_method_not_allowed
+        return handler(request, *args, **kwargs)</pre>
+http_method_names 定义当前 View可以接受的请求类型：
+<pre class="python">
+http_method_names = [&#39;get&#39;, &#39;post&#39;, &#39;put&#39;, &#39;patch&#39;, &#39;delete&#39;, &#39;head&#39;, &#39;options&#39;, &#39;trace&#39;]</pre>
+首先，if 判断当前的请求类型是否可以被接受，即请求方是否定义在 http_method_names 变量中。若能够接受请求，则 dispatch() 尝试获取 View 中的同名方法，如果不存在，则将 handler 指定为 http_method_not_allowed 即不被允许的方法。然后 else 规定如果方法不被接受则直接将其指定为 http_method_not_allowed。<br />
+<h2>
+	3. as_view方法分析</h2>
+&nbsp;Django 给 as_view 方法加了<code>@classonlymethod</code>装饰器，作用是只允许类对象调用这个方法，如果是类实例调用，将会抛出 AttributeError 异常。该方法的源码如下所示：
+<pre class="python">
+class View:   
+@classonlymethod
+    def as_view(cls, **initkwargs):
+        for key in initkwargs:
+            if key in cls.http_method_names:
+                raise TypeError(&quot;You tried to pass in the %s method name as a &quot;
+                                &quot;keyword argument to %s(). Don&#39;t do that.&quot;
+                                % (key, cls.__name__))
+            if not hasattr(cls, key):
+                raise TypeError(&quot;%s() received an invalid keyword %r. as_view &quot;
+                                &quot;only accepts arguments that are already &quot;
+                                &quot;attributes of the class.&quot; % (cls.__name__, key))
+
+        def view(request, *args, **kwargs):
+            #<span style="color:#ff0000;">创建View类实例</span>
+            self = cls(**initkwargs)
+            if hasattr(self, &#39;get&#39;) and not hasattr(self, &#39;head&#39;):
+                self.head = self.get
+            self.setup(request, *args, **kwargs)
+            if not hasattr(self, &#39;request&#39;):
+                raise AttributeError(
+                    &quot;%s instance has no &#39;request&#39; attribute. Did you override &quot;
+                    &quot;setup() and forget to call super()?&quot; % cls.__name__
+                )
+            #<span style="color:#ff0000;">调用View实例的dispatch方法</span>
+            return self.dispatch(request, *args, **kwargs)
+        view.view_class = cls
+        view.view_initkwargs = initkwargs
+        update_wrapper(view, cls, updated=())
+        update_wrapper(view, cls.dispatch, assigned=())
+        return view</pre>
+Django 将一个 HTTP 请求映射到一个<span style="color:#ff0000;">可调用的函数</span>，而不是一个类对象。所以，在定义 URL 路由的时候总是需要调用 View 的 as_view 方法。可以看到，上述的as_view 方法，它创建了 View 类的实例，然后调用了 dispatch 方法，根据请求类型分发处理请求函数。<br />
+<br />
+在本节我们通过介绍 View 的源码，详细解析了基于类视图的实现原理，当一个请求进来的时候，视图层是如何让处理的，分别调用了哪些方法，最终实现了请求的分发处理。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="78_3.html" title="Go语言实现接口的条件" target="_blank">Go语言实现接口的条件</a></li>
+<li><a href="1838_2.html" title="C语言对数组元素进行排序（冒泡排序法）" target="_blank">C语言对数组元素进行排序（冒泡排序法）</a></li>
+<li><a href="vip_6056_2.html" title="Python函数可变参数（*args,**kwargs）详解" target="_blank">Python函数可变参数（*args,**kwargs）详解</a></li>
+<li><a href="7617_2.html" title="MySQL转义字符的使用" target="_blank">MySQL转义字符的使用</a></li>
+<li><a href="../jsp2/declaration_2.html" title="JSP声明语句" target="_blank">JSP声明语句</a></li>
+<li><a href="../hibernate/crud_2.html" title="Hibernate增删改查操作（CRUD）" target="_blank">Hibernate增删改查操作（CRUD）</a></li>
+<li><a href="9776_2.html" title="Memcached数据简介" target="_blank">Memcached数据简介</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7833;
+window.arcId = "1b67JFc9NzsojX6M9m+8wvSzYQepmN5jE0NlNaY/2ReZvq254o4RTfLAMAM";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

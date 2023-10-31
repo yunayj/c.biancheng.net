@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>动态语言、静态语言、强类型语言、弱类型语言的区别</title>
+<meta name="description" content="我们在了解编程语言的类型系统时，经常听说静态类型动态类型强类型和弱类型这些术语，它们究竟是什么意思呢？各个概念之间又有什么区别呢？本文就来给读者解释一下。 什么是数" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../hot/hot_2.html">推荐阅读</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>动态语言、静态语言、强类型语言、弱类型语言的区别</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">我们在学习编程语言的类型系统时，经常听说&ldquo;静态语言&rdquo;&ldquo;动态语言&rdquo;&ldquo;强类型语言&rdquo;和&ldquo;弱类型语言&rdquo;这些概念，它们究竟是什么意思呢？各个概念之间又有什么区别呢？<br />
+<br />
+如果你阅读互联网上的博客，你也可能会发现一些矛盾的观点，有的作者糊涂地认为<code>静态语言=强类型语言</code>，或者<code>动态语言=弱类型语言</code>，但它们其实不是一回事。<br />
+<br />
+静态/动态语言应该放在一起提及，它们是从同一种维度来评价类型系统；而强类型/弱类型语言应该放在一起提及，它们是从另外一种不同的维度来评价类型系统。<br />
+<br />
+静态语言并不意味着强类型，动态语言也不意味着弱类型，一种编程语言的类型系统可以是静态/动态和强/弱的任意组合，例如：
+<ul>
+	<li>
+		C/C++/Java 是静态语言 + 强类型；</li>
+	<li>
+		JavaScript/PHP 是动态语言 + 弱类型；</li>
+	<li>
+		Python 是动态语言 + 强类型。</li>
+</ul>
+<br />
+创作本文花费了我将近一周的时间，我查阅了大量中英文资料，并反复确认，确认不会出错。本文信息量丰富，观点鲜明，通过阅读本文，您不但会解开以上疑惑，还将对类型系统有更加深刻的认知。<br />
+<h2>
+	什么是数据类型？</h2>
+如果你是一名程序员，那你一定使用过变量、函数参数或者函数返回值，它们都用来表示数据，在编程语言中无处不在；但是，你是否知道它们的真正含义呢？又是否知道它们在后台如何控制计算机的呢？<br />
+<br />
+<div style="text-align: center;">
+	<img alt="数据类型示意图" src="../uploads/allimg/210713/1-210G3132023F2_2.gif" /></div>
+<br />
+在很多编程语言（比如 C/C++、Java、C# 等）中，定义变量时除了需要指明变量的名字，还需要告诉计算机它是什么类型，比如简单的整数、浮点数、字符串，还有复杂的类、结构体、数组。<br />
+<br />
+编程语言中的数据最终都要放到内存中，在内存中存取数据要明确三件事情：数据存储地址、数据的长度以及数据的处理方式。
+<ul>
+	<li>
+		数据存储地址决定了数据放在哪里；</li>
+	<li>
+		数据长度决定了当前数据使用了多少个字节的内存；</li>
+	<li>
+		数据处理方式不仅让计算机能够正确转换数据的内容，不至于导致&ldquo;乱码&rdquo;，还让计算机知道如何处理基于该数据的各种运算，比如加减乘除。</li>
+</ul>
+<br />
+变量名不仅仅是为数据起了一个好记的名字，还告诉我们数据的存储地址，使用数据时，只要提供变量名即可，变量名会自送转换成数据在内存中的地址。而数据类型则指明了数据的长度和处理方式，它确定了除地址以外的其它所有信息。<br />
+<br />
+诸如<code>int n;</code>、<code>char c;</code>、<code>float money;</code>这样的变量定义形式就确定了数据在内存中的所有要素。<br />
+<br />
+每种编程语言都有一个数据类型系统，没有它的话，计算机将不知道如何处理我们程序中的数据，这包括：
+<ul>
+	<li>
+		计算机不知道数据的长度，不知道该操作多少个字节；</li>
+	<li>
+		计算机不知道如何将值存储到内存，不知道如何解析内存中的值；</li>
+	<li>
+		计算机不知道如何运算数据。</li>
+</ul>
+<br />
+我们可以在不了解底层类型系统的情况下开始编程，这就是高级语言的美妙之处。但是，了解我们程序中的数据将给编程带来巨大的优势，如下所示：
+<h4>
+	1) 可以更少地使用内存资源</h4>
+当数据量比较大时，采用长度较小且够用的数据类型，将节省成百上千个字节的内存空间。
+<h4>
+	2) 可以读懂报错信息</h4>
+比如将两份数据相加时可能报错，因为其中一个是数字类型，一个是字符串类型，虽然人类眼睛看起来都是数字，但是计算机不允许对字符串类型执行相加操作，这告诉我们，不能使用引号来包围数字。
+<h4>
+	3) 改变规则</h4>
+一旦你知道数据类型是如何工作的，你就可以像电影《黑客帝国》中的 Neo 一样，知道如何改变规则。比如将一个字符和一个整数相加，就可以得到另一个字符。
+<h2>
+	静态类型语言和动态类型语言</h2>
+静态类型和动态类型应该放在一起提及，它们从「如何得到数据的类型」这一维度来评价类型系统。
+<h4>
+	1) 静态类型语言</h4>
+静态类型指的是在创建一份数据（变量、参数、返回值等）时需要显式指明该数据的类型。通常情况下，这些数据的类型一旦被定义，在程序的整个生命周期也不再改变。<br />
+<br />
+请看下面的一个例子：
+<pre class="java">
+int myNumber = 42;             //整数类型
+string name = &quot;Rocky Balboa&quot;;  //字符串类型
+final double PI = 3.141592;    //双精度浮点类型
+
+// add() 函数包含两个整数类型的参数，返回值也是整数类型
+public int add(int a, int b) {
+    return a + b;
+}</pre>
+这是一段 Java 代码，它定义了几个变量，以及一个求和函数。如您所见，我们已经明确地指明了要处理的数据类型，包括整数、双精度浮点数、字符串。如果没有给编译器这些提示，编译器将不知道如何处理&nbsp;myNumber，它只是一个对我们有意义的名称，但是计算机不理解它。<br />
+<br />
+静态类型的编程语言有很多，常见的有 C/C++、Java、C#、Go 等。
+<h4>
+	2) 动态类型语言</h4>
+让我们再对比一下动态类型的语言，请看下面的例子：
+<pre class="php">
+$myNumber = 42;           //整数类型
+$name = &quot;Rocky Balboa&quot;;   //字符串类型
+$PI = 3.141592;           //单精度浮点类型
+
+// add() 包含两个参数和一个返回值
+function add($a, $b) {
+    return $a + $b;
+}</pre>
+这是一段 PHP 代码，如您所见，我们并没有使用任何明确的数据类型，这就是一种典型的动态类型语言。<br />
+<br />
+动态类型的编程语言在创建数据时往往不需要指明该数据的类型，而且数据的类型也会随着值的改变而改变，给数据赋予不同的值，数据将得到不同的类型。<br />
+<br />
+有的读者可能会问，不给数据指明类型，编程语言是如何知道它的类型的呢？编程语言会根据赋予数据的值进行猜测或者推断。对于上面的第一行代码，PHP 知道 42 是一个整数，将 42 赋值给变量&nbsp;$myNumber，PHP 也会推断出&nbsp;$myNumber 是一个整数类型。<br />
+<br />
+add() 函数包含的参数类型，会根据调用 add() 时传递的值进行推断；add() 函数包含的返回值类型，会根据<code>$a + $b</code>的运算结果进行推断。这意味着，add() 可以接受两个整数并返回一个整数，或者接受两个浮点数并返回一个浮点数。<br />
+<br />
+对动态类型语言，类型是推断出来的，甚至可以在程序运行期间更改。我们可以给上面的程序中增加一行代码，把<code>&quot;c.biancheng.net&quot;</code>赋值给 $myNumber 变量，这样 PHP 将把&nbsp;$myNumber 变量切换为字符串类型。<br />
+<br />
+常见的动态类型语言有 JavaScript、PHP、Python、Ruby 等。
+<h2>
+	静态类型和动态类型各有什么优势？</h2>
+对于静态类型语言，我们需要预先明确地告诉编译器要处理的数据的类型，这样在程序部署之前就能发现代码中的错误或者疏忽。比如我们将一个变量定义为整数，将另一个变量定义为字符串，如果我们尝试将两个变量相加，那么编译器在编译期间可能就会捕获这种语法错误，并且不会让我们完成程序的构建。<br />
+<br />
+这很好，因为越早发现错误，您的代码就越强大，您将来修复它的成本就越低。在部署之前修复问题，要比部署之后修复问题容易得多。<br />
+<br />
+那么，使用静态类型是不是就一定正确呢？好吧，使用静态类型的负担就是，在使用数据之前你必须明确地将它定义好。你必须输入更多的代码，你必须事先知道正在使用的数据的类型，你必须知道你的操作过程中会发生什么。<br />
+<br />
+然而由于我们的疏忽或者知识缺陷，这有时候是比较困难的。例如在 C/C++ 中，你必须知道<code>1/3</code>得到的是整数 0，而不是浮点数 0.3333...，这对初学者来说是一个坑。<br />
+<br />
+在这方面，动态类型语言就为我们提供了更多灵活性，程序员经常称动态语言&ldquo;更具表现力&rdquo;。例如在 PHP 中，<code>1/3</code>将会得到 0.3333...，这在很多时候都是我们期望的结果。<br />
+<br />
+然而问题在于，解释器有时候会对数据类型做出错误的猜测，你必须知道这种情况，否则这将成为一个潜在的危险，因为解释器不会给出错误提示。<br />
+<br />
+由于我们不能捕获所有的潜在危险，因此使用动态语言编写的代码往往更加脆弱，也更容易出错。<br />
+<br />
+动态语言中的数据类型通常在程序运行期间才能确定，这使得程序在被部署到生产环境之前很难捕获太多错误。程序可能在你的本地机器上正常工作，但是生产环境可能略有不同，解释器就会产生一些不同的猜测，这将导致潜在的风险。<br />
+<br />
+JavaScript 被认为是一种典型的动态语言。随着&nbsp;TypeScript（JavaScript 的超集）的诞生，程序员也想在定义变量时能够声明它的类型，以使 JavaScript 变得更加静态。<br />
+<br />
+JavaScript 臭名昭著的地方之一就是在处理数据及其类型时会做一些糟糕的猜测。随着 JavaScript 越来越流行，人们已经不限于在浏览器上使用它了，大名鼎鼎的 Node.js 使得人们可以在脱离浏览器，直接在机器上运行 JavaScript。此时程序员意识到为 JavaScript 增加静态类型的好处，这样能够消除 JavaScript 在处理数据类型时所做的一些错误猜测。<br />
+<br />
+将动态语言 JavaScript 变得更像静态语言，可以及时发现错误，并生成更加健壮的代码。在 Node.js 的帮助下，JavaScript 越来越多地渗透到服务器端编程，让 JavaScript 变得静态就显得尤为重要。
+<h4>
+	总结</h4>
+静态语言为我们提供了一个更加严格的编程环境，并且通常会生成更加健壮的代码。动态语言为编写代码带来了灵活性，同时也提高了编写代码的效率，但是如果你不注意数据的类型，可能就会导致代码更容易出错。
+<h2>
+	强类型语言和弱类型语言</h2>
+正如前面提到的，人们经常混淆静态/动态类型和强/弱类型的概念，倾向于将静态类型等同于强类型，将动态类型等同于弱类型，实际上这是不对的。<br />
+<br />
+强/弱类型指的是编程语言如何处理运算过程中的值。当值的类型不符合运算规则时，编程语言究竟是做出一些猜测，临时转换值的类型以帮助人们解决问题，还是停止运行，提醒人们不应该这样做？
+<h4>
+	1) 强类型语言</h4>
+让我们从一个例子入手解释一下：
+<pre class="cpp">
+int main() {
+    int a = 5;
+    std::string b = &quot;5&quot;;
+
+    // 编译器会报错
+    std::cout &lt;&lt; (a + b);
+    return 0;
+}</pre>
+这是一段 C++ 代码，我们尝试将一个整数和一个字符串相加，很显然这是没有意义的，编译器会停止构建，并抛出一条错误信息。<br />
+<br />
+在这个例子中，我们将变量 b 定义为字符串类型，但是在使用 b 的时候，我们对它施加了一种不匹配的运算（字符串类型不支持算数求和运算）。<br />
+<br />
+C++ 也可以在后台默默地做一些猜测，临时将字符串<code>&quot;5&quot;</code>转换成整数<code>5</code>，这样以上代码就能行得通；但是 C++ 并不会这样做，它会立即标记此处的问题（也即报错），并放弃构建，交给程序员自己处理。<br />
+<br />
+这就是强类型语言的典型特征，它们不会处理与类型定义明显矛盾的运算，而是把它标记为一个问题，并作为错误抛出。通常人们认为 C/C++、Java、C#、Python、Go 都是强类型语言，它们都不允许上述代码中的行为。
+<p class="tip-box">
+	现在虽然有办法削弱 C++ 的强类型系统，让 C++ 能够容忍一些与类型定义不匹配的运算，但是这超出了本文的讨论范围，所以不再赘述。</p>
+<h4>
+	2) 弱类型语言</h4>
+和强类型语言不一样，当我们执行一些与类型定义不匹配的运算时，弱类型语言尝试提供帮助，它可能会临时转换值的类型，让它符合当前运算。<br />
+<br />
+下面的例子中，我们使用 JavaScript 代码执行与上述 C++ 代码类似的操作：
+<pre class="javascript">
+var a = 5;
+var b = &quot;5&quot;;
+
+console.log( a+b );</pre>
+如果你对 JavaScript 特性有所了解，就会知道这段代码不会报错，而是正常运行，它会在控制台上显示 10，这也许正是你所期望的。<br />
+<br />
+对于相加运算，如果<code>+</code>两边的值的类型不一样，那么 JavaScript 将尝试转换其中一个值的类型，让它和另一个值的类型相同，然后再进行运算，并给出运算结果。这里之所以显示 10，是因为 JavaScript 将变量 b 的值转换为整数类型，得到一个数字 5，然后再和变量 a 相加，结果就是 10。<br />
+<br />
+PHP 也是一种典型的弱类型语言，对 PHP 执行类似的操作，它的结果是怎样的呢？请看下面的代码：
+<pre class="php">
+$a = 5;
+$b = &quot;5&quot;;
+
+echo $a + $b;</pre>
+运行结果：<br />
+55<br />
+<br />
+你对这个结果可能会比较惊讶，认为它和预期的不一样，这是因为 PHP 对值的类型进行了不同的转换。PHP 会将变量 $a 的值转换为字符串类型，然后再和变量 $b 的字符串拼接起来，得到一个新的字符串。
+<p class="tip-box">
+	字符串拼接工作非常简单，就是将字符串中的内容直接连接起来。</p>
+如您所见，PHP 和 JavaScript 虽然都是弱类型语言，但是当它们遇到和类型定义明显矛盾的运算时，可能会做出不同的猜测或者转换，这种猜测有时让人匪夷所思。<br />
+<br />
+类型系统的&ldquo;强/弱&rdquo;指的是当编程语言遇到与类型定义不匹配的运算时，尝试猜测或者转换的力度/程序。它不是一条明确的界限，而是一个范围。
+<ul>
+	<li>
+		强类型语言在遇到与类型定义明显矛盾的运算时，一般会当做一种语法错误，而不会尝试对值的类型进行转换。</li>
+	<li>
+		弱类型语言恰好相反，会猜测程序员的意图，并对其中一些值的类型进行转换，以让程序继续执行。</li>
+</ul>
+<br />
+强/弱类型是一个相对概念，将两种语言放在一起对比时，才更容易发现孰强孰弱。
+<h2>
+	强类型和弱类型各有什么优势？</h2>
+强类型语言是严谨的，它要确保程序员明确地知道自己在做什么。如果发生错误，强类型语言认为这是程序员不了解当前的运算规则导致的，或者程序员对正在处理的问题含混不清。<br />
+<br />
+例如，将整数<code>5</code>和字符串<code>&quot;5&quot;</code>相加对计算机来说是一种没有意义的操作，如果你没有意识到，那么强类型语言就明确地提示你。强类型语言会强迫你必须了解运算规则，并明确地告诉计算机你想做什么（通常使用强制类型转换），不能含混不清。<br />
+<br />
+强类型使得程序被部署到生产环境时更加强壮，不易出错；但是，我们需要付出更多成本，这包括花费更所时间编写代码，以及解决更多细枝末节的问题。<br />
+<br />
+相反的，弱类型语言消除了强类型语言的严格性，在较大程度上允许程序构建并正常运行，因此弱类型语言更有灵活性和表达性。<br />
+<br />
+弱类型语言不利的一方面是，它可能错误地猜测程序员的意图，并得到不被期望的运行结果。<br />
+<br />
+JavaScript 是一种弱类型语言（恰好也是动态语言），但是可以使用 TypeScript 增强，以使程序更加健壮。TypeScript 改变了类型系统，它允许程序员在定义变量时增加显式类型声明，这样 JavaScript 就能获得强类型语言的好处，在编译时捕获更多错误，并防止一些模糊的猜测被带入到生产环境。<br />
+<br />
+此外，支持 TypeScript 的编辑器也可以你编写代码时就给出错误提示，VS Code 编辑器就是一个典型的例子。
+<h2>
+	强度等级</h2>
+现在我们已经比较深入地研究了强类型和弱类型，但是还有一点需要注意，与静态/动态之间存在一条明确的界限不同，语言的强/弱是一个范围，语言可以表现出不同程序的强/弱。有些文章说 C++ 是强类型，也有文章说 C++ 是弱类型，这就是原因所在。<br />
+<br />
+让编程语言的强/弱变成一个范围的原因是，有些语言提供了一些工具或特性来帮助及时地转换类型，比如 C/C++ 中的<code>void*</code>指针，它可以指向不同类型的数据，并随时准备转换成某种具体类型的数据。<br />
+<br />
+人们通常认为，Java 拥有比 C/C++ 更强的类型，而 C/C++ 显然又比 JavaScript 拥有更强的类型。<br />
+&nbsp;<br />
+在十年的编程生涯中，我发现了解编程语言强/弱的每一个细微差别并不那么重要，只要你了解一些基本知识，并能分辨出强/弱之间的差异，就能为给定的项目和要求选择合适的编程语言。
+<h2>
+	选择合适的语言</h2>
+为项目选择编程语言时的考虑因素有很多，你可能有很多理由选择某种语言，也有很多理由拒绝另外的语言。但是，类型系统往往是人们考虑的次要因素，它被更重要的因素掩盖，例如：
+<ul>
+	<li>
+		开发人员对某种语言是否熟悉；</li>
+	<li>
+		哪种语言提供了更强大的、能适用于当前项目的功能；</li>
+	<li>
+		是否拥有提高开发效率的工具，比如周边框架（库）、强大的 IDE 等。</li>
+</ul>
+<br />
+处于上下游链条的关键位置的项目，往往要求内存严格、高效，并且要尽早发现错误，如果你正在开发这样的项目，你可能需要频繁查看内存中的内容，此时使用静态语言更有帮助。<br />
+<br />
+很多关键的算法不应该让编程语言做出过多猜测，而且指令要严格，不能含混，此时应该考虑强类型语言。<br />
+<br />
+很多 3A 大作游戏就使用静态+强类型语言，例如 C++。<br />
+<br />
+如果你希望快速且灵活地开发完成一个项目，并且不受太多约束，那么动态+弱类型语言将是不错的选择。比如，很多中小型网站就使用 PHP 开发。<br />
+<br />
+某些动态的强类型语言也能提供足够的便利性，比如 Python，很多人使用它来开发小工具，或者 Web 项目，或者机器学习项目。
+<h2>
+	总结</h2>
+本文尽量全面地介绍了动态/静态和强/弱之间的基本差异，并对它们的优缺点进行了对比，当涉及类型系统时，我认为你应该知道如何为你的项目选择合适的语言了。<br />
+<br />
+如果你觉得本文信息量丰富，不能 Get 所有细节，那么我希望你铭记两个观点：
+<ul>
+	<li>
+		静态不一定意味着强，动态也不一定以为着弱，一种编程语言可以是静态/动态和强/弱的任意组合；</li>
+	<li>
+		强和弱之间没有明确的界限，它是一个范围，是一个相对概念，将两种语言对比时才更容易发现孰强孰弱。</li>
+</ul>
+<br />
+下图使用象限示意图汇总了常用编程语言的不同分类：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="常用编程语言的静态/动态/强/弱类型分类" src="../uploads/allimg/210713/1-210G3130955C3_2.png" /></div>
+<br />
+注意，有些文章将 C/C++ 看做弱类型语言，这一点已经在前面讨论过，不过我倾向于认为 C/C++ 是强类型语言。<br />
+<br />
+最后，感谢你的阅读，祝你在下一个项目中能够选择理想的编程语言。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="181_2.html" title="do while循环，C语言do while循环详解" target="_blank">do while循环，C语言do while循环详解</a></li>
+<li><a href="1345_2.html" title="C++ getline函数用法详解" target="_blank">C++ getline函数用法详解</a></li>
+<li><a href="vip_3243_2.html" title="Shell代码块重定向（对一组命令进行重定向）" target="_blank">Shell代码块重定向（对一组命令进行重定向）</a></li>
+<li><a href="7396_2.html" title="MySQL BETWEEN AND：范围查询" target="_blank">MySQL BETWEEN AND：范围查询</a></li>
+<li><a href="9437_2.html" title="如何长期输出优质内容？我是如何做到的？" target="_blank">如何长期输出优质内容？我是如何做到的？</a></li>
+<li><a href="qqnr88_2.html" title="C语言break关键字" target="_blank">C语言break关键字</a></li>
+<li><a href="sbwkyxm_2.html" title="C++友元函数和友元类（入门必读）" target="_blank">C++友元函数和友元类（入门必读）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8803;
+window.arcId = "1f73rnWVsi/ht8i9qPBTyj7uYHafPxrpY1yGKkmCrU++DB3CCEj0VHCszUw";
+window.typeidChain = "397";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

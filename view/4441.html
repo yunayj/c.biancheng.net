@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>go fmt命令——格式化代码文件</title>
+<meta name="description" content="有过 C/C++ 开发经验的读者会知道,一些人经常为代码采取 KR 风格还是 ANSI 风格而争论不休。 在 Go语言中，代码则有标准的风格。由于之前已经有的一些习惯或其它的原因我们常将代码写" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../golang/golang.html">Go语言</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href='../golang/intro/intro.html'>Go语言简介</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href='../golang/syntax/syntax.html'>Go语言基本语法</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href='../golang/container/container.html'>Go语言容器</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href='../golang/flow_control/flow_control.html'>流程控制</a>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href='../golang/func/func.html'>Go语言函数</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href='../golang/struct/struct.html'>Go语言结构体</a>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href='../golang/interface/interface.html'>Go语言接口</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href='../golang/package/package.html'>Go语言包（package）</a>
+</dd>
+<dd>
+<span class="channel-num">9</span>
+<a href='../golang/concurrent/concurrent.html'>Go语言并发</a>
+</dd>
+<dd>
+<span class="channel-num">10</span>
+<a href='../golang/reflect/reflect.html'>Go语言反射</a>
+</dd>
+<dd>
+<span class="channel-num">11</span>
+<a href='../golang/102/102.html'>Go语言文件处理</a>
+</dd>
+<dd class="this"> <span class="channel-num">12</span> <a href="../golang/build/build.html">Go语言编译与工具</a> </dd><dl class="dl-sub"><dd>12.1 <a href="120.html">go build命令</a></dd><dd>12.2 <a href="4440.html">go clean命令</a></dd><dd>12.3 <a href="121.html">go run命令</a></dd><dd>12.4 <a href="4441.html">go fmt命令</a></dd><dd>12.5 <a href="122.html">go install命令</a></dd><dd>12.6 <a href="123.html">go get命令</a></dd><dd>12.7 <a href="4442.html">go generate命令</a></dd><dd>12.8 <a href="124.html">go test命令</a></dd><dd>12.9 <a href="125.html">go pprof命令</a></dd><dd>12.10 <a href="vip_7361.html">与C/C++进行交互</a><span class="iconfont iconfont-vip2"></span></dd><dd>12.11 <a href="vip_7362.html">Go语言内存管理</a><span class="iconfont iconfont-vip2"></span></dd><dd>12.12 <a href="vip_7363.html">Go语言垃圾回收</a><span class="iconfont iconfont-vip2"></span></dd><dd>12.13 <a href="vip_7365.html">Go语言实现RSA和AES加解密</a><span class="iconfont iconfont-vip2"></span></dd></dl>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../golang/golang.html">Go语言</a> &gt; <a href="../golang/build/build.html">Go语言编译与工具</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>go fmt命令——格式化代码文件</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">对于一门编程语言来说，代码格式化是最容易引起争议的一个问题，不同的开发者可能会有不同的编码风格和习惯，但是如果所有开发者都能使用同一种格式来编写代码，那么开发者就可以将主要精力放在语言要解决的问题上，从而节省开发时间。<br />
+<h2>
+gofmt 介绍</h2>
+Go语言的开发团队制定了统一的官方代码风格，并且推出了 gofmt 工具（gofmt 或 go fmt）来帮助开发者格式化他们的代码到统一的风格。<br />
+<br />
+gofmt 是一个 cli 程序，会优先读取标准输入，如果传入了文件路径的话，会格式化这个文件，如果传入一个目录，会格式化目录中所有 .go 文件，如果不传参数，会格式化当前目录下的所有 .go 文件。<br />
+<br />
+gofmt 默认不对代码进行简化，使用<code style="font-size: 14px;">-s</code>参数可以开启简化代码功能，具体来说会进行如下的转换：<br />
+<h4>
+1) 去除数组、切片、Map 初始化时不必要的类型声明</h4>
+如下形式的切片表达式：<br />
+<p class="info-box">
+[]T{T{}, T{}}</p>
+简化后的代码为：<br />
+<p class="info-box">
+[]T{{}, {}}</p>
+<h4>
+2) 去除数组切片操作时不必要的索引指定</h4>
+如下形式的切片表达式：<br />
+<p class="info-box">
+s[a:len(s)]</p>
+简化后的代码为：
+<p class="info-box">
+s[a:]</p>
+<h4>
+3) 去除循环时非必要的变量赋值</h4>
+如下形式的循环：<br />
+<p class="info-box">
+for x, _ = range v {...}</p>
+简化后的代码为：<br />
+<p class="info-box">
+for x = range v {...}</p>
+如下形式的循环：<br />
+<p class="info-box">
+for _ = range v {...}</p>
+简化后的代码为：<br />
+<p class="info-box">
+for range v {...}</p>
+gofmt 命令参数如下表所示：<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+标记名称</th>
+<th>
+标记描述</th>
+</tr>
+<tr>
+<td>
+-l</td>
+<td>
+仅把那些不符合格式化规范的、需要被命令程序改写的源码文件的绝对路径打印到标准输出。而不是把改写后的全部内容都打印到标准输出。</td>
+</tr>
+<tr>
+<td>
+-w</td>
+<td>
+把改写后的内容直接写入到文件中，而不是作为结果打印到标准输出。</td>
+</tr>
+<tr>
+<td>
+-r</td>
+<td>
+添加形如&ldquo;a[b:len(a)] -&gt; a[b:]&rdquo;的重写规则。如果我们需要自定义某些额外的格式化规则，就需要用到它。</td>
+</tr>
+<tr>
+<td>
+-s</td>
+<td>
+简化文件中的代码。</td>
+</tr>
+<tr>
+<td>
+-d</td>
+<td>
+只把改写前后内容的对比信息作为结果打印到标准输出。而不是把改写后的全部内容都打印到标准输出。<br />
+命令程序将使用 diff 命令对内容进行比对。在 Windows 操作系统下可能没有 diff 命令，需要另行安装。</td>
+</tr>
+<tr>
+<td>
+-e</td>
+<td>
+打印所有的语法错误到标准输出。如果不使用此标记，则只会打印每行的第 1 个错误且只打印前 10 个错误。</td>
+</tr>
+<tr>
+<td>
+-comments</td>
+<td>
+是否保留源码文件中的注释。在默认情况下，此标记会被隐式的使用，并且值为 true。</td>
+</tr>
+<tr>
+<td>
+-tabwidth</td>
+<td>
+此标记用于设置代码中缩进所使用的空格数量，默认值为 8。要使此标记生效，需要使用&ldquo;-tabs&rdquo;标记并把值设置为 false。</td>
+</tr>
+<tr>
+<td>
+-tabs</td>
+<td>
+是否使用 tab（&#39;\t&#39;）来代替空格表示缩进。在默认情况下，此标记会被隐式的使用，并且值为 true。</td>
+</tr>
+<tr>
+<td>
+-cpuprofile</td>
+<td>
+是否开启 CPU 使用情况记录，并将记录内容保存在此标记值所指的文件中。</td>
+</tr>
+</tbody>
+</table>
+<br />
+可以看到 gofmt 命令还支持自定义的重写规则，使用<code style="font-size: 14px;">-r</code>参数，按照 pattern -&gt; replacement 的格式传入规则。<br />
+<br />
+【示例】有如下内容的 Golang 程序，存储在 main.go 文件中。<br />
+<pre class="go">
+package main
+
+import &quot;fmt&quot;
+
+func main() {
+    a := 1
+    b := 2
+    c := a + b
+    fmt.Println(c)
+}</pre>
+用以下规则来格式化上面的代码。<br />
+<p class="info-box">
+gofmt -w -r &quot;a + b -&gt; b + a&quot; main.go</p>
+格式化的结果如下。<br />
+<pre class="go">
+package main
+
+import &quot;fmt&quot;
+
+func main() {
+    a := 1
+    b := 2
+    c := b + a
+    fmt.Println(c)
+}</pre>
+<p class="tip-box">
+注意：gofmt 使用 tab 来表示缩进，并且对行宽度无限制，如果手动对代码进行了换行，gofmt 不会强制把代码格式化回一行。</p>
+<h2>
+go fmt 和 gofmt</h2>
+gofmt 是一个独立的 cli 程序，而Go语言中还有一个<code style="font-size: 14px;">go fmt</code>命令，<code style="font-size: 14px;">go fmt</code>命令是 gofmt 的简单封装。<br />
+<p class="info-box">
+go help fmt<br />
+usage: go fmt [-n] [-x] [packages]<br />
+<br />
+Fmt runs the command &#39;gofmt -l -w&#39; on the packages named<br />
+by the import paths. It prints the names of the files that are modified.<br />
+<br />
+For more about gofmt, see &#39;go doc cmd/gofmt&#39;.<br />
+For more about specifying packages, see &#39;go help packages&#39;.<br />
+<br />
+The -n flag prints commands that would be executed.<br />
+The -x flag prints commands as they are executed.<br />
+<br />
+To run gofmt with specific options, run gofmt itself.<br />
+<br />
+See also: go fix, go vet.</p>
+<code style="font-size: 14px;">go fmt</code>命令本身只有两个可选参数<code style="font-size: 14px;">-n</code>和<code style="font-size: 14px;">-x</code>：
+<ul>
+<li>
+<code style="font-size: 14px;">-n</code>仅打印出内部要执行的<code style="font-size: 14px;">go fmt</code>的命令；</li>
+<li>
+<code style="font-size: 14px;">-x</code>命令既打印出<code style="font-size: 14px;">go fmt</code>命令又执行它，如果需要更细化的配置，需要直接执行 gofmt 命令。</li>
+</ul>
+<br />
+<code style="font-size: 14px;">go fmt</code>在调用 gofmt 时添加了<code style="font-size: 14px;">-l -w</code>参数，相当于执行了<code style="font-size: 14px;">gofmt -l -w</code>。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="3439.html" title="插入排序算法及C语言实现" target="_blank">插入排序算法及C语言实现</a></li>
+<li><a href="4034.html" title="Go语言变量的生命周期" target="_blank">Go语言变量的生命周期</a></li>
+<li><a href="4935.html" title="Python os.remove()函数：删除文件" target="_blank">Python os.remove()函数：删除文件</a></li>
+<li><a href="../numpy/array-range.html" title="NumPy创建区间数组" target="_blank">NumPy创建区间数组</a></li>
+<li><a href="kruskal.html" title="kruskal算法（克鲁斯卡尔算法）详解" target="_blank">kruskal算法（克鲁斯卡尔算法）详解</a></li>
+<li><a href="1nqlc8.html" title="C语言选择排序" target="_blank">C语言选择排序</a></li>
+<li><a href="50w71h6.html" title="《C语言从入门到精通》第6版PDF下载（高清完整版）" target="_blank">《C语言从入门到精通》第6版PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 4441;
+window.arcId = "5b34RPjSSHvj5nOOCKWfmy9cWybAIgGAJLHLL36B3Ru6M/qSb88zdgQk3ME";
+window.typeidChain = "14|1";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/view/121.html";
+window.nextPageURL = "/view/122.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

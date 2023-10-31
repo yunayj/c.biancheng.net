@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C语言格式化输入</title>
+<meta name="description" content="当从一个格式化数据源中读取数据时，C 语言提供了 scanf（）函数系列。与 printf（）函数一样，scanf（）函数需要一个格式化字符串作为其参数，以控制 I/O 格式与程序内部数据之间的转" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C语言格式化输入</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body"><span style="color:#b22222;">当从一个格式化数据源中读取数据时，C 语言提供了 scanf（）函数系列。与 printf（）函数一样，scanf（）函数需要一个格式化字符串作为其参数，以控制 I/O 格式与程序内部数据之间的转换。</span>本文介绍在 scanf（）和 printf（）函数中使用格式化字符串和转换修饰符的差异。
+<h2>
+scanf（）函数系列</h2>
+<span style="color:#b22222;">各种 scanf（）函数处理输入源字符的方式都是相同的。不同的是这些函数所针对的数据源种类，以及它们接收参数的方式。</span>下面的 scanf（）函数针对字节导向流：
+<pre class="cpp">
+int scanf（const char*restrict format，...）；</pre>
+从标准输入流 stdin 中读取数据。<br />
+<pre class="cpp">
+int fscanf（FILE*restrict fp，const char*restrict format，...）；</pre>
+从 fp 所引用的输入流中读取数据。<br />
+<pre class="cpp">
+int sscanf（const char*restrict src，const char*restrict format，...）；</pre>
+从 src 指向的 char 数组中读取数据。<br />
+<br />
+省略号表示还有更多的可选参数。可选参数是指向变量的指针，scanf（）函数将转换结果存储在这些变量中。<br />
+<br />
+类似于 printf（）函数，scanf（）函数系列也包含变体版本。变体版本将一个指针作为参数，指向一个参数列表，而不是在函数调用时直接接收数量可变的参数。<br />
+<br />
+这些变体版本的函数名称以字母 v 开头，表示&ldquo;variable argument list&rdquo;（可变参数列表）：例如，vscanf（）、vfscanf（）和 vsscanf（）。<span style="color:#b22222;">如果想使用支持可变参数列表的函数，除了头文件 stdio.h 以外，还必须包含头文件 stdarg.h。</span><br />
+<br />
+这些函数都具有相应的针对宽字符导向流的版本。<span style="color:#b22222;">宽字符函数名称中包含 wscanf 而不是 scanf</span>，例如 wscanf（）和 vfwscanf（）。<br />
+<br />
+C11 标准为这些函数都提供了一个新的&ldquo;安全&rdquo;的版本。这些对应的新函数均以后缀 _s（如 fscanf_s（））。新函数测试在读入一个字符串到数组之前，是否超出了数组边界。
+<h2>
+格式化字符串</h2>
+<span style="color:#b22222;">scanf（）函数的格式化字符串包含普通字符和转换说明，转换说明定义了如何解释以及转换读入的字符序列。</span>scanf（）函数所使用的大多数转换修饰符都与 printf（）函数所定义的一样。然而，scanf（）函数的转换说明没有标记和精度选项。针对 scanf（）函数转换说明的通用语法如下所示：
+<p class="info-box">
+%[*][字段宽度][长度修饰符]修饰符</p>
+<br />
+对于格式化字符串中的每个转换说明，从输入源读入的字符的数量与转换方式都会与转换修饰符一致。结果会存储在对应指针参数所指向的对象中。如下例所示：
+<pre class="cpp">
+int age = 0;
+char name[64] = &quot;&quot;;
+printf( &quot;Please enter your first name and your age:\n&quot; );
+scanf( &quot;%s%d&quot;, name, &amp;age );</pre>
+<br />
+假设用户在提示符下输入如下内容：
+<pre class="cpp">
+Bob 27\n</pre>
+<br />
+调用 scanf（）函数，会将字符串 Bob 写进 char 数组 name 中，然后将 27 写进 int 变量 age 中。<br />
+<br />
+<span style="color:#b22222;">所有的转换说明，除了具有修饰符 c 的情况以外，都会忽略前面的空白字符</span>（whitespace character）。在上例中，用户可以在第一个词 Bob 前，或者在 Bob 与 27 之间，放置任意多个空格、制表符或换行符，这些操作均不影响结果。<br />
+<br />
+针对给定的转换说明，当 scanf（）读到任何空白字符时，或者任何无法以该转换说明解释的字符时，读取序列字符的操作将会终止。无法被解释的字符会被放回到输入流中，下一个转换说明将从该字符开始。在前述例子中，假设用户输入如下：
+<pre class="cpp">
+Bob 27years\n</pre>
+<br />
+在读取到字符 y 时，它不可能是十进制数值的一部分，针对转换说明 %d，scanf（）会停止读取对应的字符。在调用该函数后，字符 years\n 会继续留在输入流的缓冲区中。<br />
+<br />
+如果在忽略所有空白符之后，scanf（）还是找不到符合当前转换说明的字符，则生成错误，scanf（）函数终止处理输入。下面将介绍如何捕获这类错误。<br />
+<br />
+<span style="color:#b22222;">通常，在调用 scanf（）函数时，格式化字符串只包含转换说明。</span>如果不是，那么格式化字符串中除转换说明与空白符以外的其他所有字符，必须与输入源对应位置的字符完全一致。否则 scanf（）函数就会终止处理，并将不匹配的字符放回到输入流中。<br />
+<br />
+<span style="color:#b22222;">格式化字符串中所出现的一个或多个连续空白符，必须符合输入流中连续空格的数量。</span>换句话说，对于格式化字符串中出现的所有空白符，scanf（）会读取并略过数据源中的所有空白字符，直到读入第一个非空白符。在理解这一点后，请判断下面的 scanf（）调用方式有什么问题。
+<pre class="cpp">
+scanf( &quot;%s%d\n&quot;, name, &amp;age );    // 有什么问题</pre>
+<br />
+假设用户输入下面这一行字符：
+<pre class="cpp">
+Bob 27\n</pre>
+<br />
+本例中，scanf（）在读入换行符后不会返回，而是继续读取更多输入，直到出现非空白字符出现。<br />
+<br />
+有时候，需要读取并略过符合给定转换说明的字符序列，不存储结果。可以在转换说明中采用 %* 来达到前述效果。对于具有星号的转换说明，不要包括对应的指针参数。<br />
+<br />
+<span style="color:#b22222;">scanf（）函数的返回值是成功存储数据项的数量。</span>如果一切执行顺利，返回值就是转换说明的数量（但不计包含星号的转换说明）。如果发生读取错误或在转换数据项前就到达了输入源尾部，则 scanf（）函数会返回值 EOF。如下例所示：
+<pre class="cpp">
+if ( scanf( &quot;%s%d&quot;, name, &amp;age ) &lt; 2 )
+  fprintf( stderr, &quot;Bad input.\n&quot; );
+else
+{ /* ...测试存储的值... */ }</pre>
+<h2>
+字段宽度</h2>
+字段宽度是十进制整型正数，它指定了对于给定的转换说明，scanf（）所读取字符的最大数量。对于字符串输入来说，字段宽度可以防止缓冲区出现溢出情况：
+<pre class="cpp">
+char city[32];
+printf( &quot;Your city: &quot;);
+if ( scanf( &quot;%31s&quot;, city ) &lt; 1 )     // 不要读入超过31个字符
+  fprintf( stderr, &quot;Error reading from standard input.\ n&quot; );
+else
+/* ... */</pre>
+<br />
+printf（）会输出超过指定字段宽度的字符，但 scanf（）不同于 printf（），转换修饰符 s 不会读入超过指定字段宽度的字符到缓冲区。
+<h2>
+读取字符和字符串</h2>
+转换说明 %c 和 %1c 都会从输入流中读取一个字符，包括空白符。<span style="color:#b22222;">通过指定字段宽度，可以读取数量等于字段宽度的字符，包括空白符，只要没有遇到输入流的结束。</span>当采用这种方式读取多个字符时，对应的指针参数必须指向一个空间足够大的 char 数组，以存储下所有读到的字符。<br />
+<br />
+使用转换修饰符 c 的 scanf（）函数，不会在读入字符序列的尾部加上字符串终止符。例如：
+<pre class="cpp">
+scanf( &quot;%*5c&quot; );</pre>
+该 scanf（）调用会读取并丢弃输入源紧接着的 5 个字符。<br />
+<br />
+转换说明 %s 总是读取恰好一个词，遇到空白符时结束读取。如果想读取整行文本，可以使用函数 fgets（）。<br />
+<br />
+下面的示例逐词地读取文本文件的内容。假设文件指针 fp 关联了一个文本文件，并且该文件已打开，以用于读取：
+<pre class="cpp">
+char word[128];
+while ( fscanf( fp, &quot;%127s&quot;, word ) == 1 )
+{
+   /* ...处理读到的词... */
+}</pre>
+<br />
+<span style="color:#b22222;">除了转换修饰符 s 以外，也可以使用&ldquo;扫描集&rdquo;（scanset）修饰符来读取字符串</span>，它由方括号所包含的一串无序字符组成（[scanset]）。scanf（）函数接着读取所有字符，然后将它们存储为一个字符串（带有字符串终止符），直到遇到不匹配扫描集中任一字符时才停止。例如：
+<pre class="cpp">
+char strNumber[32];
+scanf( &quot;%[0123456789]&quot;, strNumber );</pre>
+<br />
+如果用户输入 345X67，那么 scanf（）会把 345\0 字符串存储到数组 strNumber 中。字符 X 以及后续字符则仍然留在输入缓冲区中。<br />
+<br />
+逆向使用转换扫描集（也就是说，除扫描集中的字符外，其他都符合），做法是在扫描集的左括号后面加上一个插入号（^）。下面的 scanf（）调用读取所有字符（包括空白符），直到句子结束的标点符号，然后再读入标点符号本身：
+<pre class="cpp">
+char ch, sentence[512];
+scanf( &quot;%511[^.!?]%c&quot;, sentence, &amp;ch );</pre>
+<br />
+下面的 scanf（）调用读取并丢弃所有字符，一直到当前行结束：
+<pre class="cpp">
+scanf( &quot;%*[^\n]%*c&quot; );</pre>
+<h2>
+读取整数</h2>
+<span style="color:#b22222;">类似 printf（）函数，scanf（）函数为整数提供了下面的转换修饰符：d、i、u、o、x 和 X。</span>它们允许读入十进制、八进位与十六进制表示法，并转换为 int 或 unsigned int 变量。如下例所示：
+<pre class="cpp">
+// 读入一个非负的十进制整数
+unsigned int value = 0;
+if ( scanf( &quot;%u&quot;, &amp;value ) &lt; 1 )
+  fprintf( stderr, &quot;Unable to read an integer.\n&quot; );
+else
+  /* ... */</pre>
+<br />
+对于 scanf（）函数内的修饰符 i，读入数字的基数（进制）并非预先定义好的。基数是由读入的数字字符序列的前缀符号所决定的，这些符号的表示方式与 C 源代码中整数常量相同。<br />
+<br />
+如果字符序列不是以 0 开始，那么它会被解释为十进制数字。如果以 0 开始，并且第二个字符不是 x 或 X，那么该序列会被解释为八进位数字。如果以 0x 或 0X 开始，则以十六进制数字读入。<br />
+<br />
+<span style="color:#b22222;">如果想把所读取的整数赋值给一个 short、char、long 或 long long 变量（或者它们所对应的无符号类型），必须在转换修饰符之前插入一个长度修饰符：h 表示 short，hh 表示 char，l 表示 long，ll 表示 long long。</span>在下面的示例中，FILE 指针 fp 指向一个打开用于读取的文件：
+<pre class="cpp">
+unsigned long position = 0;
+if (fscanf( fp, &quot;%lX&quot;, &amp;position) &lt; 1 )  // 读取一个十六进制整数
+  /* ... 处理错误：无法读入数字... */</pre>
+<h2>
+读取浮点数</h2>
+<span style="color:#b22222;">当处理浮点数时，scanf（）函数使用与 printf（）相同的转换修饰符：f、e、E、g 和 G。</span>而且，C99 新增了修饰符 a 和 A。所有这些修饰符以同样的方式解释读取的字符序列。可以被解释成浮点数的字符序列，与 C 语言中的有效浮点常量是一样的。scanf（）也可以转换整数，并将它们存储在浮点变量中。<br />
+<br />
+所有这些修饰符将数字转换成 float 类型浮点值。如果想将它们转换并存储成 double 或 long double，必须插入一个长度修饰符：double 使用 l（小写L），long double 则使用 L。如下例所示：
+<pre class="cpp">
+float x = 0.0F;
+double xx = 0.0;
+// 读取两个浮点数：将一个转换为float，另一个转换为double
+if ( scanf( &quot;%f %lf&quot;, &amp;x, &amp;xx ) &lt; 2 )
+  /* ... */</pre>
+<br />
+如果该 scanf（）调用接收到的输入序列是 12.37\n，那么会将 12.3 存储在到 float 变量 x 中，而 7.0 存储到 double 变量 xx 中。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="109.html" title="Go语言reflect.TypeOf()和reflect.Type（通过反射获取类型信息）" target="_blank">Go语言reflect.TypeOf()和reflect.Type（通过反射获取类型信息）</a></li>
+<li><a href="905.html" title="Linux parted命令用法详解：创建分区" target="_blank">Linux parted命令用法详解：创建分区</a></li>
+<li><a href="1073.html" title="Linux进程优先级" target="_blank">Linux进程优先级</a></li>
+<li><a href="2543.html" title="Python fnmatch模块：用于文件名的匹配" target="_blank">Python fnmatch模块：用于文件名的匹配</a></li>
+<li><a href="vip_7715.html" title="C++ list容器底层存储结构（详解版）" target="_blank">C++ list容器底层存储结构（详解版）</a></li>
+<li><a href="floyd-warshall.html" title="弗洛伊德算法（求最短路径）" target="_blank">弗洛伊德算法（求最短路径）</a></li>
+<li><a href="5iqzv0.html" title="git status命令：查看仓库的状态" target="_blank">git status命令：查看仓库的状态</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 415;
+window.arcId = "61b2c0matjfSs4E1+IgGoNALEWTLGdwoDHiLxZe6LoPmQC+Qu6e+QFGToA";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

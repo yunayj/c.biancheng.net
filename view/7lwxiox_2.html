@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Vue v-model双向绑定表单数据详解</title>
+<meta name="description" content="对于 Vue 来说，使用 v-bind 并不能解决表单域对象双向绑定的需求，为此 Vue 提供了 v-model 指令。 所谓双向绑定，就是无论是通过 input 还是通过 Vue 对象，都能修改绑定的数据对象的值。" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Vue v-model双向绑定表单数据详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">对于 Vue 来说，使用 v-bind 并不能解决表单域对象双向绑定的需求，为此 Vue 提供了 v-model 指令。<br />
+<blockquote>
+	<p>
+		所谓双向绑定，就是无论是通过 input 还是通过 Vue 对象，都能修改绑定的数据对象的值。</p>
+</blockquote>
+对于数据的绑定，无论是使用插值表达式（{{}}）还是 v-text 指令，对于数据间的交互都是单向的，只能将 Vue 实例中的值传递给页面，页面对数据值的任何操作都无法传递给 model。<br />
+<br />
+MVVM 模式最重要的一个特性，可以说实现了数据的双向绑定，而 Vue 作为一个 MVVM 框架，肯定也实现了数据的双向绑定。在 Vue 中使用内置的 v-model 指令完成数据在 View 与 Model 间的双向绑定。<br />
+<br />
+可以用 v-model 指令在表单的 &lt;input&gt;、&lt;textarea&gt; 及 &lt;select&gt; 元素上创建双向数据绑定。它会根据控件类型自动选取正确的方法来更新元素。尽管有些神奇，但 v-model 本质上不过是语法糖。它负责监听用户的输入事件以更新数据，并对一些极端场景进行特殊处理。<br />
+<br />
+v-model 会忽略所有表单元素的 value、checked、selected 特性的初始值，而总是将 Vue 实例的数据作为数据来源。这里应该通过 JavaScript 在组件的 data 选项中声明初始值。<br />
+<h2>
+	单行文本输入框</h2>
+下面讲解常见的单行文本输入框的数据双向绑定。<br />
+<br />
+【实例一】绑定单行文本输入框
+<pre class="html">
+&lt;input type=&quot;text&quot; v-model=&quot;message&quot; value=&quot;hello world&quot;&gt;
+    &lt;p&gt;{{message}}&lt;/p&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+    //创建一个应用程序实例
+    const vm= Vue.createApp({
+        //该函数返回数据对象
+        data(){
+          return{
+            message:&quot;红罗袖里分明见&quot;
+           }
+        }
+    //在指定的DOM元素上装载应用程序实例的根组件
+    }).mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，在输入框中输入&ldquo;白玉盘中看却无&rdquo;，可以看到下面的内容也发生了变化，如下图所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/230906/2-230Z61JK3560_2.gif" /><br />
+	图 1 变更后效果</div>
+<h2>
+	多行文本输入框</h2>
+在多行文本输入框 textarea 标签中绑定 message 属性，代码如下：
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+    &lt;p&gt;{{message}}&lt;/p&gt;
+    &lt;textarea v-model=&quot;message&quot;&gt;&lt;/textarea&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+    //创建一个应用程序实例
+    const vm= Vue.createApp({
+        //该函数返回数据对象
+        data(){
+          return{
+            message:&quot;轻衣软履步江沙&quot;
+           }
+        }
+    //在指定的DOM元素上装载应用程序实例的根组件
+    }).mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，在textarea标签中输入多行文本，效果如下图所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/230906/2-230Z61JR5c4_2.gif" /><br />
+	图 2 绑定多行文本输入框</div>
+<h2>
+	复选框</h2>
+复选框单独使用时，绑定的是布尔值，选中则值为 true，未选中则值为 false。示例代码如下。
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+    &lt;input type=&quot;checkbox&quot; id=&quot;checkbox&quot; v-model=&quot;checked&quot;&gt;
+    &lt;label for=&quot;checkbox&quot;&gt;{{ checked }}&lt;/label&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+    //创建一个应用程序实例
+    const vm= Vue.createApp({
+        //该函数返回数据对象
+        data(){
+          return{
+            //默认值为false
+            checked:false
+           }
+        }
+    //在指定的DOM元素上装载应用程序实例的根组件
+    }).mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，当选中复选框后，checked 的值变为 true，效果如下图所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/230906/2-230Z61JTV44_2.gif" /><br />
+	图 3 选中效果</div>
+<br />
+将多个复选框绑定到同一个数组，被选中的复选框添加到数组中。示例代码如下：<br />
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+    &lt;p&gt;选择需要采购的商品：&lt;/p&gt;
+    &lt;input type=&quot;checkbox&quot; id=&quot;name1&quot; value=&quot;洗衣机&quot; v-model=&quot;checkedNames&quot;&gt;
+    &lt;label for=&quot;name1&quot;&gt;洗衣机&lt;/label&gt;
+    &lt;input type=&quot;checkbox&quot; id=&quot;name2&quot; value=&quot;冰箱&quot; v-model=&quot;checkedNames&quot;&gt;
+    &lt;label for=&quot;name2&quot;&gt;冰箱&lt;/label&gt;
+    &lt;input type=&quot;checkbox&quot; id=&quot;name3&quot; value=&quot;电视机&quot; v-model=&quot;checkedNames&quot;&gt;
+    &lt;label for=&quot;name3&quot;&gt;电视机&lt;/label&gt;
+    &lt;input type=&quot;checkbox&quot; id=&quot;name4&quot; value=&quot;空调&quot; v-model=&quot;checkedNames&quot;&gt;
+    &lt;label for=&quot;name4&quot;&gt;空调&lt;/label&gt;
+    &lt;p&gt;&lt;span&gt;选中的商品:{{ checkedNames }}&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+    //创建一个应用程序实例
+    const vm= Vue.createApp({
+        //该函数返回数据对象
+        data(){
+          return{
+           checkedNames: []   //定义空数组
+           }
+        }
+    //在指定的DOM元素上装载应用程序实例的根组件
+    }).mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，选择多个复选框，选择的内容显示在数组中，如下图所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/230906/2-230Z61JZMS_2.gif" /><br />
+	图 4 绑定多个复选框</div>
+<h2>
+	单选按钮</h2>
+单选按钮一般都有多个条件可供选择，既然是单选按钮，自然希望实现互斥效果，这个效果可以使用 v-model 指令配合单选框的 value 来实现。<br />
+<br />
+例如，多个单选框绑定到同一个数组，被选中的单选框添加到数组中。<br />
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+    &lt;h3&gt;请选择本次采购的商品（单选题）&lt;/h3&gt;
+    &lt;input type=&quot;radio&quot; id=&quot;one&quot; value=&quot;A&quot; v-model=&quot;picked&quot;&gt;
+    &lt;label for=&quot;one&quot;&gt;A.洗衣机&lt;/label&gt;&lt;br/&gt;
+    &lt;input type=&quot;radio&quot; id=&quot;two&quot; value=&quot;B&quot; v-model=&quot;picked&quot;&gt;
+    &lt;label for=&quot;two&quot;&gt;B.冰箱&lt;/label&gt;&lt;br/&gt;
+    &lt;input type=&quot;radio&quot; id=&quot;three&quot; value=&quot;C&quot; v-model=&quot;picked&quot;&gt;
+    &lt;label for=&quot;three&quot;&gt;C.空调&lt;/label&gt;&lt;br/&gt;
+    &lt;input type=&quot;radio&quot; id=&quot;four&quot; value=&quot;D&quot; v-model=&quot;picked&quot;&gt;
+    &lt;label for=&quot;four&quot;&gt;D. 电视机&lt;/label&gt;
+    &lt;p&gt;&lt;span&gt;选择: {{ picked }}&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+    //创建一个应用程序实例
+    const vm= Vue.createApp({
+        //该函数返回数据对象
+        data(){
+          return{
+           picked: &#39;&#39;
+           }
+        }
+    //在指定的DOM元素上装载应用程序实例的根组件
+    }).mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，单击&ldquo;D.电视机&rdquo;单选按钮，效果如下图所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/230906/2-230Z61J932153_2.gif" /><br />
+	图 5 绑定单选按钮</div>
+<h2>
+	选择框</h2>
+接下来详细讲述如何绑定单选框、多选框和用 v-for 渲染的动态选项。<br />
+<h4>
+	1) 单选框</h4>
+不需要为 &lt;select&gt; 标签添加任何属性，即可实现单选。示例如下。<br />
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+    &lt;h3&gt;选择喜欢的课程&lt;/h3&gt;
+    &lt;select v-model=&quot;selected&quot;&gt;
+        &lt;option disabled value=&quot;&quot;&gt;选择喜欢的课程&lt;/option&gt;
+        &lt;option&gt;Python开发班&lt;/option&gt;
+        &lt;option&gt;Java开发班&lt;/option&gt;
+        &lt;option&gt;前端开发班&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;span&gt;选择的课程: {{ selected }}&lt;/span&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+    //创建一个应用程序实例
+    const vm= Vue.createApp({
+        //该函数返回数据对象
+        data(){
+          return{
+           selected: &#39; &#39;
+           }
+        }
+    //在指定的DOM元素上装载应用程序实例的根组件
+    }).mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，在下拉选项中选择&ldquo;Java开发班&rdquo;，选择结果中也变成了&ldquo;Java开发班&rdquo;，效果如下图所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/230906/2-230Z61K004562_2.gif" /><br />
+	图 6 绑定单选框</div>
+<br />
+如果 v-model 表达式的初始值未能匹配任何选项，&lt;select&gt; 元素将被渲染为&ldquo;未选中&rdquo;状态。<br />
+<h4>
+	2) 多选框（绑定到一个数组）</h4>
+为 &lt;select&gt; 标签添加 multiple 属性，即可实现多选。示例如下。
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+    &lt;h3&gt;请选择您喜欢的课程&lt;/h3&gt;
+    &lt;select v-model=&quot;selected&quot; multiple style=&quot;height: 100px&quot;&gt;
+        &lt;option disabled value=&quot;&quot;&gt;可以选择的课程如下&lt;/option&gt;
+        &lt;option&gt;Java开发班&lt;/option&gt;
+        &lt;option&gt;Python开发班&lt;/option&gt;
+        &lt;option&gt;前端开发班&lt;/option&gt;
+        &lt;option&gt;PHP开发班&lt;/option&gt;
+    &lt;/select&gt;&lt;br/&gt;
+    &lt;span&gt;选择的课程: {{ selected }}&lt;/span&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+    //创建一个应用程序实例
+    const vm= Vue.createApp({
+        //该函数返回数据对象
+        data(){
+          return{
+           selected: []
+           }
+        }
+    //在指定的DOM元素上装载应用程序实例的根组件
+    }).mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，按住 Ctrl 键可以选择多个选项，效果如下图所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/230906/2-230Z61K02TE_2.gif" /><br />
+	图 7 绑定多选框</div>
+<h4>
+	3) 用v-for渲染的动态选项</h4>
+在实际应用场景中，&lt;select&gt; 标签中的 &lt;option&gt; 一般是通过 v-for 指令动态输出的，其中每一项的 value 或 text 都可以使用 v-bind 动态输出。<br />
+<br />
+例如：
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+    &lt;h3&gt;请选择您喜欢的课程&lt;/h3&gt;
+    &lt;select v-model=&quot;selected&quot;&gt;
+        &lt;option v-for=&quot;option in options&quot;
+v-bind:value=&quot;option.value&quot;&gt;{{option.text}}&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;span&gt;选择的课程: {{ selected }}&lt;/span&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+    //创建一个应用程序实例
+    const vm = Vue.createApp({
+        //该函数返回数据对象
+        data(){
+          return{
+           selected: [],
+            options:[
+                { text: &#39;课程1&#39;, value: &#39;Java开发班&#39; },
+                { text: &#39;课程2&#39;, value: &#39;Python开发班&#39; },
+                { text: &#39;课程3&#39;, value: &#39;前端开发班&#39; }
+            ]
+           }
+        }
+    }).mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，然后在选择框中选择&ldquo;课程2&rdquo;，将会显示它对应的 value 值，效果如下图所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/230906/2-230Z61K104457_2.gif" /><br />
+	图 8 v-for渲染的动态选项</div>
+<h2>
+	值绑定</h2>
+对于单选按钮、复选框及选择框的选项，v-model 绑定的值通常是静态字符串（对于复选框也可以是布尔值）。但是，有时可能想把值绑定到Vue实例的一个动态属性上，这种情况可以用 v-bind 实现，并且这个属性的值可以不是字符串。<br />
+<h4>
+	1) 复选框</h4>
+在下面的示例中，true-value 和 false-value 的特性并不会影响输入控件的 value 特性，因为浏览器在提交表单时并不会包含未被选中的复选框。如果要确保表单中这两个值中的一个能够被提交，比如&ldquo;yes&rdquo;或&ldquo;no&rdquo;，则需要换用单选按钮。<br />
+<br />
+例如：<br />
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+    &lt;input type=&quot;checkbox&quot; v-model=&quot;toggle&quot; true-value=&quot;yes&quot; false-value=&quot;no&quot;&gt;
+    &lt;span&gt;{{toggle}}&lt;/span&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+    //创建一个应用程序实例
+    const vm = Vue.createApp({
+        //该函数返回数据对象
+        data(){
+          return{
+           toggle:&#39;false&#39;
+         }
+        }
+    }).mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，选择复选框的状态效果如下图所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/230906/2-230Z61K129127_2.gif" /><br />
+	图 9 选择复选框的状态</div>
+<h4>
+	2) 单选框</h4>
+首先为单选按钮绑定一个属性 date，定义属性值为&ldquo;洗衣机&rdquo;；然后使用 v-model 指令为单选按钮绑定 pick 属性，当单选按钮被选中后，pick 的值等于 a 的属性值。<br />
+<br />
+例如：<br />
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+    &lt;input type=&quot;radio&quot;  v-model=&quot;pick&quot; v-bind:value=&quot;date&quot;&gt;
+    &lt;span&gt;{{ pick}}&lt;/span&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+    //创建一个应用程序实例
+    const vm = Vue.createApp({
+        //该函数返回数据对象
+        data(){
+          return{
+            date:&#39;洗衣机 &#39;,
+            pick:&#39;未选择&#39;
+         }
+        }
+    }).mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，选中&ldquo;洗衣机&rdquo;单选按钮，将显示其 value 值，效果如下图所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/230906/2-230Z61K155K2_2.gif" /><br />
+	图 10 单选框选中效果</div>
+<h4>
+	3) 选择框的选项</h4>
+在下面的示例中，定义了 4 个 option 选项，并使用 v-bind 进行绑定。
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+    &lt;select v-model=&quot;selected&quot; multiple&gt;
+        &lt;option v-bind:value=&quot;{ number: 100 }&quot;&gt;A&lt;/option&gt;
+        &lt;option v-bind:value=&quot;{ number: 200 }&quot;&gt;B&lt;/option&gt;
+        &lt;option v-bind:value=&quot;{ number: 300  }&quot;&gt;C&lt;/option&gt;
+        &lt;option v-bind:value=&quot;{ number: 400 }&quot;&gt;D&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;p&gt;&lt;span&gt;{{ selected }}&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+    //创建一个应用程序实例
+    const vm = Vue.createApp({
+        //该函数返回数据对象
+        data(){
+          return{
+            selected:[]
+         }
+        }
+     }).mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，选中 C 和 D 选项，在 p 标签中将显示相应的 number 值，如下图所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/230906/2-230Z61K21DE_2.gif" /><br />
+	图 11 动态绑定选择框的选项</div>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2594_2.html" title="MySQL修改存储过程（ALTER PROCEDURE）" target="_blank">MySQL修改存储过程（ALTER PROCEDURE）</a></li>
+<li><a href="2947_2.html" title="开源协议是什么？有哪些？如何选择？" target="_blank">开源协议是什么？有哪些？如何选择？</a></li>
+<li><a href="2955_2.html" title="C# TextBox：文本框控件" target="_blank">C# TextBox：文本框控件</a></li>
+<li><a href="3293_2.html" title="HTTP请求头（Header）参数简介" target="_blank">HTTP请求头（Header）参数简介</a></li>
+<li><a href="7242_2.html" title="MySQL查看触发器" target="_blank">MySQL查看触发器</a></li>
+<li><a href="glr33c1_2.html" title="Word设置纸张大小（页面大小）" target="_blank">Word设置纸张大小（页面大小）</a></li>
+<li><a href="30jyoga_2.html" title="CSS交集选择器的用法" target="_blank">CSS交集选择器的用法</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10398;
+window.arcId = "62a9bkPz+IFnbM5lS79meKLmw/8E0o0ILA5Q4ANZGBgfvO6jNLxt+5PTYoxM";
+window.typeidChain = "309|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

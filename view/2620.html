@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>什么是死锁，如何避免死锁（4种方法）</title>
+<meta name="description" content="当两个线程相互等待对方释放同步监视器时就会发生死锁。Python 解释器没有监测， 也没有采取措施来处理死锁情况，所以在进行多线程编程时应该采取措施避免出现死锁。 一旦出现死" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>什么是死锁，如何避免死锁（4种方法）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">当两个线程相互等待对方释放资源时，就会发生死锁。<a href='../python/python.html' target='_blank'>Python</a> 解释器没有监测，也不会主动采取措施来处理死锁情况，所以在进行多线程编程时应该采取措施避免出现死锁。<br />
+<p class="info-box">
+一旦出现死锁，整个程序既不会发生任何异常，也不会给出任何提示，只是所有线程都处于阻塞状态，无法继续。</p>
+死锁是很容易发生的，尤其是在系统中出现多个同步监视器的情况下，如下程序将会出现死锁：<br />
+<pre class="python">
+import threading
+import time
+
+class A:
+    def __init__(self):
+        self.lock = threading.RLock()
+    def foo(self, b):
+        try:
+            self.lock.acquire()
+            print(&quot;当前线程名: &quot; + threading.current_thread().name\
+                + &quot; 进入了A实例的foo()方法&quot; )     # ①
+            time.sleep(0.2)
+            print(&quot;当前线程名: &quot; + threading.current_thread().name\
+                + &quot; 企图调用B实例的last()方法&quot;)   # ③
+            b.last()
+        finally:
+            self.lock.release()
+    def last(self):
+        try:
+            self.lock.acquire()
+            print(&quot;进入了A类的last()方法内部&quot;)
+        finally:
+            self.lock.release()
+class B:
+    def __init__(self):
+        self.lock = threading.RLock()
+    def bar(self, a):
+        try:
+            self.lock.acquire()
+            print(&quot;当前线程名: &quot; + threading.current_thread().name\
+                + &quot; 进入了B实例的bar()方法&quot; )   # ②
+            time.sleep(0.2)
+            print(&quot;当前线程名: &quot; + threading.current_thread().name\
+                + &quot; 企图调用A实例的last()方法&quot;)  # ④
+            a.last()
+        finally:
+            self.lock.release()
+    def last(self):
+        try:
+            self.lock.acquire()
+            print(&quot;进入了B类的last()方法内部&quot;)
+        finally:
+            self.lock.release()
+a = A()
+b = B()
+def init():
+    threading.current_thread().name = &quot;主线程&quot;
+    # 调用a对象的foo()方法
+    a.foo(b)
+    print(&quot;进入了主线程之后&quot;)
+def action():
+    threading.current_thread().name = &quot;副线程&quot;
+    # 调用b对象的bar()方法
+    b.bar(a)
+    print(&quot;进入了副线程之后&quot;)
+# 以action为target启动新线程
+threading.Thread(target=action).start()
+# 调用init()函数
+init()</pre>
+运行上面程序，将会看到如图 1 所示的效果。
+<div style="text-align: center;">
+<br />
+<img alt="线程死锁效果" src="../uploads/allimg/190305/2-1Z305125TBF.gif" /><br />
+图 1 死锁效果</div>
+<br />
+从图 1 中可以看出，程序既无法向下执行，也不会抛出任何异常，就一直&ldquo;僵持&rdquo;着。究其原因，是因为上面程序中 A 对象和 B 对象的方法都是线程安全的方法。<br />
+<br />
+程序中有两个线程执行，副线程的线程执行体是 action() 函数，主线程的线程执行体是 init() 函数（主程序调用了 init() 函数）。其中在 action() 函数中让 B 对象调用 bar() 方法，而在 init() 函数中让 A 对象调用 foo() 方法。<br />
+<br />
+图 1 显示 action() 函数先执行，调用了 B 对象的 bar() 方法，在进入 bar() 方法之前，该线程对 B 对象的 Lock 加锁（当程序执行到 ② 号代码时，副线程暂停 0.2s）；CPU 切换到执行另一个线程，让 A 对象执行 foo() 方法，所以看到主线程开始执行 A 实例的 foo() 方法，在进入 foo() 方法之前，该线程对 A 对象的 Lock 加锁（当程序执行到 ① 号代码时，主线程也暂停 0.2s）。<br />
+<br />
+接下来副线程会先醒过来，继续向下执行，直到执行到 ④ 号代码处希望调用 A 对象的 last() 方法（在执行该方法之前，必须先对 A 对象的 Lock 加锁），但此时主线程正保持着 A 对象的 Lock 的锁定，所以副线程被阻塞。<br />
+<br />
+接下来主线程应该也醒过来了，继续向下执行，直到执行到 ③ 号代码处希望调用 B 对象的 last() 方法（在执行该方法之前，必须先对 B 对象的 Lock 加锁），但此时副线程没有释放对 B 对象的 Lock 的锁定。<br />
+<br />
+至此，就出现了主线程保持着 A 对象的锁，等待对 B 对象加锁，而副线程保持着 B对象的锁，等待对 A 对象加锁，两个线程互相等待对方先释放锁，所以就出现了死锁。<br />
+<br />
+死锁是不应该在程序中出现的，在编写程序时应该尽量避免出现死锁。下面有几种常见的方式用来解决死锁问题：
+<ol>
+<li>
+避免多次锁定。尽量避免同一个线程对多个 Lock 进行锁定。例如上面的死锁程序，主线程要对 A、B 两个对象的 Lock 进行锁定，副线程也要对 A、B 两个对象的 Lock 进行锁定，这就埋下了导致死锁的隐患。</li>
+<li>
+具有相同的加锁顺序。如果多个线程需要对多个 Lock 进行锁定，则应该保证它们以相同的顺序请求加锁。比如上面的死锁程序，主线程先对 A 对象的 Lock 加锁，再对 B 对象的 Lock 加锁；而副线程则先对 B 对象的 Lock 加锁，再对 A 对象的 Lock 加锁。这种加锁顺序很容易形成嵌套锁定，进而导致死锁。如果让主线程、副线程按照相同的顺序加锁，就可以避免这个问题。</li>
+<li>
+使用定时锁。程序在调用 acquire() 方法加锁时可指定 timeout 参数，该参数指定超过 timeout 秒后会自动释放对 Lock 的锁定，这样就可以解开死锁了。</li>
+<li>
+死锁检测。死锁检测是一种依靠算法机制来实现的死锁预防机制，它主要是针对那些不可能实现按序加锁，也不能使用定时锁的场景的。</li>
+</ol>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="562.html" title="C语言最大公约数和最小公倍数" target="_blank">C语言最大公约数和最小公倍数</a></li>
+<li><a href="1157.html" title="Java线程的概念：什么是线程？" target="_blank">Java线程的概念：什么是线程？</a></li>
+<li><a href="3444.html" title="冒泡排序（起泡排序）算法及其C语言实现" target="_blank">冒泡排序（起泡排序）算法及其C语言实现</a></li>
+<li><a href="4284.html" title="Go语言error接口：返回错误信息" target="_blank">Go语言error接口：返回错误信息</a></li>
+<li><a href="vip_5870.html" title="在socket编程中使用域名" target="_blank">在socket编程中使用域名</a></li>
+<li><a href="../servlet2/tomcat-directory.html" title="Tomcat目录结构" target="_blank">Tomcat目录结构</a></li>
+<li><a href="ol3rtxm.html" title="Vue v-show指令的用法" target="_blank">Vue v-show指令的用法</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 2620;
+window.arcId = "a116s6e5SqvQrQkIXoEEchqWZWbJkwqjStnXsFV3gZHOqlSkhum5WqTfQw4";
+window.typeidChain = "145|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

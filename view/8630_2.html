@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Linux线程同步详解</title>
+<meta name="description" content="多线程程序中，各线程除了可以使用自己的私有资源（局部变量、函数形参等）外，还可以共享全局变量、静态变量、堆内存、打开的文件等资源，这已经在《 线程是什么 》一节做了详" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Linux线程同步详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">多线程程序中，各线程除了可以使用自己的私有资源（局部变量、函数形参等）外，还可以共享全局变量、静态变量、堆内存、打开的文件等资源，这已经在《<a href="../thread/what-is-thread_2.html" target="_blank">线程是什么</a>》一节做了详细的讲解，不再过多赘述。<br />
+<br />
+举个例子，编写一个多线程程序模拟&ldquo;4个售票员共同卖 20 张票&rdquo;的过程，代码如下所示：
+<pre class="cpp">
+#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+#include&lt;pthread.h&gt;
+//全局变量，模拟总的票数
+int ticket_sum = 10;
+//模拟4个售票员一起售卖票的过程
+void *sell_ticket(void *arg){
+    int i;
+    //4个售票员负责将 10 张票全部卖出
+    for (i = 0; i &lt; 10; i++)
+    {
+        //直至所有票全部卖出，4 个售票员才算完成任务
+        if (ticket_sum &gt; 0)
+        {
+            sleep(1);
+            //每个线程代表一个售票员
+            printf(&quot;%u 卖第 %d 张票\n&quot;, pthread_self(), 10 - ticket_sum + 1);
+            ticket_sum--;
+        }
+    }
+    return 0;
+}
+
+int main(){
+    int flag;
+    int i;
+    void *ans;
+    //创建 4 个线程，代表 4 个售票员
+    pthread_t tids[4];
+    for (i = 0; i &lt; 4; i++)
+    {
+        flag = pthread_create(&amp;tids[i], NULL, &amp;sell_ticket, NULL);
+        if (flag != 0) {
+            printf(&quot;线程创建失败!&quot;);
+            return 0;
+        }
+    }
+    sleep(10); // 阻塞主线程，等待所有子线程执行结束
+    for (i = 0; i &lt; 4; i++)
+    {
+        flag = pthread_join(tids[i], &amp;ans);
+        if (flag != 0) {
+            printf(&quot;tid=%d 等待失败！&quot;, tids[i]);
+            return 0;
+        }
+    }
+    return 0;
+}</pre>
+程序中新建了 4 个子线程，每个线程都可以访问&nbsp;ticket_sum 全局变量，它们共同执行 sell_ticket() 函数，模拟&ldquo;4个售票员共同售卖 10 张票&rdquo;的过程。<br />
+<br />
+假设程序编写在 thread.c 文件中，执行过程如下：
+<p class="info-box">
+	[root@localhost ~]# gcc thread.c -o thread.exe -lpthread<br />
+	[root@localhost ~]# ./thread.exe<br />
+	3296569088 卖第 1 张票<br />
+	3265099520 卖第 2 张票<br />
+	3286079232 卖第 3 张票<br />
+	3275589376 卖第 4 张票<br />
+	3286079232 卖第 5 张票<br />
+	3265099520 卖第 6 张票<br />
+	3296569088 卖第 7 张票<br />
+	3275589376 卖第 8 张票<br />
+	3286079232 卖第 9 张票<br />
+	3265099520 卖第 10 张票<br />
+	3275589376 卖第 11 张票<br />
+	3296569088 卖第 12 张票<br />
+	3286079232 卖第 13 张票</p>
+<br />
+程序的执行结果并不唯一，还可能输出如下类似的信息：<br />
+<p class="info-box">
+	1492682496 卖第 1 张票<br />
+	1503172352 卖第 1 张票<br />
+	1482192640 卖第 1 张票<br />
+	1471702784 卖第 1 张票<br />
+	1503172352 卖第 5 张票<br />
+	1482192640 卖第 6 张票<br />
+	1492682496 卖第 6 张票<br />
+	1471702784 卖第 6 张票<br />
+	1503172352 卖第 9 张票<br />
+	1492682496 卖第 9 张票<br />
+	1471702784 卖第 9 张票<br />
+	1482192640 卖第 12 张票<br />
+	1503172352 卖第 13 张票</p>
+程序执行过程中，出现了&ldquo;多个售票员卖出同一张票&rdquo;以及&ldquo;4个售票员多卖出 3 张票&rdquo;的异常情况。造成此类问题的根本原因在于，进程中公有资源的访问权限是完全开放的，各个线程可以随时访问这些资源，程序运行过程中很容易出现&ldquo;多个线程同时访问某公共资源&rdquo;的情况。<br />
+<br />
+例如，之所以会出现&ldquo;多个售票员卖出同一张票&rdquo;的情况，因为这些线程几乎同一时间访问 ticket_sum 变量，得到的是相同的值。出现&ldquo;4 个售票员多卖出 3 张票&rdquo;的原因是：4 个线程访问 ticket_sum 变量得到的都是一个大于 0 的数，每个线程都可以继续执行 if 语句内的代码。由于各个线程先后执行的顺序不同，有的线程先执行<code>ticket_sum--</code>操作，导致其它线程计算<code>10-ticket_sum+1</code>表达式时，读取到的 ticket_num 变量的值为负数，因此表达式的值会出现大于 10 的情况。<br />
+<br />
+我们通常将&ldquo;多个线程同时访问某一公共资源&rdquo;的现象称为&ldquo;线程间产生了资源竞争&rdquo;或者&ldquo;线程间抢夺公共资源&rdquo;，线程间竞争资源往往会导致程序的运行结果出现异常，感到匪夷所思，严重时还会导致程序运行崩溃。<br />
+<br />
+幸运地是，Linux 提供了很多种解决方案，确定各个线程可以同步访问进程提供的公共资源（简称&ldquo;线程同步&rdquo;）。所谓线程同步，简单地理解就是：当一个线程访问某公共资源时，其它线程不得访问该资源，它们只能等待此线程访问完成后，再逐个访问该资源。
+<h2>
+	Linux线程同步的解决方案</h2>
+Linux 环境中，实现线程同步的常用方法有 4 种，分别称为<a href="../thread/vip_8615_2.html" target="_blank">互斥锁</a>、<a href="../thread/vip_8616_2.html" target="_blank">信号量</a>、<a href="../thread/vip_8617_2.html" target="_blank">条件变量</a>和<a href="../thread/vip_8618_2.html" target="_blank">读写锁</a>。<br />
+<br />
+<span style="color:#008000;">互斥锁</span>（Mutex）又称<span style="color:#008000;">互斥量</span>或者<span style="color:#008000;">互斥体</span>，是最简单也最有效地一种线程同步机制。互斥锁的用法和实际生活中的锁非常类似，当一个线程访问公共资源时，会及时地&ldquo;锁上&rdquo;该资源，阻止其它线程访问；访问结束后再进行&ldquo;解锁&rdquo;操作，将该资源让给其它线程访问。<br />
+<br />
+<span style="color:#008000;">信号量</span>又称<span style="color:#008000;">&ldquo;信号灯&rdquo;，</span>主要用于控制同时访问公共资源的线程数量，当线程数量控制在 &le;1 时，该信号量又称<span style="color:#008000;">二元信号量</span>，功能和互斥锁非常类似；当线程数量控制在 N（&ge;2）个时，该信号量又称<span style="color:#008000;">多元信号量</span>，指的是同一时刻最多只能有 N 个线程访问该资源。<br />
+<br />
+<span style="color:#008000;">条件变量</span>的功能类似于实际生活中的门，门有&ldquo;打开&rdquo;和&ldquo;关闭&rdquo;两种状态，分别对应条件变量的&ldquo;成立&rdquo;状态和&ldquo;不成立&rdquo;状态。当条件变量&ldquo;不成立&rdquo;时，任何线程都无法访问资源，只能等待条件变量成立；一旦条件变量成立，所有等待的线程都会恢复执行，访问目标资源。为了防止各个线程竞争资源，条件变量总是和互斥锁搭配使用。<br />
+<br />
+多线程程序中，如果大多数线程都是对公共资源执行读取操作，仅有少量的线程对公共资源进行修改，这种情况下可以使用<span style="color:#008000;">读写锁</span>解决线程同步问题。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="387_2.html" title="C++ set，STL set详解" target="_blank">C++ set，STL set详解</a></li>
+<li><a href="2426_2.html" title="MySQL CHAR、VARCHAR、TEXT、ENUM、SET（字符串类型）" target="_blank">MySQL CHAR、VARCHAR、TEXT、ENUM、SET（字符串类型）</a></li>
+<li><a href="vip_7103_2.html" title="Python异常处理机制的底层实现" target="_blank">Python异常处理机制的底层实现</a></li>
+<li><a href="7830_2.html" title="Django HTML表单实现用户注册" target="_blank">Django HTML表单实现用户注册</a></li>
+<li><a href="../servlet2/user-online_2.html" title="Servlet监听器统计网站在线人数" target="_blank">Servlet监听器统计网站在线人数</a></li>
+<li><a href="../spring_mvc/spring-mvc-struts2_2.html" title="Spring MVC和Struts2的区别" target="_blank">Spring MVC和Struts2的区别</a></li>
+<li><a href="../maven2/idea-import-maven_2.html" title="IDEA导入Maven项目" target="_blank">IDEA导入Maven项目</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8630;
+window.arcId = "02bbFh82z+4+SlPb5bfdb9xUXGPs9rIA8DIvWQZFd0INqklDWDTlMVEt/MQ";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

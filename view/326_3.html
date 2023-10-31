@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C语言将数组作为函数参数</title>
+<meta name="description" content="一个函数的形参是普通的局部变量。当发生函数调用时，程序创建这些形参，然后用对应的实参来初始化这些形参。形参的作用域就是函数块。函数内可以改变形参的值，而不会影响调" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C语言将数组作为函数参数</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body"><span style="color:#b22222;">一个函数的形参是普通的局部变量。当发生函数调用时，程序创建这些形参，然后用对应的实参来初始化这些形参。形参的作用域就是函数块。</span>函数内可以改变形参的值，而不会影响调用上下文中实参的值。<br />
+<br />
+如果需要将一个数组当作实参传入函数，则应把对应的形参声明成下面的形式：
+<p class="info-box">
+	类型 名称[ ]</p>
+<br />
+因为，<span style="color:#b22222;">当把数组名作为函数实参时，它会自动被转换为指针。</span>所以上面的声明等同于下面的声明：
+<p class="info-box">
+	类型 *名称</p>
+<br />
+<span style="color:#b22222;">当使用数组来声明函数参数时，方括号 [] 内的任何常量表达式都会被忽略。</span>在函数块内，数组参数名是一个指针变量，并且数组的值可以在该函数内被修改。例 1 中的函数 addArray（）将两个数组中对应索引元素的值相加。<br />
+<br />
+【例1】函数 addArray（）
+<pre class="cpp">
+// addArray() 将第二个数组中每个元素的值加到第一个数组对应元素上
+//（例如，&ldquo;array1 += array2&rdquo;）
+// 参数：两个float类型的数组，以及它们共同的长度
+// 返回值：无
+void addArray( register float a1[ ], register const float a2[ ], int len )
+{
+  register float *end = a1 + len;
+  for ( ; a1 &lt; end; ++a1, ++a2 )
+    *a1 += *a2;
+}</pre>
+<br />
+对于函数中的数组参数使用另一种表示法，上述函数 addArray（）可等效为以下形式：
+<pre class="cpp">
+void addArray( register float *a1, register const float *a2, int len )
+{  /* 函数块内容与前述一样 */ }</pre>
+<br />
+<span style="color:#b22222;">使用方括号 [] 声明函数数组参数的一个优点就是可读性好，它可以显著地标识出函数将该参数作为指向数组的指针，而不是一个独立的 float 变量。</span>在参数声明时，数组风格的表示法还有两个特点：<br />
+<br />
+(1) 在参数声明时（也只有在该情况下），C99 允许将类型限定符 const、volatile 和 restrict 放在方括号内。这个功能允许声明具有限定符指针类型的参数。<br />
+<br />
+(2) 而且，在 C99 中，也可以将存储类修饰符 static 连带整数常量表达式一起放在方括号内。这种方法表示，在函数调用的时数组内元素数量至少等于该常量表达式。<br />
+<br />
+下面一个示例展示了上述这些特点：
+<pre class="cpp">
+int func( long array[const static 5] )
+{ /* ... */ }</pre>
+<br />
+在这里所定义的函数中，参数 array 是一个指向 long 类型的常量指针，所以不能被修改。它指向一个至少有 5 个元素的数组。<br />
+<br />
+C99 同时允许将数组参数声明成可变长度的数组。方法是将一个非常量的、且为正数的整数表达式放在方括号之间。在这种情况下，数组参数仍然是指向第一个数组元素的指针。不同之处在于，数组元素本身也允许长度可变。<br />
+<br />
+在例 2 中，函数 maximum（）的第 3 个参数是一个二维数组，其长度可变。<br />
+<br />
+【例2】函数 maximum（）
+<pre class="cpp">
+// 函数 maximum() 获得double类型二维数组中的最大值
+// 参数：行数、列数、二维数组
+// 返回值：最大元素的值
+double maximum( int nrows, int ncols, double matrix[nrows][ncols] )
+{
+  double max = matrix[0][0];
+  for ( int r = 0; r &lt; nrows; ++r )
+    for ( int c = 0; c &lt; ncols; ++c )
+      if ( max &lt; matrix[r][c] )
+        max = matrix[r][c];
+  return max;
+}</pre>
+<br />
+参数 matrix 是一个指针，它指向一个具有 ncols 个元素的数组。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="38_2.html" title="Go语言字符串截取（获取字符串的某一段字符）" target="_blank">Go语言字符串截取（获取字符串的某一段字符）</a></li>
+<li><a href="992_2.html" title="Shell awk命令详解（格式+使用方法）" target="_blank">Shell awk命令详解（格式+使用方法）</a></li>
+<li><a href="vip_2272_2.html" title="C++类继承时的作用域嵌套，破解C++继承的一切秘密！" target="_blank">C++类继承时的作用域嵌套，破解C++继承的一切秘密！</a></li>
+<li><a href="vip_6072_2.html" title="Python super()使用注意事项" target="_blank">Python super()使用注意事项</a></li>
+<li><a href="9562_2.html" title="大厂卡学历吗？普通大学能进吗？" target="_blank">大厂卡学历吗？普通大学能进吗？</a></li>
+<li><a href="9803_2.html" title="V8引擎简介（非常详细）" target="_blank">V8引擎简介（非常详细）</a></li>
+<li><a href="f03wu83_2.html" title="Redis缓存雪崩、缓存击穿和缓存穿透是怎么回事？" target="_blank">Redis缓存雪崩、缓存击穿和缓存穿透是怎么回事？</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 326;
+window.arcId = "a33fJo4wHoFWz18Kiz6ODGnIwlZMoX34zmsTCinS7imwZXMN8D+Q8zxlIA";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

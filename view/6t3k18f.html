@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++局部变量和全局变量详解</title>
+<meta name="description" content="根据作用范围划分，C++ 中的变量可以细分为局部变量和全局变量两种。在本文中，将详细介绍局部变量和全局变量的定义、特性和使用场景，并通过实例代码来详细解释它们。 局部变量" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++局部变量和全局变量详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">根据作用范围划分，C++ 中的变量可以细分为局部变量和全局变量两种。在本文中，将详细介绍局部变量和全局变量的定义、特性和使用场景，并通过实例代码来详细解释它们。<br />
+<h2>
+局部变量</h2>
+局部变量指的是在函数或者某个代码块内部定义的变量，这些变量只能在定义它们的函数或代码块中使用。<br />
+<br />
+局部变量存储在栈内存中，当定义它的函数或者代码块执行完后，局部变量就会被销毁，占用的栈内存也会被回收。<br />
+<br />
+举个简单的例子：<br />
+<pre class="cpp">
+#include &lt;iostream&gt;
+
+void myFunction() {
+    int a = 10; // 局部变量
+    std::cout &lt;&lt; &quot;Local variable value: &quot; &lt;&lt; a &lt;&lt; std::endl;
+}
+
+int main() {
+    myFunction();
+    // std::cout &lt;&lt; a; // 错误！因为局部变量 a 不在这个作用范围内
+
+    {
+        int b = 10;  //局部变量，位于 {} 代码块中
+        std::cout &lt;&lt; &quot;Lacal Variable value：&quot; &lt;&lt; b &lt;&lt; std::endl;
+    }
+    //std::cout &lt;&lt; b;  // 错误！因为局部变量 b 不在这个作用范围内
+
+    return 0;
+}</pre>
+在上述程序中，myFunction() 函数中定义了一个变量 a，其作用域仅仅限于 myFunction() 的函数体内。此外在 main() 函数中，变量 b 定义在<code>{ }</code>包裹的代码块内，其作用域仅限于<code>{ }</code>代码块内。<br />
+<br />
+注意，函数形参的作用域也仅限于函数体内，所以形参也可以当做局部变量使用。<br />
+<h2>
+全局变量</h2>
+全局变量指的是在所有函数之外定义的变量。<br />
+<br />
+全局变量在整个程序的生命周期内都是可访问的。全局变量是在程序开始时就创建好了，程序运行结束时才销毁。<br />
+<br />
+全局变量存储在全局数据区，它的作用域是整个程序，即在任何一个函数中都可以访问。全局变量一旦被修改，在其它函数中访问到的值也会随之而变。<br />
+<br />
+举个简单的例子：
+<pre class="cpp">
+#include &lt;iostream&gt;
+
+int a = 20; // 全局变量
+
+void myFunction() {
+    std::cout &lt;&lt; &quot;Global variable value: &quot; &lt;&lt; a &lt;&lt; std::endl;
+}
+
+int main() {
+    myFunction(); // 输出：Global variable value: 20
+    std::cout &lt;&lt; &quot;Global variable value in main: &quot; &lt;&lt; a &lt;&lt; std::endl; // 输出：Global variable value in main: 20
+    return 0;
+}</pre>
+运行结果为：
+<p class="info-box">
+Global variable value: 20<br />
+Global variable value in main: 20</p>
+<h2>
+局部变量VS全局变量</h2>
+<ul>
+<li>
+生命周期：局部变量的生命周期较短，仅存在于函数或代码块执行期间。全局变量的生命周期从程序开始到程序结束。</li>
+<li>
+作用范围：局部变量只在定义它的函数或代码块中有效，而全局变量在整个程序中都有效。</li>
+<li>
+内存使用：因为局部变量的生命周期较短，所以通常更加节省内存。</li>
+<li>
+可维护性：过多地使用全局变量会降低程序的可维护性和可读性。</li>
+</ul>
+<br />
+局部变量和全局变量各有优缺点，应根据实际需求和场景合理使用。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="833.html" title="Java分割字符串（spilt()）" target="_blank">Java分割字符串（spilt()）</a></li>
+<li><a href="908.html" title="磁盘配额是什么，磁盘配额概述" target="_blank">磁盘配额是什么，磁盘配额概述</a></li>
+<li><a href="7609.html" title="C++ getline()：从文件中读取一行字符串" target="_blank">C++ getline()：从文件中读取一行字符串</a></li>
+<li><a href="7903.html" title="Django项目实例详解(一)" target="_blank">Django项目实例详解(一)</a></li>
+<li><a href="vip_8361.html" title="MySQL权限控制实现原理" target="_blank">MySQL权限控制实现原理</a></li>
+<li><a href="vip_8527.html" title="显示调用C/C++动态链接库" target="_blank">显示调用C/C++动态链接库</a></li>
+<li><a href="../c/islower.html" title="C语言islower()：判断一个字符是否为小写英文字母" target="_blank">C语言islower()：判断一个字符是否为小写英文字母</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10326;
+window.arcId = "88e21xPO97VHq4Mw466iFPmd1v9J2m/Lm5loWysgq/jd1L043rj8j1qboTBt";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

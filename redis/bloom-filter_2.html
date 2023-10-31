@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Redis布隆过滤器（原理+图解）</title>
+<meta name="description" content="Redis布隆过滤器 (Bloom Filter) 是 Redis 4.0 版本提供的新的Redis数据结构，它作为一个插件加载到 Redis 服务器中，给 Redis 提供强大的去重功能。相比于 Set 集合的去重功能而言，布隆过滤器在空间上" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="../view/niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+	<div id="sidebar" class="toggle-target">
+	<div id="contents">
+		<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="redis_2.html">Redis</a></dt>
+		<dd>
+        	<span class="channel-num">1</span>
+        	<a href="what-is-redis_2.html">Redis是什么</a>
+        </dd>
+<dd>
+        	<span class="channel-num">2</span>
+        	<a href="windows-installer_2.html">Windows下载安装Redis</a>
+        </dd>
+<dd>
+        	<span class="channel-num">3</span>
+        	<a href="linux-installer_2.html">Ubuntu下载安装Redis</a>
+        </dd>
+<dd>
+        	<span class="channel-num">4</span>
+        	<a href="config_2.html">Redis配置文件</a>
+        </dd>
+<dd>
+        	<span class="channel-num">5</span>
+        	<a href="data-types_2.html">Redis数据类型</a>
+        </dd>
+<dd>
+        	<span class="channel-num">6</span>
+        	<a href="commands_2.html">Redis命令行模式</a>
+        </dd>
+<dd>
+        	<span class="channel-num">7</span>
+        	<a href="keys_2.html">Redis key键</a>
+        </dd>
+<dd>
+        	<span class="channel-num">8</span>
+        	<a href="strings_2.html">Redis string字符串</a>
+        </dd>
+<dd>
+        	<span class="channel-num">9</span>
+        	<a href="bitmap_2.html">Redis bitmap位图</a>
+        </dd>
+<dd>
+        	<span class="channel-num">10</span>
+        	<a href="incrby_2.html">Redis数值操作命令</a>
+        </dd>
+<dd>
+        	<span class="channel-num">11</span>
+        	<a href="lists_2.html">Redis list列表</a>
+        </dd>
+<dd>
+        	<span class="channel-num">12</span>
+        	<a href="hashes_2.html">Redis hash哈希散列</a>
+        </dd>
+<dd>
+        	<span class="channel-num">13</span>
+        	<a href="sets_2.html">Redis set集合</a>
+        </dd>
+<dd>
+        	<span class="channel-num">14</span>
+        	<a href="sorted-set_2.html">Redis zset有序集合</a>
+        </dd>
+<dd>
+        	<span class="channel-num">15</span>
+        	<a href="connection_2.html">Redis连接命令</a>
+        </dd>
+<dd>
+        	<span class="channel-num">16</span>
+        	<a href="security_2.html">Redis安全策略</a>
+        </dd>
+<dd>
+        	<span class="channel-num">17</span>
+        	<a href="client_2.html">Redis客户端命令</a>
+        </dd>
+<dd>
+        	<span class="channel-num">18</span>
+        	<a href="server_2.html">Redis服务器命令</a>
+        </dd>
+<dd>
+        	<span class="channel-num">19</span>
+        	<a href="hyperloglog_2.html">Redis基数统计</a>
+        </dd>
+<dd>
+        	<span class="channel-num">20</span>
+        	<a href="pubsub_2.html">Redis发布订阅</a>
+        </dd>
+<dd>
+        	<span class="channel-num">21</span>
+        	<a href="streams_2.html">Redis消息队列</a>
+        </dd>
+<dd>
+        	<span class="channel-num">22</span>
+        	<a href="bloom-filter_2.html">Redis布隆过滤器</a>
+        </dd>
+<dd>
+        	<span class="channel-num">23</span>
+        	<a href="geo_2.html">Redis地理位置</a>
+        </dd>
+<dd>
+        	<span class="channel-num">24</span>
+        	<a href="transaction_2.html">Redis事务</a>
+        </dd>
+<dd>
+        	<span class="channel-num">25</span>
+        	<a href="lua-scripts_2.html">Redis Lua脚本</a>
+        </dd>
+<dd>
+        	<span class="channel-num">26</span>
+        	<a href="benchmarks_2.html">Redis性能测试</a>
+        </dd>
+<dd>
+        	<span class="channel-num">27</span>
+        	<a href="partition_2.html">Redis分区技术</a>
+        </dd>
+<dd>
+        	<span class="channel-num">28</span>
+        	<a href="pipeline_2.html">Redis管道技术</a>
+        </dd>
+<dd>
+        	<span class="channel-num">29</span>
+        	<a href="backup_2.html">Redis数据备份和还原</a>
+        </dd>
+<dd>
+        	<span class="channel-num">30</span>
+        	<a href="rdb_2.html">Redis RDB持久化</a>
+        </dd>
+<dd>
+        	<span class="channel-num">31</span>
+        	<a href="aof_2.html">Redis AOF持久化</a>
+        </dd>
+<dd>
+        	<span class="channel-num">32</span>
+        	<a href="slaveof_2.html">Redis主从模式</a>
+        </dd>
+<dd>
+        	<span class="channel-num">33</span>
+        	<a href="sentinel-model_2.html">Redis哨兵模式</a>
+        </dd>
+<dd>
+        	<span class="channel-num">34</span>
+        	<a href="distributed-lock_2.html">Redis分布式锁</a>
+        </dd>
+<dd>
+        	<span class="channel-num">35</span>
+        	<a href="cache_2.html">Redis缓存问题</a>
+        </dd>
+<dd>
+        	<span class="channel-num">36</span>
+        	<a href="java_2.html">Java使用Redis</a>
+        </dd>
+<dd>
+        	<span class="channel-num">37</span>
+        	<a href="php_2.html">PHP使用Redis</a>
+        </dd>
+<dd>
+        	<span class="channel-num">38</span>
+        	<a href="python_2.html">Python使用Redis</a>
+        </dd>
+<dd>
+        	<span class="channel-num">39</span>
+        	<a href="config-summary_2.html">Redis配置项汇总</a>
+        </dd>
+
+	</div>
+</div>
+	<div id="article-wrap">
+		<div id="article">
+			<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="redis_2.html">Redis</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+			<h1>Redis布隆过滤器（原理+图解）</h1>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+			<div id="arc-body">布隆过滤器（Bloom Filter）是 Redis 4.0 版本提供的新功能，它被作为插件加载到 Redis 服务器中，给 Redis 提供强大的去重功能。<br />
+<br />
+相比于 Set 集合的去重功能而言，布隆过滤器在空间上能节省 90% 以上，但是它的不足之处是去重率大约在 99% 左右，也就是说有 1% 左右的误判率，这种误差是由布隆过滤器的自身结构决定的。俗话说&ldquo;鱼与熊掌不可兼得&rdquo;，如果想要节省空间，就需要牺牲 1% 的误判率，而且这种误判率，在处理海量数据时，几乎可以忽略。<br />
+<h2>
+	应用场景</h2>
+布隆过滤器是 Redis 的高级功能，虽然这种结构的去重率并不完全精确，但和其他结构一样都有特定的应用场景，比如当处理海量数据时，就可以使用布隆过滤器实现去重。<br />
+<br />
+下面举两个简单的例子：
+<h4>
+	1) 示例：</h4>
+百度爬虫系统每天会面临海量的 URL 数据，我们希望它每次只爬取最新的页面，而对于没有更新过的页面则不爬取，因策爬虫系统必须对已经抓取过的 URL 去重，否则会严重影响执行效率。但是如果使用一个 set（集合）去装载这些 URL 地址，那么将造成资源空间的严重浪费。
+<h4>
+	2) 示例：</h4>
+垃圾邮件过滤功能也采用了布隆过滤器。虽然在过滤的过程中，布隆过滤器会存在一定的误判，但比较于牺牲宝贵的性能和空间来说，这一点误判是微不足道的。
+<h2>
+	工作原理</h2>
+布隆过滤器（Bloom Filter）是一个高空间利用率的概率性数据结构，由二进制向量（即位数组）和一系列随机映射函数（即哈希函数）两部分组成。<br />
+<br />
+布隆过滤器使用<code><font color="#333333"><span style="background-color: rgb(246, 246, 246);">exists()</span></font></code>来判断某个元素是否存在于自身结构中。当布隆过滤器判定某个值存在时，其实这个值只是有可能存在；当它说某个值不存在时，那这个值肯定不存在，这个误判概率大约在 1% 左右。<br />
+<h4>
+	1) 工作流程-添加元素</h4>
+布隆过滤器主要由位数组和一系列 hash 函数构成，其中位数组的初始状态都为 0。<br />
+<br />
+下面对布隆过滤器工作流程做简单描述，如下图所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Redis布隆过滤器" src="../uploads/allimg/210913/152TA292-0_2.gif" /><br />
+	图1：布隆过滤器原理</div>
+<br />
+当使用布隆过滤器添加 key 时，会使用不同的 hash 函数对 key 存储的元素值进行哈希计算，从而会得到多个哈希值。根据哈希值计算出一个整数索引值，将该索引值与位数组长度做取余运算，最终得到一个位数组位置，并将该位置的值变为 1。每个 hash 函数都会计算出一个不同的位置，然后把数组中与之对应的位置变为 1。通过上述过程就完成了元素添加(add)操作。
+<h4>
+	2) 工作流程-判定元素是否存在</h4>
+当我们需要判断一个元素是否存时，其流程如下：首先对给定元素再次执行哈希计算，得到与添加元素时相同的位数组位置，判断所得位置是否都为 1，如果其中有一个为 0，那么说明元素不存在，若都为 1，则说明元素有可能存在。
+<h4>
+	3) 为什么是可能&ldquo;存在&rdquo;</h4>
+您可能会问，为什么是有可能存在？其实原因很简单，那些被置为 1 的位置也可能是由于其他元素的操作而改变的。比如，元素1 和 元素2，这两个元素同时将一个位置变为了 1（图1所示）。在这种情况下，我们就不能判定&ldquo;元素 1&rdquo;一定存在，这是布隆过滤器存在误判的根本原因。<br />
+<h2>
+	安装与使用</h2>
+在 Redis 4.0 版本之后，布隆过滤器才作为插件被正式使用。布隆过滤器需要单独安装，下面介绍安装 RedisBloom 的几种方法：
+<h4>
+	1) docker安装</h4>
+docker 安装布隆过滤器是最简单、快捷的一种方式：<br />
+<pre class="info-box">
+docker pull redislabs/rebloom:latest
+docker run -p 6379:6379 --name redis-redisbloom redislabs/rebloom:latest
+docker exec -it redis-redisbloom bash
+redis-cli
+#测试是否安装成功
+127.0.0.1:6379&gt; bf.add www.biancheng.net hello</pre>
+<h4>
+	2) 直接编译安装</h4>
+如果您对 docker 不熟悉，也可以采用直接编译的方式来安装。<br />
+<pre class="info-box">
+下载地址：
+<a href="http://https://github.com/RedisBloom/RedisBloom.git" target="_blank">https://github.com/RedisBloom/RedisBloom</a>
+解压文件：
+unzip RedisBloom-master.zip
+进入目录：
+cd RedisBloom-master
+执行编译命令，生成redisbloom.so 文件：
+make
+拷贝至指定目录：
+cp redisbloom.so /usr/local/redis/bin/redisbloom.so
+在redis配置文件里加入以下配置：
+loadmodule /usr/local/redis/bin/redisbloom.so
+配置完成后重启redis服务：
+sudo /etc/init.d/redis-server restart
+#测试是否安装成功
+127.0.0.1:6379&gt; bf.add www.biancheng.net hello</pre>
+<h2>
+	常用命令汇总</h2>
+<table>
+	<caption>
+		布隆过滤器基本命令</caption>
+	<tbody>
+		<tr>
+			<th>
+				命令</th>
+			<th>
+				说明</th>
+		</tr>
+		<tr>
+			<td>
+				bf.add</td>
+			<td>
+				只能添加元素到布隆过滤器。</td>
+		</tr>
+		<tr>
+			<td>
+				bf.exists</td>
+			<td>
+				判断某个元素是否在于布隆过滤器中。</td>
+		</tr>
+		<tr>
+			<td>
+				bf.madd</td>
+			<td>
+				同时添加多个元素到布隆过滤器。</td>
+		</tr>
+		<tr>
+			<td>
+				bf.mexists</td>
+			<td>
+				同时判断多个元素是否存在于布隆过滤器中。</td>
+		</tr>
+		<tr>
+			<td>
+				bf.reserve</td>
+			<td>
+				以自定义的方式设置布隆过滤器参数值，共有 3 个参数分别是 key、error_rate(错误率)、initial_size(初始大小)。</td>
+		</tr>
+	</tbody>
+</table>
+<h4>
+	1) 命令应用</h4>
+<pre class="info-box">
+127.0.0.1:6379&gt; bf.add spider:url www.biancheng.net
+(integer) 1
+127.0.0.1:6379&gt; bf.exists spider:url www.biancheng.net
+(integer) 1
+127.0.0.1:6379&gt; bf.madd spider:url www.taobao.com www.123qq.com
+1) (integer) 1
+2) (integer) 1
+127.0.0.1:6379&gt; bf.mexists spider:url www.jd.com www.taobao.com
+1) (integer) 0
+2) (integer) 1</pre>
+<h2>
+	Python使用布隆过滤器</h2>
+下面使用 Python 测试布隆过滤器的误判率，代码如下所示：
+<pre class="python">
+import redis
+size=10000
+r = redis.Redis()
+count = 0
+for i in range(size):
+    #添加元素，key为userid，值为user0...user9999
+&nbsp;&nbsp;&nbsp; r.execute_command(&quot;bf.add&quot;, &quot;userid&quot;, &quot;user%d&quot; % i)
+    #判断元素是否存在，此处切记 i+1
+&nbsp;&nbsp;&nbsp; res = r.execute_command(&quot;bf.exists&quot;, &quot;userid&quot;, &quot;user%d&quot; % (i + 1))
+&nbsp;&nbsp;&nbsp; if res == 1:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; print(i)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; count += 1
+#求误判率，round()中的5表示保留的小数点位数
+print(&quot;size: {} ,error rate:{}%&quot;.format(size, round(count / size * 100, 5)))</pre>
+执行三次测试，size 从小到大。输出结果如下：
+<pre class="info-box">
+size: 1000 , error rate: 1.0%
+size: 10000 , error rate: 1.25%
+size: 100000 , error rate: 1.305%</pre>
+通过上述结果可以看出布隆过滤器的错误率为 1% 多点，当 size 越来越大时，布隆过滤器的错误率就会升高，那么有没有办法降低错误率呢？这就用到了布隆过滤器提供的<code>bf.reserve</code>方法。如果不使用该方法设置参数，那么布隆过滤器将按照默认参数进行设置，如下所示：
+<pre class="info-box">
+key  #指定存储元素的键，若已经存在,则bf.reserve会报错
+error_rate=0.01 #表示错误率
+initial_size=100 #表示预计放入布隆过滤器中的元素数量</pre>
+当放入过滤器中的元素数量超过了 initial_size 值时，错误率 error_rate 就会升高。因此就需要设置一个较大 initial_size 值，避免因数量超出导致的错误率上升。
+<h4>
+	解决错误率过高的问题</h4>
+错误率越低，所需要的空间也会越大，因此就需要我们尽可能精确的估算元素数量，避免空间的浪费。我们也要根据具体的业务来确定错误率的许可范围，对于不需要太精确的业务场景，错误率稍微设置大一点也可以。<br />
+<br />
+注意：如果要使用自定义的布隆过滤器需要在 add 操作之前，使用 bf.reserve 命令显式地创建 key，格式如下：
+<pre class="info-box">
+client.execute_command(&quot;bf.reserve&quot;, &quot;keyname&quot;, 0.001, 50000)</pre>
+布隆过滤器相比于平时常用的的列表、散列、集合等数据结构，其占用空间更少、效率更高，但缺点就是返回的结果具有概率性，并不是很准确。在理论情况下，添加的元素越多，误报的可能性就越大。再者，存放于布隆过滤器中的元素不容易被删除，因为可能出现会误删其他元素情况。<br />
+</div>
+			<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="../view/niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/1121_2.html" title="Linux zlib和libpng安装（LAMP环境搭建）" target="_blank">Linux zlib和libpng安装（LAMP环境搭建）</a></li>
+<li><a href="../view/vip_3429_2.html" title="分块查找（索引顺序查找）算法及C语言实现" target="_blank">分块查找（索引顺序查找）算法及C语言实现</a></li>
+<li><a href="../view/6259_2.html" title="PHP getimagesize()：获取图像大小" target="_blank">PHP getimagesize()：获取图像大小</a></li>
+<li><a href="../view/7369_3.html" title="Django模板系统" target="_blank">Django模板系统</a></li>
+<li><a href="../view/9799_2.html" title="JavaScript for循环的用法" target="_blank">JavaScript for循环的用法</a></li>
+<li><a href="../view/9q6qif_2.html" title="C语言生成随机数" target="_blank">C语言生成随机数</a></li>
+<li><a href="../view/40rtq08_2.html" title="Go语言defer语句的用法" target="_blank">Go语言defer语句的用法</a></li>
+</ul>
+</div>
+		</div>
+		
+	</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9308;
+window.arcId = "2c187OS3IuG/KfNwuuuISBLvdHecK9UhYEuZufvjEpu6GLXcXFkF75jG9aQ";
+window.typeidChain = "413";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="../view/8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="../view/8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="../view/8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="../view/9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="../view/8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/redis/streams.html";
+window.nextPageURL = "/redis/geo.html";
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

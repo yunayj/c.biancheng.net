@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>GCC -E选项：生成预处理文件</title>
+<meta name="description" content="将源代码提交给编译器之前，由预处理器执行命令，展开源代码文件中的宏。 在正常的情况下，GCC 不会保留预处理阶段的中间输出文件。然而，可以利用 -E 选项保留预处理器输出文件" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>GCC -E选项：生成预处理文件</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">C语言代码在交给编译器之前，会先由预处理器进行一些文本替换方面的操作，例如宏展开、文件包含、删除部分代码等。<br />
+<br />
+在正常的情况下，<a href='../gcc/gcc.html' target='_blank'>GCC</a> 不会保留预处理阶段的输出文件，也即<code>.i</code>文件。然而，可以利用<code>-E</code>选项保留预处理器的输出文件，以用于诊断代码。<code>-E</code>选项指示 GCC 在预处理完毕之后即可停止。<br />
+<br />
+默认情况下，预处理器的输出会被导入到标准输出流（也就是显示器），可以利用<code>-o</code>选项把它导入到某个输出文件：
+<p class="info-box">
+$ gcc -E circle.c -o circle.i</p>
+表示把预处理的结果导出到 circle.i 文件。<br />
+<br />
+因为头文件可能相当大，如果源文件包括了多个头文件，那么它的预处理器输出可能会庞杂难读。使用<code>-C</code>选项会很有帮助，这个选项可以阻止预处理器删除源文件和头文件中的注释：
+<p class="info-box">
+$ gcc -E -C circle.c -o circle.c</p>
+<blockquote>
+注意，这里是大写的 -C，不是小写的 -c。小写的 -c 表示只编译不链接。</blockquote>
+<br />
+下面是 GCC 预处理器阶段常用的选项：
+<h4>
+-Dname[=definition]</h4>
+在处理源文件之前，先定义宏 name。宏 name 必须是在源文件和头文件中都没有被定义过的。将该选项搭配源代码中的<code>#ifdef name</code>命令使用，可以实现条件式编译。如果没有指定一个替换的值，该宏被定义为值 1。
+<h4>
+-Uname</h4>
+如果在命令行或 GCC 默认设置中定义过宏 name，则&ldquo;取消&rdquo;name 的定义。<code>-D</code>和<code>-U</code>选项会依据在命令行中出现的先后顺序进行处理。
+<h4>
+-Idirectory[:directory[...]]</h4>
+当通过 #include 命令把所需的头文件包括进源代码中时，除系统标准 include 目录之外，指定其他的目录对这些头文件进行搜索。
+<h4>
+-iquote directory[:directory[...]]</h4>
+这是在最近 GCC 版本中新增的选项，它为在 #include 命令中采用引号而非尖括号指定的头文件指定搜索目录。
+<h4>
+-isystem directory[:directory[...]]</h4>
+该选项在标准系统 include 目录以外为系统头文件指定搜索目录，且它指定的目录优先于标准系统 include 目录被搜索。在目录说明开头位置的等号，被视作系统根目录的占位符，可以使用<code>--sysroot</code>或<code>-isysroot</code>选项来修改它。
+<h4>
+-isysroot directory</h4>
+该选项指定搜索头文件时的系统根目录。例如，如果编译器通常在 /usr/include 目录及其子目录下搜索系统头文件，则该选项将引导到 directory/usr/include 及其子目录下进行搜索。
+<blockquote>
+<p>
+<code>--sysroot</code>选项，采用一个连字符替代 i，它为链接库搜索而不是头文件搜索指定系统根目录以外的目录。如果 isysroot 不可用，则 sysroot 既为头文件又为链接库搜索指定目录。</p>
+</blockquote>
+<h4>
+-I-</h4>
+在较新版本的 GCC 中，该选项被<code>-iquote</code>替代。在旧版本中，该选项用于将命令行的所有<code>-Idirectory</code>选项分割为两组。所有在<code>-I-</code>左边加上<code>-I</code>选项的目录，被视为等同于采用<code>-iquote</code>选项；这指的是，它们只对 #include 命令中采用引号的头文件名进行搜索。<br />
+<br />
+所有在<code>-I-</code>右边加上<code>-I</code>选项的目录，将对所有 #include 命令中的头文件名进行搜索，无论文件名是在引号还是尖括号中。<br />
+<br />
+而且，如果命令行中出现了<code>-I-</code>，那么包括源文件本身的目录不再自动作为搜索头文件的目录。<br />
+<br />
+对于include目录而言，通常的搜索顺序是：
+<ol>
+<li>
+包含指定源文件的目录（对于在 #include 命令中以引号包括的文件名）。</li>
+<li>
+采用<code>-iquote</code>选项指定的目录，依照出现在命令行中的顺序进行搜索。只对 #include 命令中采用引号的头文件名进行搜索。</li>
+<li>
+采用<code>-I</code>选型指定的目录，依照出现在命令行中的顺序进行搜索。</li>
+<li>
+采用环境变量 CPATH 指定的目录。</li>
+<li>
+采用<code>-isystem</code>选项指定的目录，依照出现在命令行中的顺序进行搜索。</li>
+<li>
+采用环境变量 C_INCLUDE_PATH 指定的目录。</li>
+<li>
+系统默认的 include 目录。</li>
+</ol>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="179.html" title="void_C语言void关键字详解" target="_blank">void_C语言void关键字详解</a></li>
+<li><a href="923.html" title="Java数组使用binarySearch()方法查找指定元素" target="_blank">Java数组使用binarySearch()方法查找指定元素</a></li>
+<li><a href="5637.html" title="Java常用开发工具有哪些？" target="_blank">Java常用开发工具有哪些？</a></li>
+<li><a href="7609.html" title="C++ getline()：从文件中读取一行字符串" target="_blank">C++ getline()：从文件中读取一行字符串</a></li>
+<li><a href="../mongodb2/install-on-linux.html" title="Linux安装MongoDB（图解）" target="_blank">Linux安装MongoDB（图解）</a></li>
+<li><a href="ob311tw.html" title="Redis DECR命令的用法" target="_blank">Redis DECR命令的用法</a></li>
+<li><a href="nlwxefu.html" title="Python write()方法：向文件中写入字符串" target="_blank">Python write()方法：向文件中写入字符串</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 2375;
+window.arcId = "9088IvYZewXWTQ5h3GRwUJemXig+cJigWpDFhZifelg5hKIa4fuOAf+My0U";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

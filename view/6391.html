@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>以太网数据帧格式（结构）图解</title>
+<meta name="description" content="以太网链路传输的数据包称做以太帧，或者以太网数据帧。在以太网中，网络访问层的软件必须把数据转换成能够通过网络适配器硬件进行传输的格式。 以太帧的工作机制 当以太网软件" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>以太网数据帧格式（结构）图解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">以太网链路传输的数据包称做以太帧，或者以太网数据帧。在以太网中，网络访问层的软件必须把数据转换成能够通过网络适配器硬件进行传输的格式。
+<h2>
+以太帧的工作机制</h2>
+当以太网软件从网络层接收到数据报之后，需要完成如下操作：<br />
+<br />
+1) 根据需要把网际层的数据分解为较小的块，以符合以太网帧数据段的要求。<br />
+<br />
+以太网帧的整体大小必须在 64～1518 字节之间（不包含前导码）。有些系统支持更大的帧，最大可以支持 9000 字节。有些系统支持更大的帧，最大可以支持 9000 字节。<br />
+<br />
+2) 把数据块打包成帧。每一帧都包含数据及其他信息，这些信息是以太网网络适配器处理帧所需要的。<br />
+<br />
+3) 把数据帧传递给对应于 OSI 模型物理层的底层组件，后者把帧转换为比特流，并且通过传输介质发送出去。<br />
+<br />
+4) 以太网上的其他网络适配器接收到这个帧，检查其中的目的地址。如果目的地址与网络适配器的地址相匹配，适配器软件就会处理接收到的帧，把数据传递给协议栈中较高的层。
+<h2>
+以太帧的结构</h2>
+以太帧起始部分由前同步码和帧开始定界符组成，后面紧跟着一个以太网报头，以 MAC 地址说明目的地址和源地址。以太帧的中部是该帧负载的包含其他协议报头的数据包，如 IP 协议。<br />
+<br />
+以太帧由一个 32 位冗余校验码结尾，用于检验数据传输是否出现损坏。以太帧结构如图所示。<br />
+<div style="text-align: center;">
+<img alt="以太帧结构（格式）" src="../uploads/allimg/191106/6-191106130541362.gif" /></div>
+<br />
+上图中每个字段的含义如下表所示：<br />
+<table>
+<tbody>
+<tr>
+<th>
+字段</th>
+<th>
+含义</th>
+</tr>
+<tr>
+<td>
+前同步码</td>
+<td>
+用来使接收端的适配器在接收 MAC 帧时能够迅速调整时钟频率，使它和发送端的频率相同。前同步码为 7 个字节，1 和 0 交替。</td>
+</tr>
+<tr>
+<td>
+帧开始定界符</td>
+<td>
+帧的起始符，为 1 个字节。前 6 位 1 和 0 交替，最后的两个连续的 1 表示告诉接收端适配器：&ldquo;帧信息要来了，准备接收&rdquo;。</td>
+</tr>
+<tr>
+<td>
+目的地址</td>
+<td>
+接收帧的网络适配器的物理地址（MAC 地址），为 6 个字节（48 比特）。作用是当网卡接收到一个数据帧时，首先会检查该帧的目的地址，是否与当前适配器的物理地址相同，如果相同，就会进一步处理；如果不同，则直接丢弃。</td>
+</tr>
+<tr>
+<td>
+源地址</td>
+<td>
+发送帧的网络适配器的物理地址（MAC 地址），为 6 个字节（48 比特）。</td>
+</tr>
+<tr>
+<td>
+类型</td>
+<td>
+上层协议的类型。由于上层协议众多，所以在处理数据的时候必须设置该字段，标识数据交付哪个协议处理。例如，字段为 0x0800 时，表示将数据交付给 IP 协议。</td>
+</tr>
+<tr>
+<td>
+数据</td>
+<td>
+也称为效载荷，表示交付给上层的数据。以太网帧数据长度最小为 46 字节，最大为 1500 字节。如果不足 46 字节时，会填充到最小长度。最大值也叫最大传输单元（MTU）。<br />
+<br />
+在 Linux 中，使用 ifconfig 命令可以查看该值，通常为 1500。</td>
+</tr>
+<tr>
+<td>
+帧检验序列 FCS</td>
+<td>
+检测该帧是否出现差错，占 4 个字节（32 比特）。发送方计算帧的循环冗余码校验（CRC）值，把这个值写到帧里。接收方计算机重新计算 CRC，与 FCS 字段的值进行比较。如果两个值不相同，则表示传输过程中发生了数据丢失或改变。这时，就需要重新传输这一帧。</td>
+</tr>
+</tbody>
+</table>
+<h2>
+构建以太帧</h2>
+通过上面的学习了解了以太帧的结构。用户可以根据需要设置以太帧的字段值，从而构建以太帧。netwox 工具中编号为 32 的模块提供了以太帧构建功能。<br />
+<br />
+【示例】构建以太网数据帧。<br />
+<br />
+1) 查看以太网数据帧，执行命令如下：
+<p class="info-box">
+root@daxueba:~# netwox 32</p>
+输出信息如下：
+<p class="info-box">
+Ethernet________________________________________________________.<br />
+| 00:0C:29:CA:E4:66-&gt;00:08:09:0A:0B:0C type:0x0000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<br />
+|____________________________________________________________&nbsp; &nbsp;|</p>
+上述输出信息中的 00:0C:29:CA:E4:66 为源 MAC 地址，是当前主机的 MAC 地址；00:08:09:0A:0B:0C 为目标 MAC 地址，0x0000 为以太网类型。<br />
+<br />
+2) 构建以太帧，设置源 MAC 地址为 00:0c:29:c4:8a:de，目标 MAC 地址为 01:02:03:04:05:06，执行命令如下：
+<p class="info-box">
+root@daxueba:~# netwox 32 -a 00:0c:29:c4:8a:de -b 01:02:03:04:05:06</p>
+输出信息如下：
+<p class="info-box">
+Ethernet________________________________________________________.<br />
+| 00:0C:29:C4:8A:DE-&gt;01:02:03:04:05:06 type:0x0000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<br />
+|_____________________________________________________________&nbsp; &nbsp; |</p>
+<br />
+3)&nbsp;为了验证构建的以太帧，通过 Wireshark 工具进行抓包。在链路层中可以看到伪造的源 MAC 地址和目标 MAC 地址，信息如下：
+<p class="info-box">
+Ethernet II, Src: Vmware_c4:8a:de (00:0c:29:c4:8a:de), Dst: Woonsang_04:05:06(01:02:03:04:05:06)</p>
+<br />
+4) 为了不被其他主机发现，在构造数据包时，可以指定假的源MAC地址。但是，每构造一次只能发送一个数据包。如果需要发送多个数据包，就需要构造多次。<br />
+<br />
+为了方便，可以使用 macchanger 工具临时修改 MAC 地址，这样就不需要每次构造假的源 MAC 地址了。例如，将当前主机的 MAC 地址修改为 00:0c:29:aa:e0:28，执行命令如下：
+<p class="info-box">
+Current MAC:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 00:0c:29:ca:e4:66 (VMware, Inc.)<br />
+Permanent MAC:&nbsp; &nbsp; 00:0c:29:ca:e4:66 (VMware, Inc.)<br />
+New MAC:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 00:0c:29:aa:e0:28 (VMware, Inc.)</p>
+以上输出信息表示当前主机原来的 MAC 地址为 00:0c:29:ca:e4:66，修改后的 MAC 地址为 00:0c:29:aa:e0:28。<br />
+<br />
+5) 再次使用 netwox 工具进行发包，默认使用修改后的 MAC 地址作为源 MAC 地址，如下：
+<p class="info-box">
+root@daxueba:~# netwox 32</p>
+输出信息如下：
+<p class="info-box">
+Ethernet_________________________________________________<br />
+| 00:0C:29:AA:E0:28-&gt;00:08:09:0A:0B:0C type:0x0000&nbsp; &nbsp; |<br />
+|_______________________________________________________&nbsp; &nbsp; |</p>
+<h2>
+以太帧洪水攻击</h2>
+交换机为了方便数据传输，通常会存储每个端口所对应的 MAC 地址，形成一张表。当交换机收到计算机发来的以太帧时，就会查看帧中的源 MAC 地址，并查找存储的表：
+<ul>
+<li>
+如果表中存在该 MAC 地址，就直接转发数据；</li>
+<li>
+如果没有，则将该 MAC 地址存入该表中。</li>
+</ul>
+<br />
+当其他计算机向这个 MAC 地址发送数据时，可以快速决定向哪个端口发送数据。由于该表不可能是无穷大的，所以当达到一定数量时，将不会储存其他新的 MAC 地址。再有新的主机发来数据帧时，部分交换机将不再查找对应的端口，而是以广播的形式转发给所有的端口。这样，就使其他主机可以接收到该数据帧了。<br />
+<br />
+netwox 工具提供编号为 75 的模块，用来实现以太帧洪水攻击功能。它可以伪造大量的以太网数据包，填满交换机的存储表，使交换机失去正确的转发功能。<br />
+<br />
+实施以太帧洪水攻击，执行命令如下：
+<p class="info-box">
+root@daxueba:~# netwox 75</p>
+执行命令后没有任何输出信息，但是会发送大量的以太网数据包。<br />
+<br />
+使用 Wireshark 工具进行抓包，如图所示。图中捕获的数据包为以太帧洪水攻击产生的数据包。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/191106/6-19110613564B96.gif" /></div>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="713.html" title="Linux该如何学习（新手入门必看）" target="_blank">Linux该如何学习（新手入门必看）</a></li>
+<li><a href="vip_3249.html" title="如何检测子Shell和子进程？" target="_blank">如何检测子Shell和子进程？</a></li>
+<li><a href="4258.html" title="Python比较运算符（关系运算符）" target="_blank">Python比较运算符（关系运算符）</a></li>
+<li><a href="4372.html" title="Python dict字典详解" target="_blank">Python dict字典详解</a></li>
+<li><a href="8296.html" title="Windows平台安装GDB调试器" target="_blank">Windows平台安装GDB调试器</a></li>
+<li><a href="../spring_boot/global-exception.html" title="Spring Boot全局异常处理" target="_blank">Spring Boot全局异常处理</a></li>
+<li><a href="9827.html" title="PLC是什么（超级详细）" target="_blank">PLC是什么（超级详细）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 6391;
+window.arcId = "7c1epMoqfeDJi69uwAEG1H4bZ8VqThHn22M7MF+BJf6tCb2plmkU6oHV67c";
+window.typeidChain = "325|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

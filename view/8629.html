@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>pthread_cancel()函数：终止线程执行</title>
+<meta name="description" content="线程结束执行的方式共有 3 种，分别是： 线程将指定函数体中的代码执行完后自行结束； 线程执行过程中，遇到 pthread_exit() 函数结束执行。 线程执行过程中，被同一进程中的其它线程" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>pthread_cancel()函数：终止线程执行</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">线程结束执行的方式共有 3 种，分别是：
+<ol>
+<li>
+线程将指定函数体中的代码执行完后自行结束；</li>
+<li>
+线程执行过程中，遇到 pthread_exit() 函数结束执行。</li>
+<li>
+线程执行过程中，被同一进程中的其它线程（包括主线程）强制终止；</li>
+</ol>
+<br />
+第一种方式很容易理解，第二种方式已经在《<a href="8608.html" target="_blank">pthread_exit()函数</a>》一节中做了详细的介绍，本节给大家介绍第 3 种方式。多线程程序中，一个线程可以借助 pthread_cancel() 函数向另一个线程发送&ldquo;终止执行&rdquo;的信号（后续称&ldquo;Cancel&rdquo;信号），从而令目标线程结束执行。<br />
+<br />
+pthread_cancel() 函数声明在<code>&lt;pthread.h&gt;</code>头文件中，语法格式如下：
+<pre class="info-box">
+int pthread_cancel(pthread_t thread);</pre>
+参数 thread 用于指定发送 Cancel 信号的目标线程。<br />
+<br />
+如果 pthread_cancel() 函数成功地发送了 Cancel 信号，返回数字 0；反之如果发送失败，函数返回值为非零数。对于因&ldquo;未找到目标线程&rdquo;导致的信号发送失败，函数返回 ESRCH 宏（定义在<code>&lt;errno.h&gt;</code>头文件中，该宏的值为整数 3）。<br />
+<blockquote>
+<p>
+注意，pthread_cancel() 函数的功能仅仅是向目标线程发送 Cancel 信号，至于目标线程是否处理该信号以及何时结束执行，由目标线程决定。我们会在《<a href="../thread/vip_8613.html" target="_blank">终止线程执行，这个坑千万别踩！</a>》一节给您做详细讲解。</p>
+</blockquote>
+对于接收 Cancel 信号后结束执行的目标线程，等同于该线程自己执行如下语句：<br />
+<pre class="cpp" shownum="false">
+pthread_exit(PTHREAD_CANCELED);</pre>
+也就是说，当一个线程被强制终止执行时，它会返回 PTHREAD_CANCELED 这个宏（定义在<code>&lt;pthread.h&gt;</code>头文件中）。<br />
+<br />
+接下来通过一个样例，给大家演示 pthread_cancel() 函数的用法：<br />
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+#include &lt;pthread.h&gt;
+#include &lt;stdlib.h&gt;     // sleep() 函数
+//线程执行的函数
+void * thread_Fun(void * arg) {
+    printf(&quot;新建线程开始执行\n&quot;);
+    sleep(10);
+}
+
+int main()
+{
+    pthread_t myThread;
+    void * mess;
+    int value;
+    int res;
+    //创建 myThread 线程
+    res = pthread_create(&amp;myThread, NULL, thread_Fun, NULL);
+    if (res != 0) {
+        printf(&quot;线程创建失败\n&quot;);
+        return 0;
+    }
+    sleep(1);
+    //向 myThread 线程发送 Cancel 信号
+    res = pthread_cancel(myThread);
+    if (res != 0) {
+        printf(&quot;终止 myThread 线程失败\n&quot;);
+        return 0;
+    }
+    //获取已终止线程的返回值
+    res = pthread_join(myThread, &amp;mess);
+    if (res != 0) {
+        printf(&quot;等待线程失败\n&quot;);
+        return 0;
+    }
+    //如果线程被强制终止，其返回值为 PTHREAD_CANCELED
+    if (mess == PTHREAD_CANCELED) {
+        printf(&quot;myThread 线程被强制终止\n&quot;);
+    }
+    else {
+        printf(&quot;error\n&quot;);
+    }
+    return 0;
+}</pre>
+假设程序编写在 thread.c 文件中，执行过程为：
+<p class="info-box">
+[root@localhost ~]# gcc thread.c -o thread.exe -lpthread<br />
+[root@localhost ~]# ./thread.exe<br />
+新建线程开始执行<br />
+myThread 线程被强制终止</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="433.html" title="C++11 Lambda表达式（匿名函数）详解" target="_blank">C++11 Lambda表达式（匿名函数）详解</a></li>
+<li><a href="1062.html" title="Linux ps命令详解：查看正在运行的进程" target="_blank">Linux ps命令详解：查看正在运行的进程</a></li>
+<li><a href="1810.html" title="C语言while循环和do while循环详解" target="_blank">C语言while循环和do while循环详解</a></li>
+<li><a href="2301.html" title="C++ typeid运算符：获取类型信息" target="_blank">C++ typeid运算符：获取类型信息</a></li>
+<li><a href="2424.html" title="MySQL FLOAT、DOUBLE、DECIMAL（小数类型）" target="_blank">MySQL FLOAT、DOUBLE、DECIMAL（小数类型）</a></li>
+<li><a href="../redis2/hincrby.html" title="Redis HINCRBY命令" target="_blank">Redis HINCRBY命令</a></li>
+<li><a href="../c/isfinite.html" title="C语言isfinite()：判断有限值" target="_blank">C语言isfinite()：判断有限值</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8629;
+window.arcId = "5de6xxitbb9O9Db2iPW3IrrAfpsrP8oQdp8ZqlXs+Zcp7wO42m/OyzEaj50";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

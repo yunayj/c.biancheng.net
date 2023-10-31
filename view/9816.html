@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Python求回文数（2种实现方案）</title>
+<meta name="description" content="打印所有不超过 n（取 n256）的其平方具有对称性质的数（也称回文数）。 问题分析 对于要判定的数 n，计算出其平方后（存于 a），按照回文数的定义要将最高位与最低位、次高位与次" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Python求回文数（2种实现方案）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">打印所有不超过 n（取 n&lt;256）的其平方具有对称性质的数（也称回文数）。<br />
+<h2>
+问题分析</h2>
+对于要判定的数 n，计算出其平方后（存于 a），按照&ldquo;回文数&rdquo;的定义要将最高位与最低位、次高位与次低位等进行比较，若彼此相等则为回文数。此算法需要知道平方数的位数，再一一将每一位分解并比较，此方法对于位数已知且位数不是太多的数来说比较适用。<br />
+<br />
+此问题可借助数组来解决，将平方后的数值（a）的每一位进行分解，按从低位到高位的顺序依次暂存到数组中，再将数组中的元素按照下标从大到小的顺序重新将其组合成一个数 k（如 n=15，则a=225 且 k=522），若 a 等于 k 则可判定 n 为回文数。<br />
+<h2>
+算法设计</h2>
+从低位到高位将某个整数拆分。对于一个整数（设变量名为 a），无论其位数多少，若欲将最低位拆分则只需对 10 进行求模运算，即 a%10；拆分次低位首先要想办法将原来的次低位作为最低位来处理，用原数对 10 求商可得到由除最低位之外的数形成的新数，且新数的最低位是原数的次低位，根据拆分最低位的方法将次低位求出，即先进行 a//10 运算，后进行 a%10 运算；对于其他位上的数算法相同。<br />
+<br />
+利用这个方法要解决的一个问题是，什么情况下才算把所有数都拆分完了呢？当拆分到只剩原数最高位时（即新数为个位数时），再对 10 求商的话，得到的结果肯定为 0，可通过这个条件判断是否拆分完毕。<br />
+<br />
+根据题意，应将每次拆分出来的数据存储到数组中，原数的最低位存到下标为0的位置，次低位存到下标为 1 的位置，以此类推。程序段如下：<br />
+<pre class="python">
+i = 0
+while a != 0: # 从低位到高位分解数a的每一位，存于数组m[1]~m[16]
+    m[i] = a % 10
+    a //= 10
+    i += 1</pre>
+将数组中元素重新组合成一个新数。拆分时变量 a 的最高位仍然存储在数组中下标最大的位置，根据&ldquo;回文数&rdquo;定义，新数中数据的顺序与 a 中数据的顺序相反，所以我们按照下标从大到小的顺序分别取出数组中的元素组成新数 k。由几个数字组成一个新数时只需用每一个数字乘以所在位置对应的权值，然后相加即可，在编程过程中应该有一个变量 t 来存储每一位对应的权值，个位权值为 1，十位权值为 10，百位权值为 100，以此类推，所以可以利用循环，每循环一次，t 的值就扩大 10 倍。对应的程序段如下：<br />
+<pre class="python">
+while i &gt; 0:
+    k += m[i-1] * t # t记录某一位置对应的权值
+    t *= 10
+    i -= 1</pre>
+<h2>
+确定程序框架</h2>
+程序的流程图如下图所示：<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/221111/2-221111101P51Y.gif" /></div>
+<h2>
+第一种实现方案</h2>
+<pre class="python">
+if __name__ == &#39;__main__&#39;:
+    m = [1] * 17
+    count = 0
+    print(&quot;No.    number     it&#39;s square(palindrome)&quot;)
+    for n in range(1, 256):  # 穷举n的取值范围
+        k, i, t, a = 0, 0, 1, n*n # 计算n的平方
+        squ = a
+        while a != 0: # 从低到高分解数a的每一位存于数组m[1]~m[16]
+            m[i] = a % 10
+            a //= 10
+            i += 1
+
+        while i &gt; 0:
+            k += m[i-1] * t # t记录某一位置对应的权值
+            t *= 10
+            i -= 1
+
+        if k == squ:
+            count += 1
+            print(&quot;%2d%10d%10d&quot; % (count, n, n*n))</pre>
+运行结果为：
+<pre class="info-box">
+No.    number     it&#39;s square(palindrome)
+1         1         1
+2         2         4
+3         3         9
+4        11       121
+5        22       484
+6        26       676
+7       101     10201
+8       111     12321
+9       121     14641
+10       202     40804
+11       212     44944</pre>
+<h2>
+第二种实现方案</h2>
+在上面的问题分析中，提到另一种判断&ldquo;回文数&rdquo;的方法，就是将数据中每一位的数分离出来，然后比较对称位置上的数据，若相等，则此数是&ldquo;回文数&rdquo;。此方法适合于对一个整数进行判断。<br />
+<br />
+编程实现输入一个 5 位数，判断它是不是回文数，例如 12321 是回文数，个位与万位相同，十位与千位相同。<br />
+<br />
+完整的程序如下：<br />
+<pre class="python">
+if __name__ == &#39;__main__&#39;:
+    x = int(input(&quot;请输入一个5位数整数：&quot;))
+    if x &lt; 10000 or x &gt; 99999:
+        print(&quot;输入错误&quot;)
+    else:
+        ten_thousand = x // 10000 #拆分最高位万位
+        thousand = x % 10000 // 1000  # 拆分千位
+        ten = x % 100 // 10 # 拆分十位
+        indiv = x % 10  # 拆分个位
+        if indiv == ten_thousand and ten == thousand:
+            print(&quot;%d是回文数&quot; %x)
+        else:
+          print(&quot;%d不是回文数&quot; %x)</pre>
+对于本题来说，给定的是一个 5 位数，对于中间位置的百位不需要再进行分离，因为它不与任何其他位置进行比较。但对偶数位的整数进行判断时，所有位置都要分离出来。在编程过程中除了保证程序的正确性外，效率也是很重要的。<br />
+<br />
+运行程序，输入 12521 ，判断它们是否为回文数，结果如下图所示。
+<p class="info-box">
+请输入一个5位数整数：12521<br />
+12521是回文数</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="3342.html" title="双向链表及创建（C语言）详解" target="_blank">双向链表及创建（C语言）详解</a></li>
+<li><a href="5581.html" title="JS字符串查找（6种方法）" target="_blank">JS字符串查找（6种方法）</a></li>
+<li><a href="7868.html" title="C++11完美转发及实现方法详解" target="_blank">C++11完美转发及实现方法详解</a></li>
+<li><a href="../numpy/index-slice.html" title="Numpy索引和切片" target="_blank">Numpy索引和切片</a></li>
+<li><a href="9789.html" title="Python if语句用法详解" target="_blank">Python if语句用法详解</a></li>
+<li><a href="qqop4c.html" title="JavaScript介绍（非常详细）" target="_blank">JavaScript介绍（非常详细）</a></li>
+<li><a href="f0r37f3.html" title="Word设置页眉和页脚（多种方式）" target="_blank">Word设置页眉和页脚（多种方式）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9816;
+window.arcId = "35e4v+DnMjpVWanJN3nhgXfHQJpaWM9DjIesXWjYBU410GZ09FTRmMg+ZF0";
+window.typeidChain = "145|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

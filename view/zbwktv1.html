@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++ new和delete用法详解</title>
+<meta name="description" content="在 C++ 中，指针变量的值是个地址，这个地址指向内存中的某一个区域，使用指针的时候，需要保证指向地址的有效性。因此，了解变量在内存中的存储方式，对于理解指针的生存周期有" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++ new和delete用法详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在 C++ 中，指针变量的值是个地址，这个地址指向内存中的某一个区域，使用指针的时候，需要保证指向地址的有效性。因此，了解变量在内存中的存储方式，对于理解指针的生存周期有着非常重要的作用。<br />
+<h2>
+程序中内存的分配方式</h2>
+在 C++ 程序中，内存分为 5 个区，分别是栈、堆、全局/静态存储区、常量存储区和程序代码区，程序中的各种数据都存储在这些内存区域中。<br />
+<br />
+栈区（Stack）由编译器自动分配和释放，存放函数的参数以及局部变量。其分配运算内置于处理器的指令集中，效率很高。但是可使用的总量有限，一般不会超过 1M 字节。<br />
+<br />
+堆区（Heap）中内存的分配和释放由开发者负责。一般用运算符 new 分配内存，并用运算符 delete 释放内存。一个 new 要对应一个 delete，否则会导致内存泄露。如果开发者没有释放，在程序结束的时候操作系统会自动回收。在堆上可分配的内存比栈上大了很多，且使用非常灵活。<br />
+<br />
+全局/静态存储区中存放的是全局变量和静态变量。该存储区分配的内存在整个程序运行期间一直有效，直到程序结束由系统回收。<br />
+<br />
+常量存储区中存储的是常量，通常不允许修改。在程序中定义的常量以及指针字符串都存储在这里。<br />
+<br />
+程序代码区（Text Segment）用于存储程序的可执行代码。<br />
+<br />
+对于初学者来说，经常混淆上面几种内存分配方式。下面有个简单的例子，使用了其中的几种内存分配方式：<br />
+<pre class="cpp">
+#include &lt;iostream&gt;
+int a;          // 全局变量，存放在全局/静态存储区
+int main()
+{
+    int b;      // 局部变量，存放在栈区
+    int* p = new int; // new 申请的堆区的内存空间；指针 p 是局部变量，存放在栈区
+    const int num = 100; // 常量，存放在常量区
+
+    delete p; // 释放堆空间
+    return 0; 
+}</pre>
+在这 5 块内存区域中，栈区、全局/静态存储区以及常量存储区中的分配是由编译器来进行的，代码区由操作系统负责，只有在堆区的内存需要程序员手动管理。<br />
+<br />
+本节主要介绍通过 new 和 delete 管理堆内存。<br />
+<h2>
+C++ new</h2>
+在堆上分配内存，要使用 new 关键字，后面跟一个数据类型。如果需要对分配出的内存进行初始化，则在类型后面加上一个括号，并带有初始值。new 的语法格式如下：
+<pre class="info-box">
+new 类型(初值);</pre>
+为了后续方便使用申请的堆内存，通常会使用一个指针指向 new 的结果，例如：
+<pre class="cpp" shownum="false">
+int *p = new int(5);</pre>
+上面的语句在堆上分配一块整型变量的内存，并使指针 p 指向这块内存。括号中的 5 为这块内存提供一个初始值，该内存分配成功之后，会用 5 去初始化，因此 *p 的值为 5。<br />
+<br />
+当然，在堆上分配内存的时候也可以不提供初始值，例如：<br />
+<pre class="cpp" shownum="false">
+int *p = new int;</pre>
+对于这种不提供显式初始化的情况，如果new的类型是类，则会调用该类的默认构造函数；如果是内部数据类型，则不会被初始化。<br />
+<br />
+new 还可以申请一整块内存空间当做数组使用，其方法是在 new 的类型后面跟一个中括号，其中是数组的长度，语法格式如下：
+<pre class="info-box">
+new 类型[长度];</pre>
+举个简单的例子：
+<pre class="cpp" shownum="false">
+int *arr = new int[5]; //定义长度为 5 的 arr 数组</pre>
+自 C++11 标准开始，申请堆区数组空间的同时可以进行初始化，语法格式如下：
+<pre class="info-box">
+new 类型[长度]{值, 值, ...};</pre>
+例如：
+<pre class="cpp" shownum="false">
+int *arr = new int[5]{1,2,3,4,5};</pre>
+定义的 arr 数组中存放的元素分别是 1、2、3、4、5。<br />
+<h2>
+C++ delete</h2>
+通过 new 分配的内存必须由开发者自己去释放，如果不手动释放，那么申请的堆内存就一直存在，直到程序执行结束才会被回收。<br />
+<br />
+在 C++ 中使用 delete 来释放内存，语法格式为：
+<pre class="info-box">
+delete 指针名;</pre>
+<br />
+如果是当做数组使用的一整块对内存，delete 的语法格式为：
+<pre class="info-box">
+delete []指针名;</pre>
+其中，中括号&ldquo;[]&rdquo;表示释放的是一个数组，这里不需要指定数组的长度。<br />
+<br />
+例如：
+<pre class="cpp">
+int* p = new int;
+int* arr = new int[5];
+
+//释放先前申请的堆内存
+delete p;
+delete[]arr;</pre>
+<h2>
+总结</h2>
+在 C++ 中，new 分配的堆内存，必须用 delete 手动释放，否则会造成内存泄漏。<br />
+<br />
+对于不是用 new 分配的内存空间，使用 delete 是不合法的。对于使用 new 分配的堆内存，只能 delete 一次，否则也会造成系统错误。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="401.html" title="strchr和strrchr函数及用法，C语言strchr和strrchr函数详解" target="_blank">strchr和strrchr函数及用法，C语言strchr和strrchr函数详解</a></li>
+<li><a href="1078.html" title="Linux fg命令：把后台命令恢复在前台执行" target="_blank">Linux fg命令：把后台命令恢复在前台执行</a></li>
+<li><a href="2285.html" title="将派生类指针赋值给基类指针时到底发生了什么？" target="_blank">将派生类指针赋值给基类指针时到底发生了什么？</a></li>
+<li><a href="2353.html" title="图解TCP四次握手断开连接" target="_blank">图解TCP四次握手断开连接</a></li>
+<li><a href="6398.html" title="Java继承（extends）简明教程" target="_blank">Java继承（extends）简明教程</a></li>
+<li><a href="7751.html" title="C++ 11是什么，C++ 11标准的由来" target="_blank">C++ 11是什么，C++ 11标准的由来</a></li>
+<li><a href="vip_8352.html" title="MySQL查看和修改事务隔离级别" target="_blank">MySQL查看和修改事务隔离级别</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10312;
+window.arcId = "7488EUXxR5t7B/Beao97bDFm4O89QyF5WeiSHtub4GlFi7CSFFbzOgWprU1u";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Redis分区技术详解</title>
+<meta name="description" content="Redis 分区技术（又称 Redis Partition）指的是将 Redis 中的数据进行拆分，然后把拆分后的数据分散到多个不同的 Redis 实例（即服务器）中，每个实例仅存储所有数据的某一部分（一个子集" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="../view/niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="redis.html">Redis</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href="what-is-redis.html">Redis是什么</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href="windows-installer.html">Windows下载安装Redis</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href="linux-installer.html">Ubuntu下载安装Redis</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href="config.html">Redis配置文件</a>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href="data-types.html">Redis数据类型</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href="commands.html">Redis命令行模式</a>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href="keys.html">Redis key键</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href="strings.html">Redis string字符串</a>
+</dd>
+<dd>
+<span class="channel-num">9</span>
+<a href="bitmap.html">Redis bitmap位图</a>
+</dd>
+<dd>
+<span class="channel-num">10</span>
+<a href="incrby.html">Redis数值操作命令</a>
+</dd>
+<dd>
+<span class="channel-num">11</span>
+<a href="lists.html">Redis list列表</a>
+</dd>
+<dd>
+<span class="channel-num">12</span>
+<a href="hashes.html">Redis hash哈希散列</a>
+</dd>
+<dd>
+<span class="channel-num">13</span>
+<a href="sets.html">Redis set集合</a>
+</dd>
+<dd>
+<span class="channel-num">14</span>
+<a href="sorted-set.html">Redis zset有序集合</a>
+</dd>
+<dd>
+<span class="channel-num">15</span>
+<a href="connection.html">Redis连接命令</a>
+</dd>
+<dd>
+<span class="channel-num">16</span>
+<a href="security.html">Redis安全策略</a>
+</dd>
+<dd>
+<span class="channel-num">17</span>
+<a href="client.html">Redis客户端命令</a>
+</dd>
+<dd>
+<span class="channel-num">18</span>
+<a href="server.html">Redis服务器命令</a>
+</dd>
+<dd>
+<span class="channel-num">19</span>
+<a href="hyperloglog.html">Redis基数统计</a>
+</dd>
+<dd>
+<span class="channel-num">20</span>
+<a href="pubsub.html">Redis发布订阅</a>
+</dd>
+<dd>
+<span class="channel-num">21</span>
+<a href="streams.html">Redis消息队列</a>
+</dd>
+<dd>
+<span class="channel-num">22</span>
+<a href="bloom-filter.html">Redis布隆过滤器</a>
+</dd>
+<dd>
+<span class="channel-num">23</span>
+<a href="geo.html">Redis地理位置</a>
+</dd>
+<dd>
+<span class="channel-num">24</span>
+<a href="transaction.html">Redis事务</a>
+</dd>
+<dd>
+<span class="channel-num">25</span>
+<a href="lua-scripts.html">Redis Lua脚本</a>
+</dd>
+<dd>
+<span class="channel-num">26</span>
+<a href="benchmarks.html">Redis性能测试</a>
+</dd>
+<dd>
+<span class="channel-num">27</span>
+<a href="partition.html">Redis分区技术</a>
+</dd>
+<dd>
+<span class="channel-num">28</span>
+<a href="pipeline.html">Redis管道技术</a>
+</dd>
+<dd>
+<span class="channel-num">29</span>
+<a href="backup.html">Redis数据备份和还原</a>
+</dd>
+<dd>
+<span class="channel-num">30</span>
+<a href="rdb.html">Redis RDB持久化</a>
+</dd>
+<dd>
+<span class="channel-num">31</span>
+<a href="aof.html">Redis AOF持久化</a>
+</dd>
+<dd>
+<span class="channel-num">32</span>
+<a href="slaveof.html">Redis主从模式</a>
+</dd>
+<dd>
+<span class="channel-num">33</span>
+<a href="sentinel-model.html">Redis哨兵模式</a>
+</dd>
+<dd>
+<span class="channel-num">34</span>
+<a href="distributed-lock.html">Redis分布式锁</a>
+</dd>
+<dd>
+<span class="channel-num">35</span>
+<a href="cache.html">Redis缓存问题</a>
+</dd>
+<dd>
+<span class="channel-num">36</span>
+<a href="java.html">Java使用Redis</a>
+</dd>
+<dd>
+<span class="channel-num">37</span>
+<a href="php.html">PHP使用Redis</a>
+</dd>
+<dd>
+<span class="channel-num">38</span>
+<a href="python.html">Python使用Redis</a>
+</dd>
+<dd>
+<span class="channel-num">39</span>
+<a href="config-summary.html">Redis配置项汇总</a>
+</dd>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="redis.html">Redis</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Redis分区技术详解</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">Redis 分区技术（又称 Redis Partition）指的是将 Redis 中的数据进行拆分，然后把拆分后的数据分散到多个不同的 Redis 实例（即服务器）中，每个实例仅存储数据集的某一部分（一个子集），我们把这个过程称之为 Redis 分区操作。<br />
+<p class="tip-box">
+Redis 实例指的是一台安装了 Redis 服务器的计算机。</p>
+分区（Partition）不仅是 Redis 中的概念，几乎所有数据库管理系统都会涉及到&ldquo;分区&rdquo;的应用。因此本节重点介绍有关分区的知识。
+<h2>
+分区的优势</h2>
+Redis 分区技术有两个方面的优势，一是提升服务器的性能，二是提高了服务器的数据存储能力。<br />
+<br />
+一方面，单台机器的 Redis 服务器，其网络 IO 能力和计算资源都是非常有限的，但是如果我们将请求分散到多台机器上，那么就能充分利用多台计算机的算力和网络带宽，从而整体上提升 Redis 服务器的性能。另一方面，随着存储数据的不断增加，单台机器的存储容量会达到极限，若将数据分散存储到多台 Redis 服务器上，其存储能力也将得到大幅度提升。
+<p class="tip-box">
+注意，Redis 分区技术可以利用多台计算机的内存总和，从而创建出大型的 Redis 数据库。</p>
+<h2>
+分区常用方法</h2>
+分区技术有两种常用方法，分别是&ldquo;范围分区&rdquo;和&ldquo;哈希分区&rdquo;。<br />
+<h4>
+1) 范围分区</h4>
+范围分区是最简单、最有效的分区方法之一。所谓范围分区指的是将特定范围的 key 映射到指定的 Redis 实例上。key 的命名格式如下：
+<pre class="info-box">
+object_name:&lt;id&gt;</pre>
+比如：user:1、user:2 ...用来表示不同 id&nbsp; 的用户。下面通过一个示例了解范围分区的具体流程：<br />
+<br />
+假设现在共有 3000 个用户，您可以把 id 从 0 到 1000 的用户映射到实例 R0 上，id 从 1001 到 2000 的用户映射到实例 R1 上，以此类推，将 id 从 2001 到 3000 的用户映射到实例 R2 上。<br />
+<br />
+范围分区不仅简单，而且实用，适合许多的特定场景。但当存储的 key 不能按照范围划分时，那么范围分区就不再适用了，比如 key 是一组 uuid（通用唯一识别码）。如下所示：
+<pre class="info-box">
+9eb4d81b-31ec-4c69-a721-c7e1771413dd</pre>
+此时范围分区就不再适用，就要用到另外一种分区方式&mdash;&mdash;哈希分区。<br />
+<h4>
+2) 哈希分区</h4>
+哈希分区与范围分区相比，它最显著的优势是适合任何形式的 key。哈希分区方法并不复杂比，id 表达式如下所示：
+<pre class="info-box">
+id=hash(key)%N</pre>
+这里的 id 指的是 Redis 实例的编号，而 N 表示共有多少个 Redis 实例。<br />
+<br />
+首先调用一个 crc32() 哈希函数，它可以将 key 转换为一个整数。 如下所示：<br />
+<p class="info-box">
+crc32(key)</p>
+假如转换后的整数是 93024922，此时共有 4 个 Redis 实例，对整数与实例的数量进行取模运算，就会得到一个 0 到 3 之间的整数，如下所示：
+<pre class="info-box">
+93024922 % 4 = 2</pre>
+上述计算结果为 2 ，我们就把这个 key 映射到 R2 实例中，如果为 3 就映射到 R3实例中。以此类推，通过这种方式可以将所有的 key 分散到 4 个不同的 Redis 实例中。
+<h2>
+分区技术的不足</h2>
+虽然 Redis 分区技术有诸多优势，但是它也存在一些不足之处。下面做简单介绍：<br />
+<ul>
+<li>
+涉及操作多个 key 时，通常不被支持。这是由于批量操作的 key 会被映射到不同的 Redis 实例中，此时无法实现在一个实例中操作分散开的 key；</li>
+<li>
+不支持包含多个 key 的 Redis 事务；</li>
+<li>
+当使用分区的时候，数据的处理变的非常复杂，比如需要处理多个 .rdb 或者 .aof 存储文件，并且还需要从多个 Redis 实例中备份数据；</li>
+<li>
+添加、删除实例变的复杂，比如 Redis 集群支持在运行时增加或减少实例，分区技术不支持这种功能。</li>
+</ul>
+<h2>
+分区技术问题解决</h2>
+我们知道，应用 Redis 分区技术时存在一些不足之处，比如在增加、删除 Redis 实例时会非常麻烦，但这种情况在实际应用中经常遇到。比如今天需要删除 10 台 Redis 实例，明天又要增加 20 台实例。那么对于这种问题，有没有一种较好的解决办法呢？下面进行简单介绍：<br />
+<br />
+其实 Redis 是一种很轻量级的服务（每个实例仅占用 1 MB），针对它的这种特性，我们提出以下解决办法：<br />
+<br />
+在一台机器上开启多个 Redis 实例，您可以从中选择一定数量的实例作为 Redis 工作集群。当集群中某一台机器存储不足时，您可以将一部分 Redis 实例移动到另外一台机器上，依次类推。这样就保证了 Redis 的实例总数不变，又达到了增加机器的目的。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="../view/niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/522.html" title="C语言希尔排序算法" target="_blank">C语言希尔排序算法</a></li>
+<li><a href="../view/vip_2024.html" title="只需一招，彻底攻克C语言指针，再复杂的指针都不怕" target="_blank">只需一招，彻底攻克C语言指针，再复杂的指针都不怕</a></li>
+<li><a href="../view/3159.html" title="Docker应用容器化（将应用程序部署到容器中）" target="_blank">Docker应用容器化（将应用程序部署到容器中）</a></li>
+<li><a href="../view/4728.html" title="计算机基础视频教程汇总（包括操作系统、计算机组成原理等）" target="_blank">计算机基础视频教程汇总（包括操作系统、计算机组成原理等）</a></li>
+<li><a href="../view/7863.html" title="C++11 move()函数：将左值强制转换为右值" target="_blank">C++11 move()函数：将左值强制转换为右值</a></li>
+<li><a href="../redis2/hvals.html" title="Redis HVALS命令" target="_blank">Redis HVALS命令</a></li>
+<li><a href="../redis2/getrange.html" title="Redis GETRANGE命令" target="_blank">Redis GETRANGE命令</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9313;
+window.arcId = "e4e9e8sBSrJ9L9L5wt6x97LWVa+fkgukMlaE31vQPqfg2ADFZd8sfPwZrOQ";
+window.typeidChain = "413";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="../view/8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="../view/8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="../view/8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="../view/9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="../view/8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/redis/benchmarks.html";
+window.nextPageURL = "/redis/pipeline.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

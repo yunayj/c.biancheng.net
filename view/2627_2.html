@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Python线程池及其原理和使用（超级详细）</title>
+<meta name="description" content="系统启动一个新线程的成本是比较高的，因为它涉及与操作系统的交互。在这种情形下，使用线程池可以很好地提升性能，尤其是当程序中需要创建大量生存期很短暂的线程时，更应该" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Python线程池及其原理和使用（超级详细）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">系统启动一个新线程的成本是比较高的，因为它涉及与操作系统的交互。在这种情形下，使用线程池可以很好地提升性能，尤其是当程序中需要创建大量生存期很短暂的线程时，更应该考虑使用线程池。<br />
+<br />
+线程池在系统启动时即创建大量空闲的线程，程序只要将一个函数提交给线程池，线程池就会启动一个空闲的线程来执行它。当该函数执行结束后，该线程并不会死亡，而是再次返回到线程池中变成空闲状态，等待执行下一个函数。<br />
+<br />
+此外，使用线程池可以有效地控制系统中并发线程的数量。当系统中包含有大量的并发线程时，会导致系统性能急剧下降，甚至导致 <a href='../python/python_2.html' target='_blank'>Python</a> 解释器崩溃，而线程池的最大线程数参数可以控制系统中并发线程的数量不超过此数。<br />
+<h2>
+	线程池的使用</h2>
+线程池的基类是 concurrent.futures 模块中的 Executor，Executor 提供了两个子类，即 ThreadPoolExecutor 和 ProcessPoolExecutor，其中 ThreadPoolExecutor 用于创建线程池，而 ProcessPoolExecutor 用于创建进程池。<br />
+<br />
+如果使用线程池/进程池来管理并发编程，那么只要将相应的 task 函数提交给线程池/进程池，剩下的事情就由线程池/进程池来搞定。<br />
+<br />
+Exectuor 提供了如下常用方法：
+<ul>
+	<li>
+		submit(fn, *args, **kwargs)：将 fn 函数提交给线程池。*args 代表传给 fn 函数的参数，*kwargs 代表以关键字参数的形式为 fn 函数传入参数。</li>
+	<li>
+		map(func, *iterables, timeout=None, chunksize=1)：该函数类似于全局函数 map(func, *iterables)，只是该函数将会启动多个线程，以异步方式立即对 iterables 执行 map 处理。</li>
+	<li>
+		shutdown(wait=True)：关闭线程池。</li>
+</ul>
+<br />
+程序将 task 函数提交（submit）给线程池后，submit 方法会返回一个 Future 对象，Future 类主要用于获取线程任务函数的返回值。由于线程任务会在新线程中以异步方式执行，因此，线程执行的函数相当于一个&ldquo;将来完成&rdquo;的任务，所以 Python 使用 Future 来代表。<br />
+<p class="info-box">
+	实际上，在 <a href='../java/java_2.html' target='_blank'>Java</a> 的多线程编程中同样有 Future，此处的 Future 与 Java 的 Future 大同小异。</p>
+Future 提供了如下方法：
+<ul>
+	<li>
+		cancel()：取消该 Future 代表的线程任务。如果该任务正在执行，不可取消，则该方法返回 False；否则，程序会取消该任务，并返回 True。</li>
+	<li>
+		cancelled()：返回 Future 代表的线程任务是否被成功取消。</li>
+	<li>
+		running()：如果该 Future 代表的线程任务正在执行、不可被取消，该方法返回 True。</li>
+	<li>
+		done()：如果该 Funture 代表的线程任务被成功取消或执行完成，则该方法返回 True。</li>
+	<li>
+		result(timeout=None)：获取该 Future 代表的线程任务最后返回的结果。如果 Future 代表的线程任务还未完成，该方法将会阻塞当前线程，其中 timeout 参数指定最多阻塞多少秒。</li>
+	<li>
+		exception(timeout=None)：获取该 Future 代表的线程任务所引发的异常。如果该任务成功完成，没有异常，则该方法返回 None。</li>
+	<li>
+		add_done_callback(fn)：为该 Future 代表的线程任务注册一个&ldquo;回调函数&rdquo;，当该任务成功完成时，程序会自动触发该 fn 函数。</li>
+</ul>
+<br />
+在用完一个线程池后，应该调用该线程池的 shutdown() 方法，该方法将启动线程池的关闭序列。调用 shutdown() 方法后的线程池不再接收新任务，但会将以前所有的已提交任务执行完成。当线程池中的所有任务都执行完成后，该线程池中的所有线程都会死亡。<br />
+<br />
+使用线程池来执行线程任务的步骤如下：
+<ol>
+	<li>
+		调用 ThreadPoolExecutor 类的构造器创建一个线程池。</li>
+	<li>
+		定义一个普通函数作为线程任务。</li>
+	<li>
+		调用 ThreadPoolExecutor 对象的 submit() 方法来提交线程任务。</li>
+	<li>
+		当不想提交任何任务时，调用 ThreadPoolExecutor 对象的 shutdown() 方法来关闭线程池。</li>
+</ol>
+<br />
+下面程序示范了如何使用线程池来执行线程任务：<br />
+<pre class="python">
+from concurrent.futures import ThreadPoolExecutor
+import threading
+import time
+
+# 定义一个准备作为线程任务的函数
+def action(max):
+    my_sum = 0
+    for i in range(max):
+        print(threading.current_thread().name + &#39;  &#39; + str(i))
+        my_sum += i
+    return my_sum
+# 创建一个包含2条线程的线程池
+pool = ThreadPoolExecutor(max_workers=2)
+# 向线程池提交一个task, 50会作为action()函数的参数
+future1 = pool.submit(action, 50)
+# 向线程池再提交一个task, 100会作为action()函数的参数
+future2 = pool.submit(action, 100)
+# 判断future1代表的任务是否结束
+print(future1.done())
+time.sleep(3)
+# 判断future2代表的任务是否结束
+print(future2.done())
+# 查看future1代表的任务返回的结果
+print(future1.result())
+# 查看future2代表的任务返回的结果
+print(future2.result())
+# 关闭线程池
+pool.shutdown()</pre>
+上面程序中，第 13 行代码创建了一个包含两个线程的线程池，接下来的两行代码只要将 action() 函数提交（submit）给线程池，该线程池就会负责启动线程来执行 action() 函数。这种启动线程的方法既优雅，又具有更高的效率。<br />
+<br />
+当程序把 action() 函数提交给线程池时，submit() 方法会返回该任务所对应的 Future 对象，程序立即判断 futurel 的 done() 方法，该方法将会返回 False（表明此时该任务还未完成）。接下来主程序暂停 3 秒，然后判断 future2 的 done() 方法，如果此时该任务已经完成，那么该方法将会返回 True。<br />
+<br />
+程序最后通过 Future 的 result() 方法来获取两个异步任务返回的结果。<br />
+<p class="info-box">
+	读者可以自己运行此代码查看运行结果，这里不再演示。</p>
+当程序使用 Future 的 result() 方法来获取结果时，该方法会阻塞当前线程，如果没有指定 timeout 参数，当前线程将一直处于阻塞状态，直到 Future 代表的任务返回。<br />
+<h2>
+	获取执行结果</h2>
+前面程序调用了 Future 的 result() 方法来获取线程任务的运回值，但该方法会阻塞当前主线程，只有等到钱程任务完成后，result() 方法的阻塞才会被解除。<br />
+<br />
+如果程序不希望直接调用 result() 方法阻塞线程，则可通过 Future 的 add_done_callback() 方法来添加回调函数，该回调函数形如 fn(future)。当线程任务完成后，程序会自动触发该回调函数，并将对应的 Future 对象作为参数传给该回调函数。<br />
+<br />
+下面程序使用 add_done_callback() 方法来获取线程任务的返回值：
+<pre class="python">
+from concurrent.futures import ThreadPoolExecutor
+import threading
+import time
+
+# 定义一个准备作为线程任务的函数
+def action(max):
+    my_sum = 0
+    for i in range(max):
+        print(threading.current_thread().name + &#39;  &#39; + str(i))
+        my_sum += i
+    return my_sum
+# 创建一个包含2条线程的线程池
+with ThreadPoolExecutor(max_workers=2) as pool:
+    # 向线程池提交一个task, 50会作为action()函数的参数
+    future1 = pool.submit(action, 50)
+    # 向线程池再提交一个task, 100会作为action()函数的参数
+    future2 = pool.submit(action, 100)
+    def get_result(future):
+        print(future.result())
+    # 为future1添加线程完成的回调函数
+    future1.add_done_callback(get_result)
+    # 为future2添加线程完成的回调函数
+    future2.add_done_callback(get_result)
+    print(&#39;--------------&#39;)</pre>
+上面主程序分别为 future1、future2 添加了同一个回调函数，该回调函数会在线程任务结束时获取其返回值。<br />
+<br />
+主程序的最后一行代码打印了一条横线。由于程序并未直接调用 future1、future2 的 result() 方法，因此主线程不会被阻塞，可以立即看到输出主线程打印出的横线。接下来将会看到两个新线程并发执行，当线程任务执行完成后，get_result() 函数被触发，输出线程任务的返回值。<br />
+<br />
+另外，由于线程池实现了<span style="color:#008000;">上下文管理协议（Context Manage Protocol）</span>，因此，程序可以使用 with 语句来管理线程池，这样即可避免手动关闭线程池，如上面的程序所示。<br />
+<br />
+此外，Exectuor 还提供了一个 <code>map(func, *iterables, timeout=None, chunksize=1)</code> 方法，该方法的功能类似于全局函数 map()，区别在于线程池的 map() 方法会为 iterables 的每个元素启动一个线程，以并发方式来执行 func 函数。这种方式相当于启动 len(iterables) 个线程，井收集每个线程的执行结果。<br />
+<br />
+例如，如下程序使用 Executor 的 map() 方法来启动线程，并收集线程任务的返回值：<br />
+<pre class="python">
+from concurrent.futures import ThreadPoolExecutor
+import threading
+import time
+
+# 定义一个准备作为线程任务的函数
+def action(max):
+    my_sum = 0
+    for i in range(max):
+        print(threading.current_thread().name + &#39;  &#39; + str(i))
+        my_sum += i
+    return my_sum
+# 创建一个包含4条线程的线程池
+with ThreadPoolExecutor(max_workers=4) as pool:
+    # 使用线程执行map计算
+    # 后面元组有3个元素，因此程序启动3条线程来执行action函数
+    results = pool.map(action, (50, 100, 150))
+    print(&#39;--------------&#39;)
+    for r in results:
+        print(r)</pre>
+上面程序使用 map() 方法来启动 3 个线程（该程序的线程池包含 4 个线程，如果继续使用只包含两个线程的线程池，此时将有一个任务处于等待状态，必须等其中一个任务完成，线程空闲出来才会获得执行的机会），map() 方法的返回值将会收集每个线程任务的返回结果。<br />
+<br />
+运行上面程序，同样可以看到 3 个线程并发执行的结果，最后通过 results 可以看到 3 个线程任务的返回结果。<br />
+<br />
+通过上面程序可以看出，使用 map() 方法来启动线程，并收集线程的执行结果，不仅具有代码简单的优点，而且虽然程序会以并发方式来执行 action() 函数，但最后收集的 action() 函数的执行结果，依然与传入参数的结果保持一致。也就是说，上面 results 的第一个元素是 action(50) 的结果，第二个元素是 action(100) 的结果，第三个元素是 action(150) 的结果。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="449_2.html" title="C语言条件编译（#if，#ifdef，#ifndef，#endif，#else，#elif）" target="_blank">C语言条件编译（#if，#ifdef，#ifndef，#endif，#else，#elif）</a></li>
+<li><a href="1036_2.html" title="Linux GRUB加密方法详解（2种加密方式）" target="_blank">Linux GRUB加密方法详解（2种加密方式）</a></li>
+<li><a href="4545_2.html" title="Go语言JSON文件的读写操作" target="_blank">Go语言JSON文件的读写操作</a></li>
+<li><a href="7118_2.html" title="Python list列表查找元素" target="_blank">Python list列表查找元素</a></li>
+<li><a href="vip_7667_2.html" title="Linux如何判断磁盘配额是否生效？" target="_blank">Linux如何判断磁盘配额是否生效？</a></li>
+<li><a href="../servlet2/deploy_2.html" title="Servlet的部署和访问" target="_blank">Servlet的部署和访问</a></li>
+<li><a href="50jwsg5_2.html" title="C#数据类型转换（3种方法）" target="_blank">C#数据类型转换（3种方法）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 2627;
+window.arcId = "7873NQnletkoYYmSu9EB4wr95ltL95GRZMlofjSFf0MBUHg4TGwJe/Bulbg";
+window.typeidChain = "145|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

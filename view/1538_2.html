@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C++二进制文件读写（read和write）详解</title>
+<meta name="description" content="一个短整型数字（例如 1297）既可以用一个字符串表示 1297，如图 1 所示： 图 1 以字符串表示的数字 也可以用一个二进制数字表示，如图 2 所示： 图 2 以二进制表示的数字 这两种表示都" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C++二进制文件读写（read和write）详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">一个短整型数字（例如 1297）既可以用一个字符串表示 &quot;1297&quot;，如图 1 所示：
+<div style="text-align: center;">
+	<br />
+	<img alt="" src="../uploads/allimg/181129/2-1Q1291AP2R8_2.gif" /><br />
+	图 1 以字符串表示的数字</div>
+<br />
+也可以用一个二进制数字表示，如图 2 所示：
+<div style="text-align: center;">
+	<br />
+	<img alt="" src="../uploads/allimg/181129/2-1Q1291AQ6410_2.gif" /><br />
+	图 2 以二进制表示的数字</div>
+<br />
+这两种表示都可以看作是字节序列。字符串表示取决于用于表示单个字符的编码类型，使用 ASCII 编码时长度为 4 个字节。二进制数字表示中的字节数取决于数字的类型，当数字是短整型时，长度为 2 个字节。<span style="color:#b22222;">从字符串表示到数字的转换称为</span><span style="color:#008000;">解析</span>，<span style="color:#b22222;">而从数字到字符串的逆转换称为</span><span style="color:#008000;">格式化</span><span style="color:#b22222;">。</span><br />
+<br />
+虽然人们发现在字符串表示中使用数字是很自然的，但计算机硬件更适合以二进制形式处理数字。这就是为什么当从键盘输入或从一个编辑过的文件中输入数字时，数字必须经过解析的原因。这也是为什么数字输出为让人查看的形式时必须进行格式化的原因。<br />
+<br />
+但是，有时候程序可能会将数据输出到一个只能被其他程序读取的文件，并且永远不会被人看到。在这些情况下，可以省略在输出期间格式化数字数据和在输入期间解析数字的过程。当数据以非格式化的形式写入时，即可以说它是以二进制形式编写的，用这种方式编写的文件可以称之为<span style="color:#008000;">二进制文件</span>。相反，保存格式化数据的文件则称为<span style="color:#008000;">文本文件</span>。<br />
+<br />
+为了方便程序员，流输入操作符 <code>&lt;&lt;</code> 在输出期间提供数字的自动格式化。同样，流提取操作符 <code>&gt;&gt;</code> 提供数字输入的解析。例如，来看以下程序片段：<br />
+<pre class="cpp">
+ofstream file(&quot;num.dat&quot;);
+short x = 12 97;
+file &lt;&lt; x;</pre>
+最后一个语句将 x 的内容写入文件。然而，当数字被写入时，它将被存储为字符 &#39;1&#39;、&#39;2&#39;、&#39;9&#39; 和 &#39;7&#39;，如图 1 所示。<br />
+<br />
+然而，数字 1297 并不以图 1 所示的方式存储在内存中（在变量 x 中）。它被格式化为一个二进制数，在典型的 PC 上占用 2 个字节。图 2 显示了如何使用二进制或十六进制在内存中表示数字。<br />
+<br />
+图 2 所示数字的未格式化表示是 &quot;原始&quot; 数据存储在内存中的方式。信息可以按纯粹的二进制格式存储在文件中。存储的第一步是以二进制模式打开文件，其方法是使用 ios::binary 标志。示例如下：<br />
+<p class="info-box">
+	file.open(&quot;stuff.dat&quot;, ios::out | ios::binary);</p>
+请注意，ios::out 和 ios::binary 标志使用|运算符联合加入到语句中，这导致文件以输出和二进制模式打开。<br />
+<p class="info-box">
+	注意，默认情况下，文件以文本模式打开。</p>
+ostream 和 ofstream 类的 write 成员函数可用于将二进制数据写入文件或其他输出流。要调用该函数，需指定一个缓冲区的地址，该缓冲区包含一个要写入的字节数组和一个指示要写入多少字节的整数：<br />
+<p class="info-box">
+	write(addressOfBuffer, numberOfBytes);</p>
+write 成员函数不会区分缓冲区中的整数、浮点数或其他类型；它只是将缓冲区视为一个字节数组。由于 <a href='../cplus/cplus_2.html' target='_blank'>C++</a> 不支持指向字节的<a href='../c/80/80_2.html' target='_blank'>指针</a>，因此 write 函数原型将指定缓冲区的地址是指向 char 的指针：<br />
+<p class="info-box">
+	write(char *addressOfBuffer, int numberOfBytes);</p>
+这意味着当调用 write 时，需要告诉编译器将缓冲区的地址解释为指向 diar 的指针。要做到这一点，可以使用称为 reinterpret_cast 的特殊形式的类型转换。简单地说，reinterpret_cast 可用于强制编译器解释一个类型的位，就好像它们定义了一个不同类型的值。<br />
+<br />
+以下示例即是使用 reinterpet_cast 将指向 double 的指针转换为指向 char 的指针：<br />
+<p class="info-box">
+	double d = 45.9;<br />
+	double *pd = &amp;d;<br />
+	char *pChar;<br />
+	//将指向double的指针转换为指向char的指针<br />
+	pChar = reinterpret_cast&lt;char *&gt;(pd);</p>
+一般来说，将某个值转换为某些目标类型，可以使用以下表达式：<br />
+<p class="info-box">
+	reinterpret_cast&lt;TargetType&gt;(value);</p>
+以下是使用 write 将一个 double 类型数字和一个包含 3 个 double 类型数字的数组写入文件的示例：<br />
+<p class="info-box">
+	double dl = 45.9;<br />
+	double dArray[3] = { 12.3, 45.8, 19.0 };<br />
+	ofstream outFile(&quot;stuff.dat&quot;, ios::binary);<br />
+	outFile.write(reinterpret_cast&lt;char *&gt;(&amp;dl), sizeof(dl));<br />
+	outFile.write(reinterpret_cast&lt;char *&gt;(dArray),sizeOf(dArray));</p>
+请注意，在写入单个变量（如以上示例中的 dl）时，可以将变量本身视为缓冲区并传递它的地址（在这种情况下该地址是 &amp;dl）。但是，在使用数组作为缓冲区时，只要传递数组就可以了，因为数组已经是一个地址。<br />
+<br />
+如果正在写入的数据恰好是字符数据，则不需要使用这种转换。以下是一些写入字符数据的示例：<br />
+<p class="info-box">
+	char ch = &#39;X&#39;;<br />
+	char charArray[5] = &quot;Hello&quot;;<br />
+	outFile.write(&amp;ch, sizeof(ch));<br />
+	outFile.write(charArray, sizeof(charArray));</p>
+在 istream 和 ifstream 类中有一个read成员函数，它可以用来读取使用 write 写入的二进制数据。它釆用了两个形参，一个是字节读取后将要存储的缓冲区的地址，另外一个是要读取的字节数：<br />
+<p class="info-box">
+	read(addressOfBuffer, numberOfBytes)</p>
+必须使用 reinterpret_cast 将缓冲区的地址解释为指向 char 的指针。可以通过调用输入流上的 fail() 成员函数来发现指定的字节数是否成功读取。<br />
+<br />
+下面的程序演示了 write 和 read 的用法：<br />
+<pre class="cpp">
+//This program uses the write and read functions.
+#include &lt;iostream&gt;
+#include &lt;fstream&gt;
+u<a href='https://m.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+int main()
+{
+    //File object used to access file
+    fstream file(&quot;nums.dat&quot;, ios::out | ios::binary);
+    if (!file)
+    {
+        cout &lt;&lt; &quot;Error opening file.&quot;;
+        return 0;
+    }
+    //Integer data to write to binary file
+    int buffer[ ] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    int size = sizeof(buffer) / sizeof(buffer[0]);
+    // Write the data and close the file
+    cout &lt;&lt; &quot;Now writing the data to the file.\n&quot;;
+    file.write(reinterpret_cast&lt;char *&gt;(buffer), sizeof(buffer));
+    file.close ();
+    // Open the file and use a binary read to read contents of the file into an array
+    file.open(&quot;nums.dat&quot;, ios::in);
+    if (!file)
+    {
+        cout &lt;&lt; &quot;Error opening file.&quot;;
+        return 0;
+    }
+    cout &lt;&lt; &quot;Now reading the data back into memory.\n&quot;;
+    file.read(reinterpret_cast&lt;char *&gt;(buffer), sizeof (buffer));
+    // Write out the array entries
+    for (int count = 0; count &lt; size; count++)
+        cout &lt;&lt; buffer[count] &lt;&lt; &quot; &quot;;
+    // Close the file
+    file.close ();
+    return 0;
+}</pre>
+程序屏幕输出：
+<p class="info-box">
+	Now writing the data to the file.<br />
+	Now reading the data back into memory.<br />
+	1 2 3 4 5 6 7 8 9 10</p>
+该程序中，初始化了一个整数数组，然后使用以下语句将数组条目中的数字存储在数组中：<br />
+<p class="info-box">
+	int buffer[ ] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};<br />
+	int size = sizeof(buffer)/sizeof(buffer[0]);</p>
+前面已经介绍过，sizeof 运算符可用于变量来确定变量占用的字节数。在该程序中，sizeof(buffer) 将返回通过初始化语句分配给数组的字节数，sizeof(buffer[0]) 则返回由单个数组条目占用的字节数。通过将前者除以后者，即可获得数组条目的数量，然后将它存储到 size 中。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="349_2.html" title="C语言一维数组的定义" target="_blank">C语言一维数组的定义</a></li>
+<li><a href="385_2.html" title="内存泄漏的场景分析和避免方法总结，C语言内存泄漏详解" target="_blank">内存泄漏的场景分析和避免方法总结，C语言内存泄漏详解</a></li>
+<li><a href="834_2.html" title="Java截取新闻标题" target="_blank">Java截取新闻标题</a></li>
+<li><a href="916_2.html" title="Java二维数组详解：二维数组的声明和初始化，以及获取二维数组的值" target="_blank">Java二维数组详解：二维数组的声明和初始化，以及获取二维数组的值</a></li>
+<li><a href="../pandas/sample_2.html" title="Pandas sample随机抽样" target="_blank">Pandas sample随机抽样</a></li>
+<li><a href="ei62yf_2.html" title="Spring框架介绍（非常详细）" target="_blank">Spring框架介绍（非常详细）</a></li>
+<li><a href="s0j4eth_2.html" title="Celery框架入门教程（简明版）" target="_blank">Celery框架入门教程（简明版）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 1538;
+window.arcId = "b4bek9gsllD4/iyxzRT56LK4dV030AXsTCD4jN042VN8ADYqCn5QdlcubAM";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

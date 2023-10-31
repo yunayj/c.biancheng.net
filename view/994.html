@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>shell sed命令详解：选取、替换、删除、新増数据</title>
+<meta name="description" content="sed 是一种几乎可以应用在所有 UNIX 平台（包括 Linux）上的轻量级流编辑器。sed 有许多很好的特性。首先，它相当小巧，通常要比你所喜爱的脚本语言小多倍。其次，因为 sed 是一种流编" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>shell sed命令详解：选取、替换、删除、新増数据</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">sed 是一种几乎可以应用在所有 UNIX 平台（包括 Linux）上的轻量级流编辑器。sed 有许多很好的特性。首先，它相当小巧，通常要比你所喜爱的脚本语言小多倍。其次，因为 sed 是一种流编辑器，所以，它可以对从如管道这样的标准输入中接收的数据进行编辑。因此，无须将要编辑的数据存储在磁盘上的文件中。因为可以轻易将数据管道输出到 sed，所以，将 sed 用作强大的 Shell 脚本中长而复杂的管道很容易。<br />
+<br />
+sed 主要是用来将数据进行选取、替换、删除、新増的命令。我们看看命令的语法：
+<p class="info-box">
+[root@localhost ~] # sed [选项] &#39;[动作]&#39; 文件名</p>
+选项：
+<ul>
+<li>
+-n：一般 sed 命令会把所有数据都输出到屏幕上。如果加入此选项，则只会把经过 sed 命令处理的行输出到屏幕上；</li>
+<li>
+-e: 允许对输入数据应用多条 sed 命令编辑；</li>
+<li>
+-f 脚本文件名：从 sed 脚本中读入 sed 操作。和 awk 命令的 -f 选项非常类似；</li>
+<li>
+-r：在 sed 中支持扩展正则表达式；</li>
+<li>
+-i：用 sed 的修改结果直接修改读取数据的文件，而不是由屏幕输出动作；</li>
+<li>
+a \：追加，在当前行后添加一行或多行。当添加多行时，除最后一行外，每行末尾需要用&ldquo;\&rdquo;代表数据未完结；</li>
+<li>
+c \：行替换，用c后面的字符串替换原数据行。当替换多行时，除最后一行外，每行末尾需用&ldquo;\&rdquo;代表数据未完结；</li>
+<li>
+i \：插入，在当前行前插入一行或多行。当插入多行时，除最后一行外，每行末尾需要用&ldquo;\&rdquo;代表数据未完结；</li>
+<li>
+d：删除，删除指定的行；</li>
+<li>
+P：打印，输出指定的行；</li>
+<li>
+s：字符串替换，用一个字符串替换另一个字符串。格式为&ldquo;行范围s/旧字串/新字串/g&rdquo;（和Vim中的替换格式类似）；</li>
+</ul>
+<br />
+大家需要注意，sed 所做的修改并不会直接改变文件的内容（如果是用管道符接收的命令的输出，则连文件都没有），而是把修改结果只显示到屏幕上，除非使用&quot;-i&quot;选项才会直接修改文件。<br />
+<h2>
+行数据操作</h2>
+举几个例子来看看 sed 命令到底是干什么的。假设我想查看一下 student.txt 文件的第二行，就可以利用&quot;p&quot;动作了。<br />
+<p class="info-box">
+[root@localhost ~]# sed &#39;2p&#39; student.txt<br />
+ID Name <a href='../php/php.html' target='_blank'>PHP</a> Linux <a href='../mysql/mysql_3.html' target='_blank'>MySQL</a> Average<br />
+1 Liming 82 95 86 87.66<br />
+1 Liming 82 95 86 87.66<br />
+2 Sc 74 96 87 85.66<br />
+3 Gao 99 83 93 91.66</p>
+好像看着不怎么顺眼啊！&quot;p&quot;动作确实输出了第二行数据，但是 sed 命令还会把所有数据都输出一次，这时就会看到这个比较奇怪的结果。那如果我想指定输出某行数据，就需要&quot;-n&quot;选项的帮助了。<br />
+<p class="info-box">
+[root@localhost ~]# sed -n &#39;2p&#39; student.txt<br />
+1 Liming 82 95 86 87.66</p>
+这样才可以输出指定的行。大家可以这样记忆：当我们需要输出指定的行时，需要把&quot;-n&quot;选项和&quot;p&quot;动作一起使用。<br />
+<br />
+再来看看如何删除文件中的数据：<br />
+<p class="info-box">
+[root@localhost ~]#sed &#39;2,4d&#39; student.txt<br />
+#删除从第二行到第四行的数据<br />
+ID Name PHP Linux MySQL Average<br />
+[root@localhost ~]# cat student.txt<br />
+#文件本身并没有被修改<br />
+ID Name PHP Linux MySQL Average<br />
+1 Liming 82 95 86 87.66<br />
+2 Sc 74 96 87 85.66<br />
+3 Gao 99 83 93 91.66</p>
+<br />
+看到这条命令首先需要注意，所有的动作必须使用&quot;单引号&quot;包含；其次，在动作中可以使用数字代表行号，逗号代表连续的行范围。还可以使用&quot;$&quot;代表最后一行，如果动作是&quot;2,$d&quot;，则代表从第二行删除到最后一行。<br />
+<br />
+再来看看如何追加和插入行数据：
+<p class="info-box">
+[root@localhost ~]# sed &#39;2a hello&#39; student.txt<br />
+#在第二行后加入hello<br />
+ID Name PHP Linux MySQL Average<br />
+1 Liming 82 95 86 87.66<br />
+hello<br />
+2 Sc 74 96 87 85.66<br />
+3 Gao 99 83 93 91.66</p>
+&quot;a&quot;动作会在指定行后追加数据。如果想要在指定行前插入数据，则需要使用&quot;i&quot;动作。<br />
+<p class="info-box">
+[root@localhost ~]# sed &#39;2i hello &gt; world&#39; student.txt<br />
+#在第二行前插入两行数据<br />
+ID Name PHP Linux MySQL Average<br />
+hello<br />
+world<br />
+1 Liming 82 95 86 87.66<br />
+2 Sc 74 96 87 85.66<br />
+3 Gao 99 83 93 91.66</p>
+如果想追加或插入多行数据，则除最后一行外，每行的末尾都要加入&quot;\&quot;代表数据未完结。<br />
+<br />
+再来看看&quot;-n&quot;选项的作用，命令如下：<br />
+<p class="info-box">
+[root@localhost ~]# sed -n&#39;2i hello \<br />
+#只查看sed命令操作的麵<br />
+world&#39; student.txt<br />
+hello<br />
+world</p>
+看到了吧，&quot;-n&quot;只用于查看 sed 命令操作的数据，而并非查看所有的数据。<br />
+<br />
+再来看看如何实现行数据替换：<br />
+<p class="info-box">
+[root@localhost ~]# cat student.txt | sed &#39;2c No such person&#39;<br />
+ID Name PHP Linux MySQL Average<br />
+No such person<br />
+2 Sc 74 96 87 85.66<br />
+3 Gao 99 83 93 91.66</p>
+<br />
+第二行数据变成了 &quot;查无此人&quot;。通过这个例子我们看到了，sed 也可以接收和处理管道符传输的数据。<br />
+<br />
+sed 命令在默认情况是不会修改文件内容的。如果我确定需要让 sed 命令直接处理文件的内容，则可以使用&quot;-i&quot;选项。不过要小心，这样非常容易误操作，在操作系统文件时请小心谨慎。可以使用这样的命令：<br />
+<p class="info-box">
+[root@localhost ~]# sed -i&#39;2c No such person&#39; student.txt</p>
+<h2>
+字符串替换</h2>
+&quot;c&quot;动作是进行整行替换的，如果仅仅想替换行中的部分数据，就要使用&quot;s&quot;动作了。&quot;s&quot;动作的格式如下：<br />
+<p class="info-box">
+[root@localhost ~]# sed&#39;s/旧字符串/新字符串/g&#39; 文件名</p>
+替换的格式和 Vim 非常类似，例如：<br />
+<p class="info-box">
+[root@localhost ~]# sed &#39;3s/74/99/g&#39; student.txt<br />
+#在第三行中，把74换成99<br />
+ID Name PHP Linux MySQL Average<br />
+1 Liming 82 95 86 87.66<br />
+2 Sc 99 96 87 85.66<br />
+3 Gao 99 83 93 91.66</p>
+<br />
+如果想把某行的成绩注释掉，让它不再生效，则可以这样做：<br />
+<p class="info-box">
+[root@localhost ~]#sed &#39;4s/^/#/g&#39; student.txt<br />
+#在这里使用正则表达式，&quot;^&quot;代表行首<br />
+ID Name PHP Linux MySQL Average<br />
+1 Liming 82 95 86 87.66<br />
+2 Sc 74 96 87 85.66<br />
+#3 Gao 99 83 93 91.66</p>
+<br />
+不仅如此，我们还可以这样做：
+<p class="info-box">
+[root@localhost ~]# sed -e &#39;s/Liming//g; s/Gao//g&#39; student.txt<br />
+#同时把&quot;Liming&quot;和&quot;Gao&quot;替换为空<br />
+ID Name PHP Linux MySQL Average<br />
+1 82 95 86 87.66<br />
+2 Sc 74 96 87 85.66<br />
+3 99 83 93 91.66</p>
+<br />
+&quot;-e&quot;选项可以同时执行多个 sed 动作，当然，如果只执行一个动作，则也可以使用&quot;-e&quot;选项，但是这时没有什么意义。还要注意，多个动作之间要用&quot;;&quot;或回车分隔，例如，上一条命令也可以这样写：<br />
+<p class="info-box">
+[root@localhost ~]# sed -e &#39;s/Liming//g<br />
+&gt; s/Gao//g&#39; student.txt<br />
+ID Name PHP Linux MySQL Average<br />
+1 82 95 86 87.66<br />
+2 Sc 74 96 87 85.66<br />
+3 99 83 93 91.66</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="86.html" title="Go语言类型分支（switch判断空接口中变量的类型）" target="_blank">Go语言类型分支（switch判断空接口中变量的类型）</a></li>
+<li><a href="187.html" title="#define用法，C语言#define详解" target="_blank">#define用法，C语言#define详解</a></li>
+<li><a href="vip_2118.html" title="C语言标准库以及标准头文件" target="_blank">C语言标准库以及标准头文件</a></li>
+<li><a href="7580.html" title="Django模板过滤器用法详解" target="_blank">Django模板过滤器用法详解</a></li>
+<li><a href="../mongodb2/drop-database.html" title="MongoDB删除数据库" target="_blank">MongoDB删除数据库</a></li>
+<li><a href="../css3/at-rule.html" title="CSS @规则（详细）" target="_blank">CSS @规则（详细）</a></li>
+<li><a href="../sql/constraint.html" title="SQL约束简介" target="_blank">SQL约束简介</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 994;
+window.arcId = "7f22VUtnMcaB4HwdQ6g7XrzesVUg1sGQV+loBNaLpHqT0SwoQkhrsCdUpg";
+window.typeidChain = "210|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

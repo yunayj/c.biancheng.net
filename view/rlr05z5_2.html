@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>RabbitMQ入门教程（非常详细）</title>
+<meta name="description" content="RabbitMQ 是比较流行的消息中间件（消息队列），通常用于不同的独立程序之间或服务之间的通信。 RabbitMQ 是使用 Erlang 语言开发的开源消息队列系统，基于 AMQP（Advanced Message Queuing Prot" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>RabbitMQ入门教程（非常详细）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">RabbitMQ 是比较流行的消息中间件（消息队列），通常用于不同的独立程序之间或服务之间的通信。<br />
+<br />
+RabbitMQ 是使用 Erlang 语言开发的开源消息队列系统，基于 AMQP（Advanced Message Queuing Protocol，高级消息队列协议）的主要特征是面向消息、队列、路由、可靠性和安全。<br />
+<br />
+AMQP 更多用在企业系统内对数据的一致性、稳定性和可靠性要求很高的场景，对性能吞吐量的要求不高。
+<h2 class="center">
+	一、RabbitMQ 简介</h2>
+我们先简单了解一下 RabbitMQ 的内部机制，重点是如何使用 RabbitMQ。RabbitMQ 的结构如图1所示，RabbitMQ 相关概念如表1所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="RabbitMQ的结构" src="../uploads/allimg/230727/1-230HG144112E_2.png" /><br />
+	图1：RabbitMQ 的结构</div>
+<br />
+<table>
+	<caption>
+		表1：RabbitMQ 相关概念</caption>
+	<tbody>
+		<tr>
+			<th>
+				核心概念</th>
+			<th>
+				含义</th>
+		</tr>
+		<tr>
+			<td>
+				服务器实例（Broker）</td>
+			<td>
+				简单来说就是消息队列服务器实体。</td>
+		</tr>
+		<tr>
+			<td>
+				消息交换机（Exchange）</td>
+			<td>
+				指定消息按什么规则，路由到哪个队列。</td>
+		</tr>
+		<tr>
+			<td>
+				队列（Queue）</td>
+			<td>
+				每个消息都会被投入一个或多个队列。</td>
+		</tr>
+		<tr>
+			<td>
+				绑定（Binding）</td>
+			<td>
+				按照路由规则绑定消息交换机和队列。</td>
+		</tr>
+		<tr>
+			<td>
+				路由关键字（Routing Key）</td>
+			<td>
+				消息交换机根据这个关键字进行消息投递。</td>
+		</tr>
+		<tr>
+			<td>
+				虚拟主机（Virtual Host）</td>
+			<td>
+				一个 Broker 里可以设置多个 Virtual Host，用作不同用户的权限分离。<br />
+				<br />
+				Virtual Host 本质上就是迷你版的 RabbitMQ 服务器，拥有自己的队列、交换器、绑定和权限机制，RabbitMQ 默认的 Virtual Host 是<code>/</code>。</td>
+		</tr>
+		<tr>
+			<td>
+				消息通道（Channel）</td>
+			<td>
+				一种轻型的共享 TCP 连接。我们可以在客户端的连接中建立多个 Channel，一个 Channel 表示一个会话任务。<br />
+				<br />
+				生产者和消费者需要与 RabbitMQ 建立 TCP 连接，而一些应用需要多个连接，因为对操作系统来说建立和销毁 TCP 连接都会产生非常昂贵的系统开销，所以为了减少 TCP 连接，引入信道的概念，以复用 TCP 连接。<br />
+				<br />
+				信道是建立在真实的 TCP 连接内的虚拟连接，AMQP 命令都是通过信道发出去的，发布消息、订阅队列、接收消息等动作都可以通过信道完成。</td>
+		</tr>
+		<tr>
+			<td>
+				网络连接（Connection）</td>
+			<td>
+				例如 TCP 连接。</td>
+		</tr>
+		<tr>
+			<td>
+				消息生产者（Producer）</td>
+			<td>
+				发送消息的程序。</td>
+		</tr>
+		<tr>
+			<td>
+				消息消费者（Consumer）</td>
+			<td>
+				接收消息的程序。</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+RabbitMQ 的典型应用场景如下：
+<ul>
+	<li>
+		异步处理：用户注册时的确认邮件、短信等事务可以交由 RabbitMQ 进行异步处理。</li>
+	<li>
+		应用解耦：例如收发消息双方可以使用消息队列，RabbitMQ 具有一定的缓冲功能。</li>
+	<li>
+		流量削峰：一般是秒杀活动，RabbitMQ 可以控制用户人数，也可以降低流量。</li>
+	<li>
+		日志处理：RabbitMQ 可以将 info、warning、error 等不同的记录分开存储。</li>
+</ul>
+<h2 class="center">
+	二、RabbitMQ 的使用</h2>
+<h3>
+	1. 安装部署</h3>
+我们需要先安装一个 RabbitMQ 的服务中间件，待部署的服务器系统版本为 CentOS Linux release 7.6.1810(Core)，内核版本为 3.10.0-1127.13.1.el7.x86_64。<br />
+<br />
+具体步骤如下：<br />
+<br />
+1) 安装必备的一些相关的依赖环境：
+<p class="info-box">
+	yum install -y gcc gcc-c++ glibc-devel make ncurses-devel openssl-devel autoconf java-1.8.0-openjdk-devel git</p>
+<br />
+2) 下载安装 Erlang 的 rpm 安装包。因为 RabbitMQ 是基于 Erlang 语言开发的，所以需要先部署 Erlang 环境。
+<p class="tip-box">
+	注意，从 RabbitMQ 官网选择下载的 rmp 包要和系统内核版本保持一致，例如此处下载的是 el7.x86_64 的 rpm 安装包，el7 对应 CentOS 7，el8 对应 CentOS 8。</p>
+下载成功后将 rpm 安装包上传到服务器 CentOS 上，安装命令如下：
+<p class="info-box">
+	rpm -ivh erlang-23.3.4.10-1.el7.x86_64.rpm</p>
+<br />
+3) 下载安装 RabbitMQ-server 的 3.9.13 版本。此处注意要下载 el7 版本，和待部署环境的系统保持一致，即选择 RabbitMQ-server-3.9.13-1.el7.noarch.rpm。<br />
+<br />
+另外，使用命令<code>yum install -y</code>可以一并安装相关的依赖。<br />
+<br />
+安装命令如下：
+<p class="info-box">
+	yum install -y RabbitMQ-server-3.9.13-1.el7.noarch.rpm</p>
+图2中的 Installed 和 Complete 表示 RabbitMQ 安装成功。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="RabbitMQ 安装成功" src="../uploads/allimg/230727/1-230HG14531T3_2.png" /><br />
+	图2：RabbitMQ 安装成功</div>
+<br />
+我们可以通过以下命令启动 RabbitMQ 服务：
+<p class="info-box">
+	service Rabbit MQ-server start</p>
+启动服务成功如图3所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="RabbitMQ 启动成功" src="../uploads/allimg/230727/1-230HG14549131_2.png" /><br />
+	图3：RabbitMQ 启动成功</div>
+<br />
+在默认情况下 RabbitMQ 的 Web 界面是关闭的，我们需要通过 RabbitMQ-plugins 来启用，以方便后续的使用：
+<p class="info-box">
+	RabbitMQ-plugins enable RabbitMQ_management</p>
+成功启用后，我们可以通过 IP:15672 登录 RabbitMQ 的 Web 界面，如图4所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="登录 RabbitMQ 的 Web 界面" src="../uploads/allimg/230727/1-230HG14606461_2.png" /><br />
+	图4：登录 RabbitMQ 的 Web 界面</div>
+<br />
+在登录前，我们需要通过 RabbitMQctl 命令创建用户，如图5所示。
+<p class="info-box">
+	RabbitMQctl add_user admin admin<br />
+	RabbitMQctl set_user_tags admin administrator</p>
+<br />
+<div style="text-align: center;">
+	<img alt="创建用户" src="../uploads/allimg/230727/1-230HG14624P6_2.png" /><br />
+	图5：创建用户</div>
+<br />
+创建成功后，即可使用该用户登录 RabbitMQ 的 Web 界面。<br />
+<br />
+在部署后使用过程中我们可能遇到如下错误：
+<pre class="info-box">
+ERROR:root:Failed to connect to RabbitMQ: ConnectionClosedByBroker: (530) &quot;NOT_ALLOWED - access to vhost &#39;/&#39; refused for user &#39;admin&#39;&quot;
+ERROR:pika.adapters.blocking_connection:Connection workflow failed: AMQPConnectionWorkflowFailed: 1 exceptions in all; last exception - AMQPConnectorAMQPHandshakeError: ProbableAccessDeniedError: Client was disconnected at a connection stage indicating a probable denial of access to the specified virtual host: (&#39;ConnectionClosedByBroker: (530) &quot;NOT_ALLOWED - access to vhost \&#39;/\&#39; refused for user \&#39;admin\&#39;&quot;&#39;,); first exception - None
+ERROR:pika.adapters.blocking_connection:Error in _create_connection().</pre>
+<br />
+产生这一问题的原因是没有设置 access virtual hosts，如图6所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="RabbitMQ 的 Web 界面" src="../uploads/allimg/230727/1-230HG1464AI_2.png" /><br />
+	图6：RabbitMQ 的 Web 界面</div>
+<br />
+我们需要通过图7中的 Set permission 设置 access virtual hosts。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="在 RabbitMQ 的 Web 界面设置 permission" src="../uploads/allimg/230727/1-230HG14F6201_2.png" /><br />
+	图7：在 RabbitMQ 的 Web 界面设置 permission</div>
+<h4>
+	RabbitMQ 用户角色</h4>
+RabbitMQ 用户的角色说明如下：
+<ul>
+	<li>
+		超级管理员（Administrator）可以登录控制台，查看所有信息并对用户和策略进行操作；</li>
+	<li>
+		监控者（Monitor）可以登录控制台，可以查看节点相关的信息；</li>
+	<li>
+		策略制定者（Policymaker）可以登录控制台和制定策略，但是无法查看节点信息；</li>
+	<li>
+		普通管理员（Management）仅能登录控制台；</li>
+	<li>
+		其他用户无法登录控制台，一般指生产者和消费者。</li>
+</ul>
+<br />
+关于权限管理，MySQL 有数据库的概念并且可以指定用户操作库和表等的权限，RabbitMQ 也有类似的权限管理。<br />
+<br />
+在 RabbitMQ 中，我们可以使用虚拟消息服务器 Virtual Host，每个 Virtual Host 相当于一个相对独立的 RabbitMQ 服务器，每个 Virtual Host 之间是相互隔离的，消息交换机、队列和消息不能互通。<br />
+<br />
+Virtual Host 的使用场景是多租户的场景，例如在主机资源紧缺的情况下，开发和测试共用一个 RabbitMQ，我们可以使用 Virtual Hosts 将开发和测试隔离。
+<p class="tip-box">
+	注意：常见的安装失败的原因就是 Erlang 版本和 CentOS 版本不匹配，或 Erlang 版本和 RabbitMQ-server 版本不匹配。</p>
+<h3>
+	2. 使用说明</h3>
+RabbitMQ 支持不同的语言，并针对不同语言提供相应的库，pika 是 Python 用于连接 RabbitMQ 的主流客户端第三方库。<br />
+<br />
+pika 使用 RabbitMQ 涉及的概念如表2所示。<br />
+<br />
+<table>
+	<caption>
+		表2：pika 使用 RabbitMQ 涉及的概念</caption>
+	<tbody>
+		<tr>
+			<th>
+				概念</th>
+			<th>
+				含义</th>
+			<th>
+				示例</th>
+		</tr>
+		<tr>
+			<td>
+				路由</td>
+			<td>
+				路由键在发送消息的时候由 routing_key 参数指定，即调用 basic_publish 函数的时候。</td>
+			<td>
+				channel.basic_publish(exchange=&#39;logs&#39;,routing_key=&#39;&#39;,<br />
+				body=message)</td>
+		</tr>
+		<tr>
+			<td>
+				队列绑定</td>
+			<td>
+				将交换机 exchange 和队列进行绑定。</td>
+			<td>
+				channel.queue_bind(exchange=exchange_name,<br />
+				queue=queue_name)</td>
+		</tr>
+		<tr>
+			<td>
+				排他队列</td>
+			<td>
+				仅自己可见的队列，即不允许其他用户访问，RabbitMQ 允许我们将一个队列声明成排他性的。</td>
+			<td>
+				channel.queue_declare(exclusive=True)</td>
+		</tr>
+	</tbody>
+</table>
+<h2 class="center">
+	三、封装示例</h2>
+利用 pika 进行生产者和消费者的模拟流程流程如下。<br />
+<br />
+生产者程序的步骤如下：
+<ul>
+	<li>
+		建立连接，需要用户名和密码认证的调用认证参数。</li>
+	<li>
+		创建通道，当然通道可以池化，即放入通道池，后续就不需要重复创建通道了，可以直接从池中取用。</li>
+	<li>
+		声明队列，指定队列属性，队列属性一旦指定则不能修改，队列属性包括名称、是否持久化等。</li>
+	<li>
+		声明交换机，包括交换机类型、名称等，我们也可以不声明，直接使用空字符串或使用默认交换机。</li>
+	<li>
+		将队列与交换机绑定。</li>
+	<li>
+		通过 basic_publish 方法发送到 RabbitMQ 服务示例的交换机上，在 basic_publish 方法中可以指定路由键。</li>
+</ul>
+<br />
+消费者程序的步骤除了最后一步是通过 basic_consume 方法消费消息，其他步骤与生产者程序的步骤相同。<br />
+<br />
+结合实际的需求，封装代码如代码清单6所示，封装的代码包括 RabbitMQClient 类，该类包含连接 RabbitMQ 的连接管理、生产消息和消费消息的方法，以及获取队列消息后的回调函数。<br />
+<br />
+代码清单6：RabbitMQUtil.py
+<pre class="python">
+# -*- coding: utf-8 -*-
+# @Time : 2023/7/27 6:49 下午
+# @Project : msgUtil
+# @File : RabbitMQUtil.py
+# @Version: Python3.9.8
+　
+import pika
+import traceback
+import logging
+　
+# 配置文件
+MQ_CONFIG = {
+    &quot;host&quot;: &quot;172.21.26.54&quot;,
+    &quot;port&quot;: 5672,
+    &quot;user&quot;: &quot;admin&quot;,
+    &quot;password&quot;: &quot;admin&quot;
+}
+　
+def check_connection(func):
+    def wrapper(self, *args, **kwargs):
+        if not all([self.channel, self.connection]) or \
+                any([self.channel.is_closed, self.connection.is_closed]):
+            self.clean_up()
+            self.connect_mq()
+        return func(self, *args, **kwargs)
+    return wrapper
+　
+class RabbitMQClient(object):
+    &#39;&#39;&#39;RabbitMQClient using pika library&#39;&#39;&#39;
+　
+    def __init__(self, queue, on_message_callback=None):
+        self.mq_config = MQ_CONFIG
+        self.connection = None
+        self.channel = None
+        self.queue = queue
+        self.on_message_callback = on_message_callback
+        self.connect_mq()
+　
+    def connect_mq(self):
+        &quot;&quot;&quot;连接RabbitMQ，创建连接、通道，声明队列&quot;&quot;&quot;
+        try:
+            credentials = pika.PlainCredentials(self.mq_config[&#39;user&#39;], self.mq_config[&#39;password&#39;])
+            connect_params = pika.ConnectionParameters(self.mq_config[&#39;host&#39;],
+                                                     self.mq_config[&#39;port&#39;],
+                                                     credentials=credentials,
+                                                     heartbeat=0)
+            self.connection = pika.BlockingConnection(connect_params)
+            self.channel = self.connection.channel()
+            self.channel.queue_declare(queue=self.queue, durable=True)
+            # self.channel.exchange_declare(exchange=exchange, exchange_type=exchange_type, durable=True)
+            # self.channel.queue_bind(queue=queue, exchange=exchange, routing_key=binding_key)
+            logging.info(&quot;Succeeded to connect to RabbitMQ.&quot;)
+        except Exception as e:
+            logging.error(&quot;Failed to connect to RabbitMQ: {}&quot;.format(str(e)))
+            traceback.print_exc()
+            return False
+        return True
+　
+    def clean_up(self):
+        &quot;&quot;&quot;断开通道、连接&quot;&quot;&quot;
+        try:
+            if self.channel and self.channel.is_open:
+                self.channel.close()
+            if self.connection and self.connection.is_open:
+                self.connection.close()
+        except Exception as e:
+            logging.error(&quot;Failed to close connection with RabbitMQ: {}&quot;.format(str(e)))
+            traceback.print_exc()
+　
+    @check_connection
+    def producer(self, message):
+        &quot;&quot;&quot;向队列发送消息&quot;&quot;&quot;
+        if not isinstance(message, bytes):
+            message = str(message).encode()
+        try:
+            self.channel.basic_publish(
+                exchange=&#39;&#39;,
+                routing_key=self.queue,  # 队列名字
+                body=message,
+                properties=pika.BasicProperties(
+                    delivery_mode=2,  # 消息持久化
+                    content_type=&quot;application/json&quot;
+                )
+            )
+        except Exception as e:
+            logging.error(&#39;Failed to send message to RabbitMQ: {}&#39;.format(str(e)))
+            traceback.print_exc()
+　
+    @check_connection
+    def consumer(self):
+        &quot;&quot;&quot;从队列获取消息&quot;&quot;&quot;
+        self.channel.basic_qos(prefetch_count=1)  # 类似权重，按能力分发，如果有一个消息，就不再给我们发
+        self.channel.basic_consume(  # 消费消息
+            on_message_callback=self.callback,  # 如果收到消息，则回调
+            queue=self.queue,
+        )
+        try:
+            self.channel.start_consuming()
+        except KeyboardInterrupt:
+            self.channel.stop_consuming()
+            self.connection.channel()
+　
+    def callback(self, ch, method, properties, body):
+        &quot;&quot;&quot;获取消息后的回调函数&quot;&quot;&quot;
+        # message = ast.literal_eval(body.decode())
+        print(&quot;consumed %r &quot; % body)
+        # self.on_message_callback(message)
+        ch.basic_ack(delivery_tag=method.delivery_tag)  # 告诉生产者，消息处理完成
+　
+    # 统计消息数目
+    def msg_count(self, queue_name, is_durable=True):
+        queue = self.channel.queue_declare(queue=queue_name, durable=is_durable)
+        count = queue.method.message_count
+        return count
+　
+if __name__ == &#39;__main__&#39;:
+    mq = RabbitMQClient(&#39;testQueue2&#39;)
+    import json
+    msg = json.dumps({&#39;name&#39;: &#39;hutong&#39;})
+    mq.producer(msg)
+    mq.consumer()</pre>
+运行上述示例代码，我们可以发现生产者生产了消息，并往名为 testQueue2 的队列中发送了消息，如图8所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="消息队列接收消息" src="../uploads/allimg/230727/1-230HG14I3F1_2.png" /><br />
+	图8：消息队列接收消息</div>
+<br />
+调用消费者代码，我们可以看到刚刚发送的消息被成功消费了，如图9所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="消费者消费消息" src="../uploads/allimg/230727/1-230HG14K2959_2.png" /><br />
+	图9：消费者消费消息</div>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1975_2.html" title="C语言#include的用法详解（文件包含命令）" target="_blank">C语言#include的用法详解（文件包含命令）</a></li>
+<li><a href="../mysql/substring_2.html" title="MySQL SUBSTRING函数：截取字符串" target="_blank">MySQL SUBSTRING函数：截取字符串</a></li>
+<li><a href="2881_2.html" title="UE4设置默认游戏模式和关卡" target="_blank">UE4设置默认游戏模式和关卡</a></li>
+<li><a href="4221_2.html" title="Python IDLE使用方法详解（包含常用快捷键）" target="_blank">Python IDLE使用方法详解（包含常用快捷键）</a></li>
+<li><a href="7525_4.html" title="Django模板加载与响应" target="_blank">Django模板加载与响应</a></li>
+<li><a href="../hibernate/mapping_2.html" title="Hibernate关联映射（非常详细）" target="_blank">Hibernate关联映射（非常详细）</a></li>
+<li><a href="9383_2.html" title="HTML属性的概念和使用" target="_blank">HTML属性的概念和使用</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10148;
+window.arcId = "27e2RfZAhI/UalH5DUQy24UH143eDrA6MUt4qkmsPVUGtIwuohmS1wxgF/Zx";
+window.typeidChain = "119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

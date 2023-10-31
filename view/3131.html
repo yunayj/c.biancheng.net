@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Linux Shell管道详解</title>
+<meta name="description" content="通过前面的学习，我们已经知道了怎样从文件重定向输入，以及重定向输出到文件。Shell 还有一种功能，就是可以将两个或者多个命令（程序或者进程）连接到一起，把一个命令的输出" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<h4><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../shell/shell.html">Shell</a></h4>
+<dl id="contents">
+<dt><a href="../shell/base/base.html">Shell基础（开胃菜）</a></dt>
+<dd>1.<a href="706.html">Shell是什么</a>
+</dd>
+<dd>2.<a href="731.html">Shell是运维人员必须掌握的技能</a>
+</dd>
+<dd>3.<a href="vip_4555.html">常用的Shell有哪些？</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>4.<a href="733.html">进入Shell的两种方式</a>
+</dd>
+<dd>5.<a href="3163.html">Shell命令的基本格式</a>
+</dd>
+<dd>6.<a href="vip_3229.html">Shell命令的本质到底是什么？如何自己实现一个命令？</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>7.<a href="vip_3230.html">Shell命令的选项和参数在本质上是什么</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>8.<a href="3175.html">Shell命令提示符</a>
+</dd>
+<dd>9.<a href="vip_3279.html">修改命令提示符</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>10.<a href="735.html">第一个Shell脚本</a>
+</dd>
+<dd>11.<a href="739.html">执行Shell脚本</a>
+</dd>
+<dd>12.<a href="vip_3231.html">Shell四种运行方式（启动方式）</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>13.<a href="vip_3232.html">Shell配置文件（配置脚本）的加载</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>14.<a href="vip_3233.html">如何编写自己的Shell配置文件？</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dt><a href="../shell/program/program.html">Shell编程</a></dt>
+<dd>1.<a href="743.html">Shell变量</a>
+</dd>
+<dd>2.<a href="vip_4558.html">Shell变量的作用域（精讲）</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>3.<a href="1164.html">Shell命令替换</a>
+</dd>
+<dd>4.<a href="789.html">Shell位置参数</a>
+</dd>
+<dd>5.<a href="806.html">Shell特殊变量</a>
+</dd>
+<dd>6.<a href="vip_4559.html">Shell $*和$@之间的区别</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>7.<a href="808.html">Shell $?</a>
+</dd>
+<dd>8.<a href="821.html">Shell字符串详解</a>
+</dd>
+<dd>9.<a href="1114.html">Shell字符串拼接</a>
+</dd>
+<dd>10.<a href="1120.html">Shell字符串截取</a>
+</dd>
+<dd>11.<a href="810.html">Shell数组</a>
+</dd>
+<dd>12.<a href="812.html">Shell获取数组长度</a>
+</dd>
+<dd>13.<a href="818.html">Shell数组拼接</a>
+</dd>
+<dd>14.<a href="819.html">Shell删除数组元素</a>
+</dd>
+<dd>15.<a href="vip_3234.html">Shell关联数组</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>16.<a href="1136.html">Shell内建命令</a>
+</dd>
+<dd>17.<a href="1138.html">Shell alias命令</a>
+</dd>
+<dd>18.<a href="1142.html">Shell echo命令</a>
+</dd>
+<dd>19.<a href="2991.html">Shell read命令</a>
+</dd>
+<dd>20.<a href="1145.html">Shell exit命令</a>
+</dd>
+<dd>21.<a href="2709.html">Shell declare和typeset命令</a>
+</dd>
+<dd>22.<a href="1169.html">Shell数学计算</a>
+</dd>
+<dd>23.<a href="2480.html">Shell (())</a>
+</dd>
+<dd>24.<a href="2504.html">Shell let命令</a>
+</dd>
+<dd>25.<a href="vip_3235.html">Shell $[]</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>26.<a href="vip_3236.html">Shell expr命令</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>27.<a href="vip_3237.html">Linux bc命令</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>28.<a href="vip_3238.html">Shell declare -i</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>29.<a href="1262.html">Shell if else</a>
+</dd>
+<dd>30.<a href="2735.html">Shell退出状态</a>
+</dd>
+<dd>31.<a href="2742.html">Shell test命令</a>
+</dd>
+<dd>32.<a href="2751.html">Shell [[]]</a>
+</dd>
+<dd>33.<a href="2767.html">Shell case in</a>
+</dd>
+<dd>34.<a href="1006.html">Shell while</a>
+</dd>
+<dd>35.<a href="1007.html">Shell until</a>
+</dd>
+<dd>36.<a href="2804.html">Shell for</a>
+</dd>
+<dd>37.<a href="2829.html">Shell select in</a>
+</dd>
+<dd>38.<a href="1011.html">Shell break和continue</a>
+</dd>
+<dd>39.<a href="1009.html">Shell函数</a>
+</dd>
+<dd>40.<a href="2860.html">Shell函数参数</a>
+</dd>
+<dd>41.<a href="vip_3239.html">Shell函数返回值精讲</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dt><a href="../shell/advanced/advanced.html">Shell高级</a></dt>
+<dd>1.<a href="942.html">Shell重定向</a>
+</dd>
+<dd>2.<a href="vip_3240.html">Linux中的文件描述符到底是什么？</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>3.<a href="vip_3241.html">结合文件描述符谈重定向，彻底理解重定向的本质！</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>4.<a href="vip_3242.html">使用exec命令操作文件描述符</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>5.<a href="vip_3243.html">Shell代码块重定向</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>6.<a href="vip_3244.html">Shell Here Document</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>7.<a href="vip_3245.html">Shell Here String</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>8.<a href="vip_3246.html">Shell组命令</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>9.<a href="vip_3247.html">Shell进程替换</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>10.<a href="3131.html">Linux管道</a>
+</dd>
+<dd>11.<a href="3472.html">Shell过滤器</a>
+</dd>
+<dd>12.<a href="vip_3248.html">子Shell和子进程到底有什么区别？</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>13.<a href="vip_3249.html">如何检测子Shell和子进程？</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>14.<a href="vip_3520.html">Linux中的信号是什么</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>15.<a href="vip_3522.html">Bash Shell中的信号</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>16.<a href="vip_3521.html">Linux进程简明教程</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>17.<a href="vip_3495.html">使用什么命令查看进程</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>18.<a href="vip_3497.html">Shell向进程发送信号</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>19.<a href="vip_3499.html">使用trap命令获取信号</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>20.<a href="vip_3506.html">trap命令捕获信号实例演示</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>21.<a href="vip_3507.html">移除（重置）信号捕获</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>22.<a href="vip_3508.html">关于进程、信号和捕获的总结</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>23.<a href="vip_3250.html">Shell模块化（把代码分散到多个脚本文件中）</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dt><a href="../shell/shortcut/shortcut.html">Bash Shell快捷键</a></dt>
+<dd>1.<a href="vip_3509.html">Bash Shell快捷键大全</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>2.<a href="vip_3510.html">Bash Shell命令自动补全功能</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>3.<a href="vip_3512.html">Bash Shell历史命令</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+</dl>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../shell/shell.html">Shell</a> &gt; <a href="../shell/advanced/advanced.html">Shell高级</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Linux Shell管道详解</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">通过前面的学习，我们已经知道了怎样从文件重定向输入，以及重定向输出到文件。Shell 还有一种功能，就是可以将两个或者多个命令（程序或者进程）连接到一起，把一个命令的输出作为下一个命令的输入，以这种方式连接的两个或者多个命令就形成了<span style="color:#006400;"><strong>管道（pipe）</strong></span>。<br />
+<br />
+Linux 管道使用竖线<code>|</code>连接多个命令，这被称为<span style="color:#006400;">管道符</span>。Linux 管道的具体语法格式如下：
+<p class="info-box">
+command1 | command2<br />
+command1 | command2 [ | commandN... ]</p>
+当在两个命令之间设置管道时，管道符<code>|</code>左边命令的输出就变成了右边命令的输入。只要第一个命令向标准输出写入，而第二个命令是从标准输入读取，那么这两个命令就可以形成一个管道。大部分的 Linux 命令都可以用来形成管道。
+<blockquote>
+这里需要注意，command1 必须有正确输出，而 command2 必须可以处理 command2 的输出结果；而且 command2 只能处理 command1 的正确输出结果，不能处理 command1 的错误信息。</blockquote>
+<h2>
+为什么使用管道？</h2>
+我们先看下面一组命令，使用 mysqldump（一个数据库备份程序）来备份一个叫做 wiki 的数据库：
+<p class="info-box">
+mysqldump -u root -p &#39;123456&#39; wiki &gt; /tmp/wikidb.backup<br />
+gzip -9 /tmp/wikidb.backup<br />
+scp /tmp/wikidb.backup username@remote_ip:/backup/mysql/</p>
+上述这组命令主要做了如下任务：
+<ul>
+<li>
+mysqldump 命令用于将名为 wike 的数据库备份到文件 /tmp/wikidb.backup；其中<code>-u</code>和<code>-p</code>选项分别指出数据库的用户名和密码。</li>
+<li>
+gzip 命令用于压缩较大的数据库文件以节省磁盘空间；其中<code>-9</code>表示最慢的压缩速度最好的压缩效果。</li>
+<li>
+scp 命令（secure copy，安全拷贝）用于将数据库备份文件复制到 IP 地址为 remote_ip 的备份服务器的 /backup/mysql/ 目录下。其中<code>username</code>是登录远程服务器的用户名，命令执行后需要输入密码。</li>
+</ul>
+<br />
+上述三个命令依次执行。然而，如果使用管道的话，你就可以将 mysqldump、gzip、ssh 命令相连接，这样就避免了创建临时文件 /tmp/wikidb.backup，而且可以同时执行这些命令并达到相同的效果。<br />
+<br />
+使用管道后的命令如下所示：
+<p class="info-box">
+mysqldump -u root -p &#39;123456&#39; wiki | gzip -9 | ssh username@remote_ip &quot;cat &gt; /backup/wikidb.gz&quot;</p>
+这些使用了管道的命令有如下特点：
+<ul>
+<li>
+命令的语法紧凑并且使用简单。</li>
+<li>
+通过使用管道，将三个命令串联到一起就完成了远程 mysql 备份的复杂任务。</li>
+<li>
+从管道输出的标准错误会混合到一起。</li>
+</ul>
+<br />
+上述命令的数据流如下图所示：
+<div style="text-align: center;">
+<img alt="Linux Shell管道演示图" src="../uploads/allimg/190416/1-1Z4161052294c.gif" /></div>
+<h2>
+重定向和管道的区别</h2>
+乍看起来，管道也有重定向的作用，它也改变了数据输入输出的方向，那么，管道和重定向之间到底有什么不同呢？<br />
+<br />
+简单地说，重定向操作符&gt;将命令与文件连接起来，用文件来接收命令的输出；而管道符|将命令与命令连接起来，用第二个命令来接收第一个命令的输出。如下所示：
+<p class="info-box">
+command &gt; file<br />
+command1 | command1</p>
+有些读者在学习管道时会尝试如下的命令，我们来看一下会发生什么：
+<p class="info-box">
+command1 &gt; command2</p>
+答案是，有时尝试的结果将会很糟糕。这是一个实际的例子，一个 Linux 系统管理员以超级用户（root 用户）的身份执行了如下命令：
+<p class="info-box">
+cd /usr/bin<br />
+ls &gt; less</p>
+第一条命令将当前目录切换到了大多数程序所存放的目录，第二条命令是告诉 Shell 用 ls 命令的输出重写文件 less。因为 /usr/bin 目录已经包含了名称为 less（less 程序）的文件，第二条命令用 ls 输出的文本重写了 less 程序，因此破坏了文件系统中的 less 程序。<br />
+<br />
+这是使用重定向操作符错误重写文件的一个教训，所以在使用它时要谨慎。
+<h2>
+Linux管道实例</h2>
+【实例1】将 ls 命令的输出发送到 grep 命令：
+<pre class="info-box">
+[c.biancheng.net]$ ls | grep log.txt
+<span style="color:#b22222;">log.txt</span></pre>
+上述命令是查看文件 log.txt 是否存在于当前目录下。<br />
+<br />
+我们可以在命令的后面使用选项，例如使用<code>-al</code>选项：
+<pre class="info-box">
+[c.biancheng.net]$ ls -al | grep log.txt
+-rw-rw-r--.  1 mozhiyan mozhiyan    0 4月  15 17:26 <span style="color:#b22222;">log.txt</span></pre>
+管道符<code>|</code>与两侧的命令之间也可以不存在空格，例如将上述命令写作<code>ls -al|grep log.txt</code>；然而我还是推荐在管道符<code>|</code>和两侧的命令之间使用空格，以增加代码的可读性。<br />
+<br />
+我们也可以重定向管道的输出到一个文件，比如将上述管道命令的输出结果发送到文件 output.txt 中：
+<pre class="info-box">
+[c.biancheng.net]$ ls -al | grep log.txt &gt;output.txt
+[c.biancheng.net]$ cat output.txt
+-rw-rw-r--.  1 mozhiyan mozhiyan    0 4月  15 17:26 log.txt</pre>
+<br />
+【实例2】使用管道将 cat 命令的输出作为 less 命令的输入，这样就可以将 cat 命令的输出每次按照一个屏幕的长度显示，这对于查看长度大于一个屏幕的文件内容很有帮助。
+<pre class="info-box">
+cat /var/log/message | less</pre>
+<br />
+【实例3】查看指定程序的进程运行状态，并将输出重定向到文件中。
+<pre class="info-box">
+[c.biancheng.net]$ ps aux | grep httpd &gt; /tmp/ps.output
+[c.biancheng.net]$ cat /tem/ps.output
+mozhiyan  4101     13776  0   10:11 pts/3  00:00:00 grep httpd
+root      4578     1      0   Dec09 ?      00:00:00 /usr/sbin/httpd
+apache    19984    4578   0   Dec29 ?      00:00:00 /usr/sbin/httpd
+apache    19985    4578   0   Dec29 ?      00:00:00 /usr/sbin/httpd
+apache    19986    4578   0   Dec29 ?      00:00:00 /usr/sbin/httpd
+apache    19987    4578   0   Dec29 ?      00:00:00 /usr/sbin/httpd
+apache    19988    4578   0   Dec29 ?      00:00:00 /usr/sbin/httpd
+apache    19989    4578   0   Dec29 ?      00:00:00 /usr/sbin/httpd
+apache    19990    4578   0   Dec29 ?      00:00:00 /usr/sbin/httpd
+apache    19991    4578   0   Dec29 ?      00:00:00 /usr/sbin/httpd</pre>
+<br />
+【实例4】显示按用户名排序后的当前登录系统的用户的信息。
+<pre class="info-box">
+[c.biancheng.net]$ who | sort
+mozhiyan :0           2019-04-16 12:55 (:0)
+mozhiyan pts/0        2019-04-16 13:16 (:0)</pre>
+who 命令的输出将作为 sort 命令的输入，所以这两个命令通过管道连接后会显示按照用户名排序的已登录用户的信息。<br />
+<br />
+【实例5】统计系统中当前登录的用户数。
+<pre class="info-box">
+[c.biancheng.net]$ who | wc -l
+5</pre>
+<h2>
+管道与输入重定向</h2>
+输入重定向操作符&lt;可以在管道中使用，以用来从文件中获取输入，其语法类似下面这样：
+<p class="info-box">
+command1 &lt; input.txt | command2<br />
+command1 &lt; input.txt | command2 -option | command3</p>
+<br />
+例如，使用 tr 命令从 os.txt 文件中获取输入，然后通过管道将输出发送给 sort 或 uniq 等命令：
+<pre class="info-box">
+[c.biancheng.net]$ cat os.txt
+redhat
+suse
+centos
+ubuntu
+solaris
+hp-ux
+fedora
+centos
+redhat
+hp-ux
+[c.biancheng.net]$ tr a-z A-Z &lt;os.txt | sort
+CENTOS
+CENTOS
+FEDORA
+HP-UX
+HP-UX
+REDHAT
+REDHAT
+SOLARIS
+SUSE
+UBUNTU
+[c.biancheng.net]$ tr a-z A-Z &lt;os.txt | sort | uniq
+CENTOS
+FEDORA
+HP-UX
+REDHAT
+SOLARIS
+SUSE
+UBUNTU</pre>
+<h2>
+管道与输出重定向</h2>
+你也可以使用重定向操作符&gt;或&gt;&gt;将管道中的最后一个命令的标准输出进行重定向，其语法如下所示：
+<p class="info-box">
+command1 | command2 | ... | commandN &gt; output.txt<br />
+command1 &lt; input.txt | command2 | ... | commandN &gt; output.txt</p>
+<br />
+【实例1】使用 mount 命令显示当前挂载的文件系统的信息，并使用 column 命令格式化列的输出，最后将输出结果保存到一个文件中。
+<pre class="info-box">
+[c.biancheng.net]$ mount | column -t &gt;mounted.txt
+[c.biancheng.net]$ cat mounted.txt
+proc         on  /proc                  type  proc        (rw,nosuid,nodev,noexec,relatime)
+sysfs        on  /sys                   type  sysfs       (rw,nosuid,nodev,noexec,relatime,seclabel)
+devtmpfs     on  /dev                   type  devtmpfs    (rw,nosuid,seclabel,size=496136k,nr_inodes=124034,mode=755)
+securityfs   on  /sys/kernel/security   type  securityfs  (rw,nosuid,nodev,noexec,relatime)
+tmpfs        on  /dev/shm               type  tmpfs       (rw,nosuid,nodev,seclabel)
+devpts       on  /dev/pts               type  devpts      (rw,nosuid,noexec,relatime,seclabel,gid=5,mode=620,ptmxmode=000)
+tmpfs        on  /run                   type  tmpfs       (rw,nosuid,nodev,seclabel,mode=755)
+tmpfs        on  /sys/fs/cgroup         type  tmpfs       (rw,nosuid,nodev,noexec,seclabel,mode=755)
+#####此处省略部分内容#####</pre>
+<br />
+【实例2】使用 tr 命令将 os.txt 文件中的内容转化为大写，并使用 sort 命令将内容排序，使用 uniq 命令去除重复的行，最后将输出重定向到文件 ox.txt.new。
+<pre class="info-box">
+[c.biancheng.net]$ cat os.txt
+redhat
+suse
+centos
+ubuntu
+solaris
+hp-ux
+fedora
+centos
+redhat
+hp-ux
+[c.biancheng.net]$ tr a-z A-Z &lt;os.txt | sort | uniq &gt;os.txt.new
+[c.biancheng.net]$ cat os.txt.new
+CENTOS
+FEDORA
+HP-UX
+REDHAT
+SOLARIS
+SUSE
+UBUNTU</pre>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="569.html" title="C语言小写转大写，小写字母转换成大写字母" target="_blank">C语言小写转大写，小写字母转换成大写字母</a></li>
+<li><a href="2809.html" title="C# get和set访问器：获取和设置字段（属性）的值" target="_blank">C# get和set访问器：获取和设置字段（属性）的值</a></li>
+<li><a href="3896.html" title="VDI（远程桌面）是什么？" target="_blank">VDI（远程桌面）是什么？</a></li>
+<li><a href="6156.html" title="PHP implode()：数组转字符串" target="_blank">PHP implode()：数组转字符串</a></li>
+<li><a href="../spring_mvc/model-attribute.html" title="Spring MVC @ModelAttribute注解" target="_blank">Spring MVC @ModelAttribute注解</a></li>
+<li><a href="../json/json-bson.html" title="JSON和BSON的区别" target="_blank">JSON和BSON的区别</a></li>
+<li><a href="l0w4n2l.html" title="Vue事件修饰符详解" target="_blank">Vue事件修饰符详解</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 3131;
+window.arcId = "63e725f/jLzPVBYyZqQ4mKXMcyp7PzYVDsqK9lD1IlSCBwDiCaDF7fI3Z+Q";
+window.typeidChain = "300|78";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/view/vip_3247.html";
+window.nextPageURL = "/view/3472.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

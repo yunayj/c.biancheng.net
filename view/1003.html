@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Shell case语句（多分支条件判断）</title>
+<meta name="description" content="case 语句和 if...elif...else 语句一样都是多分支条件语句，不过和多分支 if 条件语句不同的是，case 语句只能判断一种条件关系，而 if 语句可以判断多种条件关系。 case 语句的语法如下：" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Shell case语句（多分支条件判断）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">case 语句和 if...elif...else 语句一样都是多分支条件语句，不过和多分支 if 条件语句不同的是，case 语句只能判断一种条件关系，而 if 语句可以判断多种条件关系。<br />
+<br />
+case 语句的语法如下：
+<p class="info-box">
+case $变量名 in<br />
+&quot;值 1&quot;)<br />
+;;<br />
+如果变量的值等于值1，则执行程序1，值<br />
+2&quot;)<br />
+如果变量的值等于值2，则执行程序2<br />
+&hellip;省略其他分支&hellip;<br />
+*)<br />
+如果变量的值都不是以上的值，则执行此程序<br />
+;;<br />
+esac</p>
+这条语句需要注意以下内容：
+<ul>
+<li>
+case 语句会取出变量中的值，然后与语句体中的值逐一比较。如果数值符合，则执行对应的程序；如果数值不符，则依次比较下一个值；如果所有的值都不符合，则执行&quot;*)&quot;（&quot;*&quot;代表所有其他值）中的程序。</li>
+<li>
+case 语句以&quot;case&quot;开头，以&quot;esac&quot;结尾。</li>
+<li>
+在每个分支程序之后要以&quot;;;&quot;（双分号）结尾，代表该程序段结束（千万不要忘记）。</li>
+</ul>
+<br />
+注意，多分支 case 条件语句只能判断变量中的值到底是什么，而不能像多分支if语句那样，可以判断多个条件，所以多分支 case 条件语句更加适合单条件多分支的情况。比如，我们在系统中经常看到请选择&quot;yes/no&quot;，或在命令的输出中选择是执行第一个选项，还是执行第二个选项（fdisk 命令）。在这些情况下，使用 case 最为适合。我们写一个选择&quot;yes/no&quot;的例子，命令如下：<br />
+<p class="info-box">
+[root@localhost ~]# vi sh/case.sh<br />
+#!/bin/bash<br />
+#判断用户输入<br />
+read -p &quot;Please choose yes/no: &quot; -t 30 cho<br />
+#在屏幕上输出&quot;请选择yes/no&quot;，然后把用户选择赋予变量cho<br />
+case $cho in<br />
+#判断变量cho的值<br />
+&nbsp;&nbsp;&nbsp; &quot;yes&quot;)<br />
+&nbsp;&nbsp;&nbsp; #如果是yes<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; echo &quot;Your choose is yes!&quot;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #则执行程序1<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;;<br />
+&nbsp;&nbsp;&nbsp; &quot;no&quot;)<br />
+&nbsp;&nbsp;&nbsp; #如果是no<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; echo &quot;Your choose is no!&quot;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #则执行程序2<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ;;<br />
+&nbsp;&nbsp;&nbsp; *)<br />
+&nbsp;&nbsp;&nbsp; #如果既不是yes,也不是no<br />
+&nbsp;&nbsp;&nbsp; echo &quot;Your choose is error!&quot;<br />
+&nbsp;&nbsp;&nbsp; #则执行此程序<br />
+&nbsp;&nbsp;&nbsp; ;;<br />
+esac</p>
+解释一下脚本思路：请用户输入 yes 或 no，如果输入的是 yes，则输出&quot;Your choose is yes!&quot;；如果输入的是 no，则输出&quot;Your choose is no!&quot;；如果输入的是其他字符，则输出&quot;Your choose is error!&quot;。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="500.html" title="C语言百钱买百鸡问题（详解版）" target="_blank">C语言百钱买百鸡问题（详解版）</a></li>
+<li><a href="vip_1815.html" title="谈编程思维的培养，初学者如何实现自我突破（非常重要）" target="_blank">谈编程思维的培养，初学者如何实现自我突破（非常重要）</a></li>
+<li><a href="4738.html" title="Java List.removeAll()方法：从列表中移除所有元素" target="_blank">Java List.removeAll()方法：从列表中移除所有元素</a></li>
+<li><a href="7831.html" title="Django HTML表单实现用户登录退出（含源码）" target="_blank">Django HTML表单实现用户登录退出（含源码）</a></li>
+<li><a href="7918.html" title="C++11 weak_ptr智能指针（一看即懂）" target="_blank">C++11 weak_ptr智能指针（一看即懂）</a></li>
+<li><a href="9825.html" title="Elasticsearch介绍（非常详细）" target="_blank">Elasticsearch介绍（非常详细）</a></li>
+<li><a href="ubwdolp.html" title="《Web前端技术》PDF下载（高清完整版）" target="_blank">《Web前端技术》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 1003;
+window.arcId = "c7167sAIQjXn7sV1GLtoQpUwWaifzWXHrru586UdVMXnrE+qUJfCNCk1IF8";
+window.typeidChain = "210|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

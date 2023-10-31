@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C语言fseek()：移动文件内部位置指针</title>
+<meta name="description" content="fseek() 是 C语言的一个标准库函数，定义在 stdio.h 头文件中。 fseek() 用于设置文件内部的位置指针，即改变文件中的读/写位置。fseek() 函数的原型如下： int fseek(FILE *stream, long offset, int" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="../view/niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C语言fseek()：移动文件内部位置指针</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">fseek() 是 C语言的一个标准库函数，定义在<code>&lt;stdio.h&gt;</code>头文件中。<br />
+<br />
+fseek() 用于设置文件内部的位置指针，即改变文件中的读/写位置。fseek() 函数的原型如下：<br />
+<pre class="info-box">
+int fseek(FILE *stream, long offset, int whence);</pre>
+<h4>
+	参数</h4>
+<ol>
+	<li>
+		stream：文件指针，也就是被移动的文件。</li>
+	<li>
+		offset：偏移量，也就是要移动的字节数。之所以为 long 类型，是希望移动的范围更大，能处理的文件更大。offset 为正时，向后移动；offset 为负时，向前移动。</li>
+	<li>
+		whence：起始位置，也就是从何处开始计算偏移量，C语言规定的起始位置有三种，每个位置都用对应的常量来表示：
+		<ul>
+			<li>
+				SEEK_SET：从文件开头，对应的常量值为 0；</li>
+			<li>
+				SEEK_CUR：从文件的当前位置，对应的常量值为 1。</li>
+			<li>
+				SEEK_END：从文件末尾，对应的常量值为 2。</li>
+		</ul>
+	</li>
+</ol>
+<br />
+例如，把位置指针移动到离文件开头 100 个字节处：
+<pre class="info-box">
+fseek(fp, 100, SEEK_SET);
+fseek(fp, 100, 0);</pre>
+以上两种写法是等价的。<br />
+<h4>
+	返回值</h4>
+成功时，fseek() 返回 0；失败时，fseek() 返回非零值，并设置全局错误指示器 errno。<br />
+<br />
+【实例】以下是使用 C语言 fseek() 函数在文件中跳转到特定位置并读取数据的示例代码：<br />
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+
+int main() {
+  FILE *file = fopen(&quot;example.bin&quot;, &quot;rb&quot;);
+
+  if (file == NULL) {
+    printf(&quot;Error opening file!\n&quot;);
+    return 1;
+  }
+
+  // 跳转到文件的第10个字节处
+  if (fseek(file, 9, SEEK_SET) != 0) {
+    printf(&quot;Error seeking in file!\n&quot;);
+    return 2;
+  }
+
+  // 读取一个字符
+  char ch;
+  fread(&amp;ch, 1, 1, file);
+
+  printf(&quot;Character read from file: %c\n&quot;, ch);
+
+  fclose(file);
+  return 0;
+}</pre>
+这个代码打开一个名为&quot;example.bin&quot;的文件并跳转到第 10 个字节，然后读取一个字符并打印它。如果文件打开或定位失败，则打印错误消息并返回非零退出代码。<br />
+<br />
+请注意，这个示例假设您知道要跳转到的位置。在实际应用中，可能需要更复杂的逻辑来确定文件中的正确位置，特别是当您在处理结构化数据（如记录或对象）时。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="../view/niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/510_2.html" title="C语言三个数从小到大排序/输出" target="_blank">C语言三个数从小到大排序/输出</a></li>
+<li><a href="../view/2293_2.html" title="Python MetaClass元类详解" target="_blank">Python MetaClass元类详解</a></li>
+<li><a href="../view/vip_3330_2.html" title="数据的逻辑结构和存储结构（物理结构）详解" target="_blank">数据的逻辑结构和存储结构（物理结构）详解</a></li>
+<li><a href="../view/5824_2.html" title="Visual Studio运行Python程序（超级详细）" target="_blank">Visual Studio运行Python程序（超级详细）</a></li>
+<li><a href="../view/6637_2.html" title="Java中Error和Exception的异同" target="_blank">Java中Error和Exception的异同</a></li>
+<li><a href="../spring_mvc/exception_2.html" title="Spring MVC异常处理" target="_blank">Spring MVC异常处理</a></li>
+<li><a href="../matplotlib/contour_2.html" title="Matplotlib等高线图" target="_blank">Matplotlib等高线图</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10228;
+window.arcId = "17ddR34wvg3dLGeLs8JMU7xae0IaTGNFoss3TGE7ctnkgwchrNumew1UC721";
+window.typeidChain = "288|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="../view/8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="../view/8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="../view/8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="../view/9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="../view/8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

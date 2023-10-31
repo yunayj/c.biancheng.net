@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>二分查找算法（折半查找算法）</title>
+<meta name="description" content="二分查找算法又称折半查找算法，是在分治算法基础上实现的查找算法。本文将详细讲解二分查找算法的实现思路，还会给出二分查找算法对应的C/C++、Java、Python实现代码。" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>二分查找算法（折半查找算法）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">二分查找又称<span style="color:#008000;">折半查找</span>、<span style="color:#008000;">二分搜索</span>、<span style="color:#008000;">折半搜索</span>等，是在<a href="../algorithm/divide-and-conquer.html" target="_blank">分治算法</a>基础上设计出来的查找算法，对应的时间复杂度为<code style="font-size: 14px;">O(logn)</code>。<br />
+<br />
+二分查找算法仅适用于有序序列，它只能用在升序序列或者降序序列中查找目标元素。
+<h2>
+二分查找算法的实现思路</h2>
+在有序序列中，使用二分查找算法搜索目标元素的核心思想是：不断地缩小搜索区域，降低查找目标元素的难度。<br />
+<br />
+以在升序序列中查找目标元素为例，二分查找算法的实现思路是：<br />
+<ol>
+<li>
+初始状态下，将整个序列作为搜索区域（假设为 [B, E]）；</li>
+<li>
+找到搜索区域内的中间元素（假设所在位置为 M），和目标元素进行比对。如果相等，则搜索成功；如果中间元素大于目标元素，表明目标元素位于中间元素的左侧，将 [B, M-1] 作为新的搜素区域；反之，若中间元素小于目标元素，表明目标元素位于中间元素的右侧，将 [M+1, E] 作为新的搜素区域；</li>
+<li>
+重复执行第二步，直至找到目标元素。如果搜索区域无法再缩小，且区域内不包含任何元素，表明整个序列中没有目标元素，查找失败。</li>
+</ol>
+<br />
+举个简单的例子，在下图所示的升序序列中查找元素 31。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210820/2-210R0143956357.gif" /></div>
+<br />
+二分查找算法的具体实现过程为：<br />
+1) 初始状态下，搜索区域是整个序列。找到搜索区域内的中间元素。指定区域内中间元素的位置可以套用如下公式求出：
+<p class="info-box">
+Mid = &lfloor; Begin + (End - Begin) / 2 &rfloor;</p>
+<blockquote>
+<p>
+End 表示搜索区域内最后一个元素所在位置，Begin 表示搜索区域内第一个元素所在的位置，Mid 表示中间元素所在的位置。</p>
+</blockquote>
+图 1 中，所有元素的位置分别用 0~9 表示，中间元素的位置为&nbsp;&lfloor; 0 + (9 - 0) / 2 &rfloor; = 4，如下图所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210820/2-210R0144035D2.gif" /></div>
+<br />
+中间元素 27 &lt; 31，可以断定 [0, 4] 区域内绝对没有 31，目标元素只可能位于 [5, 9] 区域内，如下图所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210820/2-210R0144119413.gif" /></div>
+<br />
+2) 在 [5, 9] 区域内，中间元素的位置为&nbsp;&lfloor; 5 + (9 - 5) / 2 &rfloor; = 7，如下图所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210820/2-210R014414U28.gif" /></div>
+<br />
+中间元素 35 &gt; 31，可以断定 [7, 9] 区域内绝对没有 31，目标元素只可能位于 [5,6] 中，如下图所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210820/2-210R014420W94.gif" /></div>
+<br />
+3) 在 [5, 6] 区域内，中间元素的位置为&nbsp;&lfloor; 5 + (6- 5) / 2 &rfloor; = 5，中间元素就是 31，成功找到目标元素。
+<h2>
+二分查找算法的具体实现</h2>
+如下用伪代码给大家展示了二分查找算法的具体实现过程：
+<pre class="info-box">
+输入 arr[]                                // 输入有序序列
+binary_search( arr , begin , end , ele):  // [begin,end] 指定搜索区域，ele 为要搜索的目标元素
+    if begin &gt; end:                       // [begin,end] 不存在时，返回一个错误值（比如 -1）
+        return -1
+    mid &lt;- &lfloor; begin+(end-begin)/2 &rfloor;        // 找到 [begin,end] 区域内中间元素所在位置的下标
+    if ele == arr[mid]:                  // 递归的出口，即 ele 和中间元素的值相等
+        return mid
+    if ele ＜ arr[mid]:                  // 比较 ele 和中间元素的值，进一步缩小搜索区域
+        return binary_search(arr , begin , mid-1 , ele)
+    else:
+        return binary_search(arr , mid+1 , end , ele)</pre>
+<br />
+结合伪代码，如下是用二分查找算法在 {10, 14, 19, 26, 27, 31, 33, 35, 42, 44} 升序序列中查找元素 31 的 C 语言程序：
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+//实现二分查找算法，ele 表示要查找的目标元素，[p,q] 指定查找区域
+int binary_search(int *arr,int p,int q,int ele) {
+    int mid = 0;
+    //如果[p,q] 不存在，返回 -1
+    if (p &gt; q) {
+        return -1;
+    }
+    // 找到中间元素所在的位置
+    mid = p + (q - p) / 2;
+    //递归的出口
+    if (ele == arr[mid]) {
+        return mid;
+    }
+    //比较 ele 和 arr[mid] 的值，缩小 ele 可能存在的区域
+    if (ele &lt; arr[mid]) {
+        //新的搜索区域为 [p,mid-1]
+        return binary_search(arr, p, mid - 1, ele);
+    }
+    else {
+        //新的搜索区域为 [mid+1,q]
+        return binary_search(arr, mid + 1, q, ele);
+    }
+}
+
+int main()
+{
+    int arr[10] = { 10,14,19,26,27,31,33,35,42,44 };
+    //输出二叉查找元素 31 所在位置的下标
+    printf(&quot;%d&quot;, binary_search(arr, 0, 9, 31));
+    return 0;
+}</pre>
+<br />
+如下是用二分查找算法在 {10, 14, 19, 26, 27, 31, 33, 35, 42, 44} 升序序列中查找元素 31 的 Java 程序：
+<pre class="java">
+public class Demo {
+    // 实现二分查找算法，ele 表示要查找的目标元素，[p,q] 指定查找区域
+    public static int binary_search(int[] arr, int p, int q, int ele) {
+        // 如果[p,q] 不存在，返回 -1
+        if (p &gt; q) {
+            return -1;
+        }
+        // 找到中间元素所在的位置
+        int mid = p + (q - p) / 2;
+        // 递归的出口
+        if (ele == arr[mid]) {
+            return mid;
+        }
+        // 比较 ele 和 arr[mid] 的值，缩小 ele 可能存在的区域
+        if (ele &lt; arr[mid]) {
+            // 新的搜索区域为 [p,mid-1]
+            return binary_search(arr, p, mid - 1, ele);
+        } else {
+            // 新的搜索区域为 [mid+1,q]
+            return binary_search(arr, mid + 1, q, ele);
+        }
+    }
+
+    public static void main(String[] args) {
+        int[] arr = new int[] { 10, 14, 19, 26, 27, 31, 33, 35, 42, 44 };
+        // 输出二叉查找元素 31 所在位置的下标
+        int add = binary_search(arr, 0, 9, 31);
+        System.out.print(add);
+    }
+}</pre>
+<br />
+如下是用二分查找算法在 {10, 14, 19, 26, 27, 31, 33, 35, 42, 44} 升序序列中查找元素 31 的 Python 程序：
+<pre class="python">
+#实现二分查找算法，ele 表示要查找的目标元素，[p,q] 指定查找区域
+def binary_search(arr,p,q,ele):
+    #如果[p,q] 不存在，返回 -1
+    if p &gt; q:
+        return -1
+    #找到中间元素所在的位置
+    mid = p + int( (q - p) / 2 )
+    #递归的出口
+    if ele == arr[mid]:
+        return mid
+    #比较 ele 和 arr[mid] 的值，缩小 ele 可能存在的区域
+    if ele &lt; arr[mid]:
+        return binary_search(arr,p,mid-1,ele)
+    else:
+        return binary_search(arr,mid+1,q,ele)
+
+arr = [10, 14, 19, 26, 27, 31, 33, 35, 42, 44]
+#输出二叉查找元素 31 所在位置的下标
+add = binary_search(arr, 0, 9, 31);
+print(add)</pre>
+<br />
+以上程序的输出结果均为：
+<p class="info-box">
+5</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="918.html" title="Linux VG卷组（创建、激活、查看、扩容、减小及删除）详解" target="_blank">Linux VG卷组（创建、激活、查看、扩容、减小及删除）详解</a></li>
+<li><a href="vip_1794.html" title="C语言在屏幕的任意位置输出字符，开发小游戏的第一步" target="_blank">C语言在屏幕的任意位置输出字符，开发小游戏的第一步</a></li>
+<li><a href="7231.html" title="C++ STL unordered_map容器用法详解" target="_blank">C++ STL unordered_map容器用法详解</a></li>
+<li><a href="9823.html" title="负载均衡是什么（超级详细）" target="_blank">负载均衡是什么（超级详细）</a></li>
+<li><a href="10j42mg.html" title="C++函数对象详解" target="_blank">C++函数对象详解</a></li>
+<li><a href="s0r5j0r.html" title="Python复制文件（文本文件和二进制文件）" target="_blank">Python复制文件（文本文件和二进制文件）</a></li>
+<li><a href="e03cg0r.html" title="PHP注释（//、#、/**/）" target="_blank">PHP注释（//、#、/**/）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9119;
+window.arcId = "2152Uh+5Hsjh+Hp0C9JGJKZ+UC6ukmNXmDUw8Z8rT9NQ87cnHEfGOz0A/bA";
+window.typeidChain = "457|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

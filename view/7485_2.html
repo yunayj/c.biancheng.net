@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C++ merge()和inplace_merge()函数用法（详解版）</title>
+<meta name="description" content="有些场景中，我们需要将 2 个有序序列合并为 1 个有序序列，这时就可以借助 merge() 或者 inplace_merge() 函数实现。 值得一提的是，merge() 和 inplace_merge() 函数都定义在 algorithm 头文件中，" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+	<div id="sidebar" class="toggle-target">
+	<div id="contents">
+		<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../stl/stl_2.html">STL</a></dt>
+		
+			<dd>
+				<span class="channel-num">1</span>
+				<a href='../stl/stl_basic/stl_basic_2.html'>STL基础</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">2</span>
+				<a href='../stl/sequence_container/sequence_container_2.html'>STL序列式容器</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">3</span>
+				<a href='../stl/map_set/map_set_2.html'>STL关联式容器</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">4</span>
+				<a href='../stl/unordered_container/unordered_container_2.html'>STL无序关联式容器</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">5</span>
+				<a href='../stl/container_adapters/container_adapters_2.html'>STL容器适配器</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">6</span>
+				<a href='../stl/iterator_adaptor/iterator_adaptor_2.html'>STL迭代器适配器</a>
+			</dd>
+		<dd class="this"> <span class="channel-num">7</span> <a href="../stl/algorithms/algorithms_2.html">C++常用算法</a> </dd><dl class="dl-sub"><dd>7.1 <a href="7457_2.html">C++ sort()排序函数</a></dd><dd>7.2 <a href="7460_2.html">C++ stable_sort()排序函数</a></dd><dd>7.3 <a href="7469_2.html">C++ partial_sort()函数</a></dd><dd>7.4 <a href="7476_2.html">C++ nth_element()排序函数</a></dd><dd>7.5 <a href="7478_2.html">C++ is_sorted()函数</a></dd><dd>7.6 <a href="vip_7734_2.html">C++ STL标准库这么多排序函数，该如何选择？</a><span class="iconfont iconfont-vip2"></span></dd><dd>7.7 <a href="vip_7735_2.html">自定义STL算法规则，应优先使用函数对象！</a><span class="iconfont iconfont-vip2"></span></dd><dd>7.8 <a href="7485_2.html">C++ merge()和inplace_merge()函数</a></dd><dd>7.9 <a href="7489_2.html">C++ find()函数</a></dd><dd>7.10 <a href="vip_7736_2.html">能用STL算法，绝不自己实现！</a><span class="iconfont iconfont-vip2"></span></dd><dd>7.11 <a href="vip_7737_2.html">STL算法和容器中的成员方法同名时，该如何选择？</a><span class="iconfont iconfont-vip2"></span></dd><dd>7.12 <a href="7493_2.html">C++ find_if()和find_if_not()函数</a></dd><dd>7.13 <a href="7500_2.html">C++ find_end()函数</a></dd><dd>7.14 <a href="7495_2.html">C++ find_first_of()函数</a></dd><dd>7.15 <a href="7499_2.html">C++ adjacent_find()函数</a></dd><dd>7.16 <a href="7503_2.html">C++ search()函数</a></dd><dd>7.17 <a href="7509_2.html">C++ search_n()函数</a></dd><dd>7.18 <a href="7513_2.html">C++ partition()和stable_partition()函数</a></dd><dd>7.19 <a href="7516_2.html">C++ partition_copy()函数</a></dd><dd>7.20 <a href="7517_2.html">C++ partition_point()函数</a></dd><dd>7.21 <a href="7521_2.html">C++ lower_bound()函数</a></dd><dd>7.22 <a href="7527_2.html">C++ upper_bound()函数</a></dd><dd>7.23 <a href="7531_2.html">C++ equel_range()函数</a></dd><dd>7.24 <a href="7537_2.html">C++ binary_search()函数</a></dd><dd>7.25 <a href="590_2.html">C++ all_of、any_of及none_of</a></dd><dd>7.26 <a href="592_2.html">C++ equal</a></dd><dd>7.27 <a href="594_2.html">C++ mismatch</a></dd><dd>7.28 <a href="595_2.html">C++ lexicographical_compare</a></dd><dd>7.29 <a href="597_2.html">C++ next_permutation</a></dd><dd>7.30 <a href="598_2.html">C++ prev_permutation</a></dd><dd>7.31 <a href="600_2.html">C++ is_permutation</a></dd><dd>7.32 <a href="601_2.html">C++ copy_n</a></dd><dd>7.33 <a href="602_2.html">C++ copy_if</a></dd><dd>7.34 <a href="605_2.html">C++ copy_backward</a></dd><dd>7.35 <a href="606_2.html">C++ reverse_copy</a></dd><dd>7.36 <a href="607_2.html">C++ unique</a></dd><dd>7.37 <a href="609_2.html">C++ rotate</a></dd><dd>7.38 <a href="611_2.html">C++ rotate_copy</a></dd><dd>7.39 <a href="613_2.html">C++ move</a></dd><dd>7.40 <a href="616_2.html">C++ swap_ranges</a></dd><dd>7.41 <a href="617_2.html">C++ remove函数</a></dd><dd>7.42 <a href="619_2.html">C++ fill和fill_n</a></dd><dd>7.43 <a href="620_2.html">C++ generate和generate_n</a></dd><dd>7.44 <a href="623_2.html">C++ transform</a></dd><dd>7.45 <a href="625_2.html">C++ replace</a></dd></dl>
+	</div>
+</div>
+	<div id="article-wrap">
+		<div id="article">
+			<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../stl/stl_2.html">STL</a> &gt; <a href="../stl/algorithms/algorithms_2.html">C++常用算法</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+			<h1>C++ merge()和inplace_merge()函数用法（详解版）</h1>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+			<div id="arc-body">有些场景中，我们需要将 2 个有序序列合并为 1 个有序序列，这时就可以借助<span style="color:#008000;"> merge()</span> 或者 <span style="color:#008000;">inplace_merge()</span> 函数实现。<br />
+<br />
+值得一提的是，merge() 和 inplace_merge() 函数都定义在<code>&lt;algorithm&gt;</code>头文件中，因此在使用它们之前，程序中必须提前引入该头文件：
+<pre class="cpp">
+#include &lt;algorithm&gt;</pre>
+<h2>
+	C++ merge()函数</h2>
+merge() 函数用于将 2 个有序序列合并为 1 个有序序列，前提是这 2 个有序序列的排序规则相同（要么都是升序，要么都是降序）。并且最终借助该函数获得的新有序序列，其排序规则也和这 2 个有序序列相同。<br />
+<br />
+举个例子，假设有 2 个序列，分别为<code>5,10,15,20,25</code>和<code>7,14,21,28,35,42</code>，显然它们不仅有序，而且都是升序序列。因此借助 merge() 函数，我们就可以轻松获得如下这个有序序列：
+<p class="info-box">
+	5 7 10 15 17 20 25 27 37 47 57</p>
+可以看到，该序列不仅包含以上 2 个序列中所有的元素，并且其本身也是一个升序序列。<br />
+<br />
+值得一提的是，C++ STL 标准库的开发人员考虑到用户可能需要自定义排序规则，因此为 merge() 函数设计了以下 2 种语法格式：
+<pre class="info-box">
+//以默认的升序排序作为排序规则
+OutputIterator merge (InputIterator1 first1, InputIterator1 last1,
+                      InputIterator2 first2, InputIterator2 last2,
+                      OutputIterator result);
+//以自定义的 comp 规则作为排序规则
+OutputIterator merge (InputIterator1 first1, InputIterator1 last1,
+                      InputIterator2 first2, InputIterator2 last2,
+                      OutputIterator result, Compare comp);</pre>
+可以看到，first1、last1、first2 以及 last2 都为输入迭代器，[first1, last1) 和 [first2, last2) 各用来指定一个有序序列；result 为输出迭代器，用于为最终生成的新有序序列指定存储位置；comp 用于自定义排序规则。同时，该函数会返回一个输出迭代器，其指向的是新有序序列中最后一个元素之后的位置。
+<blockquote>
+	<p>
+		注意，当采用第一种语法格式时，[first1, last1) 和 [first2, last2) 指定区域内的元素必须支持 &lt; 小于运算符；同样当采用第二种语法格式时，[first1, last1) 和 [first2, last2) 指定区域内的元素必须支持 comp 排序规则内的比较运算符。</p>
+</blockquote>
+举个例子：
+<pre class="cpp">
+#include &lt;iostream&gt;     // std::cout
+#include &lt;algorithm&gt;    // std::merge
+#include &lt;vector&gt;       // std::vector
+using namespace std;
+int main() {
+    //first 和 second 数组中各存有 1 个有序序列
+    int first[] = { 5,10,15,20,25 };
+    int second[] = { 7,17,27,37,47,57 };
+    //用于存储新的有序序列
+    vector&lt;int&gt; myvector(11);
+    //将 [first,first+5) 和 [second,second+6) 合并为 1 个有序序列，并存储到 myvector 容器中。
+    merge(first, first + 5, second, second + 6, myvector.begin());
+    //输出 myvector 容器中存储的元素
+    for (vector&lt;int&gt;::iterator it = myvector.begin(); it != myvector.end(); ++it) {
+        cout &lt;&lt; *it &lt;&lt; &#39; &#39;;
+    }   
+    return 0;
+}</pre>
+程序执行结果为：
+<p class="info-box">
+	5 7 10 15 17 20 25 27 37 47 57</p>
+可以看到，first 数组和 second 数组中各存有 1 个升序序列，通过借助 merge() 函数，我们成功地将它们合并成了一个有序序列，并存储到 myvector 容器中。<br />
+<blockquote>
+	<p>
+		注意，merge() 函数底层是通过拷贝的方式实现合并操作的。换句话说，上面程序在采用 merge() 函数实现合并操作的同时，并不会对 first 和 second 数组有任何影响。有关该函数的具体实现过程，可查看 <a href="http://www.cplusplus.com/reference/algorithm/merge/" rel="nofollow" target="_blank">C++ STL merge() 官网</a>。</p>
+</blockquote>
+实际上，对于 2 个有序序列是各自存储（像 first 和 second 这样）还是存储到一起，merge() 函数并不关心，只需要给它传入恰当的迭代器（或指针），该函数就可以正常工作。因此，我们还可以将上面程序改写为：<br />
+<pre class="cpp">
+//该数组中存储有 2 个有序序列
+int first[] = { 5,10,15,20,25,7,17,27,37,47,57 };
+//用于存储新的有序序列
+vector&lt;int&gt; myvector(11);
+//将 [first,first+5) 和 [first+5,first+11) 合并为 1 个有序序列，并存储到 myvector 容器中。
+merge(first, first + 5,  first + 5, first +11 , myvector.begin());</pre>
+可以看到，2 个有序序列全部存储到了 first 数组中，但只要给 merge() 函数传入正确的指针，仍可以将它们合并为 1 个有序序列。<br />
+<blockquote>
+	<p>
+		感兴趣的读者，可自行验证这段程序，其最终会得到和上面程序相同的 myvector 容器。</p>
+</blockquote>
+<h2>
+	C++ inplace_merge()函数</h2>
+事实上，当 2 个有序序列存储在同一个数组或容器中时，如果想将它们合并为 1 个有序序列，除了使用 merge() 函数，更推荐使用 inplace_merge() 函数。<br />
+<br />
+和 merge() 函数相比，inplace_merge() 函数的语法格式要简单很多：
+<pre class="info-box">
+//默认采用升序的排序规则
+void inplace_merge (BidirectionalIterator first, BidirectionalIterator middle,
+                    BidirectionalIterator last);
+//采用自定义的 comp 排序规则
+void inplace_merge (BidirectionalIterator first, BidirectionalIterator middle,
+                    BidirectionalIterator last, Compare comp);</pre>
+其中，first、middle 和 last 都为双向迭代器，[first, middle) 和 [middle, last) 各表示一个有序序列。<br />
+<br />
+和 merge() 函数一样，inplace_merge() 函数也要求 [first, middle) 和 [middle, last) 指定的这 2 个序列必须遵循相同的排序规则，且当采用第一种语法格式时，这 2 个序列中的元素必须支持 &lt; 小于运算符；同样，当采用第二种语法格式时，这 2 个序列中的元素必须支持 comp 排序规则内部的比较运算符。不同之处在于，merge() 函数会将最终合并的有序序列存储在其它数组或容器中，而 inplace_merge() 函数则将最终合并的有序序列存储在 [first, last) 区域中。<br />
+<br />
+举个例子：
+<pre class="cpp">
+#include &lt;iostream&gt;     // std::cout
+#include &lt;algorithm&gt;    // std::merge
+using namespace std;
+int main() {
+    //该数组中存储有 2 个有序序列
+    int first[] = { 5,10,15,20,25,7,17,27,37,47,57 };
+    //将 [first,first+5) 和 [first+5,first+11) 合并为 1 个有序序列。
+    inplace_merge(first, first + 5,first +11);
+
+    for (int i = 0; i &lt; 11; i++) {
+        cout &lt;&lt; first[i] &lt;&lt; &quot; &quot;;
+    }
+    return 0;
+}</pre>
+程序执行结果为：
+<p class="info-box">
+	5 7 10 15 17 20 25 27 37 47 57</p>
+可以看到，first 数组中包含 2 个升序序列，借助 inplace_merge() 函数，实现了将这 2 个序列合并为 1 个升序序列，且新序列仍存储在 first 数组中。</div>
+			<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1386_2.html" title="C++函数默认参数（详解版）" target="_blank">C++函数默认参数（详解版）</a></li>
+<li><a href="1565_2.html" title="C++函数模板声明和实现" target="_blank">C++函数模板声明和实现</a></li>
+<li><a href="vip_1749_2.html" title="彩色版的C语言，让文字更漂亮" target="_blank">彩色版的C语言，让文字更漂亮</a></li>
+<li><a href="4304_2.html" title="MyBatis的工作原理" target="_blank">MyBatis的工作原理</a></li>
+<li><a href="vip_6089_2.html" title="Python异常机制使用细则，正确使用Python异常处理机制（入门必读）" target="_blank">Python异常机制使用细则，正确使用Python异常处理机制（入门必读）</a></li>
+<li><a href="6423_2.html" title="Linux是什么，有哪些特点？" target="_blank">Linux是什么，有哪些特点？</a></li>
+<li><a href="vip_7318_2.html" title="Go语言通过内存缓存来提升性能" target="_blank">Go语言通过内存缓存来提升性能</a></li>
+</ul>
+</div>
+		</div>
+		
+	</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7485;
+window.arcId = "b839P8lrwf+MDHmXBNPtNKu/OtzjMtZ2CPMVg1+Qs8oBRA0zB//6H2ci2O0";
+window.typeidChain = "69|58";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/view/vip_7735.html";
+window.nextPageURL = "/view/7489.html";
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

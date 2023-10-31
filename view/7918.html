@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++11 weak_ptr智能指针（一看即懂）</title>
+<meta name="description" content="我们知道，C++11 标准在 C++98/03 标准的基础上，新增加了 shared_ptr、unique_ptr 以及 weak_ptr 这 3 个智能指针。其中，shared_ptr 和 unique_ptr 已经在前面章节做了详细地介绍，本节重点讲解 weak" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++11 weak_ptr智能指针（一看即懂）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在 C++98/03 的基础上，C++11 标准新引入了 shared_ptr、unique_ptr 以及 weak_ptr 这 3 个智能指针。学习 weak_ptr 智能指针之前，您必须对对 shared_ptr 智能指针有一定的了解，可阅读《<a href="7898.html" target="_blank">C++11 shared_ptr智能指针</a>》一节做系统地学习。&nbsp;<br />
+<blockquote>
+<p>
+关于 unique_ptr 指针，读者可阅读《<a href="vip_8672.html" target="_blank">C++11 unique_ptr智能指针</a>》一节做系统学习。</p>
+</blockquote>
+<h2>
+C++11 weak_ptr智能指针</h2>
+和 shared_ptr、unique_ptr 类型指针一样，weak_ptr 智能指针也是以模板类的方式实现的。weak_ptr&lt;T&gt;（ T 为指针所指数据的类型）定义在<code>&lt;memory&gt;</code>头文件，并位于 std 命名空间中。因此，要想使用 weak_ptr 类型指针，程序中应首先包含如下 2 条语句：
+<pre class="cpp">
+#include &lt;memory&gt;
+using namespace std;</pre>
+<blockquote>
+<p>
+第 2 句并不是必须的，可以不添加，则后续在使用 unique_ptr 指针时，必须标注<code>std::</code>。</p>
+</blockquote>
+需要注意的是，C++11标准虽然将 weak_ptr 定位为智能指针的一种，但该类型指针通常不单独使用（没有实际用处），只能和 shared_ptr 类型指针搭配使用。甚至于，我们可以将 weak_ptr 类型指针视为 shared_ptr 指针的一种辅助工具，借助 weak_ptr 类型指针， 我们可以获取 shared_ptr 指针的一些状态信息，比如有多少指向相同的 shared_ptr 指针、shared_ptr 指针指向的堆内存是否已经被释放等等。<br />
+<br />
+需要注意的是，当 weak_ptr 类型指针的指向和某一 shared_ptr 指针相同时，weak_ptr 指针并不会使所指堆内存的引用计数加 1；同样，当 weak_ptr 指针被释放时，之前所指堆内存的引用计数也不会因此而减 1。也就是说，weak_ptr 类型指针并不会影响所指堆内存空间的引用计数。<br />
+<br />
+除此之外，weak_ptr&lt;T&gt; 模板类中没有重载 * 和 -&gt; 运算符，这也就意味着，weak_ptr 类型指针只能访问所指的堆内存，而无法修改它。<br />
+<h4>
+1、weak_ptr指针的创建</h4>
+创建一个 weak_ptr 指针，有以下 3 种方式：<br />
+1) 可以创建一个空 weak_ptr 指针，例如：
+<pre class="cpp">
+std::weak_ptr&lt;int&gt; wp1;</pre>
+<br />
+2) 凭借已有的 weak_ptr 指针，可以创建一个新的 weak_ptr 指针，例如：
+<pre class="cpp">
+std::weak_ptr&lt;int&gt; wp2 (wp1);</pre>
+若 wp1 为空指针，则 wp2 也为空指针；反之，如果 wp1 指向某一 shared_ptr 指针拥有的堆内存，则 wp2 也指向该块存储空间（可以访问，但无所有权）。<br />
+<br />
+3) weak_ptr 指针更常用于指向某一 shared_ptr 指针拥有的堆内存，因为在构建 weak_ptr 指针对象时，可以利用已有的 shared_ptr 指针为其初始化。例如：
+<pre class="cpp">
+std::shared_ptr&lt;int&gt; sp (new int);
+std::weak_ptr&lt;int&gt; wp3 (sp);</pre>
+由此，wp3 指针和 sp 指针有相同的指针。再次强调，weak_ptr 类型指针不会导致堆内存空间的引用计数增加或减少。
+<h4>
+2) weak_ptr模板类提供的成员方法</h4>
+和 shared_ptr&lt;T&gt;、unique_ptr&lt;T&gt; 相比，weak_ptr&lt;T&gt; 模板类提供的成员方法不多，表 1 罗列了常用的成员方法及各自的功能。<br />
+<br />
+<table>
+<caption>
+表 1 weak_ptr指针可调用的成员方法</caption>
+<tbody>
+<tr>
+<th>
+成员方法</th>
+<th>
+功 能</th>
+</tr>
+<tr>
+<td>
+operator=()</td>
+<td>
+重载 = 赋值运算符，是的 weak_ptr 指针可以直接被 weak_ptr 或者 shared_ptr 类型指针赋值。</td>
+</tr>
+<tr>
+<td>
+swap(x)</td>
+<td>
+其中 x 表示一个同类型的 weak_ptr 类型指针，该函数可以互换 2 个同类型 weak_ptr 指针的内容。</td>
+</tr>
+<tr>
+<td>
+reset()</td>
+<td>
+将当前 weak_ptr 指针置为空指针。</td>
+</tr>
+<tr>
+<td>
+use_count()</td>
+<td>
+查看指向和当前 weak_ptr 指针相同的 shared_ptr 指针的数量。</td>
+</tr>
+<tr>
+<td>
+expired()</td>
+<td>
+判断当前 weak_ptr 指针为否过期（指针为空，或者指向的堆内存已经被释放）。</td>
+</tr>
+<tr>
+<td>
+lock()</td>
+<td>
+如果当前 weak_ptr 已经过期，则该函数会返回一个空的 shared_ptr 指针；反之，该函数返回一个和当前 weak_ptr 指向相同的 shared_ptr 指针。</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>
+再次强调，weak_ptr&lt;T&gt; 模板类没有重载 * 和 -&gt; 运算符，因此 weak_ptr 类型指针只能访问某一 shared_ptr 指针指向的堆内存空间，无法对其进行修改。</p>
+</blockquote>
+<br />
+下面的样例演示了 weak_ptr 指针以及表 1 中部分成员方法的基本用法：<br />
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+using namespace std;
+
+int main()
+{
+    std::shared_ptr&lt;int&gt; sp1(new int(10));
+    std::shared_ptr&lt;int&gt; sp2(sp1);
+    std::weak_ptr&lt;int&gt; wp(sp2);
+    //输出和 wp 同指向的 shared_ptr 类型指针的数量
+    cout &lt;&lt; wp.use_count() &lt;&lt; endl;
+    //释放 sp2
+    sp2.reset();
+    cout &lt;&lt; wp.use_count() &lt;&lt; endl;
+    //借助 lock() 函数，返回一个和 wp 同指向的 shared_ptr 类型指针，获取其存储的数据
+    cout &lt;&lt; *(wp.lock()) &lt;&lt; endl;
+    return 0;
+}</pre>
+程序执行结果为：
+<p class="info-box">
+2<br />
+1<br />
+10</p>
+<blockquote>
+<p>
+有关表 1 中其它成员函数的用法，感兴趣的读者可直接查看 <a href="http://www.cplusplus.com/reference/memory/weak_ptr/" rel="nofollow" target="_blank">weak_ptr 官网</a>。</p>
+</blockquote>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="796.html" title="Java数据类型转换：强制类型转换+自动类型转换" target="_blank">Java数据类型转换：强制类型转换+自动类型转换</a></li>
+<li><a href="vip_2111.html" title="那些被编译器隐藏了的过程" target="_blank">那些被编译器隐藏了的过程</a></li>
+<li><a href="2445.html" title="MySQL唯一约束（UNIQUE KEY）" target="_blank">MySQL唯一约束（UNIQUE KEY）</a></li>
+<li><a href="6174.html" title="PHP array_merge()：数组合并" target="_blank">PHP array_merge()：数组合并</a></li>
+<li><a href="9859.html" title="区块链是什么" target="_blank">区块链是什么</a></li>
+<li><a href="ulw0u00.html" title="Vue v-on命令的用法" target="_blank">Vue v-on命令的用法</a></li>
+<li><a href="7tru3fr.html" title="CSS :focus-visible伪类选择器详解" target="_blank">CSS :focus-visible伪类选择器详解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7918;
+window.arcId = "a7a4HJKKkkyRBobRFRqd7VksdT9+25MnE6iY4KZw385AvP2TXJ73vb+mFaU";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

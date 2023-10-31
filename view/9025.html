@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Linux多线程编程（10分钟入门）</title>
+<meta name="description" content="如今，几乎所有的电脑（操作系统）都支持同时执行多个任务，比如一边用迅雷下载资源，一边听歌，一边用 QQ 和好友聊天，这样的执行方式简称并发或者并行。 并发和并行都指的是计" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Linux多线程编程（10分钟入门）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">如今，几乎所有的电脑（操作系统）都支持同时执行多个任务，比如一边用迅雷下载资源，一边听歌，一边用 QQ 和好友聊天，这样的执行方式简称&ldquo;并发&rdquo;或者&ldquo;并行&rdquo;。<br />
+<blockquote>
+<p>
+并发和并行都指的是计算机可以同时执行多个任务，但严格来讲，它们是有区别的，只是本节不对它们做更细致的区分。</p>
+</blockquote>
+程序并行的常用实现方式有两种，分别叫做&ldquo;多进程编程&rdquo;和&ldquo;多线程编程&rdquo;。本节，我们教大家如何在 Linux 下进行多线程编程。<br />
+<h2>
+程序、进程和线程</h2>
+学习多线程编程的实现方法之前，首先要搞清楚什么是线程，这就要从程序、进程和线程三者的关系和区别讲起。<br />
+<br />
+<span style="font-weight: normal;">大家常常编写程序，程序其实就是一系列指令（代码）的集合，我们通常将它编写在一个或者多个文件中。例如，C 语言程序通常编写在后缀名为 .c 的文件中，Python 程序编写在后缀名为 .py 的文件中，我们通常将存有程序的文件称为&ldquo;源文件&rdquo;。</span><br />
+<br />
+程序以源文件的方式存储在外存（比如硬盘、U盘等）中，只有运行的时候才会被载入内存。对于支持并行的操作系统来说，必须为每一个运行的程序分配所需的资源（内存空间、输入输出设备等），并确保同时运行的程序之间不会相互干扰，为此，操作系统将每一个运行着的程序视为一个进程：
+<ul>
+<li>
+操作系统以进程为单位，为每个进程分配执行所需要的资源；</li>
+<li>
+原则上，各个进程之间不允许访问对方的资源；</li>
+<li>
+操作系统实时监控着每个进程的执行状态，必要时可以强制其终止执行。</li>
+</ul>
+<br />
+也就是说在操作系统看来，每个载入内存执行的程序都是一个进程。操作系统以进程为单位分配资源，各个进程相互独立，执行过程互不干扰。<br />
+<br />
+同一时间，操作系统可以运行多个应用程序（进程），每个应用程序（进程）还可以同时执行多个任务，例如迅雷支持同时下载多个文件，QQ 也支持同时和多个好友聊天。同一进程中，执行的每个任务都被视为一个线程。<br />
+<br />
+线程和进程之间的关系，与工厂和工人之间的关系非常相似。一个进程好比是一座工厂，一个线程就如同这个工厂中的一个工人。工厂可以容纳多个工人，每个工人负责完成一项具体的任务。工厂负责为所有工人提供必要的资源（电力、产品原料、食堂、厕所等），所有工人共享这些资源。<br />
+<br />
+也就是说，一个进程中可以包含多个线程，所有线程共享进程拥有的资源。当然，每个线程也可以拥有自己的私有资源。下图给您展示进程和线程之间的关系：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210810/15230aG3-0.gif" /><br />
+图 1 进程和线程的关系</div>
+<br />
+如图 1 所示，所有线程共享的进程资源有：
+<ul>
+<li>
+代码：即应用程序的代码；</li>
+<li>
+数据：包括全局变量、函数内的静态变量、堆空间的数据等；</li>
+<li>
+进程空间：操作系统分配给进程的内存空间；</li>
+<li>
+打开的文件：各个线程打开的文件资源，也可以为所有线程所共享，例如线程 A 打开的文件允许线程 B 进行读写操作。</li>
+</ul>
+<br />
+各个线程也可以拥有自己的私有资源，包括寄存器中存储的数据、线程执行所需的局部变量（函数参数）等。
+<h2>
+多线程编程的实现方法</h2>
+了解了程序、进程和线程之间的关系后，多线程的含义就很容易理解了，它指的是一个进程中拥有多个（&ge;2）线程。通常，我们将编写多线程程序的过程称为&ldquo;多线程编程&rdquo;。
+<blockquote>
+<p>
+本文的目标立足于教会大家编写入门级别的多线程程序，有关线程同步、线程死锁、线程属性等内容，建议您转至《<a href="../thread/thread.html" target="_blank">多线程编程（C语言+Linux）</a>》专题做系统的学习。</p>
+</blockquote>
+Linux 上编写多线程程序，可以借助 &lt;pthread.h&gt; 头文件提供的一些函数，常用的函数有如下几个：
+<h4>
+1) pthread_create()</h4>
+pthread_create() 函数专门用来创建线程，语法格式如下：
+<p class="info-box">
+int pthread_create(pthread_t *thread,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const pthread_attr_t *attr,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void *(*start_routine) (void *),<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void *arg);</p>
+各个参数的含义是：
+<ul>
+<li>
+thread：接收一个 pthread_t 类型变量的地址，每个 pthread_t 类型的变量都可以表示一个线程。</li>
+<li>
+attr：手动指定新线程的属性，我们可以将其置为 NULL，表示新建线程遵循默认属性。</li>
+<li>
+start_routine：以函数指针的方式指明新建线程需要执行哪个函数。</li>
+<li>
+arg：向 start_routinue() 函数的形参传递数据。将 arg 置为 NULL，表示不传递任何数据。</li>
+</ul>
+<br />
+如果成功创建线程，pthread_create() 函数返回数字 0，否则返回一个非零值。各个非零值都对应着不同的宏，指明创建失败的原因，常见的宏有以下几种：
+<ul>
+<li>
+EAGAIN：系统资源不足，无法提供创建线程所需的资源。</li>
+<li>
+EINVAL：传递给 pthread_create() 函数的 attr 参数无效。</li>
+<li>
+EPERM：传递给 pthread_create() 函数的 attr 参数中，某些属性的设置为非法操作，程序没有相关的设置权限。</li>
+</ul>
+<br />
+以上这些宏都定义在 &lt;errno.h&gt; 头文件中，如果想使用这些宏，需提前引入此头文件。
+<blockquote>
+<p>
+有关 pthread_create() 函数更详细的讲解，请阅读《<a href="../thread/vip_8626.html" target="_blank">创建线程</a>》一文。</p>
+</blockquote>
+<h4>
+2) pthread_exit()</h4>
+pthread_exit() 函数用于终止线程执行，语法格式如下：
+<p class="info-box">
+void pthread_exit(void *retval);</p>
+retval 参数指向的数据将作为线程执行结束时的返回值，如果不需要返回任何数据，将其置为 NULL 即可。注意，retval 不能指向函数内部的局部变量，否则会导致程序运行出错甚至崩溃。<br />
+<blockquote>
+<p>
+return 也可以终止线程执行，它和 pthread_exit() 之间有什么区别呢？我们已经在《<a href="../thread/vip_8610.html" target="_blank">终止线程（3种方法）</a>》一文给出了答案。</p>
+</blockquote>
+<h4>
+3) pthread_cancel()</h4>
+在多线程程序中，一个线程可以借助 pthread_cancel() 函数向另一个线程发送&ldquo;终止执行&rdquo;的信号。<br />
+<br />
+pthread_cancel() 函数的语法格式如下：
+<p class="info-box">
+int pthread_cancel(pthread_t thread);</p>
+thread 参数用于指定接收信号的目标线程。当成功发送&ldquo;终止执行&rdquo;的信号时，函数返回值为 0，否则返回非零数。
+<blockquote>
+<p>
+再次强调，pthread_cancel() 函数只是向目标线程发送&ldquo;终止执行&rdquo;的信息，至于目标线程是否接收此信号，以及何时终止执行，由目标线程说了算，我们会在《<a href="../thread/vip_8613.html" target="_blank">终止线程执行，千万别踩这个坑！</a>》一文做详细了解。</p>
+</blockquote>
+<h4>
+4) pthread_join()</h4>
+pthread_join() 函数的功能主要有两个，分别是：
+<ol>
+<li>
+接收目标线程执行结束时的返回值；</li>
+<li>
+释放目标线程占用的进程资源。</li>
+</ol>
+<br />
+pthead_join() 函数的语法格式如下：
+<p class="info-box">
+int pthread_join(pthread_t thread, void ** retval);</p>
+thread 参数用于指定目标线程；retval 参数用于存储接收到的返回值。实际场景中，调用 pthread_join() 函数可能仅是为了及时释放目标线程占用的资源，并不想接收它的返回值，这种情况下可以将 retval 置为 NULL。<br />
+<br />
+pthread_join() 函数会一直阻塞当前线程，直至目标线程执行结束，阻塞状态才会消除。如果成功等到了目标线程执行结束（成功获取到目标线程的返回值），pthread_join() 函数返回数字 0，否则返回非零数。
+<blockquote>
+<p>
+想全方位搞清楚 pthread_join() 函数的功能和用法，可阅读《<a href="../thread/vip_8627.html" target="_blank">获取线程函数的返回值</a>》一文。</p>
+</blockquote>
+<h2>
+第一个多线程程序</h2>
+接下来，我们利用上文学到的知识，编写第一个多线程程序：
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+#include &lt;pthread.h&gt;
+//定义线程要执行的函数，arg 为接收线程传递过来的数据
+void* Thread1(void* arg)
+{
+    printf(&quot;http://www.weixueyuan.net\n&quot;);
+    return &quot;Thread1成功执行&quot;;
+}
+//定义线程要执行的函数，arg 为接收线程传递过来的数据
+void* Thread2(void* arg)
+{
+    printf(&quot;魏雪原\n&quot;);
+    return &quot;Thread2成功执行&quot;;
+}
+
+int main()
+{
+    int res;
+    //创建两个线程变量 
+    pthread_t mythread1, mythread2;
+    void* thread_result;
+    //创建 mythread1 线程，执行 Thread1() 函数
+    res = pthread_create(&amp;mythread1, NULL, Thread1, NULL);
+    if (res != 0) {
+        printf(&quot;线程创建失败&quot;);
+        return 0;
+    }
+    //创建 mythread2 线程，执行 Thread2() 函数
+    res = pthread_create(&amp;mythread2, NULL, Thread2, NULL);
+    if (res != 0) {
+        printf(&quot;线程创建失败&quot;);
+        return 0;
+    }
+    //阻塞主线程，直至 mythread1 线程执行结束，用 thread_result 指向接收到的返回值，阻塞状态才消除。
+    res = pthread_join(mythread1, &amp;thread_result);
+    //输出线程执行完毕后返回的数据
+    printf(&quot;%s\n&quot;, (char*)thread_result);
+    //阻塞主线程，直至 mythread2 线程执行结束，用 thread_result 指向接收到的返回值，阻塞状态才消除。
+    res = pthread_join(mythread2, &amp;thread_result);
+    printf(&quot;%s\n&quot;, (char*)thread_result);
+    printf(&quot;主线程执行完毕&quot;);
+    return 0;
+}</pre>
+程序中共有 3 个线程，分别是主线程，mythread1 线程和 mythread2 线程。mythread1 线程负责执行 Thread1() 函数，mythread2 线程负责执行 Thread2() 函数。<br />
+<br />
+主线程先后调用了两次 pthread_join() 函数，都会阻塞主线程，直至 mythread1 和 mythread2 线程执行完毕，阻塞状态才会消除。<br />
+<br />
+假设程序存储在 thread.c 文件中，调用 GCC 编译此程序：
+<p class="info-box">
+[root@localhost ~]# gcc thread.c -o thread.exe -lpthread</p>
+最终会生成一个名为 thread.exe 的可执行文件，执行如下命令即可看到执行结果：
+<p class="info-box">
+[root@localhost ~]# ./thead.exe<br />
+http:www.weixueyuan.net<br />
+魏雪原<br />
+Thread1成功执行<br />
+Thread2成功执行<br />
+主线程执行完毕</p>
+<h2>
+总结</h2>
+本节，我们了解了程序、进程和线程三者之间的关系，学会了如何编写一个简单的多线程程序。<br />
+<br />
+但是，与多线程编程相关的知识还有很多，比如实现线程同步，解决线程死锁问题、自定义线程的属性等，这些知识我们会在《<a href="../thread/thread.html" target="_blank">多线程编程（C语言+Linux）</a>》专题中给大家做详细的讲解。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2226.html" title="C++ this指针详解（精辟）" target="_blank">C++ this指针详解（精辟）</a></li>
+<li><a href="2541.html" title="Python pathlib模块用法详解" target="_blank">Python pathlib模块用法详解</a></li>
+<li><a href="3481.html" title="汇编语言EQU伪指令" target="_blank">汇编语言EQU伪指令</a></li>
+<li><a href="vip_3729.html" title="C++11对模板实例化中连续右尖括号&gt;&gt;的改进" target="_blank">C++11对模板实例化中连续右尖括号&gt;&gt;的改进</a></li>
+<li><a href="7234.html" title="MySQL存储过程是什么？" target="_blank">MySQL存储过程是什么？</a></li>
+<li><a href="../spring/aop-programming.html" title="AOP面向切面编程" target="_blank">AOP面向切面编程</a></li>
+<li><a href="vtjuf9g.html" title="《JavaScript高级程序设计(第4版)》PDF下载（高清完整版）" target="_blank">《JavaScript高级程序设计(第4版)》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9025;
+window.arcId = "4652/BgEAhk3sKiAZrm+zPzKIxD0udmnRh0DO0ZzF5aDvT2U48RZIXHDVmw";
+window.typeidChain = "210|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

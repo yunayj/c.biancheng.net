@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++指针作为函数参数（详解版）</title>
+<meta name="description" content="《 函数引用传递 》一节，我们介绍了用作函数形参的引用变量，引用变量其实就是原始变量的别名，该原始变量用作实参。这样的设计使得函数可以访问原始实参变量，从而允许它更改" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++指针作为函数参数（详解版）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">《<a href="1387.html" target="_blank">函数引用传递</a>》一节，我们介绍了用作函数形参的引用变量，引用变量其实就是原始变量的别名，该原始变量用作实参。这样的设计使得函数可以访问原始实参变量，从而允许它更改变量的内容。当为一个变量传入一个引用形参时，则认为该实参是按引用传递的。<br />
+<br />
+按引用传递实参还有一种替代方法，那就是使用<a href='../c/80/80.html' target='_blank'>指针</a>作为函数参数。无可否认，引用变量比指针更容易处理，因为引用变量隐藏了所有的解引用和间接引用&quot;机制&quot;。但是，程序员仍然应该学会使用指针作为函数参数，因为有一些任务，特别是在处理 C 字符串时，最好使用指针完成、另外，<a href='../cplus/cplus.html' target='_blank'>C++</a> 库中还有许多使用指针作为形参的函数。<br />
+<br />
+以下是使用指针形参的函数的定义：<br />
+<pre class="cpp">
+void doubleValue(int *val)
+{
+    *val *= 2;
+}</pre>
+这个函数的目的是使 val 指向的变量翻倍。当 val 被解引用时，<code>*=</code> 运算符对 val 指向的变量起作用。该语句可以将地址存储在 val 中的原始变量乘以 2。当然，当调用该函数时，必须使用被翻倍的变量地址作为实参，而不是变量本身作为实参。<br />
+<br />
+以下是一个调用 doubleValue 函数的示例：<br />
+<p class="info-box">
+doubleValue(&amp;number);</p>
+该语句使用了地址运算符（&amp;）将 number 的地址传递到 val 形参中。函数执行后，number 的内容将被乘以 2。下面的程序演示了该函数的用法：
+<pre class="cpp">
+//This program uses two functions that accept addresses of variables as arguments.
+#include &lt;iostream&gt;
+u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+//Function prototypes
+void getNumber(int *);
+void doubleValue(int *);
+
+int main()
+{
+    int number;
+    //Call getNumber and pass the address of number
+    getNumber(&amp;number);
+    // Call doubleValue and pass the address of number
+    doubleValue(&amp;number);
+    // Display the value in number
+    cout &lt;&lt; &quot;That value doubled is &quot; &lt;&lt; number &lt;&lt; endl;
+    return 0;
+}
+void getNumber(int *input)
+{
+    cout &lt;&lt; &quot;Enter an integer number: &quot;;
+    cin &gt;&gt; *input;
+}
+
+void doubleValue(int *val)
+{
+    *val *= 2;
+}</pre>
+程序输出结果：
+<p class="info-box">
+Enter an integer number: 10<br />
+That value doubled is 20</p>
+此程序有两个使用指针作为参数的函数。请看以下函数原型：<br />
+<p class="info-box">
+void getNumber(int *);<br />
+void doubleValue(int *);</p>
+每一个函数原型都使用符号 int * 来表示该形参是一个指向 int 的指针。与所有其他类型的形参一样，不需要在原型中指定变量的名称，但星号（*）则是必需。<br />
+<br />
+getNumber 函数要求用户输入一个整数值。以下 cin 语句可以将用户输入的值存储在内存中：<br />
+<p class="info-box">
+cin &gt;&gt; *input;</p>
+间接运算符会使用户输入的值存储在 input 指向的变量中，而不是 input 中。<br />
+<br />
+在上面的语句中，使用间接运算符是非常重要的。没有它，则 cin 会将用户输入的值存储在 input 中，就像该值是一个内存地址一样。如果发生这种情况，则 input 将不再指向 main 函数中的 number 变量。如此一来，对该指针（input）的后续使用即使不会产生灾难性的结果，也必然出现错误。<br />
+<br />
+当调用 getNumber 函数时，函数 main 中 number 变量的地址作为实参传递。该函数执行后，用户输入的数值将被存储在 number 中。接下来，调用 doubleValue 函数，同样是将 number 的地址作为实参传递，这使得 number 被乘以 2。<br />
+<br />
+指针变量也可以用来接收数组地址作为实参，此后，无论是下标还是指针符号都可以用来处理数组的内容。下面的程序演示了这一点：
+<pre class="cpp">
+//This program demonstrates that a pointer may be used as a parameter to accept the address of an array. Either subscript or pointer notation may be used.
+#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+using namespace std;
+// Function prototypes
+void getSales(double *sales, int size);
+double totalSales(double *sales, int size);
+
+int main()
+{
+    const int QUARTERS = 4;
+    double sales[QUARTERS];
+
+    getSales(sales, QUARTERS);
+    cout &lt;&lt; setprecision(2);
+    cout &lt;&lt; fixed &lt;&lt; showpoint;
+    cout &lt;&lt; &quot;The total sales for the year are $&quot;;
+    cout &lt;&lt; totalSales(sales, QUARTERS) &lt;&lt; endl;
+    return 0;
+}
+void getSales(double *array, int size)
+{
+    for (int count = 0; count &lt; size; count++)
+    {
+        cout &lt;&lt; &quot;Enter the sales figure for quarter &quot;;
+        cout &lt;&lt; (count + 1) &lt;&lt; &quot;: &quot;;
+        cin &gt;&gt; array[count];
+    }
+}
+
+double totalSales(double *array, int size)
+{
+    double sum = 0.0;
+    for (int count = 0; count &lt; size; count++)
+    {
+        sum += *array;
+        array++;
+    }
+    return sum;
+}</pre>
+程序输出结果：
+<p class="info-box">
+Enter the sales figure for quarter 1: 10263.98<br />
+Enter the sales figure for quarter 2: 12369.69<br />
+Enter the sales figure for quarter 3: 11542.13<br />
+Enter the sales figure for quarter 4: 14792.06<br />
+The total sales for the year are $48967.86</p>
+请注意，该程序的 getSales 函数中，即使把形参 array 定义为一个指针，其下标符号仍然可以在 cin 语句中使用：<br />
+<p class="info-box">
+cin &gt;&gt; array[count];</p>
+在 totalSales 函数中，array 还可以与以下语句中的间接运算符一起使用：<br />
+<p class="info-box">
+sum += *array;</p>
+而在接下来的语句中，array 中的地址则可以递增，以使指向下一个元素：<br />
+<p class="info-box">
+array++;</p>
+上面介绍的两个语句也可以合并成以下语句：<br />
+<p class="info-box">
+sum += *array++;</p>
+* 运算符将首先解引用 array，然后 <code>++</code> 运算符将使得 array 中的地址递增。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="111.html" title="Go语言通过反射获取结构体的成员类型" target="_blank">Go语言通过反射获取结构体的成员类型</a></li>
+<li><a href="2422.html" title="MySQL INT、TINYINT、SMALLINT、MEDIUMINT、BIGINT（整数类型）" target="_blank">MySQL INT、TINYINT、SMALLINT、MEDIUMINT、BIGINT（整数类型）</a></li>
+<li><a href="../mysql/dayofyear.html" title="MySQL DAYOFYEAR函数：获取指定日期在一年中的位置" target="_blank">MySQL DAYOFYEAR函数：获取指定日期在一年中的位置</a></li>
+<li><a href="2767.html" title="Shell case in语句详解" target="_blank">Shell case in语句详解</a></li>
+<li><a href="6124.html" title="Goland 2019下载和安装（带破解补丁和汉化包）" target="_blank">Goland 2019下载和安装（带破解补丁和汉化包）</a></li>
+<li><a href="../csharp/enum.html" title="C# enum：枚举类型" target="_blank">C# enum：枚举类型</a></li>
+<li><a href="fb39ccq.html" title="《标准C语言基础教程(第四版)》英文版PDF下载（高清完整版）" target="_blank">《标准C语言基础教程(第四版)》英文版PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 1475;
+window.arcId = "84021IuFqUQZyEN33oL1P6Vu8Hr1XETnPwbpQEFkxErWuM2rVvznoEMTXUY";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

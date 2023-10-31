@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>宏定义（无参宏定义和带参宏定义），C语言宏定义详解</title>
+<meta name="description" content="宏定义是比较常用的预处理指令，即使用标识符来表示替换列表中的内容。标识符称为宏名，在预处理过程中，预处理器会把源程序中所有宏名，替换成宏定义中替换列表中的内容。 常" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>宏定义（无参宏定义和带参宏定义），C语言宏定义详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">宏定义是比较常用的预处理指令，即使用&ldquo;标识符&rdquo;来表示&ldquo;替换列表&rdquo;中的内容。标识符称为宏名，在预处理过程中，预处理器会把源程序中所有宏名，替换成宏定义中替换列表中的内容。<br />
+<br />
+常见的宏定义有两种，<span style="color:#008000;">不带参数的宏定义</span>和<span style="color:#008000;">带参数的宏定义</span>。<br />
+<h2>
+无参宏定义</h2>
+无参数宏定义的格式为：<br />
+<p class="info-box">
+#define 标识符 替换列表</p>
+替换列表可以是数值常量、字符常量、字符串常量等，故可以把宏定义理解为使用标识符表示一常量，或称符号常量。<br />
+<br />
+说明：<br />
+1) # 可以不在行首，但只允许它前面有空格符。例如：<br />
+<pre class="cpp">
+#define PI 3.1416 //正确，该行#前允许有空格
+int a;#define N 5 //错误，该行#前不允许有空格外的其他字符</pre>
+<br />
+2) 标识符和替换列表之间不能加赋值号 =，替换列表后不能加分号<br />
+<pre class="cpp">
+#define N =5 //虽语法正确，但预处理器会把N替换成=5
+int a[N]; //错误，因为宏替换之后为 int a[=5];</pre>
+宏定义不是语句，是预处理指令，故结尾不加分号。如果不小心添加了分号，虽然有时该宏定义没问题，但在宏替换时，可能导致 C 语法错误，或得不到预期结果。例如：<br />
+<pre class="cpp">
+#define N 5; //虽语法正确，但会把N替换成5;
+int a[N]; //语法错误，宏替换后，为int a[5;];错误</pre>
+<br />
+3) 由于宏定义仅是做简单的文本替换，故替换列表中如有表达式，必须把该表达式用括号括起来，否则可能会出现逻辑上的&ldquo;错误&rdquo;。例如：<br />
+<pre class="cpp">
+#define N 3+2
+int r=N*N;</pre>
+宏替换后为：<br />
+<pre class="cpp">
+int r=3+2*3+2; //r=11</pre>
+如果采用如下形式的宏定义：<br />
+<pre class="cpp">
+#define N (3+2)
+int r=N*N;</pre>
+则宏替换后，为:<br />
+<pre class="cpp">
+int r=(3+2)*(3+2); //r=25</pre>
+<br />
+4) 当替换列表一行写不下时，可以使用反斜线\作为续行符延续到下一行。例如：<br />
+<pre class="cpp">
+#define USA &quot;The United \
+States of \
+America&quot;</pre>
+该宏定义中替换列表为字符串常量，如果该串较长，或为了使替换列表的结构更清晰，可使用续行符 \ 把该串分若干行来写，除最后一行外，每行行尾都必须加续行符 \。<br />
+<br />
+如果调用 printf 函数，以串的形式输出该符号常量，即：<br />
+<pre class="cpp">
+printf(&quot;%s\n&quot;,USA);</pre>
+则输出结果为:The United States of America<br />
+<br />
+注意：续行符后直接按回车键换行，不能含有包括空格在内的任何字符，否则是错误的宏定义形式。<br />
+<h2>
+带参宏定义</h2>
+带参数的宏定义格式为：<br />
+<p class="info-box">
+#define 标识符(参数1,参数2,...,参数n) 替换列表</p>
+例如，求两个参数中最大值的带参宏定义为：<br />
+<pre class="cpp">
+#define MAX(a,b) ((a)&gt;(b)?(a) : (b))</pre>
+当有如下语句时：<br />
+<pre class="cpp">
+int c=MAX(5,3);</pre>
+预处理器会将带参数的宏替换成如下形式：<br />
+<pre class="cpp">
+int c=((5)&gt;(3)?(5) : (3));</pre>
+故计算结果c=5。<br />
+<br />
+删除宏定义的格式为：
+<p class="info-box">
+#undef 标识符</p>
+说明：<br />
+1) 标识符与参数表的左括号之间不能有空格，否则预处理器会把该宏理解为普通的无参宏定义，故以下是错误的带参宏定义形式。
+<pre class="cpp">
+#define MAX (a,b) ( (a) &gt; (b) ? (a) : (b) ) //错误的带参宏定义格式</pre>
+2) 宏替换列表中每个参数及整个替换列表，都必须用一对小括号 () 括起来，否则可能会出现歧义。<br />
+<br />
+<strong>【例 1】</strong>以下程序试图定义求两个参数乘积的宏定义，欲使用该宏求 3 与 6 的乘积，分析该程序能否实现预期功能，如果不能，请给出修改方案。<br />
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+#define MUL(a,b) (a*b)
+int main (void)
+{
+    int c;
+    c=MUL(3,5+1);
+    printf(&quot;c=%d\n&quot;,c);
+    return 0;
+}</pre>
+分析:<br />
+1) 由于该宏定义中的替换列表中的参数没有加括号，故宏调用时，如果参数是个表达式，可能会出现歧义，得不到预期结果。<br />
+<br />
+本例中宏调用 c=MUL(3,5+1); 会替换成 c=(3*5+1)=16;，与预期功能不符。<br />
+<br />
+2) 虽然把宏调用时的参数 5+1 括起来，可达到题目要求的效果，但这属于治标不治本。为统一编程规范，把替换列表中的每个参数均加括号，整个替换列表也加括号。<br />
+<br />
+同时，为达到标本兼治，在宏定义时，除单一值参数外，应显式加括号。<br />
+<br />
+修改代码为：
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+#define MUL(a,b) ((a)*(b))//修改处1
+int main (void)
+{
+    int c;
+    c=MUL(3,(5+1);//修改处2
+    printf(&quot;c=%d\n&quot;,c);
+    return 0;
+}</pre>
+<h2>
+带参宏定义 VS 函教调用</h2>
+<p>
+接下来将从调用发生时间、参数类型检查、参数是否需要空间、运行速度等几个主要方面进行对比分析带参宏定义与函数调用的差异。</p>
+<h4>
+调用发生的时间</h4>
+<p>
+在源程序进行编译之前，即预处理阶段进行宏替换；而函数调用则发生在程序运行期间。</p>
+<h4>
+参数类型检查</h4>
+<p>
+函数参数类型检查严格。程序在编译阶段，需要检查实参与形参个数是否相等及类型是否匹配或兼容，若参数个数不相同或类型不兼容，则会编译不通过。<br />
+<br />
+在预处理阶段，对带参宏调用中的参数不做检查。即宏定义时不需要指定参数类型，既可以认为这是宏的优点，即适用于多种数据类型，又可以认为这是宏的一个缺点，即类型不安全。故在宏调用时，需要程序设计者自行确保宏调用参数的类型正确。</p>
+<h4>
+参数是否需要空间</h4>
+<p>
+函数调用时，需要为形参分配空间，并把实参的值复制一份赋给形参分配的空间中。而宏替换，仅是简单的文本替换，且替换完就把宏名对应标识符删除掉，即不需要分配空间。</p>
+<h4>
+执行速度</h4>
+<p>
+函数在编译阶段需要检查参数个数是否相同、类型等是否匹配等多个语法，而宏替换仅 是简单文本替换，不做任何语法或逻辑检查。<br />
+<br />
+函数在运行阶段参数需入栈和出栈操作，速度相对较慢。</p>
+<h4>
+代码长度</h4>
+<p>
+由于宏替换是文本替换，即如果需替换的文本较长，则替换后会影响代码长度；而函数不会影响代码长度。<br />
+<br />
+故使用较频繁且代码量较小的功能，一般采用宏定义的形式，比采用函数形式更合适。前面章节频繁使用的 getchar()，准确地说，是宏而非函数。<br />
+<br />
+为了使该宏调用像函数调用，故把该宏设计成了带参数的宏定义：</p>
+<pre class="cpp">
+#define getchar() getc(stdin)</pre>
+<p>
+故调用该宏时，需要加括号，即传空参数：getchar()。</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="359.html" title="C语言指针的声明" target="_blank">C语言指针的声明</a></li>
+<li><a href="521.html" title="进入vi编辑器（vi打开文件）" target="_blank">进入vi编辑器（vi打开文件）</a></li>
+<li><a href="1046.html" title="Java try catch finally语句" target="_blank">Java try catch finally语句</a></li>
+<li><a href="vip_1762.html" title="C语言整数的取值范围以及数值溢出" target="_blank">C语言整数的取值范围以及数值溢出</a></li>
+<li><a href="7895.html" title="Django HTML表单实例应用" target="_blank">Django HTML表单实例应用</a></li>
+<li><a href="6b3y4nd.html" title="Java变量和常量（入门必读）" target="_blank">Java变量和常量（入门必读）</a></li>
+<li><a href="7b3dnvn.html" title="《C语言趣味编程100例》PDF下载（高清完整版）" target="_blank">《C语言趣味编程100例》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 287;
+window.arcId = "7fa6KO45CFtMiM5Fp9DJu5as0wlx5xtlC2dci/NxrIM+SNGUm1NiHpn4Rg";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

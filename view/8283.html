@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>SQL注入是什么，如何避免SQL注入？</title>
+<meta name="description" content="SQL 注入（SQL Injection）攻击是发生在应用程序中的数据库层的安全漏洞。简而言之，是在输入的字符串之中注入 SQL 语句，如果在设计不良的程序中忽略了检查，那么这些注入进去的 SQ" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>SQL注入是什么，如何避免SQL注入？</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body"><span style="color:#008000;">SQL 注入（SQL Injection）</span>是发生在 Web 程序中数据库层的安全漏洞，是网站存在最多也是最简单的漏洞。主要原因是程序对用户输入数据的合法性没有判断和处理，导致攻击者可以在 Web 应用程序中事先定义好的 SQL 语句中添加额外的 SQL 语句，在管理员不知情的情况下实现非法操作，以此来实现欺骗数据库服务器执行非授权的任意查询，从而进一步获取到数据信息。<br />
+<br />
+简而言之，SQL 注入就是在用户输入的字符串中加入 SQL 语句，如果在设计不良的程序中忽略了检查，那么这些注入进去的 SQL 语句就会被数据库服务器误认为是正常的 SQL 语句而运行，攻击者就可以执行计划外的命令或访问未被授权的数据。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/200813/5-200Q31G54Q42.png" /></div>
+SQL 注入已经成为互联网世界 Web 应用程序的最大风险，我们有必要从开发、测试、上线等各个环节对其进行防范。下面介绍 SQL 注入的原理及避免 SQL 注入的一些方法。
+<h2>
+SQL注入的原理</h2>
+SQL 注入的原理主要有以下 4 点：<br />
+<h4>
+1）恶意拼接查询</h4>
+我们知道，SQL 语句可以查询、插入、更新和删除数据，且使用分号来分隔不同的命令。例如：
+<p class="info-box">
+SELECT * FROM users WHERE user_id = $user_id</p>
+其中，user_id 是传入的参数，如果传入的参数值为&ldquo;1234; DELETE&nbsp;FROM users&rdquo;，那么最终的查询语句会变为：
+<p class="info-box">
+SELECT * FROM users WHERE user_id = 1234; DELETE FROM users</p>
+如果以上语句执行，则会删除 users 表中的所有数据。<br />
+<h4>
+2）利用注释执行非法命令。</h4>
+SQL 语句中可以插入注释。例如：<br />
+<p class="info-box">
+SELECT COUNT(*) AS &#39;num&#39; FROM game_score WHERE game_id=24411 AND version=$version</p>
+如果 version 包含了恶意的字符串<code>&#39;-1&#39; OR 3 AND SLEEP(500)--</code>，那么最终查询语句会变为：
+<p class="info-box">
+SELECT COUNT(*) AS &#39;num&#39; FROM game_score WHERE game_id=24411 AND version=&#39;-1&#39; OR 3 AND SLEEP(500)--</p>
+以上恶意查询只是想耗尽系统资源，SLEEP(500) 将导致 SQL 语句一直运行。如果其中添加了修改、删除数据的恶意指令，那么将会造成更大的破坏。
+<h4>
+3）传入非法参数</h4>
+SQL 语句中传入的字符串参数是用单引号引起来的，如果字符串本身包含单引号而没有被处理，那么可能会篡改原本 SQL 语句的作用。 例如：<br />
+<p class="info-box">
+SELECT * FROM user_name WHERE user_name = $user_name</p>
+如果 user_name 传入参数值为 G&#39;chen，那么最终的查询语句会变为：<br />
+<p class="info-box">
+SELECT * FROM user_name WHERE user_name =&#39;G&#39;chen&#39;</p>
+一般情况下，以上语句会执行出错，这样的语句风险比较小。虽然没有语法错误，但可能会恶意产生 SQL 语句，并且以一种你不期望的方式运行。
+<h4>
+4）添加额外条件</h4>
+在 SQL 语句中添加一些额外条件，以此来改变执行行为。条件一般为真值表达式。例如：
+<p class="info-box">
+UPDATE users SET userpass=&#39;$userpass&#39; WHERE user_id=$user_id;</p>
+如果 user_id 被传入恶意的字符串&ldquo;1234 OR TRUE&rdquo;，那么最终的 SQL 语句会变为：
+<p class="info-box">
+UPDATE users SET userpass= &#39;123456&#39; WHERE user_id=1234 OR TRUE;</p>
+这将更改所有用户的密码。
+<h2>
+避免SQL注入</h2>
+对于 SQL 注入，我们可以采取适当的预防措施来保护数据安全。下面是避免 SQL 注入的一些方法。<br />
+<h4>
+1. 过滤输入内容，校验字符串</h4>
+过滤输入内容就是在数据提交到数据库之前，就把用户输入中的不合法字符剔除掉。可以使用编程语言提供的处理函数或自己的处理函数来进行过滤，还可以使用正则表达式匹配安全的字符串。<br />
+<br />
+如果值属于特定的类型或有具体的格式，那么在拼接 SQL 语句之前就要进行校验，验证其有效性。比如对于某个传入的值，如果可以确定是整型，则要判断它是否为整型，在浏览器端（客户端）和服务器端都需要进行验证。<br />
+<h4>
+2. 参数化查询</h4>
+参数化查询目前被视作是预防 SQL 注入攻击最有效的方法。参数化查询是指在设计与数据库连接并访问数据时，在需要填入数值或数据的地方，使用参数（Parameter）来给值。<br />
+<br />
+MySQL 的参数格式是以&ldquo;?&rdquo;字符加上参数名称而成，如下所示：
+<p class="info-box">
+UPDATE myTable SET c1 = ?c1, c2 = ?c2, c3 = ?c3 WHERE c4 = ?c4</p>
+在使用参数化查询的情况下，数据库服务器不会将参数的内容视为 SQL 语句的一部分来进行处理，而是在数据库完成 SQL 语句的编译之后，才套用参数运行。因此就算参数中含有破坏性的指令，也不会被数据库所运行。<br />
+<h4>
+3. 安全测试、安全审计</h4>
+除了开发规范，还需要合适的工具来确保代码的安全。我们应该在开发过程中应对代码进行审查，在测试环节使用工具进行扫描，上线后定期扫描安全漏洞。通过多个环节的检查，一般是可以避免 SQL 注入的。<br />
+<br />
+有些人认为存储过程可以避免 SQL 注入，存储过程在传统行业里用得比较多，对于权限的控制是有一定用处的，但如果存储过程用到了动态查询，拼接 SQL，一样会存在安全隐患。<br />
+<br />
+下面是在开发过程中可以避免 SQL 注入的一些方法。<br />
+<h4>
+1. 避免使用动态SQL</h4>
+避免将用户的输入数据直接放入 SQL 语句中，最好使用准备好的语句和参数化查询，这样更安全。<br />
+<h4>
+2. 不要将敏感数据保留在纯文本中</h4>
+加密存储在数据库中的私有/机密数据，这样可以提供了另一级保护，以防攻击者成功地排出敏感数据。<br />
+<h4>
+3. 限制数据库权限和特权</h4>
+将数据库用户的功能设置为最低要求；这将限制攻击者在设法获取访问权限时可以执行的操作。<br />
+<h4>
+4. 避免直接向用户显示数据库错误</h4>
+攻击者可以使用这些错误消息来获取有关数据库的信息。<br />
+<br />
+一些编程框架对于写出更安全的代码也有一定的帮助，因为它提供了一些处理字符串的函数和使用查询参数的方法。但同样，你仍然可以编写出不安全的 SQL 语句。所以归根到底，我们需要有良好的编码规范，并能充分利用参数化查询、字符串处理和参数校验等多种办法来保护数据库和程序的安全。<br />
+<br />
+说明：SQL 注入技术不是单凭一篇文章就可以讲完的，这里只带领大家掌握 SQL 注入的原理及常见的几种防止 SQL 注入的方法。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_3436.html" title="键树查找法（双链树和字典树）及C语言实现" target="_blank">键树查找法（双链树和字典树）及C语言实现</a></li>
+<li><a href="5532.html" title="Swagger是什么？Swagger怎么用？" target="_blank">Swagger是什么？Swagger怎么用？</a></li>
+<li><a href="6175.html" title="PHP array_unshift()：在数组开头插入元素" target="_blank">PHP array_unshift()：在数组开头插入元素</a></li>
+<li><a href="../jstl/c-param.html" title="&lt;c:param&gt;标签" target="_blank">&lt;c:param&gt;标签</a></li>
+<li><a href="../redis/client.html" title="Redis客户端（client）命令" target="_blank">Redis客户端（client）命令</a></li>
+<li><a href="9769.html" title="什么是嵌入式系统" target="_blank">什么是嵌入式系统</a></li>
+<li><a href="7inl4g.html" title="C语言continue关键字详解" target="_blank">C语言continue关键字详解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8283;
+window.arcId = "9868z6ccN6blFWxy3Xy/wsLCgzB7um4+RNEz1aYET36y7kyThnKQleOpqQ8";
+window.typeidChain = "345|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

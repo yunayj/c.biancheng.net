@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++ queue容器适配器用法详解</title>
+<meta name="description" content="在 C++ 中，容器适配器是一种特殊的容器类，它实际上不是自己存储数据，而是依赖于其它的容器，例如 vector、list、deque 等。 简单理解，容器适配器就是对已有容器进行了一次封装，对" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++ queue容器适配器用法详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在 C++ 中，容器适配器是一种特殊的容器类，它实际上不是自己存储数据，而是依赖于其它的容器，例如 vector、list、deque 等。<br />
+<br />
+简单理解，容器适配器就是对已有容器进行了一次封装，对容器的使用做了更严格的限定，或者进行了扩展。<br />
+<br />
+本节要讲的 queue 就是 C++ 标准库提供的一个容器适配器。<br />
+<br />
+默认情况下，queue 底层使用的是 deque 容器，deque 容器允许从两端插入、删除元素，且提供了迭代器可以遍历元素，而 queue 对这些功能做了限制，它只允许从一端插入元素，从另一端删除元素，且没有提供迭代器，不支持直接遍历元素。<br />
+<h2>
+queue容器适配器的创建</h2>
+queue 本质是一个模板类，定义在<code>&lt;queue&gt;</code>头文件中。<br />
+<br />
+默认情况下，queue 底层使用的是 deque 容器：
+<pre class="info-box">
+template &lt;class T, class Container = deque&lt;T&gt; &gt; class queue;</pre>
+可以看到 template 的第二个参数 Container 默认指定的是 deque。除了 deque 之外，queue 的底层还可以使用 list 容器。<br />
+<br />
+构造 queue 容器的方式有多种，包括：<br />
+<br />
+1) 创建一个空的 queue 容器适配器，其底层使用默认的 deque 容器：
+<pre class="cpp" shownum="false">
+std::queue&lt;int&gt; values;</pre>
+通过此行代码，就可以成功创建一个可存储 int 类型元素，底层采用 deque 容器的 queue 容器适配器。<br />
+<br />
+2) 当然，也可以手动指定 queue 容器适配器底层采用 list 容器
+<pre class="cpp" shownum="false">
+std::queue&lt;int, std::list&lt;int&gt;&gt; values;</pre>
+注意，在手动指定基础容器的类型时，其存储的数据类型必须和 queue 容器适配器存储的元素类型保持一致。<br />
+<br />
+3) 可以用基础容器来初始化 queue 容器适配器，只要该容器类型和 queue 底层使用的基础容器类型相同即可。例如：
+<pre class="cpp" shownum="false">
+std::deque&lt;int&gt; values{1,2,3};
+std::queue&lt;int&gt; my_queue(values);</pre>
+由于 my_queue 底层采用的是 deque 容器，和 values 类型一致，且存储的也都是 int 类型元素，因此可以用 values 对 my_queue 进行初始化。<br />
+<br />
+4) 还可以直接通过 queue 容器适配器来初始化另一个 queue 容器适配器，只要它们存储的元素类型以及底层采用的基础容器类型相同即可。例如：
+<pre class="cpp" shownum="false">
+std::deque&lt;int&gt; values{1,2,3};
+std::queue&lt;int&gt; my_queue1(values);
+std::queue&lt;int&gt; my_queue(my_queue1); //等价于 std::queue&lt;int&gt; my_queue = my_queue1;</pre>
+注意，用 queue 适配器给另一个 queue 进行初始化有 2 种方式，都可以。<br />
+<blockquote>
+<p>
+第 3、4 种初始化方法中，my_queue 容器适配器的数据是经过拷贝得来的，也就是说操作 my_queue 容器适配器中的数据，并不会对 values 容器以及 my_queue1 容器适配器有任何影响。</p>
+</blockquote>
+<h2>
+queue容器适配器的使用</h2>
+queue 容器不提供迭代器，不支持遍历容器中的元素。此外，queue 容器中元素的进出必须遵循&ldquo;先进先出&rdquo;的原则，从一端进，从另一端出。<br />
+<br />
+下表列出了操作 queue 容器的常用成员函数。<br />
+<br />
+<table>
+<caption>
+表 2 queue容器适配器支持的成员函数</caption>
+<tbody>
+<tr>
+<th>
+成员函数</th>
+<th>
+功能</th>
+</tr>
+<tr>
+<td>
+empty()</td>
+<td>
+如果 queue 中没有元素的话，返回 true。</td>
+</tr>
+<tr>
+<td>
+size()</td>
+<td>
+返回 queue 中元素的个数。</td>
+</tr>
+<tr>
+<td>
+front()</td>
+<td>
+返回 queue 中第一个元素的引用。如果 queue 是常量，就返回一个常引用；如果 queue 为空，返回值是未定义的。</td>
+</tr>
+<tr>
+<td>
+back()</td>
+<td>
+返回 queue 中最后一个元素的引用。如果 queue 是常量，就返回一个常引用；如果 queue 为空，返回值是未定义的。</td>
+</tr>
+<tr>
+<td>
+push(const T&amp; obj)</td>
+<td>
+在 queue 的尾部添加一个元素的副本。这是通过调用底层容器的成员函数 push_back() 来完成的。</td>
+</tr>
+<tr>
+<td>
+emplace()</td>
+<td>
+在 queue 的尾部直接添加一个元素。</td>
+</tr>
+<tr>
+<td>
+push(T&amp;&amp; obj)</td>
+<td>
+以移动的方式在 queue 的尾部添加元素。这是通过调用底层容器的具有右值引用参数的成员函数 push_back() 来完成的。</td>
+</tr>
+<tr>
+<td>
+pop()</td>
+<td>
+删除 queue 中的第一个元素。</td>
+</tr>
+<tr>
+<td>
+swap(queue&lt;T&gt; &amp;other_queue)</td>
+<td>
+将两个 queue 容器适配器中的元素进行互换，需要注意的是，进行互换的 2 个 queue 容器适配器中存储的元素类型以及底层采用的基础容器类型，都必须相同。</td>
+</tr>
+</tbody>
+</table>
+<br />
+下面的 C++ 程序演示了表中部分成员函数的用法：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;queue&gt;
+
+int main() {
+    std::queue&lt;int&gt; q;
+
+    // 入队
+    q.push(1);
+    q.push(2);
+    q.push(3);
+
+    // 出队
+    q.pop();
+
+    // 访问队首元素
+    std::cout &lt;&lt; &quot;Front element: &quot; &lt;&lt; q.front() &lt;&lt; std::endl;
+
+    // 访问队尾元素
+    std::cout &lt;&lt; &quot;Back element: &quot; &lt;&lt; q.back() &lt;&lt; std::endl;
+
+    // 检查队列是否为空
+    if(!q.empty()) {
+        std::cout &lt;&lt; &quot;The queue is not empty.\n&quot;;
+    }
+
+    // 队列大小
+    std::cout &lt;&lt; &quot;Size: &quot; &lt;&lt; q.size() &lt;&lt; std::endl;
+
+    return 0;
+}</pre>
+运行结果为：
+<p class="info-box">
+Front element: 2<br />
+Back element: 3<br />
+The queue is not empty.<br />
+Size: 2</p>
+<h2>
+总结</h2>
+容器适配器提供了一种非常有效的方式来限制或扩展底层容器的功能。<br />
+<br />
+和 list 和 deque 容器相比，queue 容器对他们的用法做了限制，主要包括：
+<ul>
+<li>
+元素的进出必须遵循&ldquo;先进先出&rdquo;的原则，从一端进，从另一端出。</li>
+<li>
+不提供迭代器，不支持直接遍历容器中的元素。</li>
+</ul>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="602.html" title="C++ copy_if(STL copy_if)算法详解" target="_blank">C++ copy_if(STL copy_if)算法详解</a></li>
+<li><a href="836.html" title="Java字符串的替换（replace()、replaceFirst()和replaceAll()）" target="_blank">Java字符串的替换（replace()、replaceFirst()和replaceAll()）</a></li>
+<li><a href="vip_6073.html" title="Python MetaClass元类实现的底层原理" target="_blank">Python MetaClass元类实现的底层原理</a></li>
+<li><a href="vip_7339.html" title="Go语言单例模式简述" target="_blank">Go语言单例模式简述</a></li>
+<li><a href="vip_8343.html" title="怎么提升索引的使用效率，设计出更高效的索引" target="_blank">怎么提升索引的使用效率，设计出更高效的索引</a></li>
+<li><a href="../dll/vip_8705.html" title="Linux下静态链接库的创建和使用" target="_blank">Linux下静态链接库的创建和使用</a></li>
+<li><a href="9419.html" title="Qt QTableWidget表格控件的用法（非常详细）" target="_blank">Qt QTableWidget表格控件的用法（非常详细）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10364;
+window.arcId = "a3380wch2HYFeeA+VAolpzqpuPBESm59SwSxndcFjlsWx5Jq4SNA3OgbYFKc";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

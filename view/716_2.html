@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>dd命令安装Linux</title>
+<meta name="description" content="无人值守安装可以解决大批量服务器的安装，但是服务器端配置实在过于麻烦，并不适合新手使用。有没有更简单的大批量服务器安装方法，类似 Windows 下的用 GHOST 软件进行硬盘克隆？" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>dd命令安装Linux</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">面对大批量服务器的安装，人们往往热衷于选择&ldquo;无人值守安装&rdquo;的方式，而此方式需要对服务器进行过多的配置，并不适合初学者。<br />
+<p class="info-box">
+	<span style="color: rgb(0, 128, 0);">无人值守安装（Kickstart）</span>，又称<span style="color: rgb(0, 128, 0);">全自动安装</span>，其工作原理是，创建一个名为 ks.cfg 的文件记录 Linux 系统在安装过程中需要人工干预填写的各种参数，当安装过程中出现要填写参数时，安装程序会自行去 ks.cfg 文件中查找合适的参数，如果没找到，还是需要手工干预。因此，在 ks.cfg 文件涵盖安装过程所有可能需要填写的参数的前提下，安装者只需要告诉安装程序 ks.cfg 文件的位置，就可实现全自动安装。</p>
+<span style="color: rgb(178, 34, 34);">本节介绍使用 dd 命令实现硬盘复制，间接实现安装 Linux 系统的方法，此方式类似 Windows 下用 GHOST 软件进行硬盘克隆。</span><br />
+<br />
+首先，我们先来系统了解一下&nbsp; dd 命令。<br />
+<p class="info-box">
+	对于初学者来说，本节内容可在掌握常用 Linux 命令后再行学习。</p>
+<h2>
+	Linux dd 命令是什么</h2>
+<span style="color: rgb(178, 34, 34);">dd 命令是用来复制文件的命令，它可以用指定大小的数据块复制一个文件，并在复制的同时进行指定的转换。</span>简单地理解，dd 命令可用于进行两块硬盘之间的复制（完整复制出一块和原系统盘一样的硬盘）。<br />
+<br />
+dd 命令的格式如下：
+<p class="info-box">
+	[root@localhost ~]# dd if=输入文件 of=输出文件 bs=字节数 count=个数</p>
+<br />
+选项:
+<ul>
+	<li>
+		if=输入文件：指定源文件或源设备；</li>
+	<li>
+		of=输出文件：指定目标文件或目标设备；</li>
+	<li>
+		bs=字节数：指定一次输入/输出多少字节，即把这些字节看作一个数据块；</li>
+	<li>
+		count=个数：指定输入/输出多少个数据块；</li>
+</ul>
+<br />
+【例 1】
+<pre class="info-box">
+[root@localhost ~]# dd if=/dev/zero of=/root/testfile bs=1k count=100000
+#创建一个100MB大小的文件testfile，/dev/zero是一个输入设备，可以使用它来初始化文件，该设备无穷尽地输出0，可以理解为向testfile中不停地写0，直到写满100MB；</pre>
+<br />
+【例 2】
+<pre class="info-box">
+[root@localhost ~]# dd if=/dev/sda of=/dev/sdb
+#把第一块硬盘中的数据复制到第二块硬盘中</pre>
+<br />
+【例 3】
+<pre class="info-box">
+[root@localhost ~]# dd if=/dev/hda of=/root/image
+#把第一块硬盘中的数据复制到image文件中</pre>
+<br />
+使用 dd 命令复制硬盘，需满足以下两个前提条件：
+<ol>
+	<li>
+		需要批量复制的服务器硬件配置一致。通常，采购服务器都是批量采购的，服务器的配置都是一样的。</li>
+	<li>
+		复制硬盘的时候，需要手工更换被复制盘。服务器上一般都是 SCSI 硬盘，SCSI 硬盘支持热插拔，而且不需要拆卸机箱，更换被复制盘非常方便。</li>
+</ol>
+<p class="info-box">
+	实际上，笔者当年维护大批量服务器时采用的就是 dd 复制，而不是无人值守安装。</p>
+<h2>
+	dd命令安装Linux详细步骤</h2>
+通过以上的学习我们知道，使用 dd 命令安装 Linux，实际上就是硬盘之间的完整拷贝，其实现过程如下：
+<ol>
+	<li>
+		把母盘插入服务器的第一个硬盘插口，把被复制盘插入服务器的第二个硬盘插口，注意不要插反。</li>
+	<li>
+		执行复制命令&nbsp;<code>dd if=/dev/sda of=/dev/sdb</code>。在 dd 命令中，if 指定复制源，of 指定复制目标。/dev/sda 代表第一块 SCSI 盘，/dev/sdb 代表第二块 SCSI 盘。这条命令会把第一块硬盘中的数据完整地复制到第二块硬盘中。</li>
+</ol>
+<br />
+经过以上两步，即可实现将服务器之间的复制。那么，此方法的效率如何呢？由于复制的速度和服务器的配置及安装软件的多少相关，因此每台服务器的复制时间约为15〜25分钟，效率还可以接受。<br />
+<p class="info-box">
+	选择无人值守安装的方式，也要受到服务器端配置和网络带宽的影响，而且硬盘复制也可以多台服务器同时操作。</p>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="822_2.html" title="Linux提取RPM包文件(cpio命令)详解" target="_blank">Linux提取RPM包文件(cpio命令)详解</a></li>
+<li><a href="1735_2.html" title="编程时请选择正确的输入法，严格区分中英文" target="_blank">编程时请选择正确的输入法，严格区分中英文</a></li>
+<li><a href="vip_6005_2.html" title="Python如何合理使用assert（新手必读）" target="_blank">Python如何合理使用assert（新手必读）</a></li>
+<li><a href="../json/schema_2.html" title="JSON schema（模式）" target="_blank">JSON schema（模式）</a></li>
+<li><a href="../spring/annotation-aspectj_2.html" title="Spring使用AspectJ进行AOP开发（基于注解）" target="_blank">Spring使用AspectJ进行AOP开发（基于注解）</a></li>
+<li><a href="../csharp/array-class_2.html" title="C# Array类" target="_blank">C# Array类</a></li>
+<li><a href="3bj4moj_2.html" title="git rebase -i命令：压缩历史" target="_blank">git rebase -i命令：压缩历史</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 716;
+window.arcId = "ff91eOKd0BgwAyFIwnQRD2O98B/0usAPU+FAGSs+CU2j6rYCAam4clehkQ";
+window.typeidChain = "210|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

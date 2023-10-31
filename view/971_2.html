@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Shell数值运算方法（3种）</title>
+<meta name="description" content="Shell 编程和其他语言还是有很多不一样的地方的，其中笔者最不习惯的是：在 Shell 中所有的变量默认都是字符串型。也就是说，如果不手工指定变量的类型，那么所有的数值都是不能进" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Shell数值运算方法（3种）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">Shell 编程和其他语言还是有很多不一样的地方的，其中笔者最不习惯的是：在 Shell 中所有的变量默认都是&quot;字符串型&quot;。也就是说，如果不手工指定变量的类型，那么所有的数值都是不能进行运算的。比如：<br />
+<p class="info-box">
+	[root@localhost sh]# aa=11<br />
+	[root@localhost sh]# bb=22<br />
+	#给变量aa和bb赋值<br />
+	[root@localhost sh]# cc=$aa+$bb<br />
+	#我想让cc的值是aa和bb的和<br />
+	[root@localhost sh]# echo $cc<br />
+	11+22<br />
+	#但是cc的值却是&quot;11+22&quot;这个字符串，并没有进行数值运算</p>
+如果需要进行数值运算，则可以采用以下三种方法中的任意一种。<br />
+<h2>
+	使用declare声明变量类型</h2>
+既然所有变量的默认类型是字符串型，那么只要把变量声明为整数型不就可以参与运算了吗？使用 declare 命令就可以声明变量的类型。<br />
+<br />
+declare 命令格式如下：
+<p class="info-box">
+	[root@localhost ~]# declare [+/-] [选项] 变量名</p>
+选项：
+<ul>
+	<li>
+		-：给变量设定类型属性；</li>
+	<li>
+		+：取消变量的类型属性；</li>
+	<li>
+		-a：将变量声明为数组型；</li>
+	<li>
+		-i：将变量声明为整数型（integer）；</li>
+	<li>
+		-r：将变量声明为只读变量。注意，一旦设置为只读变量，既不能修改变量的值，也不能删除变量，甚至不能通过 +r 取消只读属性；</li>
+	<li>
+		-x：将变量声明为环境变量；</li>
+	<li>
+		-p：显示指定变量的被声明的类型；</li>
+</ul>
+<h4>
+	【例 1】数值运算</h4>
+只要把变量声明为整数型就可以参与运算了吗？试试吧：<br />
+<p class="info-box">
+	[root@localhost ~]# aa=11<br />
+	[root@localhost ~]# bb=22<br />
+	#给变量aa和bb赋值<br />
+	[root@localhost ~]# declare -i cc=$aa+$bb #声明变量cc的类型是整数型，它的值是aa和bb的和<br />
+	[root@localhost ~]# echo $cc<br />
+	33<br />
+	#这下终于可以相加了</p>
+这样运算好麻烦！没有办法，Shell 在数值运算方面确实是比较麻烦的，习惯就好了。<br />
+<h4>
+	【例 2】数组变量类型</h4>
+数组是什么呢？所谓数组，就是相同数据类型的元素按一定顺序排列的集合，也就是把有限个类型相同的变量用一个名字命名，然后用编号区分它们的变量的集合，我们把这个名字称为数组名，把编号称为下标。组成数组的各个变量被称为数组的分量，又称数组的元素，下标变量。<br />
+<br />
+一看定义就一头雾水，更加不明白数组是什么了。那么换一种说法，变量和数组都是用来保存数据的，只是变量只能被赋予一个数据值，一旦重复赋值，后一个值就会覆盖前一个值；而数组可以被赋予一组相同类型的数据值。<br />
+<br />
+大家可以把变量想象成一间小办公室，这间办公室里只能容纳一个人办公，办公室名就是变量名；而数组是一间大办公室，可以容纳很多人同时办公，在这间大办公室里办公的每个人是通过不同的座位号来区分的，这个座位号就是数组的下标，而大办公室的名字就是数组名。<br />
+<br />
+还是举个例子吧：
+<p class="info-box">
+	[root@localhost ~]# name[0]=&quot;zhang san&quot;<br />
+	#数组中第一个变量是张三<br />
+	[root@localhost ~]# name[1]=&quot;li ming&quot;<br />
+	#数组中第二个变量是李明<br />
+	[root@localhost ~]# name[2]=&quot;gao luo feng&quot;<br />
+	#数组中第三个变量是高洛峰<br />
+	[root@localhost ~]# echo ${name}<br />
+	zhang san<br />
+	#输出数组的内容。如果只写数组名，那么只会输出第一个下标变量<br />
+	[root@localhost ~]# echo ${name[*]}<br />
+	zhang san li ming gao luo feng<br />
+	#输出数组所有的内容</p>
+注意，数组的下标是从 0 开始的，在调用数组的元素时，需要使用&quot;${数组[下标]}&quot;方式来读取。<br />
+<br />
+不过，在刚刚的例子中，我们并没有把 name 变量声明为数组型。其实只要我们在定义变量时采用了&quot;变量名 [下标]&quot;的格式，这个变量就会被系统认为是数组型了，不用强制声明。<br />
+<h4>
+	【例 3】环境变量</h4>
+其实也可以使用 declare 命令把变量声明为环境变量，它和 export 命令的作用是一样的。命令如下：
+<p class="info-box">
+	[root@localhost ~]# declare -x test=123<br />
+	#把变量test声明为环境变量</p>
+<h4>
+	【例 4】只读属性</h4>
+一旦给变量设定了只读属性，那么这个变量既不能修改变量的值，也不能删除变量，甚至不能使用&quot;+r&quot;选项取消只读属性。命令如下：<br />
+<p class="info-box">
+	[root@localhost ~]# declare -r test<br />
+	#给test变量赋予只读属性<br />
+	[root@localhost ~]#test=456<br />
+	-bash：test: readonly variable<br />
+	#test变量的值就不能修改了<br />
+	[root@localhost ~]# declare +r test<br />
+	-bash：declare：test：readonly variable<br />
+	#也不能取消只读属性<br />
+	[root@localhost ~]# unset test<br />
+	-bash: unset: test: cannot unset: readonly variable<br />
+	#也不能删除变量</p>
+不过，还好这个变量只是命令行声明的，所以只要重新登陆或重启，这个变量就会消失了。
+<h4>
+	【例 5】查询变量属性和取消变量属性</h4>
+变量属性的查询使用&quot;-p&quot;选项，变量属性的取消使用&quot;+&quot;选项。命令如下：<br />
+<p class="info-box">
+	[root@localhost ~]# declare -p cc<br />
+	declare -i cc=&quot;33&quot;<br />
+	#cc变量是int型<br />
+	[root@localhost ~]# declare -p name<br />
+	declare -a name=&#39;([0]=&quot;zhang san&quot; [1]=&quot;li ming&quot; [2]=&quot;gao luo feng&quot;)&#39;<br />
+	#name变量是数组型<br />
+	[root@localhost ~]# declare -p test<br />
+	declare -rx test=&quot;123&quot;<br />
+	#test变量是环境变量和只读变量<br />
+	[root@localhost ~]# declare +x test<br />
+	#取消test变量的环境变量属性<br />
+	[root@localhost ~]# declare -p test<br />
+	declare-rtest=&quot;123&quot;<br />
+	#注意：只读变量属性是不能被取消的</p>
+<h2>
+	使用expr或let数值运算工具</h2>
+进行数值运算的第二种方法是使用 exp 命令，这个命令就没有 declare 命令那么复杂了。命令如下：
+<p class="info-box">
+	[root@localhost ~]# aa=11<br />
+	[root@localhost ~]# bb=22<br />
+	#给变量aa和bb赋值<br />
+	[root@localhost ~]# dd=$(expr $aa + $bb)<br />
+	#dd的值是aa和bb的和。注意&quot;+&quot;号左右两侧必须有空格<br />
+	[root@localhost ~]# echo $dd<br />
+	33</p>
+在使用 expr 命令进行运算时，要注意&quot;+&quot;号左右两侧必须有空格，否则运算不执行。<br />
+<br />
+至于 let 命令，和 expr 命令基本类似，都是 Linux 中的运算命令。命令如下：<br />
+<p class="info-box">
+	[root@localhost ~]# aa=11<br />
+	[root@localhost ~]# bb=22<br />
+	#给变量aa和bb赋值<br />
+	[root@localhost ~]# let ee=$aa+$bb<br />
+	[root@localhost ~]# echo $ee<br />
+	33<br />
+	#变量ee的值是aa和bb的和<br />
+	[root@localhost ~]# n=20<br />
+	#定义变量n<br />
+	[root@localhost ~]# let n+=1<br />
+	#变量n的值等于变量本身再加1<br />
+	[root@localhost ~]# echo $n<br />
+	21</p>
+expr 和 let 命令大家可以按照习惯使用，不过 let 命令对格式的要求要比 exp 命令格式的要求宽松，所以推荐使用 let 命令进行数值运算。<br />
+<h2>
+	使用&quot;$((运算式))&quot;或&quot;$[运算式]&quot;方式运算</h2>
+其实这是一种方式，&quot;$(())&quot;和&quot;$[]&quot;这两种括号按照个人习惯使用即可。命令如下：<br />
+<p class="info-box">
+	[root@localhost ~]# aa=11<br />
+	[root@localhost ~]# bb=22<br />
+	[root@localhost ~]# ff=$(( $aa+$bb))<br />
+	[root@localhost ~]# echo $ff<br />
+	33<br />
+	#变量ff的值是aa和bb的和<br />
+	[root@localhost ~]# gg=$[ $aa+$bb ]<br />
+	[root@localhost ~]# echo $gg<br />
+	33<br />
+	#变量gg的值是aa和bb的和</p>
+这三种数值运算方式，大家可以按照自己的习惯来选择使用。不过我们推荐使用&quot;$((运算式))&quot;，这种方式更加简单，也更加常用。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="734_2.html" title="Shell提示符：#和$" target="_blank">Shell提示符：#和$</a></li>
+<li><a href="5611_2.html" title="使用记事本编写运行Java程序" target="_blank">使用记事本编写运行Java程序</a></li>
+<li><a href="vip_7049_2.html" title="Java项目实战：判断闰年平年并输出某月的天数" target="_blank">Java项目实战：判断闰年平年并输出某月的天数</a></li>
+<li><a href="7243_2.html" title="MySQL触发器到底是什么？" target="_blank">MySQL触发器到底是什么？</a></li>
+<li><a href="vip_7737_2.html" title="STL算法和容器中的成员方法同名时，该如何选择？" target="_blank">STL算法和容器中的成员方法同名时，该如何选择？</a></li>
+<li><a href="../redis2/persist_2.html" title="Redis PERSIST命令" target="_blank">Redis PERSIST命令</a></li>
+<li><a href="../jstl/fn-join_2.html" title="fn:join()函数" target="_blank">fn:join()函数</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 971;
+window.arcId = "e558ZBEaFS46A2AoMCBYX6MSsDfG/z3b/AaRt5aBM6hEkt9SVSUkt/SoLg";
+window.typeidChain = "210|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

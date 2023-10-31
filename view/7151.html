@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++ decltype类型推导完全攻略</title>
+<meta name="description" content="decltype 是 C++11 新增的一个关键字，它和 auto 的功能一样，都用来在编译时期进行自动类型推导。 decltype 是declare type的缩写，译为声明类型。 既然已经有了 auto 关键字，为什么还需要" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../cplus/11/11.html">C++11</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href="7751.html">C++ 11是什么，C++ 11标准的由来</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href="6984.html">C++ auto类型推导</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href="7151.html">C++ decltype类型推导</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href="vip_8670.html">汇总auto和decltype的区别</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href="3727.html">C++返回值类型后置</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href="vip_3729.html">C++11对模板实例化中连续右尖括号&gt;&gt;的改进</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href="3730.html">C++11使用using定义别名</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href="3734.html">C++11支持函数模板的默认模板参数</a>
+</dd>
+<dd>
+<span class="channel-num">9</span>
+<a href="vip_8692.html">C++11在函数模板和类模板中使用可变参数</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">10</span>
+<a href="8600.html">C++11 tuple元组</a>
+</dd>
+<dd>
+<span class="channel-num">11</span>
+<a href="3737.html">C++11列表初始化</a>
+</dd>
+<dd>
+<span class="channel-num">12</span>
+<a href="7818.html">C++11 lambda匿名函数</a>
+</dd>
+<dd>
+<span class="channel-num">13</span>
+<a href="7165.html">C++11非受限联合体（union）</a>
+</dd>
+<dd>
+<span class="channel-num">14</span>
+<a href="7759.html">C++11 for循环（基于范围的循环）详解</a>
+</dd>
+<dd>
+<span class="channel-num">15</span>
+<a href="vip_7760.html">使用C++11标准的for循环，这些坑千万别踩！</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">16</span>
+<a href="7781.html">C++11 constexpr：验证是否为常量表达式</a>
+</dd>
+<dd>
+<span class="channel-num">17</span>
+<a href="vip_8693.html">C++11 constexpr和const的区别</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">18</span>
+<a href="7809.html">C++11 long long超长整形详解</a>
+</dd>
+<dd>
+<span class="channel-num">19</span>
+<a href="7829.html">C++11右值引用</a>
+</dd>
+<dd>
+<span class="channel-num">20</span>
+<a href="vip_8694.html">C++11移动构造函数的功能和用法</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">21</span>
+<a href="7863.html">C++11 move()函数：将左值强制转换为右值</a>
+</dd>
+<dd>
+<span class="channel-num">22</span>
+<a href="8598.html">C++11引用限定符</a>
+</dd>
+<dd>
+<span class="channel-num">23</span>
+<a href="vip_8695.html">C++11完美转发及其实现</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">24</span>
+<a href="7887.html">C++11 nullptr：初始化空指针</a>
+</dd>
+<dd>
+<span class="channel-num">25</span>
+<a href="7898.html">C++11 shared_ptr智能指针</a>
+</dd>
+<dd>
+<span class="channel-num">26</span>
+<a href="vip_8672.html">C++11 unique_ptr智能指针</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">27</span>
+<a href="vip_8673.html">C++11 weak_ptr智能指针</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../cplus/11/11.html">C++11</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++ decltype类型推导完全攻略</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">decltype 是 <a href='../cplus/cplus.html' target='_blank'>C++</a>11 新增的一个关键字，它和 auto 的功能一样，都用来在编译时期进行自动类型推导。不了解 auto 用法的读者请转到《<a href="6984.html" target="_blank">C++ auto</a>》。
+<p class="tip-box">
+decltype 是&ldquo;declare type&rdquo;的缩写，译为&ldquo;声明类型&rdquo;。</p>
+既然已经有了 auto 关键字，为什么还需要 decltype 关键字呢？因为 auto 并不适用于所有的自动类型推导场景，在某些特殊情况下 auto 用起来非常不方便，甚至压根无法使用，所以 decltype 关键字也被引入到 C++11 中。<br />
+<br />
+auto 和 decltype 关键字都可以自动推导出变量的类型，但它们的用法是有区别的：
+<p class="info-box">
+auto varname = value;<br />
+decltype(exp) varname = value;</p>
+其中，varname 表示变量名，value 表示赋给变量的值，exp 表示一个表达式。<br />
+<br />
+auto 根据<code>=</code>右边的初始值 value 推导出变量的类型，而 decltype 根据 exp 表达式推导出变量的类型，跟<code>=</code>右边的 value 没有关系。<br />
+<br />
+另外，auto 要求变量必须初始化，而 decltype 不要求。这很容易理解，auto 是根据变量的初始值来推导出变量类型的，如果不初始化，变量的类型也就无法推导了。decltype 可以写成下面的形式：
+<p class="info-box">
+decltype(exp) varname;</p>
+<h4>
+exp 注意事项</h4>
+原则上讲，exp 就是一个普通的表达式，它可以是任意复杂的形式，但是我们必须要保证 exp 的结果是有类型的，不能是 void；例如，当 exp 调用一个返回值类型为 void 的函数时，exp 的结果也是 void 类型，此时就会导致编译错误。<br />
+<br />
+C++ decltype 用法举例：
+<pre class="cpp">
+int a = 0;
+decltype(a) b = 1;  //b 被推导成了 int
+decltype(10.8) x = 5.5;  //x 被推导成了 double
+decltype(x + 100) y;  //y 被推导成了 double</pre>
+可以看到，decltype 能够根据变量、字面量、带有运算符的表达式推导出变量的类型。读者请留意第 4 行，y 没有被初始化。
+<h2>
+decltype 推导规则</h2>
+上面的例子让我们初步感受了一下 decltype 的用法，但你不要认为 decltype 就这么简单，它的玩法实际上可以非常复杂。当程序员使用 decltype(exp) 获取类型时，编译器将根据以下三条规则得出结果：
+<ul>
+<li>
+如果 exp 是一个不被括号<code>( )</code>包围的表达式，或者是一个类成员访问表达式，或者是一个单独的变量，那么 decltype(exp) 的类型就和 exp 一致，这是最普遍最常见的情况。</li>
+<li>
+如果 exp 是函数调用，那么 decltype(exp) 的类型就和函数返回值的类型一致。</li>
+<li>
+如果 exp 是一个左值，或者被括号<code>( )</code>包围，那么 decltype(exp) 的类型就是 exp 的引用；假设 exp 的类型为 T，那么 decltype(exp) 的类型就是 T&amp;。</li>
+</ul>
+<br />
+为了更好地理解 decltype 的推导规则，下面来看几个实际的例子。<br />
+<br />
+【实例1】exp 是一个普通表达式：
+<pre class="cpp">
+#include &lt;string&gt;
+using namespace std;
+
+class Student{
+public:
+    static int total;
+    string name;
+    int age;
+    float scores;
+};
+
+int Student::total = 0;
+
+int  main(){
+    int n = 0;
+    const int &amp;r = n;
+    Student stu;
+
+    decltype(n) a = n;  //n 为 int 类型，a 被推导为 int 类型
+    decltype(r) b = n;     //r 为 const int&amp; 类型, b 被推导为 const int&amp; 类型
+    decltype(Student::total) c = 0;  //total 为类 Student 的一个 int 类型的成员变量，c 被推导为 int 类型
+    decltype(stu.name) url = &quot;http://c.biancheng.net/cplus/&quot;;  //total 为类 Student 的一个 string 类型的成员变量， url 被推导为 string 类型
+
+    return 0;
+}</pre>
+这段代码很简单，按照推导规则 1，对于一般的表达式，decltype 的推导结果就和这个表达式的类型一致。<br />
+<br />
+【实例2】exp 为函数调用：
+<pre class="cpp">
+//函数声明
+int&amp; func_int_r(int, char);  //返回值为 int&amp;
+int&amp;&amp; func_int_rr(void);  //返回值为 int&amp;&amp;
+int func_int(double);  //返回值为 int
+
+const int&amp; fun_cint_r(int, int, int);  //返回值为 const int&amp;
+const int&amp;&amp; func_cint_rr(void);  //返回值为 const int&amp;&amp;
+
+//decltype类型推导
+int n = 100;
+decltype(func_int_r(100, &#39;A&#39;)) a = n;  //a 的类型为 int&amp;
+decltype(func_int_rr()) b = 0;  //b 的类型为 int&amp;&amp;
+decltype(func_int(10.5)) c = 0;   //c 的类型为 int
+
+decltype(fun_cint_r(1,2,3))  x = n;    //x 的类型为 const int &amp;
+decltype(func_cint_rr()) y = 0;  // y 的类型为 const int&amp;&amp;</pre>
+需要注意的是，exp 中调用函数时需要带上括号和参数，但这仅仅是形式，并不会真的去执行函数代码。<br />
+<br />
+【实例3】exp 是左值，或者被<code>( )</code>包围：
+<pre class="cpp">
+using namespace std;
+
+class Base{
+public:
+    int x;
+};
+
+int main(){
+    const Base obj;
+
+    //带有括号的表达式
+    decltype(obj.x) a = 0;  //obj.x 为类的成员访问表达式，符合推导规则一，a 的类型为 int
+    decltype((obj.x)) b = a;  //obj.x 带有括号，符合推导规则三，b 的类型为 int&amp;。
+
+    //加法表达式
+    int n = 0, m = 0;
+    decltype(n + m) c = 0;  //n+m 得到一个右值，符合推导规则一，所以推导结果为 int
+    decltype(n = n + m) d = c;  //n=n+m 得到一个左值，符号推导规则三，所以推导结果为 int&amp;
+
+    return 0;
+}</pre>
+这里我们需要重点说一下左值和右值：左值是指那些在表达式执行结束后依然存在的数据，也就是持久性的数据；右值是指那些在表达式执行结束后不再存在的数据，也就是临时性的数据。有一种很简单的方法来区分左值和右值，对表达式取地址，如果编译器不报错就为左值，否则为右值。<br />
+<h2>
+decltype 的实际应用</h2>
+auto 的语法格式比 decltype 简单，所以在一般的类型推导中，使用 auto 比使用 decltype 更加方便，你可以转到《<a href="6984.html" target="_blank">C++ auto</a>》查看很多类似的例子，本节仅演示只能使用 decltype 的情形。<br />
+<br />
+我们知道，auto 只能用于类的静态成员，不能用于类的非静态成员（普通成员），如果我们想推导非静态成员的类型，这个时候就必须使用 decltype 了。下面是一个模板的定义：
+<pre class="cpp">
+#include &lt;vector&gt;
+using namespace std;
+
+template &lt;typename T&gt;
+class Base {
+public:
+    void func(T&amp; container) {
+        m_it = container.begin();
+    }
+
+private:
+    typename T::iterator m_it;  //注意这里
+};
+
+int main()
+{
+    const vector&lt;int&gt; v;
+    Base&lt;const vector&lt;int&gt;&gt; obj;
+    obj.func(v);
+
+    return 0;
+}</pre>
+单独看 Base 类中 m_it 成员的定义，很难看出会有什么错误，但在使用 Base 类的时候，如果传入一个 const 类型的容器，编译器马上就会弹出一大堆错误信息。原因就在于，<code>T::iterator</code>并不能包括所有的迭代器类型，当 T 是一个 const 容器时，应当使用 const_iterator。<br />
+<br />
+要想解决这个问题，在之前的 C++98/03 版本下只能想办法把 const 类型的容器用模板特化单独处理，增加了不少工作量，看起来也非常晦涩。但是有了 C++11 的 decltype 关键字，就可以直接这样写：
+<pre class="cpp">
+template &lt;typename T&gt;
+class Base {
+public:
+    void func(T&amp; container) {
+        m_it = container.begin();
+    }
+
+private:
+    decltype(T().begin()) m_it;  //注意这里
+};</pre>
+看起来是不是很清爽？<br />
+<br />
+注意，有些低版本的编译器不支持<code>T().begin()</code>这种写法，以上代码我在 VS2019 下测试通过，在 VS2015 下测试失败。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="47.html" title="Go语言for range（键值循环）" target="_blank">Go语言for range（键值循环）</a></li>
+<li><a href="927.html" title="Java冒泡排序法（非常重要）" target="_blank">Java冒泡排序法（非常重要）</a></li>
+<li><a href="6554.html" title="MongoDB删除数据：remove()和delete()方法" target="_blank">MongoDB删除数据：remove()和delete()方法</a></li>
+<li><a href="minimum-spanning-tree.html" title="最小生成树" target="_blank">最小生成树</a></li>
+<li><a href="../csharp/stack.html" title="C# Stack：堆栈" target="_blank">C# Stack：堆栈</a></li>
+<li><a href="ftwtfrj.html" title="JS cookie的获取、设置、修改和删除" target="_blank">JS cookie的获取、设置、修改和删除</a></li>
+<li><a href="sb35se5.html" title="C# StartsWith()：判断字符串是否以指定内容开头" target="_blank">C# StartsWith()：判断字符串是否以指定内容开头</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7151;
+window.arcId = "6da9hagnfXdNZ7M/1iwa2khIL98bojSQv5jnETy5WI2NVyAxUP8d1Iqu+a4";
+window.typeidChain = "337";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

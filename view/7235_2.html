@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C++ STL无序容器底层实现原理（深度剖析）</title>
+<meta name="description" content="在阅读本节内容之前，读者需了解哈希表存储结构的原理，可猛击《 哈希表（散列表）详解 》一节。 在了解哈希表存储结构的基础上，本节将具体分析 C++ STL 无序容器（哈希容器）底" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C++ STL无序容器底层实现原理（深度剖析）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body"><blockquote>
+	<p>
+		在阅读本节内容之前，读者需了解哈希表存储结构的原理，可猛击《<a href="3437_2.html" target="_blank">哈希表（散列表）详解</a>》一节。</p>
+</blockquote>
+在了解哈希表存储结构的基础上，本节将具体分析 C++ STL 无序容器（哈希容器）底层的实现原理。<br />
+<br />
+C++ STL 标准库中，不仅是 unordered_map 容器，所有无序容器的底层实现都采用的是哈希表存储结构。更准确地说，是用&ldquo;链地址法&rdquo;（又称&ldquo;开链法&rdquo;）解决数据存储位置发生冲突的哈希表，整个存储结构如图 1 所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="C++ STL 无序容器存储状态示意图" src="../uploads/allimg/200221/1-200221131A4220_2.gif" /><br />
+	图 1 C++ STL 无序容器存储状态示意图</div>
+<blockquote>
+	<p>
+		其中，P<sub>i</sub> 表示存储的各个键值对。</p>
+</blockquote>
+可以看到，当使用无序容器存储键值对时，会先申请一整块连续的存储空间，但此空间并不用来直接存储键值对，而是存储各个链表的头指针，各键值对真正的存储位置是各个链表的节点。<br />
+<blockquote>
+	<p>
+		注意，STL 标准库通常选用 vector 容器存储各个链表的头指针。</p>
+</blockquote>
+不仅如此，在 C++ STL 标准库中，将图 1 中的各个链表称为<span style="color:#008000;">桶（bucket）</span>，每个桶都有自己的编号（从 0 开始）。当有新键值对存储到无序容器中时，整个存储过程分为如下几步：
+<ol>
+	<li>
+		将该键值对中键的值带入设计好的哈希函数，会得到一个哈希值（一个整数，用 H 表示）；</li>
+	<li>
+		将 H 和无序容器拥有桶的数量 n 做整除运算（即 H % n），该结果即表示应将此键值对存储到的桶的编号；</li>
+	<li>
+		建立一个新节点存储此键值对，同时将该节点链接到相应编号的桶上。</li>
+</ol>
+<br />
+另外值得一提的是，哈希表存储结构还有一个重要的属性，称为<span style="color:#008000;">负载因子（load factor）</span>。该属性同样适用于无序容器，用于衡量容器存储键值对的空/满程序，即负载因子越大，意味着容器越满，即各链表中挂载着越多的键值对，这无疑会降低容器查找目标键值对的效率；反之，负载因子越小，容器肯定越空，但并不一定各个链表中挂载的键值对就越少。<br />
+<br />
+举个例子，如果设计的哈希函数不合理，使得各个键值对的键带入该函数得到的哈希值始终相同（所有键值对始终存储在同一链表上）。这种情况下，即便增加桶数是的负载因子减小，该容器的查找效率依旧很差。<br />
+<br />
+无序容器中，负载因子的计算方法为：
+<p class="info-box">
+	负载因子 = 容器存储的总键值对 / 桶数</p>
+默认情况下，无序容器的最大负载因子为 1.0。如果操作无序容器过程中，使得最大复杂因子超过了默认值，则容器会自动增加桶数，并重新进行哈希，以此来减小负载因子的值。需要注意的是，此过程会导致容器迭代器失效，但指向单个键值对的引用或者指针仍然有效。<br />
+<blockquote>
+	<p>
+		这也就解释了，为什么我们在操作无序容器过程中，键值对的存储顺序有时会&ldquo;莫名&rdquo;的发生变动。</p>
+</blockquote>
+<br />
+C++ STL 标准库为了方便用户更好地管控无序容器底层使用的哈希表存储结构，各个无序容器的模板类中都提供表 2 所示的成员方法。<br />
+<br />
+<table>
+	<caption>
+		表 2 无序容器管理哈希表的成员方法</caption>
+	<tbody>
+		<tr>
+			<th>
+				成员方法</th>
+			<th>
+				功能</th>
+		</tr>
+		<tr>
+			<td>
+				bucket_count()</td>
+			<td>
+				返回当前容器底层存储键值对时，使用桶的数量。</td>
+		</tr>
+		<tr>
+			<td>
+				max_bucket_count()</td>
+			<td>
+				返回当前系统中，unordered_map 容器底层最多可以使用多少个桶。</td>
+		</tr>
+		<tr>
+			<td>
+				bucket_size(n)</td>
+			<td>
+				返回第 n 个桶中存储键值对的数量。</td>
+		</tr>
+		<tr>
+			<td>
+				bucket(key)</td>
+			<td>
+				返回以 key 为键的键值对所在桶的编号。</td>
+		</tr>
+		<tr>
+			<td>
+				load_factor()</td>
+			<td>
+				返回 unordered_map 容器中当前的负载因子。</td>
+		</tr>
+		<tr>
+			<td>
+				max_load_factor()</td>
+			<td>
+				返回或者设置当前 unordered_map 容器的最大负载因子。</td>
+		</tr>
+		<tr>
+			<td>
+				rehash(n)</td>
+			<td>
+				尝试重新调整桶的数量为等于或大于 n 的值。如果 n 大于当前容器使用的桶数，则该方法会是容器重新哈希，该容器新的桶数将等于或大于 n。反之，如果 n 的值小于当前容器使用的桶数，则调用此方法可能没有任何作用。</td>
+		</tr>
+		<tr>
+			<td>
+				reserve(n)</td>
+			<td>
+				将容器使用的桶数（bucket_count() 方法的返回值）设置为最适合存储 n 个元素的桶数。</td>
+		</tr>
+		<tr>
+			<td>
+				hash_function()</td>
+			<td>
+				返回当前容器使用的哈希函数对象。</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+下面的程序以学过的 unordered_map 容器为例，演示了表 2 中部分成员方法的用法：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;unordered_map&gt;
+using namespace std;
+int main()
+{
+    //创建空 umap 容器
+    unordered_map&lt;string, string&gt; umap;
+   
+    cout &lt;&lt; &quot;umap 初始桶数: &quot; &lt;&lt; umap.bucket_count() &lt;&lt; endl;
+    cout &lt;&lt; &quot;umap 初始负载因子: &quot; &lt;&lt; umap.load_factor() &lt;&lt; endl;
+    cout &lt;&lt; &quot;umap 最大负载因子: &quot; &lt;&lt; umap.max_load_factor() &lt;&lt; endl;
+
+    //设置 umap 使用最适合存储 9 个键值对的桶数
+    umap.reserve(9);
+    cout &lt;&lt; &quot;*********************&quot; &lt;&lt; endl;
+    cout &lt;&lt; &quot;umap 新桶数: &quot; &lt;&lt; umap.bucket_count() &lt;&lt; endl;
+    cout &lt;&lt; &quot;umap 新负载因子: &quot; &lt;&lt; umap.load_factor() &lt;&lt; endl;
+    //向 umap 容器添加 3 个键值对
+    umap[&quot;Python教程&quot;] = &quot;http://c.biancheng.net/python/&quot;;
+    umap[&quot;Java教程&quot;] = &quot;http://c.biancheng.net/java/&quot;;
+    umap[&quot;Linux教程&quot;] = &quot;http://c.biancheng.net/linux/&quot;;
+    //调用 bucket() 获取指定键值对位于桶的编号
+    cout &lt;&lt; &quot;以\&quot;Python教程\&quot;为键的键值对，位于桶的编号为:&quot; &lt;&lt; umap.bucket(&quot;Python教程&quot;) &lt;&lt; endl;
+    //自行计算某键值对位于哪个桶
+    auto fn = umap.hash_function();
+    cout &lt;&lt; &quot;计算以\&quot;Python教程\&quot;为键的键值对，位于桶的编号为：&quot; &lt;&lt; fn(&quot;Python教程&quot;) % (umap.bucket_count()) &lt;&lt; endl;
+    return 0;
+}</pre>
+程序执行结果为：
+<p class="info-box">
+	umap 初始桶数: 8<br />
+	umap 初始负载因子: 0<br />
+	umap 最大负载因子: 1<br />
+	*********************<br />
+	umap 新桶数: 16<br />
+	umap 新负载因子: 0<br />
+	以&quot;Python教程&quot;为键的键值对，位于桶的编号为:9<br />
+	计算以&quot;Python教程&quot;为键的键值对，位于桶的编号为：9</p>
+从输出结果可以看出，对于空的 umap 容器，初始状态下会分配 8 个桶，并且默认最大负载因子为 1.0，但由于其为存储任何键值对，因此负载因子值为 0。<br />
+<br />
+与此同时，程序中调用 reverse() 成员方法，是 umap 容器的桶数改为了 16，其最适合存储 9 个键值对。从侧面可以看出，一旦负载因子大于 1.0（9/8 &gt; 1.0），则容器所使用的桶数就会翻倍式（8、16、32、...）的增加。<br />
+<br />
+程序最后还演示了如何手动计算出指定键值对存储的桶的编号，其计算结果和使用 bucket() 成员方法得到的结果是一致的。
+<blockquote>
+	<p>
+		关于表 2 中成员方法的具体语法和用法，都很简单，不再过多赘述，感兴趣的读者可自行翻阅 <a href="http://www.cplusplus.com/reference/unordered_map/unordered_map/" target="_blank">C++ STL手册</a>。</p>
+</blockquote>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="51_3.html" title="Go语言continue（继续下一次循环）" target="_blank">Go语言continue（继续下一次循环）</a></li>
+<li><a href="868_2.html" title="Linux SetUID（SUID）文件特殊权限用法详解" target="_blank">Linux SetUID（SUID）文件特殊权限用法详解</a></li>
+<li><a href="1059_2.html" title="Linux常见服务类别及功能" target="_blank">Linux常见服务类别及功能</a></li>
+<li><a href="vip_7067_2.html" title="Java中为什么使用向上转型而不直接创建子类对象？" target="_blank">Java中为什么使用向上转型而不直接创建子类对象？</a></li>
+<li><a href="../spring_boot/yaml_2.html" title="YAML教程（快速入门版）" target="_blank">YAML教程（快速入门版）</a></li>
+<li><a href="../jstl/sql-query_2.html" title="&lt;sql:query&gt;标签" target="_blank">&lt;sql:query&gt;标签</a></li>
+<li><a href="../c/log2_2.html" title="C语言log2()：返回x的自然对数（以2为底的对数）" target="_blank">C语言log2()：返回x的自然对数（以2为底的对数）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7235;
+window.arcId = "983bQf+ihZelss+rst6zTXghSuAYI5pbcDqv8eONks+LI6Ks7caTZbUGdHk";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

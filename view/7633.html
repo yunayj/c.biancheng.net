@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Django路由Path方法</title>
+<meta name="description" content="在《》" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../django/django.html">Django</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Django路由Path方法</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在《<a href="7375_2.html">Django路由系统精讲</a>》一节，我们详细了解了 Django 1.x 版本中 url 方法匹配路由的规则，在本节我们将讲解 Django 2.x 版本中 path 方法，希望对大家掌握路由系统的相关知识能够有所帮助。
+<h2>
+1.初识path()方法</h2>
+Django 2.0 可谓是 Django 的里程碑版本，它于 2017 年 12 月正式发布。它移除了对 Python2.7 的支持，最少需要 3.4 以上版本，它增加以一些 Django 1.x 版本不具有的新特性其中就包括，更简单 URL 路由方法。它主要应用于动态路由的定义上，主要变化是新增了 path 函数来进行路由的匹配，可通过以下方式进行导入：
+<pre class="python">
+#新的2.x版本导入path，导入简化
+from django.urls import path
+#原来的1.x版本url方式，conf子包
+from django.conf.urls import url</pre>
+但是之前的 url 模块并没有废止，只是 Django 强烈建议我们使用新模块 path 进行路由的匹配。从对比可以看出 Django 2.0 简化了路由 path 的导入方法。
+<h4>
+1) path()方法函数定义</h4>
+path 函数在 Django中的的定义如下所示：<br />
+<p class="info-box">
+path(route,view,kwargs,name)</p>
+它可以接收 4 个参数，其中前两个是必填参数后两个为可选参数。参数解析如下：<br />
+<strong>1. route</strong><br />
+route 是一个匹配 URL 的准则（类似正则表达式）。当 Django 响应一个请求时，它会从 urlpatterns 的第一项开始，按顺序依次匹配列表中的项，直到找到匹配的项，然后执行该项映射的视图函数或者 include 函数分发的下级路由，因此，url 路由的编写在 Django中十分的重要！<br />
+<strong>2. view</strong><br />
+view 指的是处理当前 url 请求的视图函数。当 Django 匹配到某个路由条目时，自动将封装的 HttpRequest 对象作为第一个参数，被&ldquo;捕获&rdquo;的参数以关键字参数的形式，传递给该条目指定的视图函数。<br />
+<strong>3. kwargs</strong><br />
+kwargs 指使用字典关键字传参的形式给关联的目标视图函数传递参数。<br />
+<strong>4. name</strong><br />
+name 给 URL 起个别名，常用于 url 的反向解析，避免在模板中适应硬编码的方式使用嵌入 url，在后续章节会进行详细讲解。<br />
+<br />
+当使用 path 方法关联视图函数时与 url 方法相比更为简化，也更容易让初学者理解，path 方法引入了类型转化器（converter type）的概念，以此省去了较为复杂的正则表达式匹配路由的方法，实例说明如下：<br />
+<pre class="python">
+#1.x url方法
+url(r&#39;^test/(?P&lt;year&gt;[0-9]{4})/$&#39;, views.year_test),
+#2.x path方法
+path(&#39;test/&lt;int:year&gt;/&#39;, views.year_test),
+</pre>
+<p class="tip-box">
+int 支持整数类型的转化，在上述的例子中， year_test 函数接收到的 year 参数就变成整数而不是字符串，从而避免在视图中使用 year=int(year)。</p>
+path 函数定义的 &lt;int:year&gt; 规则会捕获到 URL 中的值，映射给视图中的同名参数 year ，并根据转换器将参数值转换为指定的类型，这里对应 int 大于等于 0 的整数。之所以使用转化器，有以下两个原因：
+<ul>
+<li>
+第一是可以将捕获到的字符值转换为对应的类型；</li>
+<li>
+第二是对 URL 中传值的一种限制，避免视图处理出错</li>
+</ul>
+<br />
+在使用 url 函数时候，我们遇上这样一种情景：即不同的视图函数使用相同的字段作为参数，那么 url 函数也会使用相同正则表达式，只是它们关联的视图函数不同，但是当这个被关联的字段更改的是后，那么可想而知，我们也需要修改所有的正则表达式，重新匹配它，举例如下：<br />
+<pre class="python">
+#views.py 视图函数
+def year_test(request, year):
+&nbsp;&nbsp;&nbsp; year = int(year) # 转换整形
+def num1_view(request, id):
+&nbsp;&nbsp;&nbsp; pass
+def num2_view(request, id):
+&nbsp;&nbsp;&nbsp; pass
+def num3_view(request, id):
+&nbsp;&nbsp;&nbsp; pass</pre>
+urls.py 中配置路由如下所示：
+<pre class="python">
+from django.conf.urls import url #引入url方法
+urlpatterns = [
+    url(&#39;test/(?P&lt;year&gt;[0-9]{4})/&#39;, year_tst),
+    url(&#39;test/(?P&lt;id&gt;[a-zA-Z0-9]+)/num/&#39;, num_view),
+    url(&#39;test/(?P&lt;id&gt;[a-zA-Z0-9]+)/num1/&#39;, num1_view),
+    url(&#39;test/(?P&lt;id&gt;[a-zA-Z0-9]+)/num2/&#39;, num2_view),
+]</pre>
+利用 path 方法中提供的类型转换器就很好的解决了这一问题。
+<h2>
+2. path方法类型转化器</h2>
+Django 默认支持 5 个类型转换器，在大多数情况下，绝对可以满足我们的正常业务需求，如果不能，Django 同样提供了自定义转换器。下面介绍 Django 默认支持的转换器，如下所示：
+<ul>
+<li>
+str，匹配除了路径分隔符（/）之外的非空字符串，这是默认的形式；</li>
+<li>
+int，匹配正整数，包含0；</li>
+<li>
+slug，匹配字母、数字以及横杠、下划线组成的字符串；</li>
+<li>
+uuid，匹配格式化的 uuid，如 075194d3-6885-417e-a8a8-6c931e272f00；</li>
+<li>
+path，匹配任何非空字符串，包含了路径分隔符。</li>
+</ul>
+<h2>
+3. re_path正则表达式匹配</h2>
+如果上述的 paths 和 converters 还是无法满足需求，Django 2.x 也支持我们使用正则表达式来捕获值，在这里需要使用 re_path()，而不是前面介绍的 path()。我们使用带命名的正则表达式分组，语法如下：<br />
+<p class="info-box">
+(?P&lt;name&gt;pattern)&nbsp;</p>
+其中，尖括号里的name为分组名，pattern为正则表达式。re_path()同样包含于<code>django.urls</code>模块中，所以同样使用如下方式进行导入。示例如下：
+<pre class="python">
+from django.urls import path, re_path  #导入re_path
+from . import views
+urlpatterns = [
+    re_path(&#39;test/(?P&lt;year&gt;[0-9]{4})/&#39;, views.year_test),
+    re_path(&#39;test/(?P&lt;year&gt;[0-9]{4})/(?P&lt;month&gt;[0-9]{2})/&#39;, views.month_test),
+    re_path(&#39;test/(?P&lt;year&gt;[0-9]{4})/(?P&lt;month&gt;[0-9]{2})/(?P&lt;slug&gt;[^/]+)/&#39;, views.article_test),</pre>
+re_path 其实相当于 Django 1.x 中的 url 方法。它们两的用法是一致的，所以在这里就不多加赘述了。
+<h2>
+4. 总结归纳</h2>
+Django 2.0 和之前相比多了变量类型转化这一步骤。目前路由（url）到视图（View）的流程可以大致分为四个步骤：<br />
+<ul>
+<li>
+url 匹配</li>
+<li>
+正则表达式捕获</li>
+<li>
+变量类型转化</li>
+<li>
+视图函数调用</li>
+</ul>
+<br />
+新增的 path 方法可以帮助我们解决以下几个问题：
+<ul>
+<li>
+类型自动转化问题，可以使用类型转换器完成；</li>
+<li>
+公用正则表达式，牵一发而动全身，使用类型转换器也可以规避这个问题。</li>
+</ul>
+<p class="tip-box">
+分布式路由使用到的 include 函数同样使用 from django.urls import include 来引入</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="549.html" title="C++ unordered_set查找元素（find查找元素）详解" target="_blank">C++ unordered_set查找元素（find查找元素）详解</a></li>
+<li><a href="3353.html" title="顺序队列及C语言实现（2种方案）" target="_blank">顺序队列及C语言实现（2种方案）</a></li>
+<li><a href="vip_3419.html" title="弗洛伊德算法求最短路径（C语言详解）" target="_blank">弗洛伊德算法求最短路径（C语言详解）</a></li>
+<li><a href="7578.html" title="C++ cout格式化输出（超级详细）" target="_blank">C++ cout格式化输出（超级详细）</a></li>
+<li><a href="tinh1f.html" title="PPT抠图（去掉背景）的3种方法" target="_blank">PPT抠图（去掉背景）的3种方法</a></li>
+<li><a href="a03se99.html" title="Redis HSETNX命令的用法" target="_blank">Redis HSETNX命令的用法</a></li>
+<li><a href="t0rfwgj.html" title="Python requests库详解" target="_blank">Python requests库详解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7633;
+window.arcId = "9fa882gjNcRuounD03mHnBiaHK86HtZC8/ETrKtQqqrGL7W7FpMfW61JKlI";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

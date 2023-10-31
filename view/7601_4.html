@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Django模板继承精讲</title>
+<meta name="description" content="模板继承是 Django 模板语言中最强大的部分。模板继承使您可以构建基本的骨架模板，将通用的功能或者属性写在基础模板中，也叫基类模板或者父模板。自模板可以继承父类模板，和" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../django/django_2.html">Django</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Django模板继承精讲</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在本节我们讲述模板语言中最后一个知识点，也是最重要的，那就是模板继承。模板继承和 Python 语言中类的继承含义是一样的，在 Django 中模板只是一个文本文件，如 HTML，XML，CSV等文件格式。那模板继承到底是是什么呢？如何在 Django 中使用它呢？让我们一起一探究竟。
+<h2>
+	1. 模板继承的概念</h2>
+模板继承是 Django 模板语言中最强大的部分。模板继承使你可以构建基本的&ldquo;骨架&rdquo;模板，将通用的功能或者属性写在基础模板中，也叫基类模板或者父模板。子模板可以继承父类模板，子模板继承后将自动拥有父类中的属性和方，我们还可以在子模板中对父模板进行重写，即重写父模板中方法或者属性，从而实现子模板的定制。模板继承大大提高了代码的可重用性，减轻开发人员的工作量。
+<h2>
+	2. 模板继承的应用</h2>
+那么模板继承如何使用呢？它的使用场景有哪些呢？最典型的应用是 Web 站点的头部信息和尾部信息，比如 Web 站点的底部广告，每个网页都需要放底部广告，还有 Web 站点的头部导航栏，这些都可以使用模板继承来实现。<br />
+<br />
+在模板继承中最常用了标签就是 {% block %} 与 {% extends %} 标签，其中 {% block% } 标签与 {% endblock %} 标签成对出现，而 {% extends %} 放在子模板的<span style="color:#ff0000;">第一行</span>且必须是模板中的<span style="color:#ff0000;">第一个</span>标签，标志着此模板继承自父模板，它们使用方法如下所示：
+<pre class="info-box">
+#定义父模板可被重写内容
+{%block block_name%}
+...可以被子模板覆盖的内容
+{%endblock block_name%}
+#继承父模板
+{% extends &#39;父模板名称&#39; %}
+#子模板重写父模板
+{%block block_name%}
+...子模板覆盖后呈现的新内容
+{%endblock block_name%}</pre>
+需要注意的是子模板不需要重写父模板中的所有 block 标签定义的内容，未重写时，子模板原封不动的使用父模板中的内容。下面我们通过一个简单的例子来看一下具体的实现过程。<br />
+<br />
+首先在 index/templates/index 目录下定义父模板 base.html，代码如下所示：
+<pre class="html">
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;{% block title %}Welcome to C语言中文网 {% endblock title %}&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;!--区域1默认区域不可以被子模板修改--&gt;
+&lt;p&gt;尊敬的用户您好：&lt;/p&gt;
+&lt;hr&gt;
+&lt;!--区域2可以被子模板重写--&gt;
+{% block content %}
+&lt;p&gt;这是主体内容可以被子模板重写&lt;/p&gt;
+{% endblock content %}
+&lt;hr&gt;
+&lt;!--区域3可以被子模板重写--&gt;
+{% block footer %}
+&lt;p&gt;这是结尾的内容也可以被重写&lt;/p&gt;
+{% endblock footer %}
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+然后在父模板同级路径下定义子模板文件 test.html，代码如下所示：
+<pre class="html">
+{% extends &#39;index/base.html&#39; %}
+&lt;!--重写title--&gt;
+{% block title %} 欢迎你学习Django教程 {% endblock %}
+&lt;!--区域1保持父模板默认状态--&gt;
+&lt;!--对父模板的区域2进行重写--&gt;
+{% block content %}
+{% for item in course %}
+&lt;li&gt;{{ item }}&lt;/li&gt;
+{% endfor %}
+{% endblock content %}
+{% block footer %}&lt;p&gt;最后希望&lt;span style=&quot;color:red&quot;&gt;{{ name }}&lt;/span&gt;在C语言中文网学习可以学有所成&lt;/p&gt;
+{% endblock footer %}</pre>
+在 index/views.py 文件编写视图函数，如下所示：
+<pre class="python">
+#定义父模板视图函数
+def base_html(request):
+    return render(request,&#39;index/base.html&#39;)
+#定义子模板视图函数
+def index_html(request):
+    name=&#39;xiaoming&#39;
+    course=[&#39;python&#39;,&#39;django&#39;,&#39;flask&#39;]
+    return render(request,&#39;index/test.html&#39;,locals())</pre>
+我们在主路由使用 include 函数为 index 应用建立对应的分发式路由列表，操作步骤如下所示，首先在主路由列表关联 index 应用<br />
+<pre class="python">
+from django.urls import path,include
+from BookStore import views
+urlpatterns = [path(&#39;index/&#39;,include(&#39;index.urls&#39;))]</pre>
+然后在 index 应用目录下新建 urls.py 文件，建立主路由对应的分发式路由，代码如下所示：
+<pre class="python">
+from django.urls import path
+from index import views
+urlpatterns=[
+#127.0.0.1:8000/index/test 访问子模板
+path(&#39;test/&#39;,views.index_html),
+#127.0.0.1:8000/index/base 访问父模板
+path(&#39;base/&#39;,views.base_html)]</pre>
+在浏览器地址栏输入父模板 url 地址进行访问，得到的结果如下所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="模板继承父模板" src="../uploads/allimg/200429/9-2004291HT2606_2.gif" /><br />
+	图1：模板继承父模板<br />
+	&nbsp;</div>
+我们在父模板中标记了哪些区域可以被子模板重写覆盖，现在我们访问子模板地址，看看它又是如何的呢？展示结果如下所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="模板继承子模板" src="../uploads/allimg/200429/9-2004291K923219_2.gif" /><br />
+	图2：模板继承子模板<br />
+	&nbsp;</div>
+我们可以看出，子模板对父模板中 {% block %} 包含的内容进行了重写覆盖，这就是模板继承应用。如果在多个模板中出现了大量复杂的代码，那么就应该考虑使用模板继承来减少重复性代码。
+<h2>
+	3. 父模板内容扩展(block.super)</h2>
+所谓父模板内容扩展，即对父模板中的 block 包含内容进行添加，而并非替换。Django 为实现这一功能需求提供了 {{ block.super }} 变量，可以获取到父模板中渲染后的结果并对父模板内容进行添加，我们通过举例说明实现方法，在 base.html 中添加如下代码：
+<pre class="html">
+{% block test %}
+测试模板继承：
+{% endblock test %}</pre>
+最后在 test.html 文件中插入如下代码：
+<pre class="html">
+{% block test %}
+{{block.super}}&quot;block.super&quot;实现父模板内容添加
+{% endblock %}</pre>
+<br />
+视图层函数保持不变。访问 127.0.0.1:8000/index/test，结果如下：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="模板继承block.super" src="../uploads/allimg/200430/9-200430102015356_2.png" /><br />
+	图3：block.super变量使用</div>
+<h2>
+	4. 总结归纳</h2>
+本节介绍了模板继承的使用，以及它的优势，Django 官网建议，在父模板中应尽量多的使用 {% block %} 标签，这样可以给我们更多的选择空间。本节知识点总结如下：
+<ul>
+	<li>
+		block 标签需要成对出现，使用&nbsp;{{ endblock }} 作为结束标签；</li>
+	<li>
+		定义 block 标签名字，子模板中具有同样名称的 block 块完成对父模板的替换；</li>
+	<li>
+		子模板不需要定义父模板中的所有 block，未定义时，子模板将原样使用父模板中的内容；</li>
+	<li>
+		子模板需要使用 {% extends %} 标签继承父模板，且必须是模板中的第一个标签，并放在文件的第一行；</li>
+	<li>
+		子模板不覆盖父模板而是对父模板内容进行添加，此时使用 {{ block.super }} 变量来获取父模板&nbsp;block 块的内容。</li>
+</ul>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="51_3.html" title="Go语言continue（继续下一次循环）" target="_blank">Go语言continue（继续下一次循环）</a></li>
+<li><a href="3409_2.html" title="图的十字链表存储结构" target="_blank">图的十字链表存储结构</a></li>
+<li><a href="4118_2.html" title="Go语言range关键字：循环迭代切片" target="_blank">Go语言range关键字：循环迭代切片</a></li>
+<li><a href="7233_2.html" title="MySQL查看视图" target="_blank">MySQL查看视图</a></li>
+<li><a href="7617_2.html" title="MySQL转义字符的使用" target="_blank">MySQL转义字符的使用</a></li>
+<li><a href="../css3/width-height_2.html" title="CSS width和height（宽度和高度）" target="_blank">CSS width和height（宽度和高度）</a></li>
+<li><a href="../jstl/c-redirect_2.html" title="&lt;c:redirect&gt;标签" target="_blank">&lt;c:redirect&gt;标签</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7601;
+window.arcId = "cd53MYKy+q3GL3EhYSXjVTyIZ3Y1UnwSlISHeHmTknem7gvaJIr2N1UUfBY";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

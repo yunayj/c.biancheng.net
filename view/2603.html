@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Python创建线程（2种方式）详解</title>
+<meta name="description" content="Python 提供了 _thread 和 threading 两个模块来支持多线程，其中 _thread 提供低级别的、原始的线程支持，以及一个简单的锁，正如它的名字所暗示的，一般编程不建议使用 thread 模块；而 t" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Python创建线程（2种方式）详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body"><a href='../python/python.html' target='_blank'>Python</a> 中，有关线程开发的部分被单独封装到了模块中，和线程相关的模块有以下 2 个：
+<ul>
+<li>
+_thread：是 Python 3 以前版本中 thread 模块的重命名，此模块仅提供了低级别的、原始的线程支持，以及一个简单的锁。功能比较有限。正如它的名字所暗示的（以 _ 开头），一般不建议使用 thread 模块；</li>
+<li>
+threading：Python 3 之后的线程模块，提供了功能丰富的多线程支持，推荐使用。</li>
+</ul>
+<br />
+本节就以 threading 模块为例进行讲解。Python 主要通过两种方式来创建线程：
+<ol>
+<li>
+使用 threading 模块中 Thread 类的构造器创建线程。即直接对类 threading.Thread 进行实例化创建线程，并调用实例化对象的 start() 方法启动线程。</li>
+<li>
+继承 threading 模块中的&nbsp;Thread 类创建线程类。即用 threading.Thread 派生出一个新的子类，将新建类实例化创建线程，并调用其 start() 方法启动线程。</li>
+</ol>
+<h2>
+调用Thread类的构造器创建线程</h2>
+Thread 类提供了如下的 __init__() 构造器，可以用来创建线程：<br />
+<p class="info-box">
+__init__(self, group=None, target=None, name=None, args=(), kwargs=None, *,daemon=None)</p>
+此构造方法中，以上所有参数都是可选参数，即可以使用，也可以忽略。其中各个参数的含义如下：<br />
+<ul>
+<li>
+group：指定所创建的线程隶属于哪个线程组（此参数尚未实现，无需调用）；</li>
+<li>
+target：指定所创建的线程要调度的目标方法（最常用）；</li>
+<li>
+args：以元组的方式，为 target 指定的方法传递参数；</li>
+<li>
+kwargs：以字典的方式，为 target 指定的方法传递参数；</li>
+<li>
+daemon：指定所创建的线程是否为后代线程。</li>
+</ul>
+<blockquote>
+<p>
+这些参数，初学者只需记住 target、args、kwargs 这 3 个参数的功能即可。</p>
+</blockquote>
+下面程序演示了如何使用 Thread 类的构造方法创建一个线程：
+<pre class="python">
+import threading
+#定义线程要调用的方法，*add可接收多个以非关键字方式传入的参数
+def action(*add):
+    for arc in add:
+        #调用 getName() 方法获取当前执行该程序的线程名
+        print(threading.current_thread().getName() +&quot; &quot;+ arc)
+#定义为线程方法传入的参数
+my_tuple = (&quot;http://c.biancheng.net/python/&quot;,\
+            &quot;http://c.biancheng.net/shell/&quot;,\
+            &quot;http://c.biancheng.net/java/&quot;)
+#创建线程
+thread = threading.Thread(target = action,args =my_tuple)</pre>
+<blockquote>
+<p>
+有关 Thread 类提供的和线程有关的方法，可阅读<a href="https://docs.python.org/3/library/threading.html" target="_blank">Python Thread手册</a>，由于不是本节重点，这里不再进行详细介绍。</p>
+</blockquote>
+由此就创建好了一个线程。但是线程需要手动启动才能运行，threading 模块提供了 start() 方法用来启动线程。因此在上面程序的基础上，添加如下语句：
+<pre class="python">
+thread.start()</pre>
+再次执行程序，其输出结果为：
+<p class="info-box">
+Thread-1 http://c.biancheng.net/python/<br />
+Thread-1 http://c.biancheng.net/shell/<br />
+Thread-1 http://c.biancheng.net/java/</p>
+可以看到，新创建的 thread 线程（线程名为 Thread-1）执行了 action() 函数。
+<blockquote>
+<p>
+<span style="background-color: rgb(249, 249, 249);">默认情况下，主线程的名字为 MainThread，用户启动的多个线程的名字依次为 Thread-1、Thread-2、Thread-3、...、Thread-n 等。</span></p>
+</blockquote>
+为了使 thread 线程的作用更加明显，可以继续在上面程序的基础上添加如下代码，让主线程和新创建线程同时工作：
+<pre class="python">
+for i in range(5):
+    print(threading.current_thread().getName())</pre>
+再次执行程序，其输出结果为：
+<p class="info-box">
+MainThreadThread-1 http://c.biancheng.net/python/<br />
+<br />
+MainThreadThread-1 http://c.biancheng.net/shell/<br />
+<br />
+MainThreadThread-1 http://c.biancheng.net/java/<br />
+<br />
+MainThread<br />
+MainThread</p>
+可以看到，当前程序中有 2 个线程，分别为主线程 MainThread 和子线程 Thread-1，它们以并发方式执行，即 Thread-1 执行一段时间，然后 MainThread 执行一段时间。通过轮流获得 CPU 执行一段时间的方式，程序的执行在多个线程之间切换，从而给用户一种错觉，即多个线程似乎同时在执行。
+<blockquote>
+<p>
+如果程序中不显式创建任何线程，则所有程序的执行，都将由主线程 MainThread 完成，程序就只能按照顺序依次执行。</p>
+</blockquote>
+<h2>
+继承Thread类创建线程类</h2>
+通过继承 Thread 类，我们可以自定义一个线程类，从而实例化该类对象，获得子线程。<br />
+<br />
+需要注意的是，在创建 Thread 类的子类时，必须重写从父类继承得到的 run() 方法。因为该方法即为要创建的子线程执行的方法，其功能如同第一种创建方法中的 action() 自定义函数。<br />
+<br />
+下面程序，演示了如何通过继承 Thread 类创建并启动一个线程：
+<pre class="python">
+import threading
+
+#创建子线程类，继承自 Thread 类
+class my_Thread(threading.Thread):
+    def __init__(self,add):
+        threading.Thread.__init__(self)
+        self.add = add
+    # 重写run()方法
+    def run(self):
+         for arc in self.add:
+            #调用 getName() 方法获取当前执行该程序的线程名
+            print(threading.current_thread().getName() +&quot; &quot;+ arc)
+
+#定义为 run() 方法传入的参数
+my_tuple = (&quot;http://c.biancheng.net/python/&quot;,\
+            &quot;http://c.biancheng.net/shell/&quot;,\
+            &quot;http://c.biancheng.net/java/&quot;)
+#创建子线程
+mythread = my_Thread(my_tuple)
+#启动子线程
+mythread.start()
+#主线程执行此循环
+for i in range(5):
+    print(threading.current_thread().getName())</pre>
+程序执行结果为：
+<p class="info-box">
+MainThreadThread-1 http://c.biancheng.net/python/<br />
+<br />
+MainThreadThread-1 http://c.biancheng.net/shell/<br />
+<br />
+MainThreadThread-1 http://c.biancheng.net/java/<br />
+<br />
+MainThread<br />
+MainThread</p>
+此程序中，子线程 Thread-1 执行的是 run() 方法中的代码，而 MainThread 执行的是主程序中的代码，它们以快速轮换 CPU 的方式在执行。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="290.html" title="原码、反码、补码及位操作符，C语言位操作详解" target="_blank">原码、反码、补码及位操作符，C语言位操作详解</a></li>
+<li><a href="499.html" title="C语言输出菱形（详解版）" target="_blank">C语言输出菱形（详解版）</a></li>
+<li><a href="1355.html" title="C++ if else详解" target="_blank">C++ if else详解</a></li>
+<li><a href="vip_1773.html" title="C语言变量的定义位置以及初始值" target="_blank">C语言变量的定义位置以及初始值</a></li>
+<li><a href="7252.html" title="MySQL root修改普通用户密码" target="_blank">MySQL root修改普通用户密码</a></li>
+<li><a href="../pandas/what-is-pandas.html" title="Pandas是什么" target="_blank">Pandas是什么</a></li>
+<li><a href="9790.html" title="Python while循环语句的用法" target="_blank">Python while循环语句的用法</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 2603;
+window.arcId = "e058WrZyIYru9g4RXqBss9e3w2vsUrt4l/+7f0+vfYpU36CpXA8xfGvFtQ0";
+window.typeidChain = "145|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

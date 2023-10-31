@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>汇编语言指令详解</title>
+<meta name="description" content="指令（instruction）是一种语句，它在程序汇编编译时变得可执行。汇编器将指令翻译为机器语言字节，并且在运行时由 CPU 加载和执行。 一条指令有四个组成部分： 标号（可选） 指令助" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>汇编语言指令详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">指令（instruction）是一种语句，它在程序汇编编译时变得可执行。汇编器将指令翻译为机器语言字节，并且在运行时由 CPU 加载和执行。<br />
+<br />
+一条指令有四个组成部分：<br />
+<ul>
+<li>
+标号（可选）</li>
+<li>
+指令助记符（必需）</li>
+<li>
+操作数（通常是必需的）</li>
+<li>
+注释（可选）</li>
+</ul>
+<br />
+不同部分的位置安排如下所示：<br />
+<p class="info-box">
+[label: ] mnemonic [operands] [;comment]</p>
+现在分别了解每个部分，先从标号字段开始。<br />
+<h2>
+1) 标号</h2>
+标号（label）是一种标识符，是指令和数据的位置标记。标号位于指令的前端，表示指令的地址。同样，标号也位于变量的前端，表示变量的地址。标号有两种类型：数据标号和代码标号。<br />
+<br />
+数据标号标识变量的位置，它提供了一种方便的手段在代码中引用该变量。比如，下面定义了一个名为 count 的变量：<br />
+<pre class="asm">
+count DWORD 100</pre>
+汇编器为每个标号分配一个数字地址。可以在一个标号后面定义多个数据项。在下面的例子中，array 定义了第一个数字（1024）的位置，其他数字在内存中的位置紧随其后：<br />
+<pre class="asm">
+array DWORD 1024, 2048
+      DWORD 4096, 8192</pre>
+程序代码区（指令所在区段）的标号必须用冒号（:）结束。代码标号用作跳转和循环指令的目标。例如，下面的 JMP 指令创建一个循环，将程序控制传递给标号 target 标识的位置：<br />
+<pre class="asm">
+target:
+        mov ax,bx
+        ...
+        jmp target</pre>
+代码标号可以与指令在同一行上，也可以自己独立一行：<br />
+<pre class="asm">
+L1: mov ax, bx
+L2 :</pre>
+标号命名规则要求，只要每个标号在其封闭子程序页中是唯一的，那么就可以多次使用相同的标号。<br />
+<h2>
+2) 指令助记符</h2>
+指令助记符（instruction mnemonic）是标记一条指令的短单词。在英语中，助记符是帮助记忆的方法。相似地，<a href='https://c.biancheng.net/asm/' target='_blank'>汇编语言</a>指令助记符，如 mov, add 和 sub，给出了指令执行操作类型的线索。下面是一些指令助记符的例子：<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+助记符</th>
+<th>
+说明</th>
+<th>
+助记符</th>
+<th>
+说明</th>
+</tr>
+<tr>
+<td>
+MOV</td>
+<td>
+传送（分配）数值</td>
+<td>
+MUL</td>
+<td>
+两个数值相乘</td>
+</tr>
+<tr>
+<td>
+ADD</td>
+<td>
+两个数值相加</td>
+<td>
+JMP</td>
+<td>
+跳转到一个新位置</td>
+</tr>
+<tr>
+<td>
+SUB</td>
+<td>
+从一个数值中减去另一个数值</td>
+<td>
+CALL</td>
+<td>
+调用一个子程序</td>
+</tr>
+</tbody>
+</table>
+<h2>
+3) 操作数</h2>
+操作数是指令输入输出的数值。汇编语言指令操作数的个数范围是 0〜3 个，每个操作数可以是寄存器、内存操作数、整数表达式和输入输岀端口。<br />
+<br />
+生成内存操作数有不同的方法，比如，使用变量名、带方括号的寄存器等。变量名暗示了变量地址，并指示计算机使用给定地址的内存内容。下表列出了一些操作数示例：<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+示例</th>
+<th>
+操作数类型</th>
+<th>
+示例&nbsp;</th>
+<th>
+操作数类型</th>
+</tr>
+<tr>
+<td>
+96&nbsp;</td>
+<td>
+整数常量</td>
+<td>
+eax</td>
+<td>
+寄存器</td>
+</tr>
+<tr>
+<td>
+2+4</td>
+<td>
+整数表达式</td>
+<td>
+count</td>
+<td>
+内存</td>
+</tr>
+</tbody>
+</table>
+<br />
+现在来考虑一些包含不同个数操作数的汇编语言指令示例。比如，STC 指令没有操作数：<br />
+<pre class="asm">
+stc                    ;进位标志位置 1</pre>
+INC 指令有一个操作数：<br />
+<pre class="asm">
+inc eax                ;EAX 加 1</pre>
+MOV 指令有两个操作数：<br />
+<pre class="asm">
+mov count, ebx         ;将 EBX 传送给变量 count</pre>
+操作数有固有顺序。当指令有多个操作数时，通常第一个操作数被称为目的操作数，第二个操作数被称为源操作数（source operand）。<br />
+<br />
+一般情况下，目的操作数的内容由指令修改。比如，在 mov 指令中，数据就是从源操作数复制到目的操作数。<br />
+<br />
+IMUL 指令有三个操作数，第一个是目的操作数，第二个和第三个是进行乘法的源操作数：<br />
+<pre class="asm">
+imul eax,ebx,5</pre>
+在上例中，EBX 与 5 相乘，结果存放在 EAX 寄存器中。<br />
+<h2>
+4) 注释</h2>
+注释是程序编写者与阅读者交流程序设计信息的重要途径。程序清单的开始部分通常包含如下信息：<br />
+<ul>
+<li>
+程序目标的说明</li>
+<li>
+程序创建者或修改者的名单</li>
+<li>
+程序创建和修改的日期</li>
+<li>
+程序实现技术的说明</li>
+</ul>
+<br />
+注释有两种指定方法：<br />
+<ul>
+<li>
+单行注释，用分号（;）开始。汇编器将忽略在同一行上分号之后的所有字符。</li>
+<li>
+块注释，用 COMMENT 伪指令和一个用户定义的符号开始。汇编器将忽略其后所有的文本行，直到相同的用户定义符号出现为止。</li>
+</ul>
+<br />
+示例如下：<br />
+<pre class="asm">
+COMMENT !
+        This line is a comment.
+        This line is also a comment.
+!</pre>
+其他符号也可以使用，只要该符号不出现在注释行中：<br />
+<pre class="asm">
+COMMENT &amp;
+        This line is a comment.
+        This line is also a comment.
+&amp;</pre>
+当然，程序员应该在整个程序中提供注释，尤其是代码意图不太明显的地方。<br />
+<h2>
+5) NOP（空操作）指令</h2>
+最安全（也是最无用）的指令是 NOP（空操作）。它在程序空间中占有一个字节，但是不做任何操作。它有时被编译器和汇编器用于将代码对齐到有效的地址边界。<br />
+<br />
+在下面的例子中，第一条指令 MOV 生成了 3 字节的机器代码。NOP 指令就把第三条指令的地址对齐到双字边界（4 的偶数倍）：<br />
+<pre class="asm">
+00000000   66   8B  C3  mov ax,bx
+00000003   90           nop           ;对齐下条指令
+00000004   8B   D1      mov edx,ecx</pre>
+x86 处理器被设计为从双字的偶数倍地址处加载代码和数据，这使得加载速度更快。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="252.html" title="C++ protected（受保护的）详解" target="_blank">C++ protected（受保护的）详解</a></li>
+<li><a href="810.html" title="Shell数组：Shell数组定义以及获取数组元素" target="_blank">Shell数组：Shell数组定义以及获取数组元素</a></li>
+<li><a href="1067.html" title="Java Map集合详解" target="_blank">Java Map集合详解</a></li>
+<li><a href="5632.html" title="JS正则表达式语法大全（非常详细）" target="_blank">JS正则表达式语法大全（非常详细）</a></li>
+<li><a href="../jstl/fn-substringbefore.html" title="fn:substringBefore()函数" target="_blank">fn:substringBefore()函数</a></li>
+<li><a href="9427.html" title="Qt QStackedLayout布局用法详解" target="_blank">Qt QStackedLayout布局用法详解</a></li>
+<li><a href="../csharp/switch.html" title="C# switch语句" target="_blank">C# switch语句</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 3468;
+window.arcId = "3ecaKjCiLLrie5VQ5p2CuaWnf7Brt36F51F8Umy3nYDWkeGgyZFx0u0yXdo";
+window.typeidChain = "448|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

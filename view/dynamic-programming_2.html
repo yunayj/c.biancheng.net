@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>动态规划算法</title>
+<meta name="description" content="动态规划算法会将整个问题拆分成多个相互关联的小问题，按照次序解决这些小问题就可以解决整个问题。本文将通过一个实例讲解动态规划算法的核心思想，确保初学者也能学会动态规划算法" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>动态规划算法</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body"><p>
+	动态规划算法解决问题的过程和分治算法类似，也是先将问题拆分成多个简单的小问题，通过逐一解决这些小问题找到整个问题的答案。不同之处在于，分治算法拆分出的小问题之间是相互独立的，而动态规划算法拆分出的小问题之间相互关联，例如要想解决问题 A，必须先解决问题 B 和 C。</p>
+<p>
+	<br />
+	《<a href="../algorithm/greedy_2.html" target="_blank">贪心算法</a>》一节中，给大家举过一个例子，假设有 1、7、10 这 3 种面值的纸币，每种纸币使用的数量不限，要求用尽可能少的纸币拼凑出的总面值为 15。贪心算法最终给出的拼凑方案是需要 10+1+1+1+1+1 共 6 张纸币，而如果用动态规划算法解决这个问题，可以得出最优的拼凑方案，即只需要 1+7+7 共 3 张纸币。<br />
+	<br />
+	动态规划算法的解题思路是：用 f(n) 表示凑齐面值 n 所需纸币的最少数量，面值 15 的拼凑方案有 3 种，分别是：</p>
+<ul>
+	<li>
+		f(15) = f(14) +1：挑选一张面值为 1 的纸币，f(14) 表示拼凑出面值 14 所需要的最少的纸币数量；</li>
+	<li>
+		f(15) = f(8) + 1：挑选一张面值为 7 的纸币，f(8) 表示拼凑出面值 8 所需要的最少的纸币数量；</li>
+	<li>
+		f(15) = f(5) + 1：选择一张面值为10 的纸币，f(5) 表示拼凑出面值 5 所需要的最少的纸币数量。</li>
+</ul>
+<br />
+也就是说，f(14)+1、f(8)+1 和 f(5)+1 三者中的最小值就是最优的拼凑方案。采用同样的方法，继续求 f(14)、f(8)、f(5) 的值：
+<ul>
+	<li>
+		f(5) = f(4) + 1；</li>
+	<li>
+		f(8) = f(7) + 1 = f(1) +1；</li>
+	<li>
+		f(14) = f(13)+1 = f(7) + 1 = f(4) +1。</li>
+</ul>
+<br />
+感兴趣的读者还可以继续拆分 f(4)、f(7)、f(13) 等。经过不断地拆分，f(15) 最终会和 f(0)、f(1)、f(2) 等产生关联，而 f(0)、f(1)、f(2) 的值是很容易计算的。在得知 f(0)、f(1)、f(2) 等简单问题的结果后，就可以轻松推算出 f(3)~f(14) 的值，最终可以推算出 f(15) 的值。<br />
+<br />
+对于每种纸币来说，是否使用它可能会影响 f(n) 的值。接下来，我们就一一分析三种纸币对 f(0)~f(15) 的影响：<br />
+1) 在不能使用任何纸币的情况下，f(1)~f(15) 没有对应的值，我们用 &infin; 表示它们的值：<br />
+<br />
+<table>
+	<caption>
+		表 1 不选择任何纸币</caption>
+	<tbody>
+		<tr>
+			<th colspan="1" rowspan="2">
+				选择的纸币</th>
+			<th colspan="16" rowspan="1">
+				f(n) 的所有情况</th>
+		</tr>
+		<tr>
+			<th>
+				f(0)</th>
+			<th>
+				f(1)</th>
+			<th>
+				f(2)</th>
+			<th>
+				f(3)</th>
+			<th>
+				f(4)</th>
+			<th>
+				f(5)</th>
+			<th>
+				f(6)</th>
+			<th>
+				f(7)</th>
+			<th>
+				f(8)</th>
+			<th>
+				f(9)</th>
+			<th>
+				f(10)</th>
+			<th>
+				f(11)</th>
+			<th>
+				f(12)</th>
+			<th>
+				f(13)</th>
+			<th>
+				f(14)</th>
+			<th>
+				f(15)</th>
+		</tr>
+		<tr>
+			<td>
+				不选择任何纸币</td>
+			<td>
+				0</td>
+			<td>
+				&infin;</td>
+			<td>
+				&infin;</td>
+			<td>
+				&infin;</td>
+			<td>
+				&infin;</td>
+			<td>
+				&infin;</td>
+			<td>
+				&infin;</td>
+			<td>
+				&infin;</td>
+			<td>
+				&infin;</td>
+			<td>
+				&infin;</td>
+			<td>
+				&infin;</td>
+			<td>
+				&infin;</td>
+			<td>
+				&infin;</td>
+			<td>
+				&infin;</td>
+			<td>
+				&infin;</td>
+			<td>
+				&infin;</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+2) 使用面值为 1 的纸币，可以对表 1 中各个拼凑方案对应的值进行优化，如表 2 所示：<br />
+<br />
+<table>
+	<caption>
+		表 2&nbsp;选择面值为 1 的纸币</caption>
+	<tbody>
+		<tr>
+			<th colspan="1" rowspan="2">
+				选择的纸币</th>
+			<th colspan="16" rowspan="1">
+				f(n) 的所有情况</th>
+		</tr>
+		<tr>
+			<th>
+				f(0)</th>
+			<th>
+				f(1)</th>
+			<th>
+				f(2)</th>
+			<th>
+				f(3)</th>
+			<th>
+				f(4)</th>
+			<th>
+				f(5)</th>
+			<th>
+				f(6)</th>
+			<th>
+				f(7)</th>
+			<th>
+				f(8)</th>
+			<th>
+				f(9)</th>
+			<th>
+				f(10)</th>
+			<th>
+				f(11)</th>
+			<th>
+				f(12)</th>
+			<th>
+				f(13)</th>
+			<th>
+				f(14)</th>
+			<th>
+				f(15)</th>
+		</tr>
+		<tr>
+			<td>
+				选择面值为 1 的纸币</td>
+			<td>
+				0</td>
+			<td>
+				1</td>
+			<td>
+				2</td>
+			<td>
+				3</td>
+			<td>
+				4</td>
+			<td>
+				5</td>
+			<td>
+				6</td>
+			<td>
+				7</td>
+			<td>
+				8</td>
+			<td>
+				9</td>
+			<td>
+				10</td>
+			<td>
+				11</td>
+			<td>
+				12</td>
+			<td>
+				13</td>
+			<td>
+				14</td>
+			<td>
+				15</td>
+		</tr>
+	</tbody>
+</table>
+<blockquote>
+	f(1)~f(14) 对应的值都可以优化，计算方式是：f(1)=f(0)+1，f(2)=f(1)+1，f(3)=f(2)+1... f(15)=f(14)+1 。</blockquote>
+<br />
+3) 使用面值为 7 的纸币，可以对表 2 中各个拼凑方案做进一步优化：<br />
+<br />
+<table>
+	<caption>
+		表 3&nbsp;选择面值为 7&nbsp;的纸币</caption>
+	<tbody>
+		<tr>
+			<th colspan="1" rowspan="2">
+				选择的纸币</th>
+			<th colspan="16" rowspan="1">
+				f(n) 的所有情况</th>
+		</tr>
+		<tr>
+			<th>
+				f(0)</th>
+			<th>
+				f(1)</th>
+			<th>
+				f(2)</th>
+			<th>
+				f(3)</th>
+			<th>
+				f(4)</th>
+			<th>
+				f(5)</th>
+			<th>
+				f(6)</th>
+			<th>
+				f(7)</th>
+			<th>
+				f(8)</th>
+			<th>
+				f(9)</th>
+			<th>
+				f(10)</th>
+			<th>
+				f(11)</th>
+			<th>
+				f(12)</th>
+			<th>
+				f(13)</th>
+			<th>
+				f(14)</th>
+			<th>
+				f(15)</th>
+		</tr>
+		<tr>
+			<td>
+				选择面值为 7&nbsp;的纸币</td>
+			<td>
+				0</td>
+			<td>
+				1</td>
+			<td>
+				2</td>
+			<td>
+				3</td>
+			<td>
+				4</td>
+			<td>
+				5</td>
+			<td>
+				6</td>
+			<td>
+				1</td>
+			<td>
+				2</td>
+			<td>
+				3</td>
+			<td>
+				4</td>
+			<td>
+				5</td>
+			<td>
+				6</td>
+			<td>
+				7</td>
+			<td>
+				2</td>
+			<td>
+				3</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+f(0)~f(6) 中无法使用面值为 7 的纸币，而 f(7)~f(15) 可以选择面值为 7 的纸币，它们各自产生了更优的解决方案：f(7)=f(0)+1，f(8)=f(1)+1，...，f(15)=f(8)+1。以 f(7) 为例，除了使用先前的 f(6)+1 方案，还可以选择 f(0)+1 方案，显然后者更优，只需要一张纸币。<br />
+<br />
+4) 使用面值为 10 的纸币，继续对表 3 进行优化：<br />
+<br />
+<table>
+	<caption>
+		表 3&nbsp;选择面值为 10 的纸币</caption>
+	<tbody>
+		<tr>
+			<th colspan="1" rowspan="2">
+				选择的纸币</th>
+			<th colspan="16" rowspan="1">
+				f(n) 的所有情况</th>
+		</tr>
+		<tr>
+			<th>
+				f(0)</th>
+			<th>
+				f(1)</th>
+			<th>
+				f(2)</th>
+			<th>
+				f(3)</th>
+			<th>
+				f(4)</th>
+			<th>
+				f(5)</th>
+			<th>
+				f(6)</th>
+			<th>
+				f(7)</th>
+			<th>
+				f(8)</th>
+			<th>
+				f(9)</th>
+			<th>
+				f(10)</th>
+			<th>
+				f(11)</th>
+			<th>
+				f(12)</th>
+			<th>
+				f(13)</th>
+			<th>
+				f(14)</th>
+			<th>
+				f(15)</th>
+		</tr>
+		<tr>
+			<td>
+				选择面值为 10&nbsp;的纸币</td>
+			<td>
+				0</td>
+			<td>
+				1</td>
+			<td>
+				2</td>
+			<td>
+				3</td>
+			<td>
+				4</td>
+			<td>
+				5</td>
+			<td>
+				6</td>
+			<td>
+				1</td>
+			<td>
+				2</td>
+			<td>
+				3</td>
+			<td>
+				1</td>
+			<td>
+				2</td>
+			<td>
+				3</td>
+			<td>
+				4</td>
+			<td>
+				2</td>
+			<td>
+				3</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+对比表 2 不难发现，面值为 10 的纸币仅对 f(10)~f(13) 起到了优化的作用，而对于 f(14) 和 f(15) 来说，选择面值为 10 的纸币，并没有先前的解决方案好。最终，f(15) 的最优拼凑方案是只需要 3 张纸币（7+7+1）。<br />
+<br />
+以上我们解决问题所用的方法就是动态规划算法。总的来说，动态规划算法就是不断地拆分问题，拆分出的这些小问题之间相关关联，通过解决一些简单的问题，复杂的问题也能迎刃而解。<br />
+<h2>
+	动态规划算法的实际应用</h2>
+《<a href="../algorithm/greedy_2.html" target="_blank">贪心算法</a>》一节提到，背包问题的种类有很多，其中部分背包问题可以用贪心算法解决，而 0-1 背包问题则可以用动态规划算法解决。<br />
+<br />
+此外，弗洛伊德算法在解决最短路径问题的过程中，也用到了&ldquo;动态规划&rdquo;的思想，后续章节会给大家做详细地讲解。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="507_2.html" title="C语言求最大公约数（详解版）" target="_blank">C语言求最大公约数（详解版）</a></li>
+<li><a href="vip_1803_2.html" title="C语言非阻塞式键盘监听，用户不输入数据程序也能继续执行" target="_blank">C语言非阻塞式键盘监听，用户不输入数据程序也能继续执行</a></li>
+<li><a href="2433_2.html" title="MySQL修改数据表（ALTER TABLE语句）" target="_blank">MySQL修改数据表（ALTER TABLE语句）</a></li>
+<li><a href="4552_2.html" title="Python实例方法、静态方法和类方法详解（包含区别和用法）" target="_blank">Python实例方法、静态方法和类方法详解（包含区别和用法）</a></li>
+<li><a href="7178_2.html" title="MySQL中SQL语句的大小写规则" target="_blank">MySQL中SQL语句的大小写规则</a></li>
+<li><a href="../numpy/io_2.html" title="NumPy IO操作" target="_blank">NumPy IO操作</a></li>
+<li><a href="../pandas/window-functions_2.html" title="Python Pandas窗口函数" target="_blank">Python Pandas窗口函数</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9103;
+window.arcId = "e74fvJtaf1Lzal+GqacOi6QxOXgi2xsN0anFbInBg7gD2YpHBEnwJFyHrMg";
+window.typeidChain = "457|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

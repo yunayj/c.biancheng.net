@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Qt QFile文件操作详解</title>
+<meta name="description" content="很多应用程序都需要具备操作文件的能力，包括对文件内容进行读/写、创建和删除文件等，甚至某些应用程序的诞生纯粹是为了操作文件，比如 WPS Office、PDFedit 等。为此，Qt 框架提供了" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Qt QFile文件操作详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">很多应用程序都需要具备操作文件的能力，包括对文件内容进行读/写、创建和删除文件等，甚至某些应用程序的诞生纯粹是为了操作文件，比如 WPS Office、PDFedit 等。为此，Qt 框架提供了 QFile 类专门用来操作文件。<br />
+<h2>
+	QFile文件操作</h2>
+QFile 类支持对文件进行读取、写入、删除、重命名、拷贝等操作，它既可以操作文件文件，也可以操作二进制文件。<br />
+<br />
+使用 QFile 类操作文件之前，程序中需引入<code>&lt;QFile&gt;</code>头文件。创建 QFile 类的对象，常用的构造函数有：
+<pre class="info-box">
+QFile::QFile()
+QFile::QFile(const QString &amp;name)</pre>
+参数 name 用来指定要操作的目标文件，包含文件的存储路径和文件名，存储路径可以使用绝对路径（比如 &quot;D:/Demo/test.txt&quot;）或者相对路径（比如&quot;./Demo/test.txt&quot;），路径中的分隔符要用 &quot;/&quot; 表示。<br />
+<br />
+通常情况下，我们会调用第二个构造函数，直接指明要操作的文件。对于第一个构造函数创建的 QFile 对象，需要再调用 setFileName() 方法指明要操作的文件。<br />
+<br />
+与 C++ 读写文件的规则一样，使用 QFile 读写文件之前必须先打开文件，调用 open() 成员方法即可，常用的语法格式为：
+<pre class="info-box">
+bool QFile::open(OpenMode mode)</pre>
+mode 参数用来指定文件的打开方式，下表罗列了此参数的可选值以及各自的含义：<br />
+<br />
+<table>
+	<caption>
+		表 1 QFile文件打开方式</caption>
+	<tbody>
+		<tr>
+			<th>
+				打开方式</th>
+			<th>
+				含 义</th>
+		</tr>
+		<tr>
+			<td>
+				QIODevice::ReadOnly</td>
+			<td>
+				只能对文件进行读操作</td>
+		</tr>
+		<tr>
+			<td>
+				QIODevice::WriteOnly</td>
+			<td>
+				只能对文件进行写操作，如果目标文件不存在，会自行创建一个新文件。</td>
+		</tr>
+		<tr>
+			<td>
+				QIODevice::ReadWrite</td>
+			<td>
+				等价于 ReadOnly | WriteOnly，能对文件进行读和写操作。</td>
+		</tr>
+		<tr>
+			<td>
+				QIODevice::Append</td>
+			<td>
+				以追加模式打开文件，写入的数据会追加到文件的末尾（文件原有的内容保留）。</td>
+		</tr>
+		<tr>
+			<td>
+				QIODevice::Truncate</td>
+			<td>
+				以重写模式打开，写入的数据会将原有数据全部清除。注意，此打开方式不能单独使用，通常会和&nbsp;ReadOnly 或&nbsp;WriteOnly 搭配。</td>
+		</tr>
+		<tr>
+			<td>
+				QIODevice::Text</td>
+			<td>
+				读取文件时，会将行尾结束符（Unix 系统中是 &quot;\n&quot;，Windows 系统中是 &quot;\r\n&quot;）转换成&lsquo;\n&rsquo;；将数据写入文件时，会将行尾结束符转换成本地格式，例如 Win32 平台上是&lsquo;\r\n&rsquo;。</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+根据需要，可以为 mode 参数一次性指定多个值，值和值之间用<code>|</code>分割。比如：
+<ul>
+	<li>
+		QIODevice::ReadOnly | QIODevice::Text：表示只允许对文件进行读操作，读取文件时，会将行尾结束符转换为 &#39;\n&#39;；</li>
+	<li>
+		QIODevice::WriteOnly | QIODevice::Text：表示只允许对文件进行写操作，将数据写入文件时，会将行尾结束符转换为本地格式；</li>
+	<li>
+		QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text：表示对文件进行写操作，写入的数据会存放到文件的尾部，同时数据中的行尾结束符转换为本地格式。</li>
+</ul>
+<blockquote>
+	<p>
+		注意，传递给 mode 参数的多个值之间不能相互冲突，比如 Append 和 Truncate 不能同时使用。</p>
+</blockquote>
+如果文件成功打开，open() 函数返回 true，否则返回 false。<br />
+<br />
+QFile 类提供了很多功能实用的方法，可以快速完成对文件的操作，下表列举了常用的一些：<br />
+<br />
+<table>
+	<caption>
+		表 2 QFile常用方法</caption>
+	<tbody>
+		<tr>
+			<th>
+				普通成员方法</th>
+			<th>
+				功 能</th>
+		</tr>
+		<tr>
+			<td>
+				qint64 QFile::size() const</td>
+			<td>
+				获取当前文件的大小。对于打开的文件，该方法返回文件中可以读取的字节数。</td>
+		</tr>
+		<tr>
+			<td>
+				bool QIODevice::getChar(char *c)</td>
+			<td>
+				从文件中读取一个字符，并存储到 c 中。读取成功时，方法返回 true，否则返回 false。</td>
+		</tr>
+		<tr>
+			<td>
+				bool QIODevice::putChar(char c)</td>
+			<td>
+				向文件中写入字符 c，成功时返回 true，否则返回 false。</td>
+		</tr>
+		<tr>
+			<td>
+				QByteArray QIODevice::read(qint64 maxSize)</td>
+			<td>
+				从文件中一次性最多读取 maxSize 个字节，然后返回读取到的字节。</td>
+		</tr>
+		<tr>
+			<td>
+				qint64 QIODevice::read(char *data, qint64 maxSize)</td>
+			<td>
+				从文件中一次性对多读取 maxSize 个字节，读取到的字节存储到 data 指针指定的内存控件中。该方法返回成功读取到的字节数。</td>
+		</tr>
+		<tr>
+			<td>
+				QByteArray QIODevice::readAll()</td>
+			<td>
+				读取文件中所有的数据。</td>
+		</tr>
+		<tr>
+			<td>
+				qint64 QIODevice::readLine(char *data, qint64 maxSize)</td>
+			<td>
+				每次从文件中读取一行数据或者读取最多&nbsp;maxSize-1 个字节，存储到 data 中。该方法返回实际读取到的字节数。</td>
+		</tr>
+		<tr>
+			<td>
+				qint64 QIODevice::write(const char *data, qint64 maxSize)</td>
+			<td>
+				向 data 数据一次性最多写入 maxSize 个字节，该方法返回实际写入的字节数。&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				qint64 QIODevice::write(const char *data)</td>
+			<td>
+				将 data 数据写入文件，该方法返回实际写入的字节数。</td>
+		</tr>
+		<tr>
+			<td>
+				qint64 QIODevice::write(const QByteArray &amp;byteArray)</td>
+			<td>
+				将 byteArray 数组中存储的字节写入文件，返回实际写入的字节数。</td>
+		</tr>
+		<tr>
+			<td>
+				bool QFile::copy(const QString &amp;newName)</td>
+			<td>
+				将当前文件的内容拷贝到名为 newName 的文件中，如果成功，方法返回 true，否则返回 false。<br />
+				<br />
+				copy 方法在执行复制操作之前，会关闭源文件。</td>
+		</tr>
+		<tr>
+			<td>
+				bool QFile::rename(const QString &amp;newName)</td>
+			<td>
+				对当前文件进行重命名，新名称为 newName，成功返回 true，失败返回 false。</td>
+		</tr>
+		<tr>
+			<td>
+				bool QFile::remove()</td>
+			<td>
+				删除当前文件，成功返回 true，失败返回 false。</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+【实例一】演示了 QFile 类读写文本文件的过程。
+<pre class="cpp">
+#include &lt;QFile&gt;
+#include &lt;QDebug&gt;
+int main(int argc, char *argv[])
+{
+    //创建 QFile 对象，同时指定要操作的文件
+    QFile file(&quot;D:/demo.txt&quot;);
+    //对文件进行写操作
+    if(!file.open(QIODevice::WriteOnly|QIODevice::Text)){
+        qDebug()&lt;&lt;&quot;文件打开失败&quot;;
+    }
+    //向文件中写入两行字符串
+    file.write(&quot;C语言中文网\n&quot;);
+    file.write(&quot;http://c.biancheng.net&quot;);
+    //关闭文件
+    file.close();
+
+    //重新打开文件，对文件进行读操作
+    if(!file.open(QIODevice::ReadOnly|QIODevice::Text)){
+        qDebug()&lt;&lt;&quot;文件打开失败&quot;;
+    }
+    //每次都去文件中的一行，然后输出读取到的字符串
+    char * str = new char[100];
+    qint64 readNum = file.readLine(str,100);
+    //当读取出现错误（返回 -1）或者读取到的字符数为 0 时，结束读取
+    while((readNum !=0) &amp;&amp; (readNum != -1)){
+        qDebug() &lt;&lt; str;
+        readNum = file.readLine(str,100);
+    }
+    file.close();
+    return 0;
+}</pre>
+执行程序，&quot;C语言中文网&quot; 和 &quot;http://c.biancheng.net&quot; 先写入 D 盘的 demo.txt 文件，然后再从文件中将它们读取出来。<br />
+<br />
+【实例二】演示 QFile 读写二进制文件的过程。
+<pre class="cpp">
+#include &lt;QFile&gt;
+#include &lt;QDebug&gt;
+int main(int argc, char *argv[])
+{
+    //指定要写入文件的数据
+    qint32 nums[5]={1,2,3,4,5};
+    //写入文件之前，要将数据以二进制方式存储到字节数组中
+    QByteArray byteArr;
+    byteArr.resize(sizeof(nums));
+    for(int i=0;i&lt;5;i++){
+        //借助指针，将每个整数拷贝到字节数组中
+        memcpy(byteArr.data()+i*sizeof(qint32),&amp;(nums[i]),sizeof(qint32));
+    }
+    //将 byteArr 字节数组存储到文件中
+    QFile file(&quot;D:/demo.dat&quot;);
+    file.open(QIODevice::WriteOnly);
+    file.write(byteArr);
+    file.close();
+
+    //再次打开文件，读取文件中存储的二进制数据
+    file.open(QIODevice::ReadOnly);
+    QByteArray resArr = file.readAll();
+    //输出读取到的二进制数据
+    qDebug()&lt;&lt;&quot;resArr: &quot;&lt;&lt;resArr;
+    //将二进制数据转化为整数
+    char* data = resArr.data();
+    while(*data){
+        qDebug() &lt;&lt; *(qint32*)data;
+        data += sizeof(qint32);
+    }
+    return 0;
+}</pre>
+执行程序，demo.dat 文件中会存储 {1,2,3,4,5} 这 5 个整数的二进制形式，同时输出以下内容：
+<p class="info-box">
+	resArr:&nbsp; &quot;\x01\x00\x00\x00\x02\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x05\x00\x00\x00&quot;<br />
+	1<br />
+	2<br />
+	3<br />
+	4<br />
+	5</p>
+<br />
+单独使用 QFile 类读写文件的过程既繁琐又复杂，Qt 提供了两个辅助类 QTextStream 和 QDataStream，前者用来读写文件文件，后者用来读写二进制文件，QFile 可以和它们搭配使用，从整体上提高读写文件的开发效率。<br />
+<h2>
+	QFile+QTextStream</h2>
+和单独使用 QFile 类读写文本文件相比，QTextStream 类提供了很多读写文件相关的方法，还可以设定写入到文件中的数据格式，比如对齐方式、写入数字是否带前缀等等。<br />
+<br />
+使用 QTextStream 类之前，程序中要先引入<code>&lt;QTextStream&gt;</code>头文件。QTextStream 类提供了很多种构造函数，常用的是：
+<pre class="info-box">
+QTextStream(QIODevice *device)</pre>
+QIODevice 是 QFile 的父类，因此在构造 QTextStream 类的对象时，需要传递一个 QFile 类的对象。<br />
+<br />
+下表罗列了 QTextStream 类常用的一些方法：<br />
+<table>
+	<caption>
+		表 3 QTextStream常用方法</caption>
+	<tbody>
+		<tr>
+			<th>
+				成员方法</th>
+			<th>
+				功 能</th>
+		</tr>
+		<tr>
+			<td>
+				bool QTextStream::atEnd() const</td>
+			<td>
+				判断是否读到文件末尾，如果已经达到末尾，返回 true，否则返回 false。</td>
+		</tr>
+		<tr>
+			<td>
+				QString QTextStream::read(qint64 maxlen)</td>
+			<td>
+				从文件中读最多 maxlen 个字符，返回这些字符组成的 QString 字符串。</td>
+		</tr>
+		<tr>
+			<td>
+				QString QTextStream::readAll()</td>
+			<td>
+				从文件中读取所有内容，返回由读取内容组成的 QString 字符串。</td>
+		</tr>
+		<tr>
+			<td>
+				QString QTextStream::readLine(qint64 maxlen = 0)</td>
+			<td>
+				默认读取一行文本，如果手动指定 maxlen 的值，则最多读取 maxlen 个字符，并返回读取内容组成的 QString 字符串。</td>
+		</tr>
+		<tr>
+			<td>
+				void QTextStream::setFieldAlignment(FieldAlignment mode)</td>
+			<td>
+				设置对齐方式，通常与 setFieldWidth() 一起使用。</td>
+		</tr>
+		<tr>
+			<td>
+				void QTextStream::setFieldWidth(int width)</td>
+			<td>
+				设置每份数据占用的位置宽度为 width。</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+QTextStream 类重载了<code style="font-size: 14px;">&gt;&gt;</code>输入运算符和<code style="font-size: 14px;">&gt;&gt;</code>输出运算符，使读写文本文件变得更简单。例如，用 QTextStream 实现【实例一】的程序如下：<br />
+<pre class="cpp">
+#include &lt;QFile&gt;
+#include &lt;QDebug&gt;
+#include &lt;QString&gt;
+#include &lt;QTextStream&gt;
+int main(int argc, char *argv[])
+{
+    //创建 QFile 对象，同时指定要操作的文件
+    QFile file(&quot;D:/demo.txt&quot;);
+    //对文件进行写操作
+    if(!file.open(QIODevice::WriteOnly|QIODevice::Text)){
+        qDebug()&lt;&lt;&quot;文件打开失败&quot;;
+    }
+    QTextStream out(&amp;file);
+    //向文件中写入两行字符串
+    out &lt;&lt; (QString)&quot;C语言中文网\n&quot; &lt;&lt; (QString)&quot;http://c.biancheng.net&quot;;
+    //关闭文件
+    file.close();
+
+    //重新打开文件，对文件进行读操作
+    if(!file.open(QIODevice::ReadOnly|QIODevice::Text)){
+        qDebug()&lt;&lt;&quot;文件打开失败&quot;;
+    }
+    QTextStream in(&amp;file);
+    //一直读，直至读取失败
+    while(!in.atEnd()){
+        QString str;
+        //从文件中读取一个字符串
+        in &gt;&gt; str;
+        qDebug() &lt;&lt; str;
+    }
+    file.close();
+    return 0;
+}</pre>
+<br />
+和<code>&lt;iostream&gt;</code>类似，QTextStream 类提供了两种格式化输出的方法，一种是调用该类的成员方法，例如表 3 中的 setFieldAlignment()、setFieldWidth 等，另一种是调用 QTextStream 类提供的格式描述符，下表罗列了常用的一些：<br />
+<br />
+<table>
+	<caption>
+		表 4&nbsp;QTextStream常用格式描述符</caption>
+	<tbody>
+		<tr>
+			<th>
+				描述符</th>
+			<th>
+				功能相同的方法</th>
+			<th>
+				功 能</th>
+		</tr>
+		<tr>
+			<td>
+				Qt::hex</td>
+			<td>
+				QTextStream::setIntegerBase(16)</td>
+			<td>
+				将指定整数对应的 16 进制数写入到文件中。</td>
+		</tr>
+		<tr>
+			<td>
+				Qt::showbase</td>
+			<td>
+				QTextStream::setNumberFlags(numberFlags() | ShowBase)</td>
+			<td>
+				对于非十进制数，写入到文件中时带上相应的前缀。二进制数前缀是 0b，八进制数前缀是 0，十六进制数前缀是 0x。</td>
+		</tr>
+		<tr>
+			<td>
+				Qt::forcesign</td>
+			<td>
+				QTextStream::setNumberFlags(numberFlags() | ForceSign)</td>
+			<td>
+				将数字写入文件时，带上正负号。</td>
+		</tr>
+		<tr>
+			<td>
+				Qt::fixed</td>
+			<td>
+				QTextStream::setRealNumberNotation(FixedNotation)</td>
+			<td>
+				将浮点数以普通小数的形式写入文件。</td>
+		</tr>
+		<tr>
+			<td>
+				Qt::scientific</td>
+			<td>
+				QTextStream::setRealNumberNotation(ScientificNotation)</td>
+			<td>
+				将浮点数以科学计数法的形式写入文件。</td>
+		</tr>
+		<tr>
+			<td>
+				Qt::left</td>
+			<td>
+				QTextStream::setFieldAlignment(AlignLeft)</td>
+			<td>
+				左对齐</td>
+		</tr>
+		<tr>
+			<td>
+				Qt::right</td>
+			<td>
+				QTextStream::setFieldAlignment(AlignRight)</td>
+			<td>
+				右对齐</td>
+		</tr>
+		<tr>
+			<td>
+				Qt::center</td>
+			<td>
+				QTextStream::setFieldAlignment(AlignCenter)</td>
+			<td>
+				居中对齐</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+举个简单的例子：
+<pre class="cpp">
+#include &lt;QFile&gt;
+#include &lt;QDebug&gt;
+#include &lt;QString&gt;
+#include &lt;QTextStream&gt;
+int main(int argc, char *argv[])
+{
+    QFile file(&quot;D:/demo.txt&quot;);
+    if(!file.open(QIODevice::WriteOnly|QIODevice::Text)){
+        qDebug()&lt;&lt;&quot;文件打开失败&quot;;
+    }
+    QTextStream out(&amp;file);
+    //将 10 的十六进制数写入文件
+    out &lt;&lt; hex &lt;&lt; 10;
+    //设置每份数据占用 10 个字符的位置
+    out.setFieldWidth(10);
+    //以右对齐的方式写入 3.14
+    out &lt;&lt; left &lt;&lt; 3.14;
+    //后续数据以左对齐的方式写入文件
+    out.setFieldAlignment(QTextStream::AlignRight);
+    out &lt;&lt; 2.7;
+    //关闭文件
+    file.close();
+    return 0;
+}</pre>
+程序运行后，demo.txt 存储的文本内容为：
+<p class="info-box">
+	a3.14&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2.7</p>
+<h2>
+	QFile+QDataStream</h2>
+QDataStream 类的用法和 QTextStream 非常类似，最主要的区别在于，QDataStream 用于读写二进制文件。<br />
+<br />
+使用 QDataStream 类之前，程序中要引入<code>&lt;QDataStream&gt;</code>头文件。创建 QDataStream 对象常用的构造函数为：
+<pre class="info-box">
+QDataStream::QDataStream(QIODevice *d)</pre>
+下表罗列了 QDataStream 类常用的成员方法：<br />
+<table>
+	<caption>
+		表 5 QDataStream常用方法</caption>
+	<tbody>
+		<tr>
+			<th>
+				成员方法</th>
+			<th>
+				功 能</th>
+		</tr>
+		<tr>
+			<td>
+				bool QDataStream::atEnd() const</td>
+			<td>
+				判断是否读到文件末尾，如果已经达到末尾，返回 true，否则返回 false。</td>
+		</tr>
+		<tr>
+			<td>
+				QDataStream &amp;QDataStream::readBytes(char *&amp;s, uint &amp;l)</td>
+			<td>
+				对于用 writeBytes() 方法写入文件的&nbsp;l 和&nbsp;s，只能使用 readBytes() 方法读取出来。&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				int QDataStream::readRawData(char *s, int len)</td>
+			<td>
+				从文件中读取最多 len 字节的数据到 s 中，返回值表示实际读取的字节数。注意，调用该方法之前，需要先给 s 参数分配好内存空间。</td>
+		</tr>
+		<tr>
+			<td>
+				void QDataStream::setVersion(int v)</td>
+			<td>
+				不同版本的 Qt 中，同名称的数据类型也可能存在差异，通过调用此方法手动指定版本号，可以确保读取数据的一致性。</td>
+		</tr>
+		<tr>
+			<td>
+				int QDataStream::skipRawData(int len)</td>
+			<td>
+				跳过文件中的&nbsp;len 个字节，返回实际跳过的字节数。</td>
+		</tr>
+		<tr>
+			<td>
+				QDataStream &amp;QDataStream::writeBytes(const char *s, uint len)</td>
+			<td>
+				将长度 len 和 s 一起写入到文件中，对于 writeBytes() 写入的数据，只能用 readBytes() 方法读取。</td>
+		</tr>
+		<tr>
+			<td>
+				int QDataStream::writeRawData(const char *s, int len)</td>
+			<td>
+				将 s 中前 len 字节的数据写入文件，返回值表示成功写入的字节数。</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+QDataStream 类也对<code>&lt;&lt;</code>和<code>&gt;&gt;</code>进行了重载，举个简单的例子，用 QDataStream 重新实现实例二：
+<pre class="cpp">
+#include &lt;QFile&gt;
+#include &lt;QDebug&gt;
+#include &lt;QDataStream&gt;
+int main(int argc, char *argv[])
+{
+    //指定要写入文件的数据
+    qint32 nums[5]={1,2,3,4,5};
+    QFile file(&quot;D:/demo.dat&quot;);
+    file.open(QIODevice::WriteOnly);
+    //创建 QDataStream 对象
+    QDataStream out(&amp;file);
+    //将 nums 数组中的整数逐个写入到二进制文件中
+    for(int i=0;i&lt;5;i++){
+      out &lt;&lt; nums[i];
+    }
+    file.close();
+
+    //再次打开文件，读取文件中存储的二进制数据
+    file.open(QIODevice::ReadOnly);
+    QDataStream in(&amp;file);
+    //读取二进制文件中的数据
+    while(!in.atEnd()){
+        //每次读取一个整数
+        qint32 num;
+        in &gt;&gt; num;
+        qDebug() &lt;&lt; num;
+    }
+    return 0;
+}</pre>
+输出结果为：
+<p class="info-box">
+	1<br />
+	2<br />
+	3<br />
+	4<br />
+	5</p>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="346_2.html" title="STL中“大”、“小”和“相等”的概念" target="_blank">STL中“大”、“小”和“相等”的概念</a></li>
+<li><a href="925_2.html" title="Java sort()数组排序（升序和降序）" target="_blank">Java sort()数组排序（升序和降序）</a></li>
+<li><a href="2412_2.html" title="MySQL免安装版配置教程" target="_blank">MySQL免安装版配置教程</a></li>
+<li><a href="7109_2.html" title="常用数据库大汇总（附带优缺点）" target="_blank">常用数据库大汇总（附带优缺点）</a></li>
+<li><a href="../python_spider/case06_2.html" title="Python爬虫抓取动态加载数据" target="_blank">Python爬虫抓取动态加载数据</a></li>
+<li><a href="../redis/slaveof_2.html" title="Redis Cluster主从模式详解" target="_blank">Redis Cluster主从模式详解</a></li>
+<li><a href="../csharp/polymorphism_2.html" title="C#多态" target="_blank">C#多态</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9430;
+window.arcId = "5330grt3/07WeynhGL2341Xb1TThAw3bvqXqKFHMqM0oJxSmkS1FgfJKGb0";
+window.typeidChain = "294|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

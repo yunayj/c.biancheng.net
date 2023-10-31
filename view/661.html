@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>GCC分步骤编译C语言程序</title>
+<meta name="description" content="上面讲解的是通过 gcc 命令一次性完成编译和链接的整个过程，这样最方便，大家在学习C语言的过程中一般都这么做。实际上， gcc 命令也可以将编译和链接分开，每次只完成一项任务。" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>GCC分步骤编译C语言程序</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">上节《<a href="660.html">GCC编译C语言程序完整演示</a>》讲解的是通过<code>gcc</code>命令一次性完成编译和链接的整个过程，这样最方便，大家在学习C语言的过程中一般都这么做。实际上，<code>gcc</code>命令也可以将编译和链接分开，每次只完成一项任务。<br />
+<br />
+本节将涉及到C语言程序的生成原理，如果你不了解，请转到《<a href="../c/c_3.html">C语言入门教程</a>》学习。<br />
+<br />
+本节以下面的C语言代码为例进行演示：
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+int main()
+{
+    puts(&quot;C语言中文网&quot;);
+    return 0;
+}</pre>
+<h2>
+1) 编译（Compile）</h2>
+将源文件编译成目标文件需要使用<code>-c</code>选项，例如：
+<p class="info-box">
+gcc -c main.c</p>
+就将 main.c 编译为 main.o。打开 demo 目录，就会看到 main.o：
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/180921/15593B635-0.jpg" /></div>
+对于微软编译器（内嵌在 Visual <a href='../cplus/cplus.html' target='_blank'>C++</a> 或者 Visual Studio 中），目标文件的后缀为<code>.obj</code>；对于 <a href='../gcc/gcc.html' target='_blank'>GCC</a> 编译器，目标文件的后缀为<code>.o</code>。<br />
+<br />
+一个源文件会生成一个目标文件，多个源文件会生成多个目标文件，源文件数目和目标文件数目是一样的。通常情况下，默认的目标文件名字和源文件名字是一样的。<br />
+<br />
+如果希望自定义目标文件的名字，那么可以使用<code>-o</code>选项，例如：
+<p class="info-box">
+gcc -c main.c -o a.o</p>
+这样生成的目标文件的名字就是 a.o。
+<h4>
+2) 链接（Link）</h4>
+在<code>gcc</code>命令后面紧跟目标文件的名字，就可以将目标文件链接成为可执行文件，例如：
+<p class="info-box">
+gcc main.o</p>
+就将 main.o 链接为 a.out。打开 demo 目录，就会看到 a.out。<br />
+<br />
+在<code>gcc</code>命令后面紧跟源文件名字或者目标文件名字都是可以的，<code>gcc</code>命令能够自动识别到底是源文件还是目标文件：如果是源文件，那么要经过编译和链接两个步骤才能生成可执行文件；如果是目标文件，只需要链接就可以了。<br />
+<br />
+使用<code>-o</code>选项仍然能够自定义可执行文件的名字，例如：
+<p class="info-box">
+gcc main.o -o main.out</p>
+这样生成的可执行文件的名字就是 main.out。<br />
+<br />
+下面是一个完整的演示：
+<p class="info-box">
+$ cd demo<br />
+$ gcc -c main.c<br />
+$ gcc main.o<br />
+$ ./a.out<br />
+C语言中文网<br />
+$&nbsp;</p>
+在控制台上的真实效果为：
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/180921/15593C354-1.jpg" /></div>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../linux/tmux.html" title="tmux命令_Linux tmux命令：一个窗口操作多个会话" target="_blank">tmux命令_Linux tmux命令：一个窗口操作多个会话</a></li>
+<li><a href="2232.html" title="C++ const对象（常对象）" target="_blank">C++ const对象（常对象）</a></li>
+<li><a href="2672.html" title="Shell expr命令：进行整数计算" target="_blank">Shell expr命令：进行整数计算</a></li>
+<li><a href="6407.html" title="IP地址的格式和分类" target="_blank">IP地址的格式和分类</a></li>
+<li><a href="../redis2/sunsionstore.html" title="Redis SUNIONSTORE命令" target="_blank">Redis SUNIONSTORE命令</a></li>
+<li><a href="../redis2/zrange.html" title="Redis ZRANGE命令" target="_blank">Redis ZRANGE命令</a></li>
+<li><a href="9833.html" title="MATLAB是什么（超级详细）" target="_blank">MATLAB是什么（超级详细）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 661;
+window.arcId = "081dYDJr1K/gn48C62l3fj6t/kKOjCdH0xi5CQQwMwyMmu23v6/zwPCZUA";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>GDB catch命令：建立捕捉断点</title>
+<meta name="description" content="要知道，GDB 调试器支持在被调试程序中打 3 种断点，分别可称为普通断点、观察断点和捕捉断点，其中普通断点用 break 命令建立（可阅读《 GDB break 》一节），观察断点用 watch 命令建立" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../gdb/gdb.html">GDB</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href="8123.html">GDB是什么？</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href="8130.html">GDB下载和安装教程</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href="vip_8511.html">如何在Windows平台上安装GDB调试器？</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href="vip_8512.html">Sublime Text配置GDB调试环境</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href="8153.html">GDB调试C/C++程序的整个过程</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href="vip_8520.html">调用GDB调试器的4种方式</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href="8174.html">gdb run（r）命令：启动程序</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href="8189.html">GDB break（b）：设置断点</a>
+</dd>
+<dd>
+<span class="channel-num">9</span>
+<a href="8191.html">如何实时监控变量值的变化情况？</a>
+</dd>
+<dd>
+<span class="channel-num">10</span>
+<a href="8199.html">GDB catch命令：建立捕捉断点</a>
+</dd>
+<dd>
+<span class="channel-num">11</span>
+<a href="8255.html">GDB条件断点（condition命令）详解</a>
+</dd>
+<dd>
+<span class="channel-num">12</span>
+<a href="8232.html">GDB单步调试程序</a>
+</dd>
+<dd>
+<span class="channel-num">13</span>
+<a href="vip_8519.html">如何使用GDB进行断点调试？</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">14</span>
+<a href="8238.html">GDB print和display命令：查看变量的值</a>
+</dd>
+<dd>
+<span class="channel-num">15</span>
+<a href="vip_8513.html">GDB print命令更高级的用法！</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">16</span>
+<a href="8219.html">GDB禁用和删除断点</a>
+</dd>
+<dd>
+<span class="channel-num">17</span>
+<a href="vip_8514.html">如何用GDB调试多线程程序？</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">18</span>
+<a href="vip_8515.html">GDB non-stop模式详解</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">19</span>
+<a href="vip_8516.html">GDB如何在后台执行调试命令？</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">20</span>
+<a href="vip_8517.html">GDB调试多进程程序</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">21</span>
+<a href="vip_8518.html">GDB如何进行反向调试？</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>
+<span class="channel-num">22</span>
+<a href="8291.html">GDB handle命令：信号处理</a>
+</dd>
+<dd>
+<span class="channel-num">23</span>
+<a href="8282.html">GDB frame和backtrace命令：查看栈信息</a>
+</dd>
+<dd>
+<span class="channel-num">24</span>
+<a href="7466.html">GDB编辑和搜索源码</a>
+</dd>
+<dd>
+<span class="channel-num">25</span>
+<a href="8293.html">GDB help命令：查看目标命令的具体用法</a>
+</dd>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../gdb/gdb.html">GDB</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>GDB catch命令：建立捕捉断点</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">要知道，GDB 调试器支持在被调试程序中打 3 种断点，分别为普通断点、观察断点和捕捉断点，其中普通断点用 break 命令建立（可阅读《<a href="8189.html" target="_blank">GDB break</a>》一节），观察断点用 watch 命令建立（可阅读《<a href="8191.html" target="_blank">GDB watch</a>》一节），本节将讲解如何使用<span style="color:#008000;"> catch</span> 命令建立捕捉断点。<br />
+<br />
+和前 2 种断点不同，普通断点作用于程序中的某一行，当程序运行至此行时停止执行，观察断点作用于某一变量或表达式，当该变量（表达式）的值发生改变时，程序暂停。而捕捉断点的作用是，监控程序中某一事件的发生，例如程序发生某种异常时、某一动态库被加载时等等，一旦目标时间发生，则程序停止执行。<br />
+<blockquote>
+<p>
+用捕捉断点监控某一事件的发生，等同于在程序中该事件发生的位置打普通断点。</p>
+</blockquote>
+<br />
+建立捕捉断点的方式很简单，就是使用 catch 命令，其基本格式为：
+<p class="info-box">
+(gdb) catch event</p>
+其中，event 参数表示要监控的具体事件。对于使用 GDB 调试 C、C++ 程序，常用的 event 事件类型如表 1 所示。<br />
+<br />
+<table>
+<caption>
+表 1 常见的 event 事件</caption>
+<tbody>
+<tr>
+<th>
+event 事件</th>
+<th>
+含 义</th>
+</tr>
+<tr>
+<td>
+throw [exception]</td>
+<td>
+当程序中抛出 exception 指定类型异常时，程序停止执行。如果不指定异常类型（即省略 exception），则表示只要程序发生异常，程序就停止执行。</td>
+</tr>
+<tr>
+<td>
+catch [exception]</td>
+<td>
+当程序中捕获到 exception 异常时，程序停止执行。exception 参数也可以省略，表示无论程序中捕获到哪种异常，程序都暂停执行。</td>
+</tr>
+<tr>
+<td>
+load [regexp]<br />
+unload [regexp]</td>
+<td>
+其中，regexp 表示目标动态库的名称，load 命令表示当 regexp 动态库加载时程序停止执行；unload 命令表示当 regexp 动态库被卸载时，程序暂停执行。regexp 参数也可以省略，此时只要程序中某一动态库被加载或卸载，程序就会暂停执行。</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>
+除表中罗列的以外，event 参数还有其它一些写法，感兴趣的读者可查看 <a href="https://sourceware.org/gdb/current/onlinedocs/gdb/Set-Catchpoints.html#Set-Catchpoints" target="_blank">GDB官网</a>进行了解，这里不再过多赘述。</p>
+</blockquote>
+注意，当前 GDB 调试器对监控 C++ 程序中异常的支持还有待完善，使用 catch 命令时，有以下几点需要说明：
+<ol>
+<li>
+对于使用 catch 监控指定的 event 事件，其匹配过程需要借助 libstdc++ 库中的一些 SDT 探针，而这些探针最早出现在 GCC 4.8 版本中。也就是说，想使用 catch 监控指定类型的 event 事件，系统中 GCC 编译器的版本最低为 4.8，但即便如此，catch 命令是否能正常发挥作用，还可能受到系统中其它因素的影响。</li>
+<li>
+当 catch 命令捕获到指定的 event 事件时，程序暂停执行的位置往往位于某个系统库（例如 libstdc++）中。这种情况下，通过执行 up 命令，即可返回发生 event 事件的源代码处。</li>
+<li>
+catch 无法捕获以交互方式引发的异常。</li>
+</ol>
+<br />
+如同 break 命令和 tbreak 命令的关系一样（前者的断点是永久的，后者是一次性的），catch 命令也有另一个版本，即 <span style="color:#008000;">tcatch 命令</span>。tcatch 命令和 catch 命令的用法完全相同，唯一不同之处在于，对于目标事件，catch 命令的监控是永久的，而 tcatch 命令只监控一次，也就是说，只有目标时间第一次触发时，tcath 命令才会捕获并使程序暂停，之后将失效。<br />
+<br />
+接下来就以下面的 C++ 程序为例，给大家演示 catch（tcatch）命令的用法：
+<pre class="cpp">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main(){
+    int num = 1;
+    while(num &lt;= 5){
+        try{
+            throw 100;
+        }catch(int e){
+            num++;
+            cout &lt;&lt; &quot;next&quot; &lt;&lt; endl;
+        }
+    }
+    cout &lt;&lt; &quot;over&quot; &lt;&lt; endl;
+    return 0;
+}</pre>
+此程序存储于 ~/demo/main.cpp 文件中（ ~ 表示当前登陆用户的主目录）。<br />
+<br />
+在此基础上，对 main.cpp 文件进行编译，并启动对该程序的调试：
+<p class="info-box">
+[root@bogon demo]$ ls<br />
+main.cpp<br />
+[root@bogon demo]# g++ main.cpp -o main.exe -g<br />
+[root@bogon demo]$ ls<br />
+main.cpp&nbsp; <span style="color:#008000;">main.exe</span><br />
+[root@bogon demo]# gdb main.exe -q<br />
+Reading symbols from main.exe...done.<br />
+(gdb)</p>
+<br />
+通过观察程序可以看出，当前程序中通过 throw 手动抛出了 int 异常，此异常能够被 catch 成功捕获。假设我们使用 catch 命令监控：只要程序中引发 int 异常，程序就停止执行：
+<p class="info-box">
+(gdb) catch throw int&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;-- 指定捕获&ldquo;throw int&rdquo;事件<br />
+Catchpoint 1 (throw)<br />
+(gdb) r&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;-- 执行程序<br />
+Starting program: ~/demo/main.exe<br />
+<br />
+Catchpoint 1 (exception thrown), 0x00007ffff7e81762 in __cxa_throw ()<br />
+&nbsp;&nbsp; from /lib/x86_64-linux-gnu/libstdc++.so.6&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;-- 程序暂停执行<br />
+(gdb) up&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;-- 回到源码<br />
+#1&nbsp; 0x0000555555555287 in main () at main.cpp:8<br />
+8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw 100;<br />
+(gdb) c&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;-- 继续执行程序<br />
+Continuing.<br />
+next<br />
+<br />
+Catchpoint 1 (exception thrown), 0x00007ffff7e81762 in __cxa_throw ()<br />
+&nbsp;&nbsp; from /lib/x86_64-linux-gnu/libstdc++.so.6<br />
+(gdb) up<br />
+#1&nbsp; 0x0000555555555287 in main () at main.cpp:8<br />
+8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw 100;<br />
+(gdb)&nbsp;</p>
+如上所示，借助 catch 命令设置了一个捕获断点，该断点用于监控 throw int 事件，只要发生程序就会暂停执行。由此当程序执行时，其会暂停至 libstdc++ 库中的某个位置，借助 up 指令我们可以得知该异常发生在源代码文件中的位置。<br />
+<br />
+同理，我们也可以监控 main.cpp 程序中发生的&nbsp; catch event 事件：
+<p class="info-box">
+(gdb) catch catch int<br />
+Catchpoint 1 (catch)<br />
+(gdb) r<br />
+Starting program: ~/demo/main.exe<br />
+<br />
+Catchpoint 1 (exception caught), 0x00007ffff7e804d3 in __cxa_begin_catch ()<br />
+&nbsp;&nbsp; from /lib/x86_64-linux-gnu/libstdc++.so.6<br />
+(gdb) up<br />
+#1&nbsp; 0x00005555555552d0 in main () at main.cpp:9<br />
+9&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }catch(int e){<br />
+(gdb) c<br />
+Continuing.<br />
+next<br />
+<br />
+Catchpoint 1 (exception caught), 0x00007ffff7e804d3 in __cxa_begin_catch ()<br />
+&nbsp;&nbsp; from /lib/x86_64-linux-gnu/libstdc++.so.6<br />
+(gdb) up<br />
+#1&nbsp; 0x00005555555552d0 in main () at main.cpp:9<br />
+9&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }catch(int e){<br />
+(gdb)</p>
+<br />
+甚至于，在个别场景中，还可以使用 catch 命令监控 C、C++ 程序动态库的加载和卸载。就以 main.exe 为例，其运行所需加载的动态库可以使用 ldd 命令查看，例如：
+<p class="info-box">
+[root@bogon demo]# ldd main.exe<br />
+linux-vdso.so.1 =&gt;&nbsp; (0x00007fffbc1ff000)<br />
+libstdc++.so.6 =&gt; /usr/lib64/libstdc++.so.6 (0x0000003e75000000)<br />
+libm.so.6 =&gt; /lib64/libm.so.6 (0x00000037eee00000)<br />
+libgcc_s.so.1 =&gt; /lib64/libgcc_s.so.1 (0x0000003e74c00000)<br />
+libc.so.6 =&gt; /lib64/libc.so.6 (0x00000037ee200000)<br />
+/lib64/ld-linux-x86-64.so.2 (0x00000037eda00000)</p>
+<br />
+就以监控 libstdc++.so.6 为例，在 GDB 调试器中，通过执行如下指令，即可监控该动态库的加载：
+<p class="info-box">
+(gdb) catch load libstdc++.so.6<br />
+Catchpoint 1 (load)<br />
+(gdb) r<br />
+Starting program: ~/demo/main.exe<br />
+<br />
+Catchpoint 1<br />
+&nbsp; Inferior loaded /lib/x86_64-linux-gnu/libstdc++.so.6<br />
+&nbsp;&nbsp;&nbsp; /lib/x86_64-linux-gnu/libgcc_s.so.1<br />
+&nbsp;&nbsp;&nbsp; /lib/x86_64-linux-gnu/libc.so.6<br />
+&nbsp;&nbsp;&nbsp; /lib/x86_64-linux-gnu/libm.so.6<br />
+0x00007ffff7fd37a5 in ?? () from /lib64/ld-linux-x86-64.so.2</p>
+<blockquote>
+<p>
+以上实例仅演示了 catch 命令的用法，而 tcatch 命令的语法格式和 catch 完全相同，读者可自行尝试使用 tcatch 命令，观察它的功能。</p>
+</blockquote>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="6116.html" title="Java递归算法" target="_blank">Java递归算法</a></li>
+<li><a href="7823.html" title="MySQL游标（Cursor）的定义及使用" target="_blank">MySQL游标（Cursor）的定义及使用</a></li>
+<li><a href="8114.html" title="VS Code运行C和C++程序" target="_blank">VS Code运行C和C++程序</a></li>
+<li><a href="../mongodb2/relationship.html" title="MongoDB关系：文档之间的关联" target="_blank">MongoDB关系：文档之间的关联</a></li>
+<li><a href="../matplotlib/sactter.html" title="Python Matplotlib散点图" target="_blank">Python Matplotlib散点图</a></li>
+<li><a href="../hibernate/mapping.html" title="Hibernate关联映射（非常详细）" target="_blank">Hibernate关联映射（非常详细）</a></li>
+<li><a href="../spring_mvc/9667.html" title="Spring MVC是什么" target="_blank">Spring MVC是什么</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8199;
+window.arcId = "a562xKFDmz6u6Noxh0ChReDH4BcocBrY7Vl3R5CuINSqIjVcXfYhhH39c6Q";
+window.typeidChain = "154";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/view/8191.html";
+window.nextPageURL = "/view/8255.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

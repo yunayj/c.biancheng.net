@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Go语言反射规则浅析</title>
+<meta name="description" content="前面讲解了 Value 和 Type 的基本概念，本节重点讲解反射对象 Value、Type 和类型实例之间的相互转化。实例、Value、Type 三者之间的转换关系如下图所示。 图：反射对象关系 反射 API 反射" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../golang/golang.html">Go语言</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href='../golang/intro/intro.html'>Go语言简介</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href='../golang/syntax/syntax.html'>Go语言基本语法</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href='../golang/container/container.html'>Go语言容器</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href='../golang/flow_control/flow_control.html'>流程控制</a>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href='../golang/func/func.html'>Go语言函数</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href='../golang/struct/struct.html'>Go语言结构体</a>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href='../golang/interface/interface.html'>Go语言接口</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href='../golang/package/package.html'>Go语言包（package）</a>
+</dd>
+<dd>
+<span class="channel-num">9</span>
+<a href='../golang/concurrent/concurrent.html'>Go语言并发</a>
+</dd>
+<dd class="this"> <span class="channel-num">10</span> <a href="../golang/reflect/reflect.html">Go语言反射</a> </dd><dl class="dl-sub"><dd>10.1 <a href="4407.html">Go语言反射（reflection）</a></dd><dd>10.2 <a href="5131.html">Go语言反射规则浅析</a></dd><dd>10.3 <a href="vip_7358.html">反射——性能和灵活性的双刃剑</a><span class="iconfont iconfont-vip2"></span></dd><dd>10.4 <a href="109.html">通过反射获取类型信息</a></dd><dd>10.5 <a href="110.html">通过反射获取指针指向的元素类型</a></dd><dd>10.6 <a href="111.html">通过反射获取结构体的成员类型</a></dd><dd>10.7 <a href="112.html">Go语言结构体标签</a></dd><dd>10.8 <a href="113.html">通过反射获取值信息</a></dd><dd>10.9 <a href="114.html">通过反射访问结构体成员的值</a></dd><dd>10.10 <a href="115.html">判断反射值的空和有效性</a></dd><dd>10.11 <a href="116.html">通过反射修改变量的值</a></dd><dd>10.12 <a href="117.html">通过类型信息创建实例</a></dd><dd>10.13 <a href="118.html">通过反射调用函数</a></dd><dd>10.14 <a href="5132.html">Go语言inject库：依赖注入</a></dd></dl>
+<dd>
+<span class="channel-num">11</span>
+<a href='../golang/102/102.html'>Go语言文件处理</a>
+</dd>
+<dd>
+<span class="channel-num">12</span>
+<a href='../golang/build/build.html'>Go语言编译与工具</a>
+</dd>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../golang/golang.html">Go语言</a> &gt; <a href="../golang/reflect/reflect.html">Go语言反射</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Go语言反射规则浅析</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">反射是众多编程语言中的一个非常实用的功能，它是一种能够自描述、自控制的应用，Go语言也对反射提供了友好的支持。<br />
+<br />
+Go语言中使用反射可以在编译时不知道类型的情况下更新变量，在运行时查看值、调用方法以及直接对他们的布局进行操作。<br />
+<br />
+由于反射是建立在类型系统（type system）上的，所以我们先来复习一下Go语言中的类型。<br />
+<h2>
+Go语言中的类型</h2>
+Go语言是一门静态类型的语言，每个变量都有一个静态类型，类型在编译的时候确定下来。<br />
+<p class="info-box">
+type MyInt int<br />
+<br />
+var i int<br />
+var j MyInt</p>
+变量 i 的类型是 int，变量 j 的类型是 MyInt，虽然它们有着相同的基本类型，但静态类型却不一样，在没有类型转换的情况下，它们之间无法互相赋值。<br />
+<br />
+接口是一个重要的类型，它意味着一个确定的方法集合，一个接口变量可以存储任何实现了接口的方法的具体值（除了接口本身），例如 io.Reader 和 io.Writer：<br />
+<p class="info-box">
+// Reader is the interface that wraps the basic Read method.<br />
+type Reader interface {<br />
+&nbsp;&nbsp;&nbsp; Read(p []byte) (n int, err error)<br />
+}<br />
+<br />
+// Writer is the interface that wraps the basic Write method.<br />
+type Writer interface {<br />
+&nbsp;&nbsp;&nbsp; Write(p []byte) (n int, err error)<br />
+}</p>
+如果一个类型声明实现了 Reader（或 Writer）方法，那么它便实现了 io.Reader（或 io.Writer），这意味着一个 io.Reader 的变量可以持有任何一个实现了 Read 方法的的类型的值。<br />
+<p class="info-box">
+var r io.Reader<br />
+r = os.Stdin<br />
+r = bufio.NewReader(r)<br />
+r = new(bytes.Buffer)<br />
+// and so on</p>
+必须要弄清楚的一点是，不管变量 r 中的具体值是什么，r 的类型永远是 io.Reader，由于Go语言是静态类型的，r 的静态类型就是 io.Reader。<br />
+<br />
+在接口类型中有一个极为重要的例子&mdash;&mdash;空接口：<br />
+<p class="info-box">
+interface{}</p>
+它表示了一个空的方法集，一切值都可以满足它，因为它们都有零值或方法。<br />
+<br />
+有人说Go语言的接口是动态类型，这是错误的，它们都是静态类型，虽然在运行时中，接口变量存储的值也许会变，但接口变量的类型是不会变的。我们必须精确地了解这些，因为反射与接口是密切相关的。<br />
+<br />
+关于接口我们就介绍到这里，下面我们看看Go语言的反射三定律。<br />
+<h2>
+反射第一定律：反射可以将&ldquo;接口类型变量&rdquo;转换为&ldquo;反射类型对象&rdquo;</h2>
+<p class="tip-box">
+注：这里反射类型指 reflect.Type 和 reflect.Value。</p>
+从使用方法上来讲，反射提供了一种机制，允许程序在运行时检查接口变量内部存储的 (value, type) 对。<br />
+<br />
+在最开始，我们先了解下 reflect 包的两种类型 Type 和 Value，这两种类型使访问接口内的数据成为可能，它们对应两个简单的方法，分别是 reflect.TypeOf 和 reflect.ValueOf，分别用来读取接口变量的 reflect.Type 和 reflect.Value 部分。<br />
+<br />
+当然，从 reflect.Value 也很容易获取到 reflect.Type，目前我们先将它们分开。<br />
+<br />
+首先，我们下看 reflect.TypeOf：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+)
+
+func main() {
+    var x float64 = 3.4
+    fmt.Println(&quot;type:&quot;, reflect.TypeOf(x))
+}</pre>
+运行结果如下：
+<p class="info-box">
+type: float64</p>
+大家可能会疑惑，为什么没看到接口？这段代码看起来只是把一个 float64 类型的变量 x 传递给 reflect.TypeOf 并没有传递接口。其实在 reflect.TypeOf 的函数签名里包含一个空接口：<br />
+<p class="info-box">
+// TypeOf returns the reflection Type of the value in the interface{}.<br />
+func TypeOf(i interface{}) Type</p>
+我们调用 reflect.TypeOf(x) 时，x 被存储在一个空接口变量中被传递过去，然后 reflect.TypeOf 对空接口变量进行拆解，恢复其类型信息。<br />
+<br />
+函数 reflect.ValueOf 也会对底层的值进行恢复：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+)
+
+func main() {
+    var x float64 = 3.4
+    fmt.Println(&quot;value:&quot;, reflect.ValueOf(x))
+}</pre>
+运行结果如下：
+<p class="info-box">
+value: 3.4</p>
+类型 reflect.Type 和 reflect.Value 都有很多方法，我们可以检查和使用它们，这里我们举几个例子。<br />
+<br />
+类型 reflect.Value 有一个方法 Type()，它会返回一个 reflect.Type 类型的对象。<br />
+<br />
+Type 和 Value 都有一个名为 Kind 的方法，它会返回一个常量，表示底层数据的类型，常见值有：Uint、Float64、Slice 等。<br />
+<br />
+Value 类型也有一些类似于 Int、Float 的方法，用来提取底层的数据：
+<ul>
+<li>
+Int 方法用来提取 int64</li>
+<li>
+Float 方法用来提取 float64，示例代码如下：</li>
+</ul>
+<pre class="go">
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+)
+
+func main() {
+    var x float64 = 3.4
+    v := reflect.ValueOf(x)
+    fmt.Println(&quot;type:&quot;, v.Type())
+    fmt.Println(&quot;kind is float64:&quot;, v.Kind() == reflect.Float64)
+    fmt.Println(&quot;value:&quot;, v.Float())
+}</pre>
+运行结果如下：
+<p class="info-box">
+type: float64<br />
+kind is float64: true<br />
+value: 3.4</p>
+还有一些用来修改数据的方法，比如 SetInt、SetFloat。在介绍它们之前，我们要先理解&ldquo;可修改性&rdquo;（settability），这一特性会在下面进行详细说明。<br />
+<br />
+反射库提供了很多值得列出来单独讨论的属性，下面就来介绍一下。<br />
+<br />
+首先是介绍下 Value 的 getter 和 setter 方法，为了保证 API 的精简，这两个方法操作的是某一组类型范围最大的那个。比如，处理任何含符号整型数，都使用 int64，也就是说 Value 类型的 Int 方法返回值为 int64 类型，SetInt 方法接收的参数类型也是 int64 类型。实际使用时，可能需要转化为实际的类型：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+)
+
+func main() {
+    var x uint8 = &#39;x&#39;
+    v := reflect.ValueOf(x)
+    fmt.Println(&quot;type:&quot;, v.Type())                            // uint8.
+    fmt.Println(&quot;kind is uint8: &quot;, v.Kind() == reflect.Uint8) // true.
+    x = uint8(v.Uint())                                       // v.Uint returns a uint64.
+}</pre>
+运行结果如下：
+<p class="info-box">
+type: uint8<br />
+kind is uint8: true</p>
+其次，反射对象的 Kind 方法描述的是基础类型，而不是静态类型。如果一个反射对象包含了用户定义类型的值，如下所示：<br />
+<p class="info-box">
+type MyInt int<br />
+var x MyInt = 7<br />
+v := reflect.ValueOf(x)</p>
+上面的代码中，虽然变量 v 的静态类型是 MyInt，而不是 int，但 Kind 方法仍然会返回 reflect.Int。换句话说 Kind 方法不会像 Type 方法一样区分 MyInt 和 int。<br />
+<h2>
+反射第二定律：反射可以将&ldquo;反射类型对象&rdquo;转换为&ldquo;接口类型变量&rdquo;</h2>
+和物理学中的反射类似，Go语言中的反射也能创造自己反面类型的对象。<br />
+<br />
+根据一个 reflect.Value 类型的变量，我们可以使用 Interface 方法恢复其接口类型的值。事实上，这个方法会把 type 和 value 信息打包并填充到一个接口变量中，然后返回。<br />
+<br />
+其函数声明如下：<br />
+<p class="info-box">
+// Interface returns v&#39;s value as an interface{}.<br />
+func (v Value) Interface() interface{}</p>
+然后，我们可以通过断言，恢复底层的具体值：<br />
+<p class="info-box">
+y := v.Interface().(float64) // y will have type float64.<br />
+fmt.Println(y)</p>
+上面这段代码会打印出一个 float64 类型的值，也就是反射类型变量 v 所代表的值。<br />
+<br />
+事实上，我们可以更好地利用这一特性，标准库中的 fmt.Println 和 fmt.Printf 等函数都接收空接口变量作为参数，fmt 包内部会对接口变量进行拆包，因此 fmt 包的打印函数在打印 reflect.Value 类型变量的数据时，只需要把 Interface 方法的结果传给格式化打印程序：<br />
+<p class="info-box">
+fmt.Println(v.Interface())</p>
+为什么不直接使用 fmt.Println(v)？因为 v 的类型是 reflect.Value，我们需要的是它的具体值，由于值的类型是 float64，我们也可以用浮点格式化打印它：<br />
+<p class="info-box">
+fmt.Printf(&quot;value is %7.1e\n&quot;, v.Interface())</p>
+运行结果如下：
+<p class="info-box">
+3.4e+00</p>
+同样，这次也不需要对 v.Interface() 的结果进行类型断言，空接口值内部包含了具体值的类型信息，Printf 函数会恢复类型信息。<br />
+<br />
+简单来说 Interface 方法和 ValueOf 函数作用恰好相反，唯一一点是，返回值的静态类型是 interface{}。<br />
+<br />
+Go的反射机制可以将&ldquo;接口类型的变量&rdquo;转换为&ldquo;反射类型的对象&rdquo;，然后再将&ldquo;反射类型对象&rdquo;转换过去。<br />
+<h2>
+反射第三定律：如果要修改&ldquo;反射类型对象&rdquo;其值必须是&ldquo;可写的&rdquo;</h2>
+这条定律很微妙，也很容易让人迷惑，但是如果从第一条定律开始看，应该比较容易理解。<br />
+<br />
+下面这段代码虽然不能正常工作，但是非常值得研究：<br />
+<p class="info-box">
+var x float64 = 3.4<br />
+v := reflect.ValueOf(x)<br />
+v.SetFloat(7.1) // Error: will panic</p>
+如果运行这段代码，它会抛出一个奇怪的异常：<br />
+<p class="info-box">
+panic: reflect: reflect.flag.mustBeAssignable using unaddressable value</p>
+这里问题不在于值<code style="font-size: 14px;">7.1&nbsp;</code>不能被寻址，而是因为变量 v 是&ldquo;不可写的&rdquo;，&ldquo;可写性&rdquo;是反射类型变量的一个属性，但不是所有的反射类型变量都拥有这个属性。<br />
+<br />
+我们可以通过 CanSet 方法检查一个 reflect.Value 类型变量的&ldquo;可写性&rdquo;，对于上面的例子，可以这样写：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+)
+
+func main() {
+    var x float64 = 3.4
+    v := reflect.ValueOf(x)
+    fmt.Println(&quot;settability of v:&quot;, v.CanSet())
+}</pre>
+运行结果如下：<br />
+<p class="info-box">
+settability of v: false</p>
+对于一个不具有&ldquo;可写性&rdquo;的 Value 类型变量，调用 Set 方法会报出错误。<br />
+<br />
+首先我们要弄清楚什么是&ldquo;可写性&rdquo;，&ldquo;可写性&rdquo;有些类似于寻址能力，但是更严格，它是反射类型变量的一种属性，赋予该变量修改底层存储数据的能力。&ldquo;可写性&rdquo;最终是由一个反射对象是否存储了原始值而决定的。<br />
+<br />
+示例代码如下：<br />
+<p class="info-box">
+var x float64 = 3.4<br />
+v := reflect.ValueOf(x)</p>
+这里我们传递给 reflect.ValueOf 函数的是变量 x 的一个拷贝，而非 x 本身，想象一下如果下面这行代码能够成功执行：<br />
+<p class="info-box">
+v.SetFloat(7.1)</p>
+如果这行代码能够成功执行，它不会更新 x，虽然看起来变量 v 是根据 x 创建的，相反它会更新 x 存在于反射对象 v 内部的一个拷贝，而变量 x 本身完全不受影响。这会造成迷惑，并且没有任何意义，所以是不合法的。&ldquo;可写性&rdquo;就是为了避免这个问题而设计的。<br />
+<br />
+这看起来很诡异，事实上并非如此，而且类似的情况很常见。考虑下面这行代码：<br />
+<p class="info-box">
+f(x)</p>
+代码中，我们把变量 x 的一个拷贝传递给函数，因此不期望它会改变 x 的值。如果期望函数 f 能够修改变量 x，我们必须传递 x 的地址（即指向 x 的指针）给函数 f，如下所示：<br />
+<p class="info-box">
+f(&amp;x)</p>
+反射的工作机制与此相同，如果想通过反射修改变量 x，就要把想要修改的变量的指针传递给反射库。<br />
+<br />
+首先，像通常一样初始化变量 x，然后创建一个指向它的反射对象，命名为 p：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+)
+
+func main() {
+    var x float64 = 3.4
+    p := reflect.ValueOf(&amp;x) // Note: take the address of x.
+    fmt.Println(&quot;type of p:&quot;, p.Type())
+    fmt.Println(&quot;settability of p:&quot;, p.CanSet())
+}</pre>
+运行结果如下：<br />
+<p class="info-box">
+type of p: *float64<br />
+settability of p: false</p>
+反射对象 p 是不可写的，但是我们也不像修改 p，事实上我们要修改的是 *p。为了得到 p 指向的数据，可以调用 Value 类型的 Elem 方法。Elem 方法能够对指针进行&ldquo;解引用&rdquo;，然后将结果存储到反射 Value 类型对象 v 中：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+)
+
+func main() {
+    var x float64 = 3.4
+    p := reflect.ValueOf(&amp;x) // Note: take the address of x.
+    v := p.Elem()
+    fmt.Println(&quot;settability of v:&quot;, v.CanSet())
+}</pre>
+运行结果如下：<br />
+<p class="info-box">
+settability of v: true</p>
+由于变量 v 代表 x， 因此我们可以使用 v.SetFloat 修改 x 的值：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+)
+
+func main() {
+    var x float64 = 3.4
+    p := reflect.ValueOf(&amp;x) // Note: take the address of x.
+    v := p.Elem()
+    v.SetFloat(7.1)
+    fmt.Println(v.Interface())
+    fmt.Println(x)
+}</pre>
+运行结果如下：
+<p class="info-box">
+7.1<br />
+7.1</p>
+反射不太容易理解，reflect.Type 和 reflect.Value 会混淆正在执行的程序，但是它做的事情正是编程语言做的事情。只需要记住：只要反射对象要修改它们表示的对象，就必须获取它们表示的对象的地址。<br />
+<h2>
+结构体</h2>
+我们一般使用反射修改结构体的字段，只要有结构体的指针，我们就可以修改它的字段。<br />
+<br />
+下面是一个解析结构体变量 t 的例子，用结构体的地址创建反射变量，再修改它。然后我们对它的类型设置了 typeOfT，并用调用简单的方法迭代字段。<br />
+<br />
+需要注意的是，我们从结构体的类型中提取了字段的名字，但每个字段本身是正常的 reflect.Value 对象。<br />
+<pre class="go">
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+)
+
+func main() {
+    type T struct {
+        A int
+        B string
+    }
+    t := T{23, &quot;skidoo&quot;}
+    s := reflect.ValueOf(&amp;t).Elem()
+    typeOfT := s.Type()
+    for i := 0; i &lt; s.NumField(); i++ {
+        f := s.Field(i)
+        fmt.Printf(&quot;%d: %s %s = %v\n&quot;, i,
+            typeOfT.Field(i).Name, f.Type(), f.Interface())
+    }
+}</pre>
+运行结果如下：
+<p class="info-box">
+0: A int = 23<br />
+1: B string = skidoo</p>
+T 字段名之所以大写，是因为结构体中只有可导出的字段是&ldquo;可设置&rdquo;的。<br />
+<br />
+因为 s 包含了一个可设置的反射对象，我们可以修改结构体字段：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+)
+
+func main() {
+    type T struct {
+        A int
+        B string
+    }
+    t := T{23, &quot;skidoo&quot;}
+    s := reflect.ValueOf(&amp;t).Elem()
+    s.Field(0).SetInt(77)
+    s.Field(1).SetString(&quot;Sunset Strip&quot;)
+    fmt.Println(&quot;t is now&quot;, t)
+}</pre>
+运行结果如下：
+<p class="info-box">
+t is now {77 Sunset Strip}</p>
+如果我们修改了程序让 s 由 t（而不是 &amp;t）创建，程序就会在调用 SetInt 和 SetString 的地方失败，因为 t 的字段是不可设置的。<br />
+<h2>
+总结</h2>
+反射规则可以总结为如下几条：
+<ul>
+<li>
+反射可以将&ldquo;接口类型变量&rdquo;转换为&ldquo;反射类型对象&rdquo;；</li>
+<li>
+反射可以将&ldquo;反射类型对象&rdquo;转换为&ldquo;接口类型变量&rdquo;；</li>
+<li>
+如果要修改&ldquo;反射类型对象&rdquo;，其值必须是&ldquo;可写的&rdquo;。</li>
+</ul>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="932.html" title="Shell脚本是什么" target="_blank">Shell脚本是什么</a></li>
+<li><a href="939.html" title="Java面向对象：对象的概念及面向对象的三个基本特征" target="_blank">Java面向对象：对象的概念及面向对象的三个基本特征</a></li>
+<li><a href="4033.html" title="Go语言复数" target="_blank">Go语言复数</a></li>
+<li><a href="6262.html" title="Javadoc（文档注释）详解" target="_blank">Javadoc（文档注释）详解</a></li>
+<li><a href="8530.html" title="VS2019使用教程（使用VS2019编写C语言程序）" target="_blank">VS2019使用教程（使用VS2019编写C语言程序）</a></li>
+<li><a href="ptrbj3c.html" title="Java标识符命名规范" target="_blank">Java标识符命名规范</a></li>
+<li><a href="xtjfror.html" title="Shell是什么（入门必读）" target="_blank">Shell是什么（入门必读）</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 5131;
+window.arcId = "fd8fGPmTrV1YL/L06k8om0m316115WOm9t8EJF5vcXefkdiXDqrgSZ3bMFA";
+window.typeidChain = "13|1";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/view/4407.html";
+window.nextPageURL = "/view/vip_7358.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>GPG（GnuPG）的安装和使用</title>
+<meta name="description" content="基于网络的开源项目，能给用户带来在公共标准基础上的自由发挥，并且能很好地给每个自愿人士提供了共享贡献的机会。但是，同时也因为大众化给使用共享的程序员或团队带来了安" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>GPG（GnuPG）的安装和使用</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">基于网络的开源项目，能给用户带来在公共标准基础上的自由发挥，并且能很好地给每个自愿人士提供了共享贡献的机会。但是，同时也因为大众化给使用共享的程序员或团队带来了安全性问题。<br />
+<br />
+当程序员从中央仓库下载第三方构件的时候，下载的文件有可能被另外一个人篡改过，从而破坏代码。为了确定下载的内容是正确的，一般在发布自己构件的同时，还会发布一个签名认证文件。<br />
+<br />
+使用者在使用下载的第三方构件前，先通过签名验证后，确定没有被篡改后再安心使用。GPG 就是这样一个认证签名技术。<br />
+<br />
+接下来就介绍如何使用 GPG 技术，为发布的 <a href='https://m.biancheng.net/maven/' target='_blank'>Maven</a> 构件签名，从而提高项目的安全性。<br />
+<br />
+GnuPG，简称 GPG，来自 <a href="http://www.gnupg.org" target="_blank">http://www.gnupg.org</a>，是 GPG 标准的一个免费实现。不管是 Linux 还是 Windows 平台，都可以使用。GPGneng 可以为文件生成签名、管理密匙以及验证签名。<br />
+<br />
+下面介绍如何使用 GPG 实现文件签名，并验证签名文件。
+<h2>
+	<span style="font-size: 14px; font-weight: normal;">下载安装 GPG：访问 </span><a href="http://www.gnupg.org/download" style="font-size: 14px; font-weight: normal;" target="_blank">http://www.gnupg.org/download</a><span style="font-size: 14px; font-weight: normal;">，下载适合自己操作系统平台的安装程序。这里下载的是 Windows 平台的 gpg4win-2.3.3.exe。</span></h2>
+安装完成后，打开 CMD 窗口，输入<code>gpg --version</code>，出现如图 1 信息表示安装成功：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="显示结果" src="../uploads/allimg/190807/5-1ZPG5050C37_2.png" /><br />
+	图 1&nbsp; 显示结果</div>
+<br />
+生成密钥对：在使用 GPG 之前，先要准备一个密钥对，即一个私钥，一个公钥。这样才能使用私钥对文件进行签名，将公钥分发到公钥服务器供其他用户下载，其他用户就可以使用公钥对签名进行验证。<br />
+<br />
+在 CMD 命令行中，输入<code>gpg --gen-key</code>命令生成密钥对。<br />
+<br />
+在 GPG 执行过程中会提示如下几个信息。<br />
+<br />
+生成密钥类型，如图 2 所示。
+<div style="text-align: center;">
+	<img alt="生成密钥类型" src="../uploads/allimg/190807/5-1ZPG51555109_2.png" /><br />
+	图 2&nbsp;&nbsp;生成密钥类型</div>
+通过输入 1 或直接按 Enter 键（默认），选择第 1 项。<br />
+<br />
+RSA keys 的大小，如图 3 所示。
+<div style="text-align: center;">
+	<img alt="RSA keys 的大小" src="../uploads/allimg/190807/5-1ZPG51J1W9_2.png" /><br />
+	图 3&nbsp;&nbsp;RSA keys 的大小</div>
+<br />
+输入一个介于 1024 到 4096 之间的整数，或直接按 Enter 键（默认 2048）。这里直接按 Enter键，选择的是 2048。<br />
+<br />
+密钥有效期，如图 4 所示。
+<div style="text-align: center;">
+	<img alt="密钥有效期" src="../uploads/allimg/190807/5-1ZPG5193bE_2.png" /><br />
+	图 4&nbsp;&nbsp;密钥有效期</div>
+<br />
+输入密钥有效时长，默认是 0，表示永不过期，输入一个数字 n，表示有效期为 n 天，当然也可以输入 nw、nm、ny，分别表示 n 周、n 月和 n 年。这里选择的是直接按 Enter 键，表示永不过期。<br />
+<br />
+提示前面的选择是否正确（是否确认）。输入 y，表示确认；输入 n，表示要重新输入有效期。接下来的信息，是为了生成 GPG 唯一用户 ID 的信息。<br />
+<br />
+输入开发者或团队名，如图 5 所示。
+<div style="text-align: center;">
+	<img alt="输入开发者或团队名" src="../uploads/allimg/190807/5-1ZPG5212a50_2.png" /><br />
+	图 5&nbsp;&nbsp;输入开发者或团队名</div>
+<ul>
+	<li>
+		作为演示，这里输入 mengma。</li>
+	<li>
+		联系邮箱地址输入 1164574028@qq.com。</li>
+	<li>
+		备注输入：this is a demo for maven。</li>
+</ul>
+<br />
+这时候会提示如下信息，显示生成的 USER-ID，如图 6 所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="生成的 USER-ID" src="../uploads/allimg/190807/5-1ZPG52Z4242_2.png" /><br />
+	图 6&nbsp;&nbsp;生成的 USER-ID</div>
+<br />
+中间 mengma（this is a demo for maven）＜1164574028@qq.com＞为使用者 ID。<br />
+<br />
+修改生成 USER-ID 的信息：
+<ul>
+	<li>
+		输入 N、C、E，分别用来修改名称、备注和邮件地址信息。</li>
+	<li>
+		输入 Q 表示退出。</li>
+	<li>
+		输入 O 表示进入下一步。</li>
+</ul>
+<br />
+这里输入 O，按 Enter 键。输入私钥密码：这里输入自己的密码作为演示，输入的 12345678。接下来 GPG 会提示如图 7 信息，表示密钥对已经生成。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="GPG提示信息" src="../uploads/allimg/190807/5-1ZPG53602R6_2.png" /><br />
+	图 7&nbsp;&nbsp;GPG提示信息</div>
+<br />
+查看公钥和私钥信息：在 CMD 命令行窗口中输入<code>gpg --list-keys</code>，查看本地公钥信息，列表如图 8 所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="本地公钥信息" src="../uploads/allimg/190807/5-1ZPG54125523_2.png" /><br />
+	图 8&nbsp;&nbsp;本地公钥信息</div>
+<br />
+第一行显示公钥文件和所在的位置。<br />
+<ul>
+	<li>
+		pub 行描述的是公钥大小（2048）／公钥 id（DDAAB5A8），公钥产生日期（2019-08-07）。</li>
+	<li>
+		uid 行描述的是由名称、备注和邮件地址组成的字符串。</li>
+	<li>
+		sub 行表述的是公钥的子钥（可以不用关心）。</li>
+</ul>
+<br />
+在 CMD 命令行窗口中输入<code>gpg --list-secret-keys</code>，查看本地私钥信息，列表如下图 9 所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="本地私钥信息" src="../uploads/allimg/190807/5-1ZPG5464U54_2.png" /><br />
+	图 9&nbsp;&nbsp;本地私钥信息</div>
+<br />
+第一行显示密钥文件和所在的位置。<br />
+<ul>
+	<li>
+		sec 行描述的是密钥大小（2048）、id（DDAAB5A8）和产生日期（2019-08-07）。</li>
+	<li>
+		uid 行描述的是由名称、备注和邮件地址组成的字符串。</li>
+	<li>
+		ssb 行描述的是密钥的子钥（可以不用关心）。</li>
+</ul>
+<br />
+给文件创建签名文件：打开 CMD 命令行窗口，切换到 IMvnDemoDAO.java 文件所在的目录。输入 gpg-ab IMvnDemoDAO.java 命令，再输入前面生成密钥时输入的密码 12345678，会在当前目录下生成一个名叫 I MvnDemoDAO.java.asc 的签名文件。<br />
+<br />
+分发公钥文件：为了让用户能方便地获取公钥文件，对下载的文件进行验证，需要将公钥文件发布到公共的公钥服务器上，如 hkp://pgp.mit.edu 是美国麻省理工学院提供的公钥服务器。<br />
+<br />
+打开 CMD 命令行窗口，将目录切换到公钥文件所在的目录，输入如下命令将公钥文件分发到公钥服务器。
+<p class="info-box">
+	gpg --keyserver hkp://pgp.mit.edu --send-keys DDAAB5A8</p>
+&ldquo;hkp://pgp.mit.edu&rdquo;是公钥服务器名称。DDAAB5A8 是要发布的公钥 id（前面生成的密钥对中的公钥）。<br />
+<br />
+显示如下信息，表示发布成功。
+<p class="info-box">
+	gpg: sending key DDAAB5A8 to hkp server pgp.mit.edu</p>
+有一点需要说明的是，只需往一台服务器上发布公钥就行，其他公钥服务器会自动同步。<br />
+<br />
+导入公钥服务器上的公钥：为了验证下载的文件是否准确，需要先从公钥服务器上下载对应的公钥，导入本地 GPG 服务器中，才能使用 GPG 完成对下载文件的验证。<br />
+<br />
+在 CMD 命令行窗口中输入<code>gpg--keyserver hkp://pgp.mit.edu--recv-keys DDAAB5A8</code>&nbsp;，下载 DDAAB5A8&nbsp;对应的公钥。<br />
+<br />
+注：因为本地已经有这个公钥，所有下载后提示没有改变。<br />
+<br />
+使用公钥验证下载的文件：打开 CMD 命令行窗口，切换到下载文件所在的目录（原始文件和签名文件），输入命令如下：
+<p class="info-box">
+	gpg --verify IMvnDemoDAO.java.asc</p>
+使用签名验证 IMvnDemoDAO.java 文件。<br />
+<br />
+到现在为止，已经完成了 GPG 的安装、签名、分发和验证的流程。以后的 Maven 项目就可以直接使用现在生成的密钥对发布文件签名。<br />
+<br />
+可继续阅读教程《<a href="https://m.biancheng.net/view/4849.html" target="_blank">Maven使用GPG对文件进行签名加密</a>》学习如何基于 Maven 的 GPG 插件自动完成构件签名。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="3371_2.html" title="三元组顺序表，稀疏矩阵的三元组表示及（C语言）实现" target="_blank">三元组顺序表，稀疏矩阵的三元组表示及（C语言）实现</a></li>
+<li><a href="6458_2.html" title="为什么建议使用虚拟机来安装Linux？" target="_blank">为什么建议使用虚拟机来安装Linux？</a></li>
+<li><a href="vip_7360_2.html" title="Go语言从INI配置文件中读取需要的值" target="_blank">Go语言从INI配置文件中读取需要的值</a></li>
+<li><a href="../numpy/byte-swap_2.html" title="NumPy字节交换" target="_blank">NumPy字节交换</a></li>
+<li><a href="9377_2.html" title="JS Ajax请求（简明教程）" target="_blank">JS Ajax请求（简明教程）</a></li>
+<li><a href="x0wlqcx_2.html" title="Go语言映射（map）的创建和使用" target="_blank">Go语言映射（map）的创建和使用</a></li>
+<li><a href="jtwy2ig_2.html" title="PHP变量详解" target="_blank">PHP变量详解</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 4832;
+window.arcId = "48ecuKTvJlcJMoIhil+ZxAb3rwoBPTrqJlz0GQaU70w766ain2yrFWHVgnE";
+window.typeidChain = "192|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="https://m.biancheng.net/templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C语言求回文数（详解版）</title>
+<meta name="description" content="问题描述 打印所有不超过n（取n256）的其平方具有对称性质的数（也称回文数）。 问题分析 对于要判定的数n计算出其平方后（存于a），按照回文数的定义要将最高位与最低位、次高位" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C语言求回文数（详解版）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body"><h2>
+问题描述</h2>
+打印所有不超过n（取n&lt;256）的其平方具有对称性质的数（也称回文数）。
+<h2>
+问题分析</h2>
+对于要判定的数n计算出其平方后（存于a），按照&ldquo;回文数&rdquo;的定义要将最高位与最低位、次高位与次低位&hellip;&hellip;进行比较，若彼此相等则为回文数。此算法需要知道平方数的位数，再一一将每一位分解、比较，此方法对于位数已知且位数不是太多的数来说比较适用。<br />
+<br />
+此问题可借助数组来解决。将平方后的（a的）每一位进行分解，按从低位到高位的顺序依次暂存到数组中，再将数组中的元素按照下标从大到小的顺序重新将其组合成一个数众（如n=15，则a=225且k=522），若k等于n&times;n则可判定n为回文数。
+<h2>
+算法设计</h2>
+从低位到高位将某一整数拆分。对于一个整数（设变量名为a）无论其位数多少，若欲将最低位拆分，只需对10进行求模运算a%10，拆分次低位首先要想办法将原来的次低位作为最低位来处理，用原数对10求商可得到由除最低位之外的数形成的新数，且新数的最低位是原数的次低位，根据拆分最低位的方法将次低位求出a/10、a%10，对于其他位上的数算法相同。<br />
+<br />
+利用这个方法要解决的一个问题就是，什么情况下才算把所有数都拆分完？当拆分到只剩原数最高位时（即新数为个位数时），再对10求商的话，得到的结果肯定为0，可以通过这个条件判断是否拆分完毕。根据题意，应将每次拆分出来的数据存储到数组中，原数的最低位存到下标为0的位置，次低位存到下标为1的位置&hellip;&hellip;依次类推。<br />
+<br />
+程序段如下：
+<pre class="cpp">
+for (i=0; a!=0; i++)
+{
+    m[i] = a % 10;
+    a /= 10;
+}</pre>
+将数组中元素重新组合成一新数。拆分时变量a的最高位仍然存储在数组中下标最大的位置，根据&ldquo;回文数&rdquo;定义，新数中数据的顺序与a中数据的顺序相反，所以我们按照下标从大到小的顺序分别取出数组中的元素组成新数k，由几个数字组成一个新数时只需用每一个数字乘以所在位置对应的权值然后相加即可，在编程过程中应该有一个变量t来存储每一位对应的权值，个位权值为1，十位权值为10，百位权值为100&hellip;&hellip;，所以可以利用循环，每循环一次t的值就扩大10倍。对应程序段如下：
+<pre class="cpp">
+for( ; i&gt;0; i--)
+{
+    k += m[i-l] * t;
+    t *= 10;
+}</pre>
+<br />
+下面是完整的代码：
+<pre class="cpp">
+#include&lt;stdio.h&gt;
+int main()
+{
+    int m[16], n, i, t, count=0;
+    long unsigned a, k;
+    printf(&quot;No.    number     it&#39;s square(palindrome)\n&quot;);
+    for( n=1; n&lt;256; n++ )  /*穷举n的取值范围*/
+    {
+        k=0; t=1; a=n*n;  /*计算n的平方*/
+        for( i=0; a!=0; i++ )  /*从低到高分解数a的每一位存于数组m[1]~m[16]*/
+        {
+            m[i] = a % 10;
+            a /= 10;
+        }
+        for(; i&gt;0; i--)
+        {
+            k += m[i-1] * t;  /*t记录某一位置对应的权值 */
+            t *= 10;
+        }
+        if(k == n*n)
+            printf(&quot;%2d%10d%10d\n&quot;, ++count, n, n*n);
+    }
+    return 0;
+}</pre>
+运行结果：
+<pre class="info-box">
+No.    number     it&#39;s square(palindrome)
+ 1         1         1
+ 2         2         4
+ 3         3         9
+ 4        11       121
+ 5        22       484
+ 6        26       676
+ 7       101     10201
+ 8       111     12321
+ 9       121     14641
+10       202     40804
+11       212     44944</pre>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="34.html" title="Go语言sync.Map（在并发环境中使用的map）" target="_blank">Go语言sync.Map（在并发环境中使用的map）</a></li>
+<li><a href="1432.html" title="C++结构体数组（无师自通）" target="_blank">C++结构体数组（无师自通）</a></li>
+<li><a href="2332.html" title="C++ throw（抛出异常）详解" target="_blank">C++ throw（抛出异常）详解</a></li>
+<li><a href="7909.html" title="C++11 unique_ptr智能指针详解" target="_blank">C++11 unique_ptr智能指针详解</a></li>
+<li><a href="../maven2/coordinate.html" title="Maven坐标" target="_blank">Maven坐标</a></li>
+<li><a href="../spring_boot/yaml.html" title="YAML教程（快速入门版）" target="_blank">YAML教程（快速入门版）</a></li>
+<li><a href="../jstl/sql-dateparam.html" title="&lt;sql:dateParam&gt;标签" target="_blank">&lt;sql:dateParam&gt;标签</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 505;
+window.arcId = "4068cNiWnSvBGo5U6LFJl191rRjPu/ZZNjHxHT6K+l1jbkGlBKE9aUfdAg";
+window.typeidChain = "66|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

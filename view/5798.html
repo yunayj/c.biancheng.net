@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>JS实现倒计时功能</title>
+<meta name="description" content="本示例设计一个倒计时显示牌，实现方法：用结束时间减去现在时，获取时间差，再利用数学方法从时间差中分别获取日，时、分、秒等信息，最后通过定时器设置每秒执行一次，实现" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>JS实现倒计时功能</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">本示例利用 <a href='../js/js.html' target='_blank'>JavaScript</a> 设计一个倒计时显示牌，实现方法：用结束时间减去现在时，获取时间差，再利用数学方法从时间差中分别获取日，时、分、秒等信息，最后通过定时器设置每秒执行一次，实现实时更新。
+<h4>
+【操作步骤】</h4>
+1) 使用 new Date() 获取当前时间，使用 new 调用一个带有参数的 Date 对象，定义结束的时间，endtime=new Date(2020/8/8)。使用 getTime() 方法获取现在时和结束时距离 1970 年 1 月 1 日的毫秒数。然后，求两个时间差。<br />
+<br />
+把时间差转换为天数、小时数、分钟数和秒数显示。主要是用<code style="font-size: 14px;">%</code>取模运算。得到距离结束时间的毫秒数（剩余毫秒数），除以 1000 得到剩余秒数，再除以 60 得到剩余分钟数，再除以 60 得到剩余小时数。除以 24 得到剩余天数。剩余秒数 lefttime/1000 模 60 得到秒数，剩余分钟数 lefttime/(1000 * 60) 模 60 得到分钟数，剩余小时数 lefttime/(1000 * 60 * 60) 模 24 得到小时数。<br />
+<br />
+完整代码如下：
+<pre class="javascript">
+var showtime = function () {
+    var nowtime = new Date(),  //获取当前时间
+        endtime = new Date(&quot;2020/8/8&quot;);  //定义结束时间
+    var lefttime = endtime.getTime() - nowtime.getTime(),  //距离结束时间的毫秒数
+        leftd = Math.floor(lefttime/(1000*60*60*24)),  //计算天数
+        lefth = Math.floor(lefttime/(1000*60*60)%24),  //计算小时数
+        leftm = Math.floor(lefttime/(1000*60)%60),  //计算分钟数
+        lefts = Math.floor(lefttime/1000%60);  //计算秒数
+    return leftd + &quot;天&quot; + lefth + &quot;:&quot; + leftm + &quot;:&quot; + lefts;  //返回倒计时的字符串
+}</pre>
+<br />
+2) 使用定时器设计每秒钟调用倒计时函数一次。
+<pre class="javascript">
+var div = document.getElementById(&quot;showtime&quot;);
+setInterval (function () {
+    div.innerHTML = showtime();
+}, 1000);  //反复执行函数本身</pre>
+显示结果如下：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/190923/6-1Z923104912602.gif" /></div>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../mysql/dayofmonth.html" title="MySQL DAYOFMONTH函数：获取指定日期在一个月的位置" target="_blank">MySQL DAYOFMONTH函数：获取指定日期在一个月的位置</a></li>
+<li><a href="5479.html" title="JS void运算符" target="_blank">JS void运算符</a></li>
+<li><a href="6389.html" title="ARP报文格式详解" target="_blank">ARP报文格式详解</a></li>
+<li><a href="6394.html" title="Java super关键字详解" target="_blank">Java super关键字详解</a></li>
+<li><a href="vip_7318.html" title="Go语言通过内存缓存来提升性能" target="_blank">Go语言通过内存缓存来提升性能</a></li>
+<li><a href="7834.html" title="Django QueryDict对象" target="_blank">Django QueryDict对象</a></li>
+<li><a href="7984.html" title="GCC自动识别的文件扩展名（一览表）" target="_blank">GCC自动识别的文件扩展名（一览表）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 5798;
+window.arcId = "01bbRcFmkLEUy++DT9Omqm/iRdU6jwUvp7NaxC89Re/0B+TIzj6lJ+mn7Bk";
+window.typeidChain = "309|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

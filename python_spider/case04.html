@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Python爬虫抓取链家二手房数据</title>
+<meta name="description" content="本节使用 Python 爬虫库完成链家二手房（ https://bj.lianjia.com/ershoufang/rs/ ）房源信息抓取，包括楼层、区域、总价、单价等信息。在编写此程序的过程中，您将体会到 lxml 解析库的实际应用" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="../view/niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="python_spider.html">Python爬虫</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href="what-is-spider.html">网络爬虫是什么</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href="webpage.html">网页构成</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href="static-and-dynamic.html">静态网页和动态网页</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href="check-element.html">审查网页元素</a>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href="preparatory-work.html">学习前的准备工作</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href="the-first-spider.html">第一个Python爬虫程序</a>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href="user-agent.html">User-Agent用户代理</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href="useragent-pool.html">User-Agnet代理池</a>
+</dd>
+<dd>
+<span class="channel-num">9</span>
+<a href="url-coding.html">URL编码和解码</a>
+</dd>
+<dd>
+<span class="channel-num">10</span>
+<a href="crawl-webpage.html">[实例]爬虫抓取网页</a>
+</dd>
+<dd>
+<span class="channel-num">11</span>
+<a href="case01.html">[实例]抓取百度贴吧数据</a>
+</dd>
+<dd>
+<span class="channel-num">12</span>
+<a href="regexp-syntax.html">正则表达式语法</a>
+</dd>
+<dd>
+<span class="channel-num">13</span>
+<a href="re-module.html">Python re模块用法</a>
+</dd>
+<dd>
+<span class="channel-num">14</span>
+<a href="csv-module.html">Python csv模块</a>
+</dd>
+<dd>
+<span class="channel-num">15</span>
+<a href="case02.html">[实例]抓取猫眼电影排行榜</a>
+</dd>
+<dd>
+<span class="channel-num">16</span>
+<a href="pymysql.html">Python Pymysql存储数据</a>
+</dd>
+<dd>
+<span class="channel-num">17</span>
+<a href="case03.html">[实例]抓取多级页面数据</a>
+</dd>
+<dd>
+<span class="channel-num">18</span>
+<a href="requests.html">Python Requests库</a>
+</dd>
+<dd>
+<span class="channel-num">19</span>
+<a href="crawl-photo.html">[实例]抓取网络照片</a>
+</dd>
+<dd>
+<span class="channel-num">20</span>
+<a href="requests-args.html">Requests库方法和参数</a>
+</dd>
+<dd>
+<span class="channel-num">21</span>
+<a href="switchyomega.html">Proxy SwitchyOmeg</a>
+</dd>
+<dd>
+<span class="channel-num">22</span>
+<a href="xpath.html">Xpath简明教程</a>
+</dd>
+<dd>
+<span class="channel-num">23</span>
+<a href="xpath-helper.html">Xpath Helper安装使用</a>
+</dd>
+<dd>
+<span class="channel-num">24</span>
+<a href="lxml.html">Python lxml库</a>
+</dd>
+<dd>
+<span class="channel-num">25</span>
+<a href="lxml-case.html">[实例]Python lxml应用</a>
+</dd>
+<dd>
+<span class="channel-num">26</span>
+<a href="case04.html">[实例]抓取链家二手房数据</a>
+</dd>
+<dd>
+<span class="channel-num">27</span>
+<a href="capture-package.html">浏览器实现抓包</a>
+</dd>
+<dd>
+<span class="channel-num">28</span>
+<a href="case05.html">[实例]破解有道翻译</a>
+</dd>
+<dd>
+<span class="channel-num">29</span>
+<a href="case06.html">[实例]抓取动态加载数据</a>
+</dd>
+<dd>
+<span class="channel-num">30</span>
+<a href="json.html">Python json模块</a>
+</dd>
+<dd>
+<span class="channel-num">31</span>
+<a href="cookie-login.html">[实例]Cookie模拟登录</a>
+</dd>
+<dd>
+<span class="channel-num">32</span>
+<a href="multithreading.html">Python多线程爬虫</a>
+</dd>
+<dd>
+<span class="channel-num">33</span>
+<a href="bs4.html">Python BS4解析库</a>
+</dd>
+<dd>
+<span class="channel-num">34</span>
+<a href="case07.html">[实例]爬虫下载小说</a>
+</dd>
+<dd>
+<span class="channel-num">35</span>
+<a href="selenium.html">Selenium下载和安装</a>
+</dd>
+<dd>
+<span class="channel-num">36</span>
+<a href="selenium-using.html">Python Selenium用法</a>
+</dd>
+<dd>
+<span class="channel-num">37</span>
+<a href="selenium-case.html">[实例]Selenium实战应用</a>
+</dd>
+<dd>
+<span class="channel-num">38</span>
+<a href="scrapy.html">Python Scrapy爬虫框架</a>
+</dd>
+<dd>
+<span class="channel-num">39</span>
+<a href="scrapy-case.html">[实例]Scrapy框架应用</a>
+</dd>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="python_spider.html">Python爬虫</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Python爬虫抓取链家二手房数据</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">本节使用 Python 爬虫库完成链家二手房（<a href="https://bj.lianjia.com/ershoufang/rs/" target="_blank">https://bj.lianjia.com/ershoufang/rs/</a>）房源信息抓取，包括楼层、区域、总价、单价等信息。在编写此程序的过程中，您将体会到 lxml 解析库的实际应用。<br />
+<h2>
+编写程序流程分析</h2>
+打开链家网站后，第一步，确定网站是否为静态网站，通过在网页源码内搜索关键字的方法，可以确定其为静态网站；第二步，确定要抓取页面的 URL 规律，第三步，根据要抓取的数据确定 Xpath 表达式；最后一步，编写 Python 爬虫程序。<br />
+<br />
+通过简单的分析可知 URL 具有以下规律：
+<pre class="info-box">
+第一页：https://bj.lianjia.com/ershoufang/pg1/
+第二页：https://bj.lianjia.com/ershoufang/pg2/
+第三页：https://bj.lianjia.com/ershoufang/pg3/
+第n页：https://bj.lianjia.com/ershoufang/pgn/</pre>
+<h2>
+确定Xpath表达式</h2>
+使用 Chrome 开发者工具对页面元素进行审查，从而确定 Xpath 表达式。首先根据要抓取的数据确定&ldquo;基准表达式&rdquo;。通过审查一处房源的元素结构，可以得知房源信息都包含在以下代码中：
+<pre class="html">
+&lt;div class=&quot;info clear&quot;&gt;
+&lt;div class=&quot;title&quot;&gt;&lt;a class=&quot;&quot; href=&quot;https://bj.lianjia.com/ershoufang/101110713022.html&quot; target=&quot;_blank&quot;
+   data-log_index=&quot;1&quot; data-el=&quot;ershoufang&quot; data-housecode=&quot;101110713022&quot; data-is_focus=&quot;&quot; data-sl=&quot;&quot;&gt;玉竹园小区 满五唯一
+   楼层高 视野好&lt;/a&gt;&lt;span class=&quot;goodhouse_tag tagBlock&quot;&gt;必看好房&lt;/span&gt;&lt;/div&gt;
+&lt;div class=&quot;flood&quot;&gt;
+  &lt;div class=&quot;positionInfo&quot;&gt;&lt;span class=&quot;positionIcon&quot;&gt;&lt;/span&gt;&lt;a
+    href=&quot;https://bj.lianjia.com/xiaoqu/1111027382276/&quot; target=&quot;_blank&quot; data-log_index=&quot;1&quot;
+    data-el=&quot;region&quot;&gt;玉竹园 &lt;/a&gt; - &lt;a href=&quot;https://bj.lianjia.com/ershoufang/liangxiang/&quot;
+    target=&quot;_blank&quot;&gt;良乡&lt;/a&gt; &lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;address&quot;&gt;
+  &lt;div class=&quot;houseInfo&quot;&gt;&lt;span class=&quot;houseIcon&quot;&gt;&lt;/span&gt;2室1厅 | 88.62平米 | 北 南 | 简装 | 顶层(共6层) | 2004年建 | 板楼&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;followInfo&quot;&gt;&lt;span class=&quot;starIcon&quot;&gt;&lt;/span&gt;26人关注 / 7天以前发布&lt;/div&gt;
+&lt;div class=&quot;tag&quot;&gt;&lt;span class=&quot;subway&quot;&gt;近地铁&lt;/span&gt;&lt;span class=&quot;isVrFutureHome&quot;&gt;VR看装修&lt;/span&gt;&lt;span
+   class=&quot;taxfree&quot;&gt;房本满五年&lt;/span&gt;&lt;span class=&quot;haskey&quot;&gt;随时看房&lt;/span&gt;&lt;/div&gt;
+&lt;div class=&quot;priceInfo&quot;&gt;
+  &lt;div class=&quot;totalPrice&quot;&gt;&lt;span&gt;225&lt;/span&gt;万&lt;/div&gt;
+  &lt;div class=&quot;unitPrice&quot; data-hid=&quot;101110713022&quot; data-rid=&quot;1111027382276&quot; data-price=&quot;25390&quot;&gt;
+   &lt;span&gt;单价25390元/平米&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;</pre>
+<h4>
+1) 确定基准表达式</h4>
+待抓取的房源信息都包含在相应的 &lt;div&gt; 标签中，如下所示：
+<pre class="info-box">
+&lt;div class=&quot;positionInfo&quot;&gt;..&lt;/div&gt;
+&lt;div class=&quot;address&quot;&gt;...&lt;/div&gt;
+&lt;div class=&quot;priceInfo&quot;&gt;...&lt;/div&gt;</pre>
+而每个页面中都包含 30 个房源，因此我们要匹配以下节点的父节点或者先辈节点，从而确定 Xpath 基准表达式：
+<pre class="info-box">
+&lt;div class=&quot;info clear&quot;&gt;&lt;/div&gt;</pre>
+通过页面结构分析可以得出每页的 30 个房源信息全部包含以下节点中：
+<pre class="info-box">
+&lt;ul class=&quot;sellListContent&quot; log-mod=&quot;list&quot;&gt;
+&lt;li class=&quot;clear LOGVIEWDATA LOGCLICKDATA&quot;&gt;
+房源信息..
+&lt;/li&gt;
+&lt;/ul&gt;</pre>
+接下来，使用调试工具定位上述元素，然后滚动鼠标滑。这时候神奇的一幕出现了，你会发现<code style="font-size: 14px;">li</code>标签的<code style="font-size: 14px;">class</code>属性值发生了变化，其结果如下：<br />
+<pre class="info-box">
+&lt;ul class=&quot;sellListContent&quot; log-mod=&quot;list&quot;&gt;
+&lt;li class=&quot;clear LOGCLICKDATA&quot;&gt;
+房源信息..
+&lt;/li&gt;
+&lt;/ul&gt;</pre>
+发生变化的原因是由于 JS 事件触发导致的。因此就需要去页面的源码页进行匹配。<br />
+<br />
+下面使用<code style="font-size: 14px;">Ctrl+F</code>分别对 class 变化前后的属性值进行检索，最后发现源码页只存在如下属性：
+<pre class="info-box">
+class=&quot;clear LOGVIEWDATA LOGCLICKDATA&quot;</pre>
+因此 Xpath 基准表达式如下所示：
+<pre class="info-box">
+//ul[@class=&quot;sellListContent&quot;]/li[@class=&quot;clear LOGVIEWDATA LOGCLICKDATA&quot;]</pre>
+<h4>
+2) 确定抓取信息的表达式</h4>
+根据页面元素结构确定待抓取信息的 Xpath 表达式，分别如下：
+<pre class="info-box">
+小区名称：name_list=h.xpath(&#39;.//a[@data-el=&quot;region&quot;]/text()&#39;)
+房屋介绍：info_list=h.xpath(&#39;.//div[@class=&quot;houseInfo&quot;]/text()&#39;)
+地址信息：address_list=h.xpath(&#39;.//div[@class=&quot;positionInfo&quot;]/a/text()&#39;)
+单价信息：price_list=h.xpath(&#39;.//div[@class=&quot;unitPrice&quot;]/span/text()&#39;)</pre>
+其中房屋介绍，主要包含了以下信息：
+<pre class="html">
+&lt;div class=&quot;address&quot;&gt;
+  &lt;div class=&quot;houseInfo&quot;&gt;&lt;span class=&quot;houseIcon&quot;&gt;&lt;/span&gt;2室1厅 | 88.62平米 | 北 南 | 简装 | 顶层(共6层) | 2004年建 | 板楼&lt;/div&gt;
+&lt;/div&gt;</pre>
+因此，匹配出的 info_list 列表需要经过处理才能得出我们想要的数据，如下所示：
+<pre class="python">
+#户型+面积+方位+是否精装+楼层+...    [&#39;2室1厅 | 88.62平米 | 北 南 | 简装 | 顶层(共6层) | 2004年建 | 板楼&#39;]
+info_list=h.xpath(&#39;.//div[@class=&quot;houseInfo&quot;]/text()&#39;)
+if info_list:
+   #处理列表数据
+   L=info_list[0].split(&#39;|&#39;)
+   # [&#39;2室1厅 &#39;, &#39; 88.62平米 &#39;, &#39; 北 南 &#39;, &#39; 简装 &#39;, &#39; 顶层(共6层) &#39;, &#39; 2004年建 &#39;, &#39; 板楼&#39;]
+   if len(L) &gt;= 5:
+      item[&#39;model&#39;]=L[0].strip()
+      item[&#39;area&#39;]=L[1].strip()
+      item[&#39;direction&#39;]=L[2].strip()
+      item[&#39;perfect&#39;]=L[3].strip()
+      item[&#39;floor&#39;]=L[4].strip()</pre>
+<h4>
+3) 提高抓取效率</h4>
+为了提高网页信息的抓取质量，减小网络波动带来的响应，我们可以设置一个规则：在超时时间内（3秒），在该时间内对于请求失败的页面尝试请求三次，如果均未成功，则抓取下一个页面。<br />
+<br />
+requests.get() 方法提供了 timeout 参数可以用来设置超时时间，此方法还提供了其他实用性参数，比如 auth(用户认证)、veryify(证书认证)、proxies(设置代理 IP)，这在后续内容中会做相应介绍。<br />
+<h2>
+编写程序代码</h2>
+通过上述分析得出了所有的 Xpath 表达式，下面开始编写爬虫程序，代码如下：
+<pre class="python">
+#coding:utf8
+import requests
+import random
+from lxml import etree
+import time
+#提供ua信息的的包
+from fake_useragent import UserAgent
+
+class LinajiaSpider(object):
+    def __init__(self):
+        self.url=&#39;https://bj.lianjia.com/ershoufang/pg{}/&#39;
+        #计数，请求一个页面的次数，初始值为1
+        self.blog=1
+
+    # 随机取一个UA
+    def get_header(self):
+        #实例化ua对象
+        ua=UserAgent()
+        headers={&#39;User-Agent&#39;:ua.random}
+        return headers
+    #发送请求
+    def get_html(self,url):  
+       #在超时间内，对于失败页面尝试请求三次
+        if self.blog&lt;=3:
+            try:
+                res=requests.get(url=url,headers=self.get_header(),timeout=3)
+                html=res.text
+                return html
+            except Exception as e:
+                print(e)
+                self.blog+=1
+                self.get_html(url)
+
+    # 解析提取数据
+    def parse_html(self,url):
+        html=self.get_html(url)
+        if html:
+            p=etree.HTML(html)
+            #基准xpath表达式-30个房源节点对象列表
+            h_list=p.xpath(&#39;//ul[@class=&quot;sellListContent&quot;]/li[@class=&quot;clear LOGVIEWDATA LOGCLICKDATA&quot;]&#39;)
+            #所有列表节点对象
+            for h in h_list:
+                item={}
+                #名称
+                name_list=h.xpath(&#39;.//a[@data-el=&quot;region&quot;]/text()&#39;)
+                #判断列表是否为空
+                item[&#39;name&#39;]=name_list[0] if name_list else None
+    #户型+面积+方位+是否精装..[&#39;2室1厅 | 88.62平米 | 北 南 | 简装 | 顶层(共6层) | 2004年建 | 板楼&#39;]
+                info_list=h.xpath(&#39;.//div[@class=&quot;houseInfo&quot;]/text()&#39;)
+                #判断列表是否为空
+                if info_list:
+                    L=info_list[0].split(&#39;|&#39;)
+          # [&#39;2室1厅 &#39;, &#39; 88.62平米 &#39;, &#39; 北 南 &#39;, &#39; 简装 &#39;, &#39; 顶层(共6层) &#39;, &#39; 2004年建 &#39;, &#39; 板楼&#39;]
+                    if len(L) &gt;= 5:
+                        item[&#39;model&#39;]=L[0].strip()
+                        item[&#39;area&#39;]=L[1].strip()
+                        item[&#39;direction&#39;]=L[2].strip()
+                        item[&#39;perfect&#39;]=L[3].strip()
+                        item[&#39;floor&#39;]=L[4].strip()
+                #区域+总价+单价
+
+                address_list=h.xpath(&#39;.//div[@class=&quot;positionInfo&quot;]/a/text()&#39;)
+                item[&#39;address&#39;]=address_list[0].strip() if address_list else None
+
+                total_list=h.xpath(&#39;.//div[@class=&quot;totalPrice&quot;]/span/text()&#39;)
+                item[&#39;total_list&#39;]=total_list[0].strip() if total_list else  None
+
+                price_list=h.xpath(&#39;.//div[@class=&quot;unitPrice&quot;]/span/text()&#39;)
+                item[&#39;price_list&#39;]=price_list[0].strip() if price_list else None
+                print(item)
+
+     # 入口函数
+    def run(self):
+        try:
+            for i in range(1,101):
+                url=self.url.format(i)
+                self.parse_html(url)
+                time.sleep(random.randint(1,3))
+                #每次抓取一页要初始化一次self.blog
+                self.blog=1
+        except Exception as e:
+            print(&#39;发生错误&#39;,e)
+
+if __name__ == &#39;__main__&#39;:
+    spider=LinajiaSpider()
+    spider.run()</pre>
+展示部分输出结果：
+<pre class="info-box">
+{&#39;name&#39;: &#39;玉竹园 &#39;, &#39;model&#39;: &#39;2室1厅&#39;, &#39;area&#39;: &#39;88.62平米&#39;, &#39;direction&#39;: &#39;北 南&#39;, &#39;perfect&#39;: &#39;简装&#39;, &#39;floor&#39;: &#39;顶层(共6层)&#39;, &#39;address&#39;: &#39;玉竹园&#39;, &#39;total_list&#39;: &#39;225&#39;, &#39;price_list&#39;: &#39;单价25390元/平米&#39;}
+{&#39;name&#39;: &#39;摩卡空间 &#39;, &#39;model&#39;: &#39;2室1厅&#39;, &#39;area&#39;: &#39;71.95平米&#39;, &#39;direction&#39;: &#39;东南&#39;, &#39;perfect&#39;: &#39;简装&#39;, &#39;floor&#39;: &#39;高楼层(共17层)&#39;, &#39;address&#39;: &#39;摩卡空间&#39;, &#39;total_list&#39;: &#39;372&#39;, &#39;price_list&#39;: &#39;单价51703元/平米&#39;}
+{&#39;name&#39;: &#39;长城国际 &#39;, &#39;model&#39;: &#39;1室1厅&#39;, &#39;area&#39;: &#39;52.73平米&#39;, &#39;direction&#39;: &#39;西&#39;, &#39;perfect&#39;: &#39;精装&#39;, &#39;floor&#39;: &#39;22层&#39;, &#39;address&#39;: &#39;长城国际&#39;, &#39;total_list&#39;: &#39;235&#39;, &#39;price_list&#39;: &#39;单价44567元/平米&#39;}
+{&#39;name&#39;: &#39;牛街西里 &#39;, &#39;model&#39;: &#39;3室1厅&#39;, &#39;area&#39;: &#39;102.6平米&#39;, &#39;direction&#39;: &#39;东北&#39;, &#39;perfect&#39;: &#39;其他&#39;, &#39;floor&#39;: &#39;中楼层(共20层)&#39;, &#39;address&#39;: &#39;牛街西里&#39;, &#39;total_list&#39;: &#39;815&#39;, &#39;price_list&#39;: &#39;单价79435元/平米&#39;}
+{&#39;name&#39;: &#39;新安里 &#39;, &#39;model&#39;: &#39;1室2厅&#39;, &#39;area&#39;: &#39;51.56平米&#39;, &#39;direction&#39;: &#39;南 北&#39;, &#39;perfect&#39;: &#39;精装&#39;, &#39;floor&#39;: &#39;顶层(共6层)&#39;, &#39;address&#39;: &#39;新安里&#39;, &#39;total_list&#39;: &#39;197&#39;, &#39;price_list&#39;: &#39;单价38208元/平米&#39;}
+{&#39;name&#39;: &#39;龙华园 &#39;, &#39;model&#39;: &#39;2室1厅&#39;, &#39;area&#39;: &#39;67.73平米&#39;, &#39;direction&#39;: &#39;南 北&#39;, &#39;perfect&#39;: &#39;简装&#39;, &#39;floor&#39;: &#39;顶层(共6层)&#39;, &#39;address&#39;: &#39;龙华园&#39;, &#39;total_list&#39;: &#39;342&#39;, &#39;price_list&#39;: &#39;单价50495元/平米&#39;}
+...</pre>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="../view/niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/822.html" title="Linux提取RPM包文件(cpio命令)详解" target="_blank">Linux提取RPM包文件(cpio命令)详解</a></li>
+<li><a href="../view/2233.html" title="C++友元函数和友元类（C++ friend关键字）" target="_blank">C++友元函数和友元类（C++ friend关键字）</a></li>
+<li><a href="../view/2544.html" title="Python open()函数详解：打开指定文件" target="_blank">Python open()函数详解：打开指定文件</a></li>
+<li><a href="../view/3592.html" title="汇编语言SAL（算术左移）和SAR（算术右移）指令：将操作数左/右移一位" target="_blank">汇编语言SAL（算术左移）和SAR（算术右移）指令：将操作数左/右移一位</a></li>
+<li><a href="../view/4360.html" title="Python tuple元组详解" target="_blank">Python tuple元组详解</a></li>
+<li><a href="../view/vip_7350.html" title="Go语言使用通道响应计时器的事件" target="_blank">Go语言使用通道响应计时器的事件</a></li>
+<li><a href="../ml_alg/what-is-ai.html" title="什么是人工智能" target="_blank">什么是人工智能</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9080;
+window.arcId = "59fbu7iHlPsYmWlqdr0o824lG2t0MLcm5cJhyRQscZAgpD7wgidxzYQLcjI";
+window.typeidChain = "421";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="../view/8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="../view/8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="../view/8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="../view/9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="../view/8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/python_spider/lxml-case.html";
+window.nextPageURL = "/python_spider/capture-package.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

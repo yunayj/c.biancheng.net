@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++ set添加、删除和访问(STL set添加、删除和访问)元素详解</title>
+<meta name="description" content="set 中没有实现成员函数 at()，也没有实现 operator[]() 。除了这些操作外，set 容器提供 map 容器所提供的大部分操作。可以使用 insert()、emplace()、emplace_hint() 成员函数来向 set 中添加元素。" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++ set添加、删除和访问(STL set添加、删除和访问)元素详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">set 中没有实现成员函数 at()，也没有实现 operator[]() 。除了这些操作外，set 容器提供 map 容器所提供的大部分操作。可以使用 insert()、emplace()、emplace_hint() 成员函数来向 set 中添加元素。
+<h2>
+添加元素</h2>
+下面是一个使用 insert() 的示例：<br />
+<pre class="cpp">
+std::set&lt;string, std::greater&lt;string&gt;&gt; words {&quot;one&quot;, &quot;two&quot;, &quot;three&quot;};
+auto pr1 = words.insert(&quot;four&quot;);
+auto pr2 = words.insert (&quot;two&quot;) ;
+auto iter3 = words.insert(pr.first, &quot;seven&quot;);
+words.insert ({ &quot;five&quot;,&quot;six&quot;}) ;
+string wrds[] {&quot;eight&quot;, &quot;nine&quot;, &quot;ten&quot;};
+words.insert(std::begin(wrds) , std::end(wrds));</pre>
+插入单个元素会返回一个 pair&lt;iterator，bool&gt; 对象。插入单个元素和一个标识，会返回一个迭代器。插入一段元素或一个初始化列表就不会有返回值。当 insert() 的参数是初始化列表时，会用列表中的字符串创建 string 对象。下面是两个在 set 容器中创建元素的示例：<br />
+<pre class="cpp">
+std::set&lt;std::pair&lt;string,string&gt;&gt; names;
+auto pr = names.emplace(&quot;Lisa&quot;, &quot;Carr&quot;);
+auto iter = names.emplace_hint(pr.first, &quot;Joe&quot;, &quot;King&quot;);</pre>
+这和 map 一样。成员函数 emplace() 会返回一个 pair&lt;iterator,bool&gt; 对象，而 emplace_hint() 只返回一个迭代器。前者的参数被直接传入元素的构造函数，用来创建元素。emplace_hint() 的第一个参数是一个迭代器，它指出了元素可能的插入位置，随后的参数会被传入元素的构造函数。
+<h2>
+删除元素</h2>
+成员函数 clear() 会删除 set 的所有元素。成员函数 erase() 会删除迭代器指定位置的元素或与对象匹配的元素。例如：<br />
+<pre class="cpp">
+std::set&lt;int&gt; numbers {2, 4, 6, 8, 10, 12, 14};
+auto iter = numbers.erase(++std::begin(numbers));
+auto n = numbers.erase(12);
+n = numbers.erase(13);
+numbers.clear();</pre>
+成员函数 erase() 可以删除一段元素：<br />
+<pre class="cpp">
+std::set&lt;int&gt; numbers {2, 4, 6, 8, 10, 12, 14};
+auto iter1 = std::begin(numbers); // iter1 points to 1st element
+advance(iterl, 5); // Points to 6th element-12
+auto iter = numbers.erase(++std:rbegin(numbers), iter1);// Remove 2nd to 5th inclusive. iter points to 12</pre>
+如果 set 没有元素，成员函数 empty() 返回 true，成员函数 size() 返回它所包含的元素个数。如果担心无法在 set 中存储尽可能多的元素，可以调用成员函数 max_size() 来得到可存储的最大元素个数，这显然会是一个很大的值。
+<h2>
+访问元素</h2>
+set 的成员函数 find() 会返回一个和参数匹配的元素的迭代器。如果对象不在 set 中，会返回一个结束迭代器。例如：<br />
+<pre class="cpp">
+std::set&lt;string&gt; words {&quot;one&quot;, &quot;two&quot;,&quot;three&quot;, &quot;four&quot;,&quot;five&quot;};
+auto iter = words.find (&quot;one&quot;) ; // iter points to &quot;one&quot;
+iter = words.find(string{&quot;two&quot;});   // iter points to &quot;two&quot;
+iter = words.find (&quot;six&quot;);   // iter is std:: end (words)</pre>
+调用成员函数 count() 可以返回指定键所对应的元素个数，返回值通常是 0 或 1，因为 set 容器中的元素是唯一的。set 容器模板定义了成员函数 equal_range()、lower_bound()、 upper_bound()，这和 multiset 容器在很大程度上是一致的。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="3395.html" title="树的孩子表示法（C语言详解版）" target="_blank">树的孩子表示法（C语言详解版）</a></li>
+<li><a href="vip_4555.html" title="常用的Shell有哪些？" target="_blank">常用的Shell有哪些？</a></li>
+<li><a href="6826.html" title="C++ STL vector添加元素（push_back()和emplace_back()）详解" target="_blank">C++ STL vector添加元素（push_back()和emplace_back()）详解</a></li>
+<li><a href="6987.html" title="C++ STL priority_queue容器适配器详解" target="_blank">C++ STL priority_queue容器适配器详解</a></li>
+<li><a href="../spring_boot/druid.html" title="Spring Boot整合Druid数据源" target="_blank">Spring Boot整合Druid数据源</a></li>
+<li><a href="../css3/list-style.html" title="CSS list-style（列表样式）" target="_blank">CSS list-style（列表样式）</a></li>
+<li><a href="../matplotlib/twin-axes.html" title="Matplotlib双轴图" target="_blank">Matplotlib双轴图</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 538;
+window.arcId = "b692vXejxAIs/0IA+tpitJ4A3+94aybPHVhBIzRgItehgb23KE6qopMAjQ";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

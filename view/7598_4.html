@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Django实现自定义标签</title>
+<meta name="description" content="通过前面几节的内容，我们对 Django 内置的模板标签与过滤器做了深入的探讨学习，Django 为了给 Web 开发者提供更好使用体验，同时也提供了自定义标签与过滤器的功能，如果内置标签与" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../django/django_2.html">Django</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Django实现自定义标签</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">通过前面几节的内容，我们对 Django 内置的模板标签与过滤器做了深入的探讨学习。Django 虽然内置了二十多种标签和六十多种过滤器，但是为了给 Web 开发者提供更好使用体验，Django 也提供了自定义标签与过滤器的功能。当内置标签与过滤器满足不了实际业务的需求，那么我们就可以通过自定义的方式去实现，在本节我们将对如何实现自定义标签进行讲解。
+<h2>
+	1. 如何实现自定义标签</h2>
+自定义标签可以分为三种类型：简单标签（simple_tag）、引用标签（inclusion_tag）、赋值标签（assignment_tag），在本节我们对它们进行详细的描述。
+<h4>
+	1) 定义之前的准备工作</h4>
+Django 为我们提供了自定义的机制，我们可以通过使用 Python 代码来自定义标签来，最后使用<code>{% load %}</code>标签进行加载。但是在自定义标签之前，需要我们做一些准备工作，如下所示：
+<ul>
+	<li>
+		创建专门的应用来装载自定义标签或者在项目原始 app 上进行自定义，在这里我们依旧使用原有的 index 应用；</li>
+	<li>
+		在 index 应用下创建名为 templatetags（名字不能变） 的 Python 包 ，并在包中新建__init__.py 文件作为 ；</li>
+	<li>
+		在新建的 Python 包中新建一个名为 index_tags.py 文件，该文件命名时避免与内置标签与过滤器名字冲突；</li>
+	<li>
+		在 INSTALLED_APPS 列表中注册 app，因为 index 应用之前已经注册，所以就无须操作了，若是新建的 app 就需要注册。</li>
+</ul>
+<br />
+给&nbsp;index_tags.py 文件命名时，需要注意不能与 Django 内置的标签或者过滤器名字冲突，如同 Python 中命名不可以使用关键字一样，所以我们在命名时应该尽量使用带有下划线的命名方式，这样可以确保名字不冲突。<br />
+<br />
+上述操作完成后，我们就可以使用 {% load index_tags %} 加载自定义标签了， loda 标签将加载指定的的自定义标签，但是在 templatetags 目录中自定义标签或者过滤器的数量是没有限制的，你可以根据自己实际需求进行构建。<br />
+<p class="tip-box">
+	提示：{% load xxx%} 将会载入给定模块名下的标签或者过滤器，而不是 app 应用下的中所有标签和过滤器。</p>
+<h4>
+	2) 模块变量 register</h4>
+要在模块内自定义标签，该模块必须包含一个名为 register 的模板层变量，且它的值是 template.Library 的实例，所有的标签和过滤器都是在其中注册的。所以我们需要打开 index_tags.py 文件，并在文件顶部加上如下代码：
+<pre class="python">
+from django import template
+register = template.Library()
+</pre>
+<h2>
+	2. 实现自定义简单标签</h2>
+简单标签通过接收参数，对输入的参数做一些处理并返回结果。如下所示，在 index_tags .py 文件中定义 addstr_tag 标签：
+<pre class="python">
+#注册自定义简单标签
+@register.simple_tag
+def addstr_tag(strs):
+    return &#39;Hello&#39;%strs</pre>
+addstr_tag 函数使用 register.simple_tag 进行装饰，目的是能够将 addstr_tag 注册到模板系统中。然后我们就可以使用 {% load %} 加载自定义的标签了，使用如下方式：<br />
+<p class="info-box">
+	{% load index_tags %}</p>
+加载之后我们就可以使用我们的自定义标签了，通过举例看一下实际的效果：
+<pre class="python">
+In [1]: from django.template import Template,Context
+In [2]: t=Template(&quot;&quot;&quot;
+   ...: {% load index_tags %}
+   ...: {% addstr_tag &#39;Django BookStore&#39; %}
+   ...: 
+   ...: &quot;&quot;&quot;)
+   ...: t.render(Context())
+Out[2]: &#39;Hello Django BookStore&#39;</pre>
+上述就是一个简单标签的实现过程，自定义不同类型的标签它们的过程是一样的，而且我们还可以通过 name 参数给自定义的标签其别名，这样在使用 load 加载时就可以直接使用别名了，如下所示：<br />
+<p class="info-box">
+	@register.simple_tag(name=&#39;abc&#39;)</p>
+<h2>
+	3. 实现自定义引用标签</h2>
+这种类型的标签可以对其他模板进行渲染，然后将渲染结果输。下面举例说明这类标签的用法。
+<h4>
+	1)定义模板文件</h4>
+在 BookStore/templates 中定义模板文件 inclusion.html ，并在 body 中编写如下代码：<br />
+<pre class="html">
+&lt;p&gt;{{ hello }}&lt;/p&gt;</pre>
+在 index_tags 中自定义引用标签：<br />
+<pre class="python">
+#注册自定义引用标签
+@register.inclusion_tag(&#39;inclusion.html&#39;,takes_context=True)
+#定义函数渲染模板文件 inclusion.html
+def add_webname_tag(context,namestr): #使用takes_context=True此时第一个参数必须为context
+    return {&#39;hello&#39;:&#39;%s %s&#39;%(context[&#39;varible&#39;],namestr)}</pre>
+我可以看出，引用标签使用 register.inclusion_tag 来注册，它的第一个参数用来指定要被渲染的模板文件，takes_context=True 参数可以让我们访问模板的当前环境上下文，并将当前环境上下文中的参数和值作为字典传入到函数的 contex 参数中，当使用 take_context=True 时，注册标签函数的第一个参数必需为 context。<br />
+<br />
+通过 Django shell 编写如下代码看一下它是如何应用的，如下所示：
+<pre class="python">
+In [1]: from django.template import Template,Context
+In [2]: t=Template(&quot;&quot;&quot;
+   ...: {% load index_tags %}
+   ...: {% add_webname_tag &#39;C 语言中文网&#39; %}
+   ...: 
+   ...: &quot;&quot;&quot;)
+   ...: t.render(Context({&#39;varible&#39;:&#39;Hello&#39;}))
+Out[2]: &#39;\n\n&lt;!DOCTYPE html&gt;\n&lt;html lang=&quot;en&quot;&gt;\n&lt;head&gt;\n    &lt;meta charset=&quot;UTF-8&quot;&gt;\n    &lt;title&gt;C语言中文网&lt;/title&gt;\n&lt;/head&gt;\n&lt;body&gt;\n&lt;p&gt;Hello C 语言中文网&lt;/p&gt;\n\n&lt;/body&gt;\n&lt;/html&gt;\n\n&#39;</pre>
+从输出的结果可以得出，引用标签对 inclusion.html 模板进行了渲染，将<code>{{ hello }}</code>变量渲染成了<code> Hello C 语言中文网</code>。
+<h2>
+	4. 实现自定义赋值标签</h2>
+这个标签类似于简单标签，使用 register.simple_tag 进行注册，但它并不会直接输出结果，而是使用 as 关键字将结果储存在指定的上下文变量中，从而降低了传输上下文的成本。下面在 index_tags.py 中定义test_as_tag 标签，如下所示：
+<pre class="python">
+#注册自定义赋值标签
+@register.simple_tag
+def test_as_tag(strs):
+    return &#39;Hello Test Tag-%s&#39;%strs</pre>
+使用自定义赋值标签，实例如下所示：
+<pre class="python">
+In [1]: from django.template import Template,Context
+In [2]: t=Template(&quot;&quot;&quot;
+   ...: {% load index_tags %}
+   ...: {% test_as_tag &#39;语言中文网欢迎你&#39; as test %}
+   ...: &lt;p&gt;{{ test }}&lt;/p&gt;
+   ...: &quot;&quot;&quot;)
+   ...: t.render(Context())
+Out[2]: &#39;\n\n\n&lt;p&gt;Hello Test Tag-语言中文网欢迎你&lt;/p&gt;\n&#39;</pre>
+自定义标签看似简单，但需要我们灵活的掌握它们，使用最合适的方式，最适用的逻辑让复杂的问题变得简单化。这是一个慢慢锻炼的过程，而理解了它最基本的使用方法，是漫漫征程中的第一步。 </div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="382_2.html" title="feof和ferror函数，C语言feof和ferror函数详解" target="_blank">feof和ferror函数，C语言feof和ferror函数详解</a></li>
+<li><a href="448_2.html" title="C++ forward_list用法详解" target="_blank">C++ forward_list用法详解</a></li>
+<li><a href="3727_2.html" title="C++返回值类型后置（跟踪返回值类型）" target="_blank">C++返回值类型后置（跟踪返回值类型）</a></li>
+<li><a href="vip_7053_2.html" title="Java项目实战：校验文件名和邮箱地址" target="_blank">Java项目实战：校验文件名和邮箱地址</a></li>
+<li><a href="../redis2/hget_2.html" title="Redis HGET命令" target="_blank">Redis HGET命令</a></li>
+<li><a href="../ml_alg/svm-application_2.html" title="Python Sklearn库SVM算法应用" target="_blank">Python Sklearn库SVM算法应用</a></li>
+<li><a href="jtwuakq_2.html" title="《极简C++(案例·视频)》PDF下载（高清完整版）" target="_blank">《极简C++(案例·视频)》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7598;
+window.arcId = "7a315c6Ty6YVKU2Q3YWaGNrICG99/GIt+eAy7x2Xpi+MiqJTBP4rt8s3nNo";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

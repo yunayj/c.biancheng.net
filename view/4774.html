@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Go语言依赖管理</title>
+<meta name="description" content="从 Go 1.0 发布那天起，社区做了很多努力，提供各种 Go 工具，以便开发人员的工作更轻松。有很多工具专注在如何管理包的依赖关系。现在最流行的依赖管理工具是 Keith Rarik 写的 godep、" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Go语言依赖管理</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">早期的Go语言被很多开发者所吐槽的一个问题就是没有依赖包的管理，不过随着版本的不断更迭，Go语言依赖管理方面也在不断的完善。<br />
+<h2>
+为什么需要依赖管理</h2>
+最初的时候Go语言所依赖的所有的第三方包都放在 GOPATH 目录下面，这就导致了同一个包只能保存一个版本的代码，如果不同的项目依赖同一个第三方的包的不同版本，应该怎么解决呢？<br />
+<h2>
+godep</h2>
+godep 是一个Go语言官方提供的通过 vender 模式来管理第三方依赖的工具，类似的还有由社区维护的准官方包管理工具 dep。<br />
+<br />
+Go语言从 1.5 版本开始开始引入 vendor 模式，如果项目目录下有 vendor 目录，那么Go语言编译器会优先使用 vendor 内的包进行编译、测试等。<br />
+<h4>
+安装godep工具</h4>
+我们可以通过<code style="font-size: 14px;">go get&nbsp;</code>命令来获取 godep 工具。<br />
+<p class="info-box">
+go get github.com/tools/godep</p>
+命令执行成功后会将 godep 工具的源码下载到 GOPATH 的 src 目录下对应的文件夹中，同时还会在 GOPATH 的 bin 目录下生成一个名为 godep.exe 的可执行文件，如下图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="获取 godep 工具" src="../uploads/allimg/191112/4-191112093444133.gif" /></div>
+<br />
+为了方便使用 godep 工具，我们需要将存放 godep.exe 文件的目录添加到环境变量 PATH 中。在系统变量中找到并选中&ldquo;Path&rdquo;一行，点击&ldquo;编辑&rdquo;按钮，在新弹出的窗口中点击&ldquo;新建&rdquo;，然后在最下面一行中填入对应的目录信息。确认无误后点击&ldquo;确定&rdquo;。<br />
+<br />
+<div style="text-align: center;">
+<img alt="将存放 godep 工具的目录添加的环境变量中" src="../uploads/allimg/191112/4-1911121006323N.gif" /></div>
+<br />
+环境变量设置的打开方式我们在《<a href="3992.html" target="_blank">安装Go语言开发包</a>》一节中已经介绍过了，这里不再赘述。
+<h4>
+godep工具的基本命令</h4>
+完成上面的操作后，我们就可以在命令行窗口（CMD）中使用 godep 工具了，godep 支持的命令如下表所示：<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+命令</th>
+<th>
+作用</th>
+</tr>
+<tr>
+<td>
+godep save</td>
+<td>
+将依赖包的信息保存到 Godeps.json 文件中</td>
+</tr>
+<tr>
+<td>
+godep go</td>
+<td>
+使用保存的依赖项运行 go 工具</td>
+</tr>
+<tr>
+<td>
+godep get</td>
+<td>
+下载并安装指定的包</td>
+</tr>
+<tr>
+<td>
+godep path</td>
+<td>
+打印依赖的 GOPATH 路径</td>
+</tr>
+<tr>
+<td>
+godep restore</td>
+<td>
+在 GOPATH 中拉取依赖的版本</td>
+</tr>
+<tr>
+<td>
+godep update</td>
+<td>
+更新选定的包或 go 版本</td>
+</tr>
+<tr>
+<td>
+godep diff</td>
+<td>
+显示当前和以前保存的依赖项集之间的差异</td>
+</tr>
+<tr>
+<td>
+godep version</td>
+<td>
+查看版本信息</td>
+</tr>
+</tbody>
+</table>
+<br />
+使用<code style="font-size: 14px;">godep help [命令名称]</code>可以查看命令的帮助信息，如下所示。<br />
+<p class="info-box">
+C:\Users\Administrator&gt;godep help go<br />
+Args: godep go [-v] [-d] command [arguments]<br />
+<br />
+Go runs the go tool with a modified GOPATH giving access to<br />
+dependencies saved in Godeps.<br />
+<br />
+Any go tool command can run this way, but &quot;godep go get&quot;<br />
+is unnecessary and has been disabled. Instead, use<br />
+&quot;godep go install&quot;.<br />
+<br />
+If -v is given, verbose output is enabled.<br />
+<br />
+If -d is given, debug output is enabled (you probably don&#39;t want this, see -v).</p>
+<h4>
+使用godep工具</h4>
+执行<code style="font-size: 14px;">godep save&nbsp;</code>命令，会在当前目录中创建 Godeps 和 vender 两个文件夹。Godeps 文件夹下会生成一个 Godeps.json 文件，用来记录项目中所依赖的包信息；vender 目录则是用来保存当前项目所依赖的所有第三方包。<br />
+<br />
+<div style="text-align: center;">
+<img alt="godep save 命令执行成功后生成的两个文件夹" src="../uploads/allimg/191112/4-19111213453B61.gif" /></div>
+<br />
+生成的 Godeps.json 文件的结构如下所示：<br />
+<p class="info-box">
+{<br />
+&nbsp;&nbsp;&nbsp; &quot;ImportPath&quot;: &quot;main&quot;,<br />
+&nbsp;&nbsp;&nbsp; &quot;GoVersion&quot;: &quot;go1.13&quot;,<br />
+&nbsp;&nbsp;&nbsp; &quot;GodepVersion&quot;: &quot;v80&quot;,<br />
+&nbsp;&nbsp;&nbsp; &quot;Deps&quot;: [<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;ImportPath&quot;: &quot;github.com/go-gomail/gomail&quot;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;Comment&quot;: &quot;2.0.0-23-g81ebce5&quot;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;Rev&quot;: &quot;81ebce5c23dfd25c6c67194b37d3dd3f338c98b1&quot;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />
+&nbsp;&nbsp;&nbsp; ]<br />
+}</p>
+其中，&ldquo;ImportPath&rdquo;为项目的路径信息，&ldquo;GoVersion&rdquo;为Go语言的版本号，&ldquo;GodepVersion&rdquo;为 godep 工具的版本号，&ldquo;Deps&rdquo;为当前依赖包的路径、版本号信息等等。<br />
+<p class="tip-box">
+提示：当引用的第三方包要升级时，只需要修改 Godep.json 里面的依赖包的版本号，然后再次执行 godep save 命令即可。</p>
+godep 工具的主要功能就是控制Go语言程序编译时依赖包搜索路径的优先级。例如查找项目的某个依赖包，首先会在项目根目录下的 vender 文件夹中查找，如果没有找到就会去 GOAPTH/src 目录下查找。<br />
+<h2>
+go module</h2>
+go module 是Go语言从 1.11 版本之后官方推出的版本管理工具，并且从 Go1.13 版本开始，go module 成为了Go语言默认的依赖管理工具。<br />
+<h4>
+GO111MODULE</h4>
+在Go语言 1.12 版本之前，要启用 go module 工具首先要设置环境变量 GO111MODULE，不过在Go语言 1.13 及以后的版本则不再需要设置环境变量。通过 GO111MODULE 可以开启或关闭 go module 工具。<br />
+<ul>
+<li>
+GO111MODULE=off 禁用&nbsp;go module，编译时会从 GOPATH 和 vendor 文件夹中查找包。</li>
+<li>
+GO111MODULE=on 启用&nbsp;go module，编译时会忽略 GOPATH 和 vendor 文件夹，只根据 go.mod 下载依赖。</li>
+<li>
+GO111MODULE=auto（默认值），当项目在 GOPATH/src 目录之外，并且项目根目录有 go.mod 文件时，开启&nbsp;go module。</li>
+</ul>
+<br />
+Windows 下开启 GO111MODULE 的命令为：
+<p class="info-box">
+set&nbsp;GO111MODULE=on 或者 set GO111MODULE=auto</p>
+MacOS 或者 Linux 下开启 GO111MODULE&nbsp;的命令为：
+<p class="info-box">
+export GO111MODULE=on 或者 export GO111MODULE=auto</p>
+在开启 GO111MODULE 之后就可以使用 go module 工具了，也就是说在以后的开发中就没有必要在 GOPATH 中创建项目了，并且还能够很好的管理项目依赖的第三方包信息。<br />
+<br />
+使用 go module 的<code style="font-size: 14px;">go mod init&nbsp;</code>命令后会在当前目录下生成一个 go. mod 文件，并且在编译/运行当前目录下代码或者使用<code style="font-size: 14px;">go get&nbsp;</code>命令的时候会在当前目录下生成一个 go.sun 文件。<br />
+<br />
+<div style="text-align: center;">
+<img alt="使用 go mod init 命令生成的两个文件" src="../uploads/allimg/191113/4-191113092510407.gif" /></div>
+<br />
+go.mod 文件记录了项目所有的依赖信息，其结构大致如下：
+<p class="info-box">
+module main.go<br />
+<br />
+go 1.13<br />
+<br />
+require (<br />
+&nbsp; &nbsp; github.com/astaxie/beego v1.12.0<br />
+&nbsp; &nbsp; github.com/shiena/ansicolor v0.0.0-20151119151921-a422bbe96644 // indirect<br />
+)</p>
+其中，module 为 go.mod 文件所属的包，require 为项目所依赖的包及版本号，indirect 表示间接引用。<br />
+<br />
+go.sum 文件则是用来记录每个依赖包的版本及哈希值，如下所示。<br />
+<p class="info-box">
+github.com/Knetic/govaluate v3.0.0+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=<br />
+github.com/OwnLocal/goes v1.0.0/go.mod h1:8rIFjBGTue3lCU0wplczcUgt9Gxgrkkrw7etMIcn8TM=<br />
+github.com/astaxie/beego v1.12.0 h1:MRhVoeeye5N+Flul5PoVfD9CslfdoH+xqC/xvSQ5u2Y=<br />
+github.com/astaxie/beego v1.12.0/go.mod h1:fysx+LZNZKnvh4GED/xND7jWtjCR6HzydR2Hh2Im57o=</p>
+常用的 go mod 命令如下表所示：<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+命令</th>
+<th>
+作用</th>
+</tr>
+<tr>
+<td>
+go mod download</td>
+<td>
+下载依赖包到本地（默认为 GOPATH/pkg/mod 目录）</td>
+</tr>
+<tr>
+<td>
+go mod edit</td>
+<td>
+编辑 go.mod 文件</td>
+</tr>
+<tr>
+<td>
+go mod graph</td>
+<td>
+打印模块依赖图</td>
+</tr>
+<tr>
+<td>
+go mod init</td>
+<td>
+初始化当前文件夹，创建 go.mod 文件</td>
+</tr>
+<tr>
+<td>
+go mod tidy</td>
+<td>
+增加缺少的包，删除无用的包</td>
+</tr>
+<tr>
+<td>
+go mod vendor</td>
+<td>
+将依赖复制到 vendor 目录下</td>
+</tr>
+<tr>
+<td>
+go mod verify</td>
+<td>
+校验依赖</td>
+</tr>
+<tr>
+<td>
+go mod why</td>
+<td>
+解释为什么需要依赖</td>
+</tr>
+</tbody>
+</table>
+<h4>
+GOPROXY</h4>
+proxy 顾名思义就是代理服务器的意思。大家都知道，国内的网络有防火墙的存在，这导致有些Go语言的第三方包我们无法直接通过<code style="font-size: 14px;">go get&nbsp;</code>命令获取。GOPROXY 是Go语言官方提供的一种通过中间代理商来为用户提供包下载服务的方式。要使用 GOPROXY 只需要设置环境变量 GOPROXY 即可。<br />
+<br />
+目前公开的代理服务器的地址有：
+<ul>
+<li>
+goproxy.io</li>
+<li>
+goproxy.cn：（推荐）由国内的七牛云提供。</li>
+</ul>
+<br />
+Windows 下设置 GOPROXY 的命令为：
+<p class="info-box">
+go env -w GOPROXY=https://goproxy.cn,direct</p>
+MacOS 或 Linux 下设置 GOPROXY 的命令为：
+<p class="info-box">
+export GOPROXY=https://goproxy.cn</p>
+Go语言在 1.13 版本之后 GOPROXY 默认值为 https://proxy.golang.org，在国内可能会存在下载慢或者无法访问的情况，所以十分建议大家将 GOPROXY 设置为国内的 goproxy.cn。
+<h4>
+使用go get命令下载指定版本的依赖包</h4>
+执行<code style="font-size: 14px;">go get&nbsp;</code>命令，在下载依赖包的同时还可以指定依赖包的版本。<br />
+<ul>
+<li>
+运行<code style="font-size: 14px;">go get -u</code>命令会将项目中的包升级到最新的次要版本或者修订版本；</li>
+<li>
+运行<code style="font-size: 14px;">go get -u=patch</code>命令会将项目中的包升级到最新的修订版本；</li>
+<li>
+运行<code style="font-size: 14px;">go get [包名]@[版本号]</code>命令会下载对应包的指定版本或者将对应包升级到指定的版本。</li>
+</ul>
+<p class="tip-box">
+提示：<code style="font-size: 14px;">go get [包名]@[版本号]</code>命令中版本号可以是 x.y.z 的形式，例如 go get foo@v1.2.3，也可以是 git 上的分支或 tag，例如 go get foo@master，还可以是 git 提交时的哈希值，例如 go get foo@e3702bed2。</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="109.html" title="Go语言reflect.TypeOf()和reflect.Type（通过反射获取类型信息）" target="_blank">Go语言reflect.TypeOf()和reflect.Type（通过反射获取类型信息）</a></li>
+<li><a href="395.html" title="fseek、ftell和rewind函数，C语言fseek、ftell和rewind函数详解" target="_blank">fseek、ftell和rewind函数，C语言fseek、ftell和rewind函数详解</a></li>
+<li><a href="vip_2108.html" title="C语言内存泄露（内存丢失）" target="_blank">C语言内存泄露（内存丢失）</a></li>
+<li><a href="2353.html" title="图解TCP四次握手断开连接" target="_blank">图解TCP四次握手断开连接</a></li>
+<li><a href="vip_3508.html" title="关于Linux Shell中进程、信号和捕获的总结" target="_blank">关于Linux Shell中进程、信号和捕获的总结</a></li>
+<li><a href="vip_7121.html" title="Python函数使用方法（高级用法）" target="_blank">Python函数使用方法（高级用法）</a></li>
+<li><a href="../pygame/font.html" title=" Pygame Font文本和字体（含示例）" target="_blank"> Pygame Font文本和字体（含示例）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 4774;
+window.arcId = "4abevT3dK0mrOD/+pTLHYN8jjbkkJMf4FkkIYC/7yTMvdDyM0lra74phpNA";
+window.typeidChain = "6|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

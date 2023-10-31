@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++ array迭代器及用法</title>
+<meta name="description" content="数组模板定义了成员函数 begin() 和 end()，分别返回指向第一个元素和最后一个元素的下一个位置的随机访问迭代器。如前面章节所述，随机访问迭代器具有最多的功能，能使用它进行全" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++ array迭代器及用法</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body"><p>
+数组模板定义了成员函数 begin() 和 end()，分别返回指向第一个元素和最后一个元素的下一个位置的随机访问迭代器。如前面章节所述，随机访问迭代器具有最多的功能，能使用它进行全部的操作。可以在循环中显式地使用迭代器来设置 height_ins 容器的值：</p>
+<pre class="cpp">
+unsigned int h {min_ht};
+auto first = height_ins.begin();
+auto last = height_ins.end () ;
+while (first != last)
+{
+    *first++=h;
+    h += ht_step;
+}</pre>
+迭代器对象是由 array 对象的成员函数 begin() 和 end() 返回的。使用 auto 时小需要担心迭代的实际类型，除非你要自己考虑，在本例中它们是 std::array&lt;unsigned int,19&gt;::iterator 类型，这意味着 iterator 类型被定义在 array&lt;T,N&gt; 类型中。可以看出，可以像使用普通<a href='../c/80/80.html' target='_blank'>指针</a>那样上使用迭代器对象。在保存了元素值后，使用后缀 ++ 运算符对 first 进行自增。当 first 等于 end 时，所有的元素都被设完值，循环结束。<br />
+<br />
+如前面章节所述，最好用全局的 begin() 和 end() 函数来从容器中获取迭代器，因为它们是通用的，first 和 last 可以像下面这样定义：<br />
+<pre class="cpp">
+auto first = std::begin(height_ins);
+auto last = std::end (height_ins);</pre>
+记住，当迭代器指向容器中的一个特定元素时，它们没有保留任何关于容器本身的信息，所以我们无法从迭代器中判断，它是指向 array 容器还是指向 vector 容器。容器中的一段元素可以由迭代器指定，这让我们有了对它们使用算法的可能。<br />
+<br />
+定义在 algorithm 头文件中的 generate() 函数模板，提供了用函数对象计算值、初始化一切元素的可能。我们可以像这样重写之前用来初始化 height_ins 容器的代码段：<br />
+<pre class="cpp">
+unsigned int height {};
+std::generate(std::begin(height_ins), std::end(height_ins),[height, &amp;min_ht, &amp;ht_step]()mutable
+{ return height += height == 0 ? min_ht : ht_step; });</pre>
+为容器元素设置值的语句现在减少到两条，也不再需要显式的循环语句。第一条语句定义了一个变量用来保存元素的初始值。genemte() 的前两个参数分别是开始迭代器和结束迭代器，用来指定需要设置值的元素的范围。第三个参数是一个 lambda 表达式。lambda 表达式以引用的方式捕获 min_hi、ht_step。mutable 关键使 lambda 表达式能够更新 height 局部副本的值，它是以值引用的方式捕获的。<br />
+<br />
+在 return 语句中，lambda 第一次执行后，height 的局部副本的值被设为 min_ht。然后，随着 lambda 的每次调用，height 都会增加 ht_step。 在 lambda 表达式中，以值引用的方式捕获的变量局部副本的值会被一直保存，这一机制正好满足了我们的要求。<br />
+<br />
+假定要用连续的递增值初始化一个数组容器，这里有一个函数模板 iota() 可以做到，它定义在头文件 numeric 中。这里有一个它的用法示例：<br />
+<pre class="cpp">
+std::array&lt;double, 10&gt; values;
+std::iota(std::begin(values), std::end(values),10.0);
+    elements to 10.0 to 19.0</pre>
+前两个参数是迭代器，用来定义需要设置值的元素的范围。第三个参数是第一个元素要设置的值，通过递增运算生成了随后每一个元素的值。iota()函数的使用并不仅限于数值。元素可以设为任意类型的值，只要这些类型支持 operator++()。<br />
+<br />
+注意，不要忘记算法是独立于容器类型的，对于任何具有指定类型迭代器的容器来说，算法都可以应用到它们的元素上。generate() 和 iota() 函数模板只需要正向迭代器，所以用来指定任何容器的元素范围的迭代器都能发挥作用。<br />
+<br />
+容器定义了成员函数 cbegin() 和 cend()，它们可以返回 const 迭代器。当只想访问元素时，应该使用 const 迭代器。对于 non-const 迭代器，最好使用全局的 cbegin 和 cend() 来获取。全局函数或成员函数 rbegin() 和 rend() 可以分别得到指向最一个元素和第一个元素前一个位置的反向迭代器。函数 crbegin() 和 crend() 可以返回 const 反向迭代器。我们可以用反向迭代器以逆序方式处理元素。例如：<br />
+<pre class="cpp">
+std::array&lt;double, 5&gt; these {1.0, 2.0, 3.0, 4.0, 5.0};
+double sum {};
+auto start = std::rbegin(these);
+auto finish = std::rend(these);
+while(start != finish)
+    sum += *(start++};
+std::cout &lt;&lt; &quot;The sum of elements in reverse order is &quot; &lt;&lt; sum &lt;&lt; std::endl;</pre>
+在循环中，从最后一个元素幵始，我们计算出了所有元素的和。结束迭代器指向第一个元素之前的位置，所以 sum 加上第一个元素后，循环就结朿了。在反向迭代器上使用递增运算符，会让迭代器用一种和普通正向迭代器移动方向相反的方式移动。我们也可以使用 <a href='172.html' target='_blank'>for 循环</a>：<br />
+<pre class="cpp">
+for (auto iter = std::rbegin (these); iter != std::rend(these); ++iter)
+    sum += *iter;</pre>
+因为数组容器实例的元素个数固定，所以无法使用插入迭代器。插入迭代器通常用来向容器中添加元素。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2170.html" title="Python注释（多行注释和单行注释）用法详解" target="_blank">Python注释（多行注释和单行注释）用法详解</a></li>
+<li><a href="vip_7061.html" title="Java项目实战：五子棋游戏（附带源码和解析）" target="_blank">Java项目实战：五子棋游戏（附带源码和解析）</a></li>
+<li><a href="../jsp2/directive.html" title="JSP指令" target="_blank">JSP指令</a></li>
+<li><a href="interpolation-search.html" title="插值查找算法" target="_blank">插值查找算法</a></li>
+<li><a href="../matplotlib/download-and-install.html" title="Matplotlib下载和安装" target="_blank">Matplotlib下载和安装</a></li>
+<li><a href="9624.html" title="曝光一下字节跳动的工资待遇和职位级别" target="_blank">曝光一下字节跳动的工资待遇和职位级别</a></li>
+<li><a href="9847.html" title="OpenCV计算机视觉库简介" target="_blank">OpenCV计算机视觉库简介</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 413;
+window.arcId = "b822ZKLkqZJCGLsqM/bmBU7NCy0xRrpZ6Hiua0j9zWP/Butis0rHVt5Mdw";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

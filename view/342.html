@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>strlen函数与sizeof的区别，C语言strlen与sizeof的区别详解</title>
+<meta name="description" content="对于 strlen 和 sizeof，相信不少程序员会混淆其功能。虽然从表面上看它们都可以求字符串的长度，但二者却存在着许多不同之处及本质区别。 strlen 是一个函数，它用来计算指定字符串" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>strlen函数与sizeof的区别，C语言strlen与sizeof的区别详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">对于 strlen 和 sizeof，相信不少程序员会混淆其功能。虽然从表面上看它们都可以求字符串的长度，但二者却存在着许多不同之处及本质区别。<br />
+<br />
+strlen 是一个函数，它用来计算指定字符串 str 的长度，但不包括结束字符（即 null 字符）。其原型如下面的代码所示：<br />
+<p class="info-box">
+size_t strlen(char const* str);</p>
+也正因为 strlen 是一个函数，所以需要进行一次函数调用，调用示例如下面的代码所示：<br />
+<pre class="cpp">
+char sArr[] = &quot;ILOVEC&quot;;
+/*用strlen()求长度*/
+printf(&quot;sArr的长度=%d\n&quot;, strlen(sArr));</pre>
+很显然，上面示例代码的运行结果为 6（因为不包括结束字符 null）。这里需要特别注意的是，函数 strlen 返回的是一个类型为 size_t 的值，从而有可能让程序导致意想不到的结果，如下面的示例代码所示：<br />
+<pre class="cpp">
+/*判断一*/
+if(strlen(x)&gt;= strlen(y))
+{
+}
+/*判断二*/
+if(strlen(x)- strlen(y)&gt;= 0)
+{
+}</pre>
+从表面上看，上面的两个判断表达式完全相等，但实际情况并非如此。其中，判断表达式一没什么问题，程序也能够完全按照预想的那样工作；但判断表达式二的结果就不一样了，它将永远是真，这是为什么呢？<br />
+<br />
+原因很简单，因为函数 strlen 的返回结果是 size_t 类型（即无符号整型），而 size_t 类型绝不可能是负的。因此，语句&ldquo;if(strlen(x)-strlen(y)&gt;=0）&rdquo;将永远为真。<br />
+<br />
+同样，就算表达式中同时包含了有符号整数和无符号整数，还是有可能产生意想不到的结果，如下面的代码所示：
+<pre class="cpp">
+/*判断一*/
+if(strlen(x)&gt;= 5)
+{
+}
+/*判断二*/
+if(strlen(x)- 5&gt;=0)
+{
+}</pre>
+很显然，判断表达式二的结果还是永远是真，其原因与上面相同。<br />
+<br />
+关键字 sizeof 是一个单目运算符，而不是一个函数。与函数 strlen 不同，它的参数可以是数组、指针、类型、对象、函数等，如下面的示例代码所示：<br />
+<pre class="cpp">
+char sArr[] = &quot;ILOVEC&quot;;
+/*用sizeof求长度*/
+printf(&quot;sArr的长度=%d\n&quot;, sizeof(sArr));</pre>
+相对于函数 strlen，这里的示例代码运行结果为 7（因为它包括结束字符 null）。同时，对 sizeof 而言，因为缓冲区已经用已知字符串进行了初始化，其长度是固定的，所以 sizeof 在编译时计算缓冲区的长度。也正是由于在编译时计算，因此 sizeof 不能用来返回动态分配的内存空间的大小。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="478.html" title="C++ stack(STL stack)用法详解" target="_blank">C++ stack(STL stack)用法详解</a></li>
+<li><a href="vip_1835.html" title="C语言数组是静态的，不能插入或删除元素" target="_blank">C语言数组是静态的，不能插入或删除元素</a></li>
+<li><a href="2382.html" title="GCC -l选项：手动添加链接库" target="_blank">GCC -l选项：手动添加链接库</a></li>
+<li><a href="3411.html" title="深度优先搜索（DFS、深搜）和广度优先搜索（BFS、广搜）" target="_blank">深度优先搜索（DFS、深搜）和广度优先搜索（BFS、广搜）</a></li>
+<li><a href="../redis2/hdel.html" title="Redis HDEL命令" target="_blank">Redis HDEL命令</a></li>
+<li><a href="backtracking.html" title="回溯算法" target="_blank">回溯算法</a></li>
+<li><a href="9391.html" title="HTML注释的写法（附带示例）" target="_blank">HTML注释的写法（附带示例）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 342;
+window.arcId = "b550sotHJCiaD7VsyY7LMzekBih65WG4uZ7FENFv9Gv2A9NCdpyXj8KBxw";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

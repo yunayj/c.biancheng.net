@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Hibernate持久化类详解</title>
+<meta name="description" content="持久化类（Persistent Object ）简称 PO，在 Hibernate 中， PO 是由 POJO（即 java 类或实体类）和 hbm 映射配置组成。 简单点说，持久化类本质上就是一个与数据库表建立了映射关系的普通 Jav" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="../view/niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="hibernate.html">Hibernate</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href="orm.html">ORM是什么</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href="what-is-hibernate.html">Hibernate是什么</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href="first-example.html">Hibernate项目创建流程</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href="crud.html">Hibernate增删改查操作</a>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href="principle.html">Hibernate工作原理</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href="hibernate-cfg-xml.html">Hibernate核心配置文件</a>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href="xxx-hbm-xml.html">Hibernate映射文件</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href="core-interface.html">Hibernate核心接口</a>
+</dd>
+<dd>
+<span class="channel-num">9</span>
+<a href="po.html">Hibernate持久化类</a>
+</dd>
+<dd>
+<span class="channel-num">10</span>
+<a href="l1-cache.html">Hibernate一级缓存</a>
+</dd>
+<dd>
+<span class="channel-num">11</span>
+<a href="mapping.html">Hibernate关联映射</a>
+</dd>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="hibernate.html">Hibernate</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Hibernate持久化类详解</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body"><span style="font-size: 14px; font-weight: normal;">持久化类（Persistent Object ）简称 PO，在 Hibernate 中， PO 是由 POJO（即 java 类或实体类）和 hbm 映射配置组成。</span><br />
+<br />
+简单点说，持久化类本质上就是一个与数据库表建立了映射关系的普通 Java 类（实体类），例如 User 类与数据库中 user 表通过映射文件 User.hbm.xml 建立了映射关系，此时 User 就是一个持久化类。
+<h3>
+持久化类的规范</h3>
+持久化类需要遵守一定的规范，具体如下：
+<ul>
+<li>
+持久化类中需要提供一个使用 public 修饰的无参构造器；</li>
+<li>
+持久化类中需要提供一个标识属性 OID，与数据表主键字段向对应，例如实体类 User 中的 id 属性。为了保证 OID 的唯一性，OID 应该由 Hibernate 进行赋值，尽量避免人工手动赋值；</li>
+<li>
+持久化类中所有属性（包括 OID）都要与数据库表中的字段相对应，且都应该符合 JavaBean 规范，即属性使用 private 修饰，且提供相应的&nbsp;setter 和 getter 方法；</li>
+<li>
+标识属性应尽量使用基本数据类型的包装类型，例如 Interger，目的是为了与数据库表的字段默认值 null 保持一致；</li>
+<li>
+不能用 final 修饰持久化类。</li>
+</ul>
+<h3>
+持久化对象</h3>
+&ldquo;持久化对象&rdquo;就是持久化类的实例对象，它与数据库表中一条记录相对应，Hibernate 通过操作持久化对象即可实现对数据库表的 CRUD 操作。<br />
+<blockquote>
+在 Hibernate 中，持久化对象是存储在一级缓存中的，一级缓存指 Session 级别的缓存，它可以根据缓存中的持久化对象的状态改变同步更新数据库，这里了解即可，我们会在后面的 <a href="l1-cache.html" target="_blank">Hibernate 一级缓存</a>中详细介绍。</blockquote>
+<h4>
+持久化对象的状态</h4>
+Hibernate 是一款持久层的 ORM 框架，专注于数据的持久化工作。在进行数据持久化操作时，持久化对象可能处于不同的状态当中，这些状态可分为三种，分别为瞬时态、持久态和脱管态，如下表。<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+状态</th>
+<th>
+别名</th>
+<th>
+产生时机</th>
+<th>
+特点</th>
+</tr>
+<tr>
+<td>
+瞬时态（transient）</td>
+<td>
+临时态或自由态</td>
+<td>
+由 new 关键字开辟内存空间的对象（即使用 new 关键字创建的对象）</td>
+<td>
+<ul>
+<li>
+没有唯一标识 OID；</li>
+<li>
+未与任何 Session 实例建立关联关系；</li>
+<li>
+数据库中也没有与之相关的记录；</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td>
+持久态（persistent）</td>
+<td>
+-</td>
+<td>
+当对象加入到 Session 的一级缓存中时，与 Session 实例建立关联关系时</td>
+<td>
+<ul>
+<li>
+存在唯一标识 OID，且不为 null；</li>
+<li>
+已经纳入到 Session 中管理；</li>
+<li>
+数据库中存在对应的记录；</li>
+<li>
+持久态对象的任何属性值的改动，都会在事务结束时同步到数据库表中。</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td>
+脱管态（detached）</td>
+<td>
+离线态或游离态</td>
+<td>
+持久态对象与 Session 断开联系时</td>
+<td>
+<ul>
+<li>
+存在唯一标识 OID；</li>
+<li>
+与 Session 断开关联关系，未纳入 Session 中管理；</li>
+<li>
+一旦有 Session 再次关联该脱管对象，那么该对象就可以立马变为持久状态；</li>
+<li>
+脱管态对象发生的任何改变，都不能被 Hibernate 检测到，更不能提交到数据库中。</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<br />
+在 Hibernate 运行时，持久化对象的三种状态可以通过 Session 接口提供的 一系列方法进行转换。这三种状态之间的转换关系具体如下图。<br />
+<br />
+<div style="text-align: center;">
+<img alt="持久化对象状态转换" src="../uploads/allimg/210914/10543955J-0.png" /><br />
+图1：Hibernate 持久化对象状态转化图</div>
+<br />
+通过上图可知，持久化对象的状态转换遵循以下规则：
+<ul>
+<li>
+当一个实体类对象通过 new 关键字创建时，此时该对象就处于瞬时态。</li>
+<li>
+当执行 Session 接口提供的 save() 或 saveOrUpate() 方法，将瞬时态对象保存到 Session 的一级缓存中时，该对象就从瞬时态转换为了持久态。</li>
+<li>
+当执行 Session 接口提供的 evict()、close() 或 clear() 方法，将持久态对象与 Session 断开关联关系时，该对象就从持久态转换为了脱管态。</li>
+<li>
+当执行 Session 接口提供的 update()、saveOrUpdate() 方法，将脱管态对象重新与 Session 建立关联关系时，该对象会从脱管态转换为持久态。</li>
+<li>
+直接执行 Session 接口提供的 get()、load() 或 find() 方法从数据库中查询出的对象，是处于持久态的。</li>
+<li>
+当执行 Session 接口提供的 delete() 方法时，持久态对象就会从持久态转换为瞬时态。</li>
+<li>
+由于瞬时态和脱管态对象都不在 Session 的管理范围内，因此一段时间后，它们就会被 JVM 回收。</li>
+</ul>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="../view/niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/723.html" title="Linux mkdir命令：创建目录（文件夹）" target="_blank">Linux mkdir命令：创建目录（文件夹）</a></li>
+<li><a href="../view/1318.html" title="C++ int，short，long（详解版）" target="_blank">C++ int，short，long（详解版）</a></li>
+<li><a href="../view/1991.html" title="C语言指针变量的定义和使用（精华）" target="_blank">C语言指针变量的定义和使用（精华）</a></li>
+<li><a href="../view/2947.html" title="开源协议是什么？有哪些？如何选择？" target="_blank">开源协议是什么？有哪些？如何选择？</a></li>
+<li><a href="../view/4471.html" title="Python函数值传递和引用传递（包括形式参数和实际参数的区别）" target="_blank">Python函数值传递和引用传递（包括形式参数和实际参数的区别）</a></li>
+<li><a href="../spring_boot/global.html" title="Spring Boot国际化" target="_blank">Spring Boot国际化</a></li>
+<li><a href="../view/ql3gxf0.html" title="《Web前端开发项目教程（HTML5+CSS3+JavaScript）》PDF下载（高清完整版）" target="_blank">《Web前端开发项目教程（HTML5+CSS3+JavaScript）》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9335;
+window.arcId = "0dd0hf2uW/sU4hUltDSHuygWKc04bjPssF4PLe/aajnHawa/Abb+qEvCtu4";
+window.typeidChain = "291";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="../view/8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="../view/8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="../view/8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="../view/9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="../view/8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/hibernate/core-interface.html";
+window.nextPageURL = "/hibernate/l1-cache.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

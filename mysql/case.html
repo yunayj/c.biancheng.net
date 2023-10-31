@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>MySQL CASE函数：搜索语句</title>
+<meta name="description" content="除了 IF 函数，MySQL 还提供了一个替代的条件语句 CASE。 MySQL CASE 语句使代码更加可读和高效。 CASE 语句有两种形式：简单的和可搜索 CASE 语句。 简单的 CASE 语句 简单的 CASE 语句就是指使" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="../view/niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="function/function.html">MySQL函数</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>MySQL CASE函数：搜索语句</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">除了 <a href="if.html" target="_blank">IF</a> 函数，<a href='mysql_3.html' target='_blank'>MySQL</a> 还提供了一个替代的条件语句 CASE。 MySQL CASE 语句使代码更加可读和高效。<br />
+<br />
+CASE 语句有两种形式：简单的和可搜索 CASE 语句。
+<h2>
+简单的 CASE 语句</h2>
+简单的 CASE 语句就是指使用简单 CASE 语句来检查表达式的值与一组唯一值的匹配。<br />
+<br />
+简单的 CASE 语句的语法：
+<pre class="info-box">
+CASE  &lt;表达式&gt;
+   WHEN &lt;值1&gt; THEN &lt;操作&gt;
+   WHEN &lt;值2&gt; THEN &lt;操作&gt;
+   ...
+   ELSE &lt;操作&gt;
+END CASE;</pre>
+其中：&lt;表达式&gt; 可以是任何有效的表达式。我们将&nbsp;&lt;表达式&gt; 的值与每个 WHEN 子句中的值进行比较，例如 &lt;值1&gt;，&lt;值2&gt; 等。如果 &lt;表达式&gt; 和 &lt;值n&gt; 的值相等，则执行相应的 WHEN 分支中的命令 &lt;操作&gt;。如果 WHEN 子句中的 &lt;值n&gt; 没有与 &lt;表达式&gt; 的值匹配，则 ELSE 子句中的命令将被执行。ELSE 子句是可选的。 如果省略 ELSE 子句，并且找不到匹配项，MySQL 将引发错误。<br />
+【实例 1】使用 CASE 函数根据表达式的取值返回相应值，输入SQL 语句和执行结果如下
+<pre class="info-box">
+mysql&gt; SELECT CASE WEEKDAY(NOW()) WHEN 0 THEN &#39;星期一&#39; WHEN 1 THEN &#39;星期二&#39; WHEN
+2 THEN &#39;星期三&#39; WHEN 3 THEN &#39;星期四&#39; WHEN 4 THEN &#39;星期五&#39; WHEN 5 THEN &#39;星期六&#39;
+ELSE &#39;星期天&#39; END AS COLUMN1,NOW(),WEEKDAY(NOW()),DAYNAME(NOW());
++---------+---------------------+----------------+----------------+
+| COLUMN1 | NOW()               | WEEKDAY(NOW()) | DAYNAME(NOW()) |
++---------+---------------------+----------------+----------------+
+| 星期四  | 2019-02-28 13:45:43 |              3 | Thursday       |
++---------+---------------------+----------------+----------------+
+1 row in set, 7 warnings (0.00 sec)</pre>
+由执行结果可以看出，NOW() 函数得到当前系统时间是 2019 年 2 月 28 日，DAYNAME(NOW()) 得到当天是 &#39;Thursday &#39;，WEEKDAY(NOW()) 函数返回当前时间的工作日索引是 3，即对应的是星期四。
+<h2>
+可搜索的 CASE 语句</h2>
+简单 CASE 语句仅允许将表达式的值与一组不同的值进行匹配。 为了执行更复杂的匹配，如范围，则可以使用可搜索 CASE 语句。 可搜索 CASE 语句等同于 IF 语句，但是它的构造更加可读。<br />
+可搜索CASE语句的语法：
+<pre class="info-box">
+CASE
+    WHEN &lt;条件1&gt; THEN &lt;命令&gt;
+    WHEN &lt;条件2&gt; THEN &lt;命令&gt;
+    ...
+    ELSE commands
+END CASE;</pre>
+MySQL 分别计算 WHEN 子句中的每个条件，直到找到一个值为 TRUE 的条件，然后执行 THEN 子句中的相应 &lt;命令&gt;。如果没有一个条件为 TRUE，则执行 ELSE 子句中的&nbsp;&lt;命令&gt;。如果不指定 ELSE 子句，并且没有一个条件为 TRUE，MySQL 将发出错误消息。MySQL 不允许在 THEN 或 ELSE 子句中使用空的命令。 如果您不想处理 ELSE 子句中的逻辑，同时又要防止 MySQL 引发错误，则可以在 ELSE 子句中放置一个空的 BEGIN END 块。<br />
+<br />
+【实例 2】使用 CASE 函数根据表达式的取值返回相应值，输入SQL 语句和执行结果如下
+<pre class="info-box">
+mysql&gt; SELECT CASE WHEN WEEKDAY(NOW())=0 THEN &#39;星期一&#39; WHEN WEEKDAY(NOW())=1 THE
+N &#39;星期二&#39;  WHEN WEEKDAY(NOW())=2 THEN &#39;星期三&#39; WHEN WEEKDAY(NOW())=3 THEN &#39;星期
+四&#39; WHEN WEEKDAY(NOW())=4 THEN &#39;星期五&#39; WHEN WEEKDAY(NOW())=5 THEN &#39;星期六&#39; WHEN
+WEEKDAY(NOW())=6 THEN &#39;星期天&#39; END AS COLUMN1,NOW(),WEEKDAY(NOW()),DAYNAME(NOW(
+));
++---------+---------------------+----------------+----------------+
+| COLUMN1 | NOW()               | WEEKDAY(NOW()) | DAYNAME(NOW()) |
++---------+---------------------+----------------+----------------+
+| 星期四  | 2019-02-28 14:08:00 |              3 | Thursday       |
++---------+---------------------+----------------+----------------+
+1 row in set, 7 warnings (0.00 sec)</pre>
+此例跟上例的返回结果一样，只是使用了 CASE 函数的不同写法，WHEN 后面为表达式，当表达式的返回结果为 TRUE 时取 THEN 后面的值，如果都不是，则返回 ELSE 后面的值。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="../view/niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/2014.html" title="C语言指针变量作为函数参数" target="_blank">C语言指针变量作为函数参数</a></li>
+<li><a href="../view/vip_3403.html" title="[数据结构实践项目]移动迷宫小游戏(初级版)" target="_blank">[数据结构实践项目]移动迷宫小游戏(初级版)</a></li>
+<li><a href="../view/5624.html" title="Java程序员必须知道的学习路线" target="_blank">Java程序员必须知道的学习路线</a></li>
+<li><a href="../view/6506.html" title="冒泡排序算法（超级详细）" target="_blank">冒泡排序算法（超级详细）</a></li>
+<li><a href="../view/7903.html" title="Django项目实例详解(一)" target="_blank">Django项目实例详解(一)</a></li>
+<li><a href="../view/9830.html" title="Spring框架介绍（非常详细）" target="_blank">Spring框架介绍（非常详细）</a></li>
+<li><a href="../view/w0w89wr.html" title="《HTML5+CSS3+JavaScript从入门到精通》PDF下载（高清完整版）" target="_blank">《HTML5+CSS3+JavaScript从入门到精通》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 2538;
+window.arcId = "db2c/tHeavAjVxV/GMVxCPLXrPqvxvsypcJn/ubeHRtJSWQifsTTxHxFjWo";
+window.typeidChain = "172";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="../view/8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="../view/8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="../view/8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="../view/9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="../view/8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

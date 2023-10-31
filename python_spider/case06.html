@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Python爬虫抓取动态加载数据</title>
+<meta name="description" content="本节讲解如何抓取豆瓣电影分类排行榜中的电影数据（ https://movie.douban.com/chart ），比如输入犯罪则会输出所有犯罪影片的电影名称、评分，效果如下所示： 剧情|喜剧|动作|爱情|科幻" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="../view/niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="python_spider.html">Python爬虫</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href="what-is-spider.html">网络爬虫是什么</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href="webpage.html">网页构成</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href="static-and-dynamic.html">静态网页和动态网页</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href="check-element.html">审查网页元素</a>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href="preparatory-work.html">学习前的准备工作</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href="the-first-spider.html">第一个Python爬虫程序</a>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href="user-agent.html">User-Agent用户代理</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href="useragent-pool.html">User-Agnet代理池</a>
+</dd>
+<dd>
+<span class="channel-num">9</span>
+<a href="url-coding.html">URL编码和解码</a>
+</dd>
+<dd>
+<span class="channel-num">10</span>
+<a href="crawl-webpage.html">[实例]爬虫抓取网页</a>
+</dd>
+<dd>
+<span class="channel-num">11</span>
+<a href="case01.html">[实例]抓取百度贴吧数据</a>
+</dd>
+<dd>
+<span class="channel-num">12</span>
+<a href="regexp-syntax.html">正则表达式语法</a>
+</dd>
+<dd>
+<span class="channel-num">13</span>
+<a href="re-module.html">Python re模块用法</a>
+</dd>
+<dd>
+<span class="channel-num">14</span>
+<a href="csv-module.html">Python csv模块</a>
+</dd>
+<dd>
+<span class="channel-num">15</span>
+<a href="case02.html">[实例]抓取猫眼电影排行榜</a>
+</dd>
+<dd>
+<span class="channel-num">16</span>
+<a href="pymysql.html">Python Pymysql存储数据</a>
+</dd>
+<dd>
+<span class="channel-num">17</span>
+<a href="case03.html">[实例]抓取多级页面数据</a>
+</dd>
+<dd>
+<span class="channel-num">18</span>
+<a href="requests.html">Python Requests库</a>
+</dd>
+<dd>
+<span class="channel-num">19</span>
+<a href="crawl-photo.html">[实例]抓取网络照片</a>
+</dd>
+<dd>
+<span class="channel-num">20</span>
+<a href="requests-args.html">Requests库方法和参数</a>
+</dd>
+<dd>
+<span class="channel-num">21</span>
+<a href="switchyomega.html">Proxy SwitchyOmeg</a>
+</dd>
+<dd>
+<span class="channel-num">22</span>
+<a href="xpath.html">Xpath简明教程</a>
+</dd>
+<dd>
+<span class="channel-num">23</span>
+<a href="xpath-helper.html">Xpath Helper安装使用</a>
+</dd>
+<dd>
+<span class="channel-num">24</span>
+<a href="lxml.html">Python lxml库</a>
+</dd>
+<dd>
+<span class="channel-num">25</span>
+<a href="lxml-case.html">[实例]Python lxml应用</a>
+</dd>
+<dd>
+<span class="channel-num">26</span>
+<a href="case04.html">[实例]抓取链家二手房数据</a>
+</dd>
+<dd>
+<span class="channel-num">27</span>
+<a href="capture-package.html">浏览器实现抓包</a>
+</dd>
+<dd>
+<span class="channel-num">28</span>
+<a href="case05.html">[实例]破解有道翻译</a>
+</dd>
+<dd>
+<span class="channel-num">29</span>
+<a href="case06.html">[实例]抓取动态加载数据</a>
+</dd>
+<dd>
+<span class="channel-num">30</span>
+<a href="json.html">Python json模块</a>
+</dd>
+<dd>
+<span class="channel-num">31</span>
+<a href="cookie-login.html">[实例]Cookie模拟登录</a>
+</dd>
+<dd>
+<span class="channel-num">32</span>
+<a href="multithreading.html">Python多线程爬虫</a>
+</dd>
+<dd>
+<span class="channel-num">33</span>
+<a href="bs4.html">Python BS4解析库</a>
+</dd>
+<dd>
+<span class="channel-num">34</span>
+<a href="case07.html">[实例]爬虫下载小说</a>
+</dd>
+<dd>
+<span class="channel-num">35</span>
+<a href="selenium.html">Selenium下载和安装</a>
+</dd>
+<dd>
+<span class="channel-num">36</span>
+<a href="selenium-using.html">Python Selenium用法</a>
+</dd>
+<dd>
+<span class="channel-num">37</span>
+<a href="selenium-case.html">[实例]Selenium实战应用</a>
+</dd>
+<dd>
+<span class="channel-num">38</span>
+<a href="scrapy.html">Python Scrapy爬虫框架</a>
+</dd>
+<dd>
+<span class="channel-num">39</span>
+<a href="scrapy-case.html">[实例]Scrapy框架应用</a>
+</dd>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="python_spider.html">Python爬虫</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Python爬虫抓取动态加载数据</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">本节讲解如何抓取豆瓣电影&ldquo;分类排行榜&rdquo;中的电影数据（<a href="https://movie.douban.com/chart)" target="_blank">https://movie.douban.com/chart</a>），比如输入&ldquo;犯罪&rdquo;则会输出所有犯罪影片的电影名称、评分，效果如下所示：<br />
+<pre class="info-box">
+剧情|喜剧|动作|爱情|科幻|动画|悬疑|惊悚|恐怖|纪录片|短片|情色|同性|音乐|歌舞|家庭|儿童|传记|历史|战争|犯罪|西部|奇幻|冒险|灾难|武侠|古装|运动|黑色电影|
+你想了解什么类型电影:犯罪
+{&#39;name&#39;: &#39;肖申克的救赎&#39;, &#39;score&#39;: 9.7}
+{&#39;name&#39;: &#39;控方证人&#39;, &#39;score&#39;: 9.6}
+...
+电影总数量：302部</pre>
+<h2>
+确定网站类型</h2>
+首先要明确豆瓣电影网站的类型，即是动态还是静态。检查方法：右键查看网页源码 &mdash;&gt; 搜索&ldquo;辛德勒的名单&rdquo;关键字，如下图所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="爬虫抓取动态网站" src="../uploads/allimg/210819/9-210Q915062c60.gif" /><br />
+图1：分析网站类型</div>
+<br />
+最终发现源码页中没有出现想要抓取的数据，只有一大堆的 JS 代码，由此确定该网站为动态网站。<br />
+<h2>
+影片详情信息</h2>
+接下来，使用快捷键 F12 打开控制台进行抓包，点击<code style="font-size: 14px;">NetWork</code>选项卡 &mdash;&gt;<code style="font-size: 14px;">XHR</code>选项 &mdash;&gt;&nbsp;<code style="font-size: 14px;"><font color="#333333">Preview</font></code>选项卡 &mdash;&gt; 刷新当前页面抓取数据包，如下图所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="抓取动态网站数据包" src="../uploads/allimg/210819/9-210Q9150G0938.gif" /><br />
+图2：抓取动态网站数据包</div>
+<br />
+从图 2 可知，我们想要抓取的数据取全部包含在当前的数据包中。当我们向下滚动鼠标滑轮时，左侧栏内的数据包会实现自动加载，这是使用<a href="https://baike.baidu.com/item/AJAX/8425" target="_blank">&nbsp;Ajax&nbsp;</a>异步加载技术实现的。<br />
+<br />
+通过查看数据 Headers 选项可以明确 url 地址、查询参数等信息，如下所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="抓取动态加载的数据包" src="../uploads/allimg/210819/9-210Q9150H5R0.gif" /><br />
+图3：分析Headers信息<br />
+&nbsp;</div>
+从上图可以得知请求的基准 URL （由于还未拼接查询参数，所以称之为基准 URL），如下所示：
+<pre class="info-box">
+&#39;https://movie.douban.com/j/chart/top_list?&#39;</pre>
+继续滚动鼠标滑轮可知查询参数具有如下规律：
+<pre class="info-box">
+type: 4  # 电影类型
+interval_id: 100:90  #代表网页上滑动条的百分比（好于100%-90%的历史片）
+action: &#39;&#39;  # 空
+start: 0  # 每次加载电影的起始索引值 0 20 40 60
+limit: 20 # 每次加载的电影数量，1为初始值，后续加载时20固定不变</pre>
+注意：寻找规律时，后加载出来的数据包会排在最前面，除去第一个数据包外，其余数据包如下所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="抓取动态加载的数据" src="../uploads/allimg/210819/9-210Q9150IBZ.gif" /><br />
+图4：寻找查询参数值的规律</div>
+<h2>
+影片总数量</h2>
+注意：第一个数据包反映了每个类型中电影的总数量，其 url 与响应信息如下：
+<pre class="info-box">
+请求的URL地址 : https://movie.douban.com/j/chart/top_list_count?type=4&amp;interval_id=100%3A90
+Response信息：{&quot;playable_count&quot;:41,&quot;total&quot;:104,&quot;unwatched_count&quot;:104}</pre>
+<h2>
+影片类型与类型码</h2>
+影片的类型与类型码包含在电影排行榜的主界面中，如下所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="爬虫抓取动态加载数据" src="../uploads/allimg/210819/9-210Q9150J5610.gif" /><br />
+图5：影片类型与类型码<br />
+&nbsp;</div>
+分析上述页面结构，然后使用正则表达式来提取想要的数据，并定义选择菜单&ldquo;menu&rdquo;，代码如下所示：
+<pre class="python">
+import re
+
+def get_all_type_films(self):
+    # 获取影片类型和类型码
+    url = &#39;https://movie.douban.com/chart&#39;
+    headers = self.get_headers()
+    html = requests.get(url=url, headers=headers).text
+    re_bds = r&#39;&lt;a href=.*?type_name=(.*?)&amp;type=(.*?)&amp;.*?&lt;/a&gt;&#39;
+    pattern = re.compile(re_bds, re.S)
+    r_list = pattern.findall(html)
+    # 存放所有类型和对应类型码大字典
+    type_dict = {}
+    # 定义一个选择电影类型的菜单
+    menu = &#39;&#39;
+    # r_list[{&#39;剧情 , 11&#39;},{},..]
+    for r in r_list:
+        type_dict[r[0].strip()] = r[1].strip()
+        # 获取input的菜单，显示所有电影类型
+        menu += r[0].strip() + &#39;|&#39;
+    #返回类型字典以供后续函数调用，并返回输入菜单menu
+    # {&#39;剧情&#39;: &#39;11&#39;, &#39;喜剧&#39;: &#39;24&#39;,...}
+    return type_dict, menu</pre>
+<h2>
+编写完整程序</h2>
+完成上述分析后，下面开始编写 Python 爬虫程序，代码如下：
+<pre class="python">
+#coding:utf8
+import requests
+import time
+import random
+import re
+import json
+from ua_info import ua_list
+
+
+class DoubanSpider(object):
+    def __init__(self):
+        self.url = &#39;https://movie.douban.com/j/chart/top_list?&#39;
+        self.i = 0
+
+    # 获取随机headers
+    def get_headers(self):
+        headers = {&#39;User-Agent&#39;:random.choice(ua_list)}
+        return headers
+
+    # 获取页面
+    def get_page(self,params):
+      # 将json转换为 python 数据类型，并返回
+      html = requests.get(url=self.url,params=params,headers=self.get_headers()).text
+      html=json.loads(html)
+      self.parse_page(html)
+
+    # 解析并保存数据
+    def parse_page(self,html):
+       item = {}
+        # html列表类型： [{电影1},{电影2},{电影3}...]
+       for one in html:
+            # 名称 + 评分
+           item[&#39;name&#39;] = one[&#39;title&#39;].strip()
+           item[&#39;score&#39;] = float(one[&#39;score&#39;].strip())
+           print(item)
+           self.i += 1
+
+    # 获取电影总数
+    def total_number(self,type_number):
+        # F12抓包抓到的地址，type表示电影类型
+        url = &#39;https://movie.douban.com/j/chart/top_list_count?type={}&amp;interval_id=100%3A90&#39;.format(type_number)
+        headers = self.get_headers()
+        html = requests.get(url=url,headers=headers).json()
+        total = int(html[&#39;total&#39;])
+        return total
+
+    # 获取所有电影的类型和对应type值
+    def get_all_type_films(self):
+        # 获取类型与类型码
+        url = &#39;https://movie.douban.com/chart&#39;
+        headers = self.get_headers()
+        html = requests.get(url=url,headers=headers).text
+        re_bds = r&#39;&lt;a href=.*?type_name=(.*?)&amp;type=(.*?)&amp;.*?&lt;/a&gt;&#39;
+        pattern = re.compile(re_bds,re.S)
+        r_list = pattern.findall(html)
+        # 存放所有类型和对应类型码大字典
+        type_dict = {}
+        #定义一个选择电影类型的菜单
+        menu = &#39;&#39;
+        for r in r_list:
+            type_dict[r[0].strip()] = r[1].strip()
+            # 获取input的菜单，显示所有电影类型
+            menu += r[0].strip() + &#39;|&#39;
+
+        return type_dict,menu
+
+    # 主程序入口函数
+    def main(self):
+        # 获取type的值
+        type_dict,menu = self.get_all_type_films()
+        menu = menu + &#39;\n你想了解什么类型电影:&#39;
+        name = input(menu)
+        type_number = type_dict[name]
+        # 获取电影总数
+        total = self.total_number(type_number)
+        for start in range(0,(total+1),20):
+           #构建查询参数
+            params = {
+                &#39;type&#39; : type_number,
+                &#39;interval_id&#39; : &#39;100:90&#39;,
+                &#39;action&#39; : &#39;&#39;,
+                &#39;start&#39; : str(start),
+                &#39;limit&#39; : &#39;20&#39;
+            }
+            # 调用函数,传递params参数
+            self.get_page(params)
+            # 随机休眠1-3秒
+            time.sleep(random.randint(1,3))
+        print(&#39;电影总数量:%d部&#39;%self.i )
+
+if __name__ == &#39;__main__&#39;:
+    spider = DoubanSpider()
+    spider.main()</pre>
+输出示例：
+<pre class="info-box">
+剧情|喜剧|动作|爱情|科幻|动画|悬疑|惊悚|恐怖|纪录片|短片|情色|同性|音乐|歌舞|家庭|儿童|传记|历史|战争|犯罪|西部|奇幻|冒险|灾难|武侠|古装|运动|黑色电影|
+你想了解什么类型电影:科幻
+{&#39;name&#39;: &#39;盗梦空间&#39;, &#39;score&#39;: 9.3}
+{&#39;name&#39;: &#39;星际穿越&#39;, &#39;score&#39;: 9.3}
+{&#39;name&#39;: &#39;楚门的世界&#39;, &#39;score&#39;: 9.3}
+{&#39;name&#39;: &#39;机器人总动员&#39;, &#39;score&#39;: 9.3}
+{&#39;name&#39;: &#39;蝙蝠侠：黑暗骑士&#39;, &#39;score&#39;: 9.2}
+{&#39;name&#39;: &#39;超感猎杀：完结特别篇&#39;, &#39;score&#39;: 9.2}
+{&#39;name&#39;: &#39;新世纪福音战士 第0:0话 诞生之始&#39;, &#39;score&#39;: 9.2}
+{&#39;name&#39;: &#39;少年骇客：变身之谜&#39;, &#39;score&#39;: 9.2}
+...
+...
+电影总数量:147部</pre>
+最后我们对抓取动态网站数据做简单地总结：
+<ul>
+<li>
+1. 确定网站是否为动态网站，通过查看源码搜索相应的关键字即可确定。</li>
+<li>
+2. 动态网站主要通过异步方式加载数据。触发数据加载的 JS 事件主要有滚动鼠标滑轮、鼠标点击、拉动滚动条等有关动作， 也有一些网站通过局部更新的方式加载数据，比如有道翻译案例。</li>
+</ul>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="../view/niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/466.html" title="Code::Blocks汉化教程（附带汉化包）" target="_blank">Code::Blocks汉化教程（附带汉化包）</a></li>
+<li><a href="../view/829.html" title="Java去除字符串中的空格（trim()）" target="_blank">Java去除字符串中的空格（trim()）</a></li>
+<li><a href="../view/1805.html" title="C语言if else语句详解" target="_blank">C语言if else语句详解</a></li>
+<li><a href="../view/7576.html" title="MySQL约束概述" target="_blank">MySQL约束概述</a></li>
+<li><a href="../view/radix-sort.html" title="基数排序算法" target="_blank">基数排序算法</a></li>
+<li><a href="../ml_alg/what-is-ai.html" title="什么是人工智能" target="_blank">什么是人工智能</a></li>
+<li><a href="../pillow/what-is-pillow.html" title="Pillow是什么" target="_blank">Pillow是什么</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9083;
+window.arcId = "fc52gZDVEZ59X0wTKW0+XWx66IoLpWDaCbVWvvblvPEaIuLJ8JmZaPlHYAU";
+window.typeidChain = "421";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="../view/8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="../view/8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="../view/8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="../view/9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="../view/8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="https://c.biancheng.net/templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/python_spider/case05.html";
+window.nextPageURL = "/python_spider/json.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

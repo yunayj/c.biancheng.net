@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C语言杨辉三角（两种方法）</title>
+<meta name="description" content="杨辉三角是我们从初中就知道的，现在，让我们用C语言将它在计算机上显示出来。 在初中，我们就知道，杨辉三角的两个腰边的数都是 1，其它位置的数都是上顶上两个数之和。这就是" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C语言杨辉三角（两种方法）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">杨辉三角是我们从初中就知道的，现在，让我们用C语言将它在计算机上显示出来。<br />
+<br />
+在初中，我们就知道，杨辉三角的两个腰边的数都是 1，其它位置的数都是上顶上两个数之和。这就是我们用C语言写杨辉三角的关键之一。<br />
+<br />
+在高中的时候我们又知道，杨辉三角的任意一行都是的二项式系数，n 为行数减 1。也就是说任何一个数等于这个是高中的组合数。n 代表行数减 1，不代表列数减 1。如：第五行的第三个数就为 =6。<br />
+<br />
+现在我们按第一种思路来写：先定义一个<a href='https://c.biancheng.net/c/array/' target='_blank'>二维数组</a>：a[N][N]，略大于要打印的行数。再令两边的数为 1，即当每行的第一个数和最后一个数为 1。a[i][0]=a[i][i-1]=1，n 为行数。除两边的数外，任何一个数为上两顶数之和，即 a[i][j] = a[i-1][j-1] + a[i-1][j]。最后输出杨辉三角。代码如下：
+<pre class="c">
+#include &lt;stdio.h&gt;
+#define N 14
+void main()
+{
+    int i, j, k, n=0, a[N][N];  /*定义二维数组a[14][14]*/
+    while(n&lt;=0||n&gt;=13){  /*控制打印的行数不要太大，过大会造成显示不规范*/
+        printf(&quot;请输入要打印的行数：&quot;);
+        scanf(&quot;%d&quot;,&amp;n);
+    }
+    printf(&quot;%d行杨辉三角如下：\n&quot;,n);
+    for(i=1;i&lt;=n;i++)
+        a[i][1] = a[i][i] = 1;  /*两边的数令它为1，因为现在循环从1开始，就认为a[i][1]为第一个数*/
+    for(i=3;i&lt;=n;i++)
+        for(j=2;j&lt;=i-1;j++)
+            a[i][j]=a[i-1][j-1]+a[i-1][j];  /*除两边的数外都等于上两顶数之和*/ 
+    for(i=1;i&lt;=n;i++){
+        for(k=1;k&lt;=n-i;k++)
+            printf(&quot;   &quot;);  /*这一行主要是在输出数之前打上空格占位，让输出的数更美观*/
+        for(j=1;j&lt;=i;j++)  /*j&lt;=i的原因是不输出其它的数，只输出我们想要的数*/
+            printf(&quot;%6d&quot;,a[i][j]);
+        
+        printf(&quot;\n&quot;);  /*当一行输出完以后换行继续下一行的输出*/
+    }
+    printf(&quot;\n&quot;);
+}</pre>
+运行结果：
+<pre class="info-box">
+请输入要打印的行数：10
+10行杨辉三角如下：
+                                1
+                             1     1
+                          1     2     1
+                       1     3     3     1
+                    1     4     6     4     1
+                 1     5    10    10     5     1
+              1     6    15    20    15     6     1
+           1     7    21    35    35    21     7     1
+        1     8    28    56    70    56    28     8     1
+     1     9    36    84   126   126    84    36     9     1</pre>
+<br />
+上面的这一种方法我们用到了二维数组，下面的这一方法我们将用到自定义函数。<br />
+<br />
+在高中我们知道，杨辉三角中的任何一个数都等于一个组合数，现在我们用这一公式来做。首先，此方法代码如下：
+<pre class="c">
+#include &lt;stdio.h&gt;
+
+/* 
+ * 定义阶乘，在这里可能会想。为什么要用float，当我试第一次的时候，
+ * 如果用int的话，那么在打印行数多了以后就会出错。
+ * 这是因为阶乘的数比较大，如果用int就不够用了。下同
+ */
+float J(int i){
+    int j;
+    float k=1;
+    for(j=1;j&lt;=i;j++)
+        k=k*j;
+    return(k);
+}
+float C(int i,int j){  /*定义组合数*/
+    float k;
+    k=J(j)/(J(i)*J(j-i));
+    return(k);
+}
+void main(){
+    int i=0,j,k,n;  /*打印杨辉三角*/ 
+    while(i&lt;=0||i&gt;16){
+        printf(&quot;请输入要打印的行数：&quot;);
+        scanf(&quot;%d&quot;,&amp;i);
+    }
+    printf(&quot;%d行杨辉三角如下：\n&quot;,i);
+
+    for(j=0;j&lt;i;j++){
+        for(k=1;k&lt;=(i-j);k++)
+            printf(&quot;  &quot;);
+        for(n=0;n&lt;=j;n++)
+            printf(&quot;%4.0f&quot;,C(n,j));
+        printf(&quot;\n&quot;);
+    }
+    printf(&quot;\n\n&quot;);
+}</pre>
+运行结果：
+<pre class="info-box">
+请输入要打印的行数：10
+10行杨辉三角如下：
+                       1
+                     1   1
+                   1   2   1
+                 1   3   3   1
+               1   4   6   4   1
+             1   5  10  10   5   1
+           1   6  15  20  15   6   1
+         1   7  21  35  35  21   7   1
+       1   8  28  56  70  56  28   8   1
+     1   9  36  84 126 126  84  36   9   1</pre>
+<br />
+这个方法主要就是要知道组合数的表示。还有如果自定义函数。但是这种方法产生的数据比较大，不建议用这种方法。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="187.html" title="#define用法，C语言#define详解" target="_blank">#define用法，C语言#define详解</a></li>
+<li><a href="3132.html" title="Linux ACL权限设置（setfacl和getfacl）" target="_blank">Linux ACL权限设置（setfacl和getfacl）</a></li>
+<li><a href="3472.html" title="Shell过滤器" target="_blank">Shell过滤器</a></li>
+<li><a href="4014.html" title="HttpServletResponse详解：封装HTTP响应消息" target="_blank">HttpServletResponse详解：封装HTTP响应消息</a></li>
+<li><a href="5946.html" title="Python IDE有哪些，哪款适合初学者？" target="_blank">Python IDE有哪些，哪款适合初学者？</a></li>
+<li><a href="7610.html" title="HTML &lt;textarea&gt;标签（文本域）" target="_blank">HTML &lt;textarea&gt;标签（文本域）</a></li>
+<li><a href="wnqg7p.html" title="DevOps到底是什么？" target="_blank">DevOps到底是什么？</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 495;
+window.arcId = "ef9cjKqnBO7Ne7Fr/U9kqJydmk87V5wKSSwIL9UlZrW2YhruYc0kEZCGIg";
+window.typeidChain = "66|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

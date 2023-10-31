@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>ln命令_Linux ln命令：创建文件链接</title>
+<meta name="description" content="ln 是一个很神奇的命令，它可以创建一个文件的影子，也可以通过一个通道进入另一个地方。其实，所有的这些把戏都是通过软链接和硬链接来实现的。本文不会花太多篇幅来深入解释" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="../view/niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>ln命令_Linux ln命令：创建文件链接</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">ln 是一个很神奇的命令，它可以创建一个文件的影子，也可以通过一个通道进入另一个地方。其实，所有的这些把戏都是通过软链接和硬链接来实现的。本文不会花太多篇幅来深入解释&ldquo;硬链接&rdquo;和&ldquo;软链接&rdquo;两个概念，而是更侧重在 ln 命令本身的功能和使用上。
+<h2>
+链接也分软硬</h2>
+我们先来介绍一下软链接和硬链接的概念。<br />
+<br />
+软链接，全称是软链接文件，英文叫作 symbolic link。这类文件其实非常类似于 Windows 里的快捷方式，这个软链接文件（假设叫 VA）的内容，其实是另外一个文件（假设叫 B）的路径和名称，当打开 A 文件时，实际上系统会根据其内容找到并打开 B 文件。<br />
+<br />
+而硬链接，全称叫作硬链接文件，英文名称是 hard link。这类文件比较特殊，这类文件（假设叫 A）会拥有自己的 inode 节点和名称，其 inode 会指向文件内容所在的数据块。与此同时，该文件内容所在的数据块的引用计数会加 1。当此数据块的引用计数大于等于 2 时，则表示有多个文件同时指向了这一数据块。一个文件修改，多个文件都会生效。当删除其中某个文件时，对另一个文件不会有影响，仅仅是数据块的引用计数减 1。当引用计数为 0 时，则系统才会清除此数据块。<br />
+<br />
+如果上述内容理解起来非常困难，那么还请花些时间阅读一下《UNIX 环境高级编程》的相关章节，要确保理解这部分知识，才更有助于深入掌握 ln 命令。
+<h2>
+建立属于你的第一个硬链接</h2>
+硬盘上已经有了一个文件，叫作 source.txt，我想针对这个文件建一个硬链接文件，名字叫作 hardsource.txt：
+<pre class="info-box">
+#我们的原文件
+[roc@roclinux ~]$ cat source.txt
+Hello!Source!
+ 
+#先通过ls看看文件信息, 注意开头的&quot;-&quot;, 表示这是一个普通文件
+[roc@roclinux ~]$ ls -l source.txt
+-rw-rw-r-- 1 roc roc 14 3月   1 00:19 source.txt
+ 
+#用ln命令建立硬链接
+[roc@roclinux ~]$ ln source.txt hardsource.txt
+ 
+#我们通过ls -i查看两个文件的inode, 发现是完全相同的, 表示它们指向的是同一数据块
+[roc@roclinux ~]$ ls -il source.txt hardsource.txt
+2235010 -rw-rw-r-- 2 roc roc 14 3月   1 00:19 hardsource.txt
+2235010 -rw-rw-r-- 2 roc roc 14 3月   1 00:19 source.txt</pre>
+<br />
+可以看到，我们建立硬链接的命令格式是：
+<pre class="info-box">
+$ ln 源文件名称 硬链接文件名称</pre>
+<br />
+首先，用 ln source.txt hardsource.txt 建立了一个 source.txt 文件的硬链接文件。然后，用 ls-il 命令查看了文件的信息。其中，<code>-i</code>选项表示列出每个文件的 inode 节点 ID，可以发现 source.txt 和 hardsource.txt 的 inode 号完全一致，都是 2235010，这就说明它们都指向了同一个数据块。<br />
+<br />
+这就是硬链接，属于我们的第一个硬链接文件。<br />
+<br />
+有一点要注意，硬链接不允许跨分区来建立，也不允许跨文件系统来建立，即使是同一类型的文件系统也不行，这主要是受限于 inode 指向数据块的名字空间。所以，记住，硬链接只能在同一个分区内建立。
+<h2>
+建立属于你的第一个软链接</h2>
+建立一个 source.txt 文件的软链接，名字叫作 softsource.txt。
+<pre class="info-box">
+#用ln -s来建立软链接
+[roc@roclinux ~]$ ln -s source.txt softsource.txt
+ 
+#查看文件i节点信息
+[roc@roclinux ~]$ ls -il source.txt softsource.txt
+2235009 lrwxrwxrwx 1 roc roc 10 3月   1 00:24 softsource.txt -&gt; source.txt
+2235010 -rw-rw-r-- 2 roc roc 14 3月   1 00:19 source.txt</pre>
+<br />
+可以看到，建立软链接也是使用 ln 命令，但是必须加上<code>-s</code>选项，即 --symbolic 选项。建立软链接的命令格式为：
+<pre class="info-box">
+ln -s 源文件名称 软链接文件名称</pre>
+<br />
+我们依然使用 ls-il 命令查看，发现软链接文件 softsource.txt 和源文件 source.txt 的 inode 号是不一样的，这说明它们完全指向两个不同的数据块。而且，细心的朋友能够观察到软链接文件的权限栏首字符为 l（L的小写字母），这也是软链接文件区别于普通文件的地方之一。<br />
+<br />
+如果这个时候，我们删除了 source.txt 文件，则软链接 softsource.txt 就会变成红色字体。这表示警告，说明这是一个有问题的文件，无法找到它所标识的目标文件 source.txt 啦。
+<h2>
+建立属于你自己的目录链接</h2>
+前面的两个例子都是创建的文件链接，那可以创建目录的链接吗？自从学会了 ln 命令之后，就像手里有了一把锤子，总觉得哪儿都是钉子。
+<pre class="info-box">
+[roc@roclinux ~]$ ls -F
+tempdir/
+ 
+[roc@roclinux ~]$ ln tempdir linkdir
+ln: &quot;tempdir&quot;: 不允许针对目录建立硬链接</pre>
+<br />
+我想硬链接一个目录 tempdir，但是报错了！是的，硬链接是不允许链接到目录的。至于原因，卖个关子，稍后再揭晓。<br />
+<br />
+我们来尝试一下针对目录建立软链接，看看是否可以：
+<pre class="info-box">
+#尝试建立针对目录的软链接
+[roc@roclinux ~]$ ln -s tempdir/ linkdir
+[roc@roclinux ~]$ ls -li
+总用量 4
+2235009 lrwxrwxrwx 1 roc roc    8 3月   1 00:32 linkdir -&gt; tempdir/
+2235011 drwxrwxr-x 2 roc roc 4096 3月   1 00:30 tempdir</pre>
+<br />
+成功了，系统允许我们针对目录建立软链接，看，我建立了一个 tempdir 目录的软链接 linkdir，以后我完全可以用 cd linkdir 来&ldquo;进入&rdquo;temp 目录了。
+<pre class="info-box">
+#给大家看看tempdir里的东西
+[roc@roclinux ~]$ ls -F tempdir/
+linksource.txt
+ 
+#我们通过刚才创建的软链接, 进入linkdir
+[roc@roclinux ~]$ cd linkdir/
+ 
+#看, 就如同进入tempdir一样
+[roc@roclinux linkdir]$ ls -F
+linksource.txt</pre>
+<h2>
+为什么 ln 不允许硬链接到目录</h2>
+Linux 系统中的硬链接有两个限制：
+<ol>
+<li>
+不能跨越文件系统。</li>
+<li>
+不允许普通用户对目录作硬链接。</li>
+</ol>
+<br />
+至于第一个限制，很好理解，而第二个就不那么好理解了。<br />
+<br />
+我们对任何一个目录用 ls-l 命令都可以看到其链接数至少是 2，这也说明了系统中是存在基于目录的硬链接的，而且命令 ln-d（-d选项表示针对目录建立硬链接）也允许 root 用户尝试对目录作硬链接。这些都说明了系统限制对目录进行硬链接只是一个硬性规定，并不是逻辑上不允许或技术上不可行。那么操作系统为什么要进行这个限制呢？<br />
+<br />
+这是因为，如果引入了对目录的硬连接就有可能在目录中引入循环链接，那么在目录遍历的时候系统就会陷入无限循环当中。也许有人会说，符号连接不也可以引入循环链接吗，那么为什么不限制目录的符号连接呢？<br />
+<br />
+原因就在于，在 Linux 系统中，每个文件（目录也是文件）都对应着一个 inode 结构，其中 inode <a href='../data_structure/data_structure.html' target='_blank'>数据结构</a>中包含了文件类型（目录、普通文件、符号连接文件等）的信息，也就是说，操作系统在遍历目录时可以判断出其是否是符号连接。既然可以判断出它是否是符号连接，当然就可以采取一些措施来防范进入过大过深的循环层次，于是大部分系统会规定在连续遇到 8 个符号连接后就停止遍历。但是对于硬链接，由于操作系统中采用的数据结构和算法限制，目前是不能防范这种死循环的。<br />
+<br />
+基于这样的考虑，系统不允许普通用户建立目录硬链接。
+<h2>
+ln 命令的 -n 选项有点绕</h2>
+ln 命令里面有一个<code>-n</code>选项，它的官方解释是这样的：
+<pre class="info-box">
+-n, --no-dereference 
+      treat destination that is a symlink to a directory as if it were a normal file.</pre>
+<br />
+这个选项理解起来的确有些难度，为此，我们模拟了一个操作过程，以便让大家能更好地理解。<br />
+<br />
+第一步：建立两个文件夹 a 和 b。
+<pre class="info-box">
+[roc@roclinux ~]$ mkdir a b
+[roc@roclinux ~]$ ls -F
+a/  b/</pre>
+<br />
+第二步：针对 a 目录创建软链接 c。
+<pre class="info-box">
+[roc@roclinux ~]$ ln -s a c
+[roc@roclinux ~]$ ls -li
+总用量 8
+2235012 drwxrwxr-x 2 roc roc 4096 3月   1 00:47 a
+2235013 drwxrwxr-x 2 roc roc 4096 3月   1 00:47 b
+2235009 lrwxrwxrwx 1 roc roc    1 3月   1 00:48 c -&gt; a</pre>
+<br />
+第三步：精髓就在这一步。
+<pre class="info-box">
+#我们再针对b目录创建软链接c, 造成了软链接c的重复定义
+[roc@roclinux ~]$ ln -s b c
+ 
+#软链接c并没有指向b, 上一条命令似乎并没有生效
+[roc@roclinux ~]$ ls -li
+总用量 8
+2235012 drwxrwxr-x 2 roc roc 4096 3月   1 00:48 a
+2235013 drwxrwxr-x 2 roc roc 4096 3月   1 00:47 b
+2235009 lrwxrwxrwx 1 roc roc    1 3月   1 00:48 c -&gt; a
+ 
+#我们进入到软链接c(也就是a目录)中看一看
+[roc@roclinux ~]$ cd c/
+ 
+#竟然发现了一个软链接b指向目录b, 而且是死链
+[roc@roclinux c]$ ls -li
+总用量 0
+2235010 lrwxrwxrwx 1 roc roc 1 3月   1 00:48 b -&gt; b</pre>
+<br />
+可以看到，ln 会在 c 软链接目录（也就是 a 目录）里面创建一个 b 的软链接文件，且指向 b 目录，但很明显，这不是你的本意。<br />
+<br />
+如果换成 ln-sn b c，那么结果就变了，我们一起来看。
+<pre class="info-box">
+#加上-n选项后, 系统发现了软链接重复定义的问题, 于是报错了
+[roc@roclinux ~]$ ln -sn b c
+ln: 创建符号链接 &quot;c&quot;: 文件已存在
+ 
+#我们使用-f(--force)来强制建立软链接, 看看效果
+[roc@roclinux ~]$ ln -snf b c
+ 
+#看, 原来指向a的符号链接c, 现在已经乖乖地指向b了
+[roc@roclinux ~]$ ls -li
+总用量 8
+2235012 drwxrwxr-x 2 roc roc 4096 3月   1 00:51 a
+2235013 drwxrwxr-x 2 roc roc 4096 3月   1 00:47 b
+2235009 lrwxrwxrwx 1 roc roc    1 3月   1 00:51 c -&gt; b</pre>
+<br />
+这就是<code>-n</code>选项的作用，相信通过这样一个生动的例子，你应该可以理解下面这句话的含义了。
+<pre>
+-n, --no-dereference 
+      treat destination that is a symlink to a directory as if it were a normal file.</pre>
+<br />
+好了，有关 ln 命令的种种知识和示例，就讲到这里了。如果你对<code>-n</code>选项的作用理解得还不是非常透彻的话，就多看几遍吧，确实挺难理解的，哈哈。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="../view/niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/204.html" title="函数的返回值，C语言函数返回值详解" target="_blank">函数的返回值，C语言函数返回值详解</a></li>
+<li><a href="../view/720.html" title="Linux命令基本格式（详解版）" target="_blank">Linux命令基本格式（详解版）</a></li>
+<li><a href="../view/972.html" title="Java main()方法" target="_blank">Java main()方法</a></li>
+<li><a href="../mysql/reverse.html" title="MySQL REVERSE函数：反转字符串" target="_blank">MySQL REVERSE函数：反转字符串</a></li>
+<li><a href="../maven2/profile-tutorial.html" title="Maven Profile精讲" target="_blank">Maven Profile精讲</a></li>
+<li><a href="../ml_alg/svm-application.html" title="Python Sklearn库SVM算法应用" target="_blank">Python Sklearn库SVM算法应用</a></li>
+<li><a href="../csharp/polymorphism.html" title="C#多态" target="_blank">C#多态</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 680;
+window.arcId = "2532rmK+5eQvgC0FwWjL5RUDgpZafWzZ5+ExREzK/LNnDqZOwRiP714s0g";
+window.typeidChain = "71|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="../view/8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="../view/8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="../view/8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="../view/9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="../view/8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

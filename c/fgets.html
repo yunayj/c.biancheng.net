@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C语言fgets()：从文件读取一个字符串</title>
+<meta name="description" content="fgets() 是 C语言标准库中的函数，定义在 stdio.h 头文件中。 fgets() 函数用于从文件中读取一个字符串，函数的原型如下： char *fgets(char *str, int n, FILE *stream); 参数 str：指向一个能存储字符" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="../view/niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C语言fgets()：从文件读取一个字符串</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">fgets() 是 C语言标准库中的函数，定义在<code>&lt;stdio.h&gt;</code>头文件中。<br />
+<br />
+fgets() 函数用于从文件中读取一个字符串，函数的原型如下：
+<p class="info-box">
+char *fgets(char *str, int n, FILE *stream);</p>
+<h4>
+参数</h4>
+<ul>
+<li>
+str：指向一个能存储字符串的字符数据，fgets() 会将从文件中读取到的字符串存储到 str 所指的数组中。</li>
+<li>
+n：指定要读取的最大字符数，包括空字符。也就是说，fgets() 函数从文件中最多读取 n&minus;1 个字符。</li>
+<li>
+stream：指向要读取的目标文件。</li>
+</ul>
+<h4>
+返回值</h4>
+如果操作成功，返回 str；如果到达文件末尾或发生错误，则返回 NULL。<br />
+<br />
+需要强调的是，读取到 n-1 个字符，或者读取到换行符，又或者读到文件末尾，fgets() 都会停止读取，读取到的字符串末尾会自动添加 &#39;\0&#39;。其中，当 fgets() 读取到换行符时，会将其视为有效字符保存到 str 数组中。<br />
+<br />
+【实例】以下是一个 C语言 fgets() 函数的使用示例，该示例打开一个名为 example.txt 的文件，并逐行打印其内容：<br />
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+
+int main() {
+  FILE *file = fopen(&quot;example.txt&quot;, &quot;r&quot;);
+  if (file == NULL) {
+    printf(&quot;Failed to open the file.\n&quot;);
+    return 1;
+  }
+
+  char line[100];
+  while (fgets(line, sizeof(line), file) != NULL) {
+    printf(&quot;%s&quot;, line); // 打印读取的行
+  }
+
+  fclose(file);
+
+  return 0;
+}</pre>
+<h2>
+总结</h2>
+fgets() 函数提供了一种简单安全的方法来从文件中逐行读取文本。它自动处理字符串的终止，并允许指定最大读取长度以防止缓冲区溢出。这使得 fgets() 成为读取文本文件的常用和可靠的选择。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="../view/niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/853.html" title="Linux id命令：查看用户的UID和GID" target="_blank">Linux id命令：查看用户的UID和GID</a></li>
+<li><a href="../view/1446.html" title="C++ string获取字符串元素：[]和at()" target="_blank">C++ string获取字符串元素：[]和at()</a></li>
+<li><a href="../view/2287.html" title="Python封装机制及实现方法" target="_blank">Python封装机制及实现方法</a></li>
+<li><a href="../view/4261.html" title="Spring Bean的生命周期" target="_blank">Spring Bean的生命周期</a></li>
+<li><a href="../view/vip_8359.html" title="MySQL如何选择正确的字符集？" target="_blank">MySQL如何选择正确的字符集？</a></li>
+<li><a href="../view/9623.html" title="某大厂码农说：拓展社交圈子只需要4个字" target="_blank">某大厂码农说：拓展社交圈子只需要4个字</a></li>
+<li><a href="../view/9826.html" title="Java静态编译技术介绍（超级详细）" target="_blank">Java静态编译技术介绍（超级详细）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10214;
+window.arcId = "db43SZlW3Ikmp5e53DBnXRZAZcWVivw8baON1E8YvjMgArz483uNbls0rxfr";
+window.typeidChain = "288|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="../view/8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="../view/8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="../view/8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="../view/9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="../view/8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

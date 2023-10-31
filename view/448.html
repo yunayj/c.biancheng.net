@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++ forward_list用法详解</title>
+<meta name="description" content="forward_list 容器以单链表的形式存储元素。forward_list 的模板定义在头文件 forward_list 中。 fdrward_list 和 list 最主要的区别是:它不能反向遍历元素；只能从头到尾遍历。 forward_list 的单向链" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++ forward_list用法详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">forward_list 容器以单链表的形式存储元素。forward_list 的模板定义在头文件 forward_list 中。<span style="color:#b22222;">fdrward_list 和 list 最主要的区别是:它不能反向遍历元素；只能从头到尾遍历。</span><br />
+<br />
+forward_list 的单向链接性也意味着它会有一些其他的特性：
+<ol>
+<li>
+无法使用反向迭代器。只能从它得到const或non-const前向迭代器，这些迭代器都不能解引用，只能自增；</li>
+<li>
+没有可以返回最后一个元素引用的成员函数back();只有成员函数front();</li>
+<li>
+因为只能通过自增前面元素的迭代器来到达序列的终点，所以push_back()、pop_back()、emplace_back()也无法使用。</li>
+</ol>
+<br />
+forward_list 的操作比 list 容器还要快，而且占用的内存更少，尽管它在使用上有很多限制，但仅这一点也足以让我们满意了。<br />
+<br />
+forward_list 容器的构造函数的使用方式和 list 容器相同。forward_list 的迭代器都是前向迭代器。它没有成员函数 size()，因此不能用一个前向迭代器减去另一个前向迭代器，但是可以通过使用定义在头文件 iterator 中的 dis<a href='https://c.biancheng.net/ref/tan.html' target='_blank'>tan</a>ce() 函数来得到元素的个数。例如：<br />
+<pre class="cpp">
+std::forward_list&lt;std::string&gt; my_words {&quot;three&quot;, &quot;six&quot;, &quot;eight&quot;};
+auto count = std::distance(std::begin(my_words),std::end(my_words));
+// Result is 3</pre>
+distance() 的第一个参数是一个开始迭代器，第二个参数是一个结束迭代器，它们指定了元素范围。当需要将前向迭代器移动多个位置时，advance() 就派上了用场。例如：<br />
+<pre class="cpp">
+std::forward_list&lt;int&gt; data {10, 21, 43, 87, 175, 351};
+auto iter = std::begin(data);
+size_t n {3};
+std::advance(iter, n);
+std::cout &lt;&lt; &quot;The &quot; &lt;&lt; n+1 &lt;&lt; &quot;th element is n &lt;&lt; *iter &lt;&lt; std::endl;
+// Outputs 87</pre>
+这并不神奇。advance() 函数会将前向迭代器自增需要的次数。这使我们不必去循环自增迭代器。需要记住的是这个函数自增的是作为第一个参数的迭代器，但是并不会返回它&mdash;&mdash;advance() 的返回类型为 void。<br />
+<br />
+因为 forward_list 正向链接元素，所以只能在元素的后面插入或粘接另一个容器的元素，这一点和 list 容器的操作不同，list 可以在元素前进行操作。因为这个，forward_list 包含成员函数splice_after() 和 insert_after()，用来代替 list 容器的 splice() 和 insert()；顾名思义，元素会被粘接或插入到 list 中的一个特定位置。当需要在 forward_list 的开始处粘接或插入元素时，这些操作仍然会有问题。除了第一个元素，不能将它们粘接或插入到任何其他元素之前。<br />
+<br />
+这个问题可以通过使用成员函数 cbefore_begin() 和 before_begin() 来解决。它们分别可以返回指向第一个元素之前位置的 const 和 non-const 迭代器。所以可以使用它们在开始位置插入或粘接元素。例如：<br />
+<pre class="cpp">
+std::forward_list&lt;std::string&gt; my_words {&quot;three&quot;, &quot;six&quot;, &quot;eight&quot;}
+std::forward_list&lt;std::string&gt; your_words {&quot;seven&quot;, &quot;four&quot;, &quot;nine&quot;};
+my_words.splice_after(my_words.before_begin(), your_words, ++std::begin(your_words));</pre>
+这个操作的效果是将 your_words 的最后一个元素粘接到 my_words 的开始位置，因此 my_words 会包含这些字符串对象:&quot;ninef&quot;、&quot;three&quot;、&quot;six&quot;、&quot;eight&quot;。这时 your_words 就只剩下两个字符串元素：&quot;seven&quot;和&quot;four&rdquo;。<br />
+<br />
+还有另一个版本的 splice_afler()，它可以将 forward_list&lt;T&gt; 的一段元素粘接到另一个容器中：<br />
+<pre class="cpp">
+my_words.splice_after (my_words . before_begin () , your_words,++std::begin(your_words), std::end(your_words));</pre>
+最后两个迭代器参数，指定了第三个参数所指定的 fbrward_list&lt;T&gt; 容器的元素范围。在这个范围内的元素，除了第一个，其他的都被移到第一个参数所指定容器的特定位置。 因此，如果在容器初始化后执行这条语句，my_words 会包含&quot;four&quot;、&quot;nine&quot;、&quot;three&quot;、&quot;six&quot;、 &quot;eight&quot;，your_words 仅仅包含&quot;seven&rdquo;。<br />
+<br />
+另一个版本的 splice_after() 会将一个 forward_list&lt;T&gt; 容器的全部元素粘接到另一个容器中：<br />
+<pre class="cpp">
+my_words.splice_after(my_words.before_begin(), your_words);</pre>
+上面的代码会将 your_words 中的全部元素拼接到第一个元素指定的位置。<br />
+<br />
+forward_list 和 list &mdash;样都有成员函数 sort() 和 merge()，它们也都有 remove()、remove_if() 和unique()，所有这些函数的用法都和 list 相同。我们可以尝试在一个示例中演示 forward_list 的操作。容器会包含一些代表矩形盒子的 Box 类对象。下面是 Box 类的头文件中的内容：<br />
+<pre class="cpp">
+// Defines the Box class for Ex2_06
+#ifndef BOX_H
+#define BOX_H
+#include &lt;iostream&gt;                              // For standard streams
+#include &lt;utility&gt;                               // For comparison operator templates
+u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std::rel_ops;                    // Comparison operator template namespace
+
+class Box
+{
+private:
+    size_t length {};
+    size_t width {};
+    size_t height {};
+
+public:
+    explicit Box(size_t l = 1, size_t w = 1, size_t h = 1) : length {l}, width {w}, height {h} {}
+    double volume() const { return length*width*height; }
+    bool operator&lt;(const Box&amp; box) { return volume() &lt; box.volume(); }
+    bool operator==(const Box&amp; box) { return length == box.length&amp;&amp; width == box.width&amp;&amp;height == box.height; }
+
+    friend std::istream&amp; operator&gt;&gt;(std::istream&amp; in, Box&amp; box);
+    friend std::ostream&amp; operator&lt;&lt;(std::ostream&amp; out, const Box&amp; box);
+};
+
+inline std::istream&amp; operator&gt;&gt;(std::istream&amp; in, Box&amp; box)
+{
+    std::cout &lt;&lt; &quot;Enter box length, width, &amp; height separated by spaces - Ctrl+Z to end: &quot;;
+    size_t value;
+    in &gt;&gt; value;
+    if (in.eof()) return in;
+
+    box.length = value;
+    in &gt;&gt; value;
+    box.width = value;
+    in &gt;&gt; value;
+    box.height = value;
+    return in;
+}
+
+inline std::ostream&amp; operator&lt;&lt;(std::ostream&amp; out, const Box&amp; box)
+{
+    out &lt;&lt; &quot;Box(&quot; &lt;&lt; box.length &lt;&lt; &quot;,&quot; &lt;&lt; box.width &lt;&lt; &quot;,&quot; &lt;&lt; box.height &lt;&lt; &quot;)  &quot;;
+    return out;
+}
+#endif</pre>
+utility 头文件中的命名空间 std::relops 包含一些比较运算符的模板。如果一个类已经定义了 operator&lt;() 和 operator==()，那么在需要时，这个模板会生成剩下的比较运算符函数。<br />
+<br />
+Box 类有三个私有成员，它们定义了 Box 对象的整体尺寸。带默认值的构造函数提供了一个无参构造函数，当在容器中保存 Box 对象时，需要使用它；没有初始化的元素由这种元素默认的构造函数生成。内联的友元函数重载了流的提取和插入运算，这显然包含标准输入输出流。<br />
+<br />
+每次以三个输入值为一组，在读入第一个输入值后，operator&gt;&gt;() 函数会通过调用流对象的 eof() 函数来检查是否读到 EOF。当输入 Ctrl+Z 或从文件输入流中读到文件结束符时，标准输入流会被设置为 EOF。当这些发生时会结束输入，然后返回一个流对象，EOF 状态会继续保持，因此调用程序可以检测到这个状态。<br />
+<br />
+下面是一个在 forward_list 容器中保存 Box 对象的示例：<br />
+<pre class="cpp">
+// Working with a forward list
+#include &lt;algorithm&gt; // For copy()
+#include &lt;iostream&gt; // For standard streams
+#include &lt;forward_list&gt; // For forward_list container
+#include &lt;iterator&gt; // For stream iterators
+#include &quot;Box.h&quot;
+// List a range of elements
+template&lt;typename Iter&gt;
+void list_elements(Iter begin, Iter end)
+{
+    size_t perline {6};                            // Maximum items per line
+    size_t count {};                               // Item count
+    while (begin != end)
+    {
+        std::cout &lt;&lt; *begin++;
+        if (++count % perline == 0)
+        {
+            std::cout &lt;&lt; &quot;\n&quot;;
+        }
+    }
+    std::cout &lt;&lt; std::endl;
+}
+
+int main()
+{
+    std::forward_list&lt;Box&gt; boxes;
+    std::copy(std::istream_iterator&lt;Box&gt;(std::cin), std::istream_iterator&lt;Box&gt;(), std::front_inserter(boxes));
+
+    boxes.sort();                                    // Sort the boxes
+    std::cout &lt;&lt; &quot;\nAfter sorting the sequence is:\n&quot;;
+    // Just to show that we can with Box objects - use an ostream iterator
+    std::copy(std::begin(boxes), std::end(boxes), std::ostream_iterator&lt;Box&gt;(std::cout, &quot; &quot;));
+    std::cout &lt;&lt; std::endl;
+
+    // Insert more boxes
+    std::forward_list&lt;Box&gt; more_boxes {Box {3, 3, 3}, Box {5, 5, 5}, Box {4, 4, 4}, Box {2, 2, 2}};
+    boxes.insert_after(boxes.before_begin(), std::begin(more_boxes), std::end(more_boxes));
+    std::cout &lt;&lt; &quot;After inserting more boxes the sequence is:\n&quot;;
+    list_elements(std::begin(boxes), std::end(boxes));
+
+    boxes.sort();                                    // Sort the boxes
+    std::cout &lt;&lt; std::endl;
+    std::cout &lt;&lt; &quot;The sorted sequence is now:\n&quot;;
+    list_elements(std::begin(boxes), std::end(boxes));
+
+    more_boxes.sort();
+    boxes.merge(more_boxes);                         // Merge more_boxes
+    std::cout &lt;&lt; &quot;After merging more_boxes the sequence is:\n&quot;;
+    list_elements(std::begin(boxes), std::end(boxes));
+
+    boxes.unique();
+    std::cout &lt;&lt; &quot;After removing successive duplicates the sequence is:\n&quot;;
+    list_elements(std::begin(boxes), std::end(boxes));
+
+    // Eliminate the small ones
+    const double max_v {30.0};
+    boxes.remove_if([max_v](const Box&amp; box){ return box.volume() &lt; max_v; });
+    std::cout &lt;&lt; &quot;After removing those with volume less than 30 the sorted sequence is:\n&quot;;
+    list_elements(std::begin(boxes), std::end(boxes));
+}</pre>
+运行结果为：
+<p class="info-box">
+Enter box length, width, &amp; height separated by spaces - Ctrl+Z to end: 4 4 5<br />
+Enter box length, width, &amp; height separated by spaces - Ctrl+Z to end: 6 5 7<br />
+Enter box length, width, &amp; height separated by spaces - Ctrl+Z to end: 2 2 3<br />
+Enter box length, width, &amp; height separated by spaces - Ctrl+Z to end: 12 3<br />
+Enter box length, width, &amp; height separated by spaces - Ctrl+Z to end: 3 3 4<br />
+Enter box length, width, &amp; height separated by spaces - Ctrl+Z to end: 3 3 3<br />
+Enter box length, width, &amp; height separated by spaces - Ctrl+Z to end: ^Z<br />
+After sorting the sequence is:<br />
+Box(l,2,3) Box(2,2,3) Box(3,3,3) Box(3,3,4) Box(4,4,5) Box(6,5,7)<br />
+After inserting more boxes the sequence is:<br />
+Box(3,3,3) Box(5,5,5) Box(4,4,4) Box{2,2,2) Box(1,2,3) Box(2,2,3)<br />
+Box(3,3,3) Box(3,3,4) Box(4,4,5) Box(6,5,7)<br />
+<br />
+The sorted sequence is now:<br />
+Box(l,2,3) Box(2,2,2) Box(2,2,3) Box(3,3,3) Box(3,3,3) Box(3,3,4)<br />
+Box (4,4,4) Box(4,4,5) Box(5,5,5) Box(6,5,7)<br />
+After merging more_boxes the sequence is:<br />
+Box(1,2,3) Box(2,2,2) Box(2,2,2) Box(2,2,3) Box(3,3,3) Box(3,3,3)<br />
+Box(3,3,3) Box(3,3,4) Box(4,4^4) Box(4,4,4) Box(4,4,5) Box(5,5,5)<br />
+Box(5,5,5) Box(6,5,7)<br />
+After removing successive duplicates the sequence is:<br />
+Box(1,2,3) Box(2,2,2) Box(2,2,3) Box (3,3,3) Box(3,3,4) Box(4,4,4)<br />
+Box(4,4,5) Box(5,5,5) Box(6,5,7)<br />
+After removing those with volume less than 30 the sorted sequence is:<br />
+Box(3,3,4) Box(4,4) Box(4,4,5) Box(5,5,5) Box(6,5,7)</p>
+函数模板 list_dements() 用来输出由开始和结束迭代器指定的元素，每 6 个元素一行。这里用来输出 main() 中的 forward_list 的内容。在 main() 中，首先使用 copy() 算法，以 istream_iterator&lt;Box&gt; 对象作为数据源，以 front_inserter 作为数据存放地，从 cin 中读入一些 Box 对象的尺寸。istream_iterator 会调用定义在 Box.h 中的函数 operator&gt;&gt;() 来读取 Box 对象。<br />
+<br />
+front_inserter 会调用容器的成员函数 push_front()，这是为 forward_list 所做的工作。对 boxes 容器中的元素进行排序后，我们会通过copy() 算法将元素转移到 ostream_iterator&lt;Box&gt; 对象中，然后输出它们。这个迭代器会调用定义在 Box.h 中的函数 operator&lt;&lt;()。这里有一个限制，我们无法控制每行元素输出的个数。剩下的代码是用模板 list_elements() 输出的实例。<br />
+<br />
+另一个 forward_list 容器 more_boxes 的内容被插入到 boxes 容器的头部。这是通过以函数 before_begin() 返回的迭代器作为插入位置，然后调用函数 insert_after() 来实现的。<br />
+<br />
+下一步操作是对 boxes 中的元素进行排序，然后将 more_boxes 的内容合并到 boxes 中。这两个容器在调用merge()前都必须先排序，因为只有在两个容器都是升序时，这个操作才能正常进行。因为插入新元素，显然会使 boxes 中出现一些重复的元素。调用 boxes 的函数 unique() 就可以消除连续重复的元素。<br />
+<br />
+最后一个操作是调用 boxes() 的函数 remove_if() 来 删除容器中的一些元素。由作为参数传入的一元断言来决定删除哪些元素。这里使用的是一个 lambda 表达式，如果元素体积小于 max_v，就返回 true。max_v 是从外部区域以值的方式捕获的，因此外部区域和表达式内部的值可能不同。由输出可以看出，所有的操作都符合预期。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../linux/tmux.html" title="tmux命令_Linux tmux命令：一个窗口操作多个会话" target="_blank">tmux命令_Linux tmux命令：一个窗口操作多个会话</a></li>
+<li><a href="855.html" title="Java StringBuffer替换特殊字符" target="_blank">Java StringBuffer替换特殊字符</a></li>
+<li><a href="1153.html" title="Java保存图书信息" target="_blank">Java保存图书信息</a></li>
+<li><a href="3338.html" title="单链表的基本操作（C语言版）" target="_blank">单链表的基本操作（C语言版）</a></li>
+<li><a href="7575.html" title="MySQL常用运算符概述" target="_blank">MySQL常用运算符概述</a></li>
+<li><a href="../mongodb2/what-is-nosql.html" title="NoSQL是什么" target="_blank">NoSQL是什么</a></li>
+<li><a href="ctrjshr.html" title="C# if else语句详解" target="_blank">C# if else语句详解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 448;
+window.arcId = "000bF6Z0zYEZdsNBSDVrRE0mOyq8zyJIFzgv6pnoyxLGpU4yLfGalSlUlQ";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

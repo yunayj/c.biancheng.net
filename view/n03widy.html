@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>JS删除数组元素（3种方法）</title>
+<meta name="description" content="JS 删除数组中的元素有3种方式，分别是： 使用 delete 运算符； 使用 splice() 方法； 直接修改 length 属性。 1. JS delete 运算符 使用 delete 运算符删除数组中的元素，可以在数组访问的语法基" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>JS删除数组元素（3种方法）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">JS 删除数组中的元素有3种方式，分别是：
+<ul>
+<li>
+使用 delete 运算符；</li>
+<li>
+使用 splice() 方法；</li>
+<li>
+直接修改 length 属性。</li>
+</ul>
+<h2>
+1. JS delete 运算符</h2>
+使用 delete 运算符删除数组中的元素，可以在数组访问的语法基础上，在前边加上 delete 关键字。<br />
+<br />
+例如删除数组中第2个元素，代码如下：
+<pre class="javascript" showmenu="false" shownum="false">
+let arr=[1,2,3];
+delete arr[1];  //返回值为true,arr变为[1,empty,3]
+arr.length;  //3</pre>
+可以看到使用 delete 运算符删除元素之后，对应索引的元素空位会保留下来，后边的元素并不会向前移动，数组的长度也不会发生变化。<br />
+<br />
+另外判断对应索引的元素是否存在于数组中，可以使用 in 运算符。在 in 运算符前边写上索引，后边写上进行判断的数组，如果存在则会返回 true，如果不存在则返回 false。<br />
+<br />
+例如，判断上例中索引为1的元素是否还存在于 arr 数组中，代码如下：
+<pre class="javascript" showmenu="false" shownum="false">
+1 in arr;  //false
+arr[i];  //undefined</pre>
+可以看到索引为1的元素不存在了，访问它的值会返回 undefined。<br />
+<br />
+需要要注意的是，虽然 arr[1] 返回了 undefined，但是因为使用 delete 运算符删除了它而导致它不存在，如果直接把该位置的元素设置为 undefined，则它还会存在于数组中，只不过值为 undefined，代码如下：
+<pre class="javascript" showmenu="false" shownum="false">
+let arr=[1,2,3];
+arr[1]=undefined;
+1 in arr;  //true
+arr[1];  //undefined</pre>
+可以看到 arr[1] 的值仍为 undefined，但是使用 in 判断时，1 这个索引位置的元素还是存在于数组中的。
+<h2>
+2. JS splice() 方法</h2>
+如果要删除元素并使后续元素向前移动，则可以使用 splice()，可以给它的第1个参数传递要删除的元素的起始索引，第2参数传递要删除的数量。<br />
+<br />
+例如使用 splice() 实现删除数组中的第2个元素，代码如下：
+<pre class="javascript" showmenu="false" shownum="false">
+let arr=[1,2,3];
+arr.splice(1,1);  //[2]
+arr;  //[1,3]</pre>
+arr 变成了 [1,3]，splice() 会返回被删除的元素，因为它支持删除多个元素，所以返回的结果是包含被删除元素的数组，如果只删除了一个元素，则也会把它放到结果数组中，例如上例中 splice() 的返回值为 [2]。<br />
+<br />
+在调用 splice() 方法之后，原数组则变成了除掉被删除的元素外所剩下的元素。这种改变原数组的操作，称为原地（In-Place）操作，不过数组对象提供的大部分操作都是返回新的数组，并不会改变原数组。<br />
+<br />
+splice() 的第1个参数也可以是负数，这样就会从最后一个元素索引开始向前计算起始索引，其他操作与传递正数时一样。<br />
+<br />
+如果传递给 splice() 的第2个参数大于数组的长度，或者没有传递，则会从起始索引开始，删除它后面所有的元素，例如删除一个数组中索引为3的元素及后面所有的元素的代码如下：
+<pre class="javascript" showmenu="false" shownum="false">
+let arr=[1,2,3,4,5];
+arr.splice(3);  //[4,5]
+arr;  //[1,2,3]</pre>
+splice() 还可接收第3个参数，它是一个变长的参数，用于指定要添加的元素，即在删除元素之后，从第1个参数指定的位置再添加新的元素，后面的元素会顺序后移，因此 splice() 还支持添加和替换元素。<br />
+<br />
+如果要添加新元素，则只需把第2个参数，即要删除的数量，设置为 0，然后后边的参数传递要添加的元素。<br />
+<br />
+例如，从索引为2的位置插入3个新的元素，代码如下：
+<pre class="javascript" showmenu="false" shownum="false">
+let arr=[1,3,5,7];
+arr.splice(2,0,2,4);  //[]
+arr;  //[1,3,2,4,5,7]</pre>
+这时，因为要删除的元素的数量为 0，所以 splice() 会返回一个空的数组，原数组则原地新增了3个元素，上方代码把2和4放到了索引为 2、3 的位置，然后5和7分别向后移动了1位。<br />
+<br />
+如果要替换一些元素，则只需让删除的数量等于新添加的元素的数量，代码如下：
+<pre class="javascript" showmenu="false" shownum="false">
+let arr=[1,3,5,7];
+arr.splice(2,2,2,4);  //[5,7]
+arr;  //[1,3,2,4]</pre>
+这里从索引为2的位置删除了2个元素，即5和7，之后在索引为2的位置添加了2个新的元素2和4，最后结果就是 [1，3，2，4]。<br />
+<br />
+最后，如果给 splice() 的参数设置了大于或等于数组长度的数值，则 splice() 会直接从数组末尾开始添加元素，无论第2个参数（要删除的数量）设置为多少，都不会删除元素，代码如下：
+<pre class="javascript" showmenu="false" shownum="false">
+let arr=[＂a＂,＂b＂,＂c＂];
+arr.splice(3,10,＂d＂,＂e＂,＂f＂);  //[]
+arr;  //[＂a＂,＂b＂,＂c＂,＂d＂,＂e＂,＂f＂]</pre>
+<h2>
+3. 修改 length 属性</h2>
+JS 删除数组元素还有一种不常用的方式，使用 length 属性。<br />
+<br />
+数组在创建之后，它自己会维护 length 属性的值，当有元素添加进来时，会自动增加 length 的值，而当有元素被删除时，则会自动减少，而反过来也可以通过修改 length 属性的值来删除超过 length 数量的元素，这种只适合删除末尾的元素，代码如下：
+<pre class="javascript" showmenu="false" shownum="false">
+let arr=[1,2,3,4];
+arr.length;  //4
+arr.length=2;
+arr;  //[1,2]
+arr.length=0;
+arr;  //[]</pre>
+把 arr.length 设置为2之后，超过2个的元素直接被舍弃了。当把数组的 length 设置为0时，数组就变成了空数组。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2590.html" title="MySQL自定义函数（CREATE FUNCTION）" target="_blank">MySQL自定义函数（CREATE FUNCTION）</a></li>
+<li><a href="3159.html" title="Docker应用容器化（将应用程序部署到容器中）" target="_blank">Docker应用容器化（将应用程序部署到容器中）</a></li>
+<li><a href="vip_3341.html" title="存储结构和存取结构，完全不是一码事！" target="_blank">存储结构和存取结构，完全不是一码事！</a></li>
+<li><a href="../c/strlen.html" title="C语言strlen()函数：求字符串的长度" target="_blank">C语言strlen()函数：求字符串的长度</a></li>
+<li><a href="5671.html" title="JS遍历数组（for in和forEach循环）" target="_blank">JS遍历数组（for in和forEach循环）</a></li>
+<li><a href="../redis2/strlen.html" title="Redis STRLEN命令" target="_blank">Redis STRLEN命令</a></li>
+<li><a href="../redis/security.html" title="Redis安全策略" target="_blank">Redis安全策略</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10095;
+window.arcId = "f12ft+sZvYdfYjLVdjkWmoO4/NVHlltxpcaOSFIVCvCMx6nyJtd4DsOGbMS9";
+window.typeidChain = "309|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

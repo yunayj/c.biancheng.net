@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Hibernate关联映射（非常详细）</title>
+<meta name="description" content="在前面的学习中，我们所涉及的都是基于单表的操作，但在实际的开发过程中，基本上都是同时对多张表的操作，且这些表都存在一定的关联关系。 Hibernate 是一款基于 ORM 设计思想的框" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="../view/niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="hibernate.html">Hibernate</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href="orm.html">ORM是什么</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href="what-is-hibernate.html">Hibernate是什么</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href="first-example.html">Hibernate项目创建流程</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href="crud.html">Hibernate增删改查操作</a>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href="principle.html">Hibernate工作原理</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href="hibernate-cfg-xml.html">Hibernate核心配置文件</a>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href="xxx-hbm-xml.html">Hibernate映射文件</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href="core-interface.html">Hibernate核心接口</a>
+</dd>
+<dd>
+<span class="channel-num">9</span>
+<a href="po.html">Hibernate持久化类</a>
+</dd>
+<dd>
+<span class="channel-num">10</span>
+<a href="l1-cache.html">Hibernate一级缓存</a>
+</dd>
+<dd>
+<span class="channel-num">11</span>
+<a href="mapping.html">Hibernate关联映射</a>
+</dd>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="hibernate.html">Hibernate</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Hibernate关联映射（非常详细）</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在前面的学习中，我们所涉及的都是基于单表的操作，但在实际的开发过程中，基本上都是同时对多张表的操作，且这些表都存在一定的关联关系。<br />
+<br />
+Hibernate 是一款基于 ORM 设计思想的框架，它将关系型数据库中的表与我们 Java 实体类进行映射，表中的记录对应实体类的对象，而表中的字段对应着实体类中的属性。Hibernate 进行增删改查等操作时，不再直接操作数据库表，而是对与之对应的实体类对象进行处理。那么，Hibernate 是如何处理多表关联问题的呢？本节我们针对此问题进行介绍。<br />
+<h2>
+关联映射</h2>
+在关系型数据库中，多表之间存在着三种关联关系，分别为一对一、一对多和多对多，如图 1 所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="Hibernate 关联关系映射" src="../uploads/allimg/210914/10594UK8-0.png" /><br />
+图1：多表关联关系</div>
+<br />
+关联关系描述的是数据库表之间的引用关系，而 Hibernate 关联映射指的就是与数据库表对应的实体类之间的引用关系。<br />
+<br />
+在数据库中，如果两张表想要建立关联关系，就需要外键来连接它们，数据库表之间的关系是没有方向性的，且彼此是透明的。而在 Java 中，如两个类想要建立关系的话，那就需要这两个类都通过属性（变量）来管理对方的引用，以达到建立关联关系的目的，Hibernate 关联映射也是通过这种方式实现的。
+<h3>
+一对多</h3>
+在三种关联关系中，一对多（或者多对一）是最常见的一种关联关系。<br />
+<br />
+在关系型数据库中，一对多映射关系通常是由&ldquo;多&rdquo;的一方指向&ldquo;一&rdquo;的一方。在表示&ldquo;多&rdquo;的一方的数据表中增加一个外键，指向&ldquo;一&rdquo;的一方的数据表的主键，&ldquo;一&rdquo;的一方称为主表，而&ldquo;多&rdquo;的一方称为从表。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210914/10594Q313-1.png" /></div>
+<div style="text-align: center;">
+图2：数据库映射一对多关联关系</div>
+<br />
+图 1 说明如下：
+<ul>
+<li>
+student 表为学生表，id 为学生表的主键，name 表示学生名称；</li>
+<li>
+grade 表为班级表，id 为班级表的主键，name 表示班级名称；</li>
+<li>
+gid 为学生表的外键，指向班级表的主键 id；</li>
+</ul>
+<br />
+使用 Hibernate 映射&ldquo;一对多&rdquo;关联关系时，需要如下步骤：
+<ul>
+<li>
+在&ldquo;多&rdquo;的一方的实体类中，引入&ldquo;一&rdquo;的一方实体类对象作为其属性，并在映射文件中通过 &lt;many-to-one&gt; 标签进行映射；</li>
+<li>
+在&ldquo;一&rdquo;的一方的实体类中，以&nbsp;Set 集合的形式引入&ldquo;多&rdquo;的一方实体类对象作为其属性，并在映射文件中通过 &lt;set&gt; 标签进行映射。</li>
+</ul>
+<br />
+学生和班级之间的关系，是典型的一对多关联关系，一个学生只能属于一个班级，而一个班级可以有多个学生，下面我们以学生（Student）和班级（grade）为例，演示如何使用 Hibernate 建立一对多关联映射。
+<h4>
+创建实体类</h4>
+1. 在 net.biancheng.www.po 包中，创建一个名为 Student 的实体类，代码如下。
+<pre class="java">
+package net.biancheng.www.po;
+
+public class Student {
+    private Integer id;
+    private String name;
+    //持有实体类 Grade 的一个引用，维护多对一关系
+    private Grade grade;
+
+    public Student() {
+    }
+
+    public Student(Integer id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Grade getGrade() {
+        return grade;
+    }
+
+    public void setGrade(Grade grade) {
+        this.grade = grade;
+    }
+
+    @Override
+    public String toString() {
+        return &quot;Student{&quot; +
+                &quot;id=&quot; + id +
+                &quot;, name=&#39;&quot; + name + &#39;\&#39;&#39; +
+                &quot;, grade=&quot; + grade +
+                &#39;}&#39;;
+    }
+}</pre>
+<br />
+2. 在 net.biancheng.www.po 包中，创建一个名为 Grade 的实体类，代码如下。
+<pre class="java">
+package net.biancheng.www.po;
+
+import java.util.HashSet;
+import java.util.Set;
+
+public class Grade {
+    private Integer Id;
+    private String name;
+    //持有 Student 引用的集合，来维护一对多关联关系
+    private Set&lt;Student&gt; students = new HashSet&lt;&gt;();
+
+    public Integer getId() {
+        return Id;
+    }
+
+    public void setId(Integer id) {
+        Id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Set&lt;Student&gt; getStudents() {
+        return students;
+    }
+
+    public void setStudents(Set&lt;Student&gt; students) {
+        this.students = students;
+    }
+
+    @Override
+    public String toString() {
+        return &quot;Grade{&quot; +
+                &quot;Id=&quot; + Id +
+                &quot;, name=&#39;&quot; + name +
+                &#39;}&#39;;
+    }
+}</pre>
+<h4>
+建立映射</h4>
+1. 在 net.biancheng.www.mapping 包中，创建 Student 的映射文件 Student.hbm.xml，配置如下。
+<pre class="xml">
+&lt;?xml version=&#39;1.0&#39; encoding=&#39;utf-8&#39;?&gt;
+&lt;!DOCTYPE hibernate-mapping PUBLIC
+        &quot;-//Hibernate/Hibernate Mapping DTD 3.0//EN&quot;
+        &quot;http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd&quot;&gt;
+&lt;hibernate-mapping&gt;
+    &lt;class name=&quot;net.biancheng.www.po.Student&quot; table=&quot;student&quot; schema=&quot;bianchengbang_jdbc&quot; lazy=&quot;true&quot;&gt;
+        &lt;!--主键映射--&gt;
+        &lt;id name=&quot;id&quot; column=&quot;id&quot; type=&quot;java.lang.Integer&quot;&gt;
+            &lt;!--主键生成策略--&gt;
+            &lt;generator class=&quot;native&quot;&gt;&lt;/generator&gt;
+        &lt;/id&gt;
+        &lt;property name=&quot;name&quot; column=&quot;name&quot; length=&quot;100&quot; type=&quot;java.lang.String&quot;&gt;&lt;/property&gt;
+
+        &lt;!--维护关联关系--&gt;
+        &lt;many-to-one name=&quot;grade&quot; class=&quot;net.biancheng.www.po.Grade&quot; column=&quot;gid&quot;/&gt;
+    &lt;/class&gt;
+&lt;/hibernate-mapping&gt;</pre>
+<br />
+从 Student（学生）的角度看，Student 和 Grade 的关系为多对一，因此 Student 映射文件需要通过&lt;many-to-one&gt; 来维护 Student 与 Grade 的多对一关联关系。<br />
+<br />
+&lt;many-to-one&gt; 标签通常会包含以下常用属性，如下表。<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+属性名</th>
+<th>
+描述</th>
+</tr>
+<tr>
+<td>
+name</td>
+<td>
+用来设置关联对象的属性名称</td>
+</tr>
+<tr>
+<td>
+column</td>
+<td>
+用来设置实体类所对应的数据库表的外键的字段名称</td>
+</tr>
+<tr>
+<td>
+class</td>
+<td>
+用来设置关联对象类的完全限定名（包名+类名）</td>
+</tr>
+</tbody>
+</table>
+<br />
+<br />
+2. 在 net.biancheng.www.mapping 包中，创建 Grade 的映射文件 Grade.hbm.xml，配置如下。
+<pre class="xml">
+&lt;?xml version=&#39;1.0&#39; encoding=&#39;utf-8&#39;?&gt;
+&lt;!DOCTYPE hibernate-mapping PUBLIC
+        &quot;-//Hibernate/Hibernate Mapping DTD 3.0//EN&quot;
+        &quot;http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd&quot;&gt;
+&lt;hibernate-mapping&gt;
+    &lt;class name=&quot;net.biancheng.www.po.Grade&quot; table=&quot;grade&quot; schema=&quot;bianchengbang_jdbc&quot;&gt;
+        &lt;id name=&quot;id&quot; column=&quot;id&quot; type=&quot;java.lang.Integer&quot;&gt;
+            &lt;generator class=&quot;native&quot;&gt;&lt;/generator&gt;
+        &lt;/id&gt;
+        &lt;property name=&quot;name&quot; column=&quot;name&quot; length=&quot;100&quot; type=&quot;java.lang.String&quot;/&gt;
+        &lt;!--使用 set 元素维护一对多关联关系--&gt;
+        &lt;set name=&quot;students&quot;&gt;
+            &lt;key column=&quot;gid&quot;&gt;&lt;/key&gt;
+            &lt;one-to-many class=&quot;net.biancheng.www.po.Student&quot;&gt;&lt;/one-to-many&gt;
+        &lt;/set&gt;
+    &lt;/class&gt;
+&lt;/hibernate-mapping&gt;</pre>
+<br />
+从 Grade（班级）的角度看，Student 和 Grade 是一对多的关系，因此 Grade 的映射文件中，需要通过 &lt;set&gt; 标签来维护 Grade 与 Student 的一对多关联关系。<br />
+<br />
+&lt;set&gt; 标签中通常会包含以下属性和子标签，如下表。<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+名称</th>
+<th>
+类型</th>
+<th>
+描述</th>
+</tr>
+<tr>
+<td>
+name</td>
+<td>
+属性</td>
+<td>
+关联对象引用（集合类型）的属性名称；</td>
+</tr>
+<tr>
+<td>
+&lt;key&gt;</td>
+<td>
+子标签</td>
+<td>
+用于设置关联对象所对应的数据库表的外键，其 colum 属性用于指定外键的字段名称。</td>
+</tr>
+<tr>
+<td>
+&lt;one-to-many&gt;&nbsp;</td>
+<td>
+子标签</td>
+<td>
+用于维护一对多关系，其 class 属性用来设置关联对象类的完全限定名（包名+类名）。</td>
+</tr>
+</tbody>
+</table>
+<br />
+5. 在 Hibernate 核心配置文件&nbsp;hibernate.cfg.xml 中，使用 &lt;mapping&gt; 元素来指定映射文件 Student.hbm.xml 和&nbsp;Grade.hbm.xml 的位置信息，配置代码如下。
+<pre class="xml">
+&lt;mapping resource=&quot;net/biancheng/www/mapping/Grade.hbm.xml &quot;/&gt;
+&lt;mapping resource=&quot;net/biancheng/www/mapping/Student.hbm.xml&quot; /&gt;</pre>
+<h4>
+测试</h4>
+1. 在测试类 MyTest 中，添加一个 addCascade() 方法，代码如下。
+<pre class="java">
+/**
+* 一对多
+*/
+@Test
+public void addCascade() {
+    Session session = HibernateUtils.openSession();
+    Transaction transaction = session.beginTransaction();
+    //创建一个班级对象
+    Grade grade = new Grade();
+    grade.setName(&quot;一年级&quot;);
+    //创建学生对象
+    Student student = new Student();
+    student.setName(&quot;小明&quot;);
+    //设置学生的班级
+    student.setGrade(grade);
+    //创建学生对象
+    Student student2 = new Student();
+    student2.setName(&quot;小红&quot;);
+    //设置学生的班级
+    student2.setGrade(grade);
+    //设置班级内有哪些学生
+    grade.getStudents().add(student);
+    grade.getStudents().add(student2);
+
+    //保存学生信息
+    session.save(student);
+    session.save(student2);
+    //保存班级信息
+    session.save(grade);
+    //提交事务
+    transaction.commit();
+    //释放资源
+    session.close();
+}</pre>
+<br />
+2. 执行该测试方法，控制台输出如下。
+<pre class="info-box">
+Hibernate:
+   
+    create table grade (
+       id integer not null auto_increment,
+        name varchar(100),
+        primary key (id)
+    ) engine=MyISAM
+Hibernate:
+   
+    create table student (
+       id integer not null auto_increment,
+        name varchar(100),
+        gid integer,
+        primary key (id)
+    ) engine=MyISAM
+
+Hibernate:
+   
+    alter table student
+       add constraint FKrahcsicxucn7bhee8empkb42c
+       foreign key (gid)
+       references grade (id)
+
+Hibernate:
+    insert
+    into
+        grade
+        (name)
+    values
+        (?)
+
+Hibernate:
+    insert
+    into
+        student
+        (name, gid)
+    values
+        (?, ?)
+
+Hibernate:
+    insert
+    into
+        student
+        (name, gid)
+    values
+        (?, ?)
+
+Hibernate:
+    update
+        student
+    set
+        gid=?
+    where
+        id=?
+
+Hibernate:
+    update
+        student
+    set
+        gid=?
+    where
+        id=?</pre>
+<br />
+从控制台的输出可以看到，除了建表操作外，数据库还执行了 3 条 insert 语句和 2 条 update 语句。<br />
+<br />
+3. 查询数据库表 student 中的数据，结果如下。<br />
+<table>
+<tbody>
+<tr>
+<th>
+id</th>
+<th>
+name</th>
+<th>
+gid</th>
+</tr>
+<tr>
+<td>
+1</td>
+<td>
+小明</td>
+<td>
+1</td>
+</tr>
+<tr>
+<td>
+2</td>
+<td>
+小红</td>
+<td>
+1</td>
+</tr>
+</tbody>
+</table>
+<br />
+4. 查询数据库表 grade 中的数据，结果如下。<br />
+<table>
+<tbody>
+<tr>
+<th>
+id</th>
+<th>
+name</th>
+</tr>
+<tr>
+<td>
+1</td>
+<td>
+一年级</td>
+</tr>
+</tbody>
+</table>
+<h3>
+多对多</h3>
+在实际的应用中，&ldquo;多对多&rdquo;也是一种常见的关联关系，例如学生和课程的关系，一个学生可以选修多门课程，一个课程可以被多名学生选修。<br />
+<br />
+在关系型数据库中，是无法直接表达&ldquo;多对多&rdquo;关联关系的，我们一般会采用新建一张中间表，将一个&ldquo;多对多&rdquo;关联拆分为两个&ldquo;一对多&rdquo;关联解决此问题，如下图。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210914/10594R593-2.png" /><br />
+图3：多对多：数据库表设计方案</div>
+图 1 说明如下：
+<ul>
+<li>
+student 表为学生表，id 为学生表的主键，name 表示学生名称；</li>
+<li>
+course 表为课程表，id 为课程表的主键，name 表示课程名称；</li>
+<li>
+student_course 表为中间表，其中字段 cid 和 sid 是中间表的两个外键，分别指向 student 表和 course 表的主键 id；</li>
+<li>
+在 student_course 表中，sid 和 cid 是该表的联合主键。</li>
+</ul>
+<br />
+Hibernate 在映射&ldquo;多对多&rdquo;关联关系时，需要在两个实体类中，分别以 Set 集合的方式引入对方的对象，并在映射文件中通过 &lt;set&gt; 标签进行映射。<br />
+<br />
+下面我们以学生（Student）和课程（Course）为例，演示如何使用 Hibernate 建立多对多关联映射。
+<h4>
+创建实体类</h4>
+1. 在 net.biancheng.www.po 包下创建一个名为 Course 的实体类，并以 Set 集合的形式引入 Student 对象作为其属性，来维护 Course与 Student 之间的多对多关联关系，代码如下。
+<pre class="java">
+package net.biancheng.www.po;
+
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+* 课程实体类
+*/
+public class Course {
+    private Integer id;
+    private String name;
+    //学生 Student 的集合作为其属性，维护多对多关联关系
+    private Set&lt;Student&gt; students = new HashSet&lt;&gt;();
+
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Set&lt;Student&gt; getStudents() {
+        return students;
+    }
+
+    public void setStudents(Set&lt;Student&gt; students) {
+        this.students = students;
+    }
+
+    @Override
+    public String toString() {
+        return &quot;Course{&quot; +
+                &quot;id=&quot; + id +
+                &quot;, name=&#39;&quot; + name +
+                &#39;}&#39;;
+    }
+}</pre>
+<br />
+2. 修改 Student 类的代码，在 Student 类中以 Set 的形式引入 Course 对象作为其属性，来维护 Student 与 Course 之间的多对多关联关系，代码如下。
+<pre class="java">
+package net.biancheng.www.po;
+
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+* 学生实体类
+*/
+public class Student {
+    private Integer id;
+    private String name;
+    private Grade grade;
+    //将 Course 对象的集合作为其属性，以维护它们之间的多对多关联关系
+    private Set&lt;Course&gt; courses = new HashSet&lt;&gt;();
+
+    public Student() {
+    }
+
+    public Set&lt;Course&gt; getCourses() {
+        return courses;
+    }
+
+    public void setCourses(Set&lt;Course&gt; courses) {
+        this.courses = courses;
+    }
+
+    public Student(Integer id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Grade getGrade() {
+        return grade;
+    }
+
+    public void setGrade(Grade grade) {
+        this.grade = grade;
+    }
+
+    @Override
+    public String toString() {
+        return &quot;Student{&quot; +
+                &quot;id=&quot; + id +
+                &quot;, name=&#39;&quot; + name + &#39;\&#39;&#39; +
+                &quot;, grade=&quot; + grade +
+                &#39;}&#39;;
+    }
+}</pre>
+<h4>
+建立映射</h4>
+1. 在 net.biancheng.www.mapping 包中，创建 Course 的映射文件 Coures.hbm.xml，具体配置如下。
+<pre class="xml">
+&lt;?xml version=&#39;1.0&#39; encoding=&#39;utf-8&#39;?&gt;
+&lt;!DOCTYPE hibernate-mapping PUBLIC
+        &quot;-//Hibernate/Hibernate Mapping DTD 3.0//EN&quot;
+        &quot;http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd&quot;&gt;
+&lt;hibernate-mapping&gt;
+    &lt;class name=&quot;net.biancheng.www.po.Course&quot; table=&quot;course&quot; schema=&quot;bianchengbang_jdbc&quot;&gt;
+        &lt;id name=&quot;id&quot; column=&quot;id&quot; &gt;
+            &lt;generator class=&quot;native&quot;&gt;&lt;/generator&gt;
+        &lt;/id&gt;
+
+        &lt;property name=&quot;name&quot; column=&quot;name&quot; length=&quot;100&quot;/&gt;
+       
+        &lt;set name=&quot;students&quot; table=&quot;student_course&quot; cascade=&quot;save-update&quot;&gt;
+            &lt;key column=&quot;cid&quot;&gt;&lt;/key&gt;
+            &lt;many-to-many class=&quot;net.biancheng.www.po.Student&quot; column=&quot;sid&quot;&gt;&lt;/many-to-many&gt;
+        &lt;/set&gt;
+    &lt;/class&gt;
+&lt;/hibernate-mapping&gt;</pre>
+<br />
+2. 修改 Student.hbm.xml 的配置，在其中添加 &lt;set&gt; 标签映射关联关系，配置如下。
+<pre class="xml">
+&lt;?xml version=&#39;1.0&#39; encoding=&#39;utf-8&#39;?&gt;
+&lt;!DOCTYPE hibernate-mapping PUBLIC
+        &quot;-//Hibernate/Hibernate Mapping DTD 3.0//EN&quot;
+        &quot;http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd&quot;&gt;
+&lt;hibernate-mapping&gt;
+    &lt;class name=&quot;net.biancheng.www.po.Student&quot; table=&quot;student&quot; schema=&quot;bianchengbang_jdbc&quot; lazy=&quot;true&quot;&gt;
+        &lt;!--主键映射--&gt;
+        &lt;id name=&quot;id&quot; column=&quot;id&quot; type=&quot;java.lang.Integer&quot;&gt;
+            &lt;!--主键生成策略--&gt;
+            &lt;generator class=&quot;native&quot;&gt;&lt;/generator&gt;
+        &lt;/id&gt;
+        &lt;property name=&quot;name&quot; column=&quot;name&quot; length=&quot;100&quot; type=&quot;java.lang.String&quot;&gt;&lt;/property&gt;
+
+        &lt;!--维护关联关系--&gt;
+        &lt;many-to-one name=&quot;grade&quot; class=&quot;net.biancheng.www.po.Grade&quot; column=&quot;gid&quot;/&gt;
+        &lt;set name=&quot;courses&quot; table=&quot;student_course&quot; lazy=&quot;false&quot;&gt;
+            &lt;key column=&quot;sid&quot;&gt;&lt;/key&gt;
+            &lt;many-to-many class=&quot;net.biancheng.www.po.Course&quot; column=&quot;cid&quot;&gt;&lt;/many-to-many&gt;
+        &lt;/set&gt;
+    &lt;/class&gt;
+&lt;/hibernate-mapping&gt;</pre>
+<br />
+Hibernate 在映射文件中，通过 &lt;set&gt; 标签来映射&ldquo;多对多&rdquo;关联关系，其常用属性和子标签说明如下表。<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+名称</th>
+<th>
+类型</th>
+<th>
+说明</th>
+</tr>
+<tr>
+<td>
+name</td>
+<td>
+属性</td>
+<td>
+关联对象的名称</td>
+</tr>
+<tr>
+<td>
+table</td>
+<td>
+属性</td>
+<td>
+中间表的表明</td>
+</tr>
+<tr>
+<td>
+lazy</td>
+<td>
+属性</td>
+<td>
+是否启用懒加载</td>
+</tr>
+<tr>
+<td>
+&lt;key&gt;</td>
+<td>
+子标签</td>
+<td>
+&lt;set&gt; 标签的子标签，用于映射中间表的外键字段；其 colum 属性，用于指定中间表的哪个外键指向当前数据库表的主键。</td>
+</tr>
+<tr>
+<td>
+&lt;many-to-many&gt;</td>
+<td>
+子标签</td>
+<td>
+&lt;set&gt; 标签的子标签，用于关联实体类，该子标签包含以下属性：<br />
+<ul>
+<li>
+class 属性：用于指定关联实体类的完全限定名（包名+类名）；</li>
+<li>
+column 属性：用于指定中间表的哪个外键指向关联数据库表的主键。</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<h4>
+将映射文件加入核心配置文件</h4>
+在 Hibernate 核心配置文件 hibernate.cfg.xml 中，使用 &lt;mapping&gt; 元素来指定映射文件 Course.hbm.xml 的位置信息。
+<pre class="xml">
+&lt;!--指定课程的映射文件--&gt;
+&lt;mapping resource=&quot;net/biancheng/www/mapping/Course.hbm.xml&quot; /&gt;</pre>
+<h4>
+测试</h4>
+1.&nbsp;在测试类 MyTest 中，添加一个 testManyToManySave() 方法，代码如下。
+<pre class="java">
+/**
+* 多对多
+* 保存操作
+*/
+@Test
+public void testManyToManySave() {
+    Session session = HibernateUtils.openSession();
+    Transaction transaction = session.beginTransaction();
+   
+    //新建学生和班级信息
+    Grade grade = new Grade();
+    grade.setName(&quot;三年级&quot;);
+    Student student = new Student();
+    student.setName(&quot;选课学生1&quot;);
+    student.setGrade(grade);
+    Student student2 = new Student();
+    student2.setName(&quot;选课学生2&quot;);
+    student2.setGrade(grade);
+    grade.getStudents().add(student);
+    grade.getStudents().add(student2);
+   
+    //新建三个课程
+    Course course = new Course();
+    course.setName(&quot;Java&quot;);
+    Course course2 = new Course();
+    course2.setName(&quot;PHP&quot;);
+    Course course3 = new Course();
+    course3.setName(&quot;C++&quot;);
+
+    //学生选课
+    course.getStudents().add(student);
+    course.getStudents().add(student2);
+    course3.getStudents().add(student);
+    course3.getStudents().add(student2);
+   
+    //保存操作
+    session.save(student);
+    session.save(student2);
+    session.save(grade);
+    session.save(course);
+    session.save(course2);
+    session.save(course3);
+    //提交事务
+    transaction.commit();
+    //释放资源
+    session.close();
+}</pre>
+<br />
+2. 执行该测试方法，控制台输出如下。<br />
+<pre class="info-box">
+Hibernate:
+&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; alter table student
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; add constraint FKrahcsicxucn7bhee8empkb42c
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreign key (gid)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; references grade (id)
+Hibernate:
+&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; alter table student_course
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; add constraint FKkx4bkddvbfs0ese9v7hc5rycg
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreign key (cid)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; references course (id)
+Hibernate:
+&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; alter table student_course
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; add constraint FK8era63dfxi3csvjpresf6fdgu
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreign key (sid)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; references student (id)
+
+Hibernate:
+&nbsp;&nbsp;&nbsp; insert
+&nbsp;&nbsp;&nbsp; into
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; student
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (name, gid)
+&nbsp;&nbsp;&nbsp; values
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (?, ?)
+
+Hibernate:
+&nbsp;&nbsp;&nbsp; insert
+&nbsp;&nbsp;&nbsp; into
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; student
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (name, gid)
+&nbsp;&nbsp;&nbsp; values
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (?, ?)
+
+Hibernate:
+&nbsp;&nbsp;&nbsp; insert
+&nbsp;&nbsp;&nbsp; into
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; grade
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (name)
+&nbsp;&nbsp;&nbsp; values
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (?)
+
+Hibernate:
+&nbsp;&nbsp;&nbsp; insert
+&nbsp;&nbsp;&nbsp; into
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; course
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (name)
+&nbsp;&nbsp;&nbsp; values
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (?)
+
+Hibernate:
+&nbsp;&nbsp;&nbsp; insert
+&nbsp;&nbsp;&nbsp; into
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; course
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (name)
+&nbsp;&nbsp;&nbsp; values
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (?)
+
+Hibernate:
+&nbsp;&nbsp;&nbsp; insert
+&nbsp;&nbsp;&nbsp; into
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; course
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (name)
+&nbsp;&nbsp;&nbsp; values
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (?)
+
+Hibernate:
+&nbsp;&nbsp;&nbsp; update
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; student
+&nbsp;&nbsp;&nbsp; set
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; name=?,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gid=?
+&nbsp;&nbsp;&nbsp; where
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; id=?
+
+Hibernate:
+&nbsp;&nbsp;&nbsp; update
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; student
+&nbsp;&nbsp;&nbsp; set
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; name=?,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gid=?
+&nbsp;&nbsp;&nbsp; where
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; id=?
+
+Hibernate:
+&nbsp;&nbsp;&nbsp; update
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; student
+&nbsp;&nbsp;&nbsp; set
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gid=?
+&nbsp;&nbsp;&nbsp; where
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; id=?
+
+Hibernate:
+&nbsp;&nbsp;&nbsp; update
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; student
+&nbsp;&nbsp;&nbsp; set
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gid=?
+&nbsp;&nbsp;&nbsp; where
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; id=?
+
+Hibernate:
+&nbsp;&nbsp;&nbsp; insert
+&nbsp;&nbsp;&nbsp; into
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; student_course
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (cid, sid)
+&nbsp;&nbsp;&nbsp; values
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (?, ?)
+
+Hibernate:
+&nbsp;&nbsp;&nbsp; insert
+&nbsp;&nbsp;&nbsp; into
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; student_course
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (cid, sid)
+&nbsp;&nbsp;&nbsp; values
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (?, ?)
+
+Hibernate:
+&nbsp;&nbsp;&nbsp; insert
+&nbsp;&nbsp;&nbsp; into
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; student_course
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (cid, sid)
+&nbsp;&nbsp;&nbsp; values
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (?, ?)
+
+Hibernate:
+&nbsp;&nbsp;&nbsp; insert
+&nbsp;&nbsp;&nbsp; into
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; student_course
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (cid, sid)
+&nbsp;&nbsp;&nbsp; values
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (?, ?)
+</pre>
+<br />
+从控制台输出可知，除了建表和 insert 语句外，Hibernate 还执行了 update 语句，而这些 update 语句正是由于使用双向关联而产生的多余 SQL 语句，它们会导致程序的运行效率降低。<br />
+<br />
+3. 到数据库中，分别查询学生表（stduent）、班级表（grade）、课程表（course）和中间表（student_course）中的数据，结果如下。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210914/10594V2Y-3.png" /></div>
+<div style="text-align: center;">
+图4：多对多-查询结果</div>
+<h2>
+反转</h2>
+在前面介绍&ldquo;一对多&rdquo;还是&ldquo;多对多&rdquo;关联关系时，我们都采用是双向关联，即关联的双方都对关联关系进行了维护，例如在学生和班级这种一对多关联中，既描述了学生与班级的关系，又描述了班级与学生的关系。<br />
+<br />
+这种双向关联的方式可以让 Hibernate 同时控制双方的关系，但在程序运行时，却很容易产生多余的 SQL 语句，造成重复操作的问题。此时，我们可以使用 Hibernate 提供的反转（inverse）功能，来解决此问题。<br />
+<br />
+在映射文件的 &lt;set&gt; 标签中，有一个 inverse（反转）属性，它的作用是控制关联的双方由哪一方管理关联关系。<br />
+<br />
+inverse 属性的取值是 boolean 类型的，当 inverse 属性取值为 false（默认值）时，表示由当前这一方管理双方的关联关系，如果双方 inverse 属性都为 false，双方将同时管理关联关系；取值为 true 时，表示当前一方放弃控制权，由对方管理双方的关联关系。<br />
+<br />
+在一对多关联关系中，通常我们会将&ldquo;一&rdquo;的一方的 inverse 属性取值为 true，即由&ldquo;多&rdquo;的一方来维护关联关系；而在多对多关联关系中，则任意设置一方的 inverse 属性为 true 即可。<br />
+<br />
+由于学生和班级之间的关联关系是一对多，而学生和课程之间的关联关系是多对多，因此我们可以将这两种关联关系的控制权都交给学生（Student）。下面我们就通过一个实例来演示反转功能。
+<h4>
+示例</h4>
+1. 修改映射文件 Grade.hbm.xml 的配置，在其 &lt;set&gt; 标签中，使用 inverse（反转）属性，并将该属性的值设置为 true，使其丧失对关联关系的控制权，由 Student 来管理它们之间的关联关系，配置如下。
+<pre class="xml">
+&lt;?xml version=&#39;1.0&#39; encoding=&#39;utf-8&#39;?&gt;
+&lt;!DOCTYPE hibernate-mapping PUBLIC
+        &quot;-//Hibernate/Hibernate Mapping DTD 3.0//EN&quot;
+        &quot;http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd&quot;&gt;
+&lt;hibernate-mapping&gt;
+    &lt;class name=&quot;net.biancheng.www.po.Grade&quot; table=&quot;grade&quot; schema=&quot;bianchengbang_jdbc&quot;&gt;
+        &lt;id name=&quot;id&quot; column=&quot;id&quot; type=&quot;java.lang.Integer&quot;&gt;
+            &lt;generator class=&quot;native&quot;&gt;&lt;/generator&gt;
+        &lt;/id&gt;
+        &lt;property name=&quot;name&quot; column=&quot;name&quot; length=&quot;100&quot; type=&quot;java.lang.String&quot;/&gt;
+        &lt;!--设置 inverse 属性为 true，使其丧失对关联关系的控制权，由 Student 来管理关联关系--&gt;
+        &lt;set name=&quot;students&quot; inverse=&quot;true&quot;&gt;
+            &lt;key column=&quot;gid&quot;&gt;&lt;/key&gt;
+            &lt;one-to-many class=&quot;net.biancheng.www.po.Student&quot;&gt;&lt;/one-to-many&gt;
+        &lt;/set&gt;
+    &lt;/class&gt;
+&lt;/hibernate-mapping&gt;</pre>
+<br />
+2.&nbsp;修改映射文件 Course.hbm.xml 的配置，在其 &lt;set&gt; 标签中，使用 inverse（反转）属性，并将该属性的值设置为 true，使其丧失对关联关系的控制权，由 Student 来管理它们之间的关联关系，配置如下。<br />
+<pre class="xml">
+&lt;?xml version=&#39;1.0&#39; encoding=&#39;utf-8&#39;?&gt;
+&lt;!DOCTYPE hibernate-mapping PUBLIC
+        &quot;-//Hibernate/Hibernate Mapping DTD 3.0//EN&quot;
+        &quot;http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd&quot;&gt;
+&lt;hibernate-mapping&gt;
+    &lt;class name=&quot;net.biancheng.www.po.Course&quot; table=&quot;course&quot; schema=&quot;bianchengbang_jdbc&quot;&gt;
+        &lt;id name=&quot;id&quot; column=&quot;id&quot;&gt;
+            &lt;generator class=&quot;native&quot;&gt;&lt;/generator&gt;
+        &lt;/id&gt;
+        &lt;property name=&quot;name&quot; column=&quot;name&quot; length=&quot;100&quot;/&gt;
+        &lt;!--设置 inverse 属性为 true，使其丧失对关联关系的控制权，由 Student 来管理关联关系--&gt;
+        &lt;set name=&quot;students&quot; table=&quot;student_course&quot; inverse=&quot;true&quot;&gt;
+            &lt;key column=&quot;cid&quot;&gt;&lt;/key&gt;
+            &lt;many-to-many class=&quot;net.biancheng.www.po.Student&quot; column=&quot;sid&quot;&gt;&lt;/many-to-many&gt;
+        &lt;/set&gt;
+    &lt;/class&gt;
+&lt;/hibernate-mapping&gt;</pre>
+<br />
+3. 由于所有的关联关系都已经交给了 Student 进行管理，因此我们在测试类中，只能通过 Student 对关联关系进行维护。修改测试类 MyTest 的&nbsp;testManyToManySave() 方法，代码如下。<br />
+<pre class="java">
+/**
+* 多对多
+* 保存操作
+*/
+@Test
+public void testManyToManySave() {
+    Session session = HibernateUtils.openSession();
+    Transaction transaction = session.getTransaction();
+    transaction.begin();
+   
+    //新建一个班级信
+    Grade grade = new Grade();
+    grade.setName(&quot;三年级（反转）&quot;);
+   
+    //新建两个学生
+    Student student = new Student();
+    student.setName(&quot;选课学生1（反转）&quot;);
+    Student student2 = new Student();
+    student2.setName(&quot;选课学生2（反转）&quot;);
+   
+    //新建三个课程
+    Course course = new Course();
+    course.setName(&quot;Java（反转）&quot;);
+    Course course2 = new Course();
+    course2.setName(&quot;PHP（反转）&quot;);
+    Course course3 = new Course();
+    course3.setName(&quot;C++（反转）&quot;);
+
+    //由于所有的关联关系控制权都交给了Student,因此只能由Stduent对关联关系进行维护
+    student.setGrade(grade);
+    student.getCourses().add(course);
+    student.getCourses().add(course2);
+    student.getCourses().add(course3);
+    student2.setGrade(grade);
+    student2.getCourses().add(course);
+    student2.getCourses().add(course3);
+
+    //保存数据
+    session.save(course);
+    session.save(course2);
+    session.save(course3);
+    session.save(grade);
+    session.save(student);
+    session.save(student2);
+
+    //提交事务
+    transaction.commit();
+    session.close();
+}</pre>
+<br />
+执行该测试方法，控制台输出如下。
+<pre class="info-box">
+Hibernate:
+   
+    alter table student
+       add constraint FKrahcsicxucn7bhee8empkb42c
+       foreign key (gid)
+       references grade (id)
+Hibernate:
+   
+    alter table student_course
+       add constraint FKkx4bkddvbfs0ese9v7hc5rycg
+       foreign key (cid)
+       references course (id)
+Hibernate:
+   
+    alter table student_course
+       add constraint FK8era63dfxi3csvjpresf6fdgu
+       foreign key (sid)
+       references student (id)
+
+Hibernate:
+    insert
+    into
+        course
+        (name)
+    values
+        (?)
+
+Hibernate:
+    insert
+    into
+        course
+        (name)
+    values
+        (?)
+
+Hibernate:
+    insert
+    into
+        course
+        (name)
+    values
+        (?)
+
+Hibernate:
+    insert
+    into
+        grade
+        (name)
+    values
+        (?)
+
+Hibernate:
+    insert
+    into
+        student
+        (name, gid)
+    values
+        (?, ?)
+
+Hibernate:
+    insert
+    into
+        student
+        (name, gid)
+    values
+        (?, ?)
+
+Hibernate:
+    insert
+    into
+        student_course
+        (sid, cid)
+    values
+        (?, ?)
+
+Hibernate:
+    insert
+    into
+        student_course
+        (sid, cid)
+    values
+        (?, ?)
+
+Hibernate:
+    insert
+    into
+        student_course
+        (sid, cid)
+    values
+        (?, ?)
+
+Hibernate:
+    insert
+    into
+        student_course
+        (sid, cid)
+    values
+        (?, ?)
+
+Hibernate:
+    insert
+    into
+        student_course
+        (sid, cid)
+    values
+        (?, ?)</pre>
+<br />
+从控制台输出可以看出，使用了 inverse（反转）功能后，并没有产生多余的 update 语句。
+<h2>
+级联</h2>
+Hibernate 还提供了级联功能，当拥有关联关系控制权的一方，对数据库进行操作时，为了使数据保持同步，其关联对象也执行同样的操作。<br />
+<br />
+在 Hibernate 的映射文件中有一个 cascade 属性，该属性用于设置关联对象是否进行级联操作，其常用属性值，如下表。<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+属性</th>
+<th>
+描述</th>
+</tr>
+<tr>
+<td>
+save-update</td>
+<td>
+在进行保存或更新时，进行级联操作。</td>
+</tr>
+<tr>
+<td>
+delete</td>
+<td>
+在进行删除操作时，进行级联操作。</td>
+</tr>
+<tr>
+<td>
+delete-orphan</td>
+<td>
+孤儿删除，删除和当前对象解除关联关系的对象。<br />
+该属性值仅在关联关系为一对多时有效，因此只有此时才会存在父子关系，其中&ldquo;一&rdquo;的一方为&ldquo;父方&rdquo;，&ldquo;多&rdquo;的一方为&ldquo;子方&rdquo;；<br />
+例如，班级和学生是一对多的关系，其中班级为&ldquo;父方&rdquo;，学生为&ldquo;子方&rdquo;，当学生与班级解除了关联关系后，其外键被重置为了 null，那么这个学生也就失去了他的学生身份，这种记录就需要从学生表中删除。</td>
+</tr>
+<tr>
+<td>
+all</td>
+<td>
+所有情况下均进行级联操作，&nbsp;delete-orphan （孤儿删除）除外。</td>
+</tr>
+<tr>
+<td>
+all-delete-orphan</td>
+<td>
+所有情况下均进行级联操作， 包括 delete-orphan （孤儿删除）。</td>
+</tr>
+<tr>
+<td>
+none</td>
+<td>
+默认值，表示所有情况下，均不进行级联操作。</td>
+</tr>
+</tbody>
+</table>
+<br />
+下面我们以&ldquo;班级-学生-课程&rdquo;为例，演示级联保存、级联删除以及孤儿删除等。
+<h4>
+级联保存</h4>
+班级和学生的关联关系为一对多，而学生与课程的关联关系则为多对多，基于这些关联关系，我们可以在保存班级信息时，级联保存学生和课程信息。<br />
+<br />
+1. 修改映射文件 Grade.hbm.xml，在 &lt;set&gt; 标签中，设置 cascade 属性的值为 save-update，以达到保存班级信息时，级联保存学生信息的目的，具体配置如下。
+<pre class="xml">
+&lt;?xml version=&#39;1.0&#39; encoding=&#39;utf-8&#39;?&gt;
+&lt;!DOCTYPE hibernate-mapping PUBLIC
+        &quot;-//Hibernate/Hibernate Mapping DTD 3.0//EN&quot;
+        &quot;http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd&quot;&gt;
+&lt;hibernate-mapping&gt;
+    &lt;class name=&quot;net.biancheng.www.po.Grade&quot; table=&quot;grade&quot; schema=&quot;bianchengbang_jdbc&quot;&gt;
+        &lt;id name=&quot;id&quot; column=&quot;id&quot; type=&quot;java.lang.Integer&quot;&gt;
+            &lt;generator class=&quot;native&quot;&gt;&lt;/generator&gt;
+        &lt;/id&gt;
+        &lt;property name=&quot;name&quot; column=&quot;name&quot; length=&quot;100&quot; type=&quot;java.lang.String&quot;/&gt;
+        &lt;!--设置 cascade 属性为 save-update,在保存班级信息时，级联保存学生信息--&gt;
+        &lt;set name=&quot;students&quot; inverse=&quot;false&quot; cascade=&quot;save-update&quot;&gt;
+            &lt;key column=&quot;gid&quot;&gt;&lt;/key&gt;
+            &lt;one-to-many class=&quot;net.biancheng.www.po.Student&quot;&gt;&lt;/one-to-many&gt;
+        &lt;/set&gt;
+    &lt;/class&gt;
+&lt;/hibernate-mapping&gt;</pre>
+<blockquote>
+<strong>注意</strong>：使用 cascade 属性进行级联操作时，其必须具备管理或控制关联关系的能力，即其 inverse 属性必须取值为 false（默认值）。</blockquote>
+2. 修改映射文件&nbsp;Student.hbm.xml，在 &lt;set&gt; 标签中，设置 cascade 属性的值为&nbsp;save-update，以达到保存学生信息时，级联保存选课信息的目的，具体配置如下。
+<pre class="xml">
+&lt;?xml version=&#39;1.0&#39; encoding=&#39;utf-8&#39;?&gt;
+&lt;!DOCTYPE hibernate-mapping PUBLIC
+        &quot;-//Hibernate/Hibernate Mapping DTD 3.0//EN&quot;
+        &quot;http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd&quot;&gt;
+&lt;hibernate-mapping&gt;
+    &lt;class name=&quot;net.biancheng.www.po.Student&quot; table=&quot;student&quot; schema=&quot;bianchengbang_jdbc&quot; lazy=&quot;true&quot;&gt;
+        &lt;id name=&quot;id&quot; column=&quot;id&quot; type=&quot;java.lang.Integer&quot;&gt;
+            &lt;generator class=&quot;native&quot;&gt;&lt;/generator&gt;
+        &lt;/id&gt;
+        &lt;property name=&quot;name&quot; column=&quot;name&quot; length=&quot;100&quot; type=&quot;java.lang.String&quot;&gt;&lt;/property&gt;
+
+        &lt;many-to-one name=&quot;grade&quot; class=&quot;net.biancheng.www.po.Grade&quot; column=&quot;gid&quot; /&gt;
+        &lt;!--设置 cascade 属性为 save-update,通过 student 进行级联保存--&gt;
+        &lt;set name=&quot;courses&quot; table=&quot;student_course&quot; cascade=&quot;save-update&quot;&gt;
+            &lt;key column=&quot;sid&quot;&gt;&lt;/key&gt;
+            &lt;many-to-many class=&quot;net.biancheng.www.po.Course&quot; column=&quot;cid&quot;&gt;&lt;/many-to-many&gt;
+        &lt;/set&gt;
+    &lt;/class&gt;
+&lt;/hibernate-mapping&gt;</pre>
+<br />
+3. 在测试类 MyTest 中，添加一个&nbsp;testCascadeSave() 用来测试级联保存，代码如下。
+<pre class="java">
+@Test
+public void testCascadeSave() {
+&nbsp;&nbsp;&nbsp; Session session = HibernateUtils.openSession();
+&nbsp;&nbsp;&nbsp; Transaction transaction = session.getTransaction();
+&nbsp;&nbsp;&nbsp; //开启事务
+&nbsp;&nbsp;&nbsp; transaction.begin();
+&nbsp;&nbsp;&nbsp; //创建班级
+&nbsp;&nbsp;&nbsp; Grade grade = new Grade();
+&nbsp;&nbsp;&nbsp; grade.setName(&quot;三年级&quot;);
+&nbsp;&nbsp;&nbsp; Grade grade2 = new Grade();
+&nbsp;&nbsp;&nbsp; grade2.setName(&quot;四年级&quot;);
+
+&nbsp;&nbsp;&nbsp; //新建三个课程
+&nbsp;&nbsp;&nbsp; Course course = new Course();
+&nbsp;&nbsp;&nbsp; course.setName(&quot;Java 基础&quot;);
+&nbsp;&nbsp;&nbsp; Course course2 = new Course();
+&nbsp;&nbsp;&nbsp; course2.setName(&quot;Java 面向对象 &quot;);
+&nbsp;&nbsp;&nbsp; Course course3 = new Course();
+&nbsp;&nbsp;&nbsp; course3.setName(&quot;Java 高级特性&quot;);
+
+&nbsp;&nbsp;&nbsp; //创建是三个学生
+&nbsp;&nbsp;&nbsp; Student student = new Student();
+&nbsp;&nbsp;&nbsp; student.setName(&quot;张三&quot;);
+&nbsp;&nbsp;&nbsp; //学生选课
+&nbsp;&nbsp;&nbsp; student.getCourses().add(course);
+&nbsp;&nbsp;&nbsp; student.getCourses().add(course2);
+&nbsp;&nbsp;&nbsp; student.getCourses().add(course3);
+
+&nbsp;&nbsp;&nbsp; Student student2 = new Student();
+&nbsp;&nbsp;&nbsp; student2.setName(&quot;李四&quot;);
+&nbsp;&nbsp;&nbsp; //学生选课
+&nbsp;&nbsp;&nbsp; student2.getCourses().add(course);
+&nbsp;&nbsp;&nbsp; student2.getCourses().add(course2);
+
+&nbsp;&nbsp;&nbsp; Student student3 = new Student();
+&nbsp;&nbsp;&nbsp; student3.setName(&quot;赵六&quot;);
+&nbsp;&nbsp;&nbsp; //学生选课
+&nbsp;&nbsp;&nbsp; student3.getCourses().add(course2);
+&nbsp;&nbsp;&nbsp; student3.getCourses().add(course3);
+
+&nbsp;&nbsp;&nbsp; //将学生分配到班级中
+&nbsp;&nbsp;&nbsp; grade.getStudents().add(student);
+&nbsp;&nbsp;&nbsp; grade.getStudents().add(student2);
+&nbsp;&nbsp;&nbsp; grade2.getStudents().add(student3);
+
+&nbsp;&nbsp;&nbsp; //只保存班级信息，学生和选课信息则通过级联保存
+&nbsp;&nbsp;&nbsp; session.save(grade);
+&nbsp;&nbsp;&nbsp; session.save(grade2);
+&nbsp;&nbsp;&nbsp; //提交事务
+&nbsp;&nbsp;&nbsp; transaction.commit();
+&nbsp;&nbsp;&nbsp; //释放资源
+&nbsp;&nbsp;&nbsp; session.close();
+}</pre>
+<br />
+4. 为了防止其他数据干扰，我们可以在核心配置文件 hibernate.cfg.xml 中，设置&nbsp;hibernate.hbm2ddl.auto 属性的值为 create，使数据库表在每次运行时，会删除并重新创建，保证表中只有本次运行的数据（选配）。
+<pre class="xml">
+&lt;property name=&quot;hibernate.hbm2ddl.auto&quot;&gt;create&lt;/property&gt;</pre>
+<br />
+5. 运行测试方法，执行成功后到数据库中，分别对 student 表、grade 表、course 表和中间表 student_course 进行查询，结果如下图。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210914/10594W943-4.png" /></div>
+<div style="text-align: center;">
+图5：级联保存结果</div>
+<br />
+从以上查询结果可知，虽然我们只保存班级（grade）信息，但 Hibernate 仍然通过级联操作，将学生信息、课程信息以及选课信息（中间表）都保存到了数据库中。<br />
+<h4>
+级联删除</h4>
+基于班级和学生的&ldquo;一对多&rdquo;关联关系，我们可以在删除班级信息时，级联删除班级内的学生信息。<br />
+<br />
+1. 修改映射文件 Grade.hbm.xml，并在&lt;set&gt; 标签中的&nbsp; cascade 属性新增属性值&ldquo;delete&rdquo;,配置如下。
+<pre class="xml">
+&lt;?xml version=&#39;1.0&#39; encoding=&#39;utf-8&#39;?&gt;
+&lt;!DOCTYPE hibernate-mapping PUBLIC
+        &quot;-//Hibernate/Hibernate Mapping DTD 3.0//EN&quot;
+        &quot;http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd&quot;&gt;
+&lt;hibernate-mapping&gt;
+    &lt;class name=&quot;net.biancheng.www.po.Grade&quot; table=&quot;grade&quot; schema=&quot;bianchengbang_jdbc&quot;&gt;
+        &lt;id name=&quot;id&quot; column=&quot;id&quot; type=&quot;java.lang.Integer&quot;&gt;
+            &lt;generator class=&quot;native&quot;&gt;&lt;/generator&gt;
+        &lt;/id&gt;
+        &lt;property name=&quot;name&quot; column=&quot;name&quot; length=&quot;100&quot; type=&quot;java.lang.String&quot;/&gt;
+        &lt;!--设置 cascade 属性为 save-update,delete--&gt;
+        &lt;set name=&quot;students&quot; inverse=&quot;false&quot; cascade=&quot;save-update,delete&quot;&gt;
+            &lt;key column=&quot;gid&quot;&gt;&lt;/key&gt;
+            &lt;one-to-many class=&quot;net.biancheng.www.po.Student&quot;&gt;&lt;/one-to-many&gt;
+        &lt;/set&gt;
+    &lt;/class&gt;
+&lt;/hibernate-mapping&gt;</pre>
+<blockquote>
+注意：cascade 属性可以包含多个值，中间用&ldquo;，&rdquo;隔开。</blockquote>
+2. 在测试类 MyTest 中，添加一个名为&nbsp;testCascadeDelete 测试方法，删除&ldquo;四年级&rdquo;的信息，代码如下。
+<pre class="java">
+@Test
+public void testCascadeDelete() {
+    Session session = HibernateUtils.openSession();
+    Transaction transaction = session.getTransaction();
+    //开启事务
+    transaction.begin();
+    // HQL 查询四年级信息
+    Query query = session.createQuery(&quot;from Grade WHERE name=?1&quot;);
+    query.setParameter(1, &quot;四年级&quot;);
+    List&lt;Grade&gt; resultList = query.getResultList();
+    for (Grade grade : resultList) {
+        //删除四年级的信息
+        session.delete(grade);
+    }
+    //提交事务
+    transaction.commit();
+    //释放资源
+    session.close();
+}</pre>
+<br />
+3. 执行该测试方法，然后到数据库中分别对 student 表、grade 表、course 表和中间表 student_course 进行查询，结果如下图。<br />
+&nbsp;
+<p style="text-align: center;">
+<img alt="级联删除" src="../uploads/allimg/210914/10594Qa1-5.png" /><br />
+图6：级联删除结果</p>
+<p>
+<br />
+从查询结果可以看出，我们在删除班级信息时，还同时级联删除了相关的 student（学生）和中间表（student_course）的信息。</p>
+<blockquote>
+Student.hbm.xml 在维护 Student 和 Course 关联映射时，并没有通过 cascade 属性开启级联删除功能，因此课程信息没有被级联删除。<br />
+<br />
+级联操作是具有方向性的，在决定级联删除的方向时，需要以现实需求为标准，否则会出现不符合常理的错误，例如，级联删除的方向是从 student 到 grade 的话，则就会出现因为一个学生而删掉整个班级的尴尬局面。</blockquote>
+<h4>
+孤儿删除</h4>
+班级和学生的关联关系是&ldquo;一对多&rdquo;，此时它们是存在父子关系的，其中班级为&ldquo;父方&rdquo;，学生为&ldquo;子方&rdquo;。如果学生表中某条数据的外键（gid）就会被重置为 null，即该学生与班级解除了关联关系，不再属于任何一个班级，那么这个学生也就没有了存在的意义，这种数据就被称为孤儿数据，孤儿删除就是用来删除这种&ldquo;孤儿数据&rdquo;的。<br />
+<br />
+1. 修改映射文件 Grade.hbm.xml，设置 cascade 属性的取值为&nbsp;delete-orphan，配置如下。
+<pre class="xml">
+&lt;?xml version=&#39;1.0&#39; encoding=&#39;utf-8&#39;?&gt;
+&lt;!DOCTYPE hibernate-mapping PUBLIC
+        &quot;-//Hibernate/Hibernate Mapping DTD 3.0//EN&quot;
+        &quot;http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd&quot;&gt;
+&lt;hibernate-mapping&gt;
+    &lt;class name=&quot;net.biancheng.www.po.Grade&quot; table=&quot;grade&quot; schema=&quot;bianchengbang_jdbc&quot;&gt;
+        &lt;id name=&quot;id&quot; column=&quot;id&quot; type=&quot;java.lang.Integer&quot;&gt;
+            &lt;generator class=&quot;native&quot;&gt;&lt;/generator&gt;
+        &lt;/id&gt;
+        &lt;property name=&quot;name&quot; column=&quot;name&quot; length=&quot;100&quot; type=&quot;java.lang.String&quot;/&gt;
+        &lt;!--设置 cascade 属性为 delete-orphan(孤儿删除)--&gt;
+        &lt;set name=&quot;students&quot; inverse=&quot;false&quot; cascade=&quot;save-update,delete-orphan&quot;&gt;
+            &lt;key column=&quot;gid&quot;&gt;&lt;/key&gt;
+            &lt;one-to-many class=&quot;net.biancheng.www.po.Student&quot;&gt;&lt;/one-to-many&gt;
+        &lt;/set&gt;
+    &lt;/class&gt;
+&lt;/hibernate-mapping&gt;</pre>
+<br />
+2. 在测试类 MyTest 中，添加一个名为&nbsp;testDeleteOrphan 的测试方法，代码如下。
+<pre class="java">
+@Test
+public void testDeleteOrphan() {
+    Session session = HibernateUtils.openSession();
+    Transaction transaction = session.getTransaction();
+    //开启事务
+    transaction.begin();
+    // HQL 查询三年级信息
+    Query query = session.createQuery(&quot;from Grade WHERE name=?1&quot;);
+    query.setParameter(1, &quot;三年级&quot;);
+    List&lt;Grade&gt; gradeList = query.getResultList();
+    //遍历结果集
+    for (Grade grade : gradeList) {
+        //HQL 查询名为张三的学生信息
+        Query query1 = session.createQuery(&quot;from Student where name=?1&quot;);
+        query1.setParameter(1, &quot;张三&quot;);
+        List&lt;Student&gt; studentList = query1.getResultList();
+        //将学生张三与班级解除关系，使之称为孤儿
+        grade.getStudents().removeAll(studentList);
+    }
+    //提交事务
+    transaction.commit();
+    //释放资源
+    session.close();
+}</pre>
+<br />
+3. 执行该测试方法，然后到数据库中分别对 student 表、grade 表、course 表和中间表 student_course 进行查询，结果如下图。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210914/10594U057-6.png" /><br />
+图7：孤儿删除结果</div>
+<br />
+从图 3 可以看到，由于学生表中的&ldquo;张三&rdquo;与班级表解除了关联关系（外键重置为 null）,当我们在班级的映射文件中设置了孤儿删除后，该学生信息及其相关表中数据就被自动删除了。&nbsp;&nbsp;<br />
+<blockquote>
+注意，在介绍级联保存时，我们为了防止其他数据的干扰，而将核心配置文件&nbsp;hibernate.cfg.xml 中&nbsp;hibernate.hbm2ddl.auto 属性设置为了 create，这会导致每次执行程序时，都重新创建数据库表。在执行级联删除或孤儿删除时，需要我们重新将 hibernate.hbm2ddl.auto 属性设置为 update。</blockquote>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="../view/niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/391.html" title="C++ map，STL map详解" target="_blank">C++ map，STL map详解</a></li>
+<li><a href="../view/1360.html" title="C++ &amp;&amp;、||、！逻辑运算符用法详解" target="_blank">C++ &amp;&amp;、||、！逻辑运算符用法详解</a></li>
+<li><a href="../view/4667.html" title="Python包（存放多个模块的文件夹）" target="_blank">Python包（存放多个模块的文件夹）</a></li>
+<li><a href="../view/5644.html" title="Java初学者容易犯的错误" target="_blank">Java初学者容易犯的错误</a></li>
+<li><a href="../dll/vip_8707.html" title="Linux下动态链接库的创建和使用" target="_blank">Linux下动态链接库的创建和使用</a></li>
+<li><a href="../c/memcpy.html" title="C语言memcpy()：实现内存拷贝（内存不能重叠）" target="_blank">C语言memcpy()：实现内存拷贝（内存不能重叠）</a></li>
+<li><a href="../c/trunc.html" title="C语言trunc()函数：截断浮点数" target="_blank">C语言trunc()函数：截断浮点数</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9337;
+window.arcId = "6357CG4DITUXI9U4+9M7BJ2GjGjt0S62cu44PWwOxbjpgtGkvnLda55tCrs";
+window.typeidChain = "291";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="../view/8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="../view/8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="../view/8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="../view/9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="../view/8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/hibernate/l1-cache.html";
+window.nextPageURL = "/hibernate/mapping.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

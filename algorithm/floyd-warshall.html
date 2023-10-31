@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon_6.ico" />
+<link href="../templets/new/style/common_4.css" rel="stylesheet" />
+<title>弗洛伊德算法（求最短路径）</title>
+<meta name="description" content="弗洛伊德算法用于查找各个顶点之间的最短路径，本文将详细讲解弗洛伊德算法查找最短路径的实现思路，并给出实现弗洛伊德算法的C/C++、Java、Python程序。" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default_4.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="../view/9648.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-weixin"></span>公众号</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo_4.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="algorithm.html">算法</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href="what-is-algorithm.html">算法是什么</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href="complexity.html">时间复杂度和空间复杂度</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href="recursion.html">递归算法</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href="fibonacci-series.html">斐波那契数列</a>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href="divide-and-conquer.html">分治算法</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href="max-min-problem.html">找数组的最大值和最小值</a>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href="tower-of-hanoi.html">汉诺塔问题</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href="greedy.html">贪心算法</a>
+</dd>
+<dd>
+<span class="channel-num">9</span>
+<a href="fractional-knapsack.html">部分背包问题</a>
+</dd>
+<dd>
+<span class="channel-num">10</span>
+<a href="dynamic-programming.html">动态规划算法</a>
+</dd>
+<dd>
+<span class="channel-num">11</span>
+<a href="01-knapsack.html">01背包问题</a>
+</dd>
+<dd>
+<span class="channel-num">12</span>
+<a href="backtracking.html">回溯算法</a>
+</dd>
+<dd>
+<span class="channel-num">13</span>
+<a href="maze-puzzle.html">迷宫问题</a>
+</dd>
+<dd>
+<span class="channel-num">14</span>
+<a href="n-queens.html">N皇后问题</a>
+</dd>
+<dd>
+<span class="channel-num">15</span>
+<a href="bubble-sort.html">冒泡排序算法</a>
+</dd>
+<dd>
+<span class="channel-num">16</span>
+<a href="insertion-sort.html">插入排序算法</a>
+</dd>
+<dd>
+<span class="channel-num">17</span>
+<a href="selection-sort.html">选择排序算法</a>
+</dd>
+<dd>
+<span class="channel-num">18</span>
+<a href="shell-sort.html">希尔排序算法</a>
+</dd>
+<dd>
+<span class="channel-num">19</span>
+<a href="merge-sort.html">归并排序算法</a>
+</dd>
+<dd>
+<span class="channel-num">20</span>
+<a href="quick-sort.html">快速排序算法</a>
+</dd>
+<dd>
+<span class="channel-num">21</span>
+<a href="counting-sort.html">计数排序算法</a>
+</dd>
+<dd>
+<span class="channel-num">22</span>
+<a href="radix-sort.html">基数排序算法</a>
+</dd>
+<dd>
+<span class="channel-num">23</span>
+<a href="bucket-sort.html">桶排序算法</a>
+</dd>
+<dd>
+<span class="channel-num">24</span>
+<a href="stable-sorting.html">稳定排序算法</a>
+</dd>
+<dd>
+<span class="channel-num">25</span>
+<a href="linear-search.html">顺序查找算法</a>
+</dd>
+<dd>
+<span class="channel-num">26</span>
+<a href="binary-search.html">二分查找算法</a>
+</dd>
+<dd>
+<span class="channel-num">27</span>
+<a href="interpolation-search.html">插值查找算法</a>
+</dd>
+<dd>
+<span class="channel-num">28</span>
+<a href="hash-search.html">哈希查找算法</a>
+</dd>
+<dd>
+<span class="channel-num">29</span>
+<a href="minimum-spanning-tree.html">最小生成树</a>
+</dd>
+<dd>
+<span class="channel-num">30</span>
+<a href="prim.html">普里姆算法</a>
+</dd>
+<dd>
+<span class="channel-num">31</span>
+<a href="kruskal.html">克鲁斯卡尔算法</a>
+</dd>
+<dd>
+<span class="channel-num">32</span>
+<a href="shortest-path.html">最短路径算法</a>
+</dd>
+<dd>
+<span class="channel-num">33</span>
+<a href="dijkstra.html">迪杰斯特拉算法</a>
+</dd>
+<dd>
+<span class="channel-num">34</span>
+<a href="floyd-warshall.html">弗洛伊德算法</a>
+</dd>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="algorithm.html">算法</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>弗洛伊德算法（求最短路径）</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在一个加权图中，如果想找到各个顶点之间的最短路径，可以考虑使用弗洛伊德算法。<br />
+<br />
+弗洛伊德算法既适用于无向加权图，也适用于有向加权图。使用弗洛伊德算法查找最短路径时，只允许环路的权值为负数，其它路径的权值必须为非负数，否则算法执行过程会出错。
+<h2>
+弗洛伊德算法的实现思路</h2>
+弗洛伊德算法是基于<a href="dynamic-programming.html" target="_blank">动态规划算法</a>实现的，接下来我们以在图 1 所示的有向加权图中查找各个顶点之间的最短路径为例，讲解弗洛伊德算法的实现思路。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210820/1502393Y3-0.gif" /><br />
+图 1 有向加权图</div>
+<blockquote>
+<p>
+图 1 中不存在环路，且所有路径（边）的权值都为正数，因此可以使用弗洛伊德算法。</p>
+</blockquote>
+弗洛伊德算法查找图 1 中各个顶点之间的最短路径，实现过程如下：<br />
+1) 建立一张表格，记录每个顶点直达其它所有顶点的权值：<br />
+<br />
+<table width="70%">
+<caption>
+表 1 各个顶点直达路径的权值</caption>
+<tbody style="text-align:center">
+<tr>
+<th colspan="2" rowspan="2">
+&nbsp;</th>
+<th colspan="4" rowspan="1" width="80%">
+目标顶点</th>
+</tr>
+<tr>
+<th>
+1</th>
+<th>
+2</th>
+<th>
+3</th>
+<th>
+4</th>
+</tr>
+<tr>
+<th colspan="1" rowspan="4">
+起始顶点</th>
+<th>
+1</th>
+<td>
+0</td>
+<td>
+3</td>
+<td>
+&infin;</td>
+<td>
+5</td>
+</tr>
+<tr>
+<th>
+2</th>
+<td>
+2</td>
+<td>
+0</td>
+<td>
+&infin;</td>
+<td>
+4</td>
+</tr>
+<tr>
+<th>
+3</th>
+<td>
+&infin;</td>
+<td>
+1</td>
+<td>
+0</td>
+<td>
+&infin;</td>
+</tr>
+<tr>
+<th>
+4</th>
+<td>
+&infin;</td>
+<td>
+&infin;</td>
+<td>
+2</td>
+<td>
+0</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>
+起始顶点指的是从哪个顶点出发，目标顶点指的是要达到的顶点，例如 2-&gt;1 路径的权值是 2，顶点 2 是起始顶点，顶点 1 是目标顶点。此外，&infin; 表示无穷大的数，即顶点之间不存在直达的路径。</p>
+</blockquote>
+2) 在表 1 的基础上，将顶点 1 作为 &quot;中间顶点&quot;，计算从各个顶点出发途径顶点 1 再到达其它顶点的权值，如果比表 1 中记录的权值更小，证明两个顶点之间存在更短的路径，对表 1 进行更新。<br />
+<br />
+从各个顶点出发，途径顶点 1 再到达其它顶点的路径以及对应的权值分别是：
+<ul>
+<li>
+2-1-3：权值为 2 + &infin; = &infin;，表 1 中记录的 2-3 的权值也是 &infin;；</li>
+<li>
+2-1-4：权值为 2 + 5 = 7，表 1 中记录的 2-4 的权值是 4；</li>
+<li>
+3-1-2：权值为 &infin; + 3，表 1 中记录的 3-2 的权值是 1；</li>
+<li>
+3-1-4：权值为 &infin; + 5，表 1 中记录的 3-4 的权值是 &infin;；</li>
+<li>
+4-1-2：权值为 &infin; + 3，表 1 中记录的 4-2 的权值是&nbsp;&infin;；</li>
+<li>
+4-1-3：权值为 &infin; + &infin;，表 1 中记录的 4-3 的权值是 2。&nbsp;</li>
+</ul>
+<br />
+以上所有的路径中，没有比表 1 中记录的权值最小的路径，所以不需要对表 1 进行更新。<br />
+<br />
+3) 在表 1 的基础上，以顶点 2 作为 &quot;中间顶点&quot;，计算从各个顶点出发途径顶点 2 再到达其它顶点的权值：
+<ul>
+<li>
+1-2-3：权值为 3 + &infin;，表 1 中记录的 1-3 的权值为 &infin;；</li>
+<li>
+1-2-4：权值为 3 + 4 = 7，表 1 中 1-4 的权值为 5；</li>
+<li>
+<span style="color:#b22222;">3-2-1：权值为 1 + 2 = 3，表 1 中 3-1 的权值为 &infin;，3 &lt; &infin;；</span></li>
+<li>
+<span style="color:#b22222;">3-2-4：权值为 1 + 4 = 5，表 1 中 3-4 的权值为 &infin;，5 &lt; &infin;；</span></li>
+<li>
+4-2-1：权值为 &infin; + 2，表 1 中 4-1 的权值为 &infin;；</li>
+<li>
+4-2-3：权值为 &infin; + &infin;，表 1 中 4-3 的权值为 2。</li>
+</ul>
+<br />
+以顶点 2 作为 &quot;中间顶点&quot;，我们找到了比 3-1、3-4 更短的路径，对表 1 进行更新：<br />
+<br />
+<table width="70%">
+<caption>
+表 2 更新后的 &quot;表 1&quot;</caption>
+<tbody style="text-align:center">
+<tr>
+<th colspan="2" rowspan="2">
+&nbsp;</th>
+<th colspan="4" rowspan="1" width="80%">
+目标顶点</th>
+</tr>
+<tr>
+<th>
+1</th>
+<th>
+2</th>
+<th>
+3</th>
+<th>
+4</th>
+</tr>
+<tr>
+<th colspan="1" rowspan="4">
+起始顶点</th>
+<th>
+1</th>
+<td>
+0</td>
+<td>
+3</td>
+<td>
+&infin;</td>
+<td>
+5</td>
+</tr>
+<tr>
+<th>
+2</th>
+<td>
+2</td>
+<td>
+0</td>
+<td>
+&infin;</td>
+<td>
+4</td>
+</tr>
+<tr>
+<th>
+3</th>
+<td>
+<span style="color:#b22222;">3（3-2-1）</span></td>
+<td>
+1</td>
+<td>
+0</td>
+<td>
+<span style="color:#b22222;">5（3-2-4）</span></td>
+</tr>
+<tr>
+<th>
+4</th>
+<td>
+&infin;</td>
+<td>
+&infin;</td>
+<td>
+2</td>
+<td>
+0</td>
+</tr>
+</tbody>
+</table>
+<br />
+4) 在表 2 的基础上，将顶点 3 作为 &quot;中间顶点&quot;，计算从各个顶点出发途径顶点 3 再到达其它顶点的权值：
+<ul>
+<li>
+1-3-2 权值为 &infin; + 1，表 2 中 1-2 的权值为 3；</li>
+<li>
+1-3-4 权值为 &infin; + 5，表 2 中 1-4 的权值为 5；</li>
+<li>
+2-3-1 权值为 &infin; + 3，表 2 中 2-1 的权值为 2；</li>
+<li>
+2-3-4 权值为 &infin; + 5，表 2 中 2-4 的权值为 4；</li>
+<li>
+<span style="color:#b22222;">4-3-1 权值为 2 + 3 = 5，表 2 中 4-1 的权值为 &infin;，5 &lt; &infin;；</span></li>
+<li>
+<span style="color:#b22222;">4-3-2 权值为 2 + 1 = 3，表 2 中 4-2 的权值为 &infin;，3 &lt; &infin;；</span></li>
+</ul>
+<br />
+以顶点 3 作为 &quot;中间顶点&quot;，我们找到了比 4-1、4-2 更短的路径，对表 2 进行更新：<br />
+<br />
+<table width="70%">
+<caption>
+表 3&nbsp;更新后的 &quot;表 2&quot;</caption>
+<tbody style="text-align:center">
+<tr>
+<th colspan="2" rowspan="2">
+&nbsp;</th>
+<th colspan="4" rowspan="1" width="80%">
+目标顶点</th>
+</tr>
+<tr>
+<th>
+1</th>
+<th>
+2</th>
+<th>
+3</th>
+<th>
+4</th>
+</tr>
+<tr>
+<th colspan="1" rowspan="4">
+起始顶点</th>
+<th>
+1</th>
+<td>
+0</td>
+<td>
+3</td>
+<td>
+&infin;</td>
+<td>
+5</td>
+</tr>
+<tr>
+<th>
+2</th>
+<td>
+2</td>
+<td>
+0</td>
+<td>
+&infin;</td>
+<td>
+4</td>
+</tr>
+<tr>
+<th>
+3</th>
+<td>
+3（3-2-1）</td>
+<td>
+1</td>
+<td>
+0</td>
+<td>
+5（3-2-4）</td>
+</tr>
+<tr>
+<th>
+4</th>
+<td>
+<span style="color:#b22222;">5（4-3-2-1）</span></td>
+<td>
+<span style="color:#b22222;">3（4-3-2）</span></td>
+<td>
+2</td>
+<td>
+0</td>
+</tr>
+</tbody>
+</table>
+<br />
+5) 在表 3 的基础上，将顶点 4 作为 &quot;中间顶点&quot;，计算从各个顶点出发途径顶点 4 再到达其它顶点的权值：
+<ul>
+<li>
+1-4-2 权值为 5 + 3 = 8，表 3 中 1-2 的权值为 3；</li>
+<li>
+<span style="color:#b22222;">1-4-3 权值为 5 + 2 = 7，表 3 中 1-3 的权值为 &infin;，7 &lt; &infin;；</span></li>
+<li>
+2-4-1 权值为 4 + 5 = 9，表 3 中 2-1 的权值为 2；</li>
+<li>
+<span style="color:#b22222;">2-4-3 权值为 4 + 2 = 6，表 3 中 2-3 的权值为 &infin;，6 &lt; &infin;；</span></li>
+<li>
+3-4-1 权值为 4 + 5 = 9，表 3 中 3-1 的权值为 3；</li>
+<li>
+3-4-2 权值为 5 + 5 = 10 ，表 3 中 3-2 的权值为 1。</li>
+</ul>
+<br />
+以顶点 4 作为 &quot;中间顶点&quot;，我们找到了比 1-3、2-3 更短的路径，对表 3 进行更新：<br />
+<br />
+<table width="70%">
+<caption>
+表 4&nbsp;更新后的 &quot;表 3&quot;</caption>
+<tbody style="text-align:center">
+<tr>
+<th colspan="2" rowspan="2">
+&nbsp;</th>
+<th colspan="4" rowspan="1" width="80%">
+目标顶点</th>
+</tr>
+<tr>
+<th>
+1</th>
+<th>
+2</th>
+<th>
+3</th>
+<th>
+4</th>
+</tr>
+<tr>
+<th colspan="1" rowspan="4">
+起始顶点</th>
+<th>
+1</th>
+<td>
+0</td>
+<td>
+3</td>
+<td>
+<span style="color:#b22222;">7（1-4-3）</span></td>
+<td>
+5</td>
+</tr>
+<tr>
+<th>
+2</th>
+<td>
+2</td>
+<td>
+0</td>
+<td>
+<span style="color:#b22222;">6（2-4-3）</span></td>
+<td>
+4</td>
+</tr>
+<tr>
+<th>
+3</th>
+<td>
+3（3-2-1）</td>
+<td>
+1</td>
+<td>
+0</td>
+<td>
+5（3-2-4）</td>
+</tr>
+<tr>
+<th>
+4</th>
+<td>
+5（4-3-2-1）</td>
+<td>
+3（4-3-2）</td>
+<td>
+2</td>
+<td>
+0</td>
+</tr>
+</tbody>
+</table>
+<br />
+通过将所有的顶点分别作为&ldquo;中间顶点&rdquo;，最终得到的表 4 就记录了各个顶点之间的最短路径。例如，4-1 的最短路径为 4-3-2-1。
+<h2>
+弗洛伊德算法的具体实现</h2>
+了解了弗洛伊德算法查找最短路径的实现思路后，接下来仍以图 1 为例，分别编写 C、Java、Python 程序实现弗洛伊德算法。<br />
+<br />
+如下是用弗洛伊德算法查找图 1 中各顶点之间最短路径的 C 语言程序：
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+#define V 4    //设定图中的顶点数
+#define INF 65535   // 设置一个最大值
+int P[V][V] = { 0 }; //记录各个顶点之间的最短路径
+void printMatrix(int matrix[][V]);  //输出各个顶点之间的最短路径
+void printPath(int i, int j); // 递归输出各个顶点之间最短路径的具体线路
+void floydWarshall(int graph[][V]); // 实现弗洛伊德算法
+
+int main() {
+    // 有向加权图中各个顶点之间的路径信息
+    int graph[V][V] = { {0, 3, INF, 5},
+                          {2, 0, INF, 4},
+                          {INF, 1, 0, INF},
+                          {INF, INF, 2, 0} };
+    floydWarshall(graph);
+}
+// 中序递归输出各个顶点之间最短路径的具体线路
+void printPath(int i, int j)
+{
+    int k = P[i][j];
+    if (k == 0)
+        return;
+    printPath(i, k);
+    printf(&quot;%d-&quot;, k + 1);
+    printPath(k, j);
+}
+// 输出各个顶点之间的最短路径
+void printMatrix(int graph[][V]) {
+    int i, j;
+    for (i = 0; i &lt; V; i++) {
+        for (j = 0; j &lt; V; j++) {
+            if (j == i) {
+                continue;
+            }
+            printf(&quot;%d - %d: 最短路径为:&quot;, i + 1, j + 1);
+            if (graph[i][j] == INF)
+                printf(&quot;%s\n&quot;, &quot;INF&quot;);
+            else {
+                printf(&quot;%d&quot;, graph[i][j]);
+                printf(&quot;，依次经过：%d-&quot;, i + 1);
+                //调用递归函数
+                printPath(i, j);
+                printf(&quot;%d\n&quot;, j + 1);
+            }
+        }
+    }
+}
+// 实现弗洛伊德算法,graph[][V] 为有向加权图
+void floydWarshall(int graph[][V]) {
+    int  i, j, k;
+    //遍历每个顶点，将其作为其它顶点之间的中间顶点，更新 graph 数组
+    for (k = 0; k &lt; V; k++) {
+        for (i = 0; i &lt; V; i++) {
+            for (j = 0; j &lt; V; j++) {
+                //如果新的路径比之前记录的更短，则更新 graph 数组
+                if (graph[i][k] + graph[k][j] &lt; graph[i][j]) {
+                    graph[i][j] = graph[i][k] + graph[k][j];
+                    //记录此路径
+                    P[i][j] = k;
+                }
+            }
+        }
+    }
+    // 输出各个顶点之间的最短路径
+    printMatrix(graph);
+}</pre>
+<br />
+如下是用弗洛伊德算法查找图 1 中各顶点之间最短路径的 Java 程序：
+<pre class="java">
+public class Floyd {
+    static int V = 4; // 顶点的个数
+    static int[][] P = new int[V][V]; // 记录各个顶点之间的最短路径
+    static int INF = 65535; // 设置一个最大值
+
+    // 中序递归输出各个顶点之间最短路径的具体线路
+    public static void printPath(int i, int j) {
+        int k = P[i][j];
+        if (k == 0)
+            return;
+        printPath(i, k);
+        System.out.print((k + 1) + &quot;-&quot;);
+        printPath(k, j);
+    }
+
+    // 输出各个顶点之间的最短路径
+    public static void printMatrix(int[][] graph) {
+        for (int i = 0; i &lt; V; i++) {
+            for (int j = 0; j &lt; V; j++) {
+                if (j == i) {
+                    continue;
+                }
+                System.out.print((i + 1) + &quot; - &quot; + (j + 1) + &quot;：最短路径为:&quot;);
+                if (graph[i][j] == INF)
+                    System.out.println(&quot;INF&quot;);
+                else {
+                    System.out.print(graph[i][j]);
+                    System.out.print(&quot;，依次经过：&quot; + (i + 1) + &quot;-&quot;);
+                    // 调用递归函数
+                    printPath(i, j);
+                    System.out.println((j + 1));
+                }
+            }
+        }
+    }
+
+    // 实现弗洛伊德算法,graph[][V] 为有向加权图
+    public static void floydWarshall(int[][] graph) {
+        int i, j, k;
+        // 遍历每个顶点，将其作为其它顶点之间的中间顶点，更新 graph 数组
+        for (k = 0; k &lt; V; k++) {
+            for (i = 0; i &lt; V; i++) {
+                for (j = 0; j &lt; V; j++) {
+                    // 如果新的路径比之前记录的更短，则更新 graph 数组
+                    if (graph[i][k] + graph[k][j] &lt; graph[i][j]) {
+                        graph[i][j] = graph[i][k] + graph[k][j];
+                        // 记录此路径
+                        P[i][j] = k;
+                    }
+                }
+            }
+        }
+        // 输出各个顶点之间的最短路径
+        printMatrix(graph);
+    }
+
+    public static void main(String[] args) {
+        // 有向加权图中各个顶点之间的路径信息
+        int[][] graph = new int[][] { { 0, 3, INF, 5 }, { 2, 0, INF, 4 }, { INF, 1, 0, INF }, { INF, INF, 2, 0 } };
+        floydWarshall(graph);
+    }
+}</pre>
+<br />
+如下是用弗洛伊德算法查找图 1 中各顶点之间最短路径的 Python 程序：
+<pre class="python">
+V = 4   # 顶点的个数
+INF = 65535    # 设定一个最大值
+P = [[0]*V for i in range(V)] # 记录各个顶点之间的最短路径
+# 有向加权图中各个顶点之间的路径信息
+graph = [[0, 3, INF, 5],
+         [2, 0, INF, 4],
+         [INF, 1, 0, INF],
+         [INF, INF, 2, 0]]
+# 中序递归输出各个顶点之间最短路径的具体线路
+def printPath(i,j):
+    k = P[i][j]
+    if k == 0:
+        return;
+    printPath(i , k)
+    print(&quot;%d-&quot; % (k + 1) , end=&#39;&#39;)
+    printPath(k , j)
+# 输出各个顶点之间的最短路径
+def printMatrix(graph):
+    for i in range(V):
+        for j in range(V):
+            if j == i:
+                continue
+            print(&quot;%d - %d: 最短路径为:&quot;%(i + 1, j + 1) , end=&#39;&#39;)
+            if graph[i][j] == INF:
+                print(&quot;INF&quot;)
+            else:
+                print(graph[i][j] , end=&#39;&#39;)
+                print(&quot;，依次经过：%d-&quot;%(i+1) , end=&#39;&#39;)
+                # 调用递归函数
+                printPath(i , j)
+                print(j + 1)
+# 实现弗洛伊德算法,graph[][V] 为有向加权图
+def floydWarshall(graph):
+    # 遍历每个顶点，将其作为其它顶点之间的中间顶点，更新 graph 数组
+    for k in range(V):
+        for i in range(V):
+            for j in range(V):
+                # 如果新的路径比之前记录的更短，则更新 graph 数组
+                if graph[i][k] + graph[k][j] &lt; graph[i][j]:
+                    graph[i][j] = graph[i][k] + graph[k][j]
+                    # 记录此路径
+                    P[i][j] = k
+    # 输出各个顶点之间的最短路径
+    printMatrix(graph)
+
+floydWarshall(graph)</pre>
+<br />
+以上程序的输出结果均为：
+<p class="info-box">
+1 - 2: 最短路径为:3，依次经过：1-2<br />
+1 - 3: 最短路径为:7，依次经过：1-4-3<br />
+1 - 4: 最短路径为:5，依次经过：1-4<br />
+2 - 1: 最短路径为:2，依次经过：2-1<br />
+2 - 3: 最短路径为:6，依次经过：2-4-3<br />
+2 - 4: 最短路径为:4，依次经过：2-4<br />
+3 - 1: 最短路径为:3，依次经过：3-2-1<br />
+3 - 2: 最短路径为:1，依次经过：3-2<br />
+3 - 4: 最短路径为:5，依次经过：3-2-4<br />
+4 - 1: 最短路径为:5，依次经过：4-3-2-1<br />
+4 - 2: 最短路径为:3，依次经过：4-3-2<br />
+4 - 3: 最短路径为:2，依次经过：4-3</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。本公众号由<a class="col-link" href="../view/8092_2.html" target="_blank" rel="nofollow">C语言中文网站长</a>亲自运营，长期更新，坚持原创。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp_5.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>优秀文章</h4>
+<ul class="clearfix">
+<li><a href="../view/738.html" title="Java switch case语句详解">Java switch case语句详解</a></li>
+<li><a href="../view/1537.html" title="C++ seekg函数用法详解">C++ seekg函数用法详解</a></li>
+<li><a href="../view/vip_2114.html" title="符号——链接的粘合剂">符号——链接的粘合剂</a></li>
+<li><a href="../view/2271.html" title="C++继承时的名字遮蔽问题">C++继承时的名字遮蔽问题</a></li>
+<li><a href="../view/2860.html" title="Shell函数参数">Shell函数参数</a></li>
+<li><a href="../view/vip_5952.html" title="Python浮点数精度问题（包含解决方案）">Python浮点数精度问题（包含解决方案）</a></li>
+<li><a href="../view/6187.html" title="PHP $_FILES详解">PHP $_FILES详解</a></li>
+<li><a href="../jsp2/application.html" title="JSP application对象">JSP application对象</a></li>
+<li><a href="counting-sort.html" title="计数排序算法">计数排序算法</a></li>
+<li><a href="../view/9391.html" title="HTML注释的写法（附带示例）">HTML注释的写法（附带示例）</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9127;
+window.arcId = "d02cMad3eZDKAgmkeODpi3BvPf5hklMKn8KT6iOukA3nBqUZvjuT7W7nKUE";
+window.typeidChain = "424";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="../view/8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="../view/8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="../view/8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="../view/9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="../view/8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="https://c.biancheng.net/templets/new/images/gongan_4.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom_4.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			var suffix = 'a';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=50){
+				suffix = 'd';
+			}else if(thisMin>=40){
+				suffix = 'e';
+			}else if(thisMin>=30){
+				suffix = 'f';
+			}else if( thisMin>=20 ){
+				suffix = 'c';
+			}else{
+				suffix = 'a';
+			}
+
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.6.93" alt="微信交流群" width="120" /><br />');
+		</script>
+<span>加入微信交流群，一起学习不枯燥。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.6.93";
+window.prePageURL = "/algorithm/dijkstra.html";
+window.nextPageURL = "/algorithm/floyd-warshall.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common_4.js"></script>
+<span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span>
+</body>
+</html>

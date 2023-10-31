@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++多态到底是什么（通俗易懂）</title>
+<meta name="description" content="派生类对象的地址可以赋值给基类指针。对于通过基类指针调用基类和派生类中都有的同名、同参数表的虚函数的语句，编译时并不确定要执行的是基类还是派生类的虚函数；而当程序" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++多态到底是什么（通俗易懂）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">派生类对象的地址可以赋值给基类<a href='../c/80/80.html' target='_blank'>指针</a>。对于通过基类指针调用基类和派生类中都有的同名、同参数表的虚函数的语句，编译时并不确定要执行的是基类还是派生类的虚函数；而当程序运行到该语句时，如果基类指针指向的是一个基类对象，则基类的虚函数被调用，如果基类指针指向的是一个派生类对象，则派生类的虚函数被调用。这种机制就叫作&ldquo;多态（polymorphism）&rdquo;。<br />
+<br />
+所谓&ldquo;虚函数&rdquo;，就是在声明时前面加了 virtual 关键字的成员函数。virtual 关键字只在类定义中的成员函数声明处使用，不能在类外部写成员函数体时使用。静态成员函数不能是虚函数。<br />
+<br />
+包含虚函数的类称为&ldquo;多态类&rdquo;。<br />
+<br />
+多态可以简单地理解为同一条函数调用语句能调用不同的函数；或者说，对不同对象发送同一消息，使得不同对象有各自不同的行为。<br />
+<br />
+多态在面向对象的程序设计语言中如此重要，以至于有类和对象的概念，但是不支持多态的语言，只能被称作&ldquo;基于对象的程序设计语言&rdquo;，而不能被称为&ldquo;面向对象的程序设计语言&rdquo;。例如，Visual Basic 就是&ldquo;基于对象的程序设计语言&rdquo;。<br />
+<br />
+下面是一个体现多态规则的例子。
+<pre class="cpp">
+#include &lt;iostream&gt;
+u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+class A
+{
+public:
+    virtual void Print() { cout &lt;&lt; &quot;A::Print&quot; &lt;&lt; endl; }
+};
+class B : public A
+{
+public:
+    virtual void Print() { cout &lt;&lt; &quot;B::Print&quot; &lt;&lt; endl; }
+};
+class D : public A
+{
+public:
+    virtual void Print() { cout &lt;&lt; &quot;D::Print&quot; &lt;&lt; endl; }
+};
+class E : public B
+{
+    virtual void Print() { cout &lt;&lt; &quot;E::Print&quot; &lt;&lt; endl; }
+};
+int main()
+{
+    A  a; B b; D d; E e;
+    A *pa = &amp;a;  B *pb = &amp;b;
+    pa-&gt;Print();    //多态， a.Print()被调用，输出：A::Print
+    pa = pb;        //基类指针pa指向派生类对象b
+    pa-&gt;Print();  //b.Print()被调用，输出：B::Print
+    pa = &amp;d;       //基类指针pa指向派生类对象d
+    pa-&gt;Print();  //多态， d. Print ()被调用,输出：D::Print
+    pa = &amp;e;       //基类指针pa指向派生类对象d
+    pa-&gt;Print();  //多态， e.Print () 被调用,输出：E::Print
+    return 0;
+}</pre>
+程序的输出结果是：<br />
+A::Print<br />
+B::Print<br />
+D::Print<br />
+E::Print<br />
+<br />
+程序中，四个类之间的派生关系如下所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/180830/1-1PS0161929455.jpg" /></div>
+<br />
+每个类都有同名、同参数表的虚函数 Print（每个 Print 函数声明时都加了 virtual 关键字）。根据多态的规则，对于语句&ldquo;pa-&gt;Print()&rdquo;，由于 Print 是虚函数，尽管 pa 是基类 A 的指针，编译时也不能确定调用的是哪个类的 Print 函数。当程序运行到该语句时，pa 指向的是哪个类的对象，调用的就是哪个类的 Print 函数。<br />
+<br />
+例如，程序执行到第 26 行时，pa 指向的是基类对象 a，因此调用的就是类 A 的 Print 成员函数；执行到第 28 行时，pa 指向的是类 B 的对象，因此调用的是类 B 的 Print 成员函数；第 30 行也是如此；类 E 是类 A 的间接派生类，因此，执行到第 32 行时，多态规则仍然适用，此时 pa 指向派生类 E 的对象，故调用的是类 E 的 Print 成员函数。<br />
+<br />
+需要强调的是，编译器不会分析程序的运行过程。编译器并没有通过分析程序上下文，得出在第 28 行 pa 指向的是类 B 的对象，因此第 28 行应该调用类 B 的 Print 成员函数这样的结论。<br />
+<br />
+多态的语句调用哪个类的成员函数是在运行时才能确定的，编译时不能确定（具体原理后面会解释）。因此，多态的函数调用语句被称为是&ldquo;动态联编&rdquo;的，而普通的函数调用语句是&ldquo;静态联编&rdquo;的。
+<h2>
+通过基类引用实现多态</h2>
+通过基类的引用调用虚函数的语句也是多态的。即，通过基类的引用调用基类和派生类中同名、同参数表的虚函数时，若其引用的是一个基类的对象，则被调用是基类的虚函数；若其引用的是一个派生类的对象，则被调用的是派生类的虚函数。<br />
+<br />
+下面是一个通过基类引用实现多态的例子。
+<pre class="cpp">
+#include &lt;iostream&gt;
+using namespace std;
+class A
+{
+public:
+    virtual void Print() { cout &lt;&lt; &quot;A::Print&quot; &lt;&lt; endl; }
+};
+class B : public A
+{
+public:
+    virtual void Print() { cout &lt;&lt; &quot;B::Print&quot; &lt;&lt; endl; }
+};
+void Printlnfo(A &amp; r)
+{
+    r.Print();  //多态，调用哪个Print，取决于r引用了哪个类的对象
+}
+int main()
+{
+    A a; B b;
+    Printlnfo(a);  //输出 A::Print
+    Printlnfo(b);  //输出 B::Print
+    return 0;
+}</pre>
+程序的输出结果是：<br />
+A::Print<br />
+B::Print<br />
+<br />
+第 15 条语句就是通过基类的引用调用基类和派生类中都有的同名、同参数表的虚函数，因而符合多态的规则。<br />
+<br />
+第 20 行的执行过程中，Printlnfo 函数的形参 r 引用的是基类对象 a，因此调用 A::Print。<br />
+<br />
+第 21 行的执行过程中，r 引用的是类 B 的对象 b，因此调用 B::Print。<br />
+<br />
+第 15 行的函数调用语句每次执行时，调用的可能是不同类的 Print 成员函数，因此这条语句编译时不可能确定它到底调用的是哪个类的 Print 成员函数，即无法静态联编。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2128.html" title="Linux下的socket演示程序" target="_blank">Linux下的socket演示程序</a></li>
+<li><a href="2671.html" title="Shell $[]：对整数进行数学计算" target="_blank">Shell $[]：对整数进行数学计算</a></li>
+<li><a href="vip_7316.html" title="Go语言函数中的参数传递效果测试" target="_blank">Go语言函数中的参数传递效果测试</a></li>
+<li><a href="vip_8356.html" title="Mysql并发时常见的死锁及解决方法" target="_blank">Mysql并发时常见的死锁及解决方法</a></li>
+<li><a href="../jsp2/application.html" title="JSP application对象" target="_blank">JSP application对象</a></li>
+<li><a href="jiqiha.html" title="Python异常和错误的区别" target="_blank">Python异常和错误的区别</a></li>
+<li><a href="ltrknfk.html" title="CSS子代选择符（&gt;）用法详解" target="_blank">CSS子代选择符（&gt;）用法详解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 264;
+window.arcId = "8e73dKGu8cFN3z8LSVjM8pJJE2Qg+sW1rmzbnCN5W6fcRpjpzUG1Vw3Q7g";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

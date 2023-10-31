@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++函数模板（模板函数）详解</title>
+<meta name="description" content="9.1.1函数模板的作用 面向对象的继承和多态机制有效提高了程序的可重用性和可扩充性。在程序的可重用性方面，程序员还希望得到更多支持。举一个最简单的例子，为了交换两个整型" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++函数模板（模板函数）详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">面向对象的继承和多态机制有效提高了程序的可重用性和可扩充性。在程序的可重用性方面，程序员还希望得到更多支持。举一个最简单的例子，为了交换两个整型变量的值，需要写下面的 Swap 函数：
+<pre class="cpp">
+void Swap(int &amp; x, int &amp; y)
+{
+    int tmp = x;
+    x = y;
+    y = tmp;
+}</pre>
+<br />
+为了交换两个 double 型变量的值，还需要编写下面的 Swap 函数：
+<pre class="cpp">
+void Swap (double &amp; xr double &amp; y)
+{
+    double tmp = x;
+    x = y;
+    y = tmp;
+}</pre>
+<br />
+如果还要交换两个 char 型变量的值，交换两个 CStudent 类对象的值&hellip;&hellip;都需要再编写 Swap 函数。而这些 Swap 函数除了处理的数据类型不同外，形式上都是一样的。能否只写一遍 Swap 函数，就能用来交换各种类型的变量的值呢？继承和多态显然无法解决这个问题。因此，&ldquo;模板&rdquo;的概念就应运而生了。<br />
+<br />
+众所周知，有了&ldquo;模子&rdquo;后，用&ldquo;模子&rdquo;来批量制造陶瓷、塑料、金属制品等就变得容易了。程序设计语言中的模板就是用来批量生成功能和形式都几乎相同的代码的。有了模板，编译器就能在需要的时候，根据模板自动生成程序的代码。从同一个模板自动生成的代码，形式几乎是一样的。
+<h2>
+函数模板的原理</h2>
+<a href='../cplus/cplus.html' target='_blank'>C++</a> 语言支持模板。有了模板，可以只写一个 Swap 模板，编译器会根据 Swap 模板自动生成多个 Sawp 函数，用以交换不同类型变量的值。<br />
+<br />
+在 C++ 中，模板分为函数模板和类模板两种。函数模板是用于生成函数的，类模板则是用于生成类的。<br />
+<br />
+函数模板的写法如下：
+<p class="info-box">
+template &lt;class 类型参数1, class类型参数2, ...&gt;<br />
+返回值类型&nbsp; 模板名(形参表)<br />
+{<br />
+&nbsp;&nbsp;&nbsp; 函数体<br />
+}</p>
+其中的 class 关键字也可以用 typename 关键字替换，例如：
+<p class="info-box">
+template &lt;typename 类型参数1, typename 类型参数2, ...&gt;</p>
+函数模板看上去就像一个函数。前面提到的 Swap 模板的写法如下：
+<pre class="cpp">
+template &lt;class T&gt;
+void Swap(T &amp; x, T &amp; y)
+{
+    T tmp = x;
+    x = y;
+    y = tmp;
+}</pre>
+T 是类型参数，代表类型。编译器由模板自动生成函数时，会用具体的类型名对模板中所有的类型参数进行替换，其他部分则原封不动地保留。同一个类型参数只能替换为同一种类型。编译器在编译到调用函数模板的语句时，会根据实参的类型判断该如何替换模板中的类型参数。<br />
+<br />
+例如下面的程序：
+<pre class="cpp">
+#include &lt;iostream&gt;
+u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+template&lt;class T&gt;
+void Swap(T &amp; x, T &amp; y)
+{
+    T tmp = x;
+    x = y;
+    y = tmp;
+}
+int main()
+{
+    int n = 1, m = 2;
+    Swap(n, m);  //编译器自动生成 void Swap (int &amp;, int &amp;)函数
+    double f = 1.2, g = 2.3;
+    Swap(f, g);  //编译器自动生成 void Swap (double &amp;, double &amp;)函数
+    return 0;
+}</pre>
+编译器在编译到<code>Swap(n, m);</code>时找不到函数 Swap 的定义，但是发现实参 n、m 都是 int 类型的，用 int 类型替换 Swap 模板中的 T 能得到下面的函数：
+<pre class="cpp">
+void Swap (int &amp; x, int &amp; y)
+{
+    int tmp = x;
+    x = y;
+    y = tmp;
+}</pre>
+该函数可以匹配<code>Swap(n, m);</code>这条语句。于是编译器就自动用 int 替换 Swap 模板中的 T，生成上面的 Swap 函数，将该 Swap 函数的源代码加入程序中一起编译，并且将<code>Swap(n, m);</code>编译成对自动生成的 Swap 函数的调用。<br />
+<br />
+同理，编译器在编译到<code>Swap(f, g);</code>时会用 double 替换 Swap 模板中的 T，自动生成以下 Swap 函数：
+<pre class="cpp">
+void Swap(double &amp; x, double &amp; y)
+{
+    double tmp = x;
+    x = y;
+    y = tmp;
+}</pre>
+然后再将<code>Swap(f, g);</code>编译成对该 Swap 函数的调用。<br />
+<br />
+编译器由模板自动生成函数的过程叫模板的实例化。由模板实例化而得到的函数称为模板函数。在某些编译器中，模板只有在被实例化时，编译器才会检查其语法正确性。如果程序中写了一个模板却没有用到，那么编译器不会报告这个模板中的语法错误。<br />
+<br />
+编译器对模板进行实例化时，并非只能通过模板调用语句的实参来实例化模板中的类型参数，模板调用语句可以明确指明要把类型参数实例化为哪种类型。可以用：
+<p class="info-box">
+模板名&lt;实际类型参数1, 实际类型参数2, ...&gt;</p>
+的方式告诉编译器应该如何实例化模板函数。例如下面的程序：
+<pre class="cpp">
+#include &lt;iostream&gt;
+using namespace std;
+template &lt;class T&gt;
+T Inc(int n)
+{
+    return 1 + n;
+}
+int main()
+{
+    cout &lt;&lt; Inc&lt;double&gt;(4) / 2;
+    return 0;
+}</pre>
+<code>Inc&lt;double&gt;(4)</code>指明了此处实例化的模板函数原型应为：
+<p class="info-box">
+double Inc(double);</p>
+编译器不会因为实参 4 是 int 类型，就生成原型为 int Inc(int) 的函数。因此，上面程序输出的结果是 2.5 而非 2。<br />
+<br />
+函数模板中可以有不止一个类型参数。例如，下面这个函数模板的写法是合法的：
+<pre class="cpp">
+template &lt;class Tl, class T2&gt;
+T2 print(T1 argl, T2 arg2)
+{
+    cout &lt;&lt; arg1 &lt;&lt; &quot; &quot; &lt;&lt; arg2 &lt;&lt; endl;
+    return arg2;
+}</pre>
+<h2>
+【实例】一个求数组中最大元素的函数模板</h2>
+例题：设计一个分数类 CFraction，再设计一个名为 MaxElement 的函数模板，能够求数组中最大的元素，并用该模板求一个 CFmction 数组中的最大元素。<br />
+<br />
+示例程序如下：
+<pre class="cpp">
+#include &lt;iostream&gt;
+using namespace std;
+template &lt;class T&gt;
+T MaxElement(T a[], int size) //size是数组元素个数
+{
+    T tmpMax = a[0];
+    for (int i = 1; i &lt; size; ++i)
+        if (tmpMax &lt; a[i])
+            tmpMax = a[i];
+    return tmpMax;
+}
+class CFraction //分数类
+{
+    int numerator;   //分子
+    int denominator; //分母
+public:
+    CFraction(int n, int d) :numerator(n), denominator(d) { };
+    bool operator &lt;(const CFraction &amp; f) const
+    {//为避免除法产生的浮点误差，用乘法判断两个分数的大小关系
+        if (denominator * f.denominator &gt; 0)
+            return numerator * f.denominator &lt; denominator * f.numerator;
+        else
+            return numerator * f.denominator &gt; denominator * f.numerator;
+    }
+    bool operator == (const CFraction &amp; f) const
+    {//为避免除法产生的浮点误差，用乘法判断两个分数是否相等
+        return numerator * f.denominator == denominator * f.numerator;
+    }
+    friend ostream &amp; operator &lt;&lt;(ostream &amp; o, const CFraction &amp; f);
+};
+ostream &amp; operator &lt;&lt;(ostream &amp; o, const CFraction &amp; f)
+{//重载 &lt;&lt; 使得分数对象可以通过cout输出
+    o &lt;&lt; f.numerator &lt;&lt; &quot;/&quot; &lt;&lt; f.denominator; //输出&quot;分子/分母&quot; 形式
+    return o;
+}
+int main()
+{
+    int a[5] = { 1,5,2,3,4 };
+    CFraction f[4] = { CFraction(8,6),CFraction(-8,4),
+        CFraction(3,2), CFraction(5,6) };
+    cout &lt;&lt; MaxElement(a, 5) &lt;&lt; endl;
+    cout &lt;&lt; MaxElement(f, 4) &lt;&lt; endl;
+    return 0;
+}</pre>
+编译到第 41 行时，根据实参 a 的类型，编译器通过 MaxElement 模板自动生成了一个 MaxElement 函数，原型为：
+<p class="info-box">
+int MaxElement(int a[], int size);</p>
+编译到第 42 行时，根据 f 的类型，编译器又生成一个 MaxElement 函数，原型为：
+<p class="info-box">
+CFraction MaxElement(CFraction a[], int size);</p>
+在该函数中，用到了<code>&lt;</code>比较两个 CFraction 对象的大小。如果没有对<code>&lt;</code>进行适当的重载，编译时就会出错。<br />
+<br />
+从 MaxElement 模板的写法可以看出，在函数模板中，类型参数不但可以用来定义参数的类型，还能用于定义局部变量和函数模板的返回值。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_2036.html" title="大端小端以及判别方式" target="_blank">大端小端以及判别方式</a></li>
+<li><a href="4273.html" title="Python dir()和help()帮助函数" target="_blank">Python dir()和help()帮助函数</a></li>
+<li><a href="7203.html" title="C++ STL multiset容器详解" target="_blank">C++ STL multiset容器详解</a></li>
+<li><a href="vip_7655.html" title="Linux命令行如何识别文件类型？" target="_blank">Linux命令行如何识别文件类型？</a></li>
+<li><a href="vip_7721.html" title="如何自定义C++ STL关联式容器的排序规则？" target="_blank">如何自定义C++ STL关联式容器的排序规则？</a></li>
+<li><a href="9770.html" title="ARM是什么" target="_blank">ARM是什么</a></li>
+<li><a href="9808.html" title="Go语言运算符详解" target="_blank">Go语言运算符详解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 315;
+window.arcId = "dd984ISCvxVtySfJsgU3G164dDKGjvjxJZggXpp/d6yeUWHD+w7uDbei7A";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

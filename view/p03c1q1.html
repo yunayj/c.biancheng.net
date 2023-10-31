@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Go语言列表（list）的创建和使用</title>
+<meta name="description" content="列表（list）是一种非连续的存储容器，由多个节点组成，节点通过一些变量记录彼此之间的关系，列表有多种实现方法，如单链表、双链表等。 在 Go 语言中，列表使用 container/list 包来" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Go语言列表（list）的创建和使用</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">列表（list）是一种非连续的存储容器，由多个节点组成，节点通过一些变量记录彼此之间的关系，列表有多种实现方法，如单链表、双链表等。<br />
+<br />
+在 Go 语言中，列表使用 container/list 包来实现，内部的实现原理是双链表，列表能够高效地进行任意位置的元素插入和删除操作。<br />
+<h2>
+初始化列表</h2>
+list 的初始化有两种方法，分别是使用 New() 函数和 var 关键字声明。两种方法的初始化效果是相同的。<br />
+<br />
+1) 通过 container/list 包的 New() 函数初始化 list，语法格式如下：
+<pre class="info-box">
+变量名 := list.New()</pre>
+<br />
+2) 通过 var 关键字声明初始化 list，语法格式如下：
+<pre class="info-box">
+var 变量名 list.List</pre>
+列表与切片和 map 不同的是，列表并没有具体元素类型的限制，因此，列表的元素可以是任意类型，这既带来了便利，也引来一些问题，例如，给列表中放入了一个 interface{} 类型的值，取出值后，如果要将 interface{} 转换为其他类型，将会发生宕机。<br />
+<h2>
+在列表中插入元素</h2>
+双链表支持从队列前方或后方插入元素，对应的方法分别是 PushFront() 和 PushBack()。<br />
+<br />
+这两种方法都会返回一个 *list.Element 结构，如果需要删除插入的元素，则只能通过 *list.Element 配合 Remove() 方法进行删除，这种方法可以让删除更加高效，同时也是双链表的特性之一。<br />
+<br />
+例如，给 list 列表添加元素的代码如下：
+<pre class="go" showmenu="false" shownum="false">
+l := list.New()
+l.PushBack(&quot;fist&quot;)
+l.PushFront(67)</pre>
+在以上代码中：
+<ul>
+<li>
+第 1 行，创建一个列表实例。</li>
+<li>
+第 2 行，将 fist 字符串插入到列表的尾部，此时列表是空的，插入后只有一个元素。</li>
+<li>
+第 3 行，将数值 67 放入列表，此时，列表中已经存在 fist 元素，67 这个元素将被放在 fist 的前面。</li>
+</ul>
+<br />
+列表插入元素的方法如表 1 所示。<br />
+<br />
+<table>
+<caption>
+表 1 列表插入元素的方法</caption>
+<tbody>
+<tr>
+<th>
+方 &nbsp;法</th>
+<th>
+功 &nbsp;能</th>
+</tr>
+<tr>
+<td>
+InsertAfter(v interface {}, mark * Element) * Element</td>
+<td>
+在 mark 点之后插入元素，mark 点由其他插入函数提供</td>
+</tr>
+<tr>
+<td>
+InsertBefore(v interface {}, mark * Element) ^Element</td>
+<td>
+在 mark 点之前插入元素，mark 点由其他插入函数提供</td>
+</tr>
+<tr>
+<td>
+PushBackList(other *List)</td>
+<td>
+添加 other 列表元素到尾部</td>
+</tr>
+<tr>
+<td>
+PushFrontList(other *List)</td>
+<td>
+添加 other 列表元素到头部</td>
+</tr>
+</tbody>
+</table>
+<h2>
+从列表中删除元素</h2>
+列表插入函数的返回值会提供一个 *list.Element 结构，这个结构记录着列表元素的值及与其他节点之间的关系等信息，从列表中删除元素时，需要用到这个结构进行快速删除。<br />
+<br />
+例如，列表操作元素的代码如下：
+<pre class="go">
+package main
+import &quot;container/list&quot;
+func main() {
+    l := list.New()
+    //尾部添加
+    l.PushBack(&quot;canon&quot;)
+    //头部添加
+    l.PushFront(67)
+    //尾部添加后保存元素句柄
+    element := l.PushBack(&quot;fist&quot;)
+    //在fist之后添加high
+    l.InsertAfter(&quot;high&quot;, element)
+    //在fist之前添加noon
+    l.InsertBefore(&quot;noon&quot;, element)
+    //使用
+    l.Remove(element)
+}</pre>
+在以上代码中：
+<ul>
+<li>
+第 4 行，创建列表实例。</li>
+<li>
+第 6 行，将字符串 canon 插入到列表的尾部。</li>
+<li>
+第 8 行，将数值 67 添加到列表的头部。</li>
+<li>
+第 10 行，将字符串 fist 插入到列表的尾部，并将这个元素的内部结构保存到 element 变量中。</li>
+<li>
+第 12 行，使用 element 变量，在 element 后面插入 high 字符串。</li>
+<li>
+第 14 行，使用 element 变量，在 element 前面插入 noon 字符串。</li>
+<li>
+第 16 行，移除 element 变量对应的元素。</li>
+</ul>
+<br />
+列表元素的操作过程如下表所示。<br />
+<br />
+<table>
+<caption>
+表 2 列表元素的操作过程</caption>
+<tbody>
+<tr>
+<th>
+操作内容</th>
+<th>
+列表元素</th>
+</tr>
+<tr>
+<td>
+l.PushBack(&quot;canon<span style="font-size: 11.6667px;">&quot;</span>)</td>
+<td>
+canon</td>
+</tr>
+<tr>
+<td>
+l.PushFront(67)</td>
+<td>
+67, canon</td>
+</tr>
+<tr>
+<td>
+<p>
+element := l.PushBack(<span style="font-size: 11.6667px;">&quot;</span>fist&quot;)</p>
+</td>
+<td>
+67, canon, fist</td>
+</tr>
+<tr>
+<td>
+l.InsertAfter(<span style="font-size: 11.6667px;">&quot;</span>high<span style="font-size: 11.6667px;">&quot;</span>, element)</td>
+<td>
+67, canon, fist, high</td>
+</tr>
+<tr>
+<td>
+l.InsertBefore(<span style="font-size: 11.6667px;">&quot;</span>noon<span style="font-size: 11.6667px;">&quot;</span>, element)</td>
+<td>
+67, canon, noon, fist, high</td>
+</tr>
+<tr>
+<td>
+l.Remove(element)</td>
+<td>
+67, canon, noon, high</td>
+</tr>
+</tbody>
+</table>
+<h2>
+列表的遍历</h2>
+遍历双链表需要配合 Front() 函数获取头元素，遍历时只要元素不为空就可以继续进行，每次遍历都会调用元素的 Next() 函数，例如：<br />
+<pre class="go" showmenu="false" shownum="false">
+l := list.New()
+//尾部添加
+l.PushBack(&quot;canon&quot;)
+//头部添加
+l.PushFront(67)
+for i := l.Front(); i != nil; i = i.Next() {
+    fmt.Println(i.Value)
+}</pre>
+运行结果如下：
+<p class="info-box">
+67<br />
+canon</p>
+在以上代码中：
+<ul>
+<li>
+第 1 行，创建一个列表实例。</li>
+<li>
+第 3 行，将 canon 放入列表尾部。</li>
+<li>
+第 5 行，在队列头部放入 67。</li>
+<li>
+第 6 行，使用 for 语句进行遍历，其中 i:=l.Front() 表示初始赋值，只会在一开始执行一次，每次循环会进行一次 i != nil 语句判断，如果返回 false，表示退出循环，反之则会执行 i = i.Next()。</li>
+<li>
+第 7 行，使用遍历返回的 *list.Element 的 Value 成员取得放入列表时的原值。</li>
+</ul>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="980.html" title="Java析构方法" target="_blank">Java析构方法</a></li>
+<li><a href="1739.html" title="什么是工程/项目？" target="_blank">什么是工程/项目？</a></li>
+<li><a href="1898.html" title="挖矿是什么意思？矿工都做了什么？" target="_blank">挖矿是什么意思？矿工都做了什么？</a></li>
+<li><a href="6448.html" title="虚拟机是什么" target="_blank">虚拟机是什么</a></li>
+<li><a href="6923.html" title="SEO网页描述（description）该怎么写？" target="_blank">SEO网页描述（description）该怎么写？</a></li>
+<li><a href="7562.html" title="Django for标签详解" target="_blank">Django for标签详解</a></li>
+<li><a href="../spring_boot/external-config.html" title="Spring Boot外部配置文件" target="_blank">Spring Boot外部配置文件</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10429;
+window.arcId = "e40bD1FuYFHN1mncP/gsszW34WmGSJWU3Vftbj3SlMC+sHUvYiaQ8l4br+Rp";
+window.typeidChain = "6|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

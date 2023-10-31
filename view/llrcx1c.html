@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Go语言函数的返回值</title>
+<meta name="description" content="Go 语言的函数支持多返回值，多返回值能方便地获得函数执行后的多个返回参数。 Go 语言经常使用多返回值中的最后一个返回参数返回函数执行中可能发生的错误，例如： conn, err := c" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Go语言函数的返回值</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">Go 语言的函数支持多返回值，多返回值能方便地获得函数执行后的多个返回参数。<br />
+<br />
+Go 语言经常使用多返回值中的最后一个返回参数返回函数执行中可能发生的错误，例如：
+<pre class="go" showmenu="false" shownum="false">
+conn, err := connectToNetwork()</pre>
+connectToNetwork 返回两个参数，conn 表示连接对象，err 表示返回的错误信息。<br />
+<br />
+Go 语言既支持安全指针，也支持多返回值，因此在使用函数进行逻辑编写时更为方便。<br />
+<h2>
+同一种类型返回值</h2>
+如果返回值是同一种类型，则用括号将多个返回值类型括起来，用逗号分隔每个返回值的类型。<br />
+<br />
+使用 return 语句返回时，值列表的顺序需要与函数声明的返回值类型一致，例如：
+<pre class="go">
+func typedTwoValues() (int, int) {
+    return 1, 2
+}
+func main() {
+    a, b := typedTwoValues()
+    fmt.Println(a, b)
+}</pre>
+运行结果如下：
+<p class="info-box">
+1 2</p>
+纯类型的返回值对于代码可读性不是很友好，特别是在同类型的返回值出现时，无法区分每个返回参数的意义。<br />
+<h2>
+带有变量名的返回值</h2>
+Go语言支持对返回值进行命名，这样返回值就和参数一样拥有参数变量名和类型。<br />
+<br />
+命名的返回值变量的默认值为类型的默认值，即数值为 0，字符串为空字符串，布尔值为 false，指针为 nil。<br />
+<br />
+在以下代码中，函数拥有两个整型返回值，函数声明时将返回值命名为 a 和 b，因此，可以在函数体中直接对函数返回值进行赋值，在命名的返回值方式的函数体中，在函数结束前需要显式地使用 return 语句进行返回。
+<pre class="go">
+func namedRetValues() (a, b int) {
+    a = 1
+    b = 2
+    return
+}</pre>
+在以上代码中：<br />
+第 1 行，对两个整型返回值进行命名，分别为 a 和 b。<br />
+<br />
+第 2 行和第 3 行，命名返回值的变量与这个函数的布局变量的效果一致，可以对返回值进行赋值和值获取。<br />
+<br />
+第 4 行，当函数使用命名返回值时，可以在 return 中不填写返回值列表，如果填写也是可行的，下面代码的执行效果和上面代码的效果一样。
+<pre class="go">
+func namedRetValues() (a, b int) {
+    a = 1
+    return a, 2
+}</pre>
+需要注意的是，同一种类型返回值和命名返回值两种形式只能二选一，混用时将会发生编译错误，例如：
+<pre class="go" showmenu="false" shownum="false">
+func namedRetValues() (a, b int, int)</pre>
+编译器报错提示：
+<pre class="info-box">
+mixed named and unnamed function parameters</pre>
+即在函数参数中混合使用了命名和非命名参数。<br />
+<br />
+注意，如果只有一个返回值且不声明返回值变量，那么可以省略返回值（包括返回值的括号都可以不写）。如果没有返回值，那么就直接省略最后的返回信息，什么都不用写；如果有返回值，那么必须在函数的最后添加 return 语句。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="63.html" title="Go语言宕机（panic）——程序终止运行" target="_blank">Go语言宕机（panic）——程序终止运行</a></li>
+<li><a href="140.html" title="字节（Byte）是什么？如何换算？" target="_blank">字节（Byte）是什么？如何换算？</a></li>
+<li><a href="2627.html" title="Python线程池及其原理和使用（超级详细）" target="_blank">Python线程池及其原理和使用（超级详细）</a></li>
+<li><a href="9371.html" title="JS动画效果的实现（附带示例）" target="_blank">JS动画效果的实现（附带示例）</a></li>
+<li><a href="../ml_alg/ensemble-learning.html" title="什么是集成学习算法" target="_blank">什么是集成学习算法</a></li>
+<li><a href="00w32jl.html" title="对HTTP缓存机制的理解" target="_blank">对HTTP缓存机制的理解</a></li>
+<li><a href="zlj03n4.html" title="Go语言new()和make()的区别" target="_blank">Go语言new()和make()的区别</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10432;
+window.arcId = "eb124gXN87vwaCHzyylwlKgctti7ifSZFORHiDfpnSDC/p0Aly8GRV1Y33a/";
+window.typeidChain = "6|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

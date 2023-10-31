@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Django Form表单实现自定义字段</title>
+<meta name="description" content="在《》" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../django/django_2.html">Django</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Django Form表单实现自定义字段</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在《<a href="7912_4.html" target="_blank">Django Form表单内置字段详解</a>》一节中，我们介绍了 Django Form 表单的内置字段，但是在某些业务场景下，内置字段无法满足我们的业务需求，此时就需要我们使用到 Django Form 表单提供的自定义字段的功能。不仅如此，Django Form 表单还给开发者提供了自定义验证规则的功能，可以让开发者对内置字段或者自定义字段添加额外的校验逻辑，从而满足实际的开发任务需要。在本节我们先对如何实现自定义 Form 表单字段做讲解。
+<h2>
+	1. 实现自定义Field字段</h2>
+<h4>
+	1) Field基类clean方法源码解读</h4>
+在介绍 Form 表单的内置字段时，我们提及过每一个 Field 字段都一个 clean 方法。Field 字段通过 clean() 校验并获取字段值，所以自定义 Field 字段，简而言之就是自己去实现 clean 方法。自定义字段也要继承 Field 类，那么我看一看，Field 类中的 clean 方法是怎么实现数据的&ldquo;清洗&rdquo;作用的，clean 方法的源码如下所示：
+<pre class="python">
+def clean(self, value):
+    &quot;&quot;&quot;
+    验证给定的值并将其&ldquo;清洗&rdquo;后的值作为合适的Python对象返回。
+    对任何错误抛出ValidationError。
+    &quot;&quot;&quot;
+    value = self.to_python(value)
+    self.validate(value)
+    self.run_validators(value)
+    return value</pre>
+从 源码分析来看，clean 方法接受一个 value 参数，分别经过三个方法的处理，返回已&ldquo;清洗&rdquo;的 value 或者是抛出异常 ValidationError。这个三个方法的源码如下所示：
+<pre class="python">
+def to_python(self, value):
+    return value
+
+def validate(self, value):
+    if value in self.empty_values and self.required:
+        raise ValidationError(self.error_messages[&#39;required&#39;], code=&#39;required&#39;)
+
+def run_validators(self, value):
+    if value in self.empty_values:
+        return
+    errors = []
+    for v in self.validators:
+        try:
+            v(value)
+        except ValidationError as e:
+            if hasattr(e, &#39;code&#39;) and e.code in self.error_messages:
+                e.message = self.error_messages[e.code]
+            errors.extend(e.error_list)
+    if errors:
+        raise ValidationError(errors)</pre>
+我们分析一下这三个方法的作用。分别如下所示：
+<ul>
+	<li>
+		to_python：实现数据的转换，将传递进来的 value 转换成需要的 Pyhton 对象，例如，对于 TimeField，它的 to_python 方法会将 value 转换成 Python 的 datetime.time 对象。</li>
+	<li>
+		validate：验证经过转换的 value 是否合法，如果不合法，需要抛出 ValidationError 异常。Field 中实现的 validate 方法只是简单地对 required 属性限制的条件进行验证，如果 required 为 True，且 value 为空值的时候，则会抛出异常。</li>
+	<li>
+		run_validators：这个方法会执行当前实例中包含的验证器，如果出现错误，则会抛出 ValidationError 异常。</li>
+</ul>
+<br />
+所以从上面 clean 方法的源码分析来看，只要去实现 clean 中调用的方法，就能够实现自定义数据转换成 Python 对象和数据的校验。
+<h4>
+	2) 实现自定义BookField字段</h4>
+那么接下来我们就亲自去实现一个自定字段 BookField 字段，该字段的功能是输入书籍的 id 后，可以获取 Book 的实例对象，它的代码如下所示：
+<pre class="python">
+class BookField(forms.Field):
+    default_error_message={
+        &#39;invalid&#39;:&#39;Enter a whole number&#39;,
+        &#39;not_exist&#39;:&#39;Book Not Exist&#39;,
+    }
+    def to_python(self,num):
+        try:
+            num=int(str(num).strip())
+            return Book.objects.get(id=num)
+        except (ValueError,TypeError):
+            raise ValidationError(self.error_messages[&#39;invalid&#39;],code=&#39;invalid&#39;)
+        except Exception:
+            raise  ValidationError(self.error_messages[&#39;not_exist&#39;],code=&#39;not_exist&#39;)</pre>
+在编写代码的过程中，我们一定要善于参考 Django Field 类的源码，首先理解定义内置字段的过程，然后照葫芦画瓢，实现自定义 Field 字段。BookField 字段继承自 Field 基类，它重写了 to_python 方法，把 num 当做主键去查询 Book 实例，然后将其作实例对象返回。如下所示：
+<pre class="python">
+In [1]: from index.forms import BookField
+In [2]: x=BookField()
+In [3]: x.clean(1)
+Out[3]: &lt;Book: title: Python Django pub:PubName object (8) price:59.00&gt;</pre>
+<h4>
+	3) 继承自forms.CharField实现自定义字段</h4>
+继承基类 Field 去自定义表单字段可能考虑比较多的问题，所以通常自定义 Field 都会继承自 CharField 或者 IntergerField 等内置字段，即 Field 的子类。举一个简单的例子，给字符串添加固定的前缀词语，如下所示：
+<pre class="python">
+class AddstrField(forms.CharField):
+    def clean(self,value):
+        return &#39;C语言中文网 %s&#39;% super().clean(value)</pre>
+AddstrField 该字段在 clean 方法中使用 super 方法调用了父类的 clean()，也就是使用了 CharField 的数据校验方法，这样就很大程度上简化了该功能实现过程，实例演示如下所示：
+<pre class="python">
+In [1]: from index.forms import AddstrField
+In [2]: x=AddstrField()
+In [3]: x.clean(&#39;hello&#39;)
+Out[3]: &#39;C语言中文网 hello&#39;</pre>
+<h4>
+	4) 使用ValidationError验证器校验数据</h4>
+验证器（validators）是一个可以调用的对象，接受一个参数，并验证参数是否符合预期，如果不符合预期就会抛出 ValidationError 异常。现在我们就使用验证器来校验数据的合法性，首先编写一个验证器，如下所示：
+<pre class="python">
+#自定义一个验证偶数的验证器，否则抛出异常
+def even_validator(value):
+    if value % 2  !=0:
+        raise ValidationError(&#39;%d is not a even number&#39;% value)
+#编写 EvenField字段，只可以接受偶数，否则抛出异常ValidationError 
+class EvenField(forms.IntegerField): 
+    #使用构造函数__init__ 对其进行初始化，并添加验证器规则
+    def __init__(self,**kwargs): 
+        super().__init__(validators=[even_validator],**kwargs)</pre>
+实例演示如下所示：
+<pre class="python">
+In [1]: from index.forms import EvenField
+In [2]: x=EvenField()
+In [3]: x.clean(&quot;1&quot;)
+....
+ValidationError: [&#39;1 is not a even number&#39;]
+In [5]: x.clean(2)
+Out[5]: 2</pre>
+本节我们讲解 Django Form 表单的自定义字段的实现方法。通过本节的学习，你可能会领略到读源码的重要性，善于学习的人，总会找到合适的方法去学习自己想要掌握的知识，在下一节中，我们将讲解 Django Form 表单如何实现自定义验证规则。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_1773_2.html" title="C语言变量的定义位置以及初始值" target="_blank">C语言变量的定义位置以及初始值</a></li>
+<li><a href="3918_2.html" title="SELinux Targeted、MLS和Minimum策略" target="_blank">SELinux Targeted、MLS和Minimum策略</a></li>
+<li><a href="vip_5947_2.html" title="PyCharm运行Python程序" target="_blank">PyCharm运行Python程序</a></li>
+<li><a href="6313_2.html" title="Linux ln命令：建立链接（硬链接和软链接）文件" target="_blank">Linux ln命令：建立链接（硬链接和软链接）文件</a></li>
+<li><a href="../jsp2/declaration_2.html" title="JSP声明语句" target="_blank">JSP声明语句</a></li>
+<li><a href="../spring_boot/interceptor_2.html" title="Spring Boot拦截器精讲" target="_blank">Spring Boot拦截器精讲</a></li>
+<li><a href="9370_2.html" title="JS表单验证（附带示例）" target="_blank">JS表单验证（附带示例）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7952;
+window.arcId = "c144YHNAmCh1QXwHwGi0g+ihTGsoVtmBmt+61HY2MD8CluntydhdEHqThHc";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C++ new和delete（C++动态分配和释放内存）</title>
+<meta name="description" content="数组的长度是预先定义好的，在整个程序中固定不变。C++ 不允许定义元素个数不确定的数组。例如： int n; int a[n]; //这种定义是不允许的 但是在实际的编程中，往往会出现所需的内存空" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C++ new和delete（C++动态分配和释放内存）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">数组的长度是预先定义好的，在整个程序中固定不变。<a href='../cplus/cplus_2.html' target='_blank'>C++</a> 不允许定义元素个数不确定的数组。例如：
+<pre class="cpp">
+int n;
+int a[n];  //这种定义是不允许的</pre>
+但是在实际的编程中，往往会出现所需的内存空间大小取决于实际要处理的数据多少，而实际要处理的数据数量在编程时无法确定的情况。如果总是定义一个尽可能大的数组，又会造成空间浪费。何况，这个&ldquo;尽可能大&rdquo;到底应该多大才够呢？<br />
+<br />
+为了解决上述问题，C++ 提供了一种&ldquo;动态内存分配&rdquo;机制，使得程序可以在运行期间，根据实际需要，要求操作系统临时分配一片内存空间用于存放数据。此种内存分配是在程序运行中进行的，而不是在编译时就确定的，因此称为&ldquo;动态内存分配&rdquo;。<br />
+<br />
+在 C++ 中，通过 <span style="color:#008000;"><strong>new</strong></span> 运算符来实现动态内存分配。new 运算符的第一种用法如下：
+<p class="info-box">
+	T *p = new T;</p>
+其中，T 是任意类型名，p 是类型为 T* 的<a href='../c/80/80_2.html' target='_blank'>指针</a>。<br />
+<br />
+这样的语句会动态分配出一片大小为 sizeof(T) 字节的内存空间，并且将该内存空间的起始地址赋值给 p。例如：
+<pre class="cpp">
+int* p;
+p = new int;
+*p = 5;</pre>
+第二行动态分配了一片 4 个字节大小的内存空间，而 p 指向这片空间。通过 p 可以读写该内存空间。<br />
+<br />
+new 运算符还有第二种用法，用来动态分配一个任意大小的数组：
+<p class="info-box">
+	T *p =new T[N];</p>
+其中，T 是任意类型名，p 是类型为 T* 的指针，N 代表&ldquo;元素个数&rdquo;，可以是任何值为正整数的表达式，表达式中可以包含变量、函数调用等。这样的语句动态分配出 N &times; sizeof(T) 个字节的内存空间，这片空间的起始地址被赋值给 p。例如：
+<pre class="cpp">
+int* pn;
+int i = 5 ;
+pn = new int[i*20];
+pn[0] = 20 ;
+pn[100] = 30;</pre>
+最后一行编译时没有问题，但运行时会导致数组越界。因为上面动态分配的数组只有 100 个元素，pn[100] 已经不在动态分配的这片内存区域之内了。<br />
+<br />
+如果要求分配的空间太大，操作系统找不到足够的内存来满足，那么动态内存分配就会失败，此时程序会拋出异常。关于这一点，将在后续章节中介绍。<br />
+<br />
+程序从操作系统动态分配所得的内存空间在使用完后应该释放，交还操作系统，以便操作系统将这片内存空间分配给其他程序使用。C++ 提供 <span style="color:#008000;"><strong>delete</strong></span> 运算符，用以释放动态分配的内存空间。delete 运算符的基本用法如下：
+<p class="info-box">
+	delete p;</p>
+p 是指向动态分配的内存的指针。p 必须指向动态分配的内存空间，否则运行时很可能会出错。例如：
+<pre class="cpp">
+int* p = new int;
+*p = 5;
+delete p;
+delete p;  //本句会导致程序出错</pre>
+上面的第一条 delete 语句正确地释放了动态分配的 4 个字节内存空间。第二条 delete 语句会导致程序出错，因为 p 所指向的空间已经释放，p 不再是指向动态分配的内存空间的指针了。<br />
+<br />
+如果是用 new 的第二种用法分配的内存空间，即动态分配了一个数组，那么释放该数组时，应以如下形式使用 delete 运算符：
+<p class="info-box">
+	delete[] p;</p>
+p 依然是指向动态分配的内存的指针。例如：
+<pre class="cpp">
+int* p = new int[20];
+p[0] = 1;
+delete[] p;</pre>
+同样地，要求被释放的指针 p 必须是指向动态分配的内存空间的指针，否则会出错。<br />
+<br />
+如果动态分配了一个数组，但是却用<code>delete p</code>的方式释放，没有用<code>[]</code>，则编译时没有问题，运行时也一般不会发生错误，但实际上会导致动态分配的数组没有被完全释放。<br />
+<br />
+牢记，用 new 运算符动态分配的内存空间，一定要用 delete 运算符释放。否则，即便程序运行结束，这部分内存空间仍然不会被操作系统收回，从而成为被白白浪费掉的内存垃圾。这种现象也称为&ldquo;内存泄露&rdquo;。<br />
+<br />
+如果一个程序不停地进行动态内存分配而总是没有释放，那么可用内存就会被该程序大量消耗，即便该程序结束也不能恢复。这就会导致操作系统运行速度变慢，甚至无法再启动新的程序。但是，只要重新启动计算机，这种情况就会消失。<br />
+<br />
+编程时如果进行了动态内存分配，那么一定要确保其后的每一条执行路径都能释放它。<br />
+<br />
+另外还要注意，释放一个指针，并不会使该指针的值变为 NULL。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1083_2.html" title="Linux free命令：查看内存使用状态" target="_blank">Linux free命令：查看内存使用状态</a></li>
+<li><a href="vip_1768_2.html" title="C语言到底使用什么编码？谁说C语言使用ASCII码，真是荒谬！" target="_blank">C语言到底使用什么编码？谁说C语言使用ASCII码，真是荒谬！</a></li>
+<li><a href="2353_2.html" title="图解TCP四次握手断开连接" target="_blank">图解TCP四次握手断开连接</a></li>
+<li><a href="2396_2.html" title="登录MySQL数据库" target="_blank">登录MySQL数据库</a></li>
+<li><a href="../json/object_2.html" title="JSON对象（object）" target="_blank">JSON对象（object）</a></li>
+<li><a href="../csharp/class_2.html" title="C# class：类" target="_blank">C# class：类</a></li>
+<li><a href="htjr3j0_2.html" title="JDK的不同版本" target="_blank">JDK的不同版本</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 206;
+window.arcId = "8b08Zjpo/N7RlT7BCGBVnYMMF2Agb8fdIWjUmvYo/KJgmjkG3F82fZ0URA";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

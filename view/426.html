@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C语言线程函数</title>
+<meta name="description" content="除了创建线程的 thread_create（）函数、获取返回值的 thread_join（）函数和释放线程占用资源的 thread_detach（）函数，C11 还提供了另外用于线程控制的 5 个函数： thrd_t thrd_current（void）；" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C语言线程函数</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">除了创建线程的 thread_create（）函数、获取返回值的 thread_join（）函数和释放线程占用资源的 thread_detach（）函数，C11 还提供了另外用于线程控制的 5 个函数：<br />
+<br />
+<pre class="cpp">
+thrd_t thrd_current（void）；</pre>
+该函数返回其所在线程的线程标识。<br />
+<br />
+<pre class="cpp">
+int thrd_equal（thrd_t thr0，thrd_t thr1）；</pre>
+仅当两个线程标识符 thr0、thr1 分别引用了两个不同线程时，返回 0。<br />
+<br />
+<pre class="cpp">
+int thrd_sleep（const struct timespec*duration，struct timespec*remaining）；</pre>
+使得正在调用的线程等待一段时间，等待时间由 duration 指定。仅当该函数收到唤醒的信号时，它才提前返回。在这种情况下，该函数将剩余倒数时间保留在 remaining 引用的对象中，假设 remaining 不是一个空指针。指针 duration 和 remaining 不得指向同一个对象。<br />
+<br />
+结构参数 timespec 有两个成员，分别用于存储秒和纳秒：
+<pre class="cpp">
+time_t tv_sec;              // 秒&ge;0
+long   tv_nsec;                  // 0 &le;纳秒&le;999 999 999</pre>
+<br />
+结构中成员的顺序未被指定。在下面的例子中，除非通过信号来唤醒，否则正在调用的线程将等待至少 100 毫秒：
+<pre class="cpp">
+struct timespec duration = {0};
+duration.tv_nsec = 100*1E6;      // 1毫秒 = 1 000 000纳秒
+thrd_sleep(&amp;duration,NULL);  // 休眠100毫秒</pre>
+如果倒计时完成，则 thrd_sleep（）返回 0；如果线程函数由一个信号唤醒，即实现提前返回，则 thrd_sleep（）返回 -1。其他负数返回值表示错误。<br />
+<br />
+<pre class="cpp">
+void thrd_yield（void）；</pre>
+该函数建议操作系统调度器中断当前调用的线程，并将 CPU 时间分给另一个线程。<br />
+<br />
+<pre class="cpp">
+_Noreturn void thrd_exit（int result）；</pre>
+以 result 作为结果值结束正在调用线程。在线程中执行的所有函数都可以调用 thrd_exit（）。该函数调用相当于在线程函数中执行语句 return result；。最后一个线程退出后，整个程序将正常退出，换句话说，它类似于调用具有参数 EXIT_SUCCESS 的函数 exit（）。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1121.html" title="Linux zlib和libpng安装（LAMP环境搭建）" target="_blank">Linux zlib和libpng安装（LAMP环境搭建）</a></li>
+<li><a href="vip_2282.html" title="C++虚继承下的内存模型" target="_blank">C++虚继承下的内存模型</a></li>
+<li><a href="../mysql/month.html" title="MySQL MONTH函数：获取指定日期的月份" target="_blank">MySQL MONTH函数：获取指定日期的月份</a></li>
+<li><a href="4237.html" title="Python字符串拼接（包含字符串拼接数字）" target="_blank">Python字符串拼接（包含字符串拼接数字）</a></li>
+<li><a href="6216.html" title="Goland常用快捷键" target="_blank">Goland常用快捷键</a></li>
+<li><a href="8238.html" title="GDB print和display命令：查看变量的值" target="_blank">GDB print和display命令：查看变量的值</a></li>
+<li><a href="../hibernate/po.html" title="Hibernate持久化类详解" target="_blank">Hibernate持久化类详解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 426;
+window.arcId = "9c27WWBCXqTjgkGliCtWVSsRGUtcnJK+2PmDfwbVVpN9Qer4uxBJB2SEBQ";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

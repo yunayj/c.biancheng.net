@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++ vector容器详解</title>
+<meta name="description" content="在 C++ 中，vector 容器定义在标准头文件vector中，其行为非常类似于数组，存储在其中的数据在内存中也是连续的，而且可以通过下标进行随机存取。 C++ 数组最大的优点就是可以使用下标" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++ vector容器详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在 C++ 中，vector 容器定义在标准头文件<code>&lt;vector&gt;</code>中，其行为非常类似于数组，存储在其中的数据在内存中也是连续的，而且可以通过下标进行随机存取。<br />
+<br />
+C++ 数组最大的优点就是可以使用下标随机访问数组元素。但其缺点也很明显，不仅需要时刻防备下标越界的危险，还要注意空间不足的情况。使用 vector 的初衷往往就是用来替换数组。<br />
+<br />
+vector 同数组最大的区别在于其内存空间可以动态增长，即当需要更大的内存空间时，vector 可以自动增长，同时又不破坏原来的数据。<br />
+<br />
+具体来讲，当 vector 发现其容量不够时，首先开辟一块儿新的空间，新空间要比原有的空间大，足可以容纳 vector 原有的元素以及新添加的元素，然后再把原有的元素和新添加的元素复制到新的内存空间中。<br />
+<h2>
+vector容器的构造</h2>
+本质上，vector 是一个模板类，它提供了多种构造函数，功能基本上都是设置 vector 容器的初始长度，以及初始化容器内各个元素的值。包括：
+<pre class="info-box">
+// 默认构造函数，长度为 0
+explicit vector (const allocator_type&amp; alloc = allocator_type());
+
+// 长度为 n，所有元素被默认初始化
+explicit vector (size_type n);
+
+// 长度为 n，所有元素初始化为 val  
+vector (size_type n, const value_type&amp; val, const allocator_type&amp; alloc = allocator_type());
+
+// 使用迭代器 first 和 last 指定的范围内的元素来初始化 vector
+template &lt;class InputIterator&gt;  vector (InputIterator first, InputIterator last, const allocator_type&amp; alloc = allocator_type());
+
+// 拷贝构造函数，创建一个与 x 相同的新 vector 对象。
+vector (const vector&amp; x);
+vector (const vector&amp; x, const allocator_type&amp; alloc);
+
+// 移动构造函数，创建一个新的 vector 对象，并从 x 中&ldquo;移动&rdquo;数据，而不进行深度拷贝。
+vector (vector&amp;&amp; x);
+vector (vector&amp;&amp; x, const allocator_type&amp; alloc);
+
+// 初始化列表构造函数，使用给定的初始化列表 il 来初始化 vector。
+vector (initializer_list&lt;value_type&gt; il, const allocator_type&amp; alloc = allocator_type());</pre>
+下面是一个完整的 C++ 示例，演示了用各种构造函数来创建 vector 容器。
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;iterator&gt;
+
+int main() {
+    // 使用默认构造函数创建一个空 vector
+    std::vector&lt;int&gt; vec1;
+   
+    // 创建一个大小为 5 的 vector，所有元素默认初始化（对于 int，这通常是0）
+    std::vector&lt;int&gt; vec2(5);
+   
+    // 创建一个大小为 5 的 vector，所有元素初始化为 1
+    std::vector&lt;int&gt; vec3(5, 1);
+   
+    // 使用迭代器创建一个 vector
+    int arr[] = {1, 2, 3, 4, 5};
+    std::vector&lt;int&gt; vec4(arr, arr + 5);
+   
+    // 使用拷贝构造函数创建一个新 vector
+    std::vector&lt;int&gt; vec5(vec4);
+   
+    // 使用移动构造函数创建一个新 vector
+    std::vector&lt;int&gt; vec6(std::move(vec5));
+   
+    // 使用初始化列表创建一个 vector
+    std::vector&lt;int&gt; vec7 = {1, 2, 3, 4, 5};
+
+    return 0;
+}</pre>
+<h2>
+vector容器的使用</h2>
+有关 vector 元素的操作，无非是增、删、改、查，可以借助 vector 模板类提供的成员函数来实现，如下表所示。<br />
+<br />
+<table>
+<caption>
+表 1&nbsp;vector 容器的成员函数</caption>
+<tbody>
+<tr>
+<th>
+函数成员</th>
+<th>
+函数功能</th>
+</tr>
+<tr>
+<td>
+begin()</td>
+<td>
+返回指向容器中第一个元素的迭代器。</td>
+</tr>
+<tr>
+<td>
+end()</td>
+<td>
+返回指向容器最后一个元素所在位置后一个位置的迭代器，通常和 begin() 结合使用。</td>
+</tr>
+<tr>
+<td>
+rbegin()</td>
+<td>
+返回指向最后一个元素的迭代器。</td>
+</tr>
+<tr>
+<td>
+rend()</td>
+<td>
+返回指向第一个元素所在位置前一个位置的迭代器。</td>
+</tr>
+<tr>
+<td>
+cbegin()</td>
+<td>
+和&nbsp;begin() 功能相同，只不过在其基础上，增加了 const 属性，不能用于修改元素。</td>
+</tr>
+<tr>
+<td>
+cend()</td>
+<td>
+和 end() 功能相同，只不过在其基础上，增加了 const 属性，不能用于修改元素。</td>
+</tr>
+<tr>
+<td>
+crbegin()</td>
+<td>
+和 rbegin() 功能相同，只不过在其基础上，增加了 const 属性，不能用于修改元素。</td>
+</tr>
+<tr>
+<td>
+crend()</td>
+<td>
+和 rend() 功能相同，只不过在其基础上，增加了 const 属性，不能用于修改元素。</td>
+</tr>
+<tr>
+<td>
+size()</td>
+<td>
+返回实际元素个数。</td>
+</tr>
+<tr>
+<td>
+max_size()</td>
+<td>
+返回元素个数的最大值。这通常是一个很大的值，一般是 2<sup>32</sup>-1，所以我们很少会用到这个函数。</td>
+</tr>
+<tr>
+<td>
+resize()</td>
+<td>
+改变实际元素的个数。</td>
+</tr>
+<tr>
+<td>
+capacity()</td>
+<td>
+返回当前容量。</td>
+</tr>
+<tr>
+<td>
+empty()</td>
+<td>
+判断容器中是否有元素，若无元素，则返回 true；反之，返回 false。</td>
+</tr>
+<tr>
+<td>
+reserve()</td>
+<td>
+增加容器的容量。</td>
+</tr>
+<tr>
+<td>
+shrink _to_fit()</td>
+<td>
+将内存减少到等于当前元素实际所使用的大小。</td>
+</tr>
+<tr>
+<td>
+operator[ ]</td>
+<td>
+重载了&nbsp;[ ] 运算符，可以向访问数组中元素那样，通过下标即可访问甚至修改 vector 容器中的元素。</td>
+</tr>
+<tr>
+<td>
+at()</td>
+<td>
+使用经过边界检查的索引访问元素。</td>
+</tr>
+<tr>
+<td>
+front()</td>
+<td>
+返回第一个元素的引用。</td>
+</tr>
+<tr>
+<td>
+back()</td>
+<td>
+返回最后一个元素的引用。</td>
+</tr>
+<tr>
+<td>
+data()</td>
+<td>
+返回指向容器中第一个元素的指针。</td>
+</tr>
+<tr>
+<td>
+assign()</td>
+<td>
+用新元素替换原有内容。</td>
+</tr>
+<tr>
+<td>
+push_back()</td>
+<td>
+在序列的尾部添加一个元素。</td>
+</tr>
+<tr>
+<td>
+pop_back()</td>
+<td>
+移出序列尾部的元素。</td>
+</tr>
+<tr>
+<td>
+insert()</td>
+<td>
+在指定的位置插入一个或多个元素。</td>
+</tr>
+<tr>
+<td>
+erase()</td>
+<td>
+移出一个元素或一段元素。</td>
+</tr>
+<tr>
+<td>
+clear()</td>
+<td>
+移出所有的元素，容器大小变为 0。</td>
+</tr>
+<tr>
+<td>
+swap()</td>
+<td>
+交换两个容器的所有元素。</td>
+</tr>
+<tr>
+<td>
+emplace()</td>
+<td>
+在指定的位置直接生成一个元素。</td>
+</tr>
+<tr>
+<td>
+emplace_back()</td>
+<td>
+在序列尾部生成一个元素。</td>
+</tr>
+</tbody>
+</table>
+<br />
+有关表示各个成员函数的语法格式，读者不需要死记硬背，需要时直接去查<a href="https://cplusplus.com/reference/vector/vector/" target="_blank"> C++ 标准库</a>即可，这里不再过多赘述。<br />
+<br />
+下面的 C++ 代码演示了表中部分成员函数的用法：<br />
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+int main()
+{
+    //初始化一个空vector容量
+    vector&lt;char&gt;value;
+    //向value容器中的尾部依次添加 S、T、L 字符
+    value.push_back(&#39;S&#39;);
+    value.push_back(&#39;T&#39;);
+    value.push_back(&#39;L&#39;);
+    //调用 size() 成员函数容器中的元素个数
+    printf(&quot;元素个数为：%d\n&quot;, value.size());
+    //使用迭代器遍历容器
+    for (auto i = value.begin(); i &lt; value.end(); i++) {
+        cout &lt;&lt; *i &lt;&lt; &quot; &quot;;
+    }
+    cout &lt;&lt; endl;
+    //向容器开头插入字符
+    value.insert(value.begin(), &#39;C&#39;);
+    cout &lt;&lt; &quot;首个元素为：&quot; &lt;&lt; value.at(0) &lt;&lt; endl;
+    return 0;
+}</pre>
+输出结果为：
+<p class="info-box">
+元素个数为：3<br />
+S T L<br />
+首个元素为：C</p>
+<h2>
+完整实例</h2>
+以下是一个 C++ 示例程序，演示了如何使用 std::vector 容器进行各种操作，包括初始化、添加元素、访问元素、遍历、以及删除元素。<br />
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+int main() {
+    // 1. 初始化：创建一个空的 vector 容器
+    std::vector&lt;int&gt; vec1;
+
+    // 2. 初始化：使用列表初始化
+    std::vector&lt;int&gt; vec2 = {1, 2, 3, 4, 5};
+
+    // 3. 初始化：使用构造函数，创建一个包含 5 个元素为 0 的 vector
+    std::vector&lt;int&gt; vec3(5, 0);
+
+    // 4. 添加元素：使用 push_back() 在尾部添加元素
+    vec1.push_back(10);
+    vec1.push_back(20);
+    vec1.push_back(30);
+
+    // 5. 访问元素：使用下标运算符
+    std::cout &lt;&lt; &quot;First element of vec2: &quot; &lt;&lt; vec2[0] &lt;&lt; std::endl;
+
+    // 6. 访问元素：使用 at() 函数
+    std::cout &lt;&lt; &quot;Second element of vec2: &quot; &lt;&lt; vec2.at(1) &lt;&lt; std::endl;
+
+    // 7. 遍历元素：使用范围 for 循环
+    std::cout &lt;&lt; &quot;Elements of vec1: &quot;;
+    for (const auto &amp;elem : vec1) {
+        std::cout &lt;&lt; elem &lt;&lt; &#39; &#39;;
+    }
+    std::cout &lt;&lt; std::endl;
+
+    // 8. 遍历元素：使用迭代器
+    std::cout &lt;&lt; &quot;Elements of vec2: &quot;;
+    for (auto it = vec2.begin(); it != vec2.end(); ++it) {
+        std::cout &lt;&lt; *it &lt;&lt; &#39; &#39;;
+    }
+    std::cout &lt;&lt; std::endl;
+
+    // 9. 删除元素：使用 pop_back() 删除最后一个元素
+    vec1.pop_back();
+
+    // 10. 删除元素：使用 erase() 删除第一个元素
+    vec2.erase(vec2.begin());
+
+    // 11. 获取容器大小：使用 size() 函数
+    std::cout &lt;&lt; &quot;Size of vec3: &quot; &lt;&lt; vec3.size() &lt;&lt; std::endl;
+
+    return 0;
+}</pre>
+运行结果为：
+<p class="info-box">
+First element of vec2: 1<br />
+Second element of vec2: 2<br />
+Elements of vec1: 10 20 30<br />
+Elements of vec2: 1 2 3 4 5<br />
+Size of vec3: 5</p>
+<h2>
+总结</h2>
+vector 的内存空间是连续的，查找元素很快，可以像数组一样用下标进行访问，内存空间可以随需要增长。vector 的缺点也很明显，就是插入和删除元素较慢。<br />
+<br />
+因此，vector 适用于在元素数量变化不大或者只需要增加元素的情况下，如果需要频繁地插入、删除元素，则应当考虑使用别的容器。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="291.html" title="C语言*运算符和&amp;运算符" target="_blank">C语言*运算符和&amp;运算符</a></li>
+<li><a href="494.html" title="C语言九九乘法表（五种输出形式）" target="_blank">C语言九九乘法表（五种输出形式）</a></li>
+<li><a href="2011.html" title="Python爬虫入门教程：超级简单的Python爬虫教程" target="_blank">Python爬虫入门教程：超级简单的Python爬虫教程</a></li>
+<li><a href="vip_3249.html" title="如何检测子Shell和子进程？" target="_blank">如何检测子Shell和子进程？</a></li>
+<li><a href="4164.html" title="Mac OS安装Python环境" target="_blank">Mac OS安装Python环境</a></li>
+<li><a href="7197.html" title="C++ STL set emplace()和emplace_hint()方法详解" target="_blank">C++ STL set emplace()和emplace_hint()方法详解</a></li>
+<li><a href="../c/scanf.html" title="C语言scanf()：格式化输入函数" target="_blank">C语言scanf()：格式化输入函数</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10360;
+window.arcId = "ae47kqGQE9fXAPccqp6+dBwFUDP14uotcVp6QYNqL6KnnvJaG+/IRsi5rtqL";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

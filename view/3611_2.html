@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>汇编语言ADC指令：带进位加法</title>
+<meta name="description" content="ADC（带进位加法）指令将源操作数和进位标志位的值都与目的操作数相加。该指令格式与 ADD 指令一样，且操作数大小必须相同： ADC reg, reg ADC mem, reg ADC reg, mem ADC mem, imm ADC reg, imm 例如，" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>汇编语言ADC指令：带进位加法</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">ADC（带进位加法）指令将源操作数和进位标志位的值都与目的操作数相加。该指令格式与 ADD 指令一样，且操作数大小必须相同：<br />
+<p class="info-box">
+	ADC reg, reg<br />
+	ADC mem, reg<br />
+	ADC reg, mem<br />
+	ADC mem, imm<br />
+	ADC reg, imm</p>
+例如，下述指令实现两个 8 位整数相加 (FFh+FFh)，产生的 16 位和数存入 DL:AL，其值为 01FEh：<br />
+<p class="info-box">
+	mov dl, 0<br />
+	mov al, 0FFh<br />
+	add al, 0FFh&nbsp;&nbsp;&nbsp;&nbsp; ; AL = FEh<br />
+	adc dl, 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; DL/AL = OlFEh</p>
+下图展示了这两个数相加过程中的数据活动。首先，FFh 与 AL 相加，生成 FEh 存入 AL 寄存器，并将进位标志位置 1。然后，将 0 和进位标志位与 DL 寄存器相加：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/190513/4-1Z513100R03S_2.gif" /></div>
+<br />
+同样，下述指令实现两个 32 位整数相加 (FFFF FFFFh+ FFFF FFFFh)，产生的 64 位和数存入 EDX:EAX，其值为：0000 0001 FFFF FFFEh：<br />
+<p class="info-box">
+	mov edx, 0<br />
+	mov eax, 0FFFFFFFFh<br />
+	add eax, 0FFFFFFFFh<br />
+	adc edx, 0</p>
+<h2>
+	扩展加法示例</h2>
+接下来将说明过程 Extended_Add 实现两个大小相同的扩展整数的加法。利用循环，该过程将两个扩展整数当作并行数组实现加法操作。数组中每对数值相加时，都要包括前一次循环迭代执行的加法所产生的进位标志位。实现过程时，假设整数存储在字节数组中，不过 本例很容易就能修改为双字数组的加法。<br />
+<br />
+该过程接收两个指针，存入 ESI 和 EDI，分别指向参与加法的两个整数。EBX 寄存器指向缓冲区，用于存放和数，该缓冲区的前提条件是必须比两个加数大一个字节。此外，过程还用 ECX 接收最长加数的长度。<br />
+<br />
+两个加数都需要按小端顺序存放，即其最低字节存放在该数组的起始地址。过程代码如下所示，添加了代码行编号便于进行详细讨论：<br />
+<pre class="asm">
+;------------------------------------------
+Extended_Add PROC
+; 计算两个以字节数组存放的扩展整数之和。
+; 接收：ESI和EDI为两个加数的指针
+;      EBX 为和数变量指针，
+;      ECX为
+; 相加的字节数。
+; 和数存储区必须比输入的操作数多一个字节。
+; 返回：无
+;------------------------------------------
+    pushad
+    clc                         ;清除进位标志位
+
+L1: mov    al, [esi]            ;取第一个数
+    adc    al, [edi]            ;与第二个数相加
+    pushfd                      ;保存进位标志位
+    mov    [ebx], al            ;保存部分和
+    add    esi, 1               ;三个指针都加1
+    add    edi, 1
+    add    ebx, 1
+    popfd                      ;恢复进位标志位
+    loop    L1                 ;重复循环
+
+    mov byte ptr [ebx], 0      ;清除和数高字节
+    adc byte ptr [ebx], 0  
+    popad                      ;加上其他的进位
+    ret
+Extended_Add ENDP</pre>
+当第14行和第15行将两个数组的最低字节相加时，加法运算可能会将进位标志位置 1。因此，第16行将进位标志位压入堆栈进行保存就很重要，因为在循环重复时会用到进位 标志位。第17行保存了和数的第一个字节，第18〜20行将三个指针（两个操作数，一个和数）都加 1。第 21 行恢复进位标志位，第 22 行将循环返回到第 14 行。<br />
+<br />
+（LOOP 指令不会修改 CPU 的状态标志位。）再次循环时，第 17 行进行的是第二对字节的加法，其中包括进位标志位的值。因此，如果第一次循环过程产生了进位，则第二次循环就要包括该进位。按照这种方式循环，直到所有的字节都完成了加法。然后，最后的第 24 行和第 25 行检查操作数最高字节相加是否产生进位，若产生了进位，就将该值加到和数多岀来的那个字节中。<br />
+<br />
+下面的代码示例调用 Extended_Add，并向其传递两个 8 字节的整数。要注意为和数多分配一个字节：<br />
+<pre class="asm">
+.data
+op1 BYTE 34h,12h,98h,74h,06h,0A4h,0B2h,0A2h
+op2 BYTE 02h,45h,23h,00h,00h,87h,10h,80h
+
+sum BYTE 9 dup(0)     ; = 0122C32B0674BB5736h
+
+.code
+main PROC
+
+    mov    esi,OFFSET op1        ; 第一个操作数
+    mov    edi,OFFSET op2        ; 第二个操作数
+    mov    ebx,OFFSET sum        ; 和数
+    mov    ecx,LENGTHOF op1      ; 字节数
+    call    Extended_Add
+
+; 显示和数
+   
+    mov  esi,OFFSET sum
+    mov  ecx,LENGTHOF sum
+    call    Display_Sum
+    call Crlf</pre>
+上述程序的输出如下所示，加法产生了一个进位：<br />
+<p class="info-box">
+	0122C32B0674BB5736</p>
+过程 Display_Sum 按照正确的顺序显示和数，即从最高字节开始依次显示到最低字节：<br />
+<pre class="asm">
+Display_Sum PROC
+    pushad
+    ; 指向左后一个数组
+    add esi,ecx
+    sub esi,TYPE BYTE
+    mov ebx,TYPE BYTE
+   
+L1:    mov  al,[esi]            ; 取一个数组字节
+    call WriteHexB              ; 显示该字节
+    sub  esi,TYPE BYTE          ; 指向前一个字节
+    loop L1
+
+    popad
+    ret
+Display_Sum ENDP</pre>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="346_2.html" title="STL中“大”、“小”和“相等”的概念" target="_blank">STL中“大”、“小”和“相等”的概念</a></li>
+<li><a href="vip_3397_2.html" title="森林转化为二叉树（详解版）" target="_blank">森林转化为二叉树（详解版）</a></li>
+<li><a href="vip_3449_2.html" title="归并排序算法（包含C语言实现代码）" target="_blank">归并排序算法（包含C语言实现代码）</a></li>
+<li><a href="5392_2.html" title="Go语言time包：时间和日期" target="_blank">Go语言time包：时间和日期</a></li>
+<li><a href="5596_2.html" title="JS字符串和数组之间的转换" target="_blank">JS字符串和数组之间的转换</a></li>
+<li><a href="../python_spider/regexp-syntax_2.html" title="正则表达式基本语法" target="_blank">正则表达式基本语法</a></li>
+<li><a href="x0wlqcx_2.html" title="Go语言映射（map）的创建和使用" target="_blank">Go语言映射（map）的创建和使用</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 3611;
+window.arcId = "c8b9HGUKbLI/p5T881IQcUz7jIrY28GNqTISxs44UfB7v+mD9edM1Efk9tY";
+window.typeidChain = "448|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

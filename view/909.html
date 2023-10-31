@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Linux quota和repquota命令查询磁盘配额方法详解</title>
+<meta name="description" content="对于建立好的磁盘配额，还需要有效的查询配额的手段，这样才能知道系统中到底有哪些分区设定了哪些配额。 查询磁盘配额有两种方法： 使用 quota 命令 查询用户或用户组的配额；" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../linux_tutorial/linux_tutorial.html">Linux</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href='../linux_tutorial/10/10.html'>Linux简介</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href='../linux_tutorial/20/20.html'>Linux安装</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href='../linux_tutorial/file_content/file_content.html'>Linux文件和目录管理</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href='../linux_tutorial/bale_compress/bale_compress.html'>Linux打包（归档）和压缩</a>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href='../linux_tutorial/40/40.html'>Vim文本编辑器</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href='../linux_tutorial/text_processing/text_processing.html'>Linux文本处理（Linux三剑客）</a>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href='../linux_tutorial/50/50.html'>Linux软件安装</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href='../linux_tutorial/60/60.html'>Linux用户和用户组管理</a>
+</dd>
+<dd>
+<span class="channel-num">9</span>
+<a href='../linux_tutorial/70/70.html'>Linux权限管理</a>
+</dd>
+<dd>
+<span class="channel-num">10</span>
+<a href='../linux_tutorial/80/80.html'>Linux文件系统管理</a>
+</dd>
+<dd class="this"> <span class="channel-num">11</span> <a href="../linux_tutorial/90/90.html">Linux高级文件系统管理</a> </dd><dl class="dl-sub"><dd>11.1 <a href="908.html">磁盘配额是什么</a></dd><dd>11.2 <a href="3732.html">磁盘配额启动前的准备工作</a></dd><dd>11.3 <a href="3739.html">Linux扫描文件系统并建立磁盘配额记录文件（quotacheck命令）</a></dd><dd>11.4 <a href="3743.html">Linux开启磁盘配额限制（quotaon命令）</a></dd><dd>11.5 <a href="3745.html">Linux关闭磁盘配额限制（quotaoff命令）</a></dd><dd>11.6 <a href="3751.html">Linux修改用户（群组）的磁盘配额（edquota命令）</a></dd><dd>11.7 <a href="912.html">Linux非交互式设置磁盘配额（setquota命令）</a></dd><dd>11.8 <a href="909.html">Linux查询已建立好的磁盘配额（quota和repquota命令）</a></dd><dd>11.9 <a href="vip_7667.html">Linux如何判断磁盘配额是否生效？</a><span class="iconfont iconfont-vip2"></span></dd><dd>11.10 <a href="911.html">Linux LVM逻辑卷管理机制</a></dd><dd>11.11 <a href="914.html">Linux PV物理卷</a></dd><dd>11.12 <a href="918.html">Linux VG卷组</a></dd><dd>11.13 <a href="920.html">Linux LV逻辑卷</a></dd><dd>11.14 <a href="vip_5092.html">Linux LVM（逻辑卷管理）的删除</a><span class="iconfont iconfont-vip2"></span></dd><dd>11.15 <a href="vip_5093.html">Linux RAID（磁盘阵列）完全攻略</a><span class="iconfont iconfont-vip2"></span></dd><dd>11.16 <a href="vip_5095.html">使用图形界面来配置RAID</a><span class="iconfont iconfont-vip2"></span></dd><dd>11.17 <a href="vip_5097.html">使用mdadm命令来配置RAID</a><span class="iconfont iconfont-vip2"></span></dd></dl>
+<dd>
+<span class="channel-num">12</span>
+<a href='../linux_tutorial/14/14.html'>Linux系统管理</a>
+</dd>
+<dd>
+<span class="channel-num">13</span>
+<a href='../linux_tutorial/17/17.html'>Linux备份与恢复</a>
+</dd>
+<dd>
+<span class="channel-num">14</span>
+<a href='../linux_tutorial/13/13.html'>Linux系统服务管理</a>
+</dd>
+<dd>
+<span class="channel-num">15</span>
+<a href='../linux_tutorial/15/15.html'>Linux系统日志管理</a>
+</dd>
+<dd>
+<span class="channel-num">16</span>
+<a href='../linux_tutorial/12/12.html'>Linux启动管理</a>
+</dd>
+<dd>
+<span class="channel-num">17</span>
+<a href='../linux_tutorial/16/16.html'>LAMP环境搭建和LNMP环境搭建</a>
+</dd>
+<dd>
+<span class="channel-num">18</span>
+<a href='../linux_tutorial/18/18.html'>SELinux管理</a>
+</dd>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../linux_tutorial/linux_tutorial.html">Linux</a> &gt; <a href="../linux_tutorial/90/90.html">Linux高级文件系统管理</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Linux quota和repquota命令查询磁盘配额方法详解</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">对于建立好的磁盘配额，还需要有效的查询配额的手段，这样才能知道系统中到底有哪些分区设定了哪些配额。<br />
+<br />
+查询磁盘配额有两种方法：
+<ul>
+<li>
+使用<span style="color:#008000;"> quota 命令</span>查询用户或用户组的配额；</li>
+<li>
+使用 <span style="color:#008000;">repquota 命令</span>查询整个分区的配额情况。</li>
+</ul>
+<h2>
+quota 命令查询用户或用户组配额</h2>
+<p class="info-box">
+[root@localhost~] # quota [选项] [用户名或组名]</p>
+选项：
+<ul>
+<li>
+-u 用户名：查询用户配额；</li>
+<li>
+-g 组名：查询组配额；</li>
+<li>
+-v：显示详细信息；</li>
+<li>
+-s：以习惯单位显示容量大小，如M、G；</li>
+</ul>
+<p class="info-box">
+[root@localhost 〜]# quota -uvs lamp1<br />
+Disk quotas for user lamp1 (uid 500):<br />
+Filesystem blocks quota limit grace files quota limit grace<br />
+/dev/sda3 20 0 0 6 0 0<br />
+/dev/sdbl 0 40000 50000 0 8 10<br />
+#查看lamp1用户的配额值<br />
+[root@localhost ~]# quota -uvs lamp2<br />
+Disk quotas for user lamp2 (uid 501):<br />
+Filesystem blocks quota limit grace files quota limit grace<br />
+/dev/sda3 36752 0 0 2672 0 0<br />
+/dev/sdbl 0 245M 293M 0 0 0<br />
+#查看lamp2用户的配额值</p>
+lamp 用户的配额值还不够大，所以没有换算成 MB 单位，但是 lamp2 用户已经换算了。在选项列当中多出了 grace 字段，这里是用来显示宽限时间的，我们现在还没有达到软限制，所以 grace 字段为空。<br />
+<h2>
+repquota命令查询文件系统配额</h2>
+<p class="info-box">
+[root@localhost ~] # repquota [选项] [分区名]</p>
+选项：
+<ul>
+<li>
+-a：依据 /etc/mtab 文件查询配额。如果不加 -a 选项，就一定要加分区名；</li>
+<li>
+-u：查询用户配额；</li>
+<li>
+-g：查询组配额；</li>
+<li>
+-v：显示详细信息；</li>
+<li>
+-s：以习惯单位显示容量太小；</li>
+</ul>
+<p class="info-box">
+[root@localhost ~] # repquota -augvs<br />
+*** Report for user quotas on device /dev/sdbl<br />
+#用户配额信息<br />
+Block grace time: 8days; Inode grace time: 8days<br />
+Block limits File limits<br />
+User used soft hard grace used soft hard grace<br />
+root -- 13 0 0 2 0 0<br />
+lampl -- 0 40000 50000 0 8 10<br />
+lamp2 -- 0 245M 293M 0 0 0<br />
+lamp3 -- 0 245M 293M 0 0 0<br />
+#用户的配额值<br />
+Statistics:<br />
+Total blocks: 7<br />
+Data blocks: 1<br />
+Entries: 4<br />
+Used average: 4.000000<br />
+*** Report for group quotas on device /dev/sdbl<br />
+#组配额信息<br />
+Block grace time: 7days; Inode grace time: 7days<br />
+Block limits File limits<br />
+Group used soft hard grace used soft hard grace<br />
+root -- 13 0 0 2 0 0<br />
+brother -- 0 440M 489M 0 0 0<br />
+#组的配额值<br />
+Statistics:<br />
+Total blocks: 7<br />
+Data blocks: 1<br />
+Entries: 2<br />
+Used average: 2.000000</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="921.html" title="Java数组填充（fill()）" target="_blank">Java数组填充（fill()）</a></li>
+<li><a href="1152.html" title="SELinux默认安全上下文的查询和修改(semanage命令)" target="_blank">SELinux默认安全上下文的查询和修改(semanage命令)</a></li>
+<li><a href="3350.html" title="顺序栈及基本操作（包含入栈和出栈）" target="_blank">顺序栈及基本操作（包含入栈和出栈）</a></li>
+<li><a href="../c/isdigit.html" title="C语言isdigit()函数：判断一个字符是否为数字" target="_blank">C语言isdigit()函数：判断一个字符是否为数字</a></li>
+<li><a href="4147.html" title="Python版本区别，Python 3和Python 2区别详解" target="_blank">Python版本区别，Python 3和Python 2区别详解</a></li>
+<li><a href="../spring/aop-module.html" title="Spring AOP编程（十分详细）" target="_blank">Spring AOP编程（十分详细）</a></li>
+<li><a href="1twwc5u.html" title="JS高阶函数的理解" target="_blank">JS高阶函数的理解</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 909;
+window.arcId = "e348UlTcBd1qKBEuehd/kPjmwS/6L3jcrcTmdo4L4EVVdLUPc+g9ChM0lg";
+window.typeidChain = "88|77";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/view/912.html";
+window.nextPageURL = "/view/vip_7667.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

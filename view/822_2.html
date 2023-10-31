@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Linux提取RPM包文件(cpio命令)详解</title>
+<meta name="description" content="在讲 RPM 包文件提取之前，先介绍一下 cpio 命令。 cpio 命令可以把文件或目录从文件库中提取出来，也可以把文件或目录复制到文件库中。可以把 cpio 命令看成备份或还原命令，它既可数" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+	<div id="sidebar" class="toggle-target">
+	<div id="contents">
+		<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../linux_tutorial/linux_tutorial_2.html">Linux</a></dt>
+		
+			<dd>
+				<span class="channel-num">1</span>
+				<a href='../linux_tutorial/10/10_2.html'>Linux简介</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">2</span>
+				<a href='../linux_tutorial/20/20_2.html'>Linux安装</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">3</span>
+				<a href='../linux_tutorial/file_content/file_content_2.html'>Linux文件和目录管理</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">4</span>
+				<a href='../linux_tutorial/bale_compress/bale_compress_2.html'>Linux打包（归档）和压缩</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">5</span>
+				<a href='../linux_tutorial/40/40_2.html'>Vim文本编辑器</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">6</span>
+				<a href='../linux_tutorial/text_processing/text_processing_2.html'>Linux文本处理（Linux三剑客）</a>
+			</dd>
+		<dd class="this"> <span class="channel-num">7</span> <a href="../linux_tutorial/50/50_2.html">Linux软件安装</a> </dd><dl class="dl-sub"><dd>7.1 <a href="814_2.html">Linux软件包</a></dd><dd>7.2 <a href="2868_2.html">Linux RPM包统一命名规则</a></dd><dd>7.3 <a href="2872_2.html">Linux RPM包安装、卸载和升级</a></dd><dd>7.4 <a href="817_2.html">Linux rpm命令查询软件包</a></dd><dd>7.5 <a href="820_2.html">Linux RPM包验证和数字证书</a></dd><dd>7.6 <a href="822_2.html">Linux提取RPM包</a></dd><dd>7.7 <a href="2921_2.html">Linux SRPM源码包安装</a></dd><dd>7.8 <a href="vip_5065_2.html">Linux重建RPM数据库（修复损坏的RPM数据库）</a><span class="iconfont iconfont-vip2"></span></dd><dd>7.9 <a href="vip_5066_2.html">RPM包的依赖性及其解决方案</a><span class="iconfont iconfont-vip2"></span></dd><dd>7.10 <a href="2931_2.html">Linux yum源及配置</a></dd><dd>7.11 <a href="825_2.html">Linux yum命令</a></dd><dd>7.12 <a href="826_2.html">Linux yum管理软件组</a></dd><dd>7.13 <a href="2952_2.html">Linux源码包安装和卸载</a></dd><dd>7.14 <a href="832_2.html">Linux源码包升级</a></dd><dd>7.15 <a href="vip_5067_2.html">RPM包和源码包，究竟应该选择哪种安装方式？</a><span class="iconfont iconfont-vip2"></span></dd><dd>7.16 <a href="vip_5072_2.html">Linux函数库（静态函数库和动态函数库）及其安装过程</a><span class="iconfont iconfont-vip2"></span></dd><dd>7.17 <a href="vip_5073_2.html">Linux脚本程序包及安装方法详解（以webmin为例）</a><span class="iconfont iconfont-vip2"></span></dd></dl>
+			<dd>
+				<span class="channel-num">8</span>
+				<a href='../linux_tutorial/60/60_2.html'>Linux用户和用户组管理</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">9</span>
+				<a href='../linux_tutorial/70/70_2.html'>Linux权限管理</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">10</span>
+				<a href='../linux_tutorial/80/80_2.html'>Linux文件系统管理</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">11</span>
+				<a href='../linux_tutorial/90/90_2.html'>Linux高级文件系统管理</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">12</span>
+				<a href='../linux_tutorial/14/14_2.html'>Linux系统管理</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">13</span>
+				<a href='../linux_tutorial/17/17_2.html'>Linux备份与恢复</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">14</span>
+				<a href='../linux_tutorial/13/13_2.html'>Linux系统服务管理</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">15</span>
+				<a href='../linux_tutorial/15/15_2.html'>Linux系统日志管理</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">16</span>
+				<a href='../linux_tutorial/12/12_2.html'>Linux启动管理</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">17</span>
+				<a href='../linux_tutorial/16/16_2.html'>LAMP环境搭建和LNMP环境搭建</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">18</span>
+				<a href='../linux_tutorial/18/18_2.html'>SELinux管理</a>
+			</dd>
+		
+	</div>
+</div>
+	<div id="article-wrap">
+		<div id="article">
+			<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../linux_tutorial/linux_tutorial_2.html">Linux</a> &gt; <a href="../linux_tutorial/50/50_2.html">Linux软件安装</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+			<h1>Linux提取RPM包文件(cpio命令)详解</h1>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+			<div id="arc-body">在讲解如何从 RPM 包中提取文件之前，先来系统学习一下 cpio 命令。<br />
+<br />
+cpio 命令用于从归档包中存入和读取文件，换句话说，cpio 命令可以从归档包中提取文件（或目录），也可以将文件（或目录）复制到归档包中。<br />
+<p class="info-box">
+	<span style="color: rgb(0, 128, 0);">归档包</span>，也可称为<span style="color: rgb(0, 128, 0);">文件库</span>，其实就是 cpio 或 tar 格式的文件，该文件中包含其他文件以及一些相关信息（文件名、访问权限等）。归档包既可以是磁盘中的文件，也可以是磁带或管道。</p>
+cpio 命令可以看做是备份或还原命令，因为它可以将数据（文件）备份到 cpio 归档库，也可以利用 cpio 文档库对数据进行恢复。<br />
+<br />
+使用 cpio 命令备份或恢复数据，需注意以下几点：
+<ul>
+	<li>
+		使用 cpio 备份数据时如果使用的是绝对路径，那么还原数据时会自动恢复到绝对路径下；同理，如果备份数据使用的是相对路径，那么数据会还原到相对路径下。</li>
+	<li>
+		cpio 命令无法自行指定备份（或还原）的文件，需要目标文件（或目录）的完整路径才能成功读取，因此此命令常与 find 命令配合使用。</li>
+	<li>
+		cpio 命令恢复数据时不会自动覆盖同名文件，也不会创建目录（直接解压到当前文件夹）。</li>
+</ul>
+<br />
+cpio 命令主要有以下 3 种基本模式：<br />
+<ol>
+	<li>
+		&quot;-o&quot; 模式：指的是 copy-out 模式，就是把数据备份到文件库中，命令格式如下：
+		<p class="info-box">
+			[root@localhost ~]# cpio -o[vcB] &gt; [文件丨设备]</p>
+		各选项含义如下：
+		<ul>
+			<li>
+				-o：copy-out模式，备份；</li>
+			<li>
+				-v：显示备份过程；</li>
+			<li>
+				-c：使用较新的portable format存储方式；</li>
+			<li>
+				-B：设定输入/输出块为 5120Bytes，而不是模式的 512Bytes；</li>
+		</ul>
+		<br />
+		比如，使用 cpio 备份数据的命令如下：<br />
+		<p class="info-box">
+			[root@localhost ~]#find /etc -print | cpio -ocvB &gt; /root/etc.cpio<br />
+			#利用find命令指定要备份/etc/目录，使用&gt;导出到etc.cpio文件<br />
+			[root@localhost ~]# II -h etc.cpio<br />
+			-rw--r--r--.1 root root 21M 6月5 12:29 etc.cpio<br />
+			#etc.cpio文件生成</p>
+	</li>
+	<li>
+		&quot;-i&quot; 模式：指的是 copy-in 模式，就是把数据从文件库中恢复，命令格式如下：
+		<p class="info-box">
+			[root@localhost ~]# cpio -i[vcdu] &lt; [文件|设备]</p>
+		各选项的含义为：
+		<ul>
+			<li>
+				-i：copy-in 模式，还原；</li>
+			<li>
+				-v：显示还原过程；</li>
+			<li>
+				-c：较新的 portable format 存储方式；</li>
+			<li>
+				-d：还原时自动新建目录；</li>
+			<li>
+				-u：自动使用较新的文件覆盖较旧的文件；</li>
+		</ul>
+		<br />
+		比如，使用 cpio 恢复之前备份的数据，命令如下：
+		<p class="info-box">
+			[root@localhost ~]# cpio -idvcu &lt; /root/etc.cpio<br />
+			#还原etc的备份<br />
+			#如果大家査看一下当前目录/root/，就会发现没有生成/etc/目录。这是因为备份时/etc/目录使用的是绝对路径，所以数据直接恢复到/etc/系统目录中，而没有生成在/root/etc/目录中</p>
+	</li>
+	<li>
+		&quot;-p&quot; 模式：指的是复制模式，使用 -p 模式可以从某个目录读取所有文件，但并不将其备份到 cpio 库中，而是直接复制为其他文件。<br />
+		<br />
+		例如，使用 -p 将 /boot/ 复制到 /test/boot 目录中可以执行如下命令：
+		<p class="info-box">
+			[root@localhost ~]# cd /tmp/<br />
+			#进入/tmp/目录<br />
+			[root@localhost tmp]#rm -rf*<br />
+			#删除/tmp/目录中的所有数据<br />
+			[root@localhost tmp]# mkdir test<br />
+			#建立备份目录<br />
+			[root@localhost tmp]# find /boot/ -print | cpio -p /tmp/test<br />
+			#备份/boot/目录到/tmp/test/目录中<br />
+			[root@localhost tmp]# ls test/boot<br />
+			#在/tmp/test/目录中备份出了/boot/目录</p>
+	</li>
+</ol>
+<h2>
+	使用 cpio 命令提取 RPM 包中指定文件</h2>
+在服务器使用过程，如果系统文件被误修改或误删除，可以考虑使用 cpio 命令提取出原 RPM 包中所需的系统文件，从而修复被误操作的源文件。<br />
+<br />
+RPM 包允许逐个提取包中文件，使用的命令格式如下：<br />
+<p class="info-box">
+	[root@localhost ~]# rpm2cpio 包全名|cpio -idv .文件绝对路径</p>
+该命令中，rpm2cpio 就是将 RPM 包转换为 cpio 格式的命令，通过 cpio 命令即可从 cpio 文件库中提取出指定文件。<br />
+<br />
+举个例子，假设我们不小心把 /bin/ls 命令删除了，通常有以下 2 种方式修复：
+<ol>
+	<li>
+		将 coreutils-8.4-19.el6.i686 包（包含 ls 命令的 RPM 包）通过 -force 选项再安装一遍；</li>
+	<li>
+		使用 cpio 命令从 coreutils-8.4-19.el6.i686 包中提取出 /bin/ls 文件，然后将其复制到相应位置；</li>
+</ol>
+<br />
+这里我们选择第 2 种方式。有读者可能会问，如何知道 ls 命令隶属于那个 RPM 包呢？很简单，使用&nbsp;<code style="font-size: 14px;">rpm -qf</code>&nbsp;命令即可，如下所示：
+<p class="info-box">
+	[root@localhost ~]# rpm -qf /bin/ls<br />
+	coreutils-8.4-19.el6.i686<br />
+	#查看ls文件属于哪个软件包</p>
+在此基础上，我们只需从此 RPM 包使用 cpio 命令提取出 ls 命令文件，然后将其复制到对应位置即可，实现命令如下：<br />
+<p class="info-box">
+	[root@localhost ~]# mv /bin/ls /root/<br />
+	#把/bin/ls命令移动到/root/目录下，造成误删除的假象<br />
+	[root@localhost ~]# ls<br />
+	-bash: ls: command not found<br />
+	#这时执行ls命令，系统会报&quot;命令没有找到&quot;错误<br />
+	[root@localhost ~]# rpm2cpio /mnt/cdrom/Packages/coreutils-8.4-19.el6.i686.rpm<br />
+	|cpio -idv ./bin/ls<br />
+	#提取ls命令文件到当前目录下<br />
+	[root@localhost ~]# cp /root/bin/ls /bin/<br />
+	#把提取出来的ls命令文件复制到/bin/目录下<br />
+	[root@localhost ~]#ls<br />
+	anaconda-ks.cfg bin inittab install.log install.log.syslog ls<br />
+	#可以看到，ls命令又可以正常使用了</p>
+</div>
+			<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_5097_2.html" title="使用mdadm命令来配置RAID" target="_blank">使用mdadm命令来配置RAID</a></li>
+<li><a href="7265_2.html" title="MySQL事务隔离级别详解（附带实例）" target="_blank">MySQL事务隔离级别详解（附带实例）</a></li>
+<li><a href="7830_2.html" title="Django HTML表单实现用户注册" target="_blank">Django HTML表单实现用户注册</a></li>
+<li><a href="../redis2/persist_2.html" title="Redis PERSIST命令" target="_blank">Redis PERSIST命令</a></li>
+<li><a href="../python_spider/check-element_2.html" title="如何审查网页元素" target="_blank">如何审查网页元素</a></li>
+<li><a href="iljkvmp_2.html" title="C++ static静态变量详解" target="_blank">C++ static静态变量详解</a></li>
+<li><a href="d03uvfj_2.html" title="《图解算法(使用C语言)》PDF下载（高清完整版）" target="_blank">《图解算法(使用C语言)》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+		</div>
+		
+	</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 822;
+window.arcId = "d3457hQlSYBgOQG+rkh+TRV89XoV8IIQJXDwVPmxqd6mIoVcd13ik2qzSw";
+window.typeidChain = "84|77";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/view/820.html";
+window.nextPageURL = "/view/2921.html";
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

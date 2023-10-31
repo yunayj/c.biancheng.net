@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C++ map插入数据（STL map插入数据）详解</title>
+<meta name="description" content="mapK，T 容器的成员函数 insert() 有多个版本，它们可以在 map 中插入一个或多个 pairconst K,T 对象。只能插入 map 中不存在的元素。下面这个代码片段展示了如何插入单个元素： std::mapstd::" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C++ map插入数据（STL map插入数据）详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">map&lt;K，T&gt; 容器的成员函数 insert() 有多个版本，它们可以在 map 中插入一个或多个 pair&lt;const K,T&gt; 对象。只能插入 map 中不存在的元素。下面这个代码片段展示了如何插入单个元素：<br />
+<pre class="cpp">
+std::map&lt;std:: string,size_t&gt; people {std::make_pair (&quot;Ann&quot;,25),std::make_pair(&quot;Bill&quot;,46) , std::make_pair (&quot;Jack&quot;,32), std::make_pair(&quot;Jill&quot;,32)};
+auto pr = std::make_pair(&quot;Fred&quot;,22); //Create a pair element and insert it
+auto ret_pr = people.insert(pr);
+std::cout &lt;&lt; ret_pr.first-&gt;first &lt;&lt; &quot; &quot;&lt;&lt; ret_pr.first-&gt;second&lt;&lt; &quot;&quot; &lt;&lt; std:: boolalpha &lt;&lt;ret_pr.second &lt;&lt; &quot;\n&quot;; // Fred 22 true</pre>
+第一条语句生成了一个 map 容器，并用初始化列表中的 4 个值对它进行了初始化；在这种情况下，这些值会被隐式转换为要求的类型。第二条语句生成了另一个被插入的 pair 对象 pr。pr 对象的类型是 pair&lt;const char*,int&gt;，因为 make_pair&lt;&gt;() 函数模板的类型参数是从参数类型推断出来的；但是在 insert() 操作中，这个对象会被隐式转换为容器元素类型。当然，如果不想依靠隐式转换，可以生成所要求类型的 pair 对象：<br />
+<pre class="cpp">
+auto pr = std::make_pair&lt;std:: string, size_t&gt; (std:: string { &quot;Fred&quot;},22);</pre>
+make_pair&lt;&gt;() 模板的显式类型参数决定了返回的 pair 对象的类型。可以把文字字符串作为第一个参数，然后通过隐式转换创建键需要的字符串对象。可以省略 make_pair&lt;&gt;() 的模板类型参数，让编译器去推断它们。假设像下面这样声明：<br />
+<pre class="cpp">
+auto pr = std::make_pair (&quot;Fred&quot;,22) ; // pair&lt;const char*, int&gt;</pre>
+这里会返回和所要求类型不同的 pair 对象。当允许编译器推断模板参数类型时，make_pair() 的参数可以准确地确定模板参数的类型。第一个参数是一个 const char* 类型的字符串，第二个参数是 int 类型。尽管已经说明了元素的类型，但在这种情况下，并没有多大的用处，因为在插入一个新元素时，pair 对象可以被隐式转换为容器所需类型。当 make_pair() 的参数的类型不能隐式转换成容器的键和对象的类型时，就需要注意了。<br />
+<br />
+成员函数 insert() 会返回一个 pair&lt;iterator,bool&gt; 对象。对象的成员 first 是一个迭代器，它要么指向插入元素，要么指向阻止插入的元素。如果 map 中已经保存了一个和这个键相同的对象，就会出现后面这种情况。这个对象的成员变量 second (布尔型)是返回对象，如果插入成功，返回值为 true，否则为 false。<br />
+<br />
+输出语句像我们看到的那样，访问插入 pair 的成员变量 first 的表达式是 ret_pr.first-&gt;first。ret_pr 的成员变量 first 是一个指向 pair 对象的迭代器，所以可以使用-&gt;操作符来访问它的成员变量 first。输出展示了插入的元素。可以通过下面这个循环进行验证：<br />
+<pre class="cpp">
+for (const auto&amp; p : people)
+    std::cout &lt;&lt; std::setw(10) &lt;&lt; std::left &lt;&lt; p.first &lt;&lt; &quot; &quot;&lt;&lt; p.second &lt;&lt;&quot;\n&quot;;</pre>
+循环变量 p 通过引用依次访问 map 容器 people 中的每个元素。输出如下：<br />
+<p class="info-box">
+	Ann 25<br />
+	Bill 46<br />
+	Fred 22<br />
+	Jack 32<br />
+	Jill 32</p>
+元素是以键的升序排列的，因为 map 中默认使用 less&lt;string&gt; 函数对象对它们进行排序。<br />
+<br />
+通过执行下面这两条语句，可以看出元素插入后的效果：<br />
+<pre class="cpp">
+ret_pr = people.insert(std::make_pair(&quot;Bill&quot;, 48));
+std:: cout &lt;&lt; ret_pr.first-&gt;first &lt;&lt;&quot; &quot;&lt;&lt;ret_pr.first-&gt;second&lt;&lt; &quot; &quot;&lt;&lt;std::boolalpha&lt;&lt;ret_pr.second &lt;&lt; &quot;\n&quot;; // Bill 46 false</pre>
+程序会输出如注释所示的内容。insert() 返回了一个 pair 对象 ret_pr，它的成员变量 first 指向 map 中已有的和键匹配的元素，成员变量 second 为 false，表明元素没有插入成功。<br />
+<br />
+当元素已经存在时，如果想将键值&ldquo;Bill&rdquo;对应的年龄值改为 48，可以像下面这样使用 insert() 返回的 pair 对象来做到这一点：<br />
+<pre class="cpp">
+if(!ret_pr.second) // If the element is there change the age
+    ret_pr.first&mdash;&gt;second = 48;</pre>
+当键已经存在于 map 容器中时，ret_pr 的成员变量 second为false，所以这段代码会将 map 中这个元素的成员变量 second 的值设为 48。<br />
+<br />
+可以用 pair 构造函数生成的对象作为 insert() 的参数：<br />
+<pre class="cpp">
+ret_pr = people.insert(std::pair&lt;const std::string, size_t&gt; {&quot;Bill&quot;, 48});</pre>
+这里会调用一个具有右值引用参数的 insert() 版本，所以假如元素不在容器中，那么它会被移到容器中。<br />
+<br />
+也可以提供一个提示符来指出元素插入的位置。提示符是迭代器的形式，它指向容器中的一个现有元素，通常从提示符指示的位置开始查找新元素的插入位置。好的提示符可以提高插入操作的速度，反之亦然。例如：<br />
+<pre class="cpp">
+auto ret_pr = people.insert(std::make_pair(&quot;Jim&quot;, 48));
+people.insert (ret_pr.first, std::make_pair (&quot;Ian&quot;, 38)）；</pre>
+第一条语句插入了一个元素，并像前面那样返回了一个对象。pair 对象的成员变量 first 是一个指向被插入的元素或容器中与插入元素有相同键的元素的迭代器。<br />
+<br />
+下一个 insert() 函数的第一个参数和上面的提示符有关，所以这里就是插入元素的地方。insert() 的第二个参数指定的新元素会被插入到提示符的前面，并尽可能地靠近它。如果提示符不能以这种方式使用，那么将忽略它。同样地，如果被插入的元素已经在 map 中，会导致元素插入失败。带提示符的 insert() 调用会返回一个指向被插入元素或容器中阻止此插入操作的元素的迭代器，因此可以使用返回值来确定插入是否成功。当确定元素不存在时，可以只提供一个插入符，这是一个好的想法。如果不那么确定，而且仍然想使用插入符，map 中的 count() 函数对我们有一些帮助。它会返回 map 中指定键对应元素的数目，这个数目可能是 0 或 1。<br />
+<br />
+因此代码可以这样写：<br />
+<pre class="cpp">
+if (!people.count(&quot;Ian&quot;))
+    people.insert (ret_pr.first, std::make_pair (&quot;Ian&quot;, 38));</pre>
+只有当 count() 函数返回 0 时，insert() 才会被调用，这说明&ldquo;Ian&rdquo;键不在 map 中。当然，在不用提示插入元素时，需要做一次这样的检查，但 insert() 的返回值不管怎样都能告诉我们插入结果。<br />
+<br />
+也可以将外部源中的一段元素插入 map 中，这些元素不必来自另一个 map 容器，但必须和被插入容器中的元素是同类型。这里有一些示例：<br />
+<pre class="cpp">
+std::map&lt;std::string, size_t&gt; crowd {{&quot;May&quot;, 55}, {&quot;Pat&quot;,66}, {&quot;Al&quot;, 22}, {&quot;Ben&quot;, 44}};
+auto iter = std::begin(people);
+std::advance(iter, 4);  // begin iterator+ 4
+crowd.insert(++std::begin(people),iter); // Insert 2nd, 3rd, and 4th elements from people</pre>
+这里生成了一个新的 map 容器 crowd，它有 4 个初始元素。iter 被初始化为 people 的开始迭代器。map 容器的迭代器是双向的，这样就可以对它们进行自增或自减，但是不能加上或减去一个值。这里使用了一个在前面章节中用过的 advance() 函数模板的实例来对 iter 加 4，所以它将会指向第 5 个元素，它在下一行被当作 crowd 的成员函数 insert() 的参数，用来作为指定元素段的结束迭代器。map 容器 people 的开始迭代器加 1，然后用它作为插入元素段的开始迭代器，所以会从 crowd 的第 2 个元素开始插入 3 个元素。<br />
+<br />
+下面是一个接受初始化列表作为参数的 insert() 版本：<br />
+<pre class="cpp">
+crowd.insert({{&quot;Bert&quot;, 44}, {&quot;Ellen&rdquo;, 99}});</pre>
+这里会将初始化列表中的两个元素插入到 map 容器 crowd 中。参数表达式生成的 initializer_list&lt;&gt; 对象是 initializer_list&lt;const string，size_t&gt; 类型，因为编译器知道这时 insert() 函数的参数是这种类型。当然，也可以单独创建一个初始化列表，然后将它作为参数传递给 insert() 函数：<br />
+<pre class="cpp">
+std::initializer_list&lt;std::pair&lt;const std:: string, size_t&gt;&gt;init {{&quot;Bert&quot;, 44}, {&quot;Ellen&quot;, 99}};
+crowd.insert(init);</pre>
+initializer-list 模板的第一个类型参数必须为 const 类型。initializer_list &lt;string,size_t&gt; 无法隐式转换为 initializer_list&lt;const string, size_t&gt;，所以前者类型的对象不能作为 insert() 函数的参数。<br />
+<br />
+下面你会看到这些操作的一个完整示例。此处会定义一个有点不同的对象。Name 类型代表人名，这个类定义的头文件的内容如下：
+<pre class="cpp">
+// Defines a person&#39;s name
+#ifndef NAME_H
+#define NAME_H
+#include &lt;string&gt;                                // For string class
+#include &lt;ostream&gt;                               // For output streams
+#include &lt;istream&gt;                               // For input streams
+
+class Name
+{
+private:
+    std::string first {};
+    std::string second {};
+
+public:
+    Name(const std::string&amp; name1, const std::string&amp; name2) : first (name1), second (name2) {}
+    Name() = default;
+    // Less-than operator
+    bool operator&lt;(const Name&amp; name) const
+    {
+        return second &lt; name.second || (second == name.second &amp;&amp; first &lt; name.first);
+    }
+    friend std::istream&amp; operator&gt;&gt;(std::istream&amp; in, Name&amp; name);
+    friend std::ostream&amp; operator&lt;&lt;(std::ostream&amp; out, const Name&amp; name);
+};
+
+// Extraction operator overload
+inline std::istream&amp; operator&gt;&gt;(std::istream&amp; in, Name&amp; name)
+{
+    in &gt;&gt; name.first &gt;&gt; name.second;
+    return in;
+}
+
+// Insertion operator overload
+inline std::ostream&amp; operator&lt;&lt;(std::ostream&amp; out, const Name&amp; name)
+{
+    out &lt;&lt; name.first + &quot; &quot; + name.second;
+    return out;
+}
+
+#endif</pre>
+这个类非常简单，只有两个 string 类型的私有成员变量 first 和 second。这个构造函数可以接受 string 类型的参数或字符串常量参数。为了可以用这种对象作为 map 容器的键，必须为这个类定义 operator&lt;()。为了便于对象的输入输出，也需要为流定义插入和提取操作。<br />
+<br />
+map 容器中的元素是 std::pair&lt;const Name，size_t&gt; 类型，我们可以用下面定义的别名来简化代码：<br />
+<pre class="cpp">
+u<a href='https://m.biancheng.net/ref/sin.html' target='_blank'>sin</a>g Entry = std::pair&lt;const Name, size_t&gt;;</pre>
+当容器是 map&lt;name;site_t&gt; 类型时，我们只能用 Entry 作为容器元素的类型。为了便于 map 元素的输出，我们可以把别名放到一个函数的定义中：<br />
+<pre class="cpp">
+Entry get_entry()
+{
+    std::cout &lt;&lt; &quot;Enter first and second names followed by the age: &quot;;
+    Name name {};
+    size_t age {};
+    std::cin &gt;&gt; name &gt;&gt; age;
+    return make_pair(name, age);
+}</pre>
+从 cin 先后读入了一个 Name 对象和一个年龄值，并用它们生成了一个 pair 对象。从输入中读取 name 激发了定义在 Name.h 中的 istream 对象的重载函数 operator&gt;&gt;()，同样也支持流对象对 Name 对象的读入。<br />
+<br />
+可以输出容器元素的辅助函数也是很有用的：<br />
+<pre class="cpp">
+void list_entries(const map&lt;Name, size_t&gt;&amp; people)
+{
+    for(auto&amp; entry : people)
+    {
+        std::cout &lt;&lt; std::left &lt;&lt; std::setw(30) &lt;&lt; entry.first&lt;&lt; std::right &lt;&lt; std::setw(4) &lt;&lt; entry.second &lt;&lt; std::endl;
+    }
+}</pre>
+这里只用了基于范围的 <a href='172_2.html' target='_blank'>for 循环</a>来对元素进行遍历。循环变量 entry 依次引用 map 的每个元素。每一个 map 元素都是一个 pair 对象，它的成员变量 first 是 Name 类型的对象，成员变量 second 是 size_t 类型的值。<br />
+<br />
+包含 main() 函数的源文件中的内容如下：
+<pre class="cpp">
+// Storing names and ages
+#include &lt;iostream&gt;                              // For s<a href='https://m.biancheng.net/ref/tan.html' target='_blank'>tan</a>dard streams
+#include &lt;iomanip&gt;                               // For stream manipulators
+#include &lt;string&gt;                                // For string class
+#include &lt;map&gt;                                   // For map container class
+#include &lt;utility&gt;                               // For pair&lt;&gt; &amp; make_pair&lt;&gt;()
+#include &lt;cctype&gt;                                // For <a href='https://m.biancheng.net/ref/toupper.html' target='_blank'>toupper</a>()
+#include &quot;Name.h&quot;
+using std::string;
+using Entry = std::pair&lt;const Name, size_t&gt;;
+using std::make_pair;
+using std::map;
+
+// Create a map entry from input
+Entry get_entry()
+{
+    std::cout &lt;&lt; &quot;Enter first and second names followed by the age: &quot;;
+    Name name {};
+    size_t age {};
+    std::cin &gt;&gt; name &gt;&gt; age;
+    return make_pair(name, age);
+}
+
+// Output the elements in a map
+void list_entries(const map&lt;Name, size_t&gt;&amp; people)
+{
+    for(auto&amp; entry : people)
+    {
+        std::cout &lt;&lt; std::left &lt;&lt; std::setw(30) &lt;&lt; entry.first
+              &lt;&lt; std::right &lt;&lt; std::setw(4) &lt;&lt; entry.second &lt;&lt; std::endl;
+    }
+}
+
+
+int main()
+{
+    map&lt;Name, size_t&gt; people {{{&quot;Ann&quot;, &quot;Dante&quot;}, 25}, {{&quot;Bill&quot;, &quot;Hook&quot;}, 46}, {{&quot;Jim&quot;, &quot;Jams&quot;}, 32}, {{&quot;Mark&quot;, &quot;Time&quot;}, 32}};
+
+    std::cout &lt;&lt; &quot;\nThe initial contents of the map is:\n&quot;;
+    list_entries(people);
+
+    char answer {&#39;Y&#39;};
+    std::cout &lt;&lt; &quot;\nEnter a Name and age entry.\n&quot;;
+    while(std::toupper(answer) == &#39;Y&#39;)
+    {
+        Entry entry {get_entry()};
+        auto pr = people.insert(entry);
+        if(!pr.second)
+        { // It&#39;s there already - check whether we should update
+            std::cout &lt;&lt; &quot;Key \&quot;&quot; &lt;&lt; pr.first-&gt;first &lt;&lt; &quot;\&quot; already present. Do you want to update the age (Y or N)? &quot;;
+            std::cin &gt;&gt; answer;
+            if(std::toupper(answer) == &#39;Y&#39;)
+                pr.first-&gt;second = entry.second;
+        }
+        // Check whether there are more to be entered
+        std::cout &lt;&lt; &quot;Do you want to enter another entry(Y or N)? &quot;;
+        std::cin &gt;&gt; answer;
+    }
+
+    std::cout &lt;&lt; &quot;\nThe map now contains the following entries:\n&quot;;
+    list_entries(people);
+}</pre>
+定义一些额外的别名可以减少代码冗余。可以用 using::namespace 来完全消除对 std 名称限定的需要，但不赞成这么做，因为 std 中的所有命名都被有效导入到当前作用域内，这违背了定义命名空间的初衷。<br />
+<br />
+map 容器的定义中有一些初始值，它们是初始化列表中的元素。这里只是为了说明如何在这种情况下使用嵌套花括号。在定义元素的每个初始化列表中，花括号中的 Name 对象都是初始化列表，每个初始化元素的花括号中都是一个 Name 对象和一个年龄值。最外面的一对花括号包括了所有元素的初始值。<br />
+<br />
+辅助函数 list_entries() 用来显示容器的初始状态。从 for 循环中读入了更多的 entry 对象。循环由 answer 的值控制，如果一开始它的值就是 &#39;Y&#39;，那么最少执行一次循环，最少从键盘输入一个元素。entry 对象的类型是 Entry 它也是容器元素的类型。辅助函数 get_entry() 的返回对象被作为 entry 的初始值。然后将它作为 insert() 的参数插入到容器中。这个函数返回的 pair 对象有一个成员变量 first,它指向容器中和 entry 的键匹配的元素。如果在插入之前，容器中就存在这个元素，那么它指向的是原始容器中的元素。如果键已经存在于容器中，插入不会成功，并且 pr 的成员变量 second 为 false。<br />
+<br />
+pr.first 是容器中元素的一个迭代器，因此 pr.first-&gt;second 可以访问与键关联的对象，如果用户确认需要更新，pr.first-&gt;second 的值会变为 entry.second。循环中的最后一个操作可以决定是否输入更多的 entry。在不需要输入更多的 entry 时，循环结束，用 list_entries() 函数输出这个容器最终的内容。<br />
+<br />
+下面是这个示例的一些输出结果:
+<p class="info-box">
+	The initial contents of the map is:<br />
+	Ann Dante&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 25<br />
+	Bill Hook&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 46<br />
+	Jim Jams&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 32<br />
+	Mark Time&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 32<br />
+	<br />
+	Enter a Name and age entry.<br />
+	Enter first and second names followed by the age: Emma Nate 42<br />
+	Do you want to enter another entry(Y or N)? y<br />
+	Enter first and second names followed by the age: Emma Nate 43<br />
+	Key &quot;Emma Nate&quot; already present. Do you want to update the age (Y or N)? Y<br />
+	Do you want to enter another entry(Y or N)? y<br />
+	Enter first and second names followed by the age: Eamonn Target 56<br />
+	Do you want to enter another entry(Y or N)? n<br />
+	<br />
+	The map now contains the following entries:<br />
+	Ann Dante&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 25<br />
+	Bill Hook&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 46<br />
+	Jim Jams&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 32<br />
+	Emma Nate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 43<br />
+	Eamonn Target&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 56<br />
+	Mark Time&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 32</p>
+这些元素是以键的升序排列的，因为容器中的元素是使用 less&lt;Name&gt; 进行排序的。Name::operator&lt;() 先比较姓，在姓相同时才比较名。这导致返回的姓名是正常的顺序。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="335_3.html" title="数组指针和指针数组的区别，C语言数组指针和指针数组区别详解" target="_blank">数组指针和指针数组的区别，C语言数组指针和指针数组区别详解</a></li>
+<li><a href="7158_2.html" title="C++ auto和decltype的区别" target="_blank">C++ auto和decltype的区别</a></li>
+<li><a href="7308_3.html" title="Django auth应用模块" target="_blank">Django auth应用模块</a></li>
+<li><a href="7823_2.html" title="MySQL游标（Cursor）的定义及使用" target="_blank">MySQL游标（Cursor）的定义及使用</a></li>
+<li><a href="../jstl/sql-param_2.html" title="&lt;sql:param&gt;标签" target="_blank">&lt;sql:param&gt;标签</a></li>
+<li><a href="../pandas/file-operate_2.html" title="Python Pandas读取文件" target="_blank">Python Pandas读取文件</a></li>
+<li><a href="b0wgkzj_2.html" title="《Web前端开发技术实验与实践——HTML、CSS、JavaScript》PDF下载（高清完整版）" target="_blank">《Web前端开发技术实验与实践——HTML、CSS、JavaScript》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 496;
+window.arcId = "06ccavBK4q5uqvitvZI39mryw2b7lqDswmftTK7IIFWhVGwwAiXdAeCpXQ";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Django Form基于Model定义表单</title>
+<meta name="description" content="在本章中我们讲解最后一个知识点，即基于 Model 模型类定义数据表，这种业务场景也是我们在实际的开发工作中经常遇到的，比如我们要添加一本书籍，这个页面中的表单字段就需要与" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../django/django_2.html">Django</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Django Form基于Model定义表单</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在本章中我们讲解最后一个知识点，即基于 Model 模型类定义数据表，这种业务场景也是我们在实际的开发工作中经常遇到的，比如我们要添加一本书籍，这个页面中的表单字段就需要与 Book 的 Model 定义相对应。利用 Form 对象并不难实现，只需要将 Model 中定义的字段对应成 Form 的对象中的表单字段就可以了，但是这时候也存在一个问题，就是如果这种需要对应的 Model 较多的时候，且 Model 中定义的字段也较多，那么重复实现这种表单的过程就会变成机械式的重复。
+<h2>
+	1. 初识表单系统ModelForm</h2>
+Django 的表单系统充分考虑到这个问题，并给开发者提供了 ModelForm，使用它就可以实现基于 Model 的定义自动生成表单，这就大大简化了根据 Model 生成表单的过程，很好解决了我们遇到的问题，下面就让我们一起来看一下，它是如何实现这个过程的吧。
+<h4>
+	1) 实现一个简单的ModelForm</h4>
+首先，我们来实现一个简单的 ModelForm 主要看它的使用方法以及在使用它的时候有哪些需要我们注意的事项。下面，编写如下代码：
+<pre class="python">
+class BookModelForm(forms.ModelForm):
+    class Meta:
+        model=Book
+        labels={&#39;price&#39;:&#39;零售价格&#39;}
+        exclude=(&#39;retail_price&#39;)</pre>
+ModelForm 需要使用 Meta 来设置必要的元数据信息，这样 Model 的元数据项不谋而合，我们在 Meta 中设置三个选项：model 指定了需要生成表单的模型对象；labels 为字典类型，用于定义表单字段的名称，当然这里大家需要注意一下，表单的名称首先默认使用 Model字段设置的 verbose_name，但是若 Model 字段没有设置该字段选项，则就可以使用 lables 设置的字段名；exclude 标识不需要在表单中显示的字段，这和 Model 的 Meta 也一样。<br />
+<br />
+ModelForm 的使用方法与 Form 类似，同样也可以使用 is_valid 方法来校验字段值的合法性和通过 cleaned_data 属性获取清理后的字段值，另外， ModelForm 也会校验模型字段中设置的限制条件，比如在 Model 模型的字段中添加了 unique 选项，那么 is_valid 则会查询数据库确认是否存在重复数据。
+<h2>
+	2. 使用ModeForm定义表单</h2>
+将表单应用到视图函数中才是有意义的，下面我们就实现用户添加的功能通过 ModelForm 来实现，首先在 index 目录下创建模板文件 useradd_model_form.html 文件，编写代码如下所示：
+<pre class="html">
+ 
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;用户添加&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;form action=&quot;&quot; method=&quot;post&quot;&gt;
+    {% csrf_token %}
+    &lt;table&gt;
+        {{ form }}
+    &lt;/table&gt;
+    &lt;input type=&quot;submit&quot; value=&quot;提交&quot;&gt; 
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+上面代码有两个需要注意的地方：由于指定了 POST 请求类型，需要 CSRF 保护机制，所以添加了 {%csrf_token%} 模板标签；action 没有设定 URL 的意思是将表单提交到与当前页面相同的 URL。接下来实现 UserModelForm 并在视图函数中应用它，代码如所示：
+<pre class="python">
+#forms.py编写
+class UserModelForm(forms.ModelForm):
+    class Meta:
+        model=UserInfo
+        fields=&quot;__all__&quot;
+        widgets={&#39;password&#39;:widgets.PasswordInput()}
+#views.py编写
+def user_add_form(request):
+    if request.method==&quot;Post&quot;:
+        user=UserModelForm(request.Post)
+        if user.is_valid():
+            user=UserInfo.objects.create(username=user.cleaned_data[&#39;username&#39;],
+                                         password=user.cleaned_data[&quot;password&quot;],
+                                         gender=user.cleaned_data[&#39;gender&#39;])
+            #user_add.html只需要接收变量{{ user }}即可
+            return render(request,&#39;index/user_add.html&#39;,locals())
+        else:
+            return render(request,&#39;index/useradd_model_form.html&#39;,context={&#39;form&#39;:user})
+    else:
+        return render(request,&#39;index/useradd_model_form.html&#39;,{&#39;form&#39;:UserModelForm()})
+#urls.py编写
+urlpatterns=[path(&#39;user_add_form/&#39;,views.user_add_form)]</pre>
+最后访问 127.0.01:8000/index/user_add_form/ 可得如下页面：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Django ModelForm定义表单" src="../uploads/allimg/200630/9-200630111633149_2.png" /><br />
+	图1：Django ModelForm定义表单<br />
+	&nbsp;</div>
+视图函数 user_add_form 逻辑也不是很复杂，下面我们简单总结一下：首选如果是 POST 请求，且表单字段值合法，则创建 user 对象实例，然后是 POST 请求，但表单字段值不合法，则返回表单页面同时显示错误提示信息，最后若不是 POST 请求，显示表单页面。<br />
+<br />
+通过上面的讲解，我们使用 ModelForm 定义了好一个基本的用户注册表单，并把它应用到了视图函数中，这也是通过它实现定义表单的基本流程。当然关于 ModelForm 还有一些基本知识没有介绍，比如说它的 Meta 选项，还有它的 save 方法，在一节《<a href="7991_2.html" target="_blank">Django ModelForm用法详解</a>》我们会作出讲解。&nbsp;</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="165_2.html" title="C++静态成员变量和静态成员函数详解" target="_blank">C++静态成员变量和静态成员函数详解</a></li>
+<li><a href="540_2.html" title="C语言分块查找算法，索引顺序查找算法" target="_blank">C语言分块查找算法，索引顺序查找算法</a></li>
+<li><a href="5909_2.html" title="C语言推箱子小游戏演示和说明" target="_blank">C语言推箱子小游戏演示和说明</a></li>
+<li><a href="8077_2.html" title="MinGW下载和安装教程" target="_blank">MinGW下载和安装教程</a></li>
+<li><a href="8640_2.html" title="计算机二级证书到底有没有用？需要报考吗？" target="_blank">计算机二级证书到底有没有用？需要报考吗？</a></li>
+<li><a href="ennd56_2.html" title="大白话聊栈溢出（stack overflow）" target="_blank">大白话聊栈溢出（stack overflow）</a></li>
+<li><a href="1br5fzg_2.html" title="Linux du命令：查看目录或文件占用的硬盘空间" target="_blank">Linux du命令：查看目录或文件占用的硬盘空间</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7985;
+window.arcId = "a6beAeRbQh31+LSa84XoRm4Apq06lRrS5OPoS2R+0Ep4WQuDAiohEz+Luik";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

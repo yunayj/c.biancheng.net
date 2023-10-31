@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Django查询数据库操作详解（一）</title>
+<meta name="description" content="在 web 开发过程中，与 Django 与后台数据库的交互是必不可少的，也是实现业务逻辑所需数据的重要方式，所以 Django 的表查询操作就显的尤为重要，在本节我们将全面阐述 Django 的表查询" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../django/django.html">Django</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Django查询数据库操作详解（一）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在 web 开发过程中，Django 与后台数据库的交互是必不可少的一项，也是实现业务逻辑所需数据的重要方式，所以 Django 的表查询操作就显的尤为重要。在本节我们将全面阐述 Django 的表查询 API。本节知识属于重中之重，希望各位小伙伴能够尽可能的掌握这些 API，懂得活学活用，熟悉每个 API 的使用场景，这将对后续学习 Django 框架有很大的帮助。<br />
+<h2>
+1. 返回单条查询结果</h2>
+我们知道 Manager 查询管理器提供了查询 Model 实例的接口，这些接口通常会返回三种类型：单实例、RawQuerySet、QuerySet。通常的实际的开发工作中，我们会根据给定的条件查询数据库记录。 Django 为实现返回<span style="color:#ff0000;">单条</span>查询数据提供了两个查询方法 get 和 get_or_create。<br />
+<br />
+get_or_create方法和 get 区别在于，当被查询<span style="color:#ff0000;">数据不存在</span>的时候，get_or_create 方法会创建新的实例对象，而 get 方法会抛出<code>DoesNotExist</code>异常。而当这两个方法的查询条件都能够<span style="color:#ff0000;">匹配多条数据记录</span>时，都会抛出<code>MultipleObjectsReturned</code>异常。<br />
+<p class="tip-box">
+提示：这两个方法都只能返回<span style="color:#ff0000;">一条</span>数据。</p>
+<h4>
+1) 使用get查询</h4>
+因为 get 查询可能会抛出异常，所以若在项目使用 get 查询的时，经常会与 try..except 异常处理语句一起使用。示例如下：
+<pre class="python">
+#使用 Django shell
+Author.objects.create(name=&quot;Tom&quot;,email=&quot;456789@163.com&quot;) #添加 Tom 此时数据表有两个Tom
+Author.objects.get(name=&quot;Tom&quot;) #查询 name=&quot;Tom&quot;,就会报错
+#报错信息如下
+MultipleObjectsReturned: get() returned more than one Author -- it returned 2!
+#查询不存在数据
+Author.objects.get(id=4)
+#报错信息如下：
+DoesNotExist：Traceback (most recent call last)</pre>
+<h4>
+2) 使用get_or_create查询</h4>
+该方法的查询过程与 get 类似，都需要传递查询参数，但是不 get 不同的是，它返回值是一个 tuple 对象，通过举例子来说明。
+<pre class="python">
+Author.objects.get_or_create(name=&quot;Xiaolong&quot;)#先查询是否存在若不存在则新建该实例对象
+(&lt;Author: 作家：Xiaolong&gt;, True) #返回值是一个元组有两个元素</pre>
+元组中的第一个元素代表实例对象，第二个元素是布尔值，标识返回的实例对象是否是新创建的，其中 True 代表新建实例对象，False 代表原有实例对象。<br />
+<p class="tip-box">
+查询结果为单实例的类似方法还有 first、last 等方法，用法与语法格式别无二致，在这里就不加赘述了。</p>
+<h2>
+2. 原生数据库操作方法</h2>
+所谓原生数据库操作即使用 SQL 语句来进行数据库的相关的查询操作。那你可能会问，Django 已经有 ORM 了，为什么还会提供原生语句的操作呢？其实这个问题也很容易想明白，ORM 虽然为我解决了大部分的有业务场景，但是对于复杂的查询来说，ORM 还是有点力不从心，有时无法满足开发者的要求或者书写起来比相较 SQL 语句来说很麻烦，那么在这个时候使用原生 SQL 语解决问题就是不错的选择。<br />
+<br />
+在 Django 中，可以使用模型管理器（Marager）的 raw 方法来执行 select 语句进行数据的查询。raw 方法的返回值是一个&nbsp;RawQuerySet 对象，该对象支持索引和切片，同样也可以对它进行迭代得到 Model 实例对象。但是，与 QuerySet 不同的是，它不能执行 fillter、exclude 等方法。下面通过举例说明 raw 方法如何使用。
+<h4>
+1) raw方法语法格式</h4>
+使用 raw 方法的语法格式如下所示：<br />
+<p class="info-box">
+MyModel.objects.raw(&#39;sql语句&#39;)</p>
+<h4>
+2) raw方法查询实例</h4>
+添加如下代码在index\views.py 中：
+<pre class="python">
+def BookName(request):
+    books=Book.objects.raw(&quot;select * from index_book&quot;) #书写sql语句
+    return render(request,&quot;index/allbook.html&quot;,locals())</pre>
+<br />
+在 index\templates\index 中创建 allbook.html，代码如下:
+<pre class="html">
+{% for book in books %}
+&lt;p&gt;{{book.title}}&lt;/p&gt;
+{% endfor %}
+</pre>
+最后配置路由，通过访问 127.0.0.1:8000/index/allbook/，可以得到所有书籍的 title。
+<h4>
+3) raw方法与SQL注入</h4>
+在很多场景下，我们需要使用参数化查询，比如根据传递的 title 查询 book 对象，在这个时候我们不能手动填充 SQL 字符串，这会带来 SQL 注入的风险，raw 方法充分考虑到这一点，提供了 params 参数来解决这个问题。对于参数化查询的 SQL 来说，只需要在语句中加上占位符号（%s）即可。如下所示：
+<pre class="python">
+authors=Author.objects.raw(&quot;select id from index_author where name= %s&quot;,[&#39;Tom&#39;])
+    ...: for author in authors:
+    ...:     print(&#39;%s:%s&#39;%(author.id,author.name))
+2:Tom #返回结果</pre>
+raw 方法可以接受一个列表或字典类型的参数，并将 SQL 语句中的占位符替换，最终完成查询。
+<h4>
+4) 游标cursor执行SQL语句</h4>
+那么执行<span style="color:#ff0000;">非查询语句</span>呢？如何使用原生的 SQL 语句呢？ Django 提供了游标 cursor 对数据库进行<span style="color:#ff0000;">增删改</span>操作，在 Django 中执行非查询语句<span style="color:#ff0000;">必须使用游标</span>进行操作。游标 cursor 定义在&nbsp;django.db.connection 包中，使用前用下面的方式进行导入：<br />
+<p class="info-box">
+from django.db import connection</p>
+用创建 cursor 类的构造函数创建 cursor 对象，再使用 cursor 对象执行 SQL 语句。为确保能够在出现异常时释放 cursor 游标，通常使用<span style="color:#ff0000;"> with 语句</span>进行创建操，如下所示：
+<pre class="python">
+from django.db import connection
+with connection.cursor() as cur:
+    cur.execute(&#39;执行SQL语句&#39;)</pre>
+使用示例如下：
+<pre class="python">
+from django.db import connection
+with connection.cursor() as cur:
+​#调用游标对象的execute方法，更新author的名字
+cur.execute(&#39;update index_author set name=&quot;Jack&quot; where id=3;&#39;)
+with connection.cursor() as cur: 
+# 删除id为3的一条author记录 
+cur.execute(&#39;delete from index_author where id=3;&#39;)</pre>
+虽然 Django 提供了 raw SQL的查询方法以及 cursor 游标对象的使用，但是它们很少的被使用，应为这些方法都需要考虑不同数据库的不同特性。Django 官网建议我们尽量使用 ORM 模块来完成相关操作。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1863.html" title="Qt QTableWidget及基本操作（详解版）" target="_blank">Qt QTableWidget及基本操作（详解版）</a></li>
+<li><a href="4703.html" title="Java isEmpty()方法：判断字符串是否为空" target="_blank">Java isEmpty()方法：判断字符串是否为空</a></li>
+<li><a href="6847.html" title="Java Set集合：HashSet和TreeSet类" target="_blank">Java Set集合：HashSet和TreeSet类</a></li>
+<li><a href="vip_7323.html" title="Go语言为任意类型添加方法" target="_blank">Go语言为任意类型添加方法</a></li>
+<li><a href="8640.html" title="计算机二级证书到底有没有用？需要报考吗？" target="_blank">计算机二级证书到底有没有用？需要报考吗？</a></li>
+<li><a href="9354.html" title="JS Number（数字）对象" target="_blank">JS Number（数字）对象</a></li>
+<li><a href="k0wdl03.html" title="Vue computed()函数的用法" target="_blank">Vue computed()函数的用法</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7641;
+window.arcId = "c902Q0ZnlSan5O9NSzQ0UTBp7zara4u5kvIEcGiKD2K6r5lHG21ff4j1Azg";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

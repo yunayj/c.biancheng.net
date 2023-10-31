@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Spring MVC拦截器（Interceptor）</title>
+<meta name="description" content="在系统中，经常需要在处理用户请求之前和之后执行一些行为，例如检测用户的权限，或者将请求的信息记录到日志中，即平时所说的权限检测及日志记录。当然不仅仅这些，所以需要" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="../view/niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Spring MVC拦截器（Interceptor）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在系统中，经常需要在处理用户请求之前和之后执行一些行为，例如检测用户的权限，或者将请求的信息记录到日志中，即平时所说的&ldquo;权限检测&rdquo;及&ldquo;日志记录&rdquo;。当然不仅仅这些，所以需要一种机制，拦截用户的请求，在请求的前后添加处理逻辑。<br />
+<br />
+Spring MVC 提供了 Interceptor 拦截器机制，用于请求的预处理和后处理。<br />
+<br />
+在开发一个网站时可能有这样的需求：某些页面只希望几个特定的用户浏览。对于这样的访问权限控制，应该如何实现呢？拦截器就可以实现上述需求。在 Struts2 框架中，拦截器是其重要的组成部分，Spring MVC 框架也提供了拦截器功能。<br />
+<br />
+Spring MVC 的拦截器（Interceptor）与 Java Servlet 的过滤器（Filter）类似，它主要用于拦截用户的请求并做相应的处理，通常应用在权限验证、记录请求信息的日志、判断用户是否登录等功能上。<br />
+<h2>
+拦截器的定义</h2>
+在 Spring MVC 框架中定义一个拦截器需要对拦截器进行定义和配置，主要有以下 2 种方式。
+<ol>
+<li>
+通过实现 HandlerInterceptor 接口或继承 HandlerInterceptor 接口的实现类（例如 HandlerInterceptorAdapter）来定义；</li>
+<li>
+通过实现 WebRequestInterceptor 接口或继承 WebRequestInterceptor 接口的实现类来定义。</li>
+</ol>
+<br />
+本节以实现 HandlerInterceptor 接口的定义方式为例讲解自定义拦截器的使用方法。示例代码如下。
+<pre class="java">
+package net.biancheng.interceptor;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
+
+public class TestInterceptor implements HandlerInterceptor {
+    @Override
+    public void afterCompletion(HttpServletRequest request,
+            HttpServletResponse response, Object handler, Exception ex)
+            throws Exception {
+        System.out.println(&quot;afterCompletion方法在控制器的处理请求方法执行完成后执行，即视图渲染结束之后执行&quot;);
+
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request,
+            HttpServletResponse response, Object handler,
+            ModelAndView modelAndView) throws Exception {
+        System.out.println(&quot;postHandle方法在控制器的处理请求方法调用之后，解析视图之前执行&quot;);
+    }
+
+    @Override
+    public boolean preHandle(HttpServletRequest request,
+            HttpServletResponse response, Object handler) throws Exception {
+        System.out.println(&quot;preHandle方法在控制器的处理请求方法调用之前执行&quot;);
+        return false;
+    }
+}</pre>
+上述拦截器的定义中实现了 HandlerInterceptor 接口，并实现了接口中的 3 个方法，说明如下。<br />
+<ul>
+<li>
+preHandle( )：该方法在控制器的处理请求方法前执行，其返回值表示是否中断后续操作，返回 true 表示继续向下执行，返回 false 表示中断后续操作。</li>
+<li>
+postHandle( )：该方法在控制器的处理请求方法调用之后、解析视图之前执行，可以通过此方法对请求域中的模型和视图做进一步的修改。</li>
+<li>
+afterCompletion( )：该方法在控制器的处理请求方法执行完成后执行，即视图渲染结束后执行，可以通过此方法实现一些资源清理、记录日志信息等工作。</li>
+</ul>
+<h2>
+拦截器的配置</h2>
+让自定义的拦截器生效需要在 Spring MVC 的配置文件中进行配置，配置示例代码如下：
+<pre class="xml">
+&lt;!-- 配置拦截器 --&gt;
+&lt;mvc:interceptors&gt;
+    &lt;!-- 配置一个全局拦截器，拦截所有请求 --&gt;
+    &lt;bean class=&quot;net.biancheng.interceptor.TestInterceptor&quot; /&gt; 
+    &lt;mvc:interceptor&gt;
+        &lt;!-- 配置拦截器作用的路径 --&gt;
+        &lt;mvc:mapping path=&quot;/**&quot; /&gt;
+        &lt;!-- 配置不需要拦截作用的路径 --&gt;
+        &lt;mvc:exclude-mapping path=&quot;&quot; /&gt;
+        &lt;!-- 定义&lt;mvc:interceptor&gt;元素中，表示匹配指定路径的请求才进行拦截 --&gt;
+        &lt;bean class=&quot;net.biancheng.interceptor.Interceptor1&quot; /&gt;
+    &lt;/mvc:interceptor&gt;
+    &lt;mvc:interceptor&gt;
+        &lt;!-- 配置拦截器作用的路径 --&gt;
+        &lt;mvc:mapping path=&quot;/gotoTest&quot; /&gt;
+        &lt;!-- 定义在&lt;mvc:interceptor&gt;元素中，表示匹配指定路径的请求才进行拦截 --&gt;
+        &lt;bean class=&quot;net.biancheng.interceptor.Interceptor2&quot; /&gt;
+    &lt;/mvc:interceptor&gt;
+&lt;/mvc:interceptors&gt;</pre>
+在上述示例代码中，元素说明如下。
+<ul>
+<li>
+&lt;mvc:interceptors&gt;：该元素用于配置一组拦截器。</li>
+<li>
+&lt;bean&gt;：该元素是 &lt;mvc:interceptors&gt; 的子元素，用于定义全局拦截器，即拦截所有的请求。</li>
+<li>
+&lt;mvc:interceptor&gt;：该元素用于定义指定路径的拦截器。</li>
+<li>
+&lt;mvc:mapping&gt;：该元素是 &lt;mvc:interceptor&gt; 的子元素，用于配置拦截器作用的路径，该路径在其属性 path 中定义。path 的属性值为<code>/**</code>时，表示拦截所有路径，值为<code>/gotoTest</code>时，表示拦截所有以<code>/gotoTest</code>结尾的路径。如果在请求路径中包含不需要拦截的内容，可以通过 &lt;mvc:exclude-mapping&gt; 子元素进行配置。</li>
+</ul>
+<br />
+需要注意的是，&lt;mvc:interceptor&gt; 元素的子元素必须按照 &lt;mvc:mapping.../&gt;、&lt;mvc:exclude-mapping.../&gt;、&lt;bean.../&gt; 的顺序配置。
+<h2>
+示例</h2>
+下面通过拦截器来完成一个用户登录权限验证的 Web 应用，具体要求如下：只有成功登录的用户才能访问系统的主页面 main.jsp，如果没有成功登录而直接访问主页面，则拦截器将请求拦截，并转发到登录页面 login.jsp。当成功登录的用户在系统主页面中单击&ldquo;退出&rdquo;链接时回到登录页面。<br />
+<br />
+本节示例基于《<a href="controller-requestmapping.html" target="_blank">@Controller和@RequestMapping注解</a>》一节的 springmvcDemo2 应用实现，具体实现步骤如下。
+<h4>
+1）创建 POJO 类</h4>
+在 springmvcDemo2 的 net.biancheng.pojo 包中创建 User 类，代码如下。
+<pre class="java">
+package net.biancheng.po;
+
+public class User {
+    private String name;
+    private String pwd;
+    /**省略setter和getter方法*/
+}</pre>
+<h4>
+2）创建控制器类</h4>
+在 springmvcDemo2&nbsp;的 net.biancheng.controller 包中创建控制器类 UserController，代码如下。
+<pre class="java">
+package net.biancheng.controller;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import net.biancheng.po.User;
+
+@Controller
+public class UserController {
+    /**
+     * 登录页面初始化
+     */
+    @RequestMapping(&quot;/toLogin&quot;)
+    public String initLogin() {
+        return &quot;login&quot;;
+    }
+
+    /**
+     * 处理登录功能
+     */
+    @RequestMapping(&quot;/login&quot;)
+    public String login(User user, Model model, HttpSession session) {
+        System.out.println(user.getName());
+        if (&quot;bianchengbang&quot;.equals(user.getName()) &amp;&amp; &quot;123456&quot;.equals(user.getPwd())) {
+            // 登录成功，将用户信息保存到session对象中
+            session.setAttribute(&quot;user&quot;, user);
+            // 重定向到主页面的跳转方法
+            return &quot;redirect:main&quot;;
+        }
+        model.addAttribute(&quot;msg&quot;, &quot;用户名或密码错误，请重新登录！ &quot;);
+        return &quot;login&quot;;
+    }
+
+    /**
+     * 跳转到主页面
+     */
+    @RequestMapping(&quot;/main&quot;)
+    public String toMain() {
+        return &quot;main&quot;;
+    }
+
+    /**
+     * 退出登录
+     */
+    @RequestMapping(&quot;/logout&quot;)
+    public String logout(HttpSession session) {
+        // 清除 session
+        session.invalidate();
+        return &quot;login&quot;;
+    }
+}</pre>
+<h4>
+3）创建拦截器类</h4>
+在 springmvcDemo2&nbsp;的 net.biancheng.interceptor 包中创建拦截器类 LoginInterceptor，代码如下。
+<pre class="java">
+package net.biancheng.interceptor;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
+
+public class LoginInterceptor implements HandlerInterceptor {
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws Exception {
+        // 获取请求的URL
+        String url = request.getRequestURI();
+        // login.jsp或登录请求放行，不拦截
+        if (url.indexOf(&quot;/toLogin&quot;) &gt;= 0 || url.indexOf(&quot;/login&quot;) &gt;= 0) {
+            return true;
+        }
+        // 获取 session
+        HttpSession session = request.getSession();
+        Object obj = session.getAttribute(&quot;user&quot;);
+        if (obj != null)
+            return true;
+        // 没有登录且不是登录页面，转发到登录页面，并给出提示错误信息
+        request.setAttribute(&quot;msg&quot;, &quot;还没登录，请先登录！&quot;);
+        request.getRequestDispatcher(&quot;/WEB-INF/jsp/login.jsp&quot;).forward(request, response);
+        return false;
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, Exception arg3)
+            throws Exception {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, ModelAndView arg3)
+            throws Exception {
+        // TODO Auto-generated method stub
+    }
+}</pre>
+<h4>
+4）配置拦截器</h4>
+在 WEB-INF 目录下创建配置文件 springmvc-servlet.xml 和 web.xml。web.xml 的代码和 springmvcDemo2 一样，这里不再赘述。在 springmvc-servlet.xml 文件中配置拦截器 LoginInterceptor，代码如下。
+<pre class="xml">
+&lt;!-- 配置拦截器 --&gt;
+&lt;mvc:interceptors&gt;
+    &lt;mvc:interceptor&gt;
+        &lt;!-- 配置拦截器作用的路径 --&gt;
+        &lt;mvc:mapping path=&quot;/**&quot; /&gt;
+        &lt;bean class=&quot;net.biancheng.interceptor.LoginInterceptor&quot; /&gt;
+    &lt;/mvc:interceptor&gt;
+&lt;/mvc:interceptors&gt;</pre>
+<h4>
+5）创建视图 JSP 页面</h4>
+在 WEB-INF 目录下创建文件夹 jsp，并在该文件夹中创建 login.jsp 和 main.jsp。<br />
+<br />
+login.jsp 的代码如下：
+<pre class="html">
+&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=UTF-8&quot;
+    pageEncoding=&quot;UTF-8&quot;%&gt;
+&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot;&gt;
+&lt;title&gt;用户登录&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    ${msg }
+    &lt;form action=&quot;${pageContext.request.contextPath }/login&quot; method=&quot;post&quot;&gt;
+        用户名：&lt;input type=&quot;text&quot; name=&quot;name&quot; /&gt;&lt;br&gt;
+        密码：&lt;input type=&quot;password&quot; name=&quot;pwd&quot; /&gt;&lt;br&gt;
+        &lt;input type=&quot;submit&quot; value=&quot;登录&quot; /&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+main.jsp 的代码如下：
+<pre class="html">
+&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=UTF-8&quot;
+pageEncoding=&quot;UTF-8&quot;%&gt;
+&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot;&gt;
+&lt;title&gt;首页&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    欢迎 ${user.name }，登录编程帮！&lt;br /&gt;
+    &lt;a href=&quot;${pageContext.request.contextPath }/logout&quot;&gt;退出&lt;/a&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+<h4>
+6）发布并测试应用</h4>
+首先将 springmvcDemo2 应用发布到 Tomcat 服务器并启动 Tomcat 服务器，然后通过地址&ldquo;http://localhost:8080/springmvcDemo2/main&rdquo;测试应用，运行效果如图 1 所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210705/1529152302-0.png" /><br />
+图 1&nbsp;&nbsp;没有登录直接访问主页面的效果</div>
+<br />
+从图 1 可以看出，当用户没有登录而直接访问系统主页面时请求将被登录拦截器拦截，返回到登录页面，并提示信息。如果用户在用户名框中输入&ldquo;bianchengbang&rdquo;，在密码框中输入&ldquo;123456&rdquo;，单击&ldquo;登录&rdquo;按钮后浏览器的显示结果如图 2 所示。如果输入的用户名或密码错误，浏览器的显示结果如图 3 所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210705/1529151146-1.png" /><br />
+图 2&nbsp;&nbsp;成功登录的效果<br />
+&nbsp;</div>
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210705/1529154410-2.png" /><br />
+图 3&nbsp;&nbsp;用户名或密码错误</div>
+<br />
+当单击图 2 中的&ldquo;退出&rdquo;链接后，系统将从主页面返回到登录页面。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="../view/niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/4281.html" title="Go语言类型断言简述" target="_blank">Go语言类型断言简述</a></li>
+<li><a href="../view/5845.html" title="JS window.open()打开新窗口（非常详细）" target="_blank">JS window.open()打开新窗口（非常详细）</a></li>
+<li><a href="../view/6448.html" title="虚拟机是什么" target="_blank">虚拟机是什么</a></li>
+<li><a href="../view/vip_7660.html" title="Linux重定向（输入输出重定向）详解" target="_blank">Linux重定向（输入输出重定向）详解</a></li>
+<li><a href="../view/7745.html" title="MySQL错误日志（Error Log）详解" target="_blank">MySQL错误日志（Error Log）详解</a></li>
+<li><a href="../view/vinzwl.html" title="Python判断输入的字符串是否是回文（不区分大小写）" target="_blank">Python判断输入的字符串是否是回文（不区分大小写）</a></li>
+<li><a href="../view/dtrdz5l.html" title="《C语言必须知道的300个问题》PDF下载（高清完整版）" target="_blank">《C语言必须知道的300个问题》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8718;
+window.arcId = "2a414joftegj02QdVkGPiPrhsAxaG3evh1PMhNooHzbTvNTBf7UgLYyqBV8";
+window.typeidChain = "456|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="../view/8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="../view/8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="../view/8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="../view/9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="../view/8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

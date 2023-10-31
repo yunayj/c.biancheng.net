@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Linux信号量详解</title>
+<meta name="description" content="信号量（Semaphore）的概念最早由荷兰计算机科学家 Dijkstra（迪杰斯特拉）提出，有时又称信号灯。本节，我们将详细地讲解如何使用信号量实现线程同步。 和互斥锁类似，信号量本质也" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Linux信号量详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">信号量（Semaphore）的概念最早由荷兰计算机科学家 Dijkstra（迪杰斯特拉）提出，有时又称&ldquo;信号灯&rdquo;。本节，我们将详细地讲解如何使用信号量实现线程同步。<br />
+<br />
+和<a href="../thread/vip_8615.html" target="_blank">互斥锁</a>类似，信号量本质也是一个全局变量。不同之处在于，互斥锁的值只有 2 个（加锁 &quot;lock&quot; 和解锁 &quot;unlock&quot;），而信号量的值可以根据实际场景的需要自行设置（取值范围为 &ge;0）。更重要的是，信号量还支持做&ldquo;加 1&rdquo;或者 &ldquo;减 1&rdquo;运算，且修改值的过程以&ldquo;原子操作&rdquo;的方式实现。<br />
+<blockquote>
+<p>
+<span style="color:#008000;">原子操作</span>是指当多个线程试图修改同一个信号量的值时，各线程修改值的过程不会互相干扰。例如信号量的初始值为 1，此时有 2 个线程试图对信号量做&ldquo;加 1&rdquo;操作，则信号量的值最终一定是 3，而不会是其它的值。反之若不以&ldquo;原子操作&rdquo;方式修改信号量的值，那么最终的计算结果还可能是 2（两个线程同时读取到的值为 1，各自在其基础上加 1，得到的结果即为 2）。</p>
+</blockquote>
+多线程程序中，使用信号量需遵守以下几条规则：
+<ol>
+<li>
+信号量的值不能小于 0；</li>
+<li>
+有线程访问资源时，信号量执行&ldquo;减 1&rdquo;操作，访问完成后再执行&ldquo;加 1&rdquo;操作；</li>
+<li>
+当信号量的值为 0 时，想访问资源的线程必须等待，直至信号量的值大于 0，等待的线程才能开始访问。</li>
+</ol>
+<br />
+根据初始值的不同，信号量可以细分为 2 类，分别为<span style="color:#008000;">二进制信号量</span>和<span style="color:#008000;">计数信号量</span>：
+<ul>
+<li>
+二进制信号量：指初始值为 1 的信号量，此类信号量只有 1 和 0 两个值，通常用来替代互斥锁实现线程同步；</li>
+<li>
+计数信号量：指初始值大于 1 的信号量，当进程中存在多个线程，但某公共资源允许同时访问的线程数量是有限的（出现了&ldquo;狼多肉少&rdquo;的情况），这时就可以用计数信号量来限制同时访问资源的线程数量。</li>
+</ul>
+<br />
+了解什么是信号量之后，接下来教大家如何创建并使用信号量。
+<h2>
+信号量的具体用法</h2>
+POSIX 标准中，信号量用 sem_t 类型的变量表示，该类型定义在<code>&lt;semaphore.h&gt;</code>头文件中。例如，下面代码定义了名为 mySem 的信号量：
+<pre class="cpp" shownum="false">
+#include &lt;semaphore.h&gt;
+sem_t mySem;</pre>
+由此，我们就成功定义了一个 mySem 信号量。但要想使用它，还必须完成初始化操作。
+<h4>
+1) 初始化信号量</h4>
+sem_init() 函数专门用来初始化信号量，语法格式如下：
+<pre class="info-box">
+int sem_init(sem_t *sem, int pshared, unsigned int value);</pre>
+各个参数的含义分别为：
+<ul>
+<li>
+sem：表示要初始化的目标信号量；</li>
+<li>
+pshared：表示该信号量是否可以和其他进程共享，pshared 值为 0 时表示不共享，值为 1 时表示共享；</li>
+<li>
+value：设置信号量的初始值。</li>
+</ul>
+<br />
+当 sem_init() 成功完成初始化操作时，返回值为 0，否则返回 -1。<br />
+<h4>
+2) 操作信号量的函数</h4>
+对于初始化了的信号量，我们可以借助 &lt;semaphore.h&gt; 头文件提供的一些函数操作它，比如：
+<pre class="info-box">
+int sem_post(sem_t* sem);
+int sem_wait(sem_t* sem);
+int sem_trywait(sem_t* sem);
+int sem_destroy(sem_t* sem); </pre>
+参数 sem 都表示要操作的目标信号量。各个函数的功能如下：
+<ul>
+<li>
+sem_post() 函数的功能是：将信号量的值&ldquo;加 1&rdquo;，同时唤醒其它等待访问资源的线程；</li>
+<li>
+当信号量的值大于 0 时，sem_wait() 函数会对信号量做&ldquo;减 1&rdquo;操作；当信号量的值为 0 时，sem_wait() 函数会阻塞当前线程，直至有线程执行 sem_post() 函数（使信号量的值大于 0），暂停的线程才会继续执行；</li>
+<li>
+sem_trywait() 函数的功能和 sem_wait() 函数类似，唯一的不同在于，当信号量的值为 0 时，sem_trywait() 函数并不会阻塞当前线程，而是立即返回 -1；</li>
+<li>
+sem_destory() 函数用于手动销毁信号量。</li>
+</ul>
+<br />
+以上函数执行成功时，返回值均为 0 ；如果执行失败，返回值均为 -1。
+<h2>
+信号量的实际应用</h2>
+前面讲过，信号量又细分为二进制信号量和计数信号量，虽然创建和使用它们的方法（函数）是相同的，但应用场景不同。<br />
+<h4>
+1) 二进制信号量</h4>
+二进制信号量常用于代替互斥锁解决线程同步问题，接下来我们使用二进制信号量模拟&ldquo;4 个售票员卖 10 张票&rdquo;的过程：
+<pre class="cpp">
+#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+#include&lt;pthread.h&gt;
+#include&lt;semaphore.h&gt;
+#include&lt;unistd.h&gt;
+//创建信号量
+sem_t mySem;
+//设置总票数
+int ticket_sum = 10;
+//模拟买票过程
+void *sell_ticket(void *arg) {
+    printf(&quot;当前线程ID：%u\n&quot;, pthread_self());
+    int i;
+    int flag;
+    for (i = 0; i &lt; 10; i++)
+    {
+        //完成信号量&quot;减 1&quot;操作，否则暂停执行
+        flag = sem_wait(&amp;mySem);
+        if (flag == 0) {
+            if (ticket_sum &gt; 0)
+            {
+                sleep(1);
+                printf(&quot;%u 卖第 %d 张票\n&quot;, pthread_self(), 10 - ticket_sum + 1);
+                ticket_sum--;
+            }
+            //执行&ldquo;加1&rdquo;操作
+            sem_post(&amp;mySem);
+            sleep(1);
+        }
+    }
+    return 0;
+}
+
+int main() {
+    int flag;
+    int i;
+    void *ans;
+    //创建 4 个线程
+    pthread_t tids[4];
+    //初始化信号量
+    flag = sem_init(&amp;mySem, 0, 1);
+    if (flag != 0) {
+        printf(&quot;初始化信号量失败\n&quot;);
+    }
+    for (i = 0; i &lt; 4; i++)
+    {
+        flag = pthread_create(&amp;tids[i], NULL, &amp;sell_ticket, NULL);
+        if (flag != 0) {
+            printf(&quot;线程创建失败!&quot;);
+            return 0;
+        }
+    }
+    sleep(10);
+    for (i = 0; i &lt; 4; i++)
+    {
+        flag = pthread_join(tids[i], &amp;ans);
+        if (flag != 0) {
+            printf(&quot;tid=%d 等待失败！&quot;, tids[i]);
+            return 0;
+        }
+    }
+    //执行结束前，销毁信号量
+    sem_destroy(&amp;mySem);
+    return 0;
+}</pre>
+假设程序编写在 thread.c 文件中，执行过程如下：
+<p class="info-box">
+[root@localhost ~]# gcc thread.c -o thread.exe -lpthread<br />
+[root@localhost ~]# ./thread.exe<br />
+当前线程ID：1199965952<br />
+当前线程ID：1189476096<br />
+当前线程ID：1168496384<br />
+当前线程ID：1178986240<br />
+1199965952 卖第 1 张票<br />
+1189476096 卖第 2 张票<br />
+1199965952 卖第 3 张票<br />
+1178986240 卖第 4 张票<br />
+1168496384 卖第 5 张票<br />
+1189476096 卖第 6 张票<br />
+1199965952 卖第 7 张票<br />
+1178986240 卖第 8 张票<br />
+1168496384 卖第 9 张票<br />
+1189476096 卖第 10 张票</p>
+程序中信号量的初始值为 1，当有多个线程想执行 19~25 行代码时，第一个执行 sem_wait() 函数的线程可以继续执行，同时信号量的值会由 1 变为 0，其它线程只能等待信号量的值由 0 变为 1 后，才能继续执行。<br />
+<h4>
+2) 计数信号量</h4>
+假设某银行只开设了 2 个窗口，但有 5 个人需要办理业务。如果我们使用多线程程序模拟办理业务的过程，可以借助计数信号量实现。
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+#include&lt;pthread.h&gt;
+#include&lt;stdlib.h&gt;
+#include&lt;semaphore.h&gt;
+//设置办理业务的人数
+int num = 5;
+//创建信号量
+sem_t sem;
+//模拟办理业务的过程
+void *get_service(void *arg)
+{
+    int id = *((int*)arg);
+    //信号量成功&ldquo;减 1&rdquo;后才能继续执行
+    if (sem_wait(&amp;sem) == 0)
+    {
+        printf(&quot;---customer%d 正在办理业务\n&quot;, id);
+        sleep(2);
+        printf(&quot;---customer%d 已办完业务\n&quot;, id);
+        //信号量&ldquo;加 1&rdquo;
+        sem_post(&amp;sem);
+    }
+    return 0;
+}
+
+int main()
+{
+    int flag,i,j;
+    //创建 5 个线程代表 5 个人
+    pthread_t customer[5];
+    //初始化信号量
+    sem_init(&amp;sem, 0, 2);
+    for (i = 0; i &lt; num; i++)
+    {
+        flag = pthread_create(&amp;customer[i], NULL, get_service, &amp;i);
+        if (flag != 0)
+        {
+            printf(&quot;线程创建失败!\n&quot;);
+            return 0;
+        }
+        else {
+            printf(&quot;customer%d 来办理业务\n&quot;,i);
+        }
+        sleep(1);
+    }
+
+    for (j = 0; j &lt; num; j++)
+    {
+        flag = pthread_join(customer[j], NULL);
+        if (flag != 0) {
+            printf(&quot;tid=%d 等待失败！&quot;, customer[i]);
+            return 0;
+        }
+    }
+    sem_destroy(&amp;sem);
+    return 0;
+}</pre>
+假设程序编写在 thread.c 文件中，执行过程为：
+<p class="info-box">
+[root@localhost ~]# gcc thread.c -o thread.exe -lpthread<br />
+[root@localhost ~]# ./thread.exe<br />
+customer0 来办理业务<br />
+---customer0 正在办理业务<br />
+customer1 来办理业务<br />
+---customer1 正在办理业务<br />
+---customer0 已办完业务<br />
+customer2 来办理业务<br />
+---customer2 正在办理业务<br />
+---customer1 已办完业务<br />
+customer3 来办理业务<br />
+---customer3 正在办理业务<br />
+---customer2 已办完业务<br />
+customer4 来办理业务<br />
+---customer4 正在办理业务<br />
+---customer3 已办完业务<br />
+---customer4 已办完业务</p>
+程序中，sem 信号量的初始化为 2，因此该信号量属于计数信号量。借助 sem 信号量，第 14~21 行的代码段最多只能有 2 个线程同时访问。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="507.html" title="C语言求最大公约数（详解版）" target="_blank">C语言求最大公约数（详解版）</a></li>
+<li><a href="1164.html" title="Shell命令替换：将命令的输出结果赋值给变量" target="_blank">Shell命令替换：将命令的输出结果赋值给变量</a></li>
+<li><a href="1717.html" title="学编程难吗？多久能入门？" target="_blank">学编程难吗？多久能入门？</a></li>
+<li><a href="3371.html" title="三元组顺序表，稀疏矩阵的三元组表示及（C语言）实现" target="_blank">三元组顺序表，稀疏矩阵的三元组表示及（C语言）实现</a></li>
+<li><a href="6540.html" title="Java接口（Interface）的定义和实现" target="_blank">Java接口（Interface）的定义和实现</a></li>
+<li><a href="7641.html" title="Django查询数据库操作详解（一）" target="_blank">Django查询数据库操作详解（一）</a></li>
+<li><a href="../tkinter/entry-widget.html" title="Tkinter Entry输入控件" target="_blank">Tkinter Entry输入控件</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8632;
+window.arcId = "ef8aEjIjc7oGNASXj3s40wkBu3qqCJXjaDGnVfdizOaQZgSdY031Uzd3850";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

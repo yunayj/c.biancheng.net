@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>DNS报文格式解析（非常详细）</title>
+<meta name="description" content="DNS 分为查询请求和查询响应，请求和响应的报文结构基本相同。 DNS 报文格式如图所示。 上图中显示了 DNS 的报文格式。其中，事务 ID、标志、问题计数、回答资源记录数、权威名称服" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>DNS报文格式解析（非常详细）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">DNS 分为查询请求和查询响应，请求和响应的报文结构基本相同。DNS 报文格式如图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/191111/6-1911111G20QV.gif" /></div>
+上图中显示了 DNS 的报文格式。其中，事务 ID、标志、问题计数、回答资源记录数、权威名称服务器计数、附加资源记录数这 6 个字段是DNS的报文首部，共 12 个字节。<br />
+<br />
+整个 DNS 格式主要分为 3 部分内容，即基础结构部分、问题部分、资源记录部分。下面将详细地介绍每部分的内容及含义。
+<h2>
+基础结构部分</h2>
+DNS 报文的基础结构部分指的是报文首部，如图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/191111/6-1911111G342938.gif" /></div>
+该部分中每个字段含义如下。
+<ul>
+<li>
+事务 ID：DNS 报文的 ID 标识。对于请求报文和其对应的应答报文，该字段的值是相同的。通过它可以区分 DNS 应答报文是对哪个请求进行响应的。</li>
+<li>
+标志：DNS 报文中的标志字段。</li>
+<li>
+问题计数：DNS 查询请求的数目。</li>
+<li>
+回答资源记录数：DNS 响应的数目。</li>
+<li>
+权威名称服务器计数：权威名称服务器的数目。</li>
+<li>
+附加资源记录数：额外的记录数目（权威名称服务器对应 IP 地址的数目）。</li>
+</ul>
+<br />
+基础结构部分中的标志字段又分为若干个字段，如图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/191111/6-1911111G44O02.gif" /></div>
+标志字段中每个字段的含义如下：
+<ul>
+<li>
+QR（Response）：查询请求/响应的标志信息。查询请求时，值为 0；响应时，值为 1。</li>
+<li>
+Opcode：操作码。其中，0 表示标准查询；1 表示反向查询；2 表示服务器状态请求。</li>
+<li>
+AA（Authoritative）：授权应答，该字段在响应报文中有效。值为 1 时，表示名称服务器是权威服务器；值为 0 时，表示不是权威服务器。</li>
+<li>
+TC（Truncated）：表示是否被截断。值为 1 时，表示响应已超过 512 字节并已被截断，只返回前 512 个字节。</li>
+<li>
+RD（Recursion Desired）：期望递归。该字段能在一个查询中设置，并在响应中返回。该标志告诉名称服务器必须处理这个查询，这种方式被称为一个递归查询。如果该位为 0，且被请求的名称服务器没有一个授权回答，它将返回一个能解答该查询的其他名称服务器列表。这种方式被称为迭代查询。</li>
+<li>
+RA（Recursion Available）：可用递归。该字段只出现在响应报文中。当值为 1 时，表示服务器支持递归查询。</li>
+<li>
+Z：保留字段，在所有的请求和应答报文中，它的值必须为 0。</li>
+<li>
+rcode（Reply code）：返回码字段，表示响应的差错状态。当值为 0 时，表示没有错误；当值为 1 时，表示报文格式错误（Format error），服务器不能理解请求的报文；当值为 2 时，表示域名服务器失败（Server failure），因为服务器的原因导致没办法处理这个请求；当值为 3 时，表示名字错误（Name Error），只有对授权域名解析服务器有意义，指出解析的域名不存在；当值为 4 时，表示查询类型不支持（Not Implemented），即域名服务器不支持查询类型；当值为 5 时，表示拒绝（Refused），一般是服务器由于设置的策略拒绝给出应答，如服务器不希望对某些请求者给出应答。</li>
+</ul>
+<br />
+为了能够更好地了解 DNS 数据包的基础结构部分，下面通过捕获的 DNS 数据包查看基础结构部分。<br />
+<br />
+1) DNS 请求数据包基础结构部分，如图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/191111/6-1911111GIR03.gif" /></div>
+图中的数据包为 DNS 请求包，Domain Name System(query) 部分方框标注中的信息为 DNS 报文中的基础结构部分。<br />
+<br />
+为了方便讲解这里将信息列出进行说明：
+<pre class="info-box">
+Domain Name System (query)
+    Transaction ID: 0x9ad0                              #事务ID
+    Flags: 0x0000 Standard query                        #报文中的标志字段
+        0... .... .... .... = Response: Message is a query
+                                                        #QR字段, 值为0, 因为是一个请求包
+        .000 0... .... .... = Opcode: Standard query (0)
+                                                        #Opcode字段, 值为0, 因为是标准查询
+        .... ..0. .... .... = Truncated: Message is not truncated
+                                                        #TC字段
+        .... ...0 .... .... = Recursion desired: Don&#39;t do query recursively 
+                                                        #RD字段
+        .... .... .0.. .... = Z: reserved (0)           #保留字段, 值为0
+        .... .... ...0 .... = Non-authenticated data: Unacceptable   
+                                                        #保留字段, 值为0
+    Questions: 1                                        #问题计数, 这里有1个问题
+    Answer RRs: 0                                       #回答资源记录数
+    Authority RRs: 0                                    #权威名称服务器计数
+    Additional RRs: 0                                   #附加资源记录数</pre>
+以上输出信息显示了 DNS 请求报文中基础结构部分中包含的字段以及对应的值。这里需要注意的是，在请求中 Questions 的值不可能为 0；Answer RRs，Authority RRs，Additional RRs 的值都为 0，因为在请求中还没有响应的查询结果信息。这些信息在响应包中会有相应的值。<br />
+<br />
+2) DNS 响应数据包基础结构部分如图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/191111/6-1911111G932262.gif" /></div>
+图中方框标注部分为响应包中基础结构部分，每个字段如下：
+<pre class="info-box">
+Domain Name System (response)
+    Transaction ID: 0x9ad0                                    #事务ID
+    Flags: 0x8180 Standard query response, No error           #报文中的标志字段
+        1... .... .... .... = Response: Message is a response
+                                                              #QR字段, 值为1, 因为是一个响应包
+        .000 0... .... .... = Opcode: Standard query (0)      # Opcode字段
+        .... .0.. .... .... = Authoritative: Server is not an authority for
+        domain                                                #AA字段
+        .... ..0. .... .... = Truncated: Message is not truncated
+                                                              #TC字段
+        .... ...1 .... .... = Recursion desired: Do query recursively 
+                                                              #RD字段
+        .... .... 1... .... = Recursion available: Server can do recursive
+        queries                                               #RA字段
+        .... .... .0.. .... = Z: reserved (0)
+        .... .... ..0. .... = Answer authenticated: Answer/authority portion
+        was not authenticated by the server
+        .... .... ...0 .... = Non-authenticated data: Unacceptable
+        .... .... .... 0000 = Reply code: No error (0)        #返回码字段
+    Questions: 1
+    Answer RRs: 2
+    Authority RRs: 5
+    Additional RRs: 5</pre>
+以上输出信息中加粗部分为 DNS 响应包比请求包中多出来的字段信息，这些字段信息只能出现在响应包中。在输出信息最后可以看到 Answer RRs，Authority RRs，Additional RRs 都有了相应的值（不一定全为 0）。
+<h2>
+问题部分</h2>
+问题部分指的是报文格式中查询问题区域（Queries）部分。该部分是用来显示 DNS 查询请求的问题，通常只有一个问题。该部分包含正在进行的查询信息，包含查询名（被查询主机名字）、查询类型、查询类。<br />
+<br />
+问题部分格式如图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/191111/6-1911111H103217.gif" /></div>
+该部分中每个字段含义如下：
+<ul>
+<li>
+查询名：一般为要查询的域名，有时也会是 IP 地址，用于反向查询。</li>
+<li>
+查询类型：DNS 查询请求的资源类型。通常查询类型为 A 类型，表示由域名获取对应的 IP 地址。</li>
+<li>
+查询类：地址类型，通常为互联网地址，值为 1。</li>
+</ul>
+<br />
+1) DNS 请求包的问题部分字段信息，如图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/191111/6-1911111H153W1.gif" /></div>
+<br />
+在下图中，Queries 部分的信息为问题部分信息，每个字段说明如下：
+<pre class="info-box">
+Domain Name System (query)                        #查询请求
+    Queries                                       #问题部分
+        baidu.com: type A, class IN
+            Name: baidu.com                       #查询名字段, 这里请求域名baidu.com
+            [Name Length: 9]
+            [Label Count: 2]
+            Type: A (Host Address) (1)            #查询类型字段, 这里为A类型
+            Class: IN (0x0001)                    #查询类字段, 这里为互联网地址</pre>
+其中，可以看到 DNS 请求类型为 A，那么得到的响应信息也应该为 A 类型。<br />
+<br />
+2) DNS 响应包的问题部分字段信息，如图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/191111/6-1911111H331A3.gif" /></div>
+从图中 Queries 部分中可以看到，响应包中的查询类型也是 A，与请求包的查询类型是一致的。
+<h2>
+资源记录部分</h2>
+资源记录部分是指 DNS 报文格式中的最后三个字段，包括回答问题区域字段、权威名称服务器区域字段、附加信息区域字段。这三个字段均采用一种称为资源记录的格式，格式如图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/191111/6-1911111H415240.gif" /></div>
+资源记录格式中每个字段含义如下：
+<ul>
+<li>
+域名：DNS 请求的域名。</li>
+<li>
+类型：资源记录的类型，与问题部分中的查询类型值是一样的。</li>
+<li>
+类：地址类型，与问题部分中的查询类值是一样的。</li>
+<li>
+生存时间：以秒为单位，表示资源记录的生命周期，一般用于当地址解析程序取出资源记录后决定保存及使用缓存数据的时间。它同时也可以表明该资源记录的稳定程度，稳定的信息会被分配一个很大的值。</li>
+<li>
+资源数据长度：资源数据的长度。</li>
+<li>
+资源数据：表示按查询段要求返回的相关资源记录的数据。</li>
+</ul>
+<br />
+资源记录部分只有在 DNS 响应包中才会出现。下面通过 DNS 响应包来进一步了解资源记录部分的字段信息。<br />
+<br />
+1) DNS 响应包的资源记录部分的字段信息，如图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/191111/6-1911111H520510.gif" /></div>
+其中，方框中标注的信息为 DNS 响应报文的资源记录部分信息。该部分信息主要分为三部分信息，即回答问题区域、权威名称服务器区域、附加信息区域，下面依次分析这三部分信息。<br />
+<br />
+2) 回答问题区域字段的资源记录部分信息如下：
+<pre class="info-box">
+Answers                                                      #&ldquo;回答问题区域&rdquo;字段
+    baidu.com: type A, class IN, addr 220.181.57.216         #资源记录部分
+        Name: baidu.com                                      #域名字段, 这里请求的域名为baidu.com
+        Type: A (Host Address) (1)                           #类型字段, 这里为A类型
+        Class: IN (0x0001)                                   #类字段
+        Time to live: 5                                      #生存时间
+        Data length: 4                                       #数据长度
+        Address: 220.181.57.216                              #资源数据, 这里为IP地址
+    baidu.com: type A, class IN, addr 123.125.115.110        #资源记录部分
+        Name: baidu.com
+        Type: A (Host Address) (1)
+        Class: IN (0x0001)
+        Time to live: 5
+        Data length: 4
+        Address: 123.125.115.110</pre>
+其中，Name 的值为 baidu.com，表示 DNS 请求的域名为 baidu.com；类型为 A，表示要获取该域名对应的 IP 地址。Address 的值显示了该域名对应的 IP 地址。这里获取到了 2 个 IP 地址，分别为 220.181.57.216 和 123.125.115.110。<br />
+<br />
+3) 权威名称服务器区域字段的资源记录部分信息如下：
+<pre class="info-box">
+Authoritative nameservers                               #&ldquo;权威名称服务器区域&rdquo;字段
+baidu.com: type NS, class IN, ns ns7.baidu.com      #资源记录部分
+Name: baidu.com
+Type: NS (authoritative Name Server) (2)        #类型字段, 这里为NS类型
+Class: IN (0x0001)
+Time to live: 5
+Data length: 6
+Name Server: ns7.baidu.com                      #权威名称服务器
+baidu.com: type NS, class IN, ns dns.baidu.com      #资源记录部分
+Name: baidu.com
+Type: NS (authoritative Name Server) (2)        #类型字段, 这里为NS类型
+Class: IN (0x0001)
+Time to live: 5
+Data length: 6
+Name Server: dns.baidu.com                      #权威名称服务器
+baidu.com: type NS, class IN, ns ns3.baidu.com      #资源记录部分
+Name: baidu.com
+Type: NS (authoritative Name Server) (2)
+Class: IN (0x0001)
+Time to live: 5
+Data length: 6
+Name Server: ns3.baidu.com                      #权威名称服务器
+baidu.com: type NS, class IN, ns ns4.baidu.com      #资源记录部分
+Name: baidu.com
+Type: NS (authoritative Name Server) (2)
+Class: IN (0x0001)
+Time to live: 5
+Data length: 6
+Name Server: ns4.baidu.com                      #权威名称服务器
+baidu.com: type NS, class IN, ns ns2.baidu.com      #资源记录部分
+Name: baidu.com
+Type: NS (authoritative Name Server) (2)
+Class: IN (0x0001)
+Time to live: 5
+Data length: 6
+Name Server: ns2.baidu.com                      #权威名称服务器</pre>
+其中，Name 的值为 baidu.com，表示 DNS 请求的域名为 baidu.com；类型为 NS，表示要获取该域名的权威名称服务器名称。Name Server 的值显示了该域名对应的权威名称服务器名称。这里总共获取到 5 个，如 ns7.baidu.com。<br />
+<br />
+4) 附加信息区域字段的资源记录部分信息如下：
+<pre class="info-box">
+Additional records                                            #&ldquo;附加信息区域&rdquo;字段
+    dns.baidu.com: type A, class IN, addr 202.108.22.220      #资源记录部分
+        Name: dns.baidu.com                                   #&ldquo;权威名称服务器&rdquo;名称
+        Type: A (Host Address) (1)                            #类型字段, 这里为A类型
+        Class: IN (0x0001)
+        Time to live: 5
+        Data length: 4
+        Address: 202.108.22.220                               #&ldquo;权威名称服务器&rdquo;的IP地址
+    ns2.baidu.com: type A, class IN, addr 61.135.165.235      #资源记录部分
+        Name: ns2.baidu.com                                   #&ldquo;权威名称服务器&rdquo;名称
+        Type: A (Host Address) (1)                            #类型字段, 这里为A类型
+        Class: IN (0x0001)
+        Time to live: 5
+        Data length: 4
+        Address: 61.135.165.235                               #&ldquo;权威名称服务器&rdquo;的IP地址
+    ns3.baidu.com: type A, class IN, addr 220.181.37.10       #资源记录部分
+        Name: ns3.baidu.com                                   #&ldquo;权威名称服务器&rdquo;名称
+        Type: A (Host Address) (1)                            #类型字段, 这里为A类型
+        Class: IN (0x0001)  
+        Time to live: 5
+        Data length: 4
+        Address: 220.181.37.10                                 #&ldquo;权威名称服务器&rdquo;的IP地址
+    ns4.baidu.com: type A, class IN, addr 220.181.38.10        #资源记录部分
+        Name: ns4.baidu.com                                    #&ldquo;权威名称服务器&rdquo;名称
+        Type: A (Host Address) (1)                             #类型字段, 这里为A类型
+        Class: IN (0x0001)
+        Time to live: 5
+        Data length: 4
+        Address: 220.181.38.10                                 #&ldquo;权威名称服务器&rdquo;的IP地址
+    ns7.baidu.com: type A, class IN, addr 180.76.76.92         #资源记录部分
+        Name: ns7.baidu.com                                    #&ldquo;权威名称服务器&rdquo;名称
+        Type: A (Host Address) (1)                             #类型字段, 这里为A类型
+        Class: IN (0x0001)
+        Time to live: 5
+        Data length: 4
+        Address: 180.76.76.92                                  #&ldquo;权威名称服务器&rdquo;的IP地址</pre>
+其中，Name 的值为&ldquo;权威名称服务器&rdquo;名称，Type 的值为 A，表示获取域名对应的 IP 地址；Address 的值显示了所有获取到的权威名称服务器对应的 IP 地址。<br />
+<br />
+例如，权威名称服务器名称 ns7.baidu.com 对应的 IP 地址为 180.76.76.92。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2182.html" title="Python赋值运算符（入门必读）" target="_blank">Python赋值运算符（入门必读）</a></li>
+<li><a href="3170.html" title="Docker Compose是什么" target="_blank">Docker Compose是什么</a></li>
+<li><a href="vip_5093.html" title="Linux RAID（磁盘阵列）完全攻略" target="_blank">Linux RAID（磁盘阵列）完全攻略</a></li>
+<li><a href="7410_3.html" title="网站到底是什么？" target="_blank">网站到底是什么？</a></li>
+<li><a href="../sql/what-is-sql.html" title="SQL是什么" target="_blank">SQL是什么</a></li>
+<li><a href="9lw0kqr.html" title="JS实现倒计时效果（附带源码和解析）" target="_blank">JS实现倒计时效果（附带源码和解析）</a></li>
+<li><a href="../c/exit.html" title="C语言exit()：正常终止程序" target="_blank">C语言exit()：正常终止程序</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 6457;
+window.arcId = "1ac4HdTae1jJKBVrxpfAjJ1P5VfOqNbhzg/DhZ1yxRWOw+/HbMWYFDzDVYA";
+window.typeidChain = "325|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

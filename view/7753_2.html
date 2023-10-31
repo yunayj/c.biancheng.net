@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Django Admin优化后台展示</title>
+<meta name="description" content="在《Django Admin数据表可视化》一节，我们实现了 Model 注册并显示在了后台管理系统中，Django 原生的后台 Admin 在没有经过配置之前，它是不易于管理员阅读以及使用的。为了更加方便管" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../django/django_2.html">Django</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Django Admin优化后台展示</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在《<a href="7523_8.html">Django Admin数据表可视化</a>》一节，我们实现了 Model 注册并显示在了后台管理系统中，Django 原生的后台系统，在没有经过配置之前是非常&ldquo;简陋&rdquo;的，而且不易于管理员阅读以及使用。<br />
+<br />
+为了更加方便管理员操作后台管理系统，Django 提供了 魔术方法 __str__ 让后台管理系统变得易于阅读，同时 Django 也提供了<code style="font-size: 14px;">ModelAdmin&nbsp;</code>类能够自定义后台管理系统，可以让展现形式更加美观。在本节，我们将对此知识点进行讲解，最后得到一个视觉效果美观的后台管理系统。
+<h2>
+	1. ModelAdmin自定义管理后台</h2>
+ModelAdmin 功能强大，包含了许多内置属性，能够为后台管理系统界面添加便于操作的新功能。后台管理器类须继承自 django.contrib.admin 里的 ModelAdmin 类。它的使用方法主要分为两个步骤：
+<h4>
+	1) 定义后台模型管理器类</h4>
+<pre class="python">
+#在应用index/admin.py 里定义模型管理器类
+class XXXX_Manager(admin.ModelAdmin):
+...</pre>
+<h4>
+	2)&nbsp;注册admin管理器与模型类关联</h4>
+<pre>
+# 注册MyModel模型类与管理器类MyModel_Manager关联</pre>
+<pre class="python">
+from django.contrib import admin
+from index.models import MyModel
+admin.site.register(MyModel, MyModel_Manager)#使用register注册关联关系
+#或者使用装饰器进行注册
+@admin.register(MyModel)#在定义的模型管理器类中使用装饰器
+class MyModelAdmin(admin.ModelAdmin)
+...
+</pre>
+这里需要大家<span style="color: rgb(255, 0, 0);">注意</span>，Django 规定每一个 Model 只可以注册一次，所以再注册同一个 Model 时，需要将之前注册的语句注释（或者删除），否则会抛出如下异常：<br />
+<p class="info-box">
+	django.admin.sites.AlreadyRegistered 异常</p>
+上面介绍了两种方式可以实现 admin 管理器与模型类进行关联，两种方式实现的功能是一样的，但是相比较而言使用装饰器的方法会更加简单一些。<br />
+<h2>
+	2. ModelAdmin的常用属性</h2>
+因为第二步骤在《<a href="7523_9.html">Django Admin数据表可视化</a>》一节已经进行了注册，只需要再稍加改动即可，所以我们主要对第一部分进行详细讲解，那么我们如何自定义后台模型管理器类呢？Django 在 ModelAdmin 类中定义了一些属性，我们可以通过配置这些属性，来优化管理后台的界面展示。下面就让我们来认识一些常用的属性吧！
+<h4>
+	1) list_display字段展示</h4>
+在默认的情况下，Model 在 admin 列表修改页（Admin ChangeList）只会显示一列，内容是实例对象的__str__的返回值，如果想要多现实一些列的数据，就可以通过 list_display 属性来实现。它除了可以配置 Model 的字段名之外，还可以接收函数，且这个函数将一个 Model 实例对象作为参数，这个函数也需定义在 ModeAdmin 中。语法格式如下：<br />
+<p class="info-box">
+	list_display=[]</p>
+在使用 list_display 时需要<span style="color: rgb(255, 0, 0);">特别注意</span>它的两个特性：
+<ul>
+	<li>
+		对于 Foreignkey 类型的字段，显示的是 obj.__str__() 返回的值。</li>
+	<li>
+		不支持 ManyToManyField 类型的字段，如果需要展示，可以用自定义方法实现。</li>
+</ul>
+<h4>
+	2）search_fileds添加搜索框</h4>
+在一些场景下给某些字段添加搜索框是很有意义的，Django 考虑到这一点提供了 search_fileds 属性，在 Admin 中表现为一个搜索框，查询的字段可以是 CharField 或TextField 类型的，也可以是对 ForeignKey 或 ManyToManyField 字段类型的引用查询，使用双下画线引用字段名。使用示例如下：
+<pre class="python">
+@admin.register(Book)
+class BookAdmin(admin.ModelAdmin):
+    search_fields = [&#39;title&#39;,&#39;pub__pubname&#39;]</pre>
+对于搜索框中的输入词，Django会将其分割成多个关键字，并返回所有包含这些关键字的实例对象。<br />
+<p class="tip-box">
+	提示：需要注意的是，每个关键字都必须是 search_fields 选项中的至少一个。</p>
+<h4>
+	3) list_filter添加过滤器</h4>
+配置 list_filter 属性，可以在 Admin 后台的列表修改页的右侧添加过滤器，且各个过滤条件是 and 的关系。<br />
+<br />
+list_filter 是列表或者元组类型，通常使用它会传递两类元素：一个是 Model 的字段名，另一个是继承自以下的类（并不常用）：<br />
+<p class="info-box">
+	django.contrib.admin.SimpleListFilter</p>
+对于 Model 的字段名，字段类型必须属于 BooleanField、CharField、DateField、DateTimeField、IntegerField、ForeignKey 或 ManyToManyField 中的一种。同样也可以使用双下画线实现跨表关联。示例如下所示：<br />
+<p class="info-box">
+	list_filter= [&#39;title&#39;,&#39;pub__pubname&#39;]</p>
+<h4>
+	4) raw_id_fileds优化数据库检索</h4>
+raw_id_fields 是一个元组或者列表，其中包含的每一个字段必须是 ForeignKey 或 ManyToManyField 类型。Django 对于其中的每一个字段会以输入框的形式展现，用于输入关联 Model 实例的主键，对于 ManyToManyField 类型，则需要用逗号分隔主键。<br />
+<br />
+除了与默认前端展现样式上的不同之外，Django 不会再去检索所有的关联 Model 实例，而是把这个操作留给了用户，让用户决定是否需要查询。
+<h4>
+	5) list_display_links链接至列表页面</h4>
+使用 list_display_links 可以控制 list_display 中的字段是否应该链接到对象的&ldquo;更改&rdquo;页面。默认情况下，更改列表页面会只将第一列链接到每个项目的更改页面。它的使用格式和 list_display 相同，是是列表或者元组类型。<br />
+<br />
+同时它也可以指定一个或多个字段。只要这些字段在中 list_display 中存在 ，那么 Django 就不会在意链接了多少个字段。<br />
+<p class="tip-box">
+	注意：要使用 list_display_links 这个属性 ，必须先要定义 list_display。</p>
+<h4>
+	6) list_editable设置字段名称</h4>
+允许模型的字段在列表页面上被编辑，也就是说，它包含的字段将在 list_editable 更改页面上显示为表单窗口小部件，从而允许用户一次编辑和保存多行。<br />
+<br />
+使用 list_editable 时，你应该注意以下规则：&nbsp;
+<ul>
+	<li>
+		list_editable 列表中的每个字段也必须位于&nbsp;list_display 中。否则你将无法编辑；</li>
+	<li>
+		同一字段不能同时在 list_editable 和 list_display_links 中显示，因为同一字段只能属于它们两者中的一个。</li>
+</ul>
+<br />
+ModelAdmin 中提供了很多有用的属性，基于我们本项目介绍这些就足够用了，大家也可以查阅官方文档《<a href="http://docs.djangoproject.com/en/2.2/ref/contrib/admin/" rel="nofollow" target="_blank">ModelAdmin属性选项</a>》进一步学习，该文档中提供了所有属性选项的介绍。
+<h2>
+	3. 项目实例效果展示</h2>
+访问 127.0.0.1:8000/admin 得到相应页面，如下所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="admin优化后页面展示" src="../uploads/allimg/200601/9-20060111063U21_2.png" /><br />
+	图1：admin主页面优化展示<br />
+	<br />
+	<img alt="admin后台优化页面展示" src="../uploads/allimg/200601/9-20060111260H24_2.png" /><br />
+	图2：admin后台优化页面展示<br />
+	<br />
+	<img alt="admin后台优化页面展示" src="../uploads/allimg/200601/9-200601155610438_2.gif" /><br />
+	图3：admin后台优化页面展示<br />
+	<br />
+	<img alt="admin后台优化页面展示" src="../uploads/allimg/200601/9-200601155U5V7_2.png" /><br />
+	图4：admin后台优化页面展示</div>
+在 index/admin.py 中的代码如下所示：
+<pre class="python">
+from django.contrib import admin
+from index.models import Book,Author,UserInfo,PubName,ExtendUserinfo
+@admin.register(Book) #使用admin.register(Model)来注册
+class BookAdmin(admin.ModelAdmin):
+    list_display = [&#39;id&#39;,&#39;title&#39;,&#39;price&#39;,&#39;retail_price&#39;,&#39;pub_name&#39;]
+&nbsp;&nbsp;&nbsp; def pub_name(self,obj):  #显示约束字段pubname
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return u&#39;%s&#39;%obj.pub.pubname&nbsp; #u会对字符串中的\n等进行转义
+&nbsp;&nbsp;&nbsp; pub_name.admin_order_field = &#39;pub&#39;&nbsp; # 字段排序
+&nbsp;&nbsp;&nbsp; pub_name.short_description = &#39;出版社&#39;&nbsp; # 属性name重命名
+    list_display_links = [&#39;title&#39;]
+    list_filter = [&#39;pub__pubname&#39;]#ForeignKey字段
+    list_editable=[&#39;price&#39;,&#39;retail_price&#39;]
+    search_fields = [&#39;title&#39;,&#39;pub__pubname&#39;]
+    raw_id_fields = [&#39;pub&#39;]
+#注册Model到admin管理后台
+admin.site.register([Author,UserInfo,PubName,ExtendUserinfo])</pre>
+大家看到优化后的 Admin 管理界面更加适合阅读，而且更易于后台管理人员进行操作，比如通过增加书籍按钮实现书籍的添加等等，小伙伴们可以根据本节讲解的知识，将其余的 Model 也进行优化展示，不妨自己动手试一试。如果你想更全面的了解后本节知识点，建议参阅官方文档《<a href="http://docs.djangoproject.com/en/2.2/ref/contrib/admin/" rel="nofollow" target="_blank">ModelAdmin属性选项</a>》。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="51_3.html" title="Go语言continue（继续下一次循环）" target="_blank">Go语言continue（继续下一次循环）</a></li>
+<li><a href="61_2.html" title="Go语言defer（延迟执行语句）" target="_blank">Go语言defer（延迟执行语句）</a></li>
+<li><a href="898_2.html" title="linux mkfs命令详解:格式化分区（为分区写入文件系统）" target="_blank">linux mkfs命令详解:格式化分区（为分区写入文件系统）</a></li>
+<li><a href="1147_2.html" title="SELinux是什么" target="_blank">SELinux是什么</a></li>
+<li><a href="6175_2.html" title="PHP array_unshift()：在数组开头插入元素" target="_blank">PHP array_unshift()：在数组开头插入元素</a></li>
+<li><a href="7131_2.html" title="MySQL常用图形化管理工具" target="_blank">MySQL常用图形化管理工具</a></li>
+<li><a href="y0rd698_2.html" title="《Web前端实战——HTML+CSS+JavaScript全栈开发（微课视频版）》PDF下载（高清完整" target="_blank">《Web前端实战——HTML+CSS+JavaScript全栈开发（微课视频版）》PDF下载（高清完整</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7753;
+window.arcId = "c900bToMG17zOBe2UAg2UXCMvvY7yJAHO83BMlJS7t3JF9vQrdq1EQjN+mg";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="https://m.biancheng.net/templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

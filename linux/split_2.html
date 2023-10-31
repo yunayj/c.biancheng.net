@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>split命令_Linux split命令：切割（拆分）文件</title>
+<meta name="description" content="15 分钟之后，我要去朋友家聚会。我打算从我的台式机上把一部 700MB 大小的美国大片拷贝出来，带到朋友家去看，可是我的两个优盘都只有 512MB，这让我如何是好？ 别急，用 10 分钟赶" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="../view/niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>split命令_Linux split命令：切割（拆分）文件</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">15 分钟之后，我要去朋友家聚会。我打算从我的台式机上把一部 700MB 大小的美国大片拷贝出来，带到朋友家去看，可是我的两个优盘都只有 512MB，这让我如何是好？<br />
+<br />
+别急，用 10 分钟赶快来认识一下我们的 split 拆分小能手，一切问题将迎刃而解。当遇到大文件而苦不堪言的时候，split 就会像天使一样解救我们于水火之中。
+<h2>
+	合久必分</h2>
+闲言少叙，我们现在就来介绍拆分的方法。先使用 dd 命令来生成一个 700MB 文件来作为我们的拆分对象：
+<pre class="info-box">
+[root@roclinux ~]$ dd if=/dev/zero bs=1024 count=700000 of=king_of_ring.avi
+700000+0 records in
+700000+0 records out
+716800000 bytes (717 MB) copied, 12.9189 s, 55.5 MB/s
+ 
+[root@roclinux ~]$  ls -l king_of_ring.avi
+-rw-r--r-- 1 root root 716800000 Apr 12 13:01 king_of_ring.avi</pre>
+<br />
+美国大片的文件大小是 700MB，而我手边仅有的两个优盘，都是 512MB 大小的。我打算把文件以 400MB 作为一个拆分单位，来进行拆分。这里使用到了 split 的<code>-b</code>选项，来指定每个拆分文件的大小：
+<pre class="info-box">
+[root@roclinux ~]$ split -b 400M king_of_ring.avi
+ 
+[root@roclinux ~]$ ls -l
+total 1400008
+-rw-r--r-- 1 root root 716800000 Apr 12 13:01 king_of_ring.avi
+-rw-r--r-- 1 root root 419430400 Apr 12 13:04 xaa
+-rw-r--r-- 1 root root 297369600 Apr 12 13:04 xab</pre>
+<br />
+看！分身完毕！咦，怎么多出了 xaa 和 xab 两个文件，这么奇怪的名字？<br />
+<br />
+是的，你没看错，在没有明确指定拆分后文件的命名方式的情况下，split 会默认采用 x 字符作为文件前缀，采用类似 aa、ab、ac 的字符串依次作为文件后缀。于是，就出现了我们上面看到的 xaa、xab 了。<br />
+<br />
+从文件大小来看，如我们所愿，电影文件的确被切割成了一个 400MB 的文件、一个 300MB 的文件，终于可以装到两个优盘里了。
+<h2>
+	知其然，知其所以然</h2>
+知道了拆分命令后，我们来一起学习一下 split 的命令格式和常用选项。<br />
+<br />
+split 的作用很好描述，就是将文件按照一定规则进行拆分。一般情况下，我们可以按照文件大小来进行拆分，如果是文本文件的话，还可以按照行数来进行拆分，默认是 1000 行作为一个拆分单位。<br />
+<br />
+默认情况下，分割后的文件的名称会以 x 作为前缀，以 aa、ab、ac 这样的双字母格式作为后缀，形成 xaa、xab 这样的名称格式。<br />
+<br />
+我们来一起看看 split 的命令格式：
+<pre class="info-box">
+split [-b ][-C ][-][-l ][要切割的文件][输出文件名前缀][-a ]</pre>
+<br />
+最常用的选项，都在这里了：
+<ul>
+	<li>
+		-b&lt;字节&gt;：指定按多少字节进行拆分，也可以指定 K、M、G、T 等单位。</li>
+	<li>
+		-&lt;行数&gt;或-l&lt;行数&gt;：指定每多少行要拆分成一个文件。</li>
+	<li>
+		输出文件名前缀：设置拆分后的文件的名称前缀，split 会自动在前缀后加上编号，默认从 aa 开始。</li>
+	<li>
+		-a&lt;后缀长度&gt;：默认的后缀长度是 2，也就是按 aa、ab、ac 这样的格式依次编号。</li>
+</ul>
+<h2>
+	分久必合</h2>
+完成了美国大片的拆分，我赶赴朋友家，打开他的电脑，优盘插上，使用 cat 命令将拆分文件 xaa 和 xab 合并成一个文件，可以看出合并后的文件和源文件的大小是一致的：
+<pre class="info-box">
+[root@roclinux ~]$ cat xaa xab &gt; king_of_ring_merge.avi
+ 
+[root@roclinux ~]$ ls -l
+total 2100012
+-rw-r--r-- 1 root root 716800000 Apr 12 13:01 king_of_ring.avi
+-rw-r--r-- 1 root root 716800000 Apr 12 13:07 king_of_ring_merge.avi
+-rw-r--r-- 1 root root 419430400 Apr 12 13:04 xaa
+-rw-r--r-- 1 root root 297369600 Apr 12 13:04 xab</pre>
+<br />
+对了，如果是在 Windows 下的话，我们要先运行 cmd，然后用 copy 命令来进行文件的合并：
+<pre class="info-box">
+copy /b xaa + xab king_of_ring.avi</pre>
+<br />
+格式上和 Linux 有些区别，但原理是一样的。
+<h2>
+	设置拆分文件的名称前缀</h2>
+上面例子中，我们没有指定拆分文件的名称前缀，结果拆分后的文件名都是 aa、ab 这样的名称，这样的名称既不达意也不美观。<br />
+<br />
+下面的例子，我们尝试以 king_of_ring_part_ 作为拆分后文件的名称前缀：
+<pre class="info-box">
+#我们指定了king_of_ring_part_前缀
+[root@roclinux ~]$ split -b 400m king_of_ring.avi king_of_ring_part_
+ 
+#可以看到, 文件名的可读性提高了很多
+[root@roclinux ~]$ ls -l king*
+-rw-r--r-- 1 root root 716800000 Feb 25 18:29 king_of_ring.avi
+-rw-r--r-- 1 root root 419430400 Feb 25 19:24 king_of_ring_part_aa
+-rw-r--r-- 1 root root 297369600 Feb 25 19:24 king_of_ring_part_ab</pre>
+<br />
+文件名的可读性是不是提高了不少，从文件名称就可以看出来是美国大片的拆分文件啦。
+<h2>
+	设置数字后缀</h2>
+如果大家看不惯以 aa、ab 这种字母作为文件后缀，我们还可以通过-d选项来指定数字形式的文件后缀：
+<pre class="info-box">
+#使用了-d选项
+[root@roclinux ~]$ split -b 400m -d king_of_ring.avi king_of_ring_part_
+ 
+#后缀从原来的aa、ab变成了00、01
+[root@roclinux ~]$ ls -l king*
+-rw-r--r-- 1 root root 716800000 Feb 25 18:29 king_of_ring.avi
+-rw-r--r-- 1 root root 419430400 Feb 25 19:24 king_of_ring_part_00
+-rw-r--r-- 1 root root 297369600 Feb 25 19:24 king_of_ring_part_01</pre>
+<br />
+对于中国人来说，数字形式的后缀，增加了文件名称的可读性。
+<h2>
+	按照行数进行拆分</h2>
+前面我们讲的是按照文件大小（如 400MB）进行文件拆分的方法，但是并非所有情况都适合于用文件大小作为拆分单元。比如，我们希望把 /etc/passwd 文件按照一个文件 10 行记录的方式进行拆分，又该怎么操作呢？
+<pre class="info-box">
+#使用-N来指定拆分的行数,本例中为-10
+[root@roclinux ~]$ split -d -10 /etc/passwd my_passwd_
+ 
+#可以看到拆分成功
+[root@roclinux ~]$ wc -l my_passwd_*
+  10 my_passwd_00
+  10 my_passwd_01
+   5 my_passwd_02
+  25 total</pre>
+<h2>
+	合并后的校验不可少</h2>
+需要注意的是，在通过网络来传输大文件，或者在设备之间复制大文件的时候，可能会出现传输前后数据不一致的情况。<br />
+<br />
+使用 split 来拆分大文件仅仅是故事的开始，操作完毕后化零为整、完璧归赵才是完美的结局。因此需要在合并文件后进行文件的完整性校验，推荐使用 md5sum 来计算和比对前后两个大文件的 md5 值。
+<pre class="info-box">
+#对原先的文件计算md5值
+[root@roclinux ~]$ md5sum king_of_ring.avi
+eacff27bf2db99c7301383b7d8c1c07c  king_of_ring.avi
+ 
+#对合并后的文件计算md5值, 并与原值进行比较
+[root@roclinux ~]$ md5sum king_of_ring_merge.avi
+eacff27bf2db99c7301383b7d8c1c07c  king_of_ring_merge.avi</pre>
+如果前后一致，那么恭喜你，文件合并成功！<br />
+<br />
+好了，split 学完了，我们也可以和朋友一起欣赏惊险刺激的美国大片了！</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="../view/niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/231_2.html" title="memset函数及其用法，C语言memset函数详解" target="_blank">memset函数及其用法，C语言memset函数详解</a></li>
+<li><a href="../view/3354_2.html" title="链式队列及基本操作（C语言实现）" target="_blank">链式队列及基本操作（C语言实现）</a></li>
+<li><a href="../view/7189_2.html" title="MySQL算术运算符" target="_blank">MySQL算术运算符</a></li>
+<li><a href="../view/7247_2.html" title="C++ STL unordered_map删除元素：erase()和clear()" target="_blank">C++ STL unordered_map删除元素：erase()和clear()</a></li>
+<li><a href="../jstl/fn-length_2.html" title="fn:length()函数" target="_blank">fn:length()函数</a></li>
+<li><a href="../view/8lrfsoy_2.html" title="MySQL逻辑运算符详解" target="_blank">MySQL逻辑运算符详解</a></li>
+<li><a href="../view/3trdgs7_2.html" title="《循序渐进Vue.js 3前端开发实战》PDF下载（高清完整版）" target="_blank">《循序渐进Vue.js 3前端开发实战》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 701;
+window.arcId = "e187jD7VKdCGR88GjY2YA7vC7TWZ2F2Xj2ltP5vzgGim3+pdkq4EPYrL8w";
+window.typeidChain = "71|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="../view/8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="../view/8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="../view/8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="../view/9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="../view/8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

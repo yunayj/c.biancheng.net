@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++类的构造函数（入门必读）</title>
+<meta name="description" content="在 C++ 中，构造函数是特殊的成员函数，只要创建类对象，就必须调用构造函数。 构造函数的工作是保证每个对象的数据成员具有合适的初始值，本节重点介绍怎么定义和使用构造函数" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++类的构造函数（入门必读）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在 C++ 中，构造函数是特殊的成员函数，只要创建类对象，就必须调用构造函数。<br />
+<br />
+构造函数的工作是保证每个对象的数据成员具有合适的初始值，本节重点介绍怎么定义和使用构造函数。<br />
+<h2>
+构造函数的定义</h2>
+对于一个整型的变量，在定义的时候可以同时赋一个初值，例如：
+<pre class="cpp" shownum="false">
+int a = 1;</pre>
+但是对于类对象，比如前面定义的类 Employee，如果想要在定义类对象的时候赋初值，比如：<br />
+<pre class="cpp" shownum="false">
+Employee emp={&quot;Jason&quot;, 8, 7000};</pre>
+上面例子是想在定义的时候，让 emp 对象的数据成员分别为 Jason、8 和 7000，其实这是不可以的，类对象不可以直接这么赋初值。要想让类对象在生成的时候有一个初值，就要使用构造函数。<br />
+<br />
+和类中其它的成员函数不同，构造函数和类同名，而且没有返回值类型。和其它成员函数相同的是，构造函数也有形参表和函数体。一个类可以有多个构造函数，每个构造函数必须有与其他构造函数不同数目或类型的形参。<br />
+<br />
+例如，为 Employee 类添加构造函数：<br />
+<pre class="cpp">
+// 定义 Employee类
+class Employee {
+public:
+    //定义构造函数
+    Employee(const char* n, int a, double s) {
+        name = n;
+        age = a;
+        salary = s;
+    }
+
+private:
+    const char * name;
+    int age;
+    double salary;
+};</pre>
+<blockquote>
+<p>
+注意，构造函数也受 public、protected 和 private 访问限制的约束。</p>
+</blockquote>
+在上面的定义中增加了构造函数，本构造函数接收 3 个参数。有了这个定义之后，就可以在定义类对象的时候赋初值了，例如：
+<pre class="cpp" shownum="false">
+Employee emp(&quot;zhangsan&quot;, 10, 7000);</pre>
+在创建对象的时候，编译器会自动调用构造函数，不需要程序员手动调用。<br />
+<h2>
+构造函数的重载</h2>
+一个类可以包含多个构造函数，数量没有限制。不同的构造函数允许用户指定不同的方法来初始化类。和函数的重载一样，这些构造函数的形参必须不同。<br />
+<br />
+当一个类定义了多个构造函数的时候，编译器会根据提供的实参的类型和数目来选择构造函数。<br />
+<br />
+下面为 Employee 类增加不同的构造函数：<br />
+<pre class="cpp">
+class Employee {
+public:
+    //定义构造函数
+    Employee(); // ①
+    Employee(const char* n); // ②
+    Employee(const char* n, int a, double s); // ③
+};
+Employee emp1; // 调用构造函数 ①
+Employee emp2(&quot;zhangsan&quot;); // 调用构造函数 ②
+Employee emp3(&quot;zhangsan&quot;, 10, 7000); // 调用构造函数 ③</pre>
+<h2>
+默认构造函数</h2>
+如果一个类的内部没有添加任何构造函数，那么创建类对象的时候会调用默认构造函数。<br />
+<br />
+默认构造函数可以手动添加，也可以由编译器自动生成，为所有的数据成员提供初始化。默认构造函数没有任何参数，例如上边实例中<code>Employee();</code>就是默认构造函数。<br />
+<br />
+注意，当为类手动添加了构造函数的时候，比如：
+<pre class="cpp">
+class myClass
+{
+public:
+    myClass(int n);   
+}</pre>
+因为该类定义了构造函数，所以编译器不再为其添加默认构造函数，那么这个类就没有无参数的构造函数。因此构造这个类的对象的时候必须提供参数，也就是说下面的语句是错误的：
+<pre class="cpp" shownum="false">
+myClass my; // 错误，该类没有默认构造函数</pre>
+上面的语句是错误的，因为编译器找不到无参数的构造函数定义，正确的方法就是提供一个初始参数：<br />
+<pre class="cpp" shownum="false">
+myClass my(1);</pre>
+<h2>
+复制构造函数</h2>
+上文介绍了类的构造函数，可以方便地为类指定初始值，下面考虑用一个现有的类对象来创建新的对象的过程。<br />
+<br />
+对于 C++ 内部数据类型，这个过程很容易理解，例如：
+<pre class="cpp" shownum="false">
+int a = 100;
+int b = a;</pre>
+类对象也可以像上面那样创建，例如：
+<pre class="cpp" shownum="false">
+Employee emp1;
+Employee emp2 = emp1;</pre>
+新生成的 emp2 所有的数据都和 emp1 一样，创建 emp2 对象的过程就调用了类中的复制构造函数，也叫拷贝构造函数。<br />
+<br />
+复制构造函数是一个特殊的构造函数，该构造函数接收一个本类类型的引用作为参数，参数数目只能是一个。通过使用复制构造函数，可以用一个现有的类对象来创建一个新的类对象。<br />
+<br />
+下面为 Employee 类添加一个复制构造函数：<br />
+<pre class="cpp">
+class Employee {
+public:
+    //定义复制构造函数
+    Employee(const Employee&amp; e);
+};</pre>
+<blockquote>
+<p>
+再次强调，复制构造函数的参数必须使用引用。</p>
+</blockquote>
+有了上面的定义之后，用 emp1 来创建 emp2 的时候，就会调用这个复制构造函数，并且把 emp1 作为参数传入。<br />
+<br />
+同构造函数一样，如果一个类没有定义复制构造函数，编译器会自动添加一个复制构造函数；反之如果类中已经包含复制构造函数，那么编译器就不添加了。<br />
+<br />
+一个类只能有一个复制构造函数。调用复制构造函数创建类对象，常见的场景有以下几个：
+<ul>
+<li>
+在定义类对象的时候直接用其他的类对象初始化，比如前面的<code>Employee emp2 = emp1;</code>。</li>
+<li>
+调用函数的时候。如果函数的参数为类类型，且没有定义为引用，这时函数是值传递的，编译器会自动为传入的参数创建一个复制，这个时候会调用复制构造函数。</li>
+<li>
+在函数返回的时候。如果函数的返回类型为类类型，且没有定义为引用。那么在函数返回的时候编译器也会用一个复制返回，这个时候会调用复制构造函数。</li>
+</ul>
+<h2>
+总结</h2>
+在 C++ 中，构造函数起着至关重要的作用，确保对象在创建时具有合适的初始值。构造函数不仅可以通过参数传递进行定制化初始化，还可以通过多个重载版本以适应不同的初始化需求。<br />
+<br />
+默认构造函数没有任何参数，可以手动定义，也可以由编译器自动添加。但一旦手动定义了任何类型的构造函数，编译器将不再添加默认构造函数。<br />
+<br />
+复制构造函数用于创建一个新对象，并将现有对象的所有属性复制到新对象中，在函数参数传递和返回值等场景中特别有用。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="883.html" title="Linux df用法详解：查看文件系统硬盘使用情况" target="_blank">Linux df用法详解：查看文件系统硬盘使用情况</a></li>
+<li><a href="2298.html" title="Python issubclass和isinstance函数：检查类型" target="_blank">Python issubclass和isinstance函数：检查类型</a></li>
+<li><a href="../mysql/tan.html" title="MySQL TAN函数：求正切值" target="_blank">MySQL TAN函数：求正切值</a></li>
+<li><a href="4327.html" title="MyBatis执行SQL的两种方式：SqlSession和Mapper接口" target="_blank">MyBatis执行SQL的两种方式：SqlSession和Mapper接口</a></li>
+<li><a href="7912.html" title="Django Form表单内置字段详解" target="_blank">Django Form表单内置字段详解</a></li>
+<li><a href="kin5om.html" title="C语言完数" target="_blank">C语言完数</a></li>
+<li><a href="00w96x3.html" title="《Web前端开发全程实战——HTML5+CSS3+JavaScript+jQuery+Bootstrap》PDF下载（高清完整版" target="_blank">《Web前端开发全程实战——HTML5+CSS3+JavaScript+jQuery+Bootstrap》PDF下载（高清完整版</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10344;
+window.arcId = "07baPdZY51ZKmgYMiN0lmwFlUz2FO+f0HJgdfKuUftX6/w11lUVCpJ97vN+O";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

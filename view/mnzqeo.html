@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C语言快速排序</title>
+<meta name="description" content="快速排序是一种高效的基于比较的排序算法，C语言是快速排序的实现语言之一。在本文中，我们将详细介绍C语言实现快速排序的步骤以及代码，并分析其时间复杂度。 实现步骤 快速排" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C语言快速排序</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">快速排序是一种高效的基于比较的排序算法，C语言是快速排序的实现语言之一。在本文中，我们将详细介绍C语言实现快速排序的步骤以及代码，并分析其时间复杂度。<br />
+<h2>
+实现步骤</h2>
+快速排序的实现分为两个主要步骤：选择基准元素和分割序列。<br />
+<h4>
+选择基准元素</h4>
+选择基准元素是快速排序的关键步骤。基准元素的选择会直接影响算法的效率。一般情况下，我们可以选取待排序序列的第一个元素作为基准元素，但这种方式可能会导致最坏情况的出现，即待排序序列已经有序或近乎有序，此时时间复杂度将退化为O(n^2)。<br />
+<br />
+为了避免最坏情况的出现，我们可以采用一些随机化的方法来选择基准元素，例如随机选取一个元素作为基准元素，或者从待排序序列中随机选择三个元素，取它们的中位数作为基准元素。<br />
+<h4>
+分割序列</h4>
+在选择基准元素之后，我们需要将待排序序列分割成两个子序列。具体而言，我们可以维护两个指针，一个指向待排序序列的头部，一个指向序列的尾部。然后分别从两端开始扫描序列，当找到一个元素比基准元素大（或小）时，就将其与另一个元素交换位置。重复这个过程，直到两个指针相遇为止。此时，我们可以将基准元素和相遇位置上的元素交换位置，然后将序列分成左右两部分，左边的部分的所有元素都小于等于基准元素，右边的部分的所有元素都大于等于基准元素。<br />
+<h4>
+递归排序</h4>
+接下来，我们可以递归地对左右两个子序列进行快速排序，直到序列有序为止。<br />
+<h2>
+C语言实现</h2>
+下面是C语言实现快速排序的代码：
+<pre class="c">
+#include &lt;stdio.h&gt;
+
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+int partition(int arr[], int low, int high) {
+    int pivot = arr[low];
+    int i = low, j = high;
+    while (i &lt; j) {
+        while (i &lt; j &amp;&amp; arr[j] &gt;= pivot) j--;
+        while (i &lt; j &amp;&amp; arr[i] &lt;= pivot) i++;
+        if (i &lt; j) {
+            swap(&amp;arr[i], &amp;arr[j]);
+        }
+    }
+    swap(&amp;arr[low], &amp;arr[i]);
+    return i;
+}
+
+void quicksort(int arr[], int low, int high) {
+    if (low &lt; high) {
+        int pi = partition(arr, low, high);
+        quicksort(arr, low, pi - 1);
+        quicksort(arr, pi + 1, high);
+    }
+}
+
+void printArray(int arr[], int size) {
+    int i;
+    for (i = 0; i &lt; size; i++) printf(&quot;%d &quot;, arr[i]);
+    printf(&quot;\n&quot;);
+}
+
+int main() {
+    int arr[] = {10, 7, 8, 9, 1, 5};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    quicksort(arr, 0, n - 1);
+    printf(&quot;Sorted array: &quot;);
+    printArray(arr, n);
+    return 0;
+}</pre>
+在这个代码中，我们首先定义了一个函数 swap，用于交换两个元素的值。然后，我们定义了一个函数 partition，该函数用于将待排序序列分割成两个子序列，并返回基准元素的位置。最后，我们定义了一个函数quicksort，该函数用于递归地对左右两个子序列进行快速排序。<br />
+<br />
+在 quicksort 函数中，我们首先判断待排序序列是否为空，如果不为空，就调用 partition 函数将序列分割成两个子序列，然后递归地对左右两个子序列进行排序。在主函数中，我们定义了一个整数数组，并对其进行快速排序，最后输出排序后的数组。<br />
+<h2>
+时间复杂度分析</h2>
+快速排序的时间复杂度取决于基准元素的选择方式。在最坏情况下，基准元素被选择为序列中的最小（或最大）元素，此时每次分割只能减少一个元素，需要进行 n 次分割才能完成排序，时间复杂度为 O(n^2)。在最好情况下，基准元素被选择为序列的中位数，此时每次分割将序列平均分成两部分，需要进行 log n 次分割才能完成排序，时间复杂度为 O(n log n)。<br />
+<br />
+由于快速排序采用分治的思想，每次将序列分割成两个子序列进行排序，因此快速排序的时间复杂度为 O(n log n)。快速排序的空间复杂度主要取决于递归调用的层数，即分割的次数，最坏情况下需要进行 n 次分割，因此空间复杂度为 O(n)。<br />
+<br />
+需要注意的是，在实际应用中，快速排序可能存在一些问题，比如当待排序序列中存在大量重复元素时，快速排序的效率会变得很低。为了解决这个问题，可以使用三路快速排序（即将序列分成小于、等于和大于基准元素三个部分进行排序），或者使用其他的排序算法。<br />
+<h2>
+总结</h2>
+快速排序是一种高效的排序算法，它采用分治的思想，每次将序列分割成两个子序列进行排序，时间复杂度为 O(n log n)，空间复杂度为 O(n)。<br />
+<br />
+快速排序的实现相对简单，但需要注意一些细节，比如基准元素的选择方式和数组越界的问题。在实际应用中，快速排序可能存在一些问题，需要结合具体情况选择合适的排序算法。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="713.html" title="Linux该如何学习（新手入门必看）" target="_blank">Linux该如何学习（新手入门必看）</a></li>
+<li><a href="vip_1773.html" title="C语言变量的定义位置以及初始值" target="_blank">C语言变量的定义位置以及初始值</a></li>
+<li><a href="vip_2099.html" title="用户模式和内核模式" target="_blank">用户模式和内核模式</a></li>
+<li><a href="../redis2/sdiffstore.html" title="Redis SDIFFSTORE命令" target="_blank">Redis SDIFFSTORE命令</a></li>
+<li><a href="../redis2/zrangebyscore.html" title="Redis ZRANGEBYSCORE命令" target="_blank">Redis ZRANGEBYSCORE命令</a></li>
+<li><a href="../sql/null.html" title="SQL NULL：空值" target="_blank">SQL NULL：空值</a></li>
+<li><a href="kl30a9j.html" title="OpenLDAP到底是什么？" target="_blank">OpenLDAP到底是什么？</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9892;
+window.arcId = "89b1m6fLSFaPd+DJS1k26C/4wP4IsuVmeOoruVoBZ+45RfBkn+/5Geh+Fco";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C语言点运算符和箭头运算符</title>
+<meta name="description" content="二元运算符 . 和 - 常常被称为点运算符（dot operator）和箭头运算符（arrow operator），借助于这两个运算符，可以选择结构或联合中的成员。 例 1 展示了点运算符的左操作数必须是一个结" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C语言点运算符和箭头运算符</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body"><span style="color:#b22222;">二元运算符 . 和 -&gt; 常常被称为点运算符</span>（dot operator）和<span style="color:#b22222;">箭头运算符</span>（arrow operator），借助于这两个运算符，可以选择结构或联合中的成员。<br />
+<br />
+例 1 展示了点运算符的左操作数必须是一个结构或者一个联合，而右操作数必须是该类型（结构或联合）成员的名字。<br />
+<br />
+【例1】
+<pre class="cpp">
+struct Article {  long number;      // 物品编号
+                  char name[32];    // 物品名字
+                  long price;       // 物品单价（精确到美分）
+                  /* ... */
+                };
+struct Article sw = { 102030L, &quot;Heroes&quot;, 5995L };
+sw.price = 4995L;                   // 将价格改为49.95</pre>
+<br />
+<span style="color:#b22222;">点运算结果的类型，与所选择成员的类型是一样的。</span>如果左操作数是一个左值，那么该运算也会产生左值。如果左操作数的类型有限定符（例如被声明为 const），那么结果类型也有该限定符。<br />
+<br />
+点运算符的左操作数并非一定是左值，如下例所示：<br />
+<pre class="cpp">
+struct Article getArticle();                      // 函数原型
+printf( &quot;name: %s\n&quot;, getArticle().name );</pre>
+<br />
+函数 getArticle（）返回一个 struct Article 类型的对象。按此结果，getArticle（）.name 是一个有效的表达式，但不是一个左值，因为函数的返回值不是一个左值。<br />
+<br />
+运算符 -&gt; 也可用于选择结构或联合的成员，但是<span style="color:#b22222;">箭头运算符的左操作数必须是一个指针，它指向一个结构或联合类型</span>。<span style="color:#b22222;">右操作数是该结构或联合成员的名字</span>。例 2 展示了运算符-&gt;的用法，同样使用例 1 所定义的结构 Article。<br />
+<br />
+【例2】
+<pre class="cpp">
+struct Article *pArticle = &amp;sw,     // 一个指向struct Article的指针
+       const *pcArticle = &amp;sw;      // 一个指向struct Article的只读指针
+
+++(pArticle-&gt;number);                    // 增加编号
+if ( pcArticle-&gt;number == 102031L ) // 正确：获取只读指针
+  pcArticle-&gt;price += 50;        // 错误：不能使用限定符const的指针来修改对象</pre>
+<br />
+<span style="color:#b22222;">箭头运算符的结果总是一个左值。</span>它具有被选取成员的类型，也同样包括了其指针操作数的任何类型限定符。在例 2 中，pcArticle 是一个指向 const struct Article 的指针。其结果是，表达式 pcArticle-&gt;price 是一个常量。<br />
+<br />
+包含箭头运算符的任何表达式，都可以利用点运算符进行重写，做法是先将指针解参考，然后使用点运算符：表达式 p-&gt;m 等效于（*p）.m；相反地，如果 x 是左值的话，表达式 x.m 等效于（&amp;x）-&gt;m。<br />
+<br />
+和运算符 [] 一样，点运算符 . 和箭头运算符 -&gt; 都具有最高的优先级，并且组合方式都是从左到右。因此，表达式 ++p-&gt;m 等同于 ++（p-&gt;m），表达式 p-&gt;m++ 等同于（p-&gt;m）++。<br />
+<br />
+然而，表达式（*p）.m 中的括号是有必要的，因为复引用运算符 * 的优先级比较低。表达式 *p.m 等效于 *（p.m），这种等效仅当在成员 m 是指针时才有意义。<br />
+<br />
+我们通过结合下标运算符、点运算符和箭头运算符，对一个元素为结构的数组进行操作，来总结本文讲述的问题：<br />
+<pre class="cpp">
+struct Article arrArticle[10];       // 一个具有10个元素的数组
+                                                // 每个元素为结构类型
+arrArticle[2].price = 990L;             // 设置数组元素arrArticle[2]的成员price
+arrArticle-&gt;number = 10100L;         // 设置数组元素arrArticle[0]的成员number</pre>
+<br />
+一个数组名称，例如本例中的 arrArticle，是一个指向第一个数组元素的常量指针。所以 arrArticle-&gt;number 指向第一个数组元素的成员 number。简单地说，对于任一的索引值 i，下面 3 个表达式是等价的：<br />
+<pre class="cpp">
+arrArticle[i].number
+(arrArticle+i)-&gt;number
+(*(arrArticle+i)).number</pre>
+它们都指向数组中索引值为 i 的元素的成员 number。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_2091.html" title="虚拟内存到底是什么？为什么我们在C语言中看到的地址是假的？" target="_blank">虚拟内存到底是什么？为什么我们在C语言中看到的地址是假的？</a></li>
+<li><a href="2216.html" title="Python pass语句及其作用" target="_blank">Python pass语句及其作用</a></li>
+<li><a href="7521.html" title="C++ lower_bound()函数用法详解" target="_blank">C++ lower_bound()函数用法详解</a></li>
+<li><a href="../python_spider/webpage.html" title="网页是怎样构成的" target="_blank">网页是怎样构成的</a></li>
+<li><a href="bubble-sort.html" title="冒泡排序算法" target="_blank">冒泡排序算法</a></li>
+<li><a href="ll3bkkp.html" title="PHP常量的定义和使用" target="_blank">PHP常量的定义和使用</a></li>
+<li><a href="../c/isgraph.html" title="C语言isgraph()：判断一个字符是否为可打印字符（不包括空格）" target="_blank">C语言isgraph()：判断一个字符是否为可打印字符（不包括空格）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 293;
+window.arcId = "45ccsDLtcEpkia5Wa1SO1F9RguGU0Twm97zOx7pACHBnqs06V+EFzA0afg";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

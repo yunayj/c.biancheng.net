@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>typedef的用法，C语言typedef详解</title>
+<meta name="description" content="C语言允许用户使用 typedef 关键字来定义自己习惯的数据类型名称，来替代系统默认的基本类型名称、数组类型名称、指针类型名称与用户自定义的结构型名称、共用型名称、枚举型名称" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>typedef的用法，C语言typedef详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">C语言允许用户使用 typedef 关键字来定义自己习惯的数据类型名称，来替代系统默认的基本类型名称、数组类型名称、指针类型名称与用户自定义的结构型名称、共用型名称、枚举型名称等。一旦用户在程序中定义了自己的数据类型名称，就可以在该程序中用自己的数据类型名称来定义变量的类型、数组的类型、指针变量的类型与函数的类型等。<br />
+<br />
+例如，C 语言在 C99 之前并未提供布尔类型，但我们可以使用 typedef 关键字来定义一个简单的布尔类型，如下面的代码所示：<br />
+<pre class="cpp">
+typedef int BOOL;
+#define TRUE 1
+#define FALSE 0</pre>
+定义好之后，就可以像使用基本类型数据一样使用它了，如下面的代码所示：
+<pre class="cpp">
+BOOL bflag=TRUE;</pre>
+<blockquote>
+<p>
+C99标准中新增了布尔类型，且定义布尔变量的方式有两种，一种是使用 _BOOL，另一种是使用 &lt;stdbool.h&gt; 头文件中定义好的 bool 类型，感兴趣的小伙伴请<span class="btn-more-info" keyword="C布尔类型" type="more">猛击这里</span>了解详情。&nbsp;</p>
+</blockquote>
+<h2>
+typedef的4种用法</h2>
+在实际使用中，typedef 的应用主要有如下4种。<br />
+<h4>
+1) 为基本数据类型定义新的类型名</h4>
+也就是说，系统默认的所有基本类型都可以利用 typedef 关键字来重新定义类型名，示例代码如下所示：<br />
+<pre class="cpp">
+typedef unsigned int COUNT;</pre>
+而且，我们还可以使用这种方法来定义与平台无关的类型。比如，要定义一个叫 REAL 的浮点类型，在目标平台一上，让它表示最高精度的类型，即：<br />
+<pre class="cpp">
+typedef long double REAL;</pre>
+在不支持 long double 的平台二上，改为：
+<pre class="cpp">
+typedef double REAL;</pre>
+甚至还可以在连 double 都不支持的平台三上，改为：<br />
+<pre class="cpp">
+typedef float REAL;</pre>
+这样，当跨平台移植程序时，我们只需要修改一下 typedef 的定义即可，而不用对其他源代码做任何修改。其实，标准库中广泛地使用了这个技巧，比如 size_t 在 V<a href='../cplus/cplus.html' target='_blank'>C++</a>2010 的 crtdefs.h 文件中的定义如下所示：<br />
+<pre class="cpp">
+#ifndef _SIZE_T_DEFINED
+#ifdef  _WIN64
+typedef unsigned __int64    size_t;
+#else
+typedef _W64 unsigned int   size_t;
+#endif
+#define _SIZE_T_DEFINED
+#endif</pre>
+<h4>
+2) 为自定义数据类型（结构体、共用体和枚举类型）定义简洁的类型名称</h4>
+以结构体为例，下面我们定义一个名为 Point 的结构体：
+<pre class="cpp">
+struct Point
+{
+    double x;
+    double y;
+    double z;
+};</pre>
+在调用这个结构体时，我们必须像下面的代码这样来调用这个结构体：<br />
+<pre class="cpp">
+struct Point oPoint1={100，100，0};
+struct Point oPoint2;</pre>
+在这里，结构体 struct Point 为新的数据类型，在定义变量的时候均要向上面的调用方法一样有保留字 struct，而不能像 int 和 double 那样直接使用 Point 来定义变量。现在，我们利用 typedef 定义这个结构体，如下面的代码所示：<br />
+<pre class="cpp">
+typedef struct tagPoint
+{
+    double x;
+    double y;
+    double z;
+} Point;</pre>
+在上面的代码中，实际上完成了两个操作：<br />
+1、定义了一个新的结构类型，代码如下所示：
+<pre class="cpp">
+struct tagPoint
+{
+    double x;
+    double y;
+    double z;
+} ;</pre>
+其中，struct 关键字和 tagPoint 一起构成了这个结构类型，无论是否存在 typedef 关键字，这个结构都存在。<br />
+<br />
+2、使用 typedef 为这个新的结构起了一个别名，叫 Point，即：
+<pre class="cpp">
+typedef struct tagPoint Point</pre>
+因此，现在你就可以像 int 和 double 那样直接使用 Point 定义变量，如下面的代码所示：<br />
+<pre class="cpp">
+Point oPoint1={100，100，0};
+Point oPoint2;</pre>
+为了加深对 typedef 的理解，我们再来看一个结构体例子，如下面的代码所示：<br />
+<pre class="cpp">
+typedef struct tagNode
+{
+    char *pItem;
+    pNode pNext;
+} *pNode;</pre>
+从表面上看，上面的示例代码与前面的定义方法相同，所以应该没有什么问题。但是编译器却报了一个错误，为什么呢？莫非 C 语言不允许在结构中包含指向它自己的指针？<br />
+<br />
+其实问题并非在于 struct 定义的本身，大家应该都知道，C 语言是允许在结构中包含指向它自己的指针的，我们可以在建立链表等<a href='../data_structure/data_structure.html' target='_blank'>数据结构</a>的实现上看到很多这类例子。那问题在哪里呢？其实，根本问题还是在于 typedef 的应用。<br />
+<br />
+在上面的代码中，新结构建立的过程中遇到了 pNext 声明，其类型是 pNode。这里要特别注意的是，pNode 表示的是该结构体的新别名。于是问题出现了，在结构体类型本身还没有建立完成的时候，编译器根本就不认识 pNode，因为这个结构体类型的新别名还不存在，所以自然就会报错。因此，我们要做一些适当的调整，比如将结构体中的 pNext 声明修改成如下方式：
+<pre class="cpp">
+typedef struct tagNode
+{
+    char *pItem;
+    struct tagNode *pNext;
+} *pNode;</pre>
+或者将 struct 与 typedef 分开定义，如下面的代码所示：<br />
+<pre class="cpp">
+typedef struct tagNode *pNode;
+struct tagNode
+{
+    char *pItem;
+    pNode pNext;
+};</pre>
+在上面的代码中，我们同样使用 typedef 给一个还未完全声明的类型 tagNode 起了一个新别名。不过，虽然 C 语言编译器完全支持这种做法，但不推荐这样做。建议还是使用如下规范定义方法：<br />
+<pre class="cpp">
+struct tagNode
+{
+    char *pItem;
+    struct tagNode *pNext;
+};
+typedef struct tagNode *pNode;</pre>
+<h4>
+3) 为数组定义简洁的类型名称</h4>
+它的定义方法很简单，与为基本数据类型定义新的别名方法一样，示例代码如下所示：
+<pre class="cpp">
+typedef int INT_ARRAY_100[100];
+INT_ARRAY_100 arr;</pre>
+<h4>
+4) 为指针定义简洁的名称</h4>
+对于指针，我们同样可以使用下面的方式来定义一个新的别名：<br />
+<pre class="cpp">
+typedef char* PCHAR;
+PCHAR pa;</pre>
+对于上面这种简单的变量声明，使用 typedef 来定义一个新的别名或许会感觉意义不大，但在比较复杂的变量声明中，typedef 的优势马上就体现出来了，如下面的示例代码所示：<br />
+<pre class="cpp">
+int *(*a[5])(int,char*);</pre>
+对于上面变量的声明，如果我们使用 typdef 来给它定义一个别名，这会非常有意义，如下面的代码所示：<br />
+<pre class="cpp">
+// PFun是我们创建的一个类型别名
+typedef int *(*PFun)(int,char*);
+// 使用定义的新类型来声明对象，等价于int*(*a[5])(int,char*);
+PFun a[5];</pre>
+<h2>
+小心使用 typedef 带来的陷阱</h2>
+接下来看一个简单的 typedef 使用示例，如下面的代码所示：<br />
+<pre class="cpp">
+typedef char* PCHAR;
+int strcmp(const PCHAR,const PCHAR);</pre>
+在上面的代码中，&ldquo;const PCHAR&rdquo; 是否相当于 &ldquo;const char*&rdquo; 呢？<br />
+<br />
+答案是否定的，原因很简单，typedef 是用来定义一种类型的新别名的，它不同于宏，不是简单的字符串替换（有关 typedef 和 #define 的区别，请<span class="btn-more-info" keyword="typedef和#define" type="more">猛击这里</span>了解详情）。因此，&ldquo;const PCHAR&rdquo;中的 const 给予了整个指针本身常量性，也就是形成了常量指针&ldquo;char*const（一个指向char的常量指针）&rdquo;。即它实际上相当于&ldquo;char*const&rdquo;，而不是&ldquo;const char*（指向常量 char 的指针）&rdquo;。当然，要想让 const PCHAR 相当于 const char* 也很容易，如下面的代码所示：
+<pre class="cpp">
+typedef const char* PCHAR;
+int strcmp(PCHAR， PCHAR);</pre>
+其实，无论什么时候，只要为指针声明 typedef，那么就应该在最终的 typedef 名称中加一个 const，以使得该指针本身是常量。<br />
+<br />
+还需要特别注意的是，虽然 typedef 并不真正影响对象的存储特性，但在语法上它还是一个存储类的关键字，就像 auto、extern、static 和 register 等关键字一样。因此，像下面这种声明方式是不可行的：<br />
+<pre class="cpp">
+typedef static int INT_STATIC;</pre>
+不可行的原因是不能声明多个存储类关键字，由于 typedef 已经占据了存储类关键字的位置，因此，在 typedef 声明中就不能够再使用 static 或任何其他存储类关键字了。当然，编译器也会报错，如在 VC++2010 中的报错信息为&ldquo;无法指定多个存储类&rdquo;。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="5394.html" title="Go语言包的基本概念" target="_blank">Go语言包的基本概念</a></li>
+<li><a href="6287.html" title="Linux查看硬盘读写情况（汇总版）" target="_blank">Linux查看硬盘读写情况（汇总版）</a></li>
+<li><a href="vip_8361.html" title="MySQL权限控制实现原理" target="_blank">MySQL权限控制实现原理</a></li>
+<li><a href="../mongodb2/map-reduce.html" title="MongoDB MapReduce" target="_blank">MongoDB MapReduce</a></li>
+<li><a href="../jstl/fn-escapexml.html" title="fn:escapeXml()函数" target="_blank">fn:escapeXml()函数</a></li>
+<li><a href="../pygame/transform.html" title="Pygame Transform图像变形" target="_blank">Pygame Transform图像变形</a></li>
+<li><a href="ulwxou7.html" title="HTML &lt;h1&gt;-&lt;h6&gt;标签：设置标题" target="_blank">HTML &lt;h1&gt;-&lt;h6&gt;标签：设置标题</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 298;
+window.arcId = "4ed4ZtPj3TsCAxN6GGpP35f1quXlgktv9WPkADCE+avsBvPIJaMrEmTfCg";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

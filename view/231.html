@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>memset函数及其用法，C语言memset函数详解</title>
+<meta name="description" content="在前面不止一次说过，定义变量时一定要进行初始化，尤其是数组和结构体这种占用内存大的数据结构。在使用数组的时候经常因为没有初始化而产生烫烫烫烫烫烫这样的野值，俗称乱" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>memset函数及其用法，C语言memset函数详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在前面不止一次说过，定义变量时一定要进行初始化，尤其是数组和结构体这种占用内存大的<a href='../data_structure/data_structure.html' target='_blank'>数据结构</a>。在使用数组的时候经常因为没有初始化而产生&ldquo;烫烫烫烫烫烫&rdquo;这样的野值，俗称&ldquo;乱码&rdquo;。
+<blockquote>
+<p>
+思考：C语言变量必须初始化吗，不初始化会怎样？感兴趣的小伙伴请<span class="btn-more-info" keyword="C变量初始化" type="more">猛击这里</span>获取答案。</p>
+</blockquote>
+每种类型的变量都有各自的初始化方法，memset() 函数可以说是初始化内存的&ldquo;万能函数&rdquo;，通常为新申请的内存进行初始化工作。它是直接操作内存空间，mem即&ldquo;内存&rdquo;（memory）的意思。该函数的原型为：
+<p class="info-box">
+# include &lt;string.h&gt;<br />
+void *memset(void *s, int c, unsigned long n);</p>
+函数的功能是：将指针变量 s 所指向的前 n 字节的内存单元用一个&ldquo;整数&rdquo; c 替换，注意 c 是 int 型。s 是 void* 型的指针变量，所以它可以为任何类型的数据进行初始化。<br />
+<br />
+memset() 的作用是在一段内存块中填充某个给定的值。因为它只能填充一个值，所以该函数的初始化为原始初始化，无法将变量初始化为程序中需要的数据。用memset初始化完后，后面程序中再向该内存空间中存放需要的数据。<br />
+<br />
+memset 一般使用&ldquo;0&rdquo;初始化内存单元，而且通常是给数组或结构体进行初始化。一般的变量如 char、int、float、double 等类型的变量直接初始化即可，没有必要用 memset。如果用 memset 的话反而显得麻烦。<br />
+<br />
+当然，数组也可以直接进行初始化，但 memset 是对较大的数组或结构体进行清零初始化的最快方法，因为它是直接对内存进行操作的。<br />
+<br />
+这时有人会问：&ldquo;字符串数组不是最好用&#39;\0&#39;进行初始化吗？那么可以用 memset 给字符串数组进行初始化吗？也就是说参数 c 可以赋值为&#39;\0&#39;吗？&rdquo;<br />
+<br />
+可以的。虽然参数 c 要求是一个整数，但是整型和字符型是互通的。但是赋值为 &#39;\0&#39; 和 0 是等价的，因为字符 &#39;\0&#39; 在内存中就是 0。所以在 memset 中初始化为 0 也具有结束标志符 &#39;\0&#39; 的作用，所以通常我们就写&ldquo;0&rdquo;。<br />
+<br />
+memset 函数的第三个参数 n 的值一般用 sizeof()&nbsp; 获取，这样比较专业。注意，如果是对指针变量所指向的内存单元进行清零初始化，那么一定要先对这个指针变量进行初始化，即一定要先让它指向某个有效的地址。而且用memset给指针变量如p所指向的内存单元进行初始化时，n 千万别写成 sizeof(p)，这是新手经常会犯的错误。因为 p 是指针变量，不管 p 指向什么类型的变量，sizeof(p) 的值都是 4。
+<blockquote>
+<p>
+注意，C语言中的指针和数组名不完全等价，不能将它们混为一谈，感兴趣的小伙伴请<span class="btn-more-info" keyword="C数组和指针" type="more">猛击这里</span>了解详情。</p>
+</blockquote>
+下面写一个程序：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+# include &lt;string.h&gt;
+int main(void)
+{
+    int i;  //循环变量
+    char str[10];
+    char *p = str;
+    memset(str, 0, sizeof(str));  //只能写sizeof(str), 不能写sizeof(p)
+    for (i=0; i&lt;10; ++i)
+    {
+        printf(&quot;%d\x20&quot;, str[i]);
+    }
+    printf(&quot;\n&quot;);
+    return 0;
+}</pre>
+根据memset函数的不同，输出结果也不同，分为以下几种情况：<br />
+memset(p, 0, sizeof(p));&nbsp; //地址的大小都是4字节<br />
+0 0 0 0 -52 -52 -52 -52 -52 -52<br />
+<br />
+memset(p, 0, sizeof(*p));&nbsp; //*p表示的是一个字符变量, 只有一字节<br />
+0 -52 -52 -52 -52 -52 -52 -52 -52 -52<br />
+<br />
+memset(p, 0, sizeof(str));<br />
+0 0 0 0 0 0 0 0 0 0<br />
+<br />
+memset(str, 0, sizeof(str));<br />
+0 0 0 0 0 0 0 0 0 0<br />
+<br />
+memset(p, 0, 10);&nbsp; //直接写10也行, 但不专业<br />
+0 0 0 0 0 0 0 0 0 0<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2308.html" title="C++运算符重载时要遵循的规则" target="_blank">C++运算符重载时要遵循的规则</a></li>
+<li><a href="4180.html" title="Python缩进规则（包含快捷键）" target="_blank">Python缩进规则（包含快捷键）</a></li>
+<li><a href="../spring_mvc/pass-param.html" title="Spring MVC传递参数" target="_blank">Spring MVC传递参数</a></li>
+<li><a href="../maven2/mirror.html" title="Maven镜像（mirror）" target="_blank">Maven镜像（mirror）</a></li>
+<li><a href="../maven2/private-server.html" title="Maven私服" target="_blank">Maven私服</a></li>
+<li><a href="../numpy/bit-operation.html" title="NumPy位运算" target="_blank">NumPy位运算</a></li>
+<li><a href="../c/getchar.html" title="C语言getchar()：输入一个字符" target="_blank">C语言getchar()：输入一个字符</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 231;
+window.arcId = "8e4cqwlGnocZVbeNHe24jKKPg1yPbV2v/ztYmkXr1lLNGBuSqpwyADGkCA";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

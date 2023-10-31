@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Redis AOF持久化详解（含配置策略）</title>
+<meta name="description" content="Redis AOF 被称为追加模式，或日志模式，是 Redis 提供的另一种持久化机制，它能够存储 Redis 服务器已经执行过的的命令，并且只记录对内存有过修改的命令，这种数据记录方法，被叫做增量" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="../view/niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="redis.html">Redis</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href="what-is-redis.html">Redis是什么</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href="windows-installer.html">Windows下载安装Redis</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href="linux-installer.html">Ubuntu下载安装Redis</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href="config.html">Redis配置文件</a>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href="data-types.html">Redis数据类型</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href="commands.html">Redis命令行模式</a>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href="keys.html">Redis key键</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href="strings.html">Redis string字符串</a>
+</dd>
+<dd>
+<span class="channel-num">9</span>
+<a href="bitmap.html">Redis bitmap位图</a>
+</dd>
+<dd>
+<span class="channel-num">10</span>
+<a href="incrby.html">Redis数值操作命令</a>
+</dd>
+<dd>
+<span class="channel-num">11</span>
+<a href="lists.html">Redis list列表</a>
+</dd>
+<dd>
+<span class="channel-num">12</span>
+<a href="hashes.html">Redis hash哈希散列</a>
+</dd>
+<dd>
+<span class="channel-num">13</span>
+<a href="sets.html">Redis set集合</a>
+</dd>
+<dd>
+<span class="channel-num">14</span>
+<a href="sorted-set.html">Redis zset有序集合</a>
+</dd>
+<dd>
+<span class="channel-num">15</span>
+<a href="connection.html">Redis连接命令</a>
+</dd>
+<dd>
+<span class="channel-num">16</span>
+<a href="security.html">Redis安全策略</a>
+</dd>
+<dd>
+<span class="channel-num">17</span>
+<a href="client.html">Redis客户端命令</a>
+</dd>
+<dd>
+<span class="channel-num">18</span>
+<a href="server.html">Redis服务器命令</a>
+</dd>
+<dd>
+<span class="channel-num">19</span>
+<a href="hyperloglog.html">Redis基数统计</a>
+</dd>
+<dd>
+<span class="channel-num">20</span>
+<a href="pubsub.html">Redis发布订阅</a>
+</dd>
+<dd>
+<span class="channel-num">21</span>
+<a href="streams.html">Redis消息队列</a>
+</dd>
+<dd>
+<span class="channel-num">22</span>
+<a href="bloom-filter.html">Redis布隆过滤器</a>
+</dd>
+<dd>
+<span class="channel-num">23</span>
+<a href="geo.html">Redis地理位置</a>
+</dd>
+<dd>
+<span class="channel-num">24</span>
+<a href="transaction.html">Redis事务</a>
+</dd>
+<dd>
+<span class="channel-num">25</span>
+<a href="lua-scripts.html">Redis Lua脚本</a>
+</dd>
+<dd>
+<span class="channel-num">26</span>
+<a href="benchmarks.html">Redis性能测试</a>
+</dd>
+<dd>
+<span class="channel-num">27</span>
+<a href="partition.html">Redis分区技术</a>
+</dd>
+<dd>
+<span class="channel-num">28</span>
+<a href="pipeline.html">Redis管道技术</a>
+</dd>
+<dd>
+<span class="channel-num">29</span>
+<a href="backup.html">Redis数据备份和还原</a>
+</dd>
+<dd>
+<span class="channel-num">30</span>
+<a href="rdb.html">Redis RDB持久化</a>
+</dd>
+<dd>
+<span class="channel-num">31</span>
+<a href="aof.html">Redis AOF持久化</a>
+</dd>
+<dd>
+<span class="channel-num">32</span>
+<a href="slaveof.html">Redis主从模式</a>
+</dd>
+<dd>
+<span class="channel-num">33</span>
+<a href="sentinel-model.html">Redis哨兵模式</a>
+</dd>
+<dd>
+<span class="channel-num">34</span>
+<a href="distributed-lock.html">Redis分布式锁</a>
+</dd>
+<dd>
+<span class="channel-num">35</span>
+<a href="cache.html">Redis缓存问题</a>
+</dd>
+<dd>
+<span class="channel-num">36</span>
+<a href="java.html">Java使用Redis</a>
+</dd>
+<dd>
+<span class="channel-num">37</span>
+<a href="php.html">PHP使用Redis</a>
+</dd>
+<dd>
+<span class="channel-num">38</span>
+<a href="python.html">Python使用Redis</a>
+</dd>
+<dd>
+<span class="channel-num">39</span>
+<a href="config-summary.html">Redis配置项汇总</a>
+</dd>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="redis.html">Redis</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Redis AOF持久化详解（含配置策略）</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">AOF 被称为追加模式，或日志模式，是 Redis 提供的另一种持久化策略，它能够存储 Redis 服务器已经执行过的的命令，并且只记录对内存有过修改的命令，这种数据记录方法，被叫做&ldquo;增量复制&rdquo;，其默认存储文件为<code>appendonly.aof</code>。
+<h2>
+开启AOF持久化</h2>
+AOF 机制默认处于未开启状态，可以通过修改 Redis 配置文件开启 AOF，如下所示：
+<h4>
+1) Windows系统</h4>
+执行如下操作：
+<pre class="info-box">
+#修改配置文件，把no改为 yes
+appendonly yes
+#确定存储文件名是否正确
+appendfilename &quot;appendonly.aof&quot;
+#重启服务器
+redis-server --service-stop
+redis-server --service-start</pre>
+<h4>
+2) Linux系统</h4>
+执行如下操作：<br />
+<pre class="info-box">
+#修改配置文件：
+vim /etc/redis/redis.conf
+appendonly yes # 把 no 改为 yes
+#确定存储文件名是否正确
+appendfilename &quot;appendonly.aof&quot;
+#重启服务：
+sudo /etc/init.d/redis-server restart</pre>
+提示：本节建议在您在 Linux 系统上操作 Redis，否则一些 AOF 的性能无法体现。
+<h2>
+AOF持久化机制</h2>
+每当有一个修改数据库的命令被执行时，服务器就将命令写入到 appendonly.aof 文件中，该文件存储了服务器执行过的所有修改命令，因此，只要服务器重新执行一次 .aof 文件，就可以实现还原数据的目的，这个过程被形象地称之为&ldquo;<span style="color:#008000;">命令重演&rdquo;</span>。
+<h4>
+1) 写入机制</h4>
+Redis 在收到客户端修改命令后，先进行相应的校验，如果没问题，就立即将该命令存追加到 .aof 文件中，也就是先存到磁盘中，然后服务器再执行命令。这样就算遇到了突发的宕机情况情况，也只需将存储到&nbsp; .aof 文件中的命令，进行一次&ldquo;命令重演&rdquo;就可以恢复到宕机前的状态。<br />
+<br />
+在上述执行过程中，有一个很重要的环节就是命令的写入，这是一个 IO 操作。Redis 为了提升写入效率，它不会将内容直接写入到磁盘中，而是将其放到一个内存缓存区（buffer）中，等到缓存区被填满时才真正将缓存区中的内容写入到磁盘里。<br />
+<h4>
+2) 重写机制</h4>
+Redis 在长期运行的过程中，aof 文件会越变越长。如果机器宕机重启，&ldquo;重演&rdquo;整个 aof 文件会非常耗时，导致长时间 Redis 无法对外提供服务。因此就需要对 aof 文件做一下&ldquo;瘦身&rdquo;运动。<br />
+<br />
+为了让 aof 文件的大小控制在合理的范围内，Redis 提供了 AOF 重写机制，手动执行<code>BGREWRITEAOF</code>命令，开始重写 aof 文件，如下所示：
+<pre class="info-box">
+127.0.0.1:6379&gt; BGREWRITEAOF
+Background append only file rewriting started</pre>
+通过上述操作后，服务器会生成一个新的 aof 文件，该文件具有以下特点：
+<ul>
+<li>
+新的 aof 文件记录的数据库数据和原 aof 文件记录的数据库数据完全一致；</li>
+<li>
+新的 aof 文件会使用尽可能少的命令来记录数据库数据，因此新的 aof 文件的体积会小很多；</li>
+<li>
+AOF 重写期间，服务器不会被阻塞，它可以正常处理客户端发送的命令。</li>
+</ul>
+<br />
+下表对原有 aof 文件和新生成的 aof 文件做了对比，如下所示：<br />
+<br />
+<table>
+<caption>
+重写机制AOF文件对比</caption>
+<tbody>
+<tr>
+<th>
+原有aof文件</th>
+<th>
+重写后aof文件</th>
+</tr>
+<tr>
+<td>
+select 0</td>
+<td>
+SELECT 0</td>
+</tr>
+<tr>
+<td>
+sadd myset Jack</td>
+<td>
+SADD myset Jack Helen&nbsp;JJ&nbsp;Lisa</td>
+</tr>
+<tr>
+<td>
+sadd myset Helen</td>
+<td>
+SET msg &#39;hello tarena&#39;</td>
+</tr>
+<tr>
+<td>
+sadd myset JJ</td>
+<td>
+RPUSH num 4 6 8</td>
+</tr>
+<tr>
+<td>
+sadd myset Lisa</td>
+<td>
+&nbsp;</td>
+</tr>
+<tr>
+<td>
+INCR number</td>
+<td>
+&nbsp;</td>
+</tr>
+<tr>
+<td>
+INCR number</td>
+<td>
+&nbsp;</td>
+</tr>
+<tr>
+<td>
+DEL number</td>
+<td>
+&nbsp;</td>
+</tr>
+<tr>
+<td>
+SET message &#39;www.baidu.com&#39;</td>
+<td>
+&nbsp;</td>
+</tr>
+<tr>
+<td>
+SET message &#39;www.biancheng.net&#39;</td>
+<td>
+&nbsp;</td>
+</tr>
+<tr>
+<td>
+RPUSH num&nbsp;2 4 6</td>
+<td>
+&nbsp;</td>
+</tr>
+<tr>
+<td>
+RPUSH num&nbsp;8</td>
+<td>
+&nbsp;</td>
+</tr>
+<tr>
+<td>
+LPOP num</td>
+<td>
+&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<br />
+从上表可以看出，新生成的 aof 文件中，它的命令格式做了很大程度的简化。
+<h4>
+3) 自动触发AOF重写</h4>
+Redis 为自动触发 AOF 重写功能，提供了相应的配置策略。如下所示：修改 Redis 配置文件，让服务器自动执行&nbsp;BGREWRITEAOF 命令。
+<pre class="info-box">
+#默认配置项
+auto-aof-rewrite-percentage 100
+auto-aof-rewrite-min-size 64mb #表示触发AOF重写的最小文件体积,大于或等于64MB自动触发。</pre>
+该配置项表示：触发重写所需要的 aof 文件体积百分比，只有当 aof 文件的增量大于 100% 时才进行重写，也就是大一倍。比如，第一次重写时文件大小为 64M，那么第二次触发重写的体积为 128M，第三次重写为 256M，以此类推。如果将百分比值设置为 0 就表示关闭 AOF 自动重写功能。<br />
+<h2>
+AOF策略配置</h2>
+在上述介绍写入机制的过程中，如果遇到宕机前，缓存内的数据未能写入到磁盘中，那么数据仍然会有丢失的风险。服务器宕机时，丢失命令的数量，取决于命令被写入磁盘的时间，越早地把命令写入到磁盘中，发生意外时丢失的数据就会越少，否则越多。<br />
+<br />
+Redis 为数据的安全性考虑，同样为 AOF 持久化提供了策略配置，打开 Redis 配置文件，如下图所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="Redis AOF持久化" src="../uploads/allimg/210913/1609113Z8-0.gif" /><br />
+图1：AOF策略配置</div>
+<br />
+上述配置策略说明如下：
+<ul>
+<li>
+Always：服务器每写入一个命令，就调用一次 fsync 函数，将缓冲区里面的命令写入到硬盘。这种模式下，服务器出现故障，也不会丢失任何已经成功执行的命令数据，但是其执行速度较慢；</li>
+<li>
+Everysec（默认）：服务器每一秒调用一次 fsync 函数，将缓冲区里面的命令写入到硬盘。这种模式下，服务器出现故障，最多只丢失一秒钟内的执行的命令数据，通常都使用它作为 AOF 配置策略；</li>
+<li>
+No：服务器不主动调用 fsync 函数，由操作系统决定何时将缓冲区里面的命令写入到硬盘。这种模式下，服务器遭遇意外停机时，丢失命令的数量是不确定的，所以这种策略，不确定性较大，不安全。</li>
+</ul>
+<p class="tip-box">
+注意：Linux 系统的 fsync() 函数可以将指定文件的内容从内核缓存刷到硬盘中。</p>
+由于是 fsync 是磁盘 IO 操作，所以它很慢！如果 Redis 执行一条指令就要 fsync 一次（Always），那么 Redis 高性能将严重受到影响。<br />
+<br />
+在生产环境的服务器中，Redis 通常是每隔 1s 左右执行一次 fsync 操作（ Everysec），这样既保持了高性能，也让数据尽可能的少丢失。最后一种策略（No），让操作系统来决定何时将数据同步到磁盘，这种策略存在许多不确定性，所以不建议使用。<br />
+<br />
+从三种策略的运行速度来看，Always 的速度最慢，而 Everysec 和 No 都很快。<br />
+<h2>
+AOF和RDB对比</h2>
+<table>
+<caption>
+RDB与AOF持久化对比</caption>
+<tbody>
+<tr>
+<th>
+RDB持久化</th>
+<th>
+AOF持久化</th>
+</tr>
+<tr>
+<td>
+全量备份，一次保存整个数据库。</td>
+<td>
+增量备份，一次只保存一个修改数据库的命令。</td>
+</tr>
+<tr>
+<td>
+每次执行持久化操作的间隔时间较长。</td>
+<td>
+保存的间隔默认为一秒钟（Everysec）</td>
+</tr>
+<tr>
+<td>
+数据保存为二进制格式，其还原速度快。</td>
+<td>
+使用文本格式还原数据，所以数据还原速度一般。</td>
+</tr>
+<tr>
+<td>
+执行 SAVE 命令时会阻塞服务器，但手动或者自动触发的 BGSAVE 不会阻塞服务器</td>
+<td>
+AOF持久化无论何时都不会阻塞服务器。</td>
+</tr>
+</tbody>
+</table>
+<br />
+如果进行数据恢复时，既有 dump.rdb文件，又有 appendonly.aof 文件，您应该先通过 appendonly.aof 恢复数据，这能最大程度地保证数据的安全性。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="../view/niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/380.html" title="C语言动态内存管理和动态内存分配" target="_blank">C语言动态内存管理和动态内存分配</a></li>
+<li><a href="../view/411.html" title="C++ array(STL array)的用法及初始化" target="_blank">C++ array(STL array)的用法及初始化</a></li>
+<li><a href="../view/vip_6005.html" title="Python如何合理使用assert（新手必读）" target="_blank">Python如何合理使用assert（新手必读）</a></li>
+<li><a href="../servlet2/user-online.html" title="Servlet监听器统计网站在线人数" target="_blank">Servlet监听器统计网站在线人数</a></li>
+<li><a href="../jsp2/jdbc.html" title="JSP JDBC访问数据库" target="_blank">JSP JDBC访问数据库</a></li>
+<li><a href="../pandas/numpy.html" title="Pandas和NumPy的比较" target="_blank">Pandas和NumPy的比较</a></li>
+<li><a href="../csharp/delegate.html" title="C#委托（Delegate）" target="_blank">C#委托（Delegate）</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9318;
+window.arcId = "718dOW4yuC19nNlAfNh57PiA8ox56o+EXIAASJ2yONpibiudgQJmw/uD1gc";
+window.typeidChain = "413";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="../view/8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="../view/8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="../view/8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="../view/9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="../view/8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/redis/rdb.html";
+window.nextPageURL = "/redis/slaveof.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Python求素数（带完整源码）</title>
+<meta name="description" content="素数指的是只能被 1 和它自身整除的整数。 判定一个整数 m 是否为素数的关键，就是要判定整数m能否能被除1和它自身以外的其他任何整数所整除，若都不能整除，则m为素数。 本题求的" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Python求素数（带完整源码）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">素数指的是只能被 1 和它自身整除的整数。<br />
+<br />
+判定一个整数 m 是否为素数的关键，就是要判定整数m能否能被除1和它自身以外的其他任何整数所整除，若都不能整除，则m为素数。<br />
+<br />
+本题求的是给定范围 start~end 之间的所有素数，考虑到程序的通用性，需要从键盘输入 start 和 end 的值，例如输入 start=1，end=1000，则所编写的程序应能够打印出 1~1000 之间的所有素数。<br />
+<h2>
+算法设计</h2>
+该问题考虑用双层循环结构实现。<br />
+<br />
+外层循环对 start~end 之间的每个数进行迭代，逐一检查其是否为素数。外层循环的循环变量用变量 m 表示，m 即代表当前需要进行判断的整数，显然其取值范围为 start&le;m&le;end。<br />
+<br />
+内层循环稍显复杂，完成的功能是判断当前的 m 是否为素数。设内循环变量为 i，程序设计时 i 从 2开始，一直到 math.sqrt(m)（m 的平方根）为止。用 i 依次去除需要判定的整数 m，如果 m 能够被某一个整数整除，则表示当前的整数 m 不是素数，因此应提前结束该次循环。如果 m 不能被任何一个整数所整除，则可以确定当前的整数 m 为素数。<br />
+<blockquote>
+<p>
+注意，遍历范围之所以不是[2,m]，而是 [2, math.sqrt(m)]，是凭借了一个数学定理：如果 m 不是素数，则 m 必有满足 1&lt;i&le;math.sqrt(m) 的一个因子 i 存在。</p>
+</blockquote>
+我们可以使用标志位 flag 来监控内外循环执行的情况。在定义变量时将 flag 初值设为 1，在内层循环中判断时，如果m能够被某个整数整除，则在内循环中将flag设置为0，反之则不修改 flag 的值。在外循环中对 flag 的值进行判断，如果 flag=0，则显然当前的 m 不是素数，如果 flag=1，则当前的 m 是素数，应该将其打印出来。<br />
+<h2>
+确定程序框架</h2>
+程序的流程图如下图所示。
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/221111/2-221111152Z12S.gif" /></div>
+<h2>
+完整的程序</h2>
+根据上面的分析，编写程序如下：<br />
+<pre class="python">
+import math
+
+if __name__ == &quot;__main__&quot;:
+    flag = 1
+    count = 0
+    print(&quot;请输入一个整数范围(start-end): &quot;)
+    start = int(input(&quot;start = &quot;))
+    end = int(input(&quot;end = &quot;))
+    while not (start&gt;0 and start&lt;end): #判断输入范围是否正确
+        print(&quot;输入的参数有误，请重新输入：&quot; )
+        start = int(input(&quot;start = &quot;))
+        end = int(input(&quot;end = &quot;))
+
+    print(&quot;%d 和 %d 之间的素数有：&quot; %(start, end)) # 外层循环，对start~end之间的每个数进行迭代，检查是否为素数
+    m = start
+    while m &lt;= end:
+        k = math.sqrt(m) # 求m的平方根
+        i = 2
+        while i &lt;= k: # 内层循环，判断2~k之间的每个数是否能被m整除
+            if m % i == 0: # 若存在一个数能被m整除，则跳出内层循环
+                flag = 0
+                break
+            i += 1
+        if flag == 1: # 如果flag == 1，则当前的m为素数
+            print(&quot;%-4d&quot; %m, end=&quot;&quot;)
+            count += 1
+            if count % 15 == 0: # 每15个素数换一行
+                print()
+        flag = 1
+        m += 1
+    print(&quot;\n%d 到 %d之间共有：%d 个素数&quot; %(start, end, count))</pre>
+运行结果为：
+<pre class="info-box">
+请输入一个整数范围(start-end):
+start = 1
+end = 1000
+1 和 1000 之间的素数有：
+1   2   3   5   7   11  13  17  19  23  29  31  37  41  43 
+47  53  59  61  67  71  73  79  83  89  97  101 103 107 109
+113 127 131 137 139 149 151 157 163 167 173 179 181 191 193
+197 199 211 223 227 229 233 239 241 251 257 263 269 271 277
+281 283 293 307 311 313 317 331 337 347 349 353 359 367 373
+379 383 389 397 401 409 419 421 431 433 439 443 449 457 461
+463 467 479 487 491 499 503 509 521 523 541 547 557 563 569
+571 577 587 593 599 601 607 613 617 619 631 641 643 647 653
+659 661 673 677 683 691 701 709 719 727 733 739 743 751 757
+761 769 773 787 797 809 811 821 823 827 829 839 853 857 859
+863 877 881 883 887 907 911 919 929 937 941 947 953 967 971
+977 983 991 997
+1 到 1000之间共有：169 个素数</pre>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="738.html" title="Java switch case语句详解" target="_blank">Java switch case语句详解</a></li>
+<li><a href="vip_1732.html" title="不要这样学习C语言，这是一个坑！" target="_blank">不要这样学习C语言，这是一个坑！</a></li>
+<li><a href="2872.html" title="Linux RPM包安装、卸载和升级（rpm命令）详解" target="_blank">Linux RPM包安装、卸载和升级（rpm命令）详解</a></li>
+<li><a href="3038.html" title="Linux用户和用户组（包含两者之间的关系）" target="_blank">Linux用户和用户组（包含两者之间的关系）</a></li>
+<li><a href="bubble-sort.html" title="冒泡排序算法" target="_blank">冒泡排序算法</a></li>
+<li><a href="../spring_mvc/9685.html" title="Spring MVC注解配置" target="_blank">Spring MVC注解配置</a></li>
+<li><a href="10wc9d4.html" title="Redis HMGET命令的用法" target="_blank">Redis HMGET命令的用法</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9820;
+window.arcId = "7181+thrAh9ePtJ29+9tbns2YbBR9ICb7zE4sVXegUvdSdViFd40ttt7k8E";
+window.typeidChain = "145|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

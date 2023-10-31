@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>单链表反转详解（4种算法实现）</title>
+<meta name="description" content="通过前面章节的学习，读者已经对单链表以及它的用法有了一个完整的了解。在此基础上，本节再带领大家研究一个和单链表有关的问题，即如何实现单链表的反转。 反转链表，又可以" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>单链表反转详解（4种算法实现）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">通过前面章节的学习，读者已经对单链表以及它的用法有了一个完整的了解。在此基础上，本节再带领大家研究一个和单链表有关的问题，即如何实现单链表的反转。<br />
+<br />
+反转链表，又可以称为翻转或逆置链表，它们表达的是同一个意思。以图 1 所示的链表为例：
+<div style="text-align: center;">
+<br />
+<img alt="未反转的链表" src="../uploads/allimg/200713/0U23432Z-0.gif" /><br />
+图 1 未反转的链表</div>
+<br />
+经过反转（翻转、逆置）后，得到的新链表如图 2 所示：<br />
+<div style="text-align: center;">
+<br />
+<img alt="反转后的链表" src="../uploads/allimg/200713/0U2344062-1.gif" /><br />
+图 2 反转后的链表</div>
+<br />
+通过对比图 1 和 图 2 中的链表不难得知，所谓反转链表，就是将链表整体&ldquo;反过来&rdquo;，将头变成尾、尾变成头。那么，如何实现链表的反转呢？<br />
+<br />
+常用的实现方案有 4 种，这里分别将它们称为迭代反转法、递归反转法、就地逆置法和头插法。值得一提的是，递归反转法更适用于反转不带头节点的链表；其它 3 种方法既能反转不带头节点的链表，也能反转带头节点的链表。<br />
+<br />
+本节将以图 1 所示，即不带头节点的链表为例，给大家详细讲解各算法的实现思想。
+<h2>
+1、迭代反转链表</h2>
+该算法的实现思想非常直接，就是从当前链表的首元节点开始，一直遍历至链表的最后一个节点，这期间会逐个改变所遍历到的节点的指针域，另其指向前一个节点。<br />
+<br />
+具体的实现方法也很简单，借助 3 个指针即可。以图 1 中建立的链表为例，首先我们定义 3 个指针并分别命名为 beg、mid、end。它们的初始指向如图 3 所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="迭代反转链表的初始状态" src="../uploads/allimg/200713/0U23460R-2.gif" /><br />
+图 3 迭代反转链表的初始状态</div>
+<br />
+在上图的基础上，遍历链表的过程就等价为：3 个指针每次各向后移动一个节点，直至 mid 指向链表中最后一个节点（此时 end 为 NULL ）。需要注意的是，这 3 个指针每移动之前，都需要做一步操作，即改变 mid 所指节点的指针域，另其指向和 beg 相同。<br />
+<br />
+1) 在图 3 的基础上，我们先改变 mid 所指节点的指针域指向，另其和 beg 相同（即改为 NULL），然后再将 3 个指针整体各向后移动一个节点。整个过程如图 4 所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="迭代反转链表过程一" src="../uploads/allimg/200713/0U2345228-3.gif" /><br />
+图 4 迭代反转链表过程一</div>
+<br />
+2) 在图 4 基础上，先改变 mid 所指节点的指针域指向，另其和 beg 相同（指向节点 1 ），再将 3 个指针整体各向后移动一个节点。整个过程如图 5 所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="迭代反转链表过程二" src="../uploads/allimg/200713/0U2343502-4.gif" /><br />
+图 5 迭代反转链表过程二</div>
+<br />
+3) 在图 5 基础上，先改变 mid 所指节点的指针域指向，另其和 beg 相同（指向节点 2 ），再将 3 个指针整体各向后移动一个节点。整个过程如图 6 所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="迭代反转链表过程三" src="../uploads/allimg/200713/0U2345331-5.gif" /><br />
+图 6&nbsp;迭代反转链表过程三</div>
+<br />
+4) 图 6 中，虽然 mid 指向了原链表最后一个节点，但显然整个反转的操作还差一步，即需要最后修改一次 mid 所指节点的指针域指向，另其和 beg 相同（指向节点 3）。如图 7 所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="迭代反转链表过程四" src="../uploads/allimg/200713/0U23460G-6.gif" /><br />
+图 7 迭代反转链表过程四</div>
+<blockquote>
+<p>
+注意，这里只需改变 mid 所指节点的指向即可，不用修改 3 个指针的指向。</p>
+</blockquote>
+5) 最后只需改变 head 头指针的指向，另其和 mid 同向，就实现了链表的反转。<br />
+<br />
+如下是实现整个过程的代码：
+<pre class="cpp">
+//迭代反转法，head 为无头节点链表的头指针
+link * iteration_reverse(link* head) {
+    if (head == NULL || head-&gt;next == NULL) {
+        return head;
+    }
+    else {
+        link * beg = NULL;
+        link * mid = head;
+        link * end = head-&gt;next;
+        //一直遍历
+        while (1)
+        {
+            //修改 mid 所指节点的指向
+            mid-&gt;next = beg;
+            //此时判断 end 是否为 NULL，如果成立则退出循环
+            if (end == NULL) {
+                break;
+            }
+            //整体向后移动 3 个指针
+            beg = mid;
+            mid = end;
+            end = end-&gt;next;
+        }
+        //最后修改 head 头指针的指向
+        head = mid;
+        return head;
+    }
+}</pre>
+<h2>
+2、递归反转链表</h2>
+和迭代反转法的思想恰好相反，递归反转法的实现思想是从链表的尾节点开始，依次向前遍历，遍历过程依次改变各节点的指向，即另其指向前一个节点。<br />
+<br />
+鉴于该方法的实现用到了递归算法，不易理解，因此和讲解其他实现方法不同，这里先给读者具体的实现代码，然后再给大家分析具体的实现过程：
+<pre class="cpp">
+link* recursive_reverse(link* head) {
+    //递归的出口
+    if (head == NULL || head-&gt;next == NULL)     // 空链或只有一个结点，直接返回头指针
+    {
+        return head;
+    }
+
+    else
+    {
+        //一直递归，找到链表中最后一个节点
+        link *new_head = recursive_reverse(head-&gt;next);
+
+        //当逐层退出时，new_head 的指向都不变，一直指向原链表中最后一个节点；
+        //递归每退出一层，函数中 head 指针的指向都会发生改变，都指向上一个节点。
+
+        //每退出一层，都需要改变 head-&gt;next 节点指针域的指向，同时令 head 所指节点的指针域为 NULL。
+        head-&gt;next-&gt;next = head;
+        head-&gt;next = NULL;
+        //每一层递归结束，都要将新的头指针返回给上一层。由此，即可保证整个递归过程中，能够一直找得到新链表的表头。
+        return new_head;
+    }
+}</pre>
+仍以图 1 中的链表为例，则整个递归实现反转的过程如下：<br />
+<br />
+1) 由于 head 不为 NULL，因此函数每执行到第 11 行时，递归都会深入一层，并依次将指向节点 2、3、4 的指针作为实参（head_next 的指向）参与递归。而根据递归出口的判断条件，当函数参数 head 指向的是节点 4 时满足 head-&gt;next == NULL，递归过程不再深入，并返回指向节点 4 的指针，这就是反转链表的新头指针。<br />
+<br />
+因此，当递归首次退出一层时，new_head 指向的是节点 4 ，而 head 由于退出一层，指向的是节点 3，如图 8 所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="递归反转链表过程一" src="../uploads/allimg/200713/0U2343055-7.gif" /><br />
+图 8 递归反转链表过程一</div>
+<br />
+2) 在此基础上，开始执行 17、18 行代码，整个操作过程如图 9 所示，最后将 new_head 的指向继续作为函数的返回值，传给上一层的 new_head。<br />
+<br />
+<div style="text-align: center;">
+<img alt="递归反转链表过程二" src="../uploads/allimg/200713/0U23413F-8.gif" /><br />
+图 9 递归反转链表过程二</div>
+<blockquote>
+<p>
+注意，图中节点 3 的 next 指针域<code>&and;</code>表示为 NULL。</p>
+</blockquote>
+3) 再退一层，此时 new_head 仍指向节点 4，而 head 退出一层后，指向的是节点 2。在此基础上执行 17、18 行代码，并最终将 new_head 的指向作为函数返回值，继续传给上一层的 new_head。整个操作过程如图 10 所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="递归反转链表过程三" src="../uploads/allimg/200713/0U234D49-9.gif" /><br />
+图 10 递归反转链表过程三</div>
+<br />
+4) 再退一层，此时 new_head 仍指向节点 4，而 head 退出一层后，指向的是节点 1。在此基础上执行 17、18 行代码，并返回 new_head。整个操作过程如图 11 所示：<br />
+<div style="text-align: center;">
+<br />
+<img alt="递归反转链表过程四" src="../uploads/allimg/200713/0U2345454-10.gif" /><br />
+图 11 递归反转链表过程四</div>
+<br />
+head 由节点 1 进入递归，此时 head 的指向又返回到节点 1，整个递归过程结束。显然，以上过程已经实现了链表的反转，新反转链表的头指针为 new_head。
+<h2>
+3、头插法反转链表</h2>
+所谓头插法，是指在原有链表的基础上，依次将位于链表头部的节点摘下，然后采用从头部插入的方式生成一个新链表，则此链表即为原链表的反转版。<br />
+<br />
+仍以图 1 所示的链表为例，接下来为大家演示头插反转法的具体实现过程：<br />
+1) 创建一个新的空链表，如图 12 所示：
+<div style="text-align: center;">
+<br />
+<img alt="创建一个空链表" src="../uploads/allimg/200713/0U2342546-11.gif" /><br />
+图 12 创建一个空链表</div>
+<br />
+2) 从原链表中摘除头部节点 1，并以头部插入的方式将该节点添加到新链表中，如图 13 所示：
+<div style="text-align: center;">
+<br />
+<img alt="从原链表摘除节点 1，再添加到新链表中" src="../uploads/allimg/200713/0U2342R3-12.gif" /><br />
+图 13 从原链表摘除节点 1，再添加到新链表中</div>
+<br />
+3) 从原链表中摘除头部节点 2，以头部插入的方式将该节点添加到新链表中，如图 14 所示：
+<div style="text-align: center;">
+<br />
+<img alt="从原链表摘除节点 2，再添加到新链表中" src="../uploads/allimg/200713/0U23451H-13.gif" /><br />
+图 14&nbsp;从原链表摘除节点 2，再添加到新链表中</div>
+<br />
+4) 继续重复以上工作，先后将节点 3、4 从原链表中摘除，并以头部插入的方式添加到新链表中，如图 15 所示：
+<div style="text-align: center;">
+<br />
+<img alt="从原链表摘除节点 3、4，再添加到新链表中" src="../uploads/allimg/200713/0U234C44-14.gif" /><br />
+图 15&nbsp;从原链表摘除节点 3、4，再添加到新链表中</div>
+<br />
+由此，就实现了对原链表的反转，新反转链表的头指针为 new_head。<br />
+<br />
+如下为以头插法实现链表反转的代码：
+<pre class="cpp">
+link * head_reverse(link * head) {
+    link * new_head = NULL;
+    link * temp = NULL;
+    if (head == NULL || head-&gt;next == NULL) {
+        return head;
+    }
+    while (head != NULL)
+    {
+        temp = head;
+        //将 temp 从 head 中摘除
+        head = head-&gt;next;
+
+        //将 temp 插入到 new_head 的头部
+        temp-&gt;next = new_head;
+        new_head = temp;
+    }
+    return new_head;
+}</pre>
+<h2>
+4、就地逆置法反转链表</h2>
+就地逆置法和头插法的实现思想类似，唯一的区别在于，头插法是通过建立一个新链表实现的，而就地逆置法则是直接对原链表做修改，从而实现将原链表反转。<br />
+<br />
+值得一提的是，在原链表的基础上做修改，需要额外借助 2 个指针（假设分别为 beg 和 end）。仍以图 1 所示的链表为例，接下来用就地逆置法实现对该链表的反转：<br />
+1) 初始状态下，令 beg 指向第一个节点，end 指向 beg-&gt;next，如图 16 所示：
+<div style="text-align: center;">
+<br />
+<img alt="就地反转链表的初始状态" src="../uploads/allimg/200713/0U2342L7-15.gif" /><br />
+图 16 就地反转链表的初始状态</div>
+<br />
+2) 将 end 所指节点 2 从链表上摘除，然后再添加至当前链表的头部。如图 17 所示：
+<div style="text-align: center;">
+<br />
+<img alt="反转节点2" src="../uploads/allimg/200713/0U2341592-16.gif" /><br />
+图 17 反转节点 2</div>
+<br />
+3) 将 end 指向 beg-&gt;next，然后将 end 所指节点 3 从链表摘除，再添加到当前链表的头部，如图 18 所示：
+<div style="text-align: center;">
+<br />
+<img alt="反转节点3" src="../uploads/allimg/200713/0U2343N4-17.gif" /><br />
+图 18 反转节点 3</div>
+<br />
+4) 将 end 指向 beg-&gt;next，再将 end 所示节点 4 从链表摘除，并添加到当前链表的头部，如图 19 所示：
+<div style="text-align: center;">
+<br />
+<img alt="反转节点 4" src="../uploads/allimg/200713/0U2342259-18.gif" /><br />
+图 19 反转节点 4</div>
+<br />
+由此，就实现了对图 1 链表的反转。&nbsp;<br />
+<br />
+具体实现代码如下：
+<pre class="cpp">
+link * local_reverse(link * head) {
+    link * beg = NULL;
+    link * end = NULL;
+    if (head == NULL || head-&gt;next == NULL) {
+        return head;
+    }
+    beg = head;
+    end = head-&gt;next;
+    while (end != NULL) {
+        //将 end 从链表中摘除
+        beg-&gt;next = end-&gt;next;
+        //将 end 移动至链表头
+        end-&gt;next = head;
+        head = end;
+        //调整 end 的指向，另其指向 beg 后的一个节点，为反转下一个节点做准备
+        end = beg-&gt;next;
+    }
+    return head;
+}</pre>
+<h2>
+总结</h2>
+本节仅以无头节点的链表为例，讲解了实现链表反转的 4 种方法。实际上，对于有头节点的链表反转：
+<ul>
+<li>
+使用迭代反转法实现时，初始状态忽略头节点（直接将 mid 指向首元节点），仅需在最后一步将头节点的 next 改为和 mid 同向即可；</li>
+<li>
+使用头插法或者就地逆置法实现时，仅需将要插入的节点插入到头节点和首元节点之间即可；</li>
+<li>
+递归法并不适用反转有头结点的链表（但并非不能实现），该方法更适用于反转无头结点的链表。</li>
+</ul>
+<blockquote>
+<p>
+结合以上说明，读者可尝试修改本节代码，使它们能用于反转带头节点的链表。对于反转没有头节点的链表，读者可从<a href="../uploads/soft/200713/1-200G3193033.zip" target="_blank">反转无头节点链表</a>下载；反之，对于采用迭代法、头插法以及就地逆置法反转有头节点的链表，读者可从<a href="../uploads/soft/200713/head_link.zip" target="_blank">反转有头节点链表</a>处下载。</p>
+</blockquote>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2210.html" title="Python list列表修改元素" target="_blank">Python list列表修改元素</a></li>
+<li><a href="vip_5907.html" title="C语言2048小游戏源码下载和思路解析" target="_blank">C语言2048小游戏源码下载和思路解析</a></li>
+<li><a href="../redis2/zrevrank.html" title="Redis ZREVRANK命令" target="_blank">Redis ZREVRANK命令</a></li>
+<li><a href="../redis/aof.html" title="Redis AOF持久化详解（含配置策略）" target="_blank">Redis AOF持久化详解（含配置策略）</a></li>
+<li><a href="9770.html" title="ARM是什么" target="_blank">ARM是什么</a></li>
+<li><a href="9782.html" title="Go语言注释（单行注释和多行注释）详解" target="_blank">Go语言注释（单行注释和多行注释）详解</a></li>
+<li><a href="f03wu83.html" title="Redis缓存雪崩、缓存击穿和缓存穿透是怎么回事？" target="_blank">Redis缓存雪崩、缓存击穿和缓存穿透是怎么回事？</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8105;
+window.arcId = "5f2evkRsAnwm7JE007g4f3f6e3p9wfQIy7/ETslaP+HFrvW5mN8SzLmoaA0";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

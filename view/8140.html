@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Django信号机制工作原理</title>
+<meta name="description" content="在上一节《 Django信号机制执行过程及其应用 》一节，我们详解的介绍了 Django 内置的信号的应用过程，即导入 内置信号、创建注册函数，信号中导入注册函数 ，通过以上三个步骤就可" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../django/django.html">Django</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Django信号机制工作原理</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在上一节《<a href="8139_2.html" onclick="window.open(this.href, '', 'resizable=no,status=no,location=no,toolbar=no,menubar=no,fullscreen=no,scrollbars=no,dependent=no'); return false;">Django信号机制执行过程及其应用</a>》一节，我们详解的介绍了 Django 信号机制的执行过程及其应用。通过上一节知识的学习，其实我们可以认识到信号的工作原理其实就是 Signal 对象的实现过程，在不同的阶段调用了 Signal 相应的方法，但是有些地方你可能还是会感到迷茫，比如什么是观察者模式？什么是 Python 语言的弱引用等，在本节我们将从 Python 语言的相关特性出发，介绍 Django 信号机制的工作原理。
+<h2>
+1. 观察者设计模式简述</h2>
+<h4>
+1)观察者设计模式理解</h4>
+观察者模式它定义了对象之间一对多的依赖关系，当一对象的状态发生改变的时候，所有依赖于它的对象都获取到通知并发生相应的改变。观察者模式还有一个别名叫做发布订阅模式，这个名字就非常的形象的说明了这种设计模式的理念，当订阅者订阅了某系列杂志，当杂志有了新的状态即发布者，比如更新了，那么此时就会给所有的订阅者发送一条消息，那么所有的订阅者就会收到此消息做出购买或不购买的选择。<br />
+<br />
+观察者模式的两个重要角色即目标和观察者，为了形象的理解，我们把目标定义为杂志，把观察者定义为订阅了杂志的用户，当目标状态发生改变的时候，所有的观察者都会收到通知，并做出相应的动作。比如在微博或者论坛中，你发布了一个话题，那么关注你的粉丝就会收到一个通知，粉丝收到通知后可以相应的做出回馈。这也是观察者模式的适应场景。<br />
+<br />
+从对观察者设计模式的说明与理解，我们可以得知 Django 信号机制就是观察者模式的实现。这种模式的优点非常明显，它在目标与观察者之间建立了轻度的关联关系，对于它们各自的扩展就会非常容易。在运行时，观察者可以动态地添加或删除（取关操作），对目标（话题发布者）不会有任何影响，反过来也是一样，所以它们是抽象耦合的。<br />
+<h2>
+2. Python语言特性弱引用</h2>
+学习过 Python 语言的小伙伴知道，Python 的垃圾回收由引用计数、标记清理和分代回收等方式构成。其中大部分对象的生命周期由对象的引用计数来管理。在 Python 语言中一切皆对象（还是 Python 好从不缺对象），每一个对象都会维护一个叫做 obrefcnt 的属性，也就是引用计数，当一个对象有了新的引用时，obrefcnt 就会加 1 ；当对象的引用被删除时就会就会减 1；当其为 0 的时候表示当前对象没有被使用，我们可以使用如下方式查看某个对象的引用计数值：
+<pre class="python">
+import sys
+sys.getrefcount()#接受一个参数对象</pre>
+但是引用计数有一个明显的缺点就是无法解决循环引用的问题即 a 引用 b， b 引用 a，导致其引用计数永远不为 0，这样就会导致内存无法释放也浪费了系统内存，从而造成内存泄露的问题。为了避免这个问题 Python 提供了 weakref 即弱引用。它的效果是：<span style="color:#ff0000;">当对一个对象创建了弱引用时，对象的引用计数不会增加</span>。示例如下所示：
+<pre class="python">
+In [1]: import sys,weakref
+In [2]: class A:
+   ...:     def hello(self):
+   ...:         return &quot;c语言中文网&quot;
+   ...:
+In [3]: a=A()
+In [4]: sys.getrefcount(a)
+Out[4]: 4
+In [5]: ref=weakref.ref(a)
+In [6]: sys.getrefcount(a)
+Out[6]: 4
+</pre>
+weakref 的 ref 方法用于创建弱引用对象，它的返回值是引用指向的对象。函数定义如下：<br />
+<pre class="info-box">
+weakref.ref(object[callback,])</pre>
+其中 object 即为被引用的对象，而 callback 是一个可选的回调函数。当引用的对象被删除的时候，回调函数就会被执行调用。通过 weakref.ref 创建的弱引用，在使用时需要使用 ref() 去获取 object：
+<pre class="python">
+In [1]: ref().hello()
+Out[2]: &#39;c语言中文网&#39;</pre>
+weakref 提供了 finalize 来定义引用对象被删除时执行的清理函数，它的定义如下：
+<pre class="info-box">
+finaiize(object,func,*args,**kwargs)</pre>
+其中，object 是引用的对象；func 是清理函数，obj 被删除时自动调用；*args 和 **kwargs 将会作为参数传递给清理函数。所以使用它的时候需要预先定义清理函数，示例如下：
+<pre class="python">
+In [9]: def func(obj):
+   ...:  print(&quot;%s被删除&quot;%obj)
+   ...:
+In [10]: weakref.finalize(a,func,str(hex(id(a))))
+Out[10]: &lt;finalize object at 0x508bd98; for &#39;A&#39; at 0x85a7930&gt;
+In [11]: del a
+0x85a7930被删除
+</pre>
+这里还有一种特殊的情况即引用对象是对象实例的方法，此时不可以直接使用 weakref.ref 去创建弱引用，而是使用 weakref.WeakMethod()，示例如下:
+<pre class="python">
+In [14]: a=A()
+In [15]: ref=weakref.WeakMethod(a.hello)#引用对象a的hello方法
+In [16]: ref()()
+Out[16]: &#39;c语言中文网&#39;
+In [17]: ref()
+Out[17]: &lt;bound method A.hello of &lt;__main__.A object at 0x05B64F30&gt;&gt;</pre>
+因为弱引用不会改变对象的引用计数，所以，<span style="color:#ff0000;">Django 信号机制采用弱引用的方式对信号回调函数进行引用</span>，以此来避免内存泄露的问题。<br />
+<br />
+Django 信号机制涉及了诸多方面的知识，本节我们只是讲了你可能没有涉猎过的知识点，比如，Django 信号机制还应用了 Python<span style="color:#ff0000;"> 线程的同步机制</span>，也就是使用锁即 Lock 来避免多线程程序中对共享资源的竞争导致的错误。在这里就不进行介绍了，有兴趣的同学可以自己探索。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="67.html" title="Go语言初始化结构体的成员变量" target="_blank">Go语言初始化结构体的成员变量</a></li>
+<li><a href="1036.html" title="Linux GRUB加密方法详解（2种加密方式）" target="_blank">Linux GRUB加密方法详解（2种加密方式）</a></li>
+<li><a href="1566.html" title="C++ swap函数模板及其用法" target="_blank">C++ swap函数模板及其用法</a></li>
+<li><a href="2855.html" title="UE4新建项目" target="_blank">UE4新建项目</a></li>
+<li><a href="../matplotlib/axes-formatting.html" title="Matplotlib坐标轴格式" target="_blank">Matplotlib坐标轴格式</a></li>
+<li><a href="k03y44l.html" title="Go语言匿名函数（入门必读）" target="_blank">Go语言匿名函数（入门必读）</a></li>
+<li><a href="4br7qfu.html" title="《Web前端开发精品课 JavaScript基础教程》PDF下载（高清完整版）" target="_blank">《Web前端开发精品课 JavaScript基础教程》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8140;
+window.arcId = "378azy8TMiqNU5hpdpwNJxBNMuhIwhdHy3e/tR+d+KL/JKL6Jwd5GA4yV1M";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

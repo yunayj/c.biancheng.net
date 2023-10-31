@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>指针与数组的关系，C语言指针和数组的关系详解</title>
+<meta name="description" content="指针和数组的关系是比较高级的内容。本节，我们主要讨论指针和一维数组的关系。二维数组本身用得就很少，指针和二维数组的关系用得就更少了。指针和二维数组的关系我们后面也" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>指针与数组的关系，C语言指针和数组的关系详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">指针和数组的关系是比较高级的内容。本节，我们主要讨论指针和一维数组的关系。二维数组本身用得就很少，指针和二维数组的关系用得就更少了。指针和二维数组的关系我们后面也会讲。<br />
+<br />
+指针和一维数组的关系很重要。把这个问题弄清楚了，前面的很多问题就都明白了。比如数组为什么是连续的，为什么需要连续，数组的下标是什么意思，到底什么是一维数组等。<br />
+<h2>
+用指针引用数组元素</h2>
+引用数组元素可以用&ldquo;下标法&rdquo;，这个在前面已经讲过，除了这种方法之外还可以用指针，即通过指向某个数组元素的指针变量来引用数组元素。<br />
+<br />
+数组包含若干个元素，元素就是变量，变量都有地址。所以每一个数组元素在内存中都占有存储单元，都有相应的地址。指针变量既然可以指向变量，当然也就可以指向数组元素。同样，数组的类型和指针变量的基类型一定要相同。下面给大家写一个程序：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int a[] = {1, 2, 3, 4, 5};
+    int *p = &amp;a[0];
+    int *q = a;
+    printf(&quot;*p = %d, *q = %d\n&quot;, *p, *q);
+    return 0;
+}</pre>
+输出结果是：<br />
+*p = 1, *q = 1<br />
+<br />
+程序中定义了一个一维数组 a，它有 5 个元素，即 5 个变量，分别为 a[0]、a[1]、a[2]、a[3]、a[4]。所以 p=&amp;a[0] 就表示将 a[0] 的地址放到指针变量 p 中，即指针变量 p 指向数组 a 的第一个元素 a[0]。而 C 语言中规定，&ldquo;数组名&rdquo;是一个指针&ldquo;常量&rdquo;，表示数组第一个元素的起始地址。所以 p=&amp;a[0] 和 p=a 是等价的，所以程序输出的结果 *p 和 *q 是相等的，因为它们都指向 a[0]，或者说它们都存放 a[0] 的地址。<br />
+<br />
+那么 a[0] 的地址到底是哪个地址？&ldquo;数组名表示的是数组第一个元素的起始地址&rdquo;这句话是什么意思？&ldquo;起始地址&rdquo;表示的到底是哪个地址？<br />
+<br />
+我们知道，系统给每个int型变量都分配了 4 字节的内存单元。数组 a 是 int 型的，所以数组 a 中每一个元素都占 4 字节的内存单元。而每字节都有一个地址，所以每个元素都有 4 个地址。那么 p=&amp;a[0] 到底是把哪个地址放到了 p 中？<br />
+<br />
+答案是把这 4 个地址中的第一个地址放到了 p 中。这就是&ldquo;起始&rdquo;的含义，即第一个元素的第一字节的地址。<span style="color:#b22222;">我们将&ldquo;数组第一个元素的起始地址&rdquo;称为&ldquo;数组的首地址&rdquo;。</span>数组名表示的就是数组的首地址，即数组第一个元素的第一字节的地址。<br />
+<br />
+注意，数组名不代表整个数组，q=a 表示的是&ldquo;把数组 a 的第一个元素的起始地址赋给指针变量 q&rdquo;，而不是&ldquo;把数组 a 的各个元素的地址赋给指针变量 q&rdquo;。<br />
+<h2>
+指针的移动</h2>
+那么如何使指针变量指向一维数组中的其他元素呢？比如，如何使指针变量指向 a[3] 呢？<br />
+<br />
+同样可以写成 p=&amp;a[3]。但是除了这种方法之外，C 语言规定：如果指针变量 p 已经指向一维数组的第一个元素，那么 p+1 就表示指向该数组的第二个元素。<br />
+<br />
+注意，p+1 不是指向下一个地址，而是指向下一个元素。&ldquo;下一个地址&rdquo;和&ldquo;下一个元素&rdquo;是不同的。比如 int 型数组中每个元素都占 4 字节，每字节都有一个地址，所以 int 型数组中每个元素都有 4 个地址。如果指针变量 p 指向该数组的首地址，那么&ldquo;下一个地址&rdquo;表示的是第一个元素的第二个地址，即 p 往后移一个地址。而&ldquo;下一个元素&rdquo;表示 p 往后移 4 个地址，即第二个元素的首地址。下面写一个程序验证一下：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int a[] = {1, 2, 3, 4, 5};
+    int *p = a;
+    printf(&quot;p = %d, p + 1 = %d\n&quot;, p, p+1);    //用十进制格式输出
+    printf(&quot;p = %#X, p + 1 = %#X\n&quot;, p, p+1);  //也可以用十六进制格式输出
+    printf(&quot;p = %p, p + 1 = %p\n&quot;, p, p+1);    //%p是专门输出地址的输出控制符
+    return 0;
+}</pre>
+输出结果是：<br />
+p = 1638196, p + 1 = 1638200<br />
+p = 0X18FF34, p + 1 = 0X18FF38<br />
+p = 0018FF34, p + 1 = 0018FF38<br />
+<br />
+我们看到，p+1 表示的是地址往后移 4 个。但并不是所有类型的数组 p+1 都表示往后移 4 个地址。p+1 的本质是移到数组下一个元素的地址，所以关键是看数组是什么类型的。比如数组是 char 型的，每个元素都占一字节，那么此时 p+1 就表示往后移一个地址。所以不同类型的数组，p+1 移动的地址的个数是不同的，但都是移向下一个元素。<br />
+<br />
+知道元素的地址后引用元素就很简单了。如果 p 指向的是第一个元素的地址，那么 *p 表示的就是第一个元素的内容。同样，p+i 表示的是第 i+1 个元素的地址，那么 *(p+i) 就表示第 i+1 个元素的内容。即 p+i 就是指向元素 a[i] 的指针，*(p+i) 就等价于 a[i]。<br />
+<br />
+下面写一个程序验证一下：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int a[] = {1, 2, 3, 4, 5};
+    int *p, *q, *r;
+    p = &amp;a[3];  //第一种写法
+    printf(&quot;*p = %d\n&quot;, *p);
+    q = a;  //第二种写法
+    q = q + 3;
+    printf(&quot;*q = %d\n&quot;, *q);
+    r = a;  //第三种写法
+    printf(&quot;*(r+3) = %d\n&quot;, *(r+3));
+    return 0;
+}</pre>
+输出结果是：<br />
+*p = 4<br />
+*q = 4<br />
+*(r+3) = 4<br />
+<br />
+注意，*(q+i) 两边的括号不能省略。因为 *q+i 和 *(q+i)是不等价的。指针运算符&ldquo;*&rdquo;的优先级比加法运算符&ldquo;+&rdquo;的优先级高。所以 *q+i 就相当于 (*q)+i 了。<br />
+<br />
+前面讲过，指针和指针只能进行相减运算，不能进行乘、除、加等运算。所以不能把两个地址加起来，这是没有意义的。所以指针变量只能加上一个常量，不能加上另一个指针变量。<br />
+那么现在有一个问题：&ldquo;数组名 a 表示数组的首地址，a[i] 表示的是数组第 i+1 个元素。那么如果指针变量 p 也指向这个首地址，可以用 p[i] 表示数组的第 i 个元素吗？&rdquo;可以。下面写一个程序看一下：<br />
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int a[] = {1, 2, 3, 4, 5};
+    int *p = a;
+    printf(&quot;p[0] = %d\n&quot;, p[0]);
+    printf(&quot;p[1] = %d\n&quot;, p[1]);
+    printf(&quot;p[2] = %d\n&quot;, p[2]);
+    printf(&quot;p[3] = %d\n&quot;, p[3]);
+    printf(&quot;p[4] = %d\n&quot;, p[4]);
+    return 0;
+}</pre>
+输出结果是：<br />
+p[0] = 1<br />
+p[1] = 2<br />
+p[2] = 3<br />
+p[3] = 4<br />
+p[4] = 5<br />
+<br />
+所以 p[i] 和 *(p+i) 是等价的，即&ldquo;指向数组的&rdquo;指针变量也可以写成&ldquo;带下标&rdquo;的形式。<br />
+<br />
+那么反过来，因为数组名 a 表示的也是数组的首地址，那么元素 a[i] 的地址也可以用 a+i 表示吗？回答也是&ldquo;可以的&rdquo;。也就是说如果指针变量 p 指向数组 a 的首地址，那么 p+i 和 a+i 是等价的，它们可以互换。下面也写一个程序验证一下：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int a[] = {2, 5, 8, 7, 4};
+    int *p = a;
+    printf(&quot;*(p+3) = %d, *(a+3) = %d\n&quot;, *(p+3), *(a+3));
+    return 0;
+}</pre>
+输出结果是：<br />
+*(p+3) = 7, *(a+3) = 7<br />
+<br />
+这时有人说，a 不是指针变量也可以写成&ldquo;*&rdquo;的形式吗？只要是地址，都可以用&ldquo;*地址&rdquo;表示该地址所指向的内存单元中的数据。而且也只有地址前面才能加&ldquo;*&rdquo;。因为指针变量里面存放的是地址，所以它前面才能加&ldquo;*&rdquo;。<br />
+<br />
+实际上系统在编译时，数组元素 a[i] 就是按 *(a+i) 处理的。即首先通过数组名 a 找到数组的首地址，然后首地址再加上i就是元素 a[i] 的地址，然后通过该地址找到该单元中的内容。<br />
+<br />
+所以 a[i] 写成 *(a+i) 的形式，程序的执行效率会更高、速度会更快。因为在执行程序的时候数组是先计算地址，然后转化成指针。而直接写成指针 *(a+i) 的形式就省去了这些重复计算地址的步骤。<br />
+<h2>
+指针变量的自增运算</h2>
+前面说过，p+1 表示指向数组中的第二个元素。p=p+1 也可以写成 p++ 或 ++p，即指针变量也可以进行自增运算。当然，也可以进行自减运算。自增就是指针变量向后移，自减就是指针变量向前移。下面给大家写一个程序：<br />
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int a[] = {2, 5, 8, 7, 4};
+    int *p = a;
+    printf(&quot;*p++ = %d, *++p = %d\n&quot;, *p++, *++p);
+    return 0;
+}</pre>
+输出结果是：<br />
+*p++ = 5, *++p = 5<br />
+<br />
+因为指针运算符&ldquo;*&rdquo;和自增运算符&ldquo;++&rdquo;的优先级相同，而它们的结合方向是从右往左，所以 *p++ 就相当于 *(p++)，*++p 就相当于 *(++p)。但是为了提高程序的可读性，最好加上括号。<br />
+<br />
+在程序中如果用循环语句有规律地执行 ++p，那么每个数组元素就都可以直接用指针指向了，这样读取每个数组元素时执行效率就大大提高了。为什么？比如：<br />
+int a[10] = {0};<br />
+int *p = a;<br />
+<br />
+如果执行一次 ++p，那么此时 p 就直接指向元素 a[1]。而如果用 a[1] 引用该元素，那么就先要计算数组名 a 表示的首地址，然后再加 1 才能找到元素 a[1]。同样再执行一次 ++p，p 就直接指向元素 a[2]。而如果用 a[2] 引用该元素，那么还要先计算数组名 a 表示的首地址，然后再加 2 才能找到元素 a[2]&hellip;&hellip;<br />
+<br />
+所以，用数组的下标形式引用数组元素时，每次都要重新计算数组名 a 表示的首地址，然后再加上下标才能找到该元素。而有规律地使用 ++p，则每次 p 都是直接指向那个元素的，不用额外的计算，所以访问速度就大大提高了。数组长度越长这种差距越明显！所以当有大批量数据的时候，有规律地使用 ++p 可以大大提高执行效率。<br />
+<br />
+在前面讲数组时写过这样一个程序：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int a[5] = {1, 2, 3, 4, 5};
+    int i;
+    for (i=0; i&lt;5; ++i)
+    {
+        printf(&quot;%d\n&quot;, a[i]);
+    }
+    return 0;
+}</pre>
+输出结果是：<br />
+1<br />
+2<br />
+3<br />
+4<br />
+5<br />
+<br />
+用指针的方法实现一下：<br />
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int a[] = {1, 2, 3, 4, 5};
+    int *p = NULL;  //先初始化, 好习惯
+    for (p=a; p&lt;(a+5); ++p)
+    {
+        printf(&quot;%d\n&quot;, *p);
+    }
+    return 0;
+}</pre>
+输出结果是：<br />
+1<br />
+2<br />
+3<br />
+4<br />
+5<br />
+<br />
+指针还可以用关系运算符比较大小，使用关系运算符来比较两个指针的值的前提是两个指针具有相同的类型。<br />
+<br />
+既然 p+i 和 a+i 等价，那么能不能写成 a++？答案是&ldquo;不能&rdquo;。在前面讲自增和自减的时候强调过，只有变量才能进行自增和自减，常量是不能进行自增和自减的。a 代表的是数组的首地址，是一个常量，所以不能进行自增，所以不能写成a++。<br />
+<br />
+下面再来写一个程序，编程要求：实现从键盘输入 10 个整数，然后输出最大的偶数，要求使用指针访问数组。<br />
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int a[10] = {0};
+    int *p = a;
+    int max;
+    int i;  //循环变量
+    int flag = 1;  //标志位
+    printf(&quot;请输入十个整数:&quot;);
+    for (i=0; i&lt;10; ++i)
+    {
+        scanf(&quot;%d&quot;, p+i);  //不要用&amp;p[i], 不要出现数组的影子
+    }
+    for (; p&lt;a+10; ++p)
+    {
+        if (0 == *p%2)  
+        {
+            if (flag)  //将第一个偶数赋给max；
+            {
+                max = *p;
+                flag = 0;
+            }
+            else if (*p &gt; max) //寻找最大的偶数
+            {
+                max = *p;
+            }
+        }
+    }
+    if (!flag)  /*这句很经典, 如果flag一直都是1, 那么说明没有一个是偶数*/
+    {
+        printf(&quot;最大的偶数为：%d\n&quot;, max);
+    }
+    else
+    {
+        printf(&quot;未发现偶数\n&quot;);
+    }
+    return 0;
+}</pre>
+输出结果是：<br />
+请输入十个整数:-33 -26 15 38 74 59 31 -2 27 36<br />
+最大的偶数为：74<br />
+<h2>
+两个参数确定一个数组</h2>
+前面讲过，在函数调用时如果要将一个数组从主调函数传到被调函数，只需要传递两个参数就能知道整个数组的信息。即一维数组的首地址（数组名）和数组元素的个数（数组长度）。<br />
+<br />
+但是当时还没有讲指针，所以形参定义的是数组。本节我们再将这个问题复习一下，并将形参改用指针来接收数组名。因为指针变量中存放的是地址，而数组名表示的就是一个地址，所以在形参中可以直接定义一个指针变量来接收数组名。<br />
+<br />
+下面来写一个程序，把&ldquo;输出一维数组所有元素&rdquo;的功能写成函数，然后在主函数中进行调用：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+void Output(int *p, int cnt);  //声明一个输出数组的函数
+int main(void)
+{
+    int a[] = {1, 2, 3, 4, 5};
+    int b[] = {-5, -9, -8, -7, -4};
+    Output(a, 5);
+    Output(b, 5);
+    printf(&quot;\n&quot;);
+    return 0;
+}
+/*定义一个输出数组的函数*/
+void Output(int *p, int cnt)  /*p用来接收首地址, cnt用来接收数组元素的个数*/
+{
+    int *a = p;
+    for (; p&lt;(a+cnt); ++p)  //数组地址作为循环变量
+    {
+        printf(&quot;%d  &quot;, *p);
+    }
+}</pre>
+输出结果是：<br />
+1&nbsp; 2&nbsp; 3&nbsp; 4&nbsp; 5&nbsp; -5&nbsp; -9&nbsp; -8&nbsp; -7&nbsp; -4<br />
+<br />
+程序中，之所以要传递数组的长度是因为在 C 语言中没有一个特殊的标记可以作为数组的结束标记。因为数组是存储数据的，任何数据都可以存到数组中，所以数组里面任何一个值都是有效的值。不仅是C语言，任何一门语言都无法用某一个值作为数组结束的标记。所以&ldquo;数组长度&rdquo;这个参数是必需的。<br />
+<br />
+上面这个程序是以&ldquo;数组地址&rdquo;作为被调函数的循环变量，也可以改成以&ldquo;数组个数&rdquo;作为被调函数的循环变量：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+void Output(int *p, int cnt);  //声明一个输出数组的函数
+int main(void)
+{
+    int a[] = {1, 2, 3, 4, 5};
+    int b[] = {-5, -9, -8, -7, -4};
+    Output(a, 5);
+    Output(b, 5);
+    printf(&quot;\n&quot;);
+    return 0;
+}
+/*定义一个输出数组的函数*/
+void Output(int *p, int cnt)  /*p用来接收首地址, cnt用来接收数组元素的个数*/
+{
+    int i;
+    for (i=0; i&lt;cnt; ++i)  //数组元素个数作为循环变量
+    {
+        printf(&quot;%d  &quot;, *(p+i));
+    }
+}</pre>
+输出结果是：<br />
+1&nbsp; 2&nbsp; 3&nbsp; 4&nbsp; 5&nbsp; -5&nbsp; -9&nbsp; -8&nbsp; -7&nbsp; -4<br />
+<h2>
+指针变量占多少字节</h2>
+我们讲过，指针变量根据&ldquo;基类型&rdquo;的不同有 int* 型、float* 型、double* 型、char* 型等。但是前面在讲数据类型的时候讲过，int 型变量占 4 字节，float 型变量占 4 字节、double 型变量占 8 字节、char 型变量占 1 字节。那么&ldquo;指针型变量&rdquo;占几字节？是不是基类型占几字节，该指针变量就占几字节？同样，用 sizeof 写一个程序看一下就知道了：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int    *a = NULL;
+    float  *b = NULL;
+    double *c = NULL;
+    char   *d = NULL;
+    printf(&quot;%d %d %d %d\n&quot;, sizeof(a), sizeof(b), sizeof(c), sizeof(d));
+    return 0;
+}</pre>
+输出结果是：<br />
+4 4 4 4<br />
+<br />
+可见，不管是什么基类型，系统给指针变量分配的内存空间都是 4 字节。在 C 语言中，只要是指针变量，在内存中所占的字节数都是 4。指针变量的&ldquo;基类型&rdquo;仅用来指定该指针变量可以指向的变量类型，并没有其他意思。不管基类型是什么类型的指针变量，它仍然是指针变量，所以仍然占 4 字节。<br />
+<br />
+我们前面讲过，32 位计算机有 32 根地址线，每根地址线要么是 0 要么是 1，只有这两种状态。内存单元中的每个地址都是由这 32 根地址线通过不同的状态组合而成的。而 4 字节正好是 32 位，正好能存储下所有内存单元的地址信息。少一字节可能就不够，多一字节就浪费，所以是 4 字节。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="437.html" title="C++ deque修改（替换、更改）元素详解" target="_blank">C++ deque修改（替换、更改）元素详解</a></li>
+<li><a href="1538.html" title="C++二进制文件读写（read和write）详解" target="_blank">C++二进制文件读写（read和write）详解</a></li>
+<li><a href="2575.html" title="UE4使用什么编译器？" target="_blank">UE4使用什么编译器？</a></li>
+<li><a href="2605.html" title="MySQL创建索引（CREATE INDEX）" target="_blank">MySQL创建索引（CREATE INDEX）</a></li>
+<li><a href="vip_3330.html" title="数据的逻辑结构和存储结构（物理结构）详解" target="_blank">数据的逻辑结构和存储结构（物理结构）详解</a></li>
+<li><a href="n-queens.html" title="N皇后问题" target="_blank">N皇后问题</a></li>
+<li><a href="../pillow/image-handle.html" title="Pillow图像裁剪、复制、粘贴操作" target="_blank">Pillow图像裁剪、复制、粘贴操作</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 220;
+window.arcId = "5a48AcQObkVE6JzXGS70imI0ov0eyS1wGmznBRavcB+xEZmyt2Lr/mqsfg";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

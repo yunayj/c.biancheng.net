@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C语言volatile关键字的作用</title>
+<meta name="description" content="C语言中的 volatile 关键字被设计用来修饰变量，用于表明该变量是易变的。具体来说，它告诉编译器不要对该变量进行优化，因为该变量可能会在程序的执行过程中被外部因素改变。 在" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C语言volatile关键字的作用</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">C语言中的 volatile 关键字被设计用来修饰变量，用于表明该变量是易变的。具体来说，它告诉编译器不要对该变量进行优化，因为该变量可能会在程序的执行过程中被外部因素改变。<br />
+<br />
+在本篇文章中，我们将详细介绍 volatile 关键字的作用，以及它在实际编程中的用途。<br />
+<h2>
+	为什么需要volatile关键字？</h2>
+在编写 C语言程序时，编译器通常会对变量进行优化，以尽可能地提高程序的性能。例如，编译器可能会把一个变量的值缓存到寄存器中，以避免频繁地读写内存。这样做虽然可以提高程序的执行效率，但是它有一个重要的前提，就是该变量的值在程序的执行过程中不会被外部因素改变。<br />
+<br />
+然而，在一些特定的场景中，变量的值可能会在程序的执行过程中被外部因素改变，比如：<br />
+<ul>
+	<li>
+		在多线程程序中，多个线程可能会同时访问同一个变量；</li>
+	<li>
+		在嵌入式系统中，变量的值可能会被硬件中断改变；</li>
+	<li>
+		在使用内存映射 I/O（Memory-Mapped I/O）的系统中，变量的值可能会被设备寄存器改变。</li>
+</ul>
+<br />
+在这些情况下，如果编译器对变量进行优化，可能会导致程序出现不可预测的错误。因此，C语言引入了 volatile 关键字来告诉编译器，该变量是易变的，不应该进行优化。<br />
+<h2>
+	volatile关键字的使用</h2>
+在 C语言中，使用 volatile 关键字来修饰变量，表示该变量是易变的。例如：<br />
+<pre class="c">
+volatile int counter = 0;</pre>
+上面的代码中，变量 counter 被声明为 volatile int 类型，表示该变量是易变的。这意味着，编译器不应该对该变量进行任何优化，而是应该每次都从内存中读取该变量的值。<br />
+<h2>
+	volatile关键字的作用</h2>
+volatile 关键字的作用是告诉编译器，该变量是易变的，不能进行优化。具体来说，volatile 关键字有以下几个作用：<br />
+<h4>
+	1) 防止编译器优化</h4>
+编译器会对变量进行优化，以提高程序的性能。例如，编译器可能会把一个变量的值缓存到寄存器中，以避免频繁地读写内存。然而，在一些特定的场景中，变量的值可能会在程序的执行过程中被外部因素改变。<br />
+<br />
+如果编译器对变量进行优化，可能会导致程序出现不可预测的错误。因此，使用volatile关键字可以告诉编译器不要对该变量进行优化，每次都要从内存中读取该变量的值。<br />
+<h4>
+	2) 强制编译器按照程序顺序访问变量</h4>
+在一些特定的场景中，程序的正确性依赖于变量的读写顺序。例如，在多线程程序中，多个线程可能会同时访问同一个变量。如果编译器对变量进行了优化，可能会导致不同线程看到的变量值不一致，从而引发程序错误。<br />
+<br />
+使用 volatile 关键字可以强制编译器按照程序顺序访问变量。具体来说，编译器会按照程序中变量的访问顺序来访问变量，而不是按照优化后的顺序来访问变量。<br />
+<h4>
+	3) 提供内存屏障</h4>
+在一些特定的场景中，程序需要对变量的读写顺序进行严格的控制。例如，在多线程程序中，变量的读写顺序可能会影响程序的正确性。<br />
+<br />
+为了保证程序的正确性，需要在变量的读写操作之间插入内存屏障（Memory Barrier），以确保变量的读写顺序符合程序的要求。<br />
+<br />
+使用 volatile 关键字可以提供内存屏障，以确保变量的读写顺序符合程序的要求。具体来说，使用 volatile 关键字可以在变量的读写操作之间插入内存屏障，以确保变量的读写顺序符合程序的要求。<br />
+<h2>
+	volatile关键字的注意事项</h2>
+在使用 volatile 关键字时，需要注意以下几点：<br />
+<h4>
+	1) 不要滥用volatile关键字</h4>
+虽然 volatile 关键字可以防止编译器优化，强制编译器按照程序顺序访问变量，提供内存屏障，但是不应该滥用 volatile 关键字。因为 volatile 关键字会影响程序的性能，使用过多的 volatile 关键字会导致程序变慢。<br />
+<h4>
+	2) 不要依赖volatile关键字解决多线程问题</h4>
+虽然 volatile 关键字可以防止编译器优化，强制编译器按照程序顺序访问变量，但是不应该依赖 volatile 关键字解决多线程问题。因为 volatile 关键字无法保证原子性，不能解决多线程竞争的问题。解决多线程竞争的问题需要使用其他的同步机制，比如互斥锁、读写锁、信号量等。<br />
+<h4>
+	3) 注意多线程程序中的内存可见性问题</h4>
+在多线程程序中，多个线程可能会同时访问同一个变量。为了保证程序的正确性，需要保证变量的内存可见性。具体来说，当一个线程修改了变量的值，其他线程应该能够立即看到变量的新值。<br />
+<br />
+使用 volatile 关键字可以保证变量的内存可见性。具体来说，当一个线程修改了 volatile 变量的值，其他线程能够立即看到变量的新值。<br />
+<br />
+但是需要注意的是，volatile 关键字只能保证单个变量的内存可见性，不能保证多个变量之间的内存可见性。如果多个变量之间存在依赖关系，需要使用其他的同步机制来保证变量之间的内存可见性。<br />
+<h4>
+	4) 注意内存屏障的使用</h4>
+在使用 volatile 关键字提供的内存屏障时，需要注意内存屏障的使用。具体来说，内存屏障应该放置在正确的位置，以确保变量的读写顺序符合程序的要求。如果内存屏障放置不当，可能会导致程序出现不可预测的错误。<br />
+<h4>
+	5) 注意编译器的实现</h4>
+不同编译器对 volatile 关键字的实现可能存在差异。因此，在使用 volatile 关键字时，需要注意编译器的实现。特别是在多平台开发中，不同平台上的编译器对 volatile 关键字的实现可能存在差异，需要谨慎处理。<br />
+<h2>
+	volatile关键字的应用场景</h2>
+volatile 关键字通常用于以下几个场景：<br />
+<h4>
+	1) 访问硬件寄存器</h4>
+在嵌入式系统中，常常需要访问硬件寄存器。由于硬件寄存器通常具有特殊的访问方式和访问顺序，因此需要使用 volatile 关键字来确保对硬件寄存器的访问符合要求。<br />
+<h4>
+	2) 多线程程序中的共享变量</h4>
+在多线程程序中，多个线程可能会同时访问同一个变量。为了保证程序的正确性，需要使用 volatile 关键字来保证变量的内存可见性。<br />
+<h4>
+	3) 信号处理程序中的变量</h4>
+在信号处理程序中，由于信号的不确定性，可能会导致程序出现不可预测的错误。为了避免这种错误，需要使用 volatile 关键字来确保对变量的访问符合要求。<br />
+<h4>
+	4) 外部中断处理程序中的变量</h4>
+在外部中断处理程序中，由于外部中断的不确定性，可能会导致程序出现不可预测的错误。为了避免这种错误，需要使用 volatile 关键字来确保对变量的访问符合要求。<br />
+<h4>
+	5) 某些特殊的数据类型</h4>
+在某些特殊的数据类型中，使用 volatile 关键字可以确保对变量的访问符合要求。比如，C++ 中的 std::atomic 类型，就使用了 volatile 关键字来确保对变量的访问符合要求。<br />
+<h2>
+	总结</h2>
+volatile 关键字是 C语言中用于修饰变量的关键字之一。它的作用是告诉编译器，该变量可能会被意外地修改，因此需要使用内存屏障来确保变量的读写顺序符合程序的要求。volatile 关键字通常用于访问硬件寄存器、多线程程序中的共享变量、信号处理程序中的变量、外部中断处理程序中的变量等场景。<br />
+<br />
+需要注意的是，volatile 关键字只能保证单个变量的内存可见性，不能保证多个变量之间的内存可见性。在使用 volatile 关键字时，还需要注意内存屏障的使用和编译器的实现。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="466_2.html" title="Code::Blocks汉化教程（附带汉化包）" target="_blank">Code::Blocks汉化教程（附带汉化包）</a></li>
+<li><a href="5904_2.html" title="C语言贪吃蛇小游戏演示和说明" target="_blank">C语言贪吃蛇小游戏演示和说明</a></li>
+<li><a href="vip_7101_2.html" title="Python异常处理机制到底有什么用？" target="_blank">Python异常处理机制到底有什么用？</a></li>
+<li><a href="7984_2.html" title="GCC自动识别的文件扩展名（一览表）" target="_blank">GCC自动识别的文件扩展名（一览表）</a></li>
+<li><a href="../redis/benchmarks_2.html" title="Redis Benchmark性能测试" target="_blank">Redis Benchmark性能测试</a></li>
+<li><a href="olwjc85_2.html" title="PyCharm使用教程（非常详细）" target="_blank">PyCharm使用教程（非常详细）</a></li>
+<li><a href="5bwlrpq_2.html" title="pytest框架是什么？" target="_blank">pytest框架是什么？</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9926;
+window.arcId = "a55aQW/Lc9+osrhQGDHQajrBOzNJWIOdz+l39F9XyBsK2KsU9dqrRi+WEdY";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

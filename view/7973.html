@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Django Form表单自定义验证规则</title>
+<meta name="description" content="在《》我们讲解了如何是实现 Django Form 表单自定义表单字段，" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../django/django.html">Django</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Django Form表单自定义验证规则</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在《<a href="7952_2.html" target="_blank">Django Form表单实现自定义字段</a>》我们讲解了如何是实现 Django Form 表单自定义表单字段，在大多数情况自定义 Form 表单字段的同时都会添加额外的数据校验逻辑，但是如果只是为了添加校验逻辑，而单独再去定义一个字段，也就有点事半功倍了，所以，如果只需要对一些表单字段做额外的检验，可以将检验逻辑编写在定义的 Form 类中，以类方法形式存在。
+<h2>
+1. 实现自定义校验规则</h2>
+表单系统会自动查找以 <span style="color:#ff0000;">clean_ 开头，以字段名结尾的方法</span>，它会在验证字段合法性的过程中被调用，因此，如果想要自定义校验逻辑，可以按如下方式编写代码：
+<pre class="python">
+class RegForm(forms.Form):
+    name = forms.CharField(label=&#39;用户名&#39;)
+
+    def clean_name(self):
+        name=self.cleaned_data[&#39;name&#39;]
+        if len(name)&lt;6:
+            raise forms.ValidationError(&quot;你注册的用户名字符太短了&quot;)
+        return name</pre>
+上述代码中，我们依然首先定义了一个 表单 Form 类，然后并定义了一个字段 name，并在该类中额外添加了 name 字段的验证逻辑即通过 clean_name 方法实现，该方法会在 name 字段的默认验证逻辑执行完成后执行，所以，可以直接通过 cleaned_data 属性获取到符合校验要求的数据值。<br />
+<br />
+在 clean_name 方法中只是简单的校验当前的数据长度不能小于 6 ，若不符合要求则会抛出异常 ，并给出错误提示信息，需要注意的是在自定义验证方法结束时，需要将<span style="color:#ff0000;">字段的值返回</span>，否则这个字段的值就会变成 None，这个地方需要大家在自定义校验规则的时候特别注意，这也是常见的错误。<br />
+<br />
+下面我们就来看看验证逻辑是否能够生效吧，打开 Django 的 shell 环境，进行如下操作：
+<pre class="python">
+In [1]: from index.forms import RegForm
+In [2]: form=RegForm
+In [3]: form=RegForm({&#39;name&#39;:&#39;cyuyan&#39;})
+In [4]: form.is_valid()
+Out[4]: True
+In [5]: form=RegForm({&#39;name&#39;:&#39;cyuyanzhongwenwang&#39;})
+In [6]: form.is_valid()
+Out[6]: True
+In [7]: form=RegForm({&#39;name&#39;:&#39;cyu&#39;})
+In [8]: form.is_valid()
+Out[8]: False
+In [9]: form[&quot;name&quot;].errors
+Out[9]: [&#39;你注册的用户名字符太短了&#39;]</pre>
+从上面的测试可以看出，通过自定义 clean_name 方法实现了自定义的校验逻辑。<br />
+<br />
+本节的内容不多，也比较简单，Django 提供的自定义验证规则，能够使开发者更加方便自如的实现业务需求，也希望各位小伙伴在使用 Django Form 表单系统的时候，要敢于尝试，程序开发虽然要遵循一定的规则，但是你的思路要敢于天马行空，这样才能不断提升自己能力，不断在探索和尝试中进步，学习到新的知识。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2293.html" title="Python MetaClass元类详解" target="_blank">Python MetaClass元类详解</a></li>
+<li><a href="4776.html" title="Go语言nil：空值/零值" target="_blank">Go语言nil：空值/零值</a></li>
+<li><a href="7203.html" title="C++ STL multiset容器详解" target="_blank">C++ STL multiset容器详解</a></li>
+<li><a href="../mongodb2/find-document.html" title="MongoDB查询文档" target="_blank">MongoDB查询文档</a></li>
+<li><a href="../sql/sub-query.html" title="SQL子查询（嵌套查询）" target="_blank">SQL子查询（嵌套查询）</a></li>
+<li><a href="../json/syntax.html" title="JSON语法规则" target="_blank">JSON语法规则</a></li>
+<li><a href="lbj0cst.html" title="Python读取yaml配置文件（PyYAML模块）" target="_blank">Python读取yaml配置文件（PyYAML模块）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7973;
+window.arcId = "13713T6sYlr63EcS6f/pwb+e00McwST+NjIk29V9A4icSG1JPA31uoGdftw";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

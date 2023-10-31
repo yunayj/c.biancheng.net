@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Django聚合查询和分组查询</title>
+<meta name="description" content="聚合查询 是指对一个数据表（Model）中某个字段的数据进行部分或者全部统计查询的一种方式，比如所有全部书的平均价格或者是书籍的总数量等等，在这些时候就会使用到聚合查询这" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../django/django_2.html">Django</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Django聚合查询和分组查询</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body"><span style="color:#ff0000;">聚合查询</span>是指对一个数据表（Model）中某个字段的数据进行部分或者全部统计查询的一种方式，比如所有全部书的平均价格或者是书籍的总数量等等，在这些时候就会使用到聚合查询这种方法。而分组查询同样也属于聚合查询中的一种，只是更加复杂一点而已，在学习本节的知识时候，如果你有较好的 MySQL 知识储备，那么学习本节知识将会变得再简单不过了。下面就让我们开始学习吧。<br />
+<h2>
+	1. 聚合查询的应用</h2>
+<h4>
+	1) 不带分组的聚合查询</h4>
+对数据表计算统计值，需要使用 aggregate 方法，提供的参数可以是一个或者多个聚合函数，aggregate 是 QuerySet 的一个子句，它的返回值是一个字典类型，键是聚合的关键字，值是聚合后的统计结果。<br />
+<br />
+不带分组的聚合查询是指对将全部数据进行集中统计查询，Django 定义了一些常用的聚合函数，比如求平均值（Avg）、计数（Count）、求最值（Max和Min）以 Sum 求和。它们统一定义在&nbsp;<code>django.db.models</code>模块中，所以再使用聚合函数时，同样需要提前导入，为了方便使用，我们采用下面的方式引入：<br />
+<p class="info-box">
+	from django.db.models import *</p>
+它的语法格式如下所示，它的<span style="color:#ff0000;">返回值是一个字典</span>，以统计结果变量名为 key，以统计值为 value：<br />
+<p class="info-box">
+	MyModel.objects.aggregate(统计结果变量名=聚合函数(&#39;列名&#39;))</p>
+我们通过求所有书籍的价格平均值与所书籍数量来进行实例演练：
+<pre class="python">
+#求所有书籍的平均价格
+from index.models import Book
+from django.db.models import *
+result =Book.objects.aggregate(myAvg=Avg(&#39;price&#39;))
+print(&quot;平均价格是:&quot;, result[&#39;myAvg&#39;])
+print(&quot;result=&quot;, result)
+#result= {&#39;myAvg&#39;: Decimal(&#39;47.800000&#39;)}
+#求一共有多少本书
+result =Book.objects.aggregate(MyCulate=Count(&#39;title&#39;))
+print(&quot;数据记录总个数是:&quot;, result[&#39;MyCulate&#39;])
+print(&quot;result=&quot;, result)
+#result= {&#39;MyCulate&#39;: 5}
+#传递多个聚合函数一起求值
+result=Book.objects.aggregate(l=Min(&quot;price&quot;),m=Max(&quot;price&quot;),n=Avg(&quot;retail_price&quot;))
+print(&quot;result=&quot;,result)
+#result= {&#39;l&#39;: Decimal(&#39;25.00&#39;), &#39;m&#39;: Decimal(&#39;65.00&#39;), &#39;n&#39;: Decimal(&#39;127.800000&#39;)}</pre>
+<h2>
+	2. 聚合分组查询应用</h2>
+分组聚合是指通过计算查询结果中每一个对象所关联的对象集合，从而得出总计值(也可以是平均值或总和)，即为查询集的每一项生成聚合。简单的理解就是对 QuerySet中的每一个 Model 对象都生成一个统计值。分组聚合使用 <span style="color:#ff0000;">annotate</span> 方法完成。它的语法格式和聚合查询一样如下所示：<br />
+<p class="info-box">
+	QuerySet.annotate(结果变量名=聚合函数(&#39;列名&#39;))</p>
+分组聚合的实现主要两个步骤：首先使用 <span style="color:#ff0000;">MyModel.objects.values</span> 获得要分组聚合的列，它的返回结果是一个 QuerySet 类型的<span style="color:#ff0000;">字典</span>，然后通过&nbsp;<span style="color:#ff0000;">QuerySet.annotate(变量名=聚合函数(&#39;列名&#39;))</span>&nbsp;的方法分组聚合得到相应的结果。下面我们通过实例进行说明，通过分组聚合查询获取价格相同的书籍数量：<br />
+<pre class="python">
+#在index/views.py 添加代码
+from django.db.models import Count
+from index.models import Book,PubName
+def test_annotate(request):
+    # 得到所有出版社的查询集合QuerySet
+    bk_set = Book.objects.values(&#39;price&#39;)
+    # bk=Book.objects.get(id=1)
+    # print(&#39;书名:&#39;,bk.title,&#39;出版社是:&#39;,bk.pub.pubname)
+    # 根据出版社QuerySet查询分组，出版社和Count的分组聚合查询集合
+    bk_count_set = bk_set.annotate(myCount=Count(&#39;price&#39;))  # 返回查询集合
+    for item in bk_count_set: #通过外键关联进行查询bk_set.pub.pubname
+        print(&quot;价格是:&quot;, item[&#39;price&#39;], &quot;同等价格书籍数量：&quot;, item[&#39;myCount&#39;])
+    return HttpResponse(&#39;请在CMD命令行控制台查看结果&#39;)
+#路由配置为忘记:path(&#39;annotate/&#39;,views.test_annotate)</pre>
+最终在CMD命令行会得到如下输出：<br />
+<p class="info-box">
+	价格是: 59.00 同等价格书籍数量： 1<br />
+	价格是: 25.00 同等价格书籍数量： 1<br />
+	价格是: 45.00 同等价格书籍数量： 2<br />
+	价格是: 65.00 同等价格书籍数量： 1</p>
+由于 annotate 的返回值是一个 QuerySet 对象，所以我可以通过 query 属性查看其执行的 SQL 语句，如下所示：<br />
+<pre class="mysql">
+SELECT `index_book`.`price`, COUNT(`index_book`.`price`) AS `myCount` FROM `index_book` GROUP BY `index_book`.`price` ORDER BY NULL</pre>
+从 SQL 语句可以得出，annotate 按照 price 分组，并且在 SELECT 中对 price 进行了计数。默认情况下，annotate 会对每一个 Model 对象计算统计值。但是，如果使用了 values 方法中指定的字段，Django 会先按照该字段对 Model 对象进行分组，再去对每个分组计算统计值。<br />
+<h2>
+	3. 总结归纳</h2>
+本节主要讲解了聚合查询以及分组聚合查询的使用方法，还给大家介绍了几个常用的聚合函数。聚合查询和分组查询分别调用不同的方法来实现，聚合查询是 <span style="color:#ff0000;">aggregate</span>，而分组聚合查询是&nbsp;<span style="color:#ff0000;">annotate</span>。后者经常配合 values 方法来选取要分组的字段。<br />
+<br />
+在这里大家还要<span style="color:#ff0000;">注意</span>，annotate 和 values 方法的顺序非常重要，会影响实际的查询效果。上面实例就是 values 在前的情况，如果 annotate 在前会产生不同的影响，如下所示：
+<pre class="python">
+In [41]: Book.objects.annotate(t=Max(&#39;price&#39;)).values(&#39;id&#39;,&#39;t&#39;)
+Out[41]: &lt;QuerySet [{&#39;id&#39;: 1, &#39;t&#39;: Decimal(&#39;59.00&#39;)}, {&#39;id&#39;: 2, &#39;t&#39;: Decimal(&#39;25.00&#39;)}, {&#39;id&#39;: 3, &#39;t&#39;: Decimal(&#39;45.00&#39;)}, {&#39;id&#39;: 4, &#39;t&#39;: Decimal(&#39;65.00&#39;)}, {&#39;id&#39;: 5, &#39;t&#39;: Decimal(&#39;45.00&#39;)}]&gt;#按照values提供的参数分别作为键和值。</pre>
+至此我们将 Django 提供的各种查询方式讲解完毕，我们用了 <span style="color:#ff0000;">7</span> 节的内容对此知识点做了详细介绍。熟练掌握这些章节的内容，对我们从数据库获取数据的操作会有很大帮助，也能够满足一些实际业务上需求。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1806_2.html" title="C语言关系运算符详解" target="_blank">C语言关系运算符详解</a></li>
+<li><a href="2247_2.html" title="Python函数（函数定义、函数调用）用法详解" target="_blank">Python函数（函数定义、函数调用）用法详解</a></li>
+<li><a href="2258_2.html" title="Python函数参数传递机制（超级详细）" target="_blank">Python函数参数传递机制（超级详细）</a></li>
+<li><a href="4742_2.html" title="Java List.size()方法：返回列表中元素的个数" target="_blank">Java List.size()方法：返回列表中元素的个数</a></li>
+<li><a href="vip_5048_2.html" title="Linux文件系统到底有什么用处？" target="_blank">Linux文件系统到底有什么用处？</a></li>
+<li><a href="6867_2.html" title="Java多对多关系示例" target="_blank">Java多对多关系示例</a></li>
+<li><a href="../c/floor_2.html" title="C语言floor()：向下取整" target="_blank">C语言floor()：向下取整</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7694;
+window.arcId = "b338TxQdOVCWbhxO1kJU2X6IU/GTZRv4n2aipdZbcQWJEdRv35Mw24t8f54";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

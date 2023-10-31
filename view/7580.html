@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Django模板过滤器用法详解</title>
+<meta name="description" content="过滤器从字面的意思上，可以理解为：过滤掉不需要的，剩下我们需要的，Django 的模板语言同样也内置了过滤器，如果你了解其他的框架对这个词一定不陌生，比如说 Flask 框架、Vue框架" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../django/django.html">Django</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Django模板过滤器用法详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">过滤器从字面的意思上，可以理解为：过滤掉不需要的，剩下我们需要的，Django 的模板语言同样也内置了过滤器，如果你了解其他的框架对这个词一定不陌生，比如说&nbsp; Flask 框架、Vue 框架等，都内置了过滤器这个功能，在本节我们将一起学习 Django 框架的过滤器。<br />
+<h2>
+1. 过滤器语法格式</h2>
+过滤器作用是在变量输出时，对输出的变量值做进一步的处理，比如，我们可以使用过滤器来更改变量的输出显示。<br />
+<br />
+过滤器跟模板标签一样，也是在模板中对函数进行调用，比如，对输出的日期进行格式化处理，或者转换大小写字母等，这些都有对应的过滤器去处理它们。当内置过滤器满足不了需求的情况下，也可自定义过滤器。过滤器的语法格式如下：<br />
+<p class="info-box">
+{{ 变量 | 过滤器1:参数值1 | 过滤器2:参数值2 ... }}</p>
+从语法格式我们可以得知过滤器使用<code>|</code>管道符进行变量与过滤器之间的连接，过滤器的可以通过组合多个过滤器实现链式调用，目前过滤器最多接受一个参数。经常使用的过滤器如下表所示：<br />
+<br />
+<table border="1" cellpadding="1" cellspacing="1">
+<caption>
+常见的模板过滤器</caption>
+<tbody>
+<tr>
+<td>
+过滤器</td>
+<td>
+使用说明。</td>
+</tr>
+<tr>
+<td>
+length</td>
+<td>
+获取变量的长度，适用于字符串和列表。</td>
+</tr>
+<tr>
+<td>
+lower/upper</td>
+<td>
+转换字符串为小写/大写形式。</td>
+</tr>
+<tr>
+<td>
+first/last</td>
+<td>
+获取变量的首个/末尾元素。</td>
+</tr>
+<tr>
+<td>
+add:&#39;n&#39;</td>
+<td>
+给变量值增加 n。</td>
+</tr>
+<tr>
+<td>
+safe</td>
+<td>
+默认不对变量内的字符串进行html转义。</td>
+</tr>
+<tr>
+<td>
+cut</td>
+<td>
+从给定的字符串中删除指定的值。</td>
+</tr>
+<tr>
+<td>
+dictsort</td>
+<td>
+获取字典列表，并返回按参数中给定键排序的列表。</td>
+</tr>
+<tr>
+<td>
+join</td>
+<td>
+用字符串连接列表，例如 Python 的 str.join(list)。</td>
+</tr>
+<tr>
+<td>
+truncatewords</td>
+<td>
+如果字符串字符多于指定的字符数量，那么会被截断。 截断的字符串将以可翻译的省略号序列（&ldquo;...&rdquo;）结尾。</td>
+</tr>
+</tbody>
+</table>
+<h2>
+2. 过滤器的实际应用</h2>
+过滤器相比模板标签要简单的多，我们可以把它们理解成一个 Python 函数，传递参数给他处理就可以了，当滤器接收参数后对它进行处理，最终将处理结果返回到模板中，这就是整个过滤器的实现流程，下面我们通过一些具体的实例，来更加详细理解它的使用方法。
+<h4>
+1)获取变量的长度</h4>
+我们使用 length 过滤器得到变量的长度，为了方便演示我们使用 Django shell 编写代码，如下所示：
+<pre class="python">
+In [1]: from django.template import Template,Context
+
+In [2]: t=Template(&quot;&quot;&quot;
+   ...: &lt;p&gt;hello:{{world|length}}&lt;/p&gt;
+   ...: &quot;&quot;&quot;)
+   ...: t.render(Context({&#39;world&#39;:&#39;you&#39;}))
+Out[2]: &#39;\n&lt;p&gt;hello:3&lt;/p&gt;\n&#39;</pre>
+<p class="tip-box">
+Django shell 是 Django 提供的交互模式，可以在交互模式下使用项目工程的代码执行相应的操作，从而代替编写视图函数，这样便于测试操作，同时也可以使用它来进行 model 数据表的增删改查，但不能进行过于复杂的操作，它的启动命令是 python manage.py shell。</p>
+<p>
+模板变量 world 使用管道符连接 length 过滤器，最终得到了变量对应值 you 的字符串长度为 3。同时 world 变量的值也可以是列表或者字典，是列表那么将返回列表长度，是字典将返回字典 key 的个数，如若没有定义变量则返回 0。</p>
+<h4>
+2) truncatewords 截取指定个数的词</h4>
+在一定数量的单词后截断字符串，语法格式如下所示：<br />
+<p class="info-box">
+{{ value|truncatewords:2 }}</p>
+参数是要截取的字符数量，此处为 2，如果 value 是 &quot;Django is website&quot; ，则输出为&quot;Django is &hellip;&quot;，实例代码如下：<br />
+<pre class="python">
+In [1]: from django.template import Template,Context
+In [2]: t=Template(&quot;&quot;&quot;
+    ...: &lt;p&gt;hello:{{value|truncatewords:2}}&lt;/p&gt;
+    ...: &quot;&quot;&quot;)
+    ...: t.render(Context({&#39;value&#39;:&#39;Django is website&#39;}))
+Out[2]: &#39;\n&lt;p&gt;hello:Django is &hellip;&lt;/p&gt;\n&#39;</pre>
+<h4>
+3) dictsort返回指定键的排序列表</h4>
+dictsort 它指定字典的键为参数，最后返回按照指定键排序的列表，它的用法如下所示：
+<pre class="python">
+In [1]: from django.template import Template,Context
+In [2]: t=Template(&quot;&quot;&quot;
+   ...: &lt;p&gt;hello:{{value|dictsort:&quot;num&quot;}}
+   ...: &quot;&quot;&quot;)
+   ...: t.render(Context({&#39;value&#39;:[
+   ...:     {&#39;name&#39;: &#39;C语言中文网&#39;, &#39;num&#39;:2 },
+   ...:     {&#39;name&#39;: &#39;Django官网&#39;, &#39;num&#39;: 1},
+   ...:     {&#39;name&#39;: &#39;Python官网&#39;, &#39;num&#39;: 3},
+   ...: ]}))
+Out[2]: &#39;\n&lt;p&gt;hello:[{&amp;#39;name&amp;#39;: &amp;#39;C语言中文网&amp;#39;, &amp;#39;num&amp;#39;: 1}, {&amp;#39;name&amp;#39;: &amp;#39;Django官网&amp;#39;, &amp;#39;num&amp;#39;: 2}, {&amp;#39;name&amp;#39;: &amp;#39;Python官网&amp;#39;, &amp;#39;num&amp;#39;: 3}]\n&#39;</pre>
+从输出的结果可以看出 dictsort 过滤器对指定的键 num 做了排序处理。当然过滤器也可以与模板标签配合使用，这种属于综合的使用方法，实例如下：
+<pre class="python">
+In [1]: from django.template import Template,Context
+In [2]: t=Template(&quot;&quot;&quot;
+    ...: {% for book in books|dictsort:&quot;author.age&quot; %}
+    ...:     {{ book.title }} ({{ book.author.name }})
+    ...: {% endfor %}
+    ...: &quot;&quot;&quot;)
+    ...: t.render(Context({&#39;books&#39;:[
+    ...:     {&#39;title&#39;: &#39;C语言教程&#39;, &#39;author&#39;: {&#39;name&#39;: &#39;ycs&#39;, &#39;age&#39;: 14}},
+    ...:     {&#39;title&#39;: &#39;Python教程&#39;, &#39;author&#39;: {&#39;name&#39;: &#39;xxw&#39;, &#39;age&#39;: 17}},
+    ...:     {&#39;title&#39;: &#39;Django教程&#39;, &#39;author&#39;: {&#39;name&#39;: &#39;ccs&#39;, &#39;age&#39;: 16}},
+    ...: ]}))
+Out[2]: &#39;\n\n    C语言教程 (ycs)\n\n    Django教程 (ccs)\n\n    Python教程 (xxw)\n\n&#39;</pre>
+<p class="tip-box">
+提示：&amp;#39 是单引号 HTML 转义后的十进制格式，39 是单引号的 ASCII 编码值。使用 Context 方法的&nbsp;autoescape=False 参数可以关闭自动转义。</p>
+<h4>
+4) add给变量值加 &#39;n&#39;</h4>
+add 过滤的用法也非常的简单，变量值是整形而且参数也是整形，此时的 add 过滤器相当于加法运算，但是如果变量值和参数都是列表又会怎么样呢，让我们通过下面的例子来看一下：
+<pre class="python">
+In [1]: from django.template import Template,Context
+#整形相加强制转换
+In [2]: t=Template(&quot;&quot;&quot;
+    ...: {{value|add:2 }}
+    ...: &quot;&quot;&quot;)
+    ...: t.render(Context({&#39;value&#39;:&#39;5&#39;}))
+Out[2]: &#39;\n7\n&#39;
+
+#列表相加
+In [3]: t=Template(&quot;&quot;&quot;
+    ...: {{value|add:list}}
+    ...: &quot;&quot;&quot;)
+    ...: t.render(Context({&#39;value&#39;:[&#39;python&#39;,&#39;Django&#39;,&#39;Flask&#39;],&#39;list&#39;:[&#39;Tonado&#39;,&#39;celery&#39;]}))
+Out[3]: &#39;\n[&amp;#39;python&amp;#39;, &amp;#39;Django&amp;#39;, &amp;#39;Flask&amp;#39;, &amp;#39;Tonado&amp;#39;, &amp;#39;celery&amp;#39;]\n&#39;</pre>
+add 过滤器将首先尝试将两个值都强制转换为整数。如果失败，它将尝试将所有值加在一起。这将对某些数据类型（如字符串，列表等）起作用，而对其他数据类型则失败。如果失败，结果将为空字符串。<br />
+<h3>
+3. 实现自定义过滤器</h3>
+Django 在提供诸多可供选择的过滤器的同时，也向开发者提供了自定义过滤器功能，当内置过滤器无法满足开发者的需求的时候，就可以使用自定义过滤器，实现起来也非常的方便。因为自定义过滤器与自定义模板标签，它们的实现过程非常相似，所以我们会在后续章节中做针对性的讲解。<br />
+<br />
+从上述列举的几个实例来看，过滤器的使用方法非常简单，但是它的用处却非常得大，在很大程度上简捷了变量的处理过程，Django 模板内置了很多的过滤器大概有 60 余种，但是有些过滤器不是经常的使用，大家如果有兴趣了解也可以参见 Django 官方（<a href="https://docs.djangoproject.com/en/2.2/ref/templates/builtins/" target="_blank">https://docs.djangoproject.com/en/2.2/ref/templates/builtins/</a>）。我们应该尽可能的熟悉它们，俗话说&ldquo;技多不压身&rdquo;，这样我们在使用它们时候才能够游刃有余。<br />
+<pre style="background-color:#ffffff;color:#000000;font-family:'Consolas';font-size:12.8pt;">
+</pre>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../mysql/date_add_adddate.html" title="MySQL DATE_ADD和ADDDATE函数：向日期添加指定时间间隔" target="_blank">MySQL DATE_ADD和ADDDATE函数：向日期添加指定时间间隔</a></li>
+<li><a href="2868.html" title="Linux RPM包统一命名规则" target="_blank">Linux RPM包统一命名规则</a></li>
+<li><a href="../c/pow.html" title="C语言pow()函数：求x的y次方的值" target="_blank">C语言pow()函数：求x的y次方的值</a></li>
+<li><a href="4188.html" title="Python关键字（保留字）一览表" target="_blank">Python关键字（保留字）一览表</a></li>
+<li><a href="../maven2/install-configure.html" title="Maven安装与配置（图解）" target="_blank">Maven安装与配置（图解）</a></li>
+<li><a href="8776.html" title="C语言的主要用途以及未来发展" target="_blank">C语言的主要用途以及未来发展</a></li>
+<li><a href="../hibernate/po.html" title="Hibernate持久化类详解" target="_blank">Hibernate持久化类详解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7580;
+window.arcId = "1267ivDThP2E7rgM4utu5AKbAlpx3OlFRP8v9O5mfrtoyym71jxu51cZdFk";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

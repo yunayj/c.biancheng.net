@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Django模板中校验用户身份与权限</title>
+<meta name="description" content="在 Django 的用户认证系统还提供了其他认证方式，它们既方便又快捷。所以在本节中，我们将介绍 Django 用户认证系统的其他应用，" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../django/django_2.html">Django</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Django模板中校验用户身份与权限</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在上一节《<a href="8045_2.html">Django自定义认证后端实现多种登录方式验证</a>》中我们解决了用户登录多种实现多种验证的问题在 Django 的用户认证系统还提供了其他 API 接口，它们既方便又快捷。所以在本节中，我们将介绍 Django 用户认证系统的其他应用。<br />
+<h2>
+	1. 登录时实现用户校验认证</h2>
+User 的实例对象拥有&nbsp;<span style="color:#ff0000;">is_authenticated()</span>&nbsp;方法，可以在用户登录时进行认证。如果是真正的 User 对象，返回值为 True，用于检查用户是否已经通过了认证。但是通过认证并不意味着用户认证拥有任何权限，甚至也不会检查该用户是否处于激活状态，这只是表明用户成功的通过了认证。<br />
+<br />
+is_authenticated() 这个方法很重要，在后台用 request.user.is_authenticated() 判断用户是否已经登录，如果 True 则可以向前台展示 request.user.name 用户名，即实现欢迎某某用户登录的业务场景。使用该方法的时候应满足一下要求：用户登录后才能访问某些页面；如果用户没有登录就访问该页面的话直接跳到登录页面；用户在跳转到登录界面中完成登录后，自动跳转到之前访问的 url。
+<h2>
+	2. 实现模板中校验用户身份</h2>
+在模板中我们同样也可以使用 is_authenticated() 校验用户是否登录，对于已登录的用户返回是 True，反之则会 False，所以在模板中，我们可以根据这个方法的返回值来决定渲染什么样的内容，如下所示：
+<pre class="html">
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;auth用户认证&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+{% if user.is_authenticated %}
+&lt;h1&gt; Hello {{user.username}} Login &lt;/h1&gt;
+{% else %}
+&lt;h1&gt;Visitor Login&lt;/h1&gt;
+{% endif %}
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+此时有个地方需要大家注意一下，此时 user 变量实例对象需要上下文进行传递，也可以用 locals() 方法或者 RequestContext 参数进行传递。
+<h2>
+	3. 实现模板中校验用户权限</h2>
+我们可以在模板中适应 perms 变量完成权限的校验，perms 变量是 PermWrapper 类的实例，使用它可以校验当前用户是否拥有某些权限。它可以使用如下方式导入：<br />
+<p class="info-box">
+	from django.contrib.auth.context_processors import PermWrapper</p>
+perms 只可以完成两类权限的校验：是否有某个应用的权限，只要当前用户拥有某个应用中的任何一个权限，即为 True。使用方法见下：<br />
+<p class="info-box">
+	{{ perms.user }}</p>
+它的返回值是当前用户被授予的 user 应用的权限，如返回值是None 则表示当前用户没有 index 应用的权限；是否有某一项权限，这里指的是当前用户是否拥有一个确定的权限，如下所示：<br />
+<p class="info-box">
+	{{perms.user.add_book }}</p>
+它的返回值若为 True 则代表当前用户拥有 user 应用中的 add_book 权限。在 Django 模板语言中我们可以使用下列方式来判断用户是否有某项权限：<br />
+<p class="info-box">
+	{% if &quot;user&quot; in perms %}</p>
+校验当前用户是否有 user 应用的权限，假如返回了 True，则代表至少有一个 post 应用的权限。<br />
+<p class="info-box">
+	{% if &quot;user.add_book&quot; in perms %}</p>
+判断当前用户是否有 user 应用的 add_book 权限。下面我们实现一个简单的模板，可以根据登录用户拥有的权限渲染不同的内容。定义 authmodel.html 文件，编写如下代码：
+<pre class="html">
+{% if perms.index %}
+&lt;p&gt; {{ user.username }}拥有 user应用的权限&lt;/p&gt;&gt;
+    {% if perms.index.add_book %}
+    &lt;p&gt;你拥有书籍添加的功能&lt;/p&gt;
+    {% endif %}
+    {% if perms.index.change_book %}
+    &lt;p&gt;你有用书籍删除的功能&lt;/p&gt;
+    {% endif %}
+{% else %}
+&lt;p&gt;关于index应用的权限你一个也没有拥有&lt;/p&gt;
+{% endif %}
+
+</pre>
+从模板中我们可以看出，它首先判断当前用户是否拥有 index 应用的权限，然后再去判断是否有 add_book 和 change_book 的权限。可以将这个模板应用到视图函数中，以此来查看不同登录用户，得到的不同返回结果，注意在这个过程中，要设置不同用户的不同权限配置。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="751_2.html" title="Java return语句" target="_blank">Java return语句</a></li>
+<li><a href="1144_2.html" title="Java字节流的使用：字节输入/输出流、文件输入/输出流、字节数组输入/输出流" target="_blank">Java字节流的使用：字节输入/输出流、文件输入/输出流、字节数组输入/输出流</a></li>
+<li><a href="1157_2.html" title="Java线程的概念：什么是线程？" target="_blank">Java线程的概念：什么是线程？</a></li>
+<li><a href="../redis2/zcount_2.html" title="Redis ZCOUNT命令" target="_blank">Redis ZCOUNT命令</a></li>
+<li><a href="tinh1f_2.html" title="PPT抠图（去掉背景）的3种方法" target="_blank">PPT抠图（去掉背景）的3种方法</a></li>
+<li><a href="../c/isascii_2.html" title="C语言isascii()：判断一个字符是否为ASCII码字符" target="_blank">C语言isascii()：判断一个字符是否为ASCII码字符</a></li>
+<li><a href="zt3a6xj_2.html" title="Java if else if语句详解" target="_blank">Java if else if语句详解</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8056;
+window.arcId = "6d0c0wk1rqbtDPxq6yC0U2ATEblZnRxdU4WE7iFiql4Oubo4LjYkbo0MVrE";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

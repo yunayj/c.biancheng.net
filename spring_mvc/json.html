@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Spring MVC JSON数据交互</title>
+<meta name="description" content="Spring MVC 在数据绑定的过程中需要对传递数据的格式和类型进行转换，它既可以转换 String 等类型的数据，也可以转换 JSON 等其他类型的数据。本节将针对 Spring MVC 中 JSON 类型的数据交互" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="../view/niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Spring MVC JSON数据交互</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">Spring MVC 在数据绑定的过程中需要对传递数据的格式和类型进行转换，它既可以转换 String 等类型的数据，也可以转换 JSON 等其他类型的数据。本节将针对 Spring MVC 中 JSON 类型的数据交互进行讲解。<br />
+<h2>
+JSON 概述</h2>
+JSON（JavaScript Object Notation, JS 对象标记）是一种轻量级的数据交换格式。与 XML 一样，JSON 也是基于纯文本的数据格式。它有对象结构和数组结构两种数据结构。<br />
+<h4>
+1）对象结构</h4>
+对象结构以<code>{</code>开始、以<code>}</code>结束，中间部分由 0 个或多个以英文<code>,</code>分隔的 key/value 对构成，key 和 value 之间以英文<code>:</code>分隔。对象结构的语法结构如下：
+<p class="info-box">
+{<br />
+&nbsp; &nbsp; key1:value1,<br />
+&nbsp; &nbsp; key2:value2,<br />
+&nbsp; &nbsp; ...<br />
+}</p>
+其中，key 必须为 String 类型，value 可以是 String、Number、Object、Array 等数据类型。例如，一个 person 对象包含姓名、密码、年龄等信息，使用 JSON 的表示形式如下：
+<p class="info-box">
+{<br />
+&nbsp;&nbsp;&nbsp; &quot;pname&quot;:&quot;张三&quot;,<br />
+&nbsp;&nbsp;&nbsp; &quot;password&quot;:&quot;123456&quot;,<br />
+&nbsp;&nbsp;&nbsp; &quot;page&quot;:40<br />
+}</p>
+<h4>
+2）数组结构</h4>
+数组结构以<code>[</code>开始、以<code>]</code>结束，中间部分由 0 个或多个以英文<code>,</code>分隔的值的列表组成。数组结构的语法结构如下：
+<p class="info-box">
+{<br />
+&nbsp;&nbsp;&nbsp; value1,<br />
+&nbsp;&nbsp;&nbsp; value2,<br />
+&nbsp;&nbsp;&nbsp; ...<br />
+}</p>
+上述两种（对象、数组）数据结构也可以分别组合构成更加复杂的数据结构。例如，一个 student 对象包含 sno、sname、hobby 和 college 对象，其 JSON 的表示形式如下：
+<p class="info-box">
+{<br />
+&nbsp;&nbsp;&nbsp; &quot;sno&quot;:&quot;201802228888&quot;,<br />
+&nbsp;&nbsp;&nbsp; &quot;sname&quot;:&quot;张三&quot;,<br />
+&nbsp;&nbsp;&nbsp; &quot;hobby&quot;:[&quot;篮球&quot;,&quot;足球&quot;]，<br />
+&nbsp;&nbsp;&nbsp; &quot;college&quot;:{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;cname&quot;:&quot;清华大学&quot;,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;city&quot;:&quot;北京&quot;<br />
+&nbsp;&nbsp;&nbsp; }<br />
+}</p>
+<h2>
+JSON 数据转换</h2>
+为实现浏览器与控制器类之间的 JSON 数据交互，Spring MVC 提供了 MappingJackson2HttpMessageConverter 实现类默认处理 JSON 格式请求响应。该实现类利用 Jackson 开源包读写 JSON 数据，将 Java 对象转换为 JSON 对象和 XML 文档，同时也可以将 JSON 对象和 XML 文档转换为 Java 对象。<br />
+<br />
+在使用注解开发时需要用到两个重要的 JSON 格式转换注解，分别是 @RequestBody 和 @ResponseBody。<br />
+<ul>
+<li>
+@RequestBody：用于将请求体中的数据绑定到方法的形参中，该注解应用在方法的形参上。</li>
+<li>
+@ResponseBody：用于直接返回 return 对象，该注解应用在方法上。</li>
+</ul>
+<br />
+需要注意的是，在该处理方法上，除了通过 @RequestMapping 指定请求的 URL，还有一个 @ResponseBody 注解。该注解的作用是将标注该注解的处理方法的返回结果直接写入 HTTP Response Body（Response 对象的 body 数据区）中。一般情况下，@ResponseBody 都会在异步获取数据时使用，被其标注的处理方法返回的数据都将输出到响应流中，客户端获取并显示数据。
+<h2>
+各个JSON技术比较</h2>
+早期 JSON 的组装和解析都是通过手动编写代码来实现的，这种方式效率不高，所以后来有许多的关于组装和解析 JSON 格式信息的工具类出现，如 json-lib、Jackson、Gson 和&nbsp;FastJson 等，可以解决 JSON 交互的开发效率。<br />
+<h4>
+1）json-lib</h4>
+json-lib 最早也是应用广泛的 JSON 解析工具，缺点是依赖很多的第三方包，如 commons-beanutils.jar、commons-collections-3.2.jar、commons-lang-2.6.jar、commons-logging-1.1.1.jar、ezmorph-1.0.6.jar 等。<br />
+<br />
+对于复杂类型的转换，json-lib 在将 JSON 转换成 Bean 时还有缺陷，比如一个类里包含另一个类的 List 或者 Map 集合，json-lib 从 JSON 到 Bean 的转换就会出现问题。<br />
+<br />
+所以 json-lib 在功能和性能上面都不能满足现在互联网化的需求。<br />
+<h4>
+2）开源的Jackson</h4>
+开源的&nbsp;Jackson 是 Spring MVC 内置的 JSON 转换工具。相比 json-lib 框架，Jackson 所依赖 jar 文件较少，简单易用并且性能也要相对高些。并且 Jackson 社区相对比较活跃，更新速度也比较快。<br />
+<br />
+但是 Jackson 对于复杂类型的 JSON 转换 Bean 会出现问题，一些集合 Map、List 的转换出现问题。而 Jackson 对于复杂类型的 Bean 转换 JSON，转换的 JSON 格式不是标准的 JSON 格式。<br />
+<h4>
+3）Google的Gson</h4>
+Gson 是目前功能最全的 JSON 解析神器，Gson 当初是应 Google 公司内部需求由 Google 自行研发。自从在 2008 年 5 月公开发布第一版后，Gson 就已经被许多公司或用户应用。<br />
+<br />
+Gson 主要提供了 toJson 与 fromJson 两个转换函数，不需要依赖其它的 jar 文件，就能直接在 JDK 上运行。在使用这两个函数转换之前，需要先创建好对象的类型以及其成员才能成功的将 JSON 字符串转换为相对应的对象。<br />
+<br />
+类里面只要有 get 和 set 方法，Gson 完全可以将复杂类型的 JSON 到 Bean 或 Bean 到 JSON 的转换，是 JSON 解析的神器。Gson 在功能上面无可挑剔，但性能比 FastJson 有所差距。<br />
+<h4>
+4）阿里巴巴的FastJson</h4>
+FastJson 是用 Java 语言编写的高性能 JSON 处理器，由阿里巴巴公司开发。<br />
+<br />
+FastJson&nbsp;不需要依赖其它的 jar 文件，就能直接在 JDK 上运行。<br />
+<br />
+FastJson 在复杂类型的 Bean 转换 JSON 上会出现一些问题，可能会出现引用的类型，导致 JSON 转换出错，需要制定引用。<br />
+<br />
+FastJson 采用独创的算法，将 parse 的速度提升到极致，超过所有 JSON 库。<br />
+<br />
+综上 4 种 JSON 技术的比较，在项目选型的时候可以使用 Google 的 Gson 和阿里巴巴的 FastJson 两种并行使用，如果只是功能要求，没有性能要求，可以使用Google 的 Gson。如果有性能上面的要求可以使用 Gson 将 Bean 转换 JSON 确保数据的正确，使用 FastJson 将 JSON 转换 Bean。
+<h2>
+示例</h2>
+本节示例基于阿里巴巴提供的 FastJson。下面结合具体需求演示 Spring MVC 如何处理 JSON 格式数据。（本节代码基于《》一节的 springmvcDemo2 实现）<br />
+<h4>
+1. 导入jar文件</h4>
+导入所需 jar 包 fastjson-1.2.62.jar，下载地址：<a href="https://github.com/alibaba/fastjson/releases" target="_blank">https://github.com/alibaba/fastjson/releases</a>。<br />
+<br />
+Maven 项目在 pom.xml 文件中添加以下依赖。<br />
+<pre class="xml">
+&lt;!-- fastjson --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.alibaba&lt;/groupId&gt;
+    &lt;artifactId&gt;fastjson&lt;/artifactId&gt;
+    &lt;version&gt;1.2.62&lt;/version&gt;
+&lt;/dependency&gt;</pre>
+<h4>
+2. 配置Spring MVC核心配置文件</h4>
+在 springmvc-servlet.xml 中添加以下代码。
+<pre class="xml">
+&lt;mvc:annotation-driven&gt;
+&lt;!--配置@ResponseBody由fastjson解析 --&gt;
+    &lt;mvc:message-converters&gt;
+        &lt;bean
+            class=&quot;org.springframework.http.converter.StringHttpMessageConverter&quot;&gt;
+            &lt;property name=&quot;defaultCharset&quot; value=&quot;UTF-8&quot; /&gt;
+        &lt;/bean&gt;
+        &lt;bean
+            class=&quot;com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter4&quot; /&gt;
+    &lt;/mvc:message-converters&gt;
+&lt;/mvc:annotation-driven&gt;
+&lt;mvc:default-servlet-handler /&gt;
+&lt;bean id=&quot;fastJsonpResponseBodyAdvice&quot;
+    class=&quot;com.alibaba.fastjson.support.spring.FastJsonpResponseBodyAdvice&quot;&gt;
+    &lt;constructor-arg&gt;
+        &lt;list&gt;
+            &lt;value&gt;callback&lt;/value&gt;
+            &lt;value&gt;jsonp&lt;/value&gt;
+        &lt;/list&gt;
+    &lt;/constructor-arg&gt;
+&lt;/bean&gt;
+&lt;!-- annotation-driven用于简化开发的配置，注解DefaultAnnotationHandlerMapping和AnnotationMethodHandlerAdapter --&gt;
+&lt;!-- 使用resources过滤掉不需要dispatcherservlet的资源（即静态资源，例如css、js、html、images）。
+    在使用resources时必须使用annotation-driven，否则resources元素会阻止任意控制器被调用 --&gt;
+&lt;!-- 允许js目录下的所有文件可见 --&gt;
+&lt;mvc:resources location=&quot;/&quot; mapping=&quot;/**&quot; /&gt;</pre>
+<h4>
+3. 创建POJO类</h4>
+在 net.biancheng.pojo 包下创建 User 类，代码如下。
+<pre class="java">
+package net.biancheng.po;
+
+public class User {
+    private String name;
+    private String password;
+    private Integer age;
+    
+    /**省略setter和getter方法*/
+}</pre>
+<h4>
+4. 创建JSP页面</h4>
+创建 index.jsp 页面测试 JSON 数据交互，代码如下。
+<pre class="xml">
+&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=UTF-8&quot;
+    pageEncoding=&quot;UTF-8&quot;%&gt;
+&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot;&gt;
+&lt;title&gt;测试JSON交互&lt;/title&gt;
+&lt;script type=&quot;text/javaScript&quot;
+    src=&quot;${pageContext.request.contextPath }/js/jquery-3.2.1.min.js&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;form action=&quot;&quot;&gt;
+        用户名：&lt;input type=&quot;text&quot; name=&quot;name&quot; id=&quot;name&quot; /&gt;
+        &lt;br&gt;
+        密码：&lt;input type=&quot;password&quot; name=&quot;password&quot; id=&quot;password&quot; /&gt;
+        &lt;br&gt;
+        年龄：&lt;input type=&quot;text&quot; name=&quot;age&quot; id=&quot;age&quot;&gt;
+        &lt;br&gt;
+        &lt;input type=&quot;button&quot; value=&quot;测试&quot; onclick=&quot;testJson()&quot; /&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+&lt;script type=&quot;text/javaScript&quot;&gt;
+    function testJson() {
+        var name = $(&quot;#name&quot;).val();
+        var password = $(&quot;#password&quot;).val();
+        var age = $(&quot;#age&quot;).val();
+        $.ajax({
+            //请求路径
+            url : &quot;${pageContext.request.contextPath}/testJson&quot;,
+            //请求类型
+            type : &quot;post&quot;,
+
+            //data表示发送的数据
+            data : JSON.stringify({
+                name : name,
+                password : password,
+                age : age
+            }), //定义发送请求的数据格式为JSON字符串
+            contentType : &quot;application/json;charset=utf-8&quot;,
+            //定义回调响应的数据格式为JSON字符串，该属性可以省略
+            dataType : &quot;json&quot;,
+            //成功响应的结果
+            success : function(data) {
+                if (data != null) {
+                    alert(&quot;输入的用户名：&quot; + data.name + &quot;，密码：&quot; + data.password
+                            + &quot;， 年龄：&quot; + data.age);
+                }
+            }
+        });
+    }
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+由于在 index.jsp 中使用的是 JQuery 的 AJAX 进行的 JSON 的数据提交和响应，所以还需要引入 jquery.js 文件。这里我们引入的是 webapp 目录下的 js 文件夹中的 jquery-3.2.1.min.js。<br />
+<h4>
+5. 创建控制器</h4>
+在 UserController 中添加以下代码。
+<pre class="java">
+/**
+* 接收页面请求的JSON参数，并返回JSON格式的结果
+*/
+@RequestMapping(&quot;/testJson&quot;)
+@ResponseBody
+public User testJson(@RequestBody User user) {
+    // 打印接收的 JSON数据
+    System.out.println(&quot;name=&quot; + user.getName() + &quot;,password=&quot; + user.getPassword() + &quot;,age=&quot; + user.getAge());
+    // 返回JSON格式的响应
+    return user;
+}</pre>
+在上述控制器类中编写了接收和响应 JSON 格式数据的 testJson 方法，方法中的 @RequestBody 注解用于将前端请求体中的 JSON 格式数据绑定到形参 user 上，@ResponseBody 注解用于直接返回 Person 对象（当返回 POJO 对象时默认转换为 JSON 格式数据进行响应）。
+<h4>
+6. 测试JSON数据交互</h4>
+访问地址：http://localhost:8080/springmvcDemo2/index.jsp，运行结果如下。<br />
+<br />
+<div style="text-align: center;">
+<img alt="index.jsp页面" src="../uploads/allimg/210705/1526434150-0.png" /><br />
+index.jsp 页面</div>
+输入信息后点击&rdquo;测试&ldquo;按钮，将弹出显示输入信息的对话框，如下图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210705/1526432K0-1.png" /></div>
+Eclipse 控制台输出信息如下。
+<p class="info-box">
+name=biancheng.net,password=123456,age=12</p>
+从运行结果可以看出，编写的代码可以将 JSON 格式的请求数据转换为方法中的 Java 对象，也可以将 Java 对象转换为 JSON 格式的响应数据。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="../view/niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/2123.html" title="socket是什么？套接字是什么？" target="_blank">socket是什么？套接字是什么？</a></li>
+<li><a href="../view/vip_2325.html" title="将C++模板应用于多文件编程" target="_blank">将C++模板应用于多文件编程</a></li>
+<li><a href="../view/vip_3393.html" title="双向线索二叉树详解（包含C语言实现代码）" target="_blank">双向线索二叉树详解（包含C语言实现代码）</a></li>
+<li><a href="../view/4709.html" title="Python文件基本操作（入门必读）" target="_blank">Python文件基本操作（入门必读）</a></li>
+<li><a href="../view/7135.html" title="MySQL安装配置教程（Windows系统）" target="_blank">MySQL安装配置教程（Windows系统）</a></li>
+<li><a href="../view/7505.html" title="Django项目创建第一个应用" target="_blank">Django项目创建第一个应用</a></li>
+<li><a href="../css3/comment.html" title="CSS注释（附带示例）" target="_blank">CSS注释（附带示例）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8717;
+window.arcId = "5cb7ID9cNuM7MRxNP7gWFD0oAx1RynTnStQqOTgHxg3cw4Cg9MaTJMlDRvo";
+window.typeidChain = "456|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="../view/8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="../view/8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="../view/8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="../view/9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="../view/8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++友元函数和友元类（C++ friend）详解</title>
+<meta name="description" content="私有成员只能在类的成员函数内部访问，如果想在别处访问对象的私有成员，只能通过类提供的接口（成员函数）间接地进行。这固然能够带来数据隐藏的好处，利于将来程序的扩充，" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++友元函数和友元类（C++ friend）详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">私有成员只能在类的成员函数内部访问，如果想在别处访问对象的私有成员，只能通过类提供的接口（成员函数）间接地进行。这固然能够带来数据隐藏的好处，利于将来程序的扩充，但也会增加程序书写的麻烦。<br />
+<br />
+<a href='../cplus/cplus.html' target='_blank'>C++</a> 是从结构化的C语言发展而来的，需要照顾结构化设计程序员的习惯，所以在对私有成员可访问范围的问题上不可限制太死。<br />
+<br />
+C++ 设计者认为， 如果有的程序员真的非常怕麻烦，就是想在类的成员函数外部直接访问对象的私有成员，那还是做一点妥协以满足他们的愿望为好，这也算是眼前利益和长远利益的折中。因此，C++ 就有了<strong><span style="color:#008000;">友元（friend）</span></strong>的概念。打个比方，这相当于是说：朋友是值得信任的，所以可以对他们公开一些自己的隐私。<br />
+<br />
+友元分为两种：友元函数和友元类。
+<h2>
+友元函数</h2>
+在定义一个类的时候，可以把一些函数（包括全局函数和其他类的成员函数）声明为&ldquo;友元&rdquo;，这样那些函数就成为该类的友元函数，在友元函数内部就可以访问该类对象的私有成员了。<br />
+<br />
+将全局函数声明为友元的写法如下：
+<p class="info-box">
+friend &nbsp;返回值类型 &nbsp;函数名(参数表);</p>
+将其他类的成员函数声明为友元的写法如下：
+<p class="info-box">
+friend &nbsp;返回值类型 &nbsp;其他类的类名::成员函数名(参数表);</p>
+但是，不能把其他类的私有成员函数声明为友元。<br />
+<br />
+关于友元，看下面的程序示例。
+<pre class="cpp">
+#include&lt;iostream&gt;
+u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+class CCar;  //提前声明CCar类，以便后面的CDriver类使用
+class CDriver
+{
+public:
+    void ModifyCar(CCar* pCar);  //改装汽车
+};
+class CCar
+{
+private:
+    int price;
+    friend int MostExpensiveCar(CCar cars[], int total);  //声明友元
+    friend void CDriver::ModifyCar(CCar* pCar);  //声明友元
+};
+void CDriver::ModifyCar(CCar* pCar)
+{
+    pCar-&gt;price += 1000;  //汽车改装后价值增加
+}
+int MostExpensiveCar(CCar cars[], int total)  //求最贵气车的价格
+{
+    int tmpMax = -1;
+    for (int i = 0; i&lt;total; ++i)
+        if (cars[i].price &gt; tmpMax)
+            tmpMax = cars[i].price;
+    return tmpMax;
+}
+int main()
+{
+    return 0;
+}</pre>
+这个程序只是为了展示友元的用法，所以 main 函数什么也不做。<br />
+<br />
+第 3 行声明了 CCar 类，CCar 类的定义在后面。之所以要提前声明，是因为 CDriver 类的定义中用到了 CCar 类型（第7行），而此时 CCar 类还没有定义，编译会报错。<br />
+<br />
+不要第 3 行，而把 CCar 类的定义写在 CDriver 类的前面，是解决不了这个问题的，因为 CCar 类中也用到了 CDriver 类型（第14行），把 CCar 类的定义写在前面会导致第 14 行的 CDriver 因没有定义而报错。C++ 为此提供的解决办法是：可以简单地将一个类的名字提前声明，写法如下：
+<p>
+class&nbsp; 类名;</p>
+尽管可以提前声明，但是在一个类的定义出现之前，仍然不能有任何会导致该类对象被生成的语句。但使用该类的<a href='../c/80/80.html' target='_blank'>指针</a>或引用是没有问题的。<br />
+<br />
+第 13 行将全局函数 MostExpensiveCar 声明为 CCar 类的友元，因此在第 24 行可以访问 cars[i] 的私有成员 price。同理，第 14 行将 CDriver 类的 ModifyCar 成员函数声明为友元，因此在第 18 行可以访问 pCar 指针所指向的对象的私有成员变量 price。
+<h2>
+友元类</h2>
+一个类 A 可以将另一个类 B 声明为自己的友元，类 B 的所有成员函数就都可以访问类 A 对象的私有成员。在类定义中声明友元类的写法如下：
+<p class="info-box">
+friend&nbsp; class&nbsp; 类名;</p>
+来看如下例程：
+<pre class="cpp">
+class CCar
+{
+private:
+    int price;
+    friend class CDriver;  //声明 CDriver 为友元类
+};
+class CDriver
+{
+public:
+    CCar myCar;
+    void ModifyCar()  //改装汽车
+    {
+        myCar.price += 1000;  //因CDriver是CCar的友元类，故此处可以访问其私有成员
+    }
+};
+int main()
+{
+    return 0;
+}</pre>
+第 5 行将 CDriver 声明为 CCar 的友元类。这条语句本来就是在声明 CDriver 是一个类，所以 CCar 类定义前面就不用声明 CDriver 类了。第 5 行使得 CDriver 类的所有成员函数都能访问 CCar 对象的私有成员。如果没有第 5 行，第 13 行对 myCar 私有成员 price 的访问就会导致编译错误。<br />
+<br />
+一般来说，类 A 将类 B 声明为友元类，则类 B 最好从逻辑上和类 A 有比较接近的关系。例如上面的例子，CDriver 代表司机，CCar 代表车，司机拥有车，所以 CDriver 类和 CCar 类从逻辑上来讲关系比较密切，把 CDriver 类声明为 CCar 类的友元比较合理。<br />
+<br />
+友元关系在类之间不能传递，即类 A 是类 B 的友元，类 B 是类 C 的友元，并不能导出类 A 是类 C 的友元。&ldquo;咱俩是朋友，所以你的朋友就是我的朋友&rdquo;这句话在 C++ 的友元关系上 不成立。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="4750.html" title="Java Map.keySet()方法：获取Map集合的所有键名" target="_blank">Java Map.keySet()方法：获取Map集合的所有键名</a></li>
+<li><a href="6154.html" title="PHP二维数组和多维数组" target="_blank">PHP二维数组和多维数组</a></li>
+<li><a href="7265.html" title="MySQL事务隔离级别详解（附带实例）" target="_blank">MySQL事务隔离级别详解（附带实例）</a></li>
+<li><a href="7898.html" title="C++11 shared_ptr智能指针（超级详细）" target="_blank">C++11 shared_ptr智能指针（超级详细）</a></li>
+<li><a href="../mongodb2/capped-collection.html" title="MongoDB固定集合（Capped Collections）" target="_blank">MongoDB固定集合（Capped Collections）</a></li>
+<li><a href="ltww5vs.html" title="JS作用域（全局作用域+局部作用域）" target="_blank">JS作用域（全局作用域+局部作用域）</a></li>
+<li><a href="xljckti.html" title="Go语言值传递和引用传递" target="_blank">Go语言值传递和引用传递</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 169;
+window.arcId = "5e78nI+hBpvAUl/bnK0LH0pysxwPAKYrcrinVKTCshMoNtUkjIffAsGdgA";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

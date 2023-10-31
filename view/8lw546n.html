@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Go语言指针的定义和使用（入门必读）</title>
+<meta name="description" content="Go 语言中的指针，是一个用来指向内存地址的变量，如下图所示： 图 1 指针图解 在定义变量的时候，计算机都会为变量自动分配内存地址，指针用来存储这些变量的内存地址。为什么" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Go语言指针的定义和使用（入门必读）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">Go 语言中的指针，是一个用来指向内存地址的变量，如下图所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230912/2-23091214591K38.gif" /><br />
+图 1 指针图解</div>
+<br />
+在定义变量的时候，计算机都会为变量自动分配内存地址，指针用来存储这些变量的内存地址。<br />
+<br />
+注意，由于不同类型的数据占用不同的存储空间，导致内存地址分配大小各不相同，所以指针只能存放同一类型变量的内存地址，比如整型的指针只能存储整型变量的内存地址。<br />
+<br />
+Go 语言的指针变量也会分配内存地址，但它的值用来存放其他变量的内存地址，指针变量分为两种：类型指针和切片指针，两者说明如下：
+<ul>
+<li>
+类型指针允许对数据进行修改，直接使用指针传递数据，无须复制数据，但类型指针不能进行偏移和运算。</li>
+<li>
+切片指针是切片类型的指针，它包含起始元素的原始指针、元素数量和容量。</li>
+</ul>
+<br />
+Go 语言对指针的使用不同于 C 语言，它对指针设置了约束和拆分，但仍拥有指针高效访问的特点，并且不会发生指针偏移，从而避免了非法修改数据的问题，并且指针的释放和回收也是由 Go 语言的资源回收机制实现。<br />
+<br />
+在学习 Go 语言的指针之前，还需要了解指针的相关概念，如指针变量、指针类型、指针赋值和指针取值。<br />
+1) 指针也称为指针变量，即用来存放内存地址的变量，一般情况下，内存地址的数据格式以 0xcXXXXXXX 表示，如 0xc0000180a8 或 0xc0000ac058 等。指针是一个变量，也有自己的内存地址，它存放的内存地址是另一个变量的内存地址，这一概念必须梳理清楚。<br />
+<br />
+2) 指针类型是指针存放的内存地址的大小，比如指针 a 定义为 int 类型，它只能存放整型变量的内存地址，所以在使用指针的时候必须声明指针类型，确保指针只能存放一种数据类型。<br />
+<br />
+3) 指针赋值将某个变量的内存地址赋值给指针，在某个变量前面使用取地址操作符&ldquo;&amp;&rdquo;即可获取变量的内存地址。<br />
+<br />
+4) 指针取值从指针变量中通过某个变量的内存地址获取对应的数值，只需在指针变量前面使用取值操作符&ldquo;*&rdquo;即可。<br />
+<h2>
+指针的定义</h2>
+在 Go 语言中使用关键字 var 定义指针变量，在指针变量的数据类型前面加上符号&ldquo;*&rdquo;，语法格式如下：
+<pre class="info-box">
+var name *type</pre>
+语法说明如下：
+<ul>
+<li>
+name代表指针变量名，可自行命名，但必须遵从标识符命名规则。</li>
+<li>
+type是指针变量的数据类型，如数字、字符串、切片等 Go 语言内置的数据类型。</li>
+</ul>
+<br />
+根据指针的定义语法，我们可以定义不同数据类型的指针变量，示例代码如下：<br />
+<pre class="go">
+package main
+
+import &quot;fmt&quot;
+
+func main() {
+    // 定义int类型的指针变量
+    var pint *int
+    fmt.Printf(&quot;指针值为：%v，空间地址：%v\n&quot;, pint, &amp;pint)
+    // 定义float64类型的指针变量
+    var pfloat *float64
+    fmt.Printf(&quot;指针值为：%v，空间地址：%v\n&quot;, pfloat, &amp;pfloat)
+    // 定义string类型的指针变量
+    var pstr *string
+    fmt.Printf(&quot;指针值为：%v，空间地址：%v\n&quot;, pstr, &amp;pstr)
+    // 定义bool类型的指针变量
+    var pbool *bool
+    fmt.Printf(&quot;指针值为：%v，空间地址：%v\n&quot;, pbool, &amp;pbool)
+    // 定义byte类型的指针变量
+    var pbyte *byte
+    fmt.Printf(&quot;指针值为：%v，空间地址：%v\n&quot;, pbyte, &amp;pbyte)
+}</pre>
+运行上述代码，结果为：
+<p class="info-box">
+指针值为：&lt;nil&gt;，空间地址：0xc0000d8018<br />
+指针值为：&lt;nil&gt;，空间地址：0xc0000d8028<br />
+指针值为：&lt;nil&gt;，空间地址：0xc0000d8030<br />
+指针值为：&lt;nil&gt;，空间地址：0xc0000d8038<br />
+指针值为：&lt;nil&gt;，空间地址：0xc0000d8040</p>
+当指针定义之后，它仅仅是一个特殊变量，Go 语言自动为其分配内存地址，但它的值是空值（Go 语言的空值以 nil 表示），也称为空指针。<br />
+<br />
+定义指针还可以使用内置函数方法 new() 实现，但定义的指针会为其设置默认值，比如定义字符串类型的指针，它将会指向一个空字符串的内存地址；定义一个整型类型的指针，它将会指向一个数值为 0 的内存地址，示例如下：
+<pre class="go">
+package main
+
+import &quot;fmt&quot;
+
+func main() {
+    ptr := new(int)
+    fmt.Printf(&quot;ptr指向的变量值为：%v，空间地址：%v\n&quot;, *ptr, &amp;ptr)
+}</pre>
+运行上述代码，结果为：
+<p class="info-box">
+ptr指向的变量值为：0，空间地址：0xc000006028</p>
+<h2>
+指针的使用</h2>
+在 Go 语言编程中，所有变量先定义后使用，当指针变量定义之后，下一步对变量进行赋值和取值操作。<br />
+<br />
+指针赋值是设置指针变量的值，但指针变量的值只能是某个变量的内存地址；指针取值是通过指针变量的值得到某个变量的内存地址，再从内存地址获取该变量的值。<br />
+<br />
+指针赋值与取值的语法格式如下：
+<pre class="go">
+var name int = 200
+var ptr *int
+// 指针赋值，将name的内存地址赋值给ptr
+ptr = &amp;name
+// 指针取值，在ptr前面使用&ldquo;*&rdquo;获取name的值
+name1 := *ptr</pre>
+语法说明如下：
+<ul>
+<li>
+name 代表变量名，数据类型为整型，变量值为 200。</li>
+<li>
+ptr 是指针变量，设置为整型。</li>
+<li>
+指针赋值通过取地址操作符&ldquo;&amp;&rdquo;将变量 name 的内存地址赋值给指针变量。</li>
+<li>
+指针取值通过取值操作符&ldquo;*&rdquo;从指针变量存储的内存地址获取变量 name 的值。</li>
+</ul>
+<br />
+指针赋值和取值是通过取地址操作符&ldquo;&amp;&rdquo;和取值操作符&ldquo;*&rdquo;实现的，它们是一对互补操作符。&ldquo;&amp;&rdquo;取出内存地址，&ldquo;*&rdquo;根据内存地址取出对应的数值。<br />
+<br />
+我们根据语法格式编写应用示例，代码如下：
+<pre class="go">
+package main
+
+import &quot;fmt&quot;
+
+func main() {
+    var a int = 200
+    fmt.Printf(&quot;变量a的空间地址：%v\n&quot;, &amp;a)
+    // 定义int类型的指针变量
+    var pint *int
+    fmt.Printf(&quot;指针值为：%v，空间地址：%v\n&quot;, pint, &amp;pint)
+    pint = &amp;a
+    fmt.Printf(&quot;指针值为：%v，空间地址：%v\n&quot;, pint, &amp;pint)
+    fmt.Printf(&quot;指针值的值为：%v，空间地址：%v\n&quot;, *pint, &amp;pint)
+}</pre>
+运行上述代码，结果为：
+<p class="info-box">
+变量a的空间地址：0xc0000ac058<br />
+指针值为：&lt;nil&gt;，空间地址：0xc0000d8020<br />
+指针值为：0xc0000ac058，空间地址：0xc0000d8020<br />
+指针值的值为：200，空间地址：0xc0000d8020</p>
+从上述示例看到，指针 pint 分别经过定义、赋值和取值操作，说明如下：
+<ul>
+<li>
+指针 pint 定义的时候为空指针，其内存地址为 0xc0000d8020。</li>
+<li>
+通过取地址操作符&ldquo;&amp;&rdquo;将变量 a 的内存地址赋值给指针 pint，指针 pint 的内存地址保持不变，其值变为变量 a 的内存地址。</li>
+<li>
+最后在指针 pint 前面使用取值操作符&ldquo;*&rdquo;，从指针 pint 的值（即变量 a 的内存地址）取出变量 a 的数据，指针 pint 的内存地址保持不变。</li>
+</ul>
+<br />
+指针赋值和取值的过程通过图解方式演示，如下图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230912/2-230912150101135.gif" /><br />
+图 2 指针赋值与取值图解</div>
+<br />
+综上所述，指针是 Go 语言的一种特殊变量，它存放的数据是计算机的内存地址，它的数据来自某个变量的内存地址，通过取地址操作符&ldquo;&amp;&rdquo;将某个变量的内存地址完成赋值。如果直接从指针取值，只能获得某个变量的内存地址，若要获得某个变量的数值，需要在指针前面使用取值操作符&ldquo;*&rdquo;。<br />
+<br />
+取值操作符&ldquo;*&rdquo;不仅能通过指针获取某个变量的数值，还能通过指针修改某个变量的数值，示例如下：
+<pre class="go">
+package main
+
+import &quot;fmt&quot;
+
+func main() {
+    var b int = 100
+    var pint *int
+    fmt.Printf(&quot;指针存放的变量值为：%v，空间地址：%v\n&quot;, pint, &amp;pint)
+    // 将变量b的内存地址赋值给指针pint
+    pint = &amp;b
+    fmt.Printf(&quot;指针存放的变量值为：%v，空间地址：%v\n&quot;, *pint, &amp;pint)
+    // 通过取值操作符&ldquo;*&rdquo;修改变量b的值
+    *pint = 666
+    fmt.Printf(&quot;指针存放的变量值为：%v，空间地址：%v\n&quot;, *pint, &amp;pint)
+}</pre>
+运行上述代码，结果为：
+<p class="info-box">
+指针存放的变量值为：&lt;nil&gt;，空间地址：0xc000006028<br />
+指针存放的变量值为：100，空间地址：0xc000006028<br />
+指针存放的变量值为：666，空间地址：0xc000006028</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="8067.html" title="Django Auth应用定义登录视图的方式" target="_blank">Django Auth应用定义登录视图的方式</a></li>
+<li><a href="vip_8339.html" title="MySQL如何处理无效数据值？" target="_blank">MySQL如何处理无效数据值？</a></li>
+<li><a href="../jstl/fn-length.html" title="fn:length()函数" target="_blank">fn:length()函数</a></li>
+<li><a href="9346.html" title="JS for in循环语句的用法" target="_blank">JS for in循环语句的用法</a></li>
+<li><a href="9832.html" title="机器学习介绍（非常详细）" target="_blank">机器学习介绍（非常详细）</a></li>
+<li><a href="8iqgw3.html" title="机器学习使用哪种编程语言？" target="_blank">机器学习使用哪种编程语言？</a></li>
+<li><a href="3bwwn45.html" title="Django入门教程（简明版）" target="_blank">Django入门教程（简明版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10438;
+window.arcId = "762dSZTdSbHFl9W9Dn3zszjPNVDuCkqs2W8C9Hp+x58M/IRydLTEDNO+UVol";
+window.typeidChain = "6|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

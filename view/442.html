@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++ list（STL list）增加和插入元素详解（insert成员函数插入元素）</title>
+<meta name="description" content="可以使用 list 容器的成员函数 push_front() 在它的头部添加一个元素。调用 push_back() 可以在 list 容器的末尾添加一个元素。在下面这两个示例中，参数作为对象被添加： std::liststd::string" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++ list（STL list）增加和插入元素详解（insert成员函数插入元素）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">可以使用 list 容器的成员函数 push_front() 在它的头部添加一个元素。调用 push_back() 可以在 list 容器的末尾添加一个元素。在下面这两个示例中，参数作为对象被添加：<br />
+<pre class="cpp">
+std::list&lt;std::string&gt; names { &quot;Jane&quot;, &quot;Jim&quot;, &quot;Jules&quot;, &quot;Janet&quot;};
+names.push_front(&quot;Ian&quot;); // Add string (&quot;Ian&quot;) to the front of the list
+names.push_back(&quot;Kitty&quot;); // Append string (&quot;Kitty&quot;) to the end of the list</pre>
+这两个函数都有右值引用参数的版本，这种版本的函数会移动参数而不是从参数复制新的元素。它们显然要比其他使用左值引用参数的版本高效。然而，成员函数 emplace_front() 和 emplace_back() 可以做得更好：<br />
+<pre class="cpp">
+names.emplace_front(&quot;Ian&quot;);//Create string (&quot;Ian&quot;) in place at the front of the list
+names.emplace_back(&quot;Kitty&quot;);// Create string (&quot;Kitty&quot;) in place at the end of the list</pre>
+这些成员函数的参数是调用以被生成元素的构造函数的参数。它们消除了 push_front() 和 push_back() 不得不执行的右值移动运算。<br />
+<br />
+可以使用成员函数 insert() 在 list 容器内部添加元素。像其他序列容器一样，它有三个版本。<br />
+<br />
+1) 可以在迭代器指定的位置插入一个新的元素：
+<pre class="cpp">
+std::list&lt;int&gt; data(10, 55); // List of 10 elements with value 55
+data.insert(++begin(data), 66); // Insert 66 as the second element</pre>
+insert() 的第一个参数是一个指定插入点的迭代器，第二个参数是被插入的元素。begin() 返回的双向迭代器自增后，指向第二个元素。上面的语句执行完毕后，list 容器的内容如下：<br />
+55 66 55 55 55 55 55 55 55 55 55<br />
+<br />
+list 容器现在包含 11 个元素。插入元素不必移动现有的元素。生成新元素后，这个过程需要将 4 个<a href='../c/80/80.html' target='_blank'>指针</a>重新设为适当的值。第一个元素的 next 指针指向新的元素，原来的第二个元素的 pre 指针也指向新的元素。新元素的 pre 指针指向第一个元素，next 指针指向序列之前的第二个元素。和 vector、deque 容器的插入过程相比，这个要快很多，并且无论在哪里插入元素，花费的时间都相同。<br />
+<br />
+2) 可以在给定位置插入几个相同元素的副本：<br />
+<pre class="cpp">
+auto iter = begin(data);
+std::advance(iter, 9); // Increase iter by 9
+data.insert(iter, 3, 88);// Insert 3 copies of 88 starting at the 10th</pre>
+iter 是 list&lt;int&gt;::iterator 类型。insert() 函数的第一个参数是用来指定插入位置的迭代器，第二个参数是被插入元素的个数，第三个参数是被重复插入的元素。为了得到第 10 个元素，可以使用定义在 iterator 头文件中的全局函数 advance()，将迭代器增加 9。只能增加或减小双向迭代器。因为迭代器不能直接加 9，所以 advance() 会在循环中自增迭代器。<br />
+<br />
+执行完上面的代码后，list 容器的内容如下：<br />
+55 66 55 55 55 55 55 55 55 88 88 88 55 55<br />
+<br />
+现在 list 容器包含 14 个元素。下面展示如何将一段元素插入到data列表中：<br />
+<pre class="cpp">
+std::vector&lt;int&gt; numbers(10, 5)/ // Vector of 10 elements with value 5
+data.insert(--(--end(data)), cbegin(numbers), cend(numbers));</pre>
+insert() 的第一个参数是一个迭代器，它指向 data 的倒数第二个元素。第二和第三个参数指定了 number 中被插入元素的范围，因此从 data 中倒数第二个元素开始，依次插入 vector 的全部元素。代码执行后，data 中的内容如下：<br />
+55 66 55 55 55 55 55 55 55 88 88 88 5 5 5 5 5 5 5 5 5 5 55 55<br />
+<br />
+list 容器现在有 24 个元素。从 numbers 中倒数第二个元素的位置开始插入元素，list 最右边两个元素的位置被替换了。尽管如此，指向最后两个元素的任何迭代器或结束迭代器都没有失效。list 元素的迭代器只会在它所指向的元素被删除时才会失效。<br />
+<br />
+3) 有三个函数可以在 list 容器中直接构造元素：emplace() 在迭代器指定的位置构造一个元素；emplace_front() 在 list 的第一个元素之前构造元素；emplace_back() 在 list 的尾部元素之后构造元素。下面是一些用法示例：<br />
+<pre class="cpp">
+std::list&lt;std:: string&gt; names {&quot;Jane&quot;, &quot;Jim&quot;, &quot;Jules&quot;, &quot;Janet&quot;};
+names.emplace_back(&quot;Ann&quot;);
+std:: string name (&quot;Alan&quot;);
+names.emplace_back(std::move(name));
+names.emplace_front(&quot;Hugo&quot;);
+names.emplace(++begin(names), &quot;Hannah&quot;);</pre>
+<br />
+第 4 行代码用 std::move() 函数将 name 的右值引用传入 emplace_back() 函数。这个操作执行后，names 变为空，因为它的内容已经被移到 list 中。执行完这些语句后，names 中的内容如下：<br />
+&quot;Hugo&rdquo; &quot;Hannah&quot; &quot;Jane&quot; &quot;Jim&quot; &quot;Jules&quot; &quot;Janet&quot; &quot;Ann&quot; &quot;Alan&quot;<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="348.html" title="C++ vector，STL vector（可变长的动态数组）详解" target="_blank">C++ vector，STL vector（可变长的动态数组）详解</a></li>
+<li><a href="1321.html" title="C++ double和float（浮点类型）详解" target="_blank">C++ double和float（浮点类型）详解</a></li>
+<li><a href="1834.html" title="C语言字符串处理函数" target="_blank">C语言字符串处理函数</a></li>
+<li><a href="vip_1867.html" title="C语言中间递归函数（比较复杂的一种递归）" target="_blank">C语言中间递归函数（比较复杂的一种递归）</a></li>
+<li><a href="2194.html" title="C++输入输出（cin和cout）" target="_blank">C++输入输出（cin和cout）</a></li>
+<li><a href="4279.html" title="Python count()方法：统计字符串出现的次数" target="_blank">Python count()方法：统计字符串出现的次数</a></li>
+<li><a href="../servlet2/virtual-path.html" title="Servlet虚拟路径映射" target="_blank">Servlet虚拟路径映射</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 442;
+window.arcId = "55a6Ov9BVweQVN16A+gRIo6G4FjKkM0Fk8puh60ul7vo161af29DoGUoEw";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

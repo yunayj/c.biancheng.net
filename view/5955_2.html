@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>JS键盘事件（非常详细）</title>
+<meta name="description" content="当用户操作键盘时，会触发键盘事件，键盘事件主要包括下面 3 种类型： keydown：在键盘上按下某个键时触发。如果按住某个键，会不断触发该事件，但是 Opera 浏览器不支持这种连续操" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>JS键盘事件（非常详细）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在 <a href='../js/js_2.html' target='_blank'>JavaScript</a> 中，当用户操作键盘时，会触发键盘事件，键盘事件主要包括下面 3 种类型：
+<ul>
+	<li>
+		keydown：在键盘上按下某个键时触发。如果按住某个键，会不断触发该事件，但是 Opera 浏览器不支持这种连续操作。该事件处理函数返回 false 时，会取消默认的动作（如输入的键盘字符，在 IE 和 Safari 浏览器下还会禁止keypress 事件响应）。</li>
+	<li>
+		keypress：按下某个键盘键并释放时触发。如果按住某个键，会不断触发该事件。该事件处理函数返回 false 时，会取消默认的动作（如输入的键盘字符）。</li>
+	<li>
+		keyup：释放某个键盘键时触发。该事件仅在松开键盘时触发一次，不是一个持续的响应状态。</li>
+</ul>
+<br />
+当获取用户正按下键码时，可以使用 keydown、keypress 和 keyup 事件获取这些信息。其中 keydown 和 keypress 事件基本上是同义事件，它们的表现也完全一致，不过一些浏览器不允许使用 keypress 事件获取按键信息。所有元素都支持键盘事件，但键盘事件多被应用在表单输入中。
+<h4>
+	示例</h4>
+下面示例实时捕获键盘操作的各种细节，即键盘响应事件类型及对应的键值。
+<pre class="javascript">
+&lt;textarea id=&quot;key&quot;&gt;&lt;/textarea&gt;
+&lt;script&gt;
+    var key = document.getElementById(&quot;key&quot;);
+    key.onkeydown =f;  //注册keydown事件处理函数
+    key.onkeyup = f;  //注册keyup事件处理函数
+    key.onkeypress = f;  //注册keypress事件处理函数
+    function f (e) {
+        var e = e || window.event;  //标准化事件处理
+        var s = e.type + &quot; &quot; + e.keyCode;  //获取键盘事件类型和按下的值
+        key.value = s;
+    }
+&lt;/script&gt;</pre>
+<h2>
+	键盘事件属性</h2>
+键盘定义了很多属性，如下表所示。利用这些属性可以精确控制键盘操作。键盘事件属性一般只在键盘相关事件发生时才会存在于事件对象中，但是 ctrlKey 和 shiftKey 属性除外，因为它们可以在水保事件中存在。例如，当按下 Ctrl 或Shift 键时单击鼠标操作。<br />
+<table>
+	<caption>
+		键盘事件定义的属性</caption>
+	<tbody>
+		<tr>
+			<th>
+				属性</th>
+			<th>
+				说明</th>
+		</tr>
+		<tr>
+			<td>
+				keyCode</td>
+			<td>
+				该属性包含键盘中对应键位的键值</td>
+		</tr>
+		<tr>
+			<td>
+				charCode</td>
+			<td>
+				该属性包含键盘中对应键位的 Unicode 编码，仅 DOM 支持</td>
+		</tr>
+		<tr>
+			<td>
+				target</td>
+			<td>
+				发生事件的节点（包含元素），仅 DOM 支持</td>
+		</tr>
+		<tr>
+			<td>
+				srcElement</td>
+			<td>
+				发生事件的元素，仅 IE 支持</td>
+		</tr>
+		<tr>
+			<td>
+				shiftKey</td>
+			<td>
+				是否按下 Shift 键，如果按下返回 true，否则为false</td>
+		</tr>
+		<tr>
+			<td>
+				ctrlKey</td>
+			<td>
+				是否按下 Ctrl 键，如果按下返回 true，否则为false</td>
+		</tr>
+		<tr>
+			<td>
+				altKey</td>
+			<td>
+				是否按下 Alt 键，如果按下返回 true，否则为false</td>
+		</tr>
+		<tr>
+			<td>
+				metaKey</td>
+			<td>
+				是否按下 Mtea 键，如果按下返回 true，否则为false，仅 DOM 支持</td>
+		</tr>
+	</tbody>
+</table>
+<h4>
+	示例1</h4>
+ctrlKey 和 shiftKey 属性可存在于键盘和鼠标事件中，表示键盘上的 Ctrl 和 Shift 键是否被按住。下面示例能够监测 Ctrl 和 Shift 键是否被同时按下。如果同时按下，且鼠标单击某个页面元素，则会把该元素从页面中删除。
+<pre class="javascript">
+document.onclick = function (e) {
+    var e = e || window.event;  //标准化事件对象
+    var t = e.target || e.srcElement;  //获取发生事件的元素，兼容IE和DOM
+    if (e.ctrlKey &amp;&amp; e.shiftKey) {  //如果同时按下Ctrl和Shift键
+        t.parentNode.removeChild(t);  //移出当前元素
+    }
+}</pre>
+<br />
+keyCode 和 charCode 属性使用比较复杂，但是它们在实际开发中又比较常用，故比较这两个属性在不同事件类型和不同浏览器中的表现时非常必要的，如下表所示。读者可以根据需要有针对性的选用事件响应类型和引用属性值。<br />
+<br />
+<table>
+	<caption>
+		keyCode 和 charCode 属性值</caption>
+	<tbody>
+		<tr>
+			<th>
+				属性</th>
+			<th>
+				IE 事件模型</th>
+			<th>
+				DOM 事件模型</th>
+		</tr>
+		<tr>
+			<td>
+				keyCode（keypress）</td>
+			<td>
+				返回所有字符键的正确值，区分大写状态（65~90）和小写状态（97~122）</td>
+			<td>
+				功能键返回正确值，而 Shift、Ctrl、Alt、PrintScreen、ScrollLock 无返回值，其他所有键值都返回 0</td>
+		</tr>
+		<tr>
+			<td>
+				keyCode（keydown）</td>
+			<td>
+				返回所有键值（除 PrintScreen 键），字母键都以大写状态显示键值（65~90）</td>
+			<td>
+				返回所有键值（除 PrintScreen 键），字母键都以大写状态显示键值（65~90）</td>
+		</tr>
+		<tr>
+			<td>
+				keyCode（keyup）</td>
+			<td>
+				返回所有键值（除 PrintScreen 键），字母键都以大写状态显示键值（65~90）</td>
+			<td>
+				返回所有键值（除 PrintScreen 键），字母键都以大写状态显示键值（65~90）</td>
+		</tr>
+		<tr>
+			<td>
+				charCode（keypress）</td>
+			<td>
+				不支持该属性</td>
+			<td>
+				返回字符键，区分大写状态（65~90）和小写状态（97~122），Shift、Ctrl、Alt、PrintScreen、ScrollLock 无返回值，其他所有键值都返回 0</td>
+		</tr>
+		<tr>
+			<td>
+				charCode（keydown）</td>
+			<td>
+				不支持该属性</td>
+			<td>
+				所有键值为 0</td>
+		</tr>
+		<tr>
+			<td>
+				charCode（keyup）</td>
+			<td>
+				不支持该属性</td>
+			<td>
+				所有键值为 0</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+某些键的可用性不是很正确，如 PageUp 和 Home 键等。不过常用功能键和字符键都是比较稳定的，如下表所示。<br />
+<br />
+<table>
+	<caption>
+		键位和码值对照表</caption>
+	<tbody>
+		<tr>
+			<th>
+				键位</th>
+			<th>
+				码值</th>
+			<th>
+				键位</th>
+			<th>
+				码值</th>
+		</tr>
+		<tr>
+			<td>
+				0~9（数字键）</td>
+			<td>
+				48~57</td>
+			<td>
+				A~Z（字母键）</td>
+			<td>
+				65~90</td>
+		</tr>
+		<tr>
+			<td>
+				Backspace（退格键）</td>
+			<td>
+				8</td>
+			<td>
+				Tab（制表键）</td>
+			<td>
+				9</td>
+		</tr>
+		<tr>
+			<td>
+				Enter（回车键）</td>
+			<td>
+				13</td>
+			<td>
+				Space（空格键）</td>
+			<td>
+				32</td>
+		</tr>
+		<tr>
+			<td>
+				Left arrow（左箭头键）</td>
+			<td>
+				37</td>
+			<td>
+				Top arrow（上箭头键）</td>
+			<td>
+				38</td>
+		</tr>
+		<tr>
+			<td>
+				Right arrow（右箭头键）</td>
+			<td>
+				39</td>
+			<td>
+				Down arrow（下箭头键）</td>
+			<td>
+				40</td>
+		</tr>
+	</tbody>
+</table>
+<h4>
+	示例2</h4>
+下面示例演示了如何使用方向键控制页面元素的移动效果。
+<pre class="javascript">
+&lt;div id=&quot;box&quot;&gt;&lt;/div&gt;
+&lt;script&gt;
+    var box = document.getElementById(&quot;box&quot;);  // 获取页面元素的引用指针
+    box.style.position = &quot;absolute&quot;;  // 色块绝对定位
+    box.style.width = &quot;20px&quot;;  // 色块宽度
+    box.style.height = &quot;20px&quot;;  // 色块高度
+    box.style.backgroundColor = &quot;red&quot;;  // 色块背景
+    document.onkeydown = keyDown;
+    //在Document对象中注册keyDown事件处理函数
+    function keyDown(event){  // 方向键控制元素移动函数
+        var event = event || window.event;  // 标准化事件对象
+        switch(event.keyCode){  // 获取当前按下键盘键的编码
+            case 37 :  // 按下左箭头键，向左移动5个像素
+                box.style.left = box.offsetLeft - 5  + &quot;px&quot;;
+                break;
+            case 39 :  // 按下右箭头键，向右移动5个像素
+                box.style.left = box.offsetLeft + 5 + &quot;px&quot;;
+                break;
+            case 38 :  // 按下上箭头键，向上移动5个像素
+                box.style.top = box.offsetTop  - 5 + &quot;px&quot;;
+                break;
+            case 40 :  // 按下下箭头键，向下移动5个像素
+                box.style.top = box.offsetTop  + 5 + &quot;px&quot;;
+                break;
+        }
+        return false
+    }
+&lt;/script&gt;</pre>
+在上面示例中，首先获取页面元素，通过 CSS 脚本控制元素绝对定位、大小和背景色。然后在 document 对象上注册鼠标按下事件类型处理函数，在事件回调函数 keyDown() 中侦测当前按下的方向键，并决定定位元素在窗口中的位置。其中元素的 offsetLeft 和 offsetTop 属性可以存取它在页面中的位置。
+<h2>
+	键盘响应顺序</h2>
+当按下键盘时，会连续触发多个事件，它们将按如下顺序发生。<br />
+<br />
+对于字符键来说，键盘事件的响应顺序：keydown &rarr; keypress &rarr; keyup。<br />
+<br />
+对于非字符键（如功能键或特殊键）来说，键盘事件的相应顺序：keydown &rarr; keyup。<br />
+<br />
+如果按下字符键不放，则 keydown 和 keypress 事件将逐个持续发生，直至松开按键。<br />
+<br />
+如果按下非字符键不放，则只有 keydown 事件持续发生，直至松开按键。
+<h4>
+	示例</h4>
+下面设计一个简单示例，以获取键盘事件相应顺序。
+<pre class="javascript">
+&lt;textarea id=&quot;text&quot; cols=&quot;26&quot; rows=&quot;16&quot;&gt;&lt;/textarea&gt;
+&lt;script&gt;
+    var n = 1;  // 定义编号变量
+    var text = document.getElementById(&quot;text&quot;);  // 获取文本区域的引用指针
+    text.onkeydown = f;  // 注册keydown事件处理函数
+    text.onkeyup = f;  // 注册keyup事件处理函数
+    text.onkeypress = f;  // 注册keypress事件处理函数
+    function f(e){  // 事件调用函数
+        var e = e || window.event;  // 标准化事件对象
+        text.value += (n++) + &quot;=&quot; + e.type +&quot;  (keyCode=&quot; + e.keyCode + &quot;)\n&quot;;
+        //捕获事件响应信息
+    }
+&lt;/script&gt;</pre>
+演示效果如下：<br />
+<br />
+当分别输入 A、B、C 时：
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/191012/6-191012154605T4_2.gif" /></div>
+<br />
+当分别输入 Shift、Ctrl、Alt 功能键时：
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/191012/6-191012154644940_2.gif" /></div>
+<br />
+当连续按下字符 A 时：
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/191012/6-191012154G1B6_2.gif" /></div>
+<br />
+当连续按下 Shift 键时：
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/191012/6-191012154J5V1_2.gif" /></div>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1039_2.html" title="Linux内核模块管理（查看、添加和删除）" target="_blank">Linux内核模块管理（查看、添加和删除）</a></li>
+<li><a href="1829_2.html" title="C语言二维数组的定义、初始化、赋值" target="_blank">C语言二维数组的定义、初始化、赋值</a></li>
+<li><a href="4357_2.html" title="Go语言并发通信" target="_blank">Go语言并发通信</a></li>
+<li><a href="6992_2.html" title="Java注解（Annotation）简介" target="_blank">Java注解（Annotation）简介</a></li>
+<li><a href="7575_2.html" title="MySQL常用运算符概述" target="_blank">MySQL常用运算符概述</a></li>
+<li><a href="../maven2/plugin_2.html" title="Maven插件（plugin）" target="_blank">Maven插件（plugin）</a></li>
+<li><a href="ibwvnzi_2.html" title="C++ if语句的嵌套（入门必读）" target="_blank">C++ if语句的嵌套（入门必读）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 5955;
+window.arcId = "ba95L3OSK1g2OxvKhQJgNeZj+v+8QYWGyuEV0Fre+sOAB4uS1fcGMwg6YQo";
+window.typeidChain = "309|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

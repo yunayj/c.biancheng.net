@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++继承和派生是什么意思（通俗易懂）</title>
+<meta name="description" content="代码重用是提高软件开发效率的重要手段，因此 C++ 对代码重用有很强的支持，继承就是支持代码重用的机制之一。 假设教育局要编写一个学籍管理程序，推广到全国的大中小学使用。" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++继承和派生是什么意思（通俗易懂）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">代码重用是提高软件开发效率的重要手段，因此 <a href='../cplus/cplus.html' target='_blank'>C++</a> 对代码重用有很强的支持，&ldquo;继承&rdquo;就是支持代码重用的机制之一。<br />
+<br />
+假设教育局要编写一个学籍管理程序，推广到全国的大中小学使用。如果用面向对象的方法开发，必然要设计一个&ldquo;学生&rdquo;类。&ldquo;学生&rdquo;类包含所有学生的共同属性和方法，如姓名、学号、性别、成绩等属性，判断是否该退学、是否该奖励或处罚等方法。而中学生、本科生、研究生又有各自不同的属性和方法，如本科生和研究生有专业的属性，而中学生没有；研究生有导师的属性；中学生有竞赛、特长加分等属性，而本科生和研究生没有。<br />
+<br />
+如果为每种学生都编写一个类，显然会有不少重复的代码，造成效率上的浪费。C++ 的&ldquo;继承&rdquo;机制就能避免上述浪费。
+<h2>
+基本概念</h2>
+在 C++ 中，当定义一个新的类 B 时，如果发现类 B 拥有某个已写好的类 A 的全部特点，此外还有类 A 没有的特点，那么就不必从头重写类 B，而是可以把类 A 作为一个&ldquo;基类&rdquo;（也称&ldquo;父类&rdquo;），把类 B 写为基类 A 的一个&ldquo;派生类&rdquo;（也称&ldquo;子类&rdquo;）。这样，就可以说从类 A &ldquo;派生&rdquo;出了类 B，也可以说类 B &ldquo;继承&rdquo;了类 A。<br />
+<br />
+派生类是通过对基类进行扩充和修改得到的。基类的所有成员自动成为派生类的成员。<br />
+<br />
+所谓扩充，指的是在派生类中可以添加新的成员变量和成员函数；所谓修改，指的是在派生类中可以重写从基类继承得到的成员。<br />
+<br />
+派生类的成员函数不能访问基类的私有成员。<br />
+<br />
+有了 &ldquo;继承&rdquo;机制，对于上述学籍管理程序，就可以编写一个&ldquo;学生&rdquo;类概括各种学生的共同特点，然后从&ldquo;学生&rdquo;类派生出&ldquo;小学生&rdquo;类、&ldquo;中学生&rdquo;类、&ldquo;本科生类&rdquo;等，如图 1 所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/180830/1-1PS01101405X.jpg" />:<br />
+图1：学籍管理系统的类设计</div>
+<br />
+在 C++ 中，从一个类派生出另一个类的写法如下：
+<p class="info-box">
+class&nbsp; 派生类名: 继承方式说明符&nbsp; 基类名{<br />
+&nbsp;&nbsp; ...<br />
+};</p>
+继承方式说明符可以是 public（公有继承）、private（私有继承）或 protected（保护继承）。一般都使用 public。protected 或 private 方式很少用到。<br />
+<br />
+派生类对象占用的存储空间大小，等于基类对象占用的存储空间大小加上派生类对象自身成员变量占用的存储空间大小。<br />
+<br />
+派生类对象中包含基类对象，而且基类对象的存储位置位于派生类对象新增的成员变量之前。例如以下两个类 CBase 和 CDerived，CDerived 继承了 CBase ：
+<pre class="cpp">
+class CBase
+{
+    int v1, v2;
+};
+class CDerived: public CBase
+{
+    int v3;
+};</pre>
+则 CDerived 对象的存储空间如图 2 所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/180830/1-1PS011025CR.jpg" /><br />
+图2：派生类对象的内存空间示意</div>
+<br />
+显然，sizeof(CBase) 等于 8，sizeof(CDerived) 等于 12。
+<h2>
+程序实例</h2>
+下面来看一个有两个类的简单学生管理程序。
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+class CStudent
+{
+private:
+    string name;
+    string id;  //学号
+    char gender;  //性别，F 代表女，M 代表男
+    int age;
+public:
+    void PrintInfo();
+    void SetInfo(const string &amp; name_, const string &amp; id_, int age_, char gender_);
+    string GetName() { return name; }
+};
+class CUndergraduateStudent : public CStudent  //本科生类，继承了 CStudent 类
+{
+private:
+    string department;  //学生所属的系的名称
+public:
+    void QulifiedForBaoyan() {  //给予保研资格
+        cout &lt;&lt; &quot;qulified for baoyan&quot; &lt;&lt; endl;
+    }
+    void PrintInfo() {
+        CStudent::PrintInfo();  //调用基类的 PrintInfo 函数
+        cout &lt;&lt; &quot;Department: &quot; &lt;&lt; department &lt;&lt; endl;
+    }
+    void SetInfo(const string &amp; name_, const string &amp; id_, int age_,
+            char gender_, const string &amp; department_) {
+        CStudent::SetInfo(name_, id_, age_, gender_);  //调用基类的 SetInfo 函数
+        department = department_;
+    }
+};
+void CStudent::PrintInfo()
+{
+    cout &lt;&lt; &quot;Name: &quot; &lt;&lt; name &lt;&lt; endl;
+    cout &lt;&lt; &quot;ID: &quot; &lt;&lt; id &lt;&lt; endl;
+    cout &lt;&lt; &quot;Age: &quot; &lt;&lt; age &lt;&lt; endl;
+    cout &lt;&lt; &quot;Gender: &quot; &lt;&lt; gender &lt;&lt; endl;
+}
+void CStudent::SetInfo(const string &amp;name_, const string &amp; id_, int age_, char gender_)
+{
+    name = name_;
+    id = id_;
+    age = age_;
+    gender = gender_;
+}
+int main()
+{
+    CStudent s1;
+    CUndergraduateStudent s2;
+    s2.SetInfo(&quot;Harry Potter&quot;, &quot;118829212&quot;, 19, &#39;M&#39;, &quot;Computer Science&quot;);
+    cout &lt;&lt; s2.GetName() &lt;&lt; &quot; &quot;;
+    s2.QulifiedForBaoyan();
+    s2.PrintInfo();
+    cout &lt;&lt; &quot;sizeof(string) = &quot; &lt;&lt; sizeof(string) &lt;&lt; endl;
+    cout &lt;&lt; &quot;sizeof(CStudent) = &quot; &lt;&lt; sizeof(CStudent) &lt;&lt; endl;
+    cout &lt;&lt; &quot;sizeof(CUndergraduateStudent) = &quot; &lt;&lt; sizeof(CUndergraduateStudent) &lt;&lt; endl;
+    return 0;
+}</pre>
+在 Dev C++ 下的运行结果：<br />
+Harry Potter qulified for baoyan<br />
+Name: Harry Potter<br />
+ID: 118829212<br />
+Age: 19<br />
+Gender: M<br />
+Department: Computer Science<br />
+sizeof(string) = 4<br />
+sizeof(CStudent) = 16<br />
+sizeof(CUndergraduateStudent) = 20<br />
+<br />
+上述程序中，CStudent 类概括了所有学生的共同特点。CUndergraduateStudent 类继承了 CStudent 类，所有 CStudent 类的成员也都是 CUndergraduateStudent 类的成员，因此第 53 行调用 GetName 成员函数是没有问题的。<br />
+<br />
+此外，CUndergraduateStudent 类还添加了新成员变量 department，以及新的成员函数 QulifiedForBaoyan。<br />
+<br />
+CUndergraduateStudent 类还重写了从基类继承的两个成员函数 SetInfo 和 PrintInfo。<br />
+<br />
+在基类和派生类有同名成员（可以是成员变量，也可以是成员函数）的情况下，在派生类的成员函数中访问同名成员，或通过派生类对象访问同名成员，除非特别指明，否则访问的就是派生类的成员，这种情况叫&ldquo;覆盖&rdquo;，即派生类的成员覆盖基类的同名成员。因此，第 52 行调用的是 CUndergraduateStudent 类的 SetInfo 成员函数，第 55 行调用的是 CUndergraduateStudent 类的 PrintInfo 成员函数。<br />
+<br />
+如果要访问基类的同名成员，则需要在成员名前面加&ldquo;基类名::&rdquo;。例如，假设 s2 是 CUndergraduateStudent 类的对象，p 是 CUndergraduateStudent 类的<a href='../c/80/80.html' target='_blank'>指针</a>，则以下写法就调用了基类的成员函数：
+<pre class="cpp">
+s2.CStudent::PrintInfo();
+p-&gt;CStudent::PrintInfo();</pre>
+第 25 行和第 30 行都调用了基类的同名成员函数。派生类的 PrintInfo 成员函数先调用基类的 PrintInfo 成员函数输出基类部分的成员信息，然后再输出新增的 department 成员信息。<br />
+<br />
+基类和派生类有同名成员函数，完成类似的功能。在派生类的同名成员函数中，先调用基类的同名成员函数完成基类部分的功能，然后再执行自己的代码完成派生类的功能，这种做法非常常见。<br />
+<br />
+在 Windows 面向对象的 MFC 编程、<a href='https://c.biancheng.net/android/' target='_blank'>Android</a> 系统应用程序开发等编程环境中，许多程序员编写的关键的类都必须是由编译器提供的类派生而来的，在其中往往都必须编写和基类同名的一些成员函数。而在派生类的这些成员函数中，一般都需要先调用基类的同名成员函数来完成必要的功能。<br />
+<br />
+派生类和基类有同名成员函数很常见，但一般不会在派生类中定义和基类同名的成员变量，这样做会很让人困惑。<br />
+<br />
+第 56 行及其后的几行输出是为了说明派生类对象占用的存储空间大小等于基类对象占用的存储空间大小加上派生类新增成员变量占用的存储空间大小。<br />
+<br />
+第 56 行输出&ldquo;sizeof(string) = 4，是用 Dev C ++ 编译后程序的输出结果。如果用 Visual Studio 2010 编译，输出结果会是 &ldquo;sizeof(string) = 32&rdquo;。这是由于不同的编译器所提供的类库对于 string 类有不同的实现方法， 因此 sizeof(string) 在不同编译器上的值是不同的。<br />
+<br />
+按理说，对象占用的存储空间大小等于各成员变量占用的存储空间大小之和，那么 sizeof(CStudent) 的值应该为 13，但输出结果却是&ldquo;sizeof(CStudent) = 16&rdquo;，这是为什么呢？<br />
+<br />
+由于计算机内部在 CPU 和内存之间传输数据都是以 4 字节（对于32位计算机）或8字节（对于64位计算机）为单位进行的，出于传输效率的考虑，应该尽量使对象的成员变量的地址是 4 或 8 的整数倍，这叫作对齐。<br />
+<br />
+对于CStudent类，编译器为每个 CStudent 对象中的 char 类型成员变量 gender 补齐 3 个字节，使得 age 成员变量能够对齐，这样 CStudent 对象就变成了 16 字节。<br />
+<br />
+在一些编译器中，关于对象的成员变量如何对齐是有选项可以设定的。例如在 Visual Studio 中，这个选项就是：
+<p class="info-box">
+Projects -&gt; Properties -&gt; Configuration Properties -&gt; C/C++ -&gt; Code generation -&gt; Struct Member Alignment</p>
+这称作结构成员对齐，默认值是 8。<br />
+<br />
+思考题：如何实现 string 类，可以使得 sizeof(string) = 4？这样实现的 string 类如何才能在常数时间内求得 string 对象中字符串的长度？<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="344.html" title="C语言可变参数函数" target="_blank">C语言可变参数函数</a></li>
+<li><a href="3343.html" title="双向链表基本操作（C语言实现）" target="_blank">双向链表基本操作（C语言实现）</a></li>
+<li><a href="vip_6088.html" title="Python自定义异常类及用法" target="_blank">Python自定义异常类及用法</a></li>
+<li><a href="vip_7070.html" title="Java使用内部类实现多重继承" target="_blank">Java使用内部类实现多重继承</a></li>
+<li><a href="vip_7686.html" title="C++如何跳过（忽略）指定字符？" target="_blank">C++如何跳过（忽略）指定字符？</a></li>
+<li><a href="../sql/top.html" title="SQL TOP子句：限制返回数据的条数" target="_blank">SQL TOP子句：限制返回数据的条数</a></li>
+<li><a href="../spring/autowire-xml.html" title="Spring自动装配" target="_blank">Spring自动装配</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 250;
+window.arcId = "8b4dM1CFTz3cXFZrGDqQFz0mAjvEVXKeM0psjf7+BOANYx6Bnau39f68uA";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

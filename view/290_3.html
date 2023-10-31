@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>原码、反码、补码及位操作符，C语言位操作详解</title>
+<meta name="description" content="计算机中的所有数据均是以二进制形式存储和处理的。所谓位操作就是直接把计算机中的二进制数进行操作，无须进行数据形式的转换，故处理速度较快。 原码、反码和补码 位（bit）是" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>原码、反码、补码及位操作符，C语言位操作详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">计算机中的所有数据均是以二进制形式存储和处理的。所谓位操作就是直接把计算机中的二进制数进行操作，无须进行数据形式的转换，故处理速度较快。<br />
+<h2>
+	原码、反码和补码</h2>
+位（bit）是计算机中处理数据的最小单位，其取值只能是 0 或 1。<br />
+<br />
+字节（Byte）是计算机处理数据的基本单位，通常系统中一个字节为 8 位。即:1 Byte=8 bit。<br />
+<br />
+为便于演示，本节表示的原码、反码及补码均默认为 8 位。<br />
+<br />
+准确地说，数据在计算机中是以其补码形式存储和运算的。在介绍补码之前，先了解原码和反码的概念。<br />
+<br />
+<span style="color:#b22222;">正数的原码、反码、补码均相同。</span><br />
+<br />
+原码：用最高位表示符号位，其余位表示数值位的编码称为原码。其中，正数的符号位为 0，负数的符号位为 1。<br />
+<br />
+<span style="color:#008000;">负数的反码：</span>把原码的符号位保持不变，数值位逐位取反，即可得原码的反码。<br />
+<br />
+<span style="color:#008000;">负数的补码：</span>在反码的基础上加 1 即得该原码的补码。<br />
+<br />
+例如：<br />
++11 的原码为: 0000 1011<br />
++11 的反码为: 0000 1011<br />
++11 的补码为: 0000 1011<br />
+<br />
+-7 的原码为：1000 0111<br />
+-7 的反码为：1111 1000<br />
+-7 的补码为：1111 1001<br />
+<br />
+注意，对补码再求一次补码操作就可得该补码对应的原码。<br />
+<h2>
+	位操作符</h2>
+语言中提供了 6 个基本的位操作符，如表 2 所示。<br />
+<br />
+<table>
+	<caption>
+		表 2 C语言运算符</caption>
+	<tbody>
+		<tr>
+			<th>
+				运算符</th>
+			<th>
+				功&nbsp;能</th>
+			<th>
+				运算规则</th>
+		</tr>
+		<tr>
+			<th>
+				&amp;</th>
+			<td>
+				按位与</td>
+			<td>
+				对应位均为 1 时，结果才为 1</td>
+		</tr>
+		<tr>
+			<th>
+				|</th>
+			<td>
+				按位或</td>
+			<td>
+				两位中只要有一位为 1，结果为 1。<br />
+				只有两位同时为 0 时，结果为才为 0。</td>
+		</tr>
+		<tr>
+			<th>
+				^</th>
+			<td>
+				按位异或</td>
+			<td>
+				两位相异时，结果为 1;两位相同时，结果为 0。</td>
+		</tr>
+		<tr>
+			<th>
+				&lt;&lt;</th>
+			<td>
+				左移</td>
+			<td>
+				将运算数的各二进制位均左移若干位，高位丢弃（不包括 1），低位补 0，每左移一位，相当于该数乘以 2。</td>
+		</tr>
+		<tr>
+			<th>
+				&gt;&gt;</th>
+			<td>
+				右移</td>
+			<td>
+				将运算数的各二进制位均右移若干位，正数补左补 0，负数左补 1，右边移出的位丢弃。</td>
+		</tr>
+		<tr>
+			<th>
+				~</th>
+			<td>
+				按位取反</td>
+			<td>
+				0 变 1,1 变 0。</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+注意，计算机中位运算操作，均是以二进制补码形式进行的。<br />
+<h4>
+	按位与（&amp;）</h4>
+只有两位同时为 1 时，结果才为 1；只要两位中有一位为 0，则结果为 0。用式子表示为：<br />
+<p class="info-box">
+	0 &amp; 0 = 0<br />
+	0 &amp; 1 = 0<br />
+	1 &amp; 0 = 0<br />
+	1 &amp; 1 = 1</p>
+复合赋值运算符：<code>&amp;=</code> 表示按位与后赋值。<br />
+<br />
+例如，计算 20 和 9 按位与的结果，如下所示。
+<div style="text-align: center;">
+	<br />
+	<img alt="" src="../uploads/allimg/180904/2-1PZ413334S44_2.jpg" /></div>
+<br />
+即：20&amp;9=0。<br />
+<br />
+应用一：使用 0x01 与一个数按位与，可获取该数对应二进制数的最低位。<br />
+应用二：使用 0x00 与一个数按位与，可使该数低位的一个字节清零。<br />
+<br />
+例如，9&amp;0x1 可求得 9 对应二进制数 0000 1001 的最低位 1。<br />
+<br />
+<strong>【例 1】</strong>分析以下程序的功能，并输出其运行结果。<br />
+<pre class="cpp">
+#include&lt;stdio.h&gt;
+int main (void)
+{
+int n;
+for(n=1;n&lt;=20;n++)
+  if (0==(n&amp;0x1))
+            printf(&quot;%d &quot;,n);
+    printf (&quot;\n&quot;);
+    return 0;
+}</pre>
+程序运行结果为：<br />
+2 4 6 8 10 12 14 16 18 20<br />
+<br />
+程序分析：<br />
+n&amp;0x1 的功能是取出 n 对应补码二进制数的最低位（最右端位），如果该位为 0，则输出。二进制数 b<sub>n-1</sub>b<sub>n-2</sub>b<sub>n-3</sub>&hellip;b<sub>2</sub>b<sub>1</sub>b<sub>0</sub>。对应的十进制数 N 的表达式为：<br />
+<p class="info-box">
+	N=b<sub>0</sub> X 2<sup>0</sup> + b<sub>1</sub> X 2<sup>1</sup> + b<sub>2</sub> X 2<sup>2</sup> + b<sub>3</sub> X 2<sup>3</sup> + b<sub>4</sub> X 2<sup>4</sup> + &hellip;</p>
+由于从上式中第二项开始的每一项都是偶数，故N是否偶数取决于 b<sub>0</sub> 是否偶数，故 b<sub>0</sub> 为 1 时是奇数，为 0 时是偶数。<br />
+<h4>
+	按位或（丨）</h4>
+只要两位中有一位为 1，结果为 1；只有两位同时为 0 时，结果才为 0。用式子表示为：<br />
+<p class="info-box">
+	0 | 0 = 0<br />
+	0 | 1 = 1<br />
+	1 | 0 = 1<br />
+	1 | 1 = 1</p>
+复合赋值运算符：<code>|=</code> 按位或后赋值。<br />
+<br />
+例如，计算 20 和 9 按位或的结果，如下所示。
+<div style="text-align: center;">
+	<br />
+	<img alt="" src="../uploads/allimg/180904/2-1PZ413353JL_2.jpg" /></div>
+<br />
+即: 20 | 9 = 29。<br />
+<h4>
+	按位异或（^）</h4>
+当两位相同时，即同为 1 或同为 0 时，结果为 0；当两位相异时，即其中一位为 1，另一位为 0 时，结果为 1。即相同为 0，相异为 1。用式子表示为：<br />
+<p class="info-box">
+	0 ^ 0 = 0<br />
+	0 ^ 1 = 1<br />
+	1 ^ 0 = 1<br />
+	1 ^ 1 = 0</p>
+由此可得按位异或的 6 个性质或特点如下。<br />
+<ol>
+	<li>
+		a^0=a。即0与任意数按位异或都得该数本身。</li>
+	<li>
+		1 与任意二进制位按位异或都得该位取反（0 变 1，1 变 0）。</li>
+	<li>
+		a^a=0。即任意数与自身按位异或都得0。</li>
+	<li>
+		a^b=b^a。即满足交换律。</li>
+	<li>
+		(a^b)^c=a^(b^c)。即满足结合律。</li>
+	<li>
+		a^b^b=a^(b^b)=a^0=a。</li>
+</ol>
+<br />
+复合赋值运算符：<code>^=</code> 按位异或后赋值。<br />
+<br />
+例如，计算 22 和 7 按位异或的结果，如下所示。
+<div style="text-align: center;">
+	<br />
+	<img alt="" src="../uploads/allimg/180904/2-1PZ4133644534_2.jpg" /></div>
+<br />
+即：22^7=17。<br />
+<br />
+<strong>【例 2】</strong>分析以下程序的功能。
+<pre class="cpp">
+#include&lt;stdio.h&gt;
+int main (void)
+{
+    int a=3,b=5;
+    a=a^b;
+    b=a^b;
+    a=a^b;
+    printf(&quot;a=%d,b=%d\n&quot;,a,b);
+    return 0;
+}</pre>
+运行结果：<br />
+a=5,b=3<br />
+<br />
+程序分析：<br />
+本题是对按位异或的性质和特点的综合运用，由于没有使用中间变量，故在理解上存在一定的难度。<br />
+<br />
+由于 a=a^b; 故：<br />
+b=a^b=a^b^b=a^(b^b)=a^0=a，即：b=3。<br />
+a=a^b=(a^b)^a=(b^a)^a=b^(a^a)=b^0=b，即：a=5。<br />
+<br />
+故实现了 a 与 b 的交换。<br />
+<h4>
+	左移（&lt;&lt;)</h4>
+将运算数的各二进制位均左移若干位，高位丢弃（不包含 1），低位补 0。左移时舍弃的高位不包含 1，则每左移一位，相当于该数乘以 2。<br />
+<br />
+复合赋值运算符： <code>&lt;&lt;=</code> 左移后赋值。<br />
+<br />
+例如，计算 10 左移两位的结果，如下所示。
+<div style="text-align: center;">
+	<br />
+	<img alt="" src="../uploads/allimg/180904/2-1PZ4133P4959_2.jpg" /></div>
+<br />
+丢弃左边高位移出去的 0，低位补 0。<br />
+<br />
+左移一位相当于该数乘以 2，本例中左移两位，故相当于乘以 4。即：10&lt;&lt;2 = 10 X 2 X 2 = 40。<br />
+<h4>
+	右移（&gt;&gt;）</h4>
+将运算数的各二进制位全部右移若干位，正数左补 0，负数左补 1，右边移出的位丢弃。<br />
+<br />
+复合赋值运算符： <code>&gt;&gt;=</code> 右移后赋值。<br />
+<br />
+例如，计算 70 右移两位的结果，如下所示。
+<div style="text-align: center;">
+	<br />
+	<img alt="" src="../uploads/allimg/180904/2-1PZ4133912430_2.jpg" /></div>
+<br />
+丢弃右边移出去的所有位，由于该数为正数，左边补 0。<br />
+<br />
+右移一位相当于该数除以 2 取整，本例中右移两位，故相当于除以 4 取整。即：70&gt;&gt;2=70/4 = 17。<br />
+<h4>
+	按位取反（~）</h4>
+0 变 1,1 变 0。用式子表示为：<br />
+<p class="info-box">
+	~0 = 1<br />
+	~1 = 0</p>
+应用：~a+1=-a 即对任意数按位取反后加 1，得该数的相反数。<br />
+<br />
+例如，计算 10 按位取反的结果，如下所示：
+<div style="text-align: center;">
+	<br />
+	<img alt="" src="../uploads/allimg/180904/2-1PZ41340021L_2.jpg" /></div>
+<br />
+由于计算机中位运算均是以补码形式操作的，正数的补码是其本身，负数的补码为其反码加 1。
+<div style="text-align: center;">
+	<br />
+	<img alt="" src="../uploads/allimg/180904/2-1PZ4134032229_2.jpg" /></div>
+<br />
+所得显然是负数的补码，对补码 1111 0101 再做一次求补操作，即可得该补码对应的原码。 求 1111 0101 补码的过程如下所示。<br />
+<p class="info-box">
+	反码 1000 1010 --符号位 1 保持不变，数值位按位取反<br />
+	补码 1000 1011 --反码加1<br />
+	根据 (补码)补码=原码<br />
+	故补码1111 0101对应的原码为1000 1011=-11，即:~(10)D =~(0100 0110)B补= (1111 0101)B补=-11</p>
+由此可见，~10+1=-11+1=-10，即满足 ~a+1=-a。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1090_2.html" title="Linux at命令详解：定时执行任务" target="_blank">Linux at命令详解：定时执行任务</a></li>
+<li><a href="1432_2.html" title="C++结构体数组（无师自通）" target="_blank">C++结构体数组（无师自通）</a></li>
+<li><a href="6824_2.html" title="Java集合详解" target="_blank">Java集合详解</a></li>
+<li><a href="vip_7044_2.html" title="Java是如何实现跨平台的，原理是什么？" target="_blank">Java是如何实现跨平台的，原理是什么？</a></li>
+<li><a href="7247_2.html" title="C++ STL unordered_map删除元素：erase()和clear()" target="_blank">C++ STL unordered_map删除元素：erase()和clear()</a></li>
+<li><a href="../matplotlib/twin-axes_2.html" title="Matplotlib双轴图" target="_blank">Matplotlib双轴图</a></li>
+<li><a href="9349_2.html" title="JS函数（function）的定义和使用" target="_blank">JS函数（function）的定义和使用</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 290;
+window.arcId = "37e5M8z6YBR4q+UI+AniAzjz69fMQo8jxI/1Vf/6geE//gu3TefPVhpciw";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

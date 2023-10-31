@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Go语言死锁、活锁和饥饿概述</title>
+<meta name="description" content="前面的部分都是关于程序正确性的讨论，如果这些问题得到正确的处理，那我们的程序将永远不会给出错误的答案。不幸的是，即使成功处理了这些问题，还有另一类问题需要解决：死" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../golang/golang.html">Go语言</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href='../golang/intro/intro.html'>Go语言简介</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href='../golang/syntax/syntax.html'>Go语言基本语法</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href='../golang/container/container.html'>Go语言容器</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href='../golang/flow_control/flow_control.html'>流程控制</a>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href='../golang/func/func.html'>Go语言函数</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href='../golang/struct/struct.html'>Go语言结构体</a>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href='../golang/interface/interface.html'>Go语言接口</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href='../golang/package/package.html'>Go语言包（package）</a>
+</dd>
+<dd class="this"> <span class="channel-num">9</span> <a href="../golang/concurrent/concurrent.html">Go语言并发</a> </dd><dl class="dl-sub"><dd>9.1 <a href="4356.html">Go语言并发简述</a></dd><dd>9.2 <a href="93.html">Go语言轻量级线程</a></dd><dd>9.3 <a href="4357.html">Go语言并发通信</a></dd><dd>9.4 <a href="4358.html">Go语言竞争状态</a></dd><dd>9.5 <a href="94.html">Go语言调整并发的运行性能</a></dd><dd>9.6 <a href="95.html">并发和并行的区别</a></dd><dd>9.7 <a href="96.html">goroutine和coroutine的区别</a></dd><dd>9.8 <a href="97.html">Go语言通道（chan）</a></dd><dd>9.9 <a href="98.html">示例：并发打印</a></dd><dd>9.10 <a href="99.html">Go语言单向通道</a></dd><dd>9.11 <a href="4359.html">Go语言无缓冲的通道</a></dd><dd>9.12 <a href="100.html">Go语言带缓冲的通道</a></dd><dd>9.13 <a href="4361.html">Go语言channel超时机制</a></dd><dd>9.14 <a href="vip_7348.html">Go语言通道的多路复用</a><span class="iconfont iconfont-vip2"></span></dd><dd>9.15 <a href="vip_7349.html">Go语言模拟远程过程调用</a><span class="iconfont iconfont-vip2"></span></dd><dd>9.16 <a href="vip_7350.html">示例：使用通道响应计时器的事件</a><span class="iconfont iconfont-vip2"></span></dd><dd>9.17 <a href="vip_7351.html">Go语言关闭通道后继续使用通道</a><span class="iconfont iconfont-vip2"></span></dd><dd>9.18 <a href="4362.html">Go语言多核并行化</a></dd><dd>9.19 <a href="vip_7352.html">Go语言Telnet回音服务器</a><span class="iconfont iconfont-vip2"></span></dd><dd>9.20 <a href="vip_7353.html">检测代码在并发环境下可能出现的问题</a><span class="iconfont iconfont-vip2"></span></dd><dd>9.21 <a href="107.html">互斥锁和读写互斥锁</a></dd><dd>9.22 <a href="108.html">Go语言等待组</a></dd><dd>9.23 <a href="4786.html">死锁、活锁和饥饿概述</a></dd><dd>9.24 <a href="vip_7354.html">示例：封装qsort快速排序函数</a><span class="iconfont iconfont-vip2"></span></dd><dd>9.25 <a href="5111.html">Go语言CSP：通信顺序进程简述</a></dd><dd>9.26 <a href="5408.html">示例：聊天服务器</a></dd><dd>9.27 <a href="vip_7355.html">高效地使用Go语言并发特性</a><span class="iconfont iconfont-vip2"></span></dd><dd>9.28 <a href="vip_7356.html">使用select切换协程</a><span class="iconfont iconfont-vip2"></span></dd><dd>9.29 <a href="vip_7357.html">Go语言加密通信</a><span class="iconfont iconfont-vip2"></span></dd></dl>
+<dd>
+<span class="channel-num">10</span>
+<a href='../golang/reflect/reflect.html'>Go语言反射</a>
+</dd>
+<dd>
+<span class="channel-num">11</span>
+<a href='../golang/102/102.html'>Go语言文件处理</a>
+</dd>
+<dd>
+<span class="channel-num">12</span>
+<a href='../golang/build/build.html'>Go语言编译与工具</a>
+</dd>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../golang/golang.html">Go语言</a> &gt; <a href="../golang/concurrent/concurrent.html">Go语言并发</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Go语言死锁、活锁和饥饿概述</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">本节我们来介绍一下死锁、活锁和饥饿这三个概念。<br />
+<h2>
+死锁</h2>
+死锁是指两个或两个以上的进程（或线程）在执行过程中，因争夺资源而造成的一种互相等待的现象，若无外力作用，它们都将无法推进下去。此时称系统处于死锁状态或系统产生了死锁，这些永远在互相等待的进程称为死锁进程。<br />
+<br />
+死锁发生的条件有如下几种：<br />
+<h4>
+1) 互斥条件</h4>
+线程对资源的访问是排他性的，如果一个线程对占用了某资源，那么其他线程必须处于等待状态，直到该资源被释放。<br />
+<h4>
+2) 请求和保持条件</h4>
+线程 T1 至少已经保持了一个资源 R1 占用，但又提出使用另一个资源 R2 请求，而此时，资源 R2 被其他线程 T2 占用，于是该线程 T1 也必须等待，但又对自己保持的资源 R1 不释放。<br />
+<h4>
+3) 不剥夺条件</h4>
+线程已获得的资源，在未使用完之前，不能被其他线程剥夺，只能在使用完以后由自己释放。<br />
+<h4>
+4) 环路等待条件</h4>
+在死锁发生时，必然存在一个&ldquo;进程 - 资源环形链&rdquo;，即：{p0,p1,p2,...pn}，进程 p0（或线程）等待 p1 占用的资源，p1 等待 p2 占用的资源，pn 等待 p0 占用的资源。<br />
+<br />
+最直观的理解是，p0 等待 p1 占用的资源，而 p1 而在等待 p0 占用的资源，于是两个进程就相互等待。<br />
+<br />
+死锁解决办法：<br />
+<ul>
+<li>
+如果并发查询多个表，约定访问顺序；</li>
+<li>
+在同一个事务中，尽可能做到一次锁定获取所需要的资源；</li>
+<li>
+对于容易产生死锁的业务场景，尝试升级锁颗粒度，使用表级锁；</li>
+<li>
+采用分布式事务锁或者使用乐观锁。</li>
+</ul>
+<br />
+死锁程序是所有并发进程彼此等待的程序，在这种情况下，如果没有外界的干预，这个程序将永远无法恢复。<br />
+<br />
+为了便于大家理解死锁是什么，我们先来看一个例子（忽略代码中任何不知道的类型，函数，方法或是包，只理解什么是死锁即可），代码如下所示：<br />
+<pre class="go">
+package main
+
+import (
+&nbsp;&nbsp;&nbsp; &quot;fmt&quot;
+&nbsp;&nbsp;&nbsp; &quot;runtime&quot;
+&nbsp;&nbsp;&nbsp; &quot;sync&quot;
+&nbsp;&nbsp;&nbsp; &quot;time&quot;
+)
+
+type value struct {
+&nbsp;&nbsp;&nbsp; memAccess sync.Mutex
+&nbsp;&nbsp;&nbsp; value&nbsp;&nbsp;&nbsp;&nbsp; int
+}
+
+func main() {
+&nbsp;&nbsp;&nbsp; runtime.GOMAXPROCS(3)
+&nbsp;&nbsp;&nbsp; var wg sync.WaitGroup
+&nbsp;&nbsp;&nbsp; sum := func(v1, v2 *value) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; defer wg.Done()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; v1.memAccess.Lock()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; time.Sleep(2 * time.Second)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; v2.memAccess.Lock()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fmt.Printf(&quot;sum = %d\n&quot;, v1.value+v2.value)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; v2.memAccess.Unlock()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; v1.memAccess.Unlock()
+&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp;&nbsp; product := func(v1, v2 *value) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; defer wg.Done()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; v2.memAccess.Lock()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; time.Sleep(2 * time.Second)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; v1.memAccess.Lock()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fmt.Printf(&quot;product = %d\n&quot;, v1.value*v2.value)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; v1.memAccess.Unlock()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; v2.memAccess.Unlock()
+&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp;&nbsp; var v1, v2 value
+&nbsp;&nbsp;&nbsp; v1.value = 1
+&nbsp;&nbsp;&nbsp; v2.value = 1
+&nbsp;&nbsp;&nbsp; wg.Add(2)
+&nbsp;&nbsp;&nbsp; go sum(&amp;v1, &amp;v2)
+&nbsp;&nbsp;&nbsp; go product(&amp;v1, &amp;v2)
+&nbsp;&nbsp;&nbsp; wg.Wait()
+}</pre>
+运行上面的代码，可能会看到：<br />
+<p class="info-box">
+fatal error: all goroutines are asleep - deadlock!</p>
+为什么呢？如果仔细观察，就可以在此代码中看到时机问题，以下是运行时的图形表示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="一个因时间问题导致死锁的演示" src="../uploads/allimg/191223/4-19122313533W41.gif" /><br />
+图 ：一个因时间问题导致死锁的演示</div>
+<h2>
+活锁</h2>
+活锁是另一种形式的活跃性问题，该问题尽管不会阻塞线程，但也不能继续执行，因为线程将不断重复同样的操作，而且总会失败。<br />
+<br />
+例如线程 1 可以使用资源，但它很礼貌，让其他线程先使用资源，线程 2 也可以使用资源，但它同样很绅士，也让其他线程先使用资源。就这样你让我，我让你，最后两个线程都无法使用资源。<br />
+<br />
+活锁通常发生在处理事务消息中，如果不能成功处理某个消息，那么消息处理机制将回滚事务，并将它重新放到队列的开头。这样，错误的事务被一直回滚重复执行，这种形式的活锁通常是由过度的错误恢复代码造成的，因为它错误地将不可修复的错误认为是可修复的错误。<br />
+<br />
+当多个相互协作的线程都对彼此进行相应而修改自己的状态，并使得任何一个线程都无法继续执行时，就导致了活锁。这就像两个过于礼貌的人在路上相遇，他们彼此让路，然后在另一条路上相遇，然后他们就一直这样避让下去。<br />
+<br />
+要解决这种活锁问题，需要在重试机制中引入随机性。例如在网络上发送数据包，如果检测到冲突，都要停止并在一段时间后重发，如果都在 1 秒后重发，还是会冲突，所以引入随机性可以解决该类问题。<br />
+<br />
+下面通过示例来演示一下活锁：<br />
+<pre class="go">
+package main
+
+import (
+&nbsp;&nbsp;&nbsp; &quot;bytes&quot;
+&nbsp;&nbsp;&nbsp; &quot;fmt&quot;
+&nbsp;&nbsp;&nbsp; &quot;runtime&quot;
+&nbsp;&nbsp;&nbsp; &quot;sync&quot;
+&nbsp;&nbsp;&nbsp; &quot;sync/atomic&quot;
+&nbsp;&nbsp;&nbsp; &quot;time&quot;
+)
+
+func main() {
+&nbsp;&nbsp;&nbsp; runtime.GOMAXPROCS(3)
+&nbsp;&nbsp;&nbsp; cv := sync.NewCond(&amp;sync.Mutex{})
+&nbsp;&nbsp;&nbsp; go func() {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for range time.Tick(1 * time.Second) { // 通过tick控制两个人的步调
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cv.Broadcast()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; }()
+
+&nbsp;&nbsp;&nbsp; takeStep := func() {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cv.L.Lock()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cv.Wait()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cv.L.Unlock()
+&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp;&nbsp; tryDir := func(dirName string, dir *int32, out *bytes.Buffer) bool {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fmt.Fprintf(out, &quot; %+v&quot;, dirName)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; atomic.AddInt32(dir, 1)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; takeStep()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //走上一步
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if atomic.LoadInt32(dir) == 1 { //走成功就返回
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fmt.Fprint(out, &quot;. Success!&quot;)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; takeStep() // 没走成功，再走回来
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; atomic.AddInt32(dir, -1)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false
+&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp;&nbsp; var left, right int32
+&nbsp;&nbsp;&nbsp; tryLeft := func(out *bytes.Buffer) bool {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return tryDir(&quot;向左走&quot;, &amp;left, out)
+&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp;&nbsp; tryRight := func(out *bytes.Buffer) bool {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return tryDir(&quot;向右走&quot;, &amp;right, out)
+&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp;&nbsp; walk := func(walking *sync.WaitGroup, name string) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var out bytes.Buffer
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; defer walking.Done()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; defer func() { fmt.Println(out.String()) }()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fmt.Fprintf(&amp;out, &quot;%v is trying to scoot:&quot;, name)
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for i := 0; i &lt; 5; i++ {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if tryLeft(&amp;out) || tryRight(&amp;out) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fmt.Fprintf(&amp;out, &quot;\n%v is tried!&quot;, name)
+&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp;&nbsp; var trail sync.WaitGroup
+&nbsp;&nbsp;&nbsp; trail.Add(2)
+&nbsp;&nbsp;&nbsp; go walk(&amp;trail, &quot;男人&quot;) // 男人在路上走
+&nbsp;&nbsp;&nbsp; go walk(&amp;trail, &quot;女人&quot;) // 女人在路上走
+&nbsp;&nbsp;&nbsp; trail.Wait()
+}</pre>
+输出结果如下：<br />
+<p class="info-box">
+go run main.go<br />
+女人 is trying to scoot: 向左走 向右走 向左走 向右走 向左走 向右走 向左走 向右走 向左走 向右走<br />
+女人 is tried!<br />
+男人 is trying to scoot: 向左走 向右走 向左走 向右走 向左走 向右走 向左走 向右走 向左走 向右走<br />
+男人 is tried!</p>
+这个例子演示了使用活锁的一个十分常见的原因，两个或两个以上的并发进程试图在没有协调的情况下防止死锁。这就好比，如果走廊里的人都同意，只有一个人会移动，那就不会有活锁；一个人会站着不动，另一个人会移到另一边，他们就会继续移动。<br />
+<br />
+活锁和死锁的区别在于，处于活锁的实体是在不断的改变状态，所谓的&ldquo;活&rdquo;，而处于死锁的实体表现为等待，活锁有可能自行解开，死锁则不能。<br />
+<h2>
+饥饿</h2>
+饥饿是指一个可运行的进程尽管能继续执行，但被调度器无限期地忽视，而不能被调度执行的情况。<br />
+<br />
+与死锁不同的是，饥饿锁在一段时间内，优先级低的线程最终还是会执行的，比如高优先级的线程执行完之后释放了资源。<br />
+<br />
+活锁与饥饿是无关的，因为在活锁中，所有并发进程都是相同的，并且没有完成工作。更广泛地说，饥饿通常意味着有一个或多个贪婪的并发进程，它们不公平地阻止一个或多个并发进程，以尽可能有效地完成工作，或者阻止全部并发进程。<br />
+<br />
+下面的示例程序中包含了一个贪婪的 goroutine 和一个平和的 goroutine：<br />
+<pre class="go">
+package main
+
+import (
+&nbsp;&nbsp;&nbsp; &quot;fmt&quot;
+&nbsp;&nbsp;&nbsp; &quot;runtime&quot;
+&nbsp;&nbsp;&nbsp; &quot;sync&quot;
+&nbsp;&nbsp;&nbsp; &quot;time&quot;
+)
+
+func main() {
+&nbsp;&nbsp;&nbsp; runtime.GOMAXPROCS(3)
+
+&nbsp;&nbsp;&nbsp; var wg sync.WaitGroup
+&nbsp;&nbsp;&nbsp; const runtime = 1 * time.Second
+&nbsp;&nbsp;&nbsp; var sharedLock sync.Mutex
+
+&nbsp;&nbsp;&nbsp; greedyWorker := func() {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; defer wg.Done()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var count int
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for begin := time.Now(); time.Since(begin) &lt;= runtime; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sharedLock.Lock()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; time.Sleep(3 * time.Nanosecond)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sharedLock.Unlock()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; count++
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fmt.Printf(&quot;Greedy worker was able to execute %v work loops\n&quot;, count)
+&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp;&nbsp; politeWorker := func() {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; defer wg.Done()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var count int
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for begin := time.Now(); time.Since(begin) &lt;= runtime; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sharedLock.Lock()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; time.Sleep(1 * time.Nanosecond)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sharedLock.Unlock()
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sharedLock.Lock()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; time.Sleep(1 * time.Nanosecond)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sharedLock.Unlock()
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sharedLock.Lock()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; time.Sleep(1 * time.Nanosecond)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sharedLock.Unlock()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; count++
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fmt.Printf(&quot;Polite worker was able to execute %v work loops\n&quot;, count)
+&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp;&nbsp; wg.Add(2)
+&nbsp;&nbsp;&nbsp; go greedyWorker()
+&nbsp;&nbsp;&nbsp; go politeWorker()
+
+&nbsp;&nbsp;&nbsp; wg.Wait()
+}</pre>
+输出如下：
+<p class="info-box">
+Greedy worker was able to execute 276 work loops<br />
+Polite worker was able to execute 92 work loops</p>
+贪婪的 worker 会贪婪地抢占共享锁，以完成整个工作循环，而平和的 worker 则试图只在需要时锁定。两种 worker 都做同样多的模拟工作（sleeping 时间为 3ns），可以看到，在同样的时间里，贪婪的 worker 工作量几乎是平和的 worker 工作量的两倍！<br />
+<br />
+假设两种 worker 都有同样大小的临界区，而不是认为贪婪的 worker 的算法更有效（或调用 Lock 和 Unlock 的时候，它们也不是缓慢的），我们得出这样的结论，贪婪的 worker 不必要地扩大其持有共享锁上的临界区，井阻止（通过饥饿）平和的 worker 的 goroutine 高效工作。<br />
+<h2>
+总结</h2>
+不适用锁肯定会出问题。如果用了，虽然解了前面的问题，但是又出现了更多的新问题。
+<ul>
+<li>
+死锁：是因为错误的使用了锁，导致异常；</li>
+<li>
+活锁：是饥饿的一种特殊情况，逻辑上感觉对，程序也一直在正常的跑，但就是效率低，逻辑上进行不下去；</li>
+<li>
+饥饿：与锁使用的粒度有关，通过计数取样，可以判断进程的工作效率。</li>
+</ul>
+<br />
+只要有共享资源的访问，必定要使其逻辑上进行顺序化和原子化，确保访问一致，这绕不开锁这个概念。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="308.html" title="for循环及其注意事项，C语言使用for循环的注意事项总结" target="_blank">for循环及其注意事项，C语言使用for循环的注意事项总结</a></li>
+<li><a href="2054.html" title="C语言fopen函数的用法，C语言打开文件详解" target="_blank">C语言fopen函数的用法，C语言打开文件详解</a></li>
+<li><a href="2415.html" title="MySQL删除数据库（DROP DATABASE语句）" target="_blank">MySQL删除数据库（DROP DATABASE语句）</a></li>
+<li><a href="2735.html" title="Shell退出状态" target="_blank">Shell退出状态</a></li>
+<li><a href="3382.html" title="广义表的复制详解（含C语言代码实现）" target="_blank">广义表的复制详解（含C语言代码实现）</a></li>
+<li><a href="../thread/first-thread.html" title="第一个多线程程序" target="_blank">第一个多线程程序</a></li>
+<li><a href="max-min-problem.html" title="找数组的最大值和最小值" target="_blank">找数组的最大值和最小值</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 4786;
+window.arcId = "83afz1x+bTagw8jf2VrJQjQzQSjPurSqvd6X1a9ODAeWCjFhbFwOD2Q+CIQ";
+window.typeidChain = "12|1";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/view/108.html";
+window.nextPageURL = "/view/vip_7354.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

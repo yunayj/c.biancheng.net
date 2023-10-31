@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Code::Blocks调试程序方法详解</title>
+<meta name="description" content="作为一款跨平台、免费开源的 C/C++ IDE，Code::Blocks（后续简称 CodeBlocks）默认支持 GCC、MSVC 等多种编译器，还支持 GDB 或者 CDB 调试器。也就是说，我们不仅可以利用 CodeBlocks 编译、运行" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Code::Blocks调试程序方法详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">作为一款跨平台、免费开源的 C/C++ IDE，Code::Blocks（后续简称 CodeBlocks）默认支持 GCC、MSVC 等多种编译器，还支持 GDB 或者 CDB 调试器。也就是说，我们不仅可以利用 CodeBlocks 编译、运行 C/C++ 程序，还可以调试程序。<br />
+<br />
+所谓调试程序，就是控制编译器一行一行地执行代码，过程中可以清楚看到每个变量值的变化情况、函数的调用过程等，进而发现程序中隐藏的错误或者低效的代码。 接下来，我们以一段完整的 C 语言程序为例，讲解如何在 CodeBlocks 中调试程序。
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+int add(int a,int b){
+    int c = a+b;
+    return c;
+}
+int main(){
+    int a=10,b=20;
+    int sum = add(a,b);
+    printf(&quot;sum = %d&quot;,sum);
+    return 0;
+}</pre>
+<h2>
+调试前的准备工作</h2>
+如果您是首次使用 CodeBlocks 的调试功能，必须先手动配置调试器，然后才能正常调试程序。配置调试器的方法也简单，打开 CodeBlocks，菜单栏中依次选择&ldquo;Settings -&gt; Debugger&rdquo;，打开下图所示的对话框：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211105/1A2234022-0.gif" /><br />
+图 1 配置调试器</div>
+<br />
+在 &quot;Executable path&quot; 一栏中，找到 CodeBlocks 的存储位置（例如笔者将其安装到 D:/CodeBlocks 文件夹），然后进入 /MinGw/bin/ 找到 gdb32.exe，最后点击&ldquo;OK&rdquo;，调试器就配置成功了。<br />
+<br />
+在 CodeBlocks 中，调试 C 语言程序需要先建立一个 C语言项目，菜单栏中依次选择&ldquo;File -&gt; New -&gt; Project...&rdquo;，会弹出如下的对话框：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211105/1A223KS-1.gif" /><br />
+图 2 新建 C 语言项目</div>
+<br />
+点击&ldquo;Go&rdquo;，然后自定义项目名称和存储位置（假设为 Demo），创建好的项目如下图所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211105/1A22323X-2.gif" /><br />
+图 3 创建好的项目</div>
+<br />
+可以看到，新项目中默认包含了 main.c 源文件，还写好了一个最具代表性的&ldquo;Hello world!&rdquo;程序。此外，CodeBlocks 提供了多个调试按钮，常用的有以下几个：
+<ul>
+<li>
+Debug/Continue：启动调试；</li>
+<li>
+Run to cursor：令编译器执行到下一个断点处暂停执行；</li>
+<li>
+Next line：令编译器执行一行代码；</li>
+<li>
+Step into：对于调用自定义函数的语句，此按钮可以进入到函数的内部，一步一步执行函数内部的代码；</li>
+<li>
+Step out：令编译器执行完当前函数后暂停执行；</li>
+<li>
+Stop debugger：结束调试。</li>
+</ul>
+<br />
+接下来，我们将事先写好的测试程序拷贝到 main.c 文件中，然后利用这些按钮开始调试程序。<br />
+<h2>
+CodeBlocks调试程序</h2>
+默认情况下，程序会瞬间从开头执行到结尾，除非中途出现错误（称为&ldquo;运行时错误&rdquo;，比如读写内存失败、数组越界等）。要想让程序暂停执行，就需要设置一个断点。<br />
+<br />
+所谓断点（BreakPoint），可以简单地理解成障碍物，汽车遇到障碍物不能通行，程序遇到断点就会暂停执行。CodeBlocks 设置断点的方法非常简单，想让编译器运行到哪行代码处暂停，就在代码左侧的行号附近右击并选择&ldquo;Add breakpoint&rdquo;，如下图所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211105/1A2235H1-3.gif" /><br />
+图 4 添加断点</div>
+<br />
+如图 4b) 所示，成功添加断点的标志是代码的行号处增加了一个&nbsp;<span style="color:#b22222;">●&nbsp;</span>红点。接下来，点击图 3 调试工具栏中的&nbsp;<span style="color:#b22222;">▶</span> 按钮，编译器从头开始执行程序，一直到第 7 行代码处暂停，如下图所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211105/1A2231P0-4.gif" /><br />
+图 5 程序暂停执行</div>
+<br />
+当程序暂停执行时，借助 Watches 对话框可以看到各个局部变量的值。例如在图 5 中，由于第 7 行代码尚未运行，变量 a、b 和 sum 的值都是无意义的值。借助图 3 调试工具栏中的&ldquo;Next line&rdquo;按钮，让编译器继续执行一行代码，三个变量的值如下图所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211105/1A223K23-5.gif" /><br />
+图 6 观察各个变量值的变化</div>
+<br />
+可以看到，变量 a 和 b 的值发生了改变，这是执行第 7 行代码的效果。<br />
+<br />
+注意，第 8 行代码中调用了 add() 自定义函数，如果按 &quot;Next line&quot; 按钮，编译器会在第 9 行代码处暂停执行。如果想调试 add() 函数内部的代码，需要按&ldquo;Step into&rdquo;按钮，如下图所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211105/1A2236205-6.gif" /><br />
+图 7 调试自定义函数内部代码</div>
+<br />
+通过按&ldquo;Step into&rdquo;按钮，调试光标成功进入 add() 函数，Watches 对话框中也会显示 add() 函数参数和局部变量的值，此时再按&ldquo;Next line&rdquo;按钮就可以一行一行地执行函数内部的代码了。<br />
+<br />
+CodeBlocks 支持在程序中同时设置多个断点，如下图所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211105/1A2235O4-7.gif" /><br />
+图 8 同时设置多个断点</div>
+<br />
+编译器执行程序时，每遇到一个断点都会暂停执行。当需要调试的代码量很多时，在程序中设置多个断点并借助&ldquo;Run to cursor&rdquo;按钮，一定程度上可以提高调试代码的效率。
+<h2>
+总结</h2>
+如果程序的运行结果不符合我们的预期，不要总指望用眼睛瞅出错误，而是要学会使用调试工具，一步步地调试程序。本节给大家讲解了 CodeBlocks 断点调试程序的方法，对于每个使用 CodeBlocks 编程的初学者，都应该掌握。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="610.html" title="C语言整数逆序输出" target="_blank">C语言整数逆序输出</a></li>
+<li><a href="1363.html" title="C++ ?:条件运算符(三目运算符)用法详解" target="_blank">C++ ?:条件运算符(三目运算符)用法详解</a></li>
+<li><a href="6174.html" title="PHP array_merge()：数组合并" target="_blank">PHP array_merge()：数组合并</a></li>
+<li><a href="vip_7684.html" title="C++如何管理输出缓冲区？" target="_blank">C++如何管理输出缓冲区？</a></li>
+<li><a href="../ml_alg/analysis-logistic.html" title="数学解析Logistic回归算法" target="_blank">数学解析Logistic回归算法</a></li>
+<li><a href="vinzwl.html" title="Python判断输入的字符串是否是回文（不区分大小写）" target="_blank">Python判断输入的字符串是否是回文（不区分大小写）</a></li>
+<li><a href="j0wt2bw.html" title="JS call()、apply()和bind()的区别" target="_blank">JS call()、apply()和bind()的区别</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9452;
+window.arcId = "d8afrUK4Hrbf5KRoTym09olQLv0benbNB5IfGbgRr5H777Ii9lMD83BreM4";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

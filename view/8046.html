@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Django实现分页功能</title>
+<meta name="description" content="在本节中，我们将介绍 Django 为我们提供的高级模块，通过高级模块的学习，你会感受到 Django 的易用性如此之强，但是同时它又很复杂，需要我们掌握的知识还有很多。本节要讲的分页" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../django/django.html">Django</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Django实现分页功能</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在本节中，我们将介绍 Django 为我们提供的高级模块，通过高级模块的学习，你会感受到 Django 的易用性如此之强，但是同时它又很复杂，所以在学习 Django 这样的重度框架的时候，我们一定要切记急躁，对于新的知识要敢于探索，除了要跟随着本教程的进度学习之外，大家也要拿出时间多阅读 Django 源码、官方文档，这样才能帮助自己尽快的提升。<br />
+<br />
+本节要讲的分页功能大家一定不陌生，就像课本上的一篇篇课文一样，如果课文内容很多就会分成很多页，展示给读者。这和我们在开发阶段处理数据信息是一样的，因为大多数情况下，我们往往会面对很多的数据信息，为了让这些信息显示的更便于阅读以及减小数据的提取量从而减少服务器的压力等，我们就会采用分页的处理方法，Django 为开发者提供了内置的模块&nbsp;<span style="color:#ff0000;">Paginator&nbsp;</span>类。它的使用场景处处可见，比如某宝网购物时，显示<span style="color:#ff0000;">下一页</span>的商品，或者是用数字 <span style="color:#ff0000;">1、2、3</span> 等标注的页码，都属于分页的设计。
+<h2>
+1. 认识Paginator对象属性及方法</h2>
+<h4>
+1) Paginator类构造函数参数</h4>
+本节中我们先对 Paginator 类进行的介绍，最后通过项目的实例演示，加深大家对该模块的理解。Paginator 可以叫它为<span style="color:#ff0000;">分页器</span>，实际上它也是一个 Python 类，要使用它的时候我们可以用如下方式进行引入：<br />
+<p class="info-box">
+from django.core.paginator import Paginator</p>
+这个类被定义在&nbsp;django.core.paginator 模块中，它的构造函数如下所示：
+<pre class="python">
+class Paginator:
+    def __init__(self, object_list, per_page, orphans=0,
+                 allow_empty_first_page=True)</pre>
+其中每个参数的含义如下所示：
+<ul>
+<li>
+object_list， 对象列表即查询到的数据。</li>
+<li>
+per_page， 每一页展示的内容，即每页的数据条数。</li>
+<li>
+orphans=0， 为避免最后一页数据过少时设置，若最后一页的数据小于这个值，会合并到上一页，可省略。</li>
+<li>
+allow_empty_first_page=True， 允许首页为空 ，默认为 True。</li>
+</ul>
+<h4>
+2) Paginator对象的属性</h4>
+我们可以使用如下方法获取一个分页器对象：
+<pre class="python">
+paginator = Paginator(exam, 10)
+</pre>
+它的属性如下所示：
+<pre class="python">
+In [1]: from django.core.paginator import Paginator
+#待分页的数据
+In [2]: objects=[&#39;a&#39;,&#39;b&#39;,&#39;c&#39;,&#39;d&#39;,&#39;e&#39;,&#39;f&#39;,&#39;g&#39;]
+#获取分页器对象
+In [3]: p = Paginator(objects, 2)
+#需要分类数据的对象总数
+In [4]: p.count
+Out[4]: 7
+#分页后的页面总数
+In [5]: p.num_pages
+Out[5]: 4
+#每一页的数据个数
+In [6]: p.per_page
+Out[6]: 2
+#分页后的页码范围从1开始，不包括5,左闭右开
+In [7]: p.page_range
+Out[7]: range(1, 5)</pre>
+<h4>
+3) Paginator对象的方法 page()</h4>
+Paginator 分页器对象只有一个方法，也就是 page。它接受一个必填参数即页码号，返回一个当前页对象，若不提供将返回一个 TypeError 错误。
+<pre class="python">
+In [9]: p.page()
+#不提供页码返回错误类型
+TypeError                               
+TypeError: page() missing 1 required positional argument: &#39;number&#39;
+#获取第2页的page对象
+In [10]: pag2=p.page(2)
+#返回当前页对象
+In [11]: pag2
+Out[11]: &lt;Page 2 of 4&gt;
+#使用list进行实例化
+In [12]: list(pag2)
+Out[12]: [&#39;c&#39;, &#39;d&#39;]</pre>
+<h2>
+2. Page对象的常用方法以及属性</h2>
+<h4>
+1) Page对象属性</h4>
+在上面我们介绍了 Paginator 分页器对象的 page 方法，Page(）方法通过传递页码编号（从1开始）得到的相应页的页面对象，这个对象也有其相应的属性以及方法，下面就让我们一起来看一下：
+<pre class="python">
+#当前页上所有数据对象的列表
+In [14]: pag2.object_list
+Out[14]: [&#39;c&#39;, &#39;d&#39;]
+#当前页的序号，从1开始，第几页
+In [15]: pag2.number
+Out[15]: 2
+#当前page对象相关的Paginator对象，可通它可调用原有的Paginator属性
+In [16]: pag2.paginator
+Out[16]: &lt;django.core.paginator.Paginator at 0x63b2090&gt;</pre>
+<h4>
+2) Page对象方法</h4>
+Page 对象的适应方法也非常的简单在这里就不进行实例讲解了，有兴趣的小伙伴可以自己试一试，如下所示：
+<ul>
+<li>
+len()：返回当前页面对象的个数。</li>
+<li>
+has_next()：如果有下一页返回 True。</li>
+<li>
+has_previous()：如果有上一页返回 True。</li>
+<li>
+has_other_pages()：如果有上一页或下一页返回 True。</li>
+<li>
+previous_page_number()：返回上一页的页码，如果上一页不存在，抛出 InvalidPage 异常。</li>
+<li>
+next_page_number()：返回下一页的页码，如果下一页不存在，抛出 InvalidPage 异常。</li>
+<li>
+start_index()：返回当前页相对于整个列表来说的起始的对象序号，从 1 开始，上例所示将返回 3。</li>
+<li>
+end_index()：返回当前页相对于整个列表来说的结束的对象序号，从 1 开始，上例所示将返回 4。</li>
+</ul>
+<p class="info-box">
+注意：Page 对象是可迭代对象，可以用 for 语句来 访问当前页面中的每个对象</p>
+<h2>
+3. Paginator的异常处理模块</h2>
+Paginator 的异常处理模块，有三类，分别如下所示：<br />
+<ul>
+<li>
+InvalidPage：当向 page() 传入一个无效的页码时抛出。</li>
+<li>
+PageNotAnInteger：当向 page() 传入一个不是整数的值时抛出。</li>
+<li>
+EmptyPage：当向 page() 提供一个有效值，但是那个页面上没有任何对象时抛出，即当前页面数据为空。</li>
+</ul>
+<br />
+我们可以使用如下方式引入，在代码中需要的时候主动的抛出异常：
+<p class="info-box">
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage,InvalidPage</p>
+<h2>
+4. Paginator实例项目应用</h2>
+<pre class="python">
+from django.shortcuts import render
+&nbsp;from index.models import Book
+from django.core.paginator import Paginator#分页功能
+#视图函数 index/views.py
+def page_test(request):
+    # 测试分页功能
+    books=Book.objects.all()
+    paginator = Paginator(books,2)
+    num_p = request.GET.get(&#39;page&#39;,1)#以page为键得到默认的页面1
+    page=paginator.page(int(num_p))
+    return render(request,&#39;index/page_test.html&#39;,locals())</pre>
+编写 page_test.html 页面，如下所示：
+<pre class="html">
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&nbsp;&nbsp;&nbsp; &lt;meta charset=&quot;UTF-8&quot;&gt;
+&nbsp;&nbsp;&nbsp; &lt;title&gt;分页测试&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+{% for p in page %}
+&nbsp;&nbsp;&nbsp; &lt;div&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 书名：{{ p.title }}
+&nbsp;&nbsp;&nbsp; &lt;/div&gt;
+{% endfor %}
+&lt;!--判断是否有上一页，然后拼接关于page的查询字符串--&gt;
+{% if page.has_previous %}
+{# 得到上一页的页码编号 #}
+&nbsp; &lt;a href=&quot;/index/page_test?page={{ page.previous_page_number }}&quot;&gt;上一页&lt;/a&gt;
+{% else %}
+上一页
+{% endif %}
+{# 在页面范围内循环选择一个页面号码 #}
+{% for p in paginator.page_range %}
+{# 如果页面编号等于当前页码序号 #}
+&nbsp;&nbsp;&nbsp; {% if p == page.number %} 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ p }}
+&nbsp;&nbsp;&nbsp; {% else %}
+         {# 否则跳转到页码相对应的页面 #}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;a href=&quot;/index/page_test?page={{ p }}&quot;&gt;{{ p }}&lt;/a&gt;
+&nbsp;&nbsp;&nbsp; {% endif %}
+{% endfor %}
+
+{% if page.has_next %}
+&nbsp; &lt;a href=&quot;/index/page_test?page={{ page.next_page_number }}&quot;&gt;下一页&lt;/a&gt;
+{% else %}
+下一页
+{% endif %}
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+最后配置路由映射关系为 127.0.0.1:8000/index/page_test ,访问页面可得如下显示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="Django分页功能实现" src="../uploads/allimg/200714/9-200G4130032426.png" /><br />
+图1：Django分页功能的实现<br />
+&nbsp;</div>
+可以看出上面代码的实现主要逻辑编写在 HTML 页面中，利用 page 对象的属性判断是否存在上一页或者下一页，利用查询字符串 page 进行传参，从而实现了各个页面之间的跳转，所以从上述代码中，我们要理解 Paginator 对象以及 Page 对象的方法、属性，这样才可以把 Django 的分页功能运用自如。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="241.html" title="结构体的声明，定义及其初始化，C语言结构体完全攻略" target="_blank">结构体的声明，定义及其初始化，C语言结构体完全攻略</a></li>
+<li><a href="1439.html" title="C++ basic_string（字符串类模板）详解" target="_blank">C++ basic_string（字符串类模板）详解</a></li>
+<li><a href="2447.html" title="MySQL默认值（DEFAULT）" target="_blank">MySQL默认值（DEFAULT）</a></li>
+<li><a href="3441.html" title="2路插入排序算法详解" target="_blank">2路插入排序算法详解</a></li>
+<li><a href="7516.html" title="C++ partition_copy()函数详解" target="_blank">C++ partition_copy()函数详解</a></li>
+<li><a href="../spring_boot/import-spring-config.html" title="Spring Boot导入Spring配置" target="_blank">Spring Boot导入Spring配置</a></li>
+<li><a href="../pillow/create-dynamic-gif.html" title="Pillow生成GIF动态图" target="_blank">Pillow生成GIF动态图</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8046;
+window.arcId = "4cc4PLRQc3zSReUMz6gDfCCfOv5f6Za6uz98eJfcjRWPYtLQBtSe9MJtsW4";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

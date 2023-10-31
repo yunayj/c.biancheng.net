@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Go语言数据I/O对象及操作</title>
+<meta name="description" content="Go语言标准库 bufio 包，实现了对数据 I/O 接口的缓冲功能。它封装于接口 io.ReadWriter、io.Reader 和 io.Writer 中，并对应创建对象 ReadWriter、Reader 或 Writer，在提供缓冲的同时实现了一些文本基" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../golang/golang.html">Go语言</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href='../golang/intro/intro.html'>Go语言简介</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href='../golang/syntax/syntax.html'>Go语言基本语法</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href='../golang/container/container.html'>Go语言容器</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href='../golang/flow_control/flow_control.html'>流程控制</a>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href='../golang/func/func.html'>Go语言函数</a>
+</dd>
+<dd class="this"> <span class="channel-num">6</span> <a href="../golang/struct/struct.html">Go语言结构体</a> </dd><dl class="dl-sub"><dd>6.1 <a href="65.html">Go语言结构体定义</a></dd><dd>6.2 <a href="66.html">Go语言实例化结构体</a></dd><dd>6.3 <a href="67.html">初始化结构体的成员变量</a></dd><dd>6.4 <a href="68.html">Go语言构造函数</a></dd><dd>6.5 <a href="vip_7322.html">Go语言方法和接收器</a><span class="iconfont iconfont-vip2"></span></dd><dd>6.6 <a href="vip_7323.html">为任意类型添加方法</a><span class="iconfont iconfont-vip2"></span></dd><dd>6.7 <a href="vip_7324.html">示例：使用事件系统实现事件的响应和处理</a><span class="iconfont iconfont-vip2"></span></dd><dd>6.8 <a href="72.html">类型内嵌和结构体内嵌</a></dd><dd>6.9 <a href="vip_7325.html">结构体内嵌模拟类的继承</a><span class="iconfont iconfont-vip2"></span></dd><dd>6.10 <a href="74.html">初始化内嵌结构体</a></dd><dd>6.11 <a href="75.html">内嵌结构体成员名字冲突</a></dd><dd>6.12 <a href="vip_7326.html">示例：使用匿名结构体解析JSON数据</a><span class="iconfont iconfont-vip2"></span></dd><dd>6.13 <a href="4236.html">Go语言垃圾回收和SetFinalizer</a></dd><dd>6.14 <a href="vip_7327.html">示例：将结构体数据保存为JSON格式数据</a><span class="iconfont iconfont-vip2"></span></dd><dd>6.15 <a href="5568.html">Go语言链表操作</a></dd><dd>6.16 <a href="5569.html">Go语言数据I/O对象及操作</a></dd></dl>
+<dd>
+<span class="channel-num">7</span>
+<a href='../golang/interface/interface.html'>Go语言接口</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href='../golang/package/package.html'>Go语言包（package）</a>
+</dd>
+<dd>
+<span class="channel-num">9</span>
+<a href='../golang/concurrent/concurrent.html'>Go语言并发</a>
+</dd>
+<dd>
+<span class="channel-num">10</span>
+<a href='../golang/reflect/reflect.html'>Go语言反射</a>
+</dd>
+<dd>
+<span class="channel-num">11</span>
+<a href='../golang/102/102.html'>Go语言文件处理</a>
+</dd>
+<dd>
+<span class="channel-num">12</span>
+<a href='../golang/build/build.html'>Go语言编译与工具</a>
+</dd>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../golang/golang.html">Go语言</a> &gt; <a href="../golang/struct/struct.html">Go语言结构体</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Go语言数据I/O对象及操作</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在Go语言中，几乎所有的<a href='../data_structure/data_structure.html' target='_blank'>数据结构</a>都围绕接口展开，接口是Go语言中所有数据结构的核心。在实际开发过程中，无论是实现 web 应用程序，还是控制台输入输出，又或者是网络操作，都不可避免的会遇到 I/O 操作。<br />
+<br />
+Go语言标准库的 bufio 包中，实现了对数据 I/O 接口的缓冲功能。这些功能封装于接口 io.ReadWriter、io.Reader 和 io.Writer 中，并对应创建了 ReadWriter、Reader 或 Writer 对象，在提供缓冲的同时实现了一些文本基本 I/O 操作功能。<br />
+<h2>
+ReadWriter 对象</h2>
+ReadWriter 对象可以对数据 I/O 接口 io.ReadWriter 进行输入输出缓冲操作，ReadWriter 结构定义如下：<br />
+<p class="info-box">
+type ReadWriter struct {<br />
+&nbsp;&nbsp;&nbsp; *Reader<br />
+&nbsp;&nbsp;&nbsp; *Writer<br />
+}</p>
+默认情况下，ReadWriter 对象中存放了一对 Reader 和 Writer 指针，它同时提供了对数据 I/O 对象的读写缓冲功能。<br />
+<br />
+可以使用 NewReadWriter() 函数创建 ReadWriter 对象，该函数的功能是根据指定的 Reader 和 Writer 创建一个 ReadWriter 对象，ReadWriter 对象将会向底层 io.ReadWriter 接口写入数据，或者从 io.ReadWriter 接口读取数据。该函数原型声明如下：<br />
+<p class="info-box">
+func NewReadWriter(r *Reader, w *Writer) *ReadWriter</p>
+在函数 NewReadWriter() 中，参数 r 是要读取的来源 Reader 对象，参数 w 是要写入的目的 Writer 对象。<br />
+<h2>
+Reader 对象</h2>
+Reader 对象可以对数据 I/O 接口 io.Reader 进行输入缓冲操作，Reader 结构定义如下：<br />
+<p class="info-box">
+type Reader struct {<br />
+&nbsp;&nbsp;&nbsp; //contains filtered or unexported fields<br />
+)</p>
+默认情况下 Reader 对象没有定义初始值，输入缓冲区最小值为 16。当超出限制时，另创建一个二倍的存储空间。<br />
+<h3>
+创建 Reader 对象</h3>
+可以创建 Reader 对象的函数一共有两个，分别是 NewReader() 和 NewReaderSize()，下面分别介绍。<br />
+<h4>
+1) NewReader() 函数</h4>
+NewReader() 函数的功能是按照缓冲区默认长度创建 Reader 对象，Reader 对象会从底层 io.Reader 接口读取尽量多的数据进行缓存。该函数原型如下：<br />
+<p class="info-box">
+func NewReader(rd io.Reader) *Reader</p>
+其中，参数 rd 是 io.Reader 接口，Reader 对象将从该接口读取数据。<br />
+<h4>
+2) NewReaderSize() 函数</h4>
+NewReaderSize() 函数的功能是按照指定的缓冲区长度创建 Reader 对象，Reader 对象会从底层 io.Reader 接口读取尽量多的数据进行缓存。该函数原型如下：<br />
+<p class="info-box">
+func NewReaderSize(rd io.Reader, size int) *Reader</p>
+其中，参数 rd 是 io.Reader 接口，参数 size 是指定的缓冲区字节长度。<br />
+<h3>
+操作 Reader 对象</h3>
+操作 Reader 对象的方法共有 11 个，分别是 Read()、ReadByte()、ReadBytes()、ReadLine()、ReadRune ()、ReadSlice()、ReadString()、UnreadByte()、UnreadRune()、Buffered()、Peek()，下面分别介绍。<br />
+<h4>
+1) Read() 方法</h4>
+Read() 方法的功能是读取数据，并存放到字节切片 p 中。Read() 执行结束会返回已读取的字节数，因为最多只调用底层的 io.Reader 一次，所以返回的 n 可能小于 len(p)，当字节流结束时，n 为 0，err 为 io. EOF。该方法原型如下：<br />
+<p class="info-box">
+func (b *Reader) Read(p []byte) (n int, err error)</p>
+在方法 Read() 中，参数 p 是用于存放读取数据的字节切片。示例代码如下：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;bufio&quot;
+    &quot;bytes&quot;
+    &quot;fmt&quot;
+)
+
+func main() {
+    data := []byte(&quot;C语言中文网&quot;)
+    rd := bytes.NewReader(data)
+    r := bufio.NewReader(rd)
+    var buf [128]byte
+    n, err := r.Read(buf[:])
+    fmt.Println(string(buf[:n]), n, err)
+}</pre>
+运行结果如下：<br />
+<p class="info-box">
+C语言中文网 16 &lt;nil&gt;</p>
+<h4>
+2) ReadByte() 方法</h4>
+ReadByte() 方法的功能是读取并返回一个字节，如果没有字节可读，则返回错误信息。该方法原型如下：<br />
+<p class="info-box">
+func (b *Reader) ReadByte() (c byte,err error)</p>
+示例代码如下：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;bufio&quot;
+    &quot;bytes&quot;
+    &quot;fmt&quot;
+)
+
+func main() {
+    data := []byte(&quot;Go语言入门教程&quot;)
+    rd := bytes.NewReader(data)
+    r := bufio.NewReader(rd)
+    c, err := r.ReadByte()
+    fmt.Println(string(c), err)
+}</pre>
+运行结果如下：<br />
+<p class="info-box">
+G &lt;nil&gt;</p>
+<h4>
+3) ReadBytes() 方法</h4>
+ReadBytes() 方法的功能是读取数据直到遇到第一个分隔符&ldquo;delim&rdquo;，并返回读取的字节序列（包括&ldquo;delim&rdquo;）。如果 ReadBytes 在读到第一个&ldquo;delim&rdquo;之前出错，它返回已读取的数据和那个错误（通常是 io.EOF）。只有当返回的数据不以&ldquo;delim&rdquo;结尾时，返回的 err 才不为空值。该方法原型如下：<br />
+<p class="info-box">
+func (b *Reader) ReadBytes(delim byte) (line []byte, err error)</p>
+其中，参数 delim 用于指定分割字节。示例代码如下：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;bufio&quot;
+    &quot;bytes&quot;
+    &quot;fmt&quot;
+)
+
+func main() {
+    data := []byte(&quot;C语言中文网, Go语言入门教程&quot;)
+    rd := bytes.NewReader(data)
+    r := bufio.NewReader(rd)
+    var delim byte = &#39;,&#39;
+    line, err := r.ReadBytes(delim)
+    fmt.Println(string(line), err)
+}</pre>
+运行结果如下：<br />
+<p class="info-box">
+C语言中文网, &lt;nil&gt;</p>
+<h4>
+4) ReadLine() 方法</h4>
+ReadLine() 是一个低级的用于读取一行数据的方法，大多数调用者应该使用 ReadBytes(&#39;\n&#39;) 或者 ReadString(&#39;\n&#39;)。ReadLine 返回一行，不包括结尾的回车字符，如果一行太长（超过缓冲区长度），参数 isPrefix 会设置为 true 并且只返回前面的数据，剩余的数据会在以后的调用中返回。<br />
+<br />
+当返回最后一行数据时，参数 isPrefix 会置为 false。返回的字节切片只在下一次调用 ReadLine 前有效。ReadLine 会返回一个非空的字节切片或一个错误，方法原型如下：<br />
+<p class="info-box">
+func (b *Reader) ReadLine() (line []byte, isPrefix bool, err error)</p>
+示例代码如下：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;bufio&quot;
+    &quot;bytes&quot;
+    &quot;fmt&quot;
+)
+
+func main() {
+    data := []byte(&quot;Golang is a beautiful language. \r\n I like it!&quot;)
+    rd := bytes.NewReader(data)
+    r := bufio.NewReader(rd)
+    line, prefix, err := r.ReadLine()
+    fmt.Println(string(line), prefix, err)
+}</pre>
+运行结果如下：<br />
+<p class="info-box">
+Golang is a beautiful language.&nbsp; false &lt;nil&gt;</p>
+<h4>
+5) ReadRune() 方法</h4>
+ReadRune() 方法的功能是读取一个 UTF-8 编码的字符，并返回其 Unicode 编码和字节数。如果编码错误，ReadRune 只读取一个字节并返回 unicode.ReplacementChar(U+FFFD) 和长度 1。该方法原型如下：<br />
+<p class="info-box">
+func (b *Reader) ReadRune() (r rune, size int, err error)</p>
+示例代码如下：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;bufio&quot;
+    &quot;bytes&quot;
+    &quot;fmt&quot;
+)
+
+func main() {
+    data := []byte(&quot;C语言中文网&quot;)
+    rd := bytes.NewReader(data)
+    r := bufio.NewReader(rd)
+    ch, size, err := r.ReadRune()
+    fmt.Println(string(ch), size, err)
+}</pre>
+运行结果如下：<br />
+<p class="info-box">
+C 1 &lt;nil&gt;</p>
+<h4>
+6) ReadSlice() 方法</h4>
+ReadSlice() 方法的功能是读取数据直到分隔符&ldquo;delim&rdquo;处，并返回读取数据的字节切片，下次读取数据时返回的切片会失效。如果 ReadSlice 在查找到&ldquo;delim&rdquo;之前遇到错误，它返回读取的所有数据和那个错误（通常是 io.EOF）。<br />
+<br />
+如果缓冲区满时也没有查找到&ldquo;delim&rdquo;，则返回 ErrBufferFull 错误。ReadSlice 返回的数据会在下次 I/O 操作时被覆盖，大多数调用者应该使用 ReadBytes 或者 ReadString。只有当 line 不以&ldquo;delim&rdquo;结尾时，ReadSlice 才会返回非空 err。该方法原型如下：<br />
+<p class="info-box">
+func (b *Reader) ReadSlice(delim byte) (line []byte, err error)</p>
+其中，参数 delim 用于指定分割字节。示例代码如下：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;bufio&quot;
+    &quot;bytes&quot;
+    &quot;fmt&quot;
+)
+
+func main() {
+    data := []byte(&quot;C语言中文网, Go语言入门教程&quot;)
+    rd := bytes.NewReader(data)
+    r := bufio.NewReader(rd)
+    var delim byte = &#39;,&#39;
+    line, err := r.ReadSlice(delim)
+    fmt.Println(string(line), err)
+    line, err = r.ReadSlice(delim)
+    fmt.Println(string(line), err)
+    line, err = r.ReadSlice(delim)
+    fmt.Println(string(line), err)
+}</pre>
+运行结果如下：<br />
+<p class="info-box">
+C语言中文网, &lt;nil&gt;<br />
+Go语言入门教程 EOF<br />
+EOF</p>
+<h4>
+7) ReadString() 方法</h4>
+ReadString() 方法的功能是读取数据直到分隔符&ldquo;delim&rdquo;第一次出现，并返回一个包含&ldquo;delim&rdquo;的字符串。如果 ReadString 在读取到&ldquo;delim&rdquo;前遇到错误，它返回已读字符串和那个错误（通常是 io.EOF）。只有当返回的字符串不以&ldquo;delim&rdquo;结尾时，ReadString 才返回非空 err。该方法原型如下：<br />
+<p class="info-box">
+func (b *Reader) ReadString(delim byte) (line string, err error)</p>
+其中，参数 delim 用于指定分割字节。示例代码如下：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;bufio&quot;
+    &quot;bytes&quot;
+    &quot;fmt&quot;
+)
+
+func main() {
+    data := []byte(&quot;C语言中文网, Go语言入门教程&quot;)
+    rd := bytes.NewReader(data)
+    r := bufio.NewReader(rd)
+    var delim byte = &#39;,&#39;
+    line, err := r.ReadString(delim)
+    fmt.Println(line, err)
+}</pre>
+运行结果为：<br />
+<p class="info-box">
+C语言中文网, &lt;nil&gt;</p>
+<h4>
+8) UnreadByte() 方法</h4>
+UnreadByte() 方法的功能是取消已读取的最后一个字节（即把字节重新放回读取缓冲区的前部）。只有最近一次读取的单个字节才能取消读取。该方法原型如下：<br />
+<p class="info-box">
+func (b *Reader) UnreadByte() error</p>
+<h4>
+9) UnreadRune() 方法</h4>
+UnreadRune() 方法的功能是取消读取最后一次读取的 Unicode 字符。如果最后一次读取操作不是 ReadRune，UnreadRune 会返回一个错误（在这方面它比 UnreadByte 更严格，因为 UnreadByte 会取消上次任意读操作的最后一个字节）。该方法原型如下：<br />
+<p class="info-box">
+func (b *Reader) UnreadRune() error</p>
+<h4>
+10) Buffered() 方法</h4>
+Buffered() 方法的功能是返回可从缓冲区读出数据的字节数, 示例代码如下：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;bufio&quot;
+    &quot;bytes&quot;
+    &quot;fmt&quot;
+)
+
+func main() {
+    data := []byte(&quot;Go语言入门教程&quot;)
+    rd := bytes.NewReader(data)
+    r := bufio.NewReader(rd)
+    var buf [14]byte
+    n, err := r.Read(buf[:])
+    fmt.Println(string(buf[:n]), n, err)
+    rn := r.Buffered()
+    fmt.Println(rn)
+    n, err = r.Read(buf[:])
+    fmt.Println(string(buf[:n]), n, err)
+    rn = r.Buffered()
+    fmt.Println(rn)
+}</pre>
+运行结果如下：<br />
+<p class="info-box">
+Go语言入门 14 &lt;nil&gt;<br />
+6<br />
+教程 6 &lt;nil&gt;<br />
+0</p>
+<h4>
+11) Peek() 方法</h4>
+Peek() 方法的功能是读取指定字节数的数据，这些被读取的数据不会从缓冲区中清除。在下次读取之后，本次返回的字节切片会失效。如果 Peek 返回的字节数不足 n 字节，则会同时返回一个错误说明原因，如果 n 比缓冲区要大，则错误为 ErrBufferFull。该方法原型如下：<br />
+<p class="info-box">
+func (b *Reader) Peek(n int) ([]byte, error)</p>
+在方法 Peek() 中，参数 n 是希望读取的字节数。示例代码如下：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;bufio&quot;
+    &quot;bytes&quot;
+    &quot;fmt&quot;
+)
+
+func main() {
+    data := []byte(&quot;Go语言入门教程&quot;)
+    rd := bytes.NewReader(data)
+    r := bufio.NewReader(rd)
+    bl, err := r.Peek(8)
+    fmt.Println(string(bl), err)
+    bl, err = r.Peek(14)
+    fmt.Println(string(bl), err)
+    bl, err = r.Peek(20)
+    fmt.Println(string(bl), err)
+}</pre>
+运行结果如下：<br />
+<p class="info-box">
+Go语言 &lt;nil&gt;<br />
+Go语言入门 &lt;nil&gt;<br />
+Go语言入门教程 &lt;nil&gt;</p>
+<h2>
+Writer 对象</h2>
+Writer 对象可以对数据 I/O 接口 io.Writer 进行输出缓冲操作，Writer 结构定义如下：<br />
+<p class="info-box">
+type Writer struct {<br />
+&nbsp;&nbsp;&nbsp; //contains filtered or unexported fields<br />
+}</p>
+默认情况下 Writer 对象没有定义初始值，如果输出缓冲过程中发生错误，则数据写入操作立刻被终止，后续的写操作都会返回写入异常错误。<br />
+<h3>
+创建 Writer 对象</h3>
+创建 Writer 对象的函数共有两个分别是 NewWriter() 和 NewWriterSize()，下面分别介绍一下。<br />
+<h4>
+1) NewWriter() 函数</h4>
+NewWriter() 函数的功能是按照默认缓冲区长度创建 Writer 对象，Writer 对象会将缓存的数据批量写入底层 io.Writer 接口。该函数原型如下：<br />
+<p class="info-box">
+func NewWriter(wr io.Writer) *Writer</p>
+其中，参数 wr 是 io.Writer 接口，Writer 对象会将数据写入该接口。<br />
+<h4>
+2) NewWriterSize() 函数</h4>
+NewWriterSize() 函数的功能是按照指定的缓冲区长度创建 Writer 对象，Writer 对象会将缓存的数据批量写入底层 io.Writer 接口。该函数原型如下：<br />
+<p class="info-box">
+func NewWriterSize(wr io.Writer, size int) *Writer</p>
+其中，参数 wr 是 io.Writer 接口，参数 size 是指定的缓冲区字节长度。<br />
+<h3>
+操作 Writer 对象</h3>
+操作 Writer 对象的方法共有 7 个，分别是 Available()、Buffered()、Flush()、Write()、WriteByte()、WriteRune() 和 WriteString() 方法，下面分别介绍。<br />
+<h4>
+1) Available() 方法</h4>
+Available() 方法的功能是返回缓冲区中未使用的字节数，该方法原型如下：<br />
+<p class="info-box">
+func (b *Writer) Available() int</p>
+示例代码如下：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;bufio&quot;
+    &quot;bytes&quot;
+    &quot;fmt&quot;
+)
+
+func main() {
+    wr := bytes.NewBuffer(nil)
+    w := bufio.NewWriter(wr)
+    p := []byte(&quot;C语言中文网&quot;)
+    fmt.Println(&quot;写入前未使用的缓冲区为：&quot;, w.Available())
+    w.Write(p)
+    fmt.Printf(&quot;写入%q后，未使用的缓冲区为：%d\n&quot;, string(p), w.Available())
+}</pre>
+运行结果如下：<br />
+<p class="info-box">
+写入前未使用的缓冲区为： 4096<br />
+写入&quot;C语言中文网&quot;后，未使用的缓冲区为：4080</p>
+<h4>
+2) Buffered() 方法</h4>
+Buffered() 方法的功能是返回已写入当前缓冲区中的字节数，该方法原型如下：<br />
+<p class="info-box">
+func (b *Writer) Buffered() int</p>
+示例代码如下：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;bufio&quot;
+    &quot;bytes&quot;
+    &quot;fmt&quot;
+)
+
+func main() {
+    wr := bytes.NewBuffer(nil)
+    w := bufio.NewWriter(wr)
+    p := []byte(&quot;C语言中文网&quot;)
+    fmt.Println(&quot;写入前未使用的缓冲区为：&quot;, w.Buffered())
+    w.Write(p)
+    fmt.Printf(&quot;写入%q后，未使用的缓冲区为：%d\n&quot;, string(p), w.Buffered())
+    w.Flush()
+    fmt.Println(&quot;执行 Flush 方法后，写入的字节数为：&quot;, w.Buffered())
+}</pre>
+该例测试结果为：<br />
+<p class="info-box">
+写入前未使用的缓冲区为： 0<br />
+写入&quot;C语言中文网&quot;后，未使用的缓冲区为：16<br />
+执行 Flush 方法后，写入的字节数为： 0</p>
+<h4>
+3) Flush() 方法</h4>
+Flush() 方法的功能是把缓冲区中的数据写入底层的 io.Writer，并返回错误信息。如果成功写入，error 返回 nil，否则 error 返回错误原因。该方法原型如下：<br />
+<p class="info-box">
+func (b *Writer) Flush() error</p>
+示例代码如下：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;bufio&quot;
+    &quot;bytes&quot;
+    &quot;fmt&quot;
+)
+
+func main() {
+    wr := bytes.NewBuffer(nil)
+    w := bufio.NewWriter(wr)
+    p := []byte(&quot;C语言中文网&quot;)
+    w.Write(p)
+    fmt.Printf(&quot;未执行 Flush 缓冲区输出 %q\n&quot;, string(wr.Bytes()))
+    w.Flush()
+    fmt.Printf(&quot;执行 Flush 后缓冲区输出 %q\n&quot;, string(wr.Bytes()))
+}</pre>
+运行结果如下：<br />
+<p class="info-box">
+未执行 Flush 缓冲区输出 &quot;&quot;<br />
+执行 Flush 后缓冲区输出 &quot;C语言中文网&quot;</p>
+<h4>
+4) Write() 方法</h4>
+Write() 方法的功能是把字节切片 p 写入缓冲区，返回已写入的字节数 nn。如果 nn 小于 len(p)，则同时返回一个错误原因。该方法原型如下：<br />
+<p class="info-box">
+func (b *Writer) Write(p []byte) (nn int, err error)</p>
+其中，参数 p 是要写入的字节切片。示例代码如下：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;bufio&quot;
+    &quot;bytes&quot;
+    &quot;fmt&quot;
+)
+
+func main() {
+    wr := bytes.NewBuffer(nil)
+    w := bufio.NewWriter(wr)
+    p := []byte(&quot;C语言中文网&quot;)
+    n, err := w.Write(p)
+    w.Flush()
+    fmt.Println(string(wr.Bytes()), n, err)
+}</pre>
+运行结果如下：<br />
+<p class="info-box">
+C语言中文网 16 &lt;nil&gt;</p>
+<h4>
+5) WriteByte() 方法</h4>
+WriteByte() 方法的功能是写入一个字节，如果成功写入，error 返回 nil，否则 error 返回错误原因。该方法原型如下：<br />
+<p class="info-box">
+func (b *Writer) WriteByte(c byte) error</p>
+其中，参数 c 是要写入的字节数据，比如 ASCII 字符。示例代码如下：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;bufio&quot;
+    &quot;bytes&quot;
+    &quot;fmt&quot;
+)
+
+func main() {
+    wr := bytes.NewBuffer(nil)
+    w := bufio.NewWriter(wr)
+    var c byte = &#39;G&#39;
+    err := w.WriteByte(c)
+    w.Flush()
+    fmt.Println(string(wr.Bytes()), err)
+}</pre>
+运行结果如下：<br />
+<p class="info-box">
+G &lt;nil&gt;</p>
+<h4>
+6) WriteRune() 方法</h4>
+WriteRune() 方法的功能是以 UTF-8 编码写入一个 Unicode 字符，返回写入的字节数和错误信息。该方法原型如下：<br />
+<p class="info-box">
+func (b *Writer) WriteRune(r rune) (size int,err error)</p>
+其中，参数 r 是要写入的 Unicode 字符。示例代码如下：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;bufio&quot;
+    &quot;bytes&quot;
+    &quot;fmt&quot;
+)
+
+func main() {
+    wr := bytes.NewBuffer(nil)
+    w := bufio.NewWriter(wr)
+    var r rune = &#39;G&#39;
+    size, err := w.WriteRune(r)
+    w.Flush()
+    fmt.Println(string(wr.Bytes()), size, err)
+}</pre>
+该例测试结果为：<br />
+<p class="info-box">
+G 1 &lt;nil&gt;</p>
+<h4>
+7) WriteString() 方法</h4>
+WriteString() 方法的功能是写入一个字符串，并返回写入的字节数和错误信息。如果返回的字节数小于 len(s)，则同时返回一个错误说明原因。该方法原型如下：<br />
+<p class="info-box">
+func (b *Writer) WriteString(s string) (int, error)</p>
+其中，参数 s 是要写入的字符串。示例代码如下：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;bufio&quot;
+    &quot;bytes&quot;
+    &quot;fmt&quot;
+)
+
+func main() {
+    wr := bytes.NewBuffer(nil)
+    w := bufio.NewWriter(wr)
+    s := &quot;C语言中文网&quot;
+    n, err := w.WriteString(s)
+    w.Flush()
+    fmt.Println(string(wr.Bytes()), n, err)
+}</pre>
+运行结果如下：<br />
+<p class="info-box">
+C语言中文网 16 &lt;nil&gt;</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="6174.html" title="PHP array_merge()：数组合并" target="_blank">PHP array_merge()：数组合并</a></li>
+<li><a href="vip_7043.html" title="Java程序员工资高么？就业方向有哪些？" target="_blank">Java程序员工资高么？就业方向有哪些？</a></li>
+<li><a href="7412.html" title="PHP strlen()与mb_strlen()：获取字符串长度" target="_blank">PHP strlen()与mb_strlen()：获取字符串长度</a></li>
+<li><a href="vip_7739.html" title="如何衡量一个算法的执行效率？" target="_blank">如何衡量一个算法的执行效率？</a></li>
+<li><a href="6nop6z.html" title="WebRTC技术介绍（非常详细）" target="_blank">WebRTC技术介绍（非常详细）</a></li>
+<li><a href="t0wlylp.html" title="JS history对象的使用" target="_blank">JS history对象的使用</a></li>
+<li><a href="3bj4moj.html" title="git rebase -i命令：压缩历史" target="_blank">git rebase -i命令：压缩历史</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 5569;
+window.arcId = "c257luZb+a8z1Hj1T+pjxCGsudHFZ09WA0Eu/udY3RkA8KVO4d0EEtwVpxc";
+window.typeidChain = "9|1";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/view/5568.html";
+window.nextPageURL = "/golang/interface/";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

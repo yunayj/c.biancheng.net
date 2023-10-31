@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>MySQL索引类型详解</title>
+<meta name="description" content="索引的类型和存储引擎有关，每种存储引擎所支持的索引类型不一定完全相同。根据存储方式的不同，MySQL 中常用的索引在物理上分为以下两类。 1) B-树索引 B-树索引又称为 BTREE 索引，" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>MySQL索引类型详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">索引的类型和存储引擎有关，每种存储引擎所支持的索引类型不一定完全相同。MySQL 索引可以从存储方式、逻辑角度和实际使用的角度来进行分类。<br />
+<h2>
+存储方式区分</h2>
+根据存储方式的不同，MySQL 中常用的索引在物理上分为&nbsp; B-树索引和 HASH 索引两类，两种不同类型的索引各有其不同的适用范围。
+<h4>
+1) B-树索引</h4>
+<span style="color:#008000;">B-树索引</span>又称为 <span style="color:#008000;">BTREE 索引</span>，目前大部分的索引都是采用 B-树索引来存储的。<br />
+<br />
+B-树索引是一个典型的数据结构，其包含的组件主要有以下几个：
+<ul>
+<li>
+叶子节点：包含的条目直接指向表里的数据行。叶子节点之间彼此相连，一个叶子节点有一个指向下一个叶子节点的指针。</li>
+<li>
+分支节点：包含的条目指向索引里其他的分支节点或者叶子节点。</li>
+<li>
+根节点：一个 B-树索引只有一个根节点，实际上就是位于树的最顶端的分支节点。</li>
+</ul>
+<br />
+基于这种树形数据结构，表中的每一行都会在索引上有一个对应值。因此，在表中进行数据查询时，可以根据索引值一步一步定位到数据所在的行。<br />
+<br />
+B-树索引可以进行全键值、键值范围和键值前缀查询，也可以对查询结果进行 ORDER BY 排序。但 B-树索引必须遵循左边前缀原则，要考虑以下几点约束：
+<ul>
+<li>
+查询必须从索引的最左边的列开始。</li>
+<li>
+查询不能跳过某一索引列，必须按照从左到右的顺序进行匹配。</li>
+<li>
+存储引擎不能使用索引中范围条件右边的列。</li>
+</ul>
+<h4>
+2) 哈希索引</h4>
+哈希（Hash）一般翻译为&ldquo;散列&rdquo;，也有直接音译成&ldquo;哈希&rdquo;的，就是把任意长度的输入（又叫作预映射，pre-image）通过散列算法变换成固定长度的输出，该输出就是散列值。<br />
+<br />
+<span style="color:#008000;">哈希索引</span>也称为<span style="color:#008000;">散列索引</span>或 <span style="color:#008000;">HASH 索引</span>。MySQL 目前仅有 MEMORY 存储引擎和 HEAP 存储引擎支持这类索引。其中，MEMORY 存储引擎可以支持 B-树索引和 HASH 索引，且将 HASH 当成默认索引。<br />
+<br />
+HASH 索引不是基于树形的数据结构查找数据，而是根据索引列对应的哈希值的方法获取表的记录行。哈希索引的最大特点是访问速度快，但也存在下面的一些缺点：<br />
+<ul>
+<li>
+MySQL 需要读取表中索引列的值来参与散列计算，散列计算是一个比较耗时的操作。也就是说，相对于 B-树索引来说，建立哈希索引会耗费更多的时间。</li>
+<li>
+不能使用 HASH 索引排序。</li>
+<li>
+HASH 索引只支持等值比较，如&ldquo;=&rdquo;&ldquo;IN()&rdquo;或&ldquo;&lt;=&gt;&rdquo;。</li>
+<li>
+HASH 索引不支持键的部分匹配，因为在计算 HASH 值的时候是通过整个索引值来计算的。</li>
+</ul>
+<h2>
+逻辑区分</h2>
+根据索引的具体用途，MySQL 中的索引在逻辑上分为以下 5 类：
+<h4>
+1) 普通索引</h4>
+<span style="color:#008000;">普通索引</span>是 MySQL 中最基本的索引类型，它没有任何限制，唯一任务就是加快系统对数据的访问速度。<br />
+<br />
+普通索引允许在定义索引的列中插入重复值和空值。<br />
+<br />
+创建普通索引时，通常使用的关键字是 <span style="color:#008000;">INDEX</span> 或 KEY。<br />
+<h4>
+例 1</h4>
+下面在 tb_student 表中的 id 字段上建立名为 index_id 的索引。<br />
+<p class="info-box">
+CREATE INDEX index_id ON tb_student(id);</p>
+<h4>
+2) 唯一索引</h4>
+<span style="color:#008000;">唯一索引</span>与普通索引类似，不同的是创建唯一性索引的目的不是为了提高访问速度，而是为了避免数据出现重复。<br />
+<br />
+唯一索引列的值必须唯一，允许有空值。如果是组合索引，则列值的组合必须唯一。<br />
+<br />
+创建唯一索引通常使用 <span style="color:#008000;">UNIQUE</span> 关键字。
+<h4>
+例 2</h4>
+下面在 tb_student 表中的 id 字段上建立名为 index_id 的索引，SQL 语句如下：
+<p class="info-box">
+CREATE UNIQUE INDEX index_id ON tb_student(id);</p>
+其中，id 字段可以有唯一性约束，也可以没有。<br />
+<h4>
+3) 主键索引</h4>
+顾名思义，<span style="color:#008000;">主键索引</span>就是专门为主键字段创建的索引，也属于索引的一种。<br />
+<br />
+主键索引是一种特殊的唯一索引，不允许值重复或者值为空。<br />
+<br />
+创建主键索引通常使用 <span style="color:#008000;">PRIMARY KEY</span> 关键字。不能使用 CREATE INDEX 语句创建主键索引。<br />
+<h4>
+4) 空间索引</h4>
+<span style="color:#008000;">空间索引</span>是对空间数据类型的字段建立的索引，使用 <span style="color:#008000;">SPATIAL</span> 关键字进行扩展。<br />
+<br />
+创建空间索引的列必须将其声明为 NOT NULL，空间索引只能在存储引擎为 MyISAM 的表中创建。<br />
+<br />
+空间索引主要用于地理空间数据类型 GEOMETRY。对于初学者来说，这类索引很少会用到。
+<h4>
+例 3</h4>
+下面在 tb_student 表中的 line 字段上建立名为 index_line 的索引，SQL 语句如下：
+<p class="info-box">
+CREATE SPATIAL INDEX index_line ON tb_student(line);</p>
+其中，tb_student 表的存储引擎必须是 MyISAM，line 字段必须为空间数据类型，而且是非空的。<br />
+<h4>
+5)<span style="font-weight: normal;">&nbsp;</span>全文索引</h4>
+<span style="color:#008000;">全文索引</span>主要用来查找文本中的关键字，只能在 CHAR、VARCHAR 或 TEXT 类型的列上创建。在 MySQL 中只有 MyISAM 存储引擎支持全文索引。<br />
+<br />
+全文索引允许在索引列中插入重复值和空值。<br />
+<br />
+不过对于大容量的数据表，生成全文索引非常消耗时间和硬盘空间。<br />
+<br />
+创建全文索引使用 <span style="color:#008000;">FULLTEXT</span> 关键字。
+<h4>
+例 4</h4>
+在 tb_student 表中的 info 字段上建立名为 index_info 的全文索引，SQL 语句如下：
+<p class="info-box">
+CREATE FULLTEXT INDEX index_info ON tb_student(info);</p>
+其中，index_info 的存储引擎必须是 MyISAM，info 字段必须是 CHAR、VARCHAR 和 TEXT 等类型。<br />
+<h2>
+实际使用区分</h2>
+索引在逻辑上分为以上 5 类，但在实际使用中，索引通常被创建成单列索引和组合索引。
+<h4>
+1）单列索引</h4>
+<span style="color:#008000;">单列索引</span>就是索引只包含原表的一个列。在表中的单个字段上创建索引，单列索引只根据该字段进行索引。<br />
+<br />
+单列索引可以是普通索引，也可以是唯一性索引，还可以是全文索引。只要保证该索引只对应一个字段即可。<br />
+<h4>
+例 5</h4>
+下面在 tb_student 表中的 address 字段上建立名为 index_addr 的单列索引，address 字段的数据类型为 VARCHAR(20)，索引的数据类型为 CHAR(4)。SQL 语句如下：
+<p class="info-box">
+CREATE INDEX index_addr ON tb_student(address(4));</p>
+这样，查询时可以只查询 address 字段的前 4 个字符，而不需要全部查询。<br />
+<h4>
+2）多列索引</h4>
+<span style="color:#008000;">组合索引</span>也称为<span style="color:#008000;">复合索引</span>或<span style="color:#008000;">多列索引</span>。相对于单列索引来说，组合索引是将原表的多个列共同组成一个索引。多列索引是在表的多个字段上创建一个索引。该索引指向创建时对应的多个字段，可以通过这几个字段进行查询。但是，只有查询条件中使用了这些字段中第一个字段时，索引才会被使用。<br />
+<br />
+例如，在表中的 id、name 和 sex 字段上建立一个多列索引，那么，只有查询条件使用了 id 字段时，该索引才会被使用。
+<h4>
+例 6</h4>
+下面在 tb_student 表中的 name 和 address 字段上建立名为 index_na 的索引，SQL 语句如下：
+<p class="info-box">
+CREATE INDEX index_na ON tb_student(name,address);</p>
+该索引创建好了以后，查询条件中必须有 name 字段才能使用索引。<br />
+<blockquote>
+<p>
+提示：一个表可以有多个单列索引，但这些索引不是组合索引。一个组合索引实质上为表的查询提供了多个索引，以此来加快查询速度。比如，在一个表中创建了一个组合索引(c1，c2，c3)，在实际查询中，系统用来实际加速的索引有三个：单个索引(c1)、双列索引(c1，c2)和多列索引(c1，c2，c3)。</p>
+</blockquote>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="180.html" title="while循环，C语言while循环详解" target="_blank">while循环，C语言while循环详解</a></li>
+<li><a href="504.html" title="C语言水仙花数（详解版）" target="_blank">C语言水仙花数（详解版）</a></li>
+<li><a href="vip_6004.html" title="Python深拷贝和浅拷贝详解" target="_blank">Python深拷贝和浅拷贝详解</a></li>
+<li><a href="6212.html" title="Linux sar命令详解：分析系统性能" target="_blank">Linux sar命令详解：分析系统性能</a></li>
+<li><a href="7255.html" title="C++ STL迭代器适配器是什么？" target="_blank">C++ STL迭代器适配器是什么？</a></li>
+<li><a href="7396.html" title="MySQL BETWEEN AND：范围查询" target="_blank">MySQL BETWEEN AND：范围查询</a></li>
+<li><a href="../thread/vip_8622.html" title="使用C++11进行多线程编程" target="_blank">使用C++11进行多线程编程</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7897;
+window.arcId = "07fbNiwNSmd9C13YtTEgvTz2o2tElib1ydraUmyQNN/vxnDNa6Yu/2hhpaU";
+window.typeidChain = "345|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

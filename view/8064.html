@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>extern &quot;C&quot;：实现C++和C的混合编程</title>
+<meta name="description" content="通过前面的学习我们知道，如今的 GCC 编译器已能支持多种编程语言，包括 C、C++、Java、Objective-C 等。在此基础上，读者可能不了解的是，GCC 还支持混合编译，比如 C 和 C++、Objective-C 和" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>extern &quot;C&quot;：实现C++和C的混合编程</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">通过《<a href="vip_1722.html" target="_blank">C语言和C++到底有什么关系？</a>》一节的学习，读者已经了解了 C++ 和 C 语言之间的关系。简单的理解，C++ 就是在 C 语言的基础上增加了一些新特性，从大的方面讲，C++ 不仅支持面向过程编程，还支持面向对象编程和泛型编程；从小的方面讲，C++ 还支持命名空间、函数重载、内联函数等。<br />
+<br />
+在此基础上，很多读者都存在一个疑问，即在一个项目中，能否既包含 C++ 程序又包含 C 程序呢？换句话说，C++ 和 C 可以进行混合编程吗？<br />
+<br />
+要知道，在 C++ 出现之前，很多实用的功能都是用 C 语言开发的，很多底层的库也是用 C 语言编写的。这意味着，如果能在 C++ 代码中兼容 C 语言代码，无疑能极大地提高 C++ 程序员的开发效率。<br />
+<br />
+而恰恰答案也正是我们想要的，C++ 和 C 可以进行混合编程。但需要注意的是，由于 C++ 和 C 在程序的编译、链接等方面都存在一定的差异，而这些差异往往会导致程序运行失败。<br />
+<br />
+举个例子，如下就是一个用 C++ 和 C 混合编程实现的实例项目：
+<pre class="cpp">
+//myfun.h
+void display();
+
+//myfun.c
+#include &lt;stdio.h&gt;
+#include &quot;myfun.h&quot;
+void display(){
+   printf(&quot;C++：http://c.biancheng/net/cplus/&quot;);
+}
+
+//main.cpp
+#include &lt;iostream&gt;
+#include &quot;myfun.h&quot;
+using namespace std;
+int main(){
+   display();
+   return 0;
+}</pre>
+在此项目中，主程序是用 C++ 编写的，而 display() 函数的定义是用 C 语言编写的。从表面上看，这个项目很完整，我们可以尝试运行它：
+<p class="info-box">
+In function `main&#39;: undefined reference to `display()&#39;</p>
+如上是调用 GCC 编译器运行此项目时给出的错误信息，指的是编译器无法找到 main.cpp 文件中 display() 函数的实现代码。导致此错误的原因，就是因为 C++ 和 C 编译程序的方式存在差异。<br />
+<br />
+通过学习《<a href="2206.html" target="_blank">C++函数重载</a>》一节我们知道，之所以 C++ 支持函数的重载，是因为 C++ 会在程序的编译阶段对函数的函数名进行&ldquo;再次重命名&rdquo;，例如：
+<ul>
+<li>
+void Swap(int a, int b) 会被重命名为<code>_Swap_int_int</code>；</li>
+<li>
+void Swap(float x, float y) 会被重命名为<code>_Swap_float_float</code>。</li>
+</ul>
+显然通过重命名，可以有效避免编译器在程序链接阶段无法找到对应的函数。<br />
+<br />
+但是，C 语言是不支持函数重载的，它不会在编译阶段对函数的名称做较大的改动。仍以 void Swap(int a, int b) 和 void Swap(float x, float y)&nbsp;为例，若以 C 语言的标准对它们进行编译，两个函数的函数名将都是<code>_Swap</code>。
+<blockquote>
+<p>
+不同的编译器有不同的重命名方式，但根据 C++ 标准编译后的函数名几乎都由原有函数名和各个参数的数据类型构成，而根据 C 语言标准编译后的函数名则仅有原函数名构成。这里仅仅举例说明，实际情况可能并非如此。</p>
+</blockquote>
+这也就意味着，使用 C 和 C++ 进行混合编程时，考虑到对函数名的处理方式不同，势必会造成编译器在程序链接阶段无法找到函数具体的实现，导致链接失败。<br />
+<br />
+幸运的是，C++ 给出了相应的解决方案，即借助 extern &quot;C&quot;，就可以轻松解决 C++ 和 C 在处理代码方式上的差异性。
+<h2>
+extern &quot;C&quot;</h2>
+extern 是 C 和 C++ 的一个关键字，但对于 extern &quot;C&quot;，读者大可以将其看做一个整体，和 extern 毫无关系。<br />
+<br />
+extern &quot;C&quot; 既可以修饰一句 C++ 代码，也可以修饰一段 C++ 代码，它的功能是让编译器以处理 C 语言代码的方式来处理修饰的 C++ 代码。<br />
+<br />
+仍以本节前面的实例项目来说，main.cpp 和 myfun.c 文件中都包含 myfun.h 头文件，当程序进行预处理操作时，myfun.h 头文件中的内容会被分别复制到这 2 个源文件中。对于 main.cpp 文件中包含的 display() 函数来说，编译器会以 C++ 代码的编译方式来处理它；而对于 myfun.c 文件中的 display() 函数来说，编译器会以 C 语言代码的编译方式来处理它。<br />
+<br />
+为了避免 display() 函数以不同的编译方式处理，我们应该使其在 main.cpp 文件中仍以 C 语言代码的方式处理，这样就可以解决函数名不一致的问题。因此，可以像如下这样来修改 myfun.h：
+<pre class="cpp">
+#ifdef __cplusplus
+extern &quot;C&quot; void display();
+#else
+void display();
+#endif</pre>
+可以看到，当 myfun.h 被引入到 C++ 程序中时，会选择带有 extern &quot;C&quot; 修饰的 display() 函数；反之如果 myfun.h 被引入到 C 语言程序中，则会选择不带 extern &quot;C&quot; 修饰的 display() 函数。由此，无论 display() 函数位于 C++ 程序还是 C 语言程序，都保证了 display() 函数可以按照 C 语言的标准来处理。<br />
+<br />
+再次运行该项目，会发现之前的问题消失了，可以正常运行：
+<p class="info-box">
+C++：http://c.biancheng/net/cplus/</p>
+<br />
+在实际开发中，对于解决 C++ 和 C 混合编程的问题，通常在头文件中使用如下格式：
+<pre class="cpp">
+#ifdef __cplusplus
+extern &quot;C&quot; {
+#endif
+
+void display();
+
+#ifdef __cplusplus
+}
+#endif</pre>
+由此可以看出，extern &quot;C&quot; 大致有 2 种用法，当仅修饰一句 C++ 代码时，直接将其添加到该函数代码的开头即可；如果用于修饰一段 C++ 代码，只需为 extern &quot;C&quot; 添加一对大括号<code>{}</code>，并将要修饰的代码囊括到括号内即可。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="266.html" title="goto，break和continue语句，C语言goto，break和continue跳转语句详解" target="_blank">goto，break和continue语句，C语言goto，break和continue跳转语句详解</a></li>
+<li><a href="917.html" title="Java多维数组" target="_blank">Java多维数组</a></li>
+<li><a href="1130.html" title="Linux memcache安装和配置（自启动）过程详解" target="_blank">Linux memcache安装和配置（自启动）过程详解</a></li>
+<li><a href="1444.html" title="C++获取字符串长度详解" target="_blank">C++获取字符串长度详解</a></li>
+<li><a href="7458.html" title="Django创建第一个项目" target="_blank">Django创建第一个项目</a></li>
+<li><a href="../css3/3d-transform.html" title="CSS 3D转换（5种形式）" target="_blank">CSS 3D转换（5种形式）</a></li>
+<li><a href="il3ype3.html" title="NumPy库的安装和使用" target="_blank">NumPy库的安装和使用</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8064;
+window.arcId = "2524ECSardaJe+RXpGzBSyvhBwLLb0rbZT83FMM8th6Cr4VWJ0S0owFCKQQ";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

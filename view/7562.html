@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Django for标签详解</title>
+<meta name="description" content="通过上一节的《》的讲解，我相信大家对于模板标签已经不再陌生，在本节我们再给大家隆重介绍一位最熟悉的陌生人，那就是 for 标签，学习它的时候，我们也要结合 Python 语言中的" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../django/django.html">Django</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Django for标签详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">通过上一节的《<a href="7561_2.html">Django if标签详解</a>》的讲解，我相信大家对于模板标签已经不再陌生，在本节我们再给大家隆重介绍一位最熟悉的陌生人，那就是 for 标签，学习它的时候，我们也要结合 Python 语言中的 for 循环，这样很便于大家理解与使用它。<br />
+<h2>
+1. for标签的使用</h2>
+for 标签用于对可迭代对象进行遍历，包括列表、元组等，它与 Python 中的 for 语法是类似的。for 标签 使用时也需要和 endfor 标签配合使用，当然它也有不同之处，那就是它多了一个可选的 empty 标签，比如用它来显示当列表不存在或者列表中元素为空的时候要显示的内容，它的使用格式如下：<br />
+<p class="info-box">
+{% for 变量 in 可迭代对象 %}<br />
+&nbsp;&nbsp;&nbsp; ... 循环语句<br />
+{% empty %}<br />
+&nbsp;&nbsp;&nbsp; ... 可迭代对象无数据时填充的语句<br />
+{% endfor %}</p>
+我们通过一个具体的实例来看一下它的用法，在 views.py 中添加如下代码：
+<pre class="python">
+from django.template import Template,Context
+def test_for(request):
+      #调用template()方法生成模板
+      t1=Template(&quot;&quot;&quot;
+                    {% for item in list %}
+                        &lt;li&gt;{{ item }}&lt;/li&gt;
+                    {% empty %}
+                        &lt;h1&gt;如果找不到你想要，可以来C语言中文网(网址：http://c.biancheng.net/)&lt;/h1&gt;
+                    {% endfor %}
+                              &quot;&quot;&quot;)
+      #调用 Context()方法
+      c1= Context({&#39;list&#39;:[&#39;Python&#39;,&#39;Java&#39;,&#39;C&#39;,&#39;Javascript&#39;,&#39;C++&#39;]})
+      html=t1.render(c1)
+      return HttpResponse(html)
+</pre>
+并配置路由映射关系，如下所示：
+<p class="info-box">
+path(&#39;test_for/&#39;,views.test_for)</p>
+访问 127.0.0.1:8000/test_for 得到如下页面：<br />
+<br />
+<div style="text-align: center;">
+<img alt="for标签的使用" src="../uploads/allimg/200416/9-2004161J4064X.png" style="text-align: start;" /><br />
+图1：for 标签的使用<br />
+&nbsp;</div>
+当我们将列表改为空的时候，或者不是一个可迭代对象的时候，会得到如下页面：<br />
+<br />
+<div style="text-align: center;">
+<img alt="for标签的使用" src="../uploads/allimg/200416/9-2004161P002N9.png" /><br />
+图2：for 标签的使用</div>
+<p class="tip-box">
+提示：与 Python 中的 for 循环不同的是，for 标签只能一次性地遍历完列表中的元素，不能中断（break），也不能跳过（continue）。</p>
+<h2>
+2. for标签嵌套使用</h2>
+for 标签同样可以嵌套使用，示例代码如下所示：
+<pre class="python">
+def test01_for(request):
+    #使用嵌套for标签依次遍历列表取值
+     website=Template(&quot;&quot;&quot;
+     {% for course in list01 %}
+     &lt;div&gt;
+        {% for coursename in course %}
+        &lt;p&gt;&lt;b&gt;{{ coursename }}&lt;/b&gt;&lt;/p&gt;
+        {% endfor %}
+     &lt;/div&gt;
+     {% endfor %}
+     &quot;&quot;&quot;)
+     webname=Context({&#39;list01&#39;:[[&#39;Django&#39;,&#39;Flask&#39;,&#39;Tornado&#39;],[&#39;c语言中网&#39;,&#39;Django官网&#39;,&#39;Pytho官网&#39;]]})
+     html=website.render(webname)
+     return HttpResponse(html)</pre>
+然后为其配置路由映射关系，最后访问 127.0.0.1/test01_for 获得相应页面如下所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="for循环嵌套使用" src="../uploads/allimg/200417/9-20041G53624106.png" /><br />
+图3：for 循环嵌套使用</div>
+<h2>
+3. forloop变量详解</h2>
+在 for 标签还提供了内置变量 <code>forloop</code> ，我们可以访问这个变量的属性从而获取 for 循环迭代过程中的一些信息，比如 forloop.first，它的返回值是一个布尔值，当 for 循环迭代第一个元素的时候返回 True， 若有其余元素则返回的是 False。forloop 的属性主要有以下几个：<br />
+<table>
+<caption>
+forloop变量属性</caption>
+<tbody>
+<tr>
+<th>
+变量</th>
+<th>
+描述</th>
+</tr>
+<tr>
+<td>
+forloop.counter</td>
+<td>
+用来计数，查看当前迭代第几个元素（从1开始索引）</td>
+</tr>
+<tr>
+<td>
+forloop.counter0</td>
+<td>
+用来计数，查看当前迭代第几个元素（从0开始索引）</td>
+</tr>
+<tr>
+<td>
+forloop.revcounter</td>
+<td>
+表示当前循环中剩余的未被迭代的元素数量（从1开始索引）</td>
+</tr>
+<tr>
+<td>
+forloop.revcounter0</td>
+<td>
+表示当前循环中剩余的未被迭代的元素数量（从0开始索引）</td>
+</tr>
+<tr>
+<td>
+forloop.first</td>
+<td>
+如果当前迭代的是第一个元素，则为True</td>
+</tr>
+<tr>
+<td>
+forloop.last&nbsp;</td>
+<td>
+如果当前迭代的是最后一个元素，则为True</td>
+</tr>
+<tr>
+<td>
+forloop.parentloop</td>
+<td>
+在嵌套循环中，用来引用外层循环的 forloop</td>
+</tr>
+</tbody>
+</table>
+<br />
+实例说明如下所示：<br />
+<pre class="python">
+def test_forloop(request):
+&nbsp;&nbsp;&nbsp;&nbsp; a=Template(&quot;&quot;&quot;
+&nbsp;&nbsp;&nbsp;&nbsp; {% for item in lists %}
+&nbsp;&nbsp;&nbsp;&nbsp; &lt;div&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;p&gt;&lt;b&gt;{{ forloop.counter }}:{{ item }}&lt;/b&gt;&lt;/p&gt;
+&nbsp;&nbsp;&nbsp;&nbsp; &lt;/div&gt;
+&nbsp;&nbsp;&nbsp;&nbsp; {% endfor %}
+&nbsp;&nbsp;&nbsp;&nbsp; &quot;&quot;&quot;)
+&nbsp;&nbsp;&nbsp;&nbsp; b=Context({&#39;lists&#39;:[&#39;c语言中网&#39;,&#39;Django官网&#39;,&#39;Pytho官网&#39;]})
+&nbsp;&nbsp;&nbsp;&nbsp; html=a.render(b)
+&nbsp;&nbsp;&nbsp;&nbsp; return HttpResponse(html) #数字与元素以 1:&#39;c语言中文网&#39; 的形式出现</pre>
+最终效果如图所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="forloop属性counter使用" src="../uploads/allimg/200417/9-20041GF545544.png" /><br />
+图4：forloop 属性使用方法</div>
+<p class="tip-box">
+提示：forloop 变量只能在 for 与 endfor 之间使用，它的 first 和 last 属性，可以通过 if 标签对当前迭代元素做逻辑判断，而像 counter 属性，常用于调试程序。</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="960.html" title="Shell环境变量设置方法详解" target="_blank">Shell环境变量设置方法详解</a></li>
+<li><a href="1120.html" title="Shell字符串截取（非常详细）" target="_blank">Shell字符串截取（非常详细）</a></li>
+<li><a href="vip_2095.html" title="分页机制究竟是如何实现的？" target="_blank">分页机制究竟是如何实现的？</a></li>
+<li><a href="2376.html" title="MySQL安装教程，包含所有平台（图解）" target="_blank">MySQL安装教程，包含所有平台（图解）</a></li>
+<li><a href="3730.html" title="C++11使用using定义别名（替代typedef）" target="_blank">C++11使用using定义别名（替代typedef）</a></li>
+<li><a href="../maven2/profile.html" title="Maven简介" target="_blank">Maven简介</a></li>
+<li><a href="../maven2/build-test.html" title="Maven项目的构建与测试" target="_blank">Maven项目的构建与测试</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7562;
+window.arcId = "f05880gyNZp91YTYmAWIsNJnhd1lr4wRYm7NjR/OBBD8lDSSMPtbDHy0PSw";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>CSS @layer规则详解</title>
+<meta name="description" content="我们在实际开发的时候，经常会使用第三方组件。每个产品通常都有自己的 UI 样式风格，当引入第三方组件的时候，往往需要对这些组件的 UI 进行重置，例如换肤、变色等。此时，我们" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>CSS @layer规则详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">我们在实际开发的时候，经常会使用第三方组件。每个产品通常都有自己的 UI 样式风格，当引入第三方组件的时候，往往需要对这些组件的 UI 进行重置，例如换肤、变色等。此时，我们的做法是使用优先级更高的选择器进行覆盖，例如第三方组件中某个按钮的选择器是：
+<pre class="info-box">
+.container .some-button { height: 30px; }</pre>
+当需要重置的时候，可能就会使用类似于下面的选择器，通过增加选择器复杂度的方式进行重置。
+<pre class="info-box">
+.reset .container .some-button { height: 40px; }</pre>
+这就会使我们的 CSS 代码变得很臃肿，维护成本上升，同时过于复杂的选择器也使 CSS 渲染的性能不是很好。<br />
+<br />
+再举个例子，对于链接元素的CSS reset，有一种非常好的方法是使用:any-link 伪类，代码示意如下：
+<pre class="info-box">
+:any-link { color: darkblue; }
+:any-link:hover { color: blue; }</pre>
+其语义明确，匹配精准，且无须担心 :visited 伪类的干扰。<br />
+<br />
+然而，这个伪类却很少有人使用，其原因只有一个，那就是伪类的优先级比较高，不太适合作为 CSS reset 使用，因为一旦设置这个伪类，某个 &lt;a&gt; 元素按钮想要被重置颜色，所需的选择器成本就会很高，提升了整个项目的选择器复杂度。<br />
+<br />
+而有了 @layer 规则，上面这些问题就迎刃而解了。我们只要将希望获得低优先级的 CSS 代码放在 @layer 规则中，就无须再担心选择器优先级过高的问题，因为 @layer 规则的级联层级比常规的 CSS 代码的级联层级低。<br />
+<br />
+参见这里的 CSS 代码示意：<br />
+<pre class="css">
+@layer {
+  .container .some-button { height: 30px; }
+  :any-link { color: darkblue; }
+  :any-link:hover { color: blue; }
+}
+/* 业务代码 */
+.some-button { height: 40px; }
+a { color: deepskyblue; }</pre>
+此时相关的 CSS 代码在浏览器的优先级层级关系如下图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230906/2-230Z613561b12.gif" /><br />
+<img alt="" src="../uploads/allimg/230906/2-230Z6135629592.gif" /><br />
+图 1 &lt;a&gt;元素优先级高于:any-link伪类</div>
+<br />
+从图中可以看出，虽然业务代码中的按钮选择器只有一个类名 .some-button，其优先级低于 .container 和 .some-button 这两个类名，但是由于代码所在的级联层级更高，因此，还是重置了 30px。其次，链接的颜色最终按照 a 标签选择器渲染了，再也不用担心 :any-link 伪类作为 CSS reset 代码会影响业务代码中 &lt;a&gt; 元素的样式设置了。<br />
+<br />
+这就是 @layer 规则的作用，可以让 CSS 代码的级联层级降低，从而确保主业务的 CSS 代码不受第三方组件的 CSS 代码的影响。<br />
+<h2>
+@layer语法</h2>
+@layer 这个 AT 规则（CSS at-rule）的语法如下：<br />
+<pre class="info-box">
+@layer {rules}
+@layer layer-name {rules};
+@layer layer-name;
+@layer layer-name, layer-name, layer-name;</pre>
+其中，@layer {rules} 语法在前文出现过，没有任何层级名，称为匿名级联层，而下面 3 种语法均需要自定义级联层的名称，称为命名级联层。<br />
+<br />
+下面重点介绍这 3 种命名级联层语法。<br />
+<h4>
+1) 命名带规则语法</h4>
+这种语法和匿名级联层语法的唯一区别就是多了一个名称，便于开发人员识别与管理，从性质上来讲，有点类似于编程语言中的变量。<br />
+<br />
+例如：
+<pre class="css">
+@layer button {
+  .container .some-button {
+    height: 30px;
+  }
+}
+@layer link {
+  :any-link {
+    color: blue;
+  }
+}</pre>
+此时，我们可以使用下面的单命名语法或者多命名语法来灵活调整不同级联层的优先级顺序。如果我们没有这样的需求，则可以直接使用匿名级联层语法。<br />
+<h4>
+2) 单命名语法</h4>
+@layer layer-name 主要用于灵活设置 @layer 规则之间的优先级顺序。例如，有一个级联层，名为 peacock，希望这个级联层的优先级最低，但是，相关 CSS 代码的位置却无法控制，有可能靠前，也可能靠后，此时，@layer layer-name 这个语法就有用武之地了。<br />
+<pre class="css">
+@layer peacock;
+
+/* &hellip;&hellip;大量的CSS代码&hellip;&hellip; */
+/* &hellip;&hellip;大量的CSS代码&hellip;&hellip; */
+/* &hellip;&hellip;大量的CSS代码&hellip;&hellip; */
+
+/* 虽然我位置靠后，但我优先级最低 */
+@layer peacock {
+  .bottom-layer {
+      content: &#39;hello world&#39;
+  }
+}</pre>
+上面这段 CSS 代码，虽然 @layer peacock{} 出现在 CSS 语句的最后面，但是由于在开头设置了 @layer peacock; 这行代码，peacock 这个级联层中的所有 CSS 代码的优先级都是最低的。<br />
+<h4>
+3) 多命名语法</h4>
+@layer layer-name, layer-name, layer-name 这个多命名语法和 @layer layer-name 这个单命名语法的作用是类似的，也是用来灵活调整 @layer 规则的整体优先级的。<br />
+<br />
+在默认情况下，@layer 规则内 CSS 声明的优先级取决于先后顺序，例如：<br />
+<pre class="css">
+@layer b1 {
+  button { padding: 10px; }
+}
+@layer b2 {
+  button { padding: 20px; }
+}</pre>
+此时，如果页面中有一个 &lt;button&gt; 按钮元素，则此按钮元素的内间距是 20px，因为设置 padding:20px 的规则出现在后面。<br />
+<br />
+如果我们希望 b2 级联层的优先级高于 b1 级联层的优先级，则使用多命名语法设置好先后顺序就可以了。<br />
+<pre class="css">
+@layer b2, b1;
+@layer b1 {
+  button { padding: 10px; }
+}
+@layer b2 {
+  button { padding: 20px; }
+}</pre>
+此时，按钮元素匹配的 padding 内间距值是 10px，因为 @layer 多命名语法中 b1 出现在后面，优先级更高，参见下图所示的优先级覆盖效果。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230906/2-230Z6135P4210.gif" /><br />
+图 2 多命名级联层语法的作用示意</div>
+<h2>
+使整个CSS变成@layer</h2>
+对于第三方的 CSS 文件，尤其是那些通过 CDN 实现的绝对地址 CSS，我们是没办法修改相关的代码的，此时有办法使这部分 CSS 变成低优先级的级联层吗？答案是可以的，我们可以尝试使用 @import 语法。<br />
+<br />
+如果希望导入其他 CSS 文件的低优先级，可以这样设置：<br />
+<pre class="css">
+@import &#39;./example.css&#39; layer(example);</pre>
+也就是在传统的 @import 语法后面再添加一个 layer(some-name) 就可以了。<br />
+<br />
+此时，example.css 中的所有 CSS 声明的优先级都低于常规设置的 CSS 声明。其中 layer() 函数中的名称可以自行定义，如果想要调整 layer(some-name) 的优先级，可以参照多命名语法的用法。例如：<br />
+<pre class="css">
+layer button, example;
+@import &#39;./example.css&#39; layer(example);
+@layer button {}</pre>
+同时也支持匿名引入的语法，例如：<br />
+<pre class="css">
+@import &#39;./example.css&#39; layer;</pre>
+<h2>
+@layer规则的嵌套</h2>
+@layer规则还支持更加复杂的嵌套语法。先看一个比较简单的嵌套例子：<br />
+<pre class="css">
+@layer outer {
+    button {
+        width: 100px;
+        height: 30px;   
+    }
+    @layer inner {
+        button {
+            height: 40px;
+            width: 160px;
+        }   
+    }
+}</pre>
+此时，button 选择器的外层优先级高于内层。读者可以这么理解：每多一层 @layer，样式的优先级就降低一层。因此，上面的代码中最终生效的是外层的 width:100px 和 height:30px，效果如下图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230906/2-230Z6135Z4N0.gif" /><br />
+图 3 @layer规则嵌套语法的优先级渲染效果</div>
+<br />
+此时在开发者工具的样式面板中可以看到下图所示的 CSS 代码优先级覆盖关系。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230906/2-230Z61359263S.gif" /><br />
+图 4 @layer规则嵌套语法的优先级覆盖示意</div>
+<h4>
+1) 点（.）级联写法</h4>
+内外嵌套的语法还可以使用字符点（.）进行连接，例如，上面例子中的 CSS 代码和下面的 CSS 代码的效果是完全一样的，参见图 3。<br />
+<pre class="css">
+@layer outer {
+  button {
+    width: 100px;
+    height: 30px;   
+  }
+}
+@layer outer.inner {
+  button {
+    height: 40px;
+    width: 160px;
+  }   
+}</pre>
+嵌套的层数不限，例如嵌套 5 层、10 层甚至更多层都是可以的，当然，实际开发中不会用到这样深的层级关系。<br />
+<h4>
+2) 多嵌套语法下的优先级</h4>
+当存在多个 @layer 规则，同时这些 @layer 规则之间都有嵌套关系的时候，各个 CSS 声明的优先级又是怎样的呢？<br />
+<br />
+只需要记住这样一句话：内层 @layer 规则的优先级由外层 @layer 规则决定。例如下面这个例子：<br />
+<pre class="css">
+@layer 甲 {
+  p { color: red; }
+  @layer 乙 {
+    p { color: green; }
+  }
+}
+@layer 丙 {
+  p { color: orange; }
+  @layer 丁 {
+    p { color: blue; }
+  }
+}</pre>
+由于&ldquo;丙&rdquo;位置靠后，因此&ldquo;丙&rdquo;的优先级高于&ldquo;甲&rdquo;，而对于单独某个级联层的优先级，则是外层的优先级更高，因此，最终的优先级顺序是：丙 &gt; 丙.丁 &gt; 甲 &gt; 甲.乙<br />
+<br />
+真实渲染的覆盖关系如下图所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230906/2-230Z614000BC.gif" /><br />
+图 5 @layer规则在多嵌套语法下的优先级覆盖示意</div>
+<br />
+因此，最终 &lt;p&gt; 元素应用的 color 属性值是 orange。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="266.html" title="goto，break和continue语句，C语言goto，break和continue跳转语句详解" target="_blank">goto，break和continue语句，C语言goto，break和continue跳转语句详解</a></li>
+<li><a href="743.html" title="Shell变量：Shell变量的定义、赋值和删除" target="_blank">Shell变量：Shell变量的定义、赋值和删除</a></li>
+<li><a href="7013.html" title="Java @FunctionalInterface注解" target="_blank">Java @FunctionalInterface注解</a></li>
+<li><a href="vip_7361.html" title="Go语言与C/C++进行交互" target="_blank">Go语言与C/C++进行交互</a></li>
+<li><a href="vip_8333.html" title="不同存储引擎的数据表在磁盘中是如何存储的？" target="_blank">不同存储引擎的数据表在磁盘中是如何存储的？</a></li>
+<li><a href="../csharp/constructor.html" title="C#构造函数" target="_blank">C#构造函数</a></li>
+<li><a href="mbjdhi6.html" title="《编程珠玑(第2版)》PDF下载（高清完整版）" target="_blank">《编程珠玑(第2版)》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10391;
+window.arcId = "1c48rm3j/vKzgwcQK+4k3DEFOZbG7x6KBOjcp3J/SVrUd3yJtccw4gCsgCTI";
+window.typeidChain = "121|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

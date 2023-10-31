@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>HttpServletRequest详解：获取HTTP请求消息</title>
+<meta name="description" content="HttpServletRequest 接口继承自 ServletRequest 接口，其主要作用是封装 HTTP 请求消息。由于 HTTP 请求消息分为请求行、请求消息头和请求消息体三部分，因此，在 HttpServletRequest 接口中定义了获" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>HttpServletRequest详解：获取HTTP请求消息</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">Http<a href='https://m.biancheng.net/servlet/' target='_blank'>Servlet</a>Request 接口继承自 ServletRequest 接口，其主要作用是封装 HTTP 请求消息。由于 HTTP 请求消息分为请求行、请求消息头和请求消息体三部分。因此，在 HttpServletRequest 接口中定义了获取请求行、请求头和请求消息体的相关方法。<br />
+<br />
+本节将针对常用的获取请求行和请求消息头的相关方法进行讲解，下节《<a href="https://m.biancheng.net/view/4010.html" target="_blank">Java servlet获取form表单数据（参数）</a>》继续讲解如何通过&nbsp;HttpServletRequest 接口获取用户提交的 form 表单数据。<br />
+<h2>
+	获取请求行信息的相关方法</h2>
+当访问 Servlet 时，所有请求消息将被封装到 HttpServletRequest 对象中，请求消息的请求行中包含请求方法、请求资源名、请求路径等信息，为了获取这些信息，HttpServletRequest 接口定义了一系列方法，如表 1 所示。<br />
+<table>
+	<caption>
+		<br />
+		表 1 获取请求行信息的常用方法</caption>
+	<thead>
+		<tr>
+			<th scope="col">
+				方法声明</th>
+			<th scope="col">
+				功能描述</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				String getMethod()</td>
+			<td>
+				该方法用于获取 HTTP 请求消息中的请求方式（如 GET、POST 等）</td>
+		</tr>
+		<tr>
+			<td>
+				String getRequestURI()</td>
+			<td>
+				该方法用于获取请求行中的资源名称部分即位于 URL 的主机和端门之后、参数部分之前的部分</td>
+		</tr>
+		<tr>
+			<td>
+				String getQueryString()</td>
+			<td>
+				该方法用于获取请求行中的参数部分，也就是资源路径后问号（？）以后的所有内容</td>
+		</tr>
+		<tr>
+			<td>
+				String getContextPath()</td>
+			<td>
+				该方法用于获取请求 URL 中属于 Web 应用程序的路径，这个路径以 / 开头，表示相对于整个 Web 站点的根目录，路径结尾不含 /。如果请求 URL 属于 Web 站点的根目录，那么返回结果为空字符串（&quot;&quot;）</td>
+		</tr>
+		<tr>
+			<td>
+				String getServletPath()</td>
+			<td>
+				该方法用于获取 Servlet 的名称或 Servlet 所映射的路径</td>
+		</tr>
+		<tr>
+			<td>
+				String getRemoteAddr()</td>
+			<td>
+				该方法用于获取请求客户端的 IP 地址，其格式类似于 192.168.0.3</td>
+		</tr>
+		<tr>
+			<td>
+				String getRemoteHost()</td>
+			<td>
+				该方法用于获取请求客户端的完整主机名，其格式类似于 pcl.mengma.com。需要注意的是，如果无法解析出客户机的完整主机名，那么该方法将会返回客户端的 IP 地址</td>
+		</tr>
+		<tr>
+			<td>
+				int getRemotePort()</td>
+			<td>
+				该方法用于获取请求客户端网络连接的端口号</td>
+		</tr>
+		<tr>
+			<td>
+				String getLocaIAddr()</td>
+			<td>
+				该方法用于获取 Web 服务器上接收当前请求网络连接的 IP 地址</td>
+		</tr>
+		<tr>
+			<td>
+				String getLocalName()</td>
+			<td>
+				<br />
+				该方法用于获取 Web 服务器上接收当前网络连接 IP 所对应的主机名</td>
+		</tr>
+		<tr>
+			<td>
+				int getLocalPort()</td>
+			<td>
+				该方法用于获取 Web 服务器上接收当前网络连接的端口号</td>
+		</tr>
+		<tr>
+			<td>
+				String getServerName()</td>
+			<td>
+				该方法用于获取当前请求所指向的主机名，即 HTTP 请求消息中 Host 头字段所对应的主机名部分</td>
+		</tr>
+		<tr>
+			<td>
+				int gctServcrPort()</td>
+			<td>
+				该方法用于获取当前请求所连接的服务器端口号，即 HTTP 请求消息中 Host 头字段所对应的端口号部分</td>
+		</tr>
+		<tr>
+			<td>
+				StringBuffcr getRequestURL()</td>
+			<td>
+				该方法用于获取客户端发出请求时的完整 URL，包括协议、服务器名、端口号、 资源路径等信息，但不包括后面的査询参数部分。注意，getRequcstURL() 方法返冋的结果是 StringBuffer 类型，而不是 String 类型，这样更便于对结果进行修改</td>
+		</tr>
+	</tbody>
+</table>
+表 1 列出了一系列用于获取请求消息行信息的方法，为了使读者更好地理解这些方法，下面通过案例演示这些方法的使用。<br />
+<br />
+在 MyEclipse 中创建一个名称为 servletDemo02 的项目，在 src 下新建一个名称为 com.mengma.request 的包，在包中创建一个名为 RequestLineServlet 的 Servlet 类，在该类中编写用于获取请求行中相关信息的方法，如下所示。
+<pre class="java">
+package com.mengma.request;
+
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class RequestLineServlet extends HttpServlet {
+
+    public void doGet(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
+        PrintWriter out = response.getWriter();
+
+        // 获取请求行的相关信息
+        out.println(&quot;getMethod : &quot; + request.getMethod());
+        out.println(&quot;getRequestURI:&quot; + request.getRequestURL());
+        out.println(&quot;getQueryString:&quot; + request.getQueryString());
+        out.println(&quot;getContextPath:&quot; + request.getContextPath());
+        out.println(&quot;getServletPath:&quot; + request.getServletPath());
+        out.println(&quot;getRemoteAddr : &quot; + request.getRemoteAddr());
+        out.println(&quot;getRemoteHost : &quot; + request.getRemoteHost());
+        out.println(&quot;getRemotePort : &quot; + request.getRemotePort());
+        out.println(&quot;getLocalAddr : &quot; + request.getLocalAddr());
+        out.println(&quot;getLocalName : &quot; + request.getLocalName());
+        out.println(&quot;getLocalPort : &quot; + request.getLocalPort());
+        out.println(&quot;getServerName : &quot; + request.getServerName());
+        out.println(&quot;getServerPort : &quot; + request.getServerPort());
+        out.println(&quot;getRequestURL : &quot; + request.getRequestURL());
+    }
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+      doGet(request, response);
+    }
+}</pre>
+启动 Tomcat 服务器，在浏览器的地址栏中输入地址 http://localhost:8080/servletDemo02/RequestLineServlet 访问 RequestLineServlet，浏览器的显示结果如图 1 所示。<br />
+<br />
+从图 1 中可以看出，浏览器显示出了请求 RequestLineServlet 时发送的请求行信息。由此可见，通过 HttpServletRequest 对象可以很方便地获取请求行的相关信息。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="运行结果" src="../uploads/allimg/190611/5-1Z61112124G04_2.png" /><br />
+	图 1&nbsp; 运行结果</div>
+<h2>
+	获取请求消息头的相关方法</h2>
+当浏览器发送 Servlet 请求时，需要通过请求消息头向服务器传递附加信息，例如，客户端可以接收的数据类型、压缩方式、语言等。为此，在 HttpServletRequest 接口中定义了一系列用于获取 HTTP 请求头字段的方法，如表 2 所示。<br />
+<table>
+	<caption>
+		<br />
+		表 2 获取请求消息头的方法</caption>
+	<thead>
+		<tr>
+			<th scope="col">
+				方法声明</th>
+			<th scope="col">
+				功能描述</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				String getHeader(String name)</td>
+			<td>
+				该方法用于获取一个指定头字段的值，如果请求消息中没有包含指定的头字段，则 getHeader() 方法返回 null；如果请求消息中包含多个指定名称的头字段，则 getHeader() 方法返回其中第一个头字段的值</td>
+		</tr>
+		<tr>
+			<td>
+				Enumeration getHeaders(String name)</td>
+			<td>
+				<br />
+				该方法返回一个 Enumeration 集合对象，该集合对象由请求消息中出现的某个指定名称的所有头字段值组成。在多数情况下，一个头字段名在请求消息中只出现一次，但有时可能会出现多次</td>
+		</tr>
+		<tr>
+			<td>
+				Enumeration getHeaderNames()</td>
+			<td>
+				该方法用于获取一个包含所有请求头字段的 Enumeration 对象</td>
+		</tr>
+		<tr>
+			<td>
+				int getIntHeader(String name)</td>
+			<td>
+				该方法用于获取指定名称的头字段，并且将其值转为 int 类型。需要注意的是，如果指定名称的头字段不存在，则返回值为 -1；如果获取到的头字段的值不能转为 int 类型，则将发生 NumberFormatException 异常</td>
+		</tr>
+		<tr>
+			<td>
+				long getDateHeader(String name)</td>
+			<td>
+				该方法用于获取指定头字段的值，并将其按 GMT 时间格式转换为一个代表日期/时间的长整数，该长整数是自 1970 年 1 月 1 日 0 时 0 分 0 秒算起的以毫秒为单位的时间值</td>
+		</tr>
+		<tr>
+			<td>
+				String getContentType()</td>
+			<td>
+				该方法用于获取 Content-Type 头字段的值，结果为 String 类型</td>
+		</tr>
+		<tr>
+			<td>
+				int getContentLength()</td>
+			<td>
+				该方法用于获取 Content-Length 头字段的值，结果为 int 类型</td>
+		</tr>
+		<tr>
+			<td>
+				String getCharacterEncoding()</td>
+			<td>
+				该方法用于返回请求消息的实体部分的字符集编码，通常是从 Content-Type 头字段中进行提取，结果为 String 类型</td>
+		</tr>
+	</tbody>
+</table>
+表 2 列出了一系列用于读取 HTTP 请求消息头字段的方法，为了更好地掌握这些方法，下面通过案例学习这些方法的使用。<br />
+<br />
+在 com.mengma.request 包中创建一个名为 RequestHeadersServlet 的 Servlet 类，该类中使用 getHeaderNames() 方法获取请求消息头信息，如下所示。
+<pre class="java">
+package com.mengma.request;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Enumeration;
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class RequestHeadersServlet extends HttpServlet {
+
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+        PrintWriter out = response.getWriter();
+        // 获取请求消息中的所有头字段
+        Enumeration headerNames = request.getHeaderNames();
+        //用循环遍历所有请求头，并通过 getHeader() 方法获取一个指定名称的头字段
+        while (headerNames.hasMoreElements()) {
+            String headerName = (String) headerNames.nextElement();
+            out.print(headerName + &quot;:&quot; + request.getHeader(headerName)
+     + &quot;&lt;br /&gt;&quot;);
+        }
+    }
+
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doGet(request, response);
+    }
+}</pre>
+启动 Tomcat 服务器，在浏览器的地址栏中输入 http://localhost:8080/servletDemo02/RequestHeadersServlet 访问 RequestHeadersServlet，浏览器的显示结果如图 2 所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="运行结果" src="../uploads/allimg/190611/5-1Z6111215194c_2.png" /><br />
+	图 2&nbsp; 运行结果</div>
+<br />
+下节内容：<a href="https://m.biancheng.net/view/4010.html" target="_blank">Java servlet获取form表单数据（参数）</a></div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1795_2.html" title="C语言scanf：读取从键盘输入的数据（含输入格式汇总表）" target="_blank">C语言scanf：读取从键盘输入的数据（含输入格式汇总表）</a></li>
+<li><a href="vip_1797_2.html" title="进入缓冲区（缓存）的世界，破解一切与输入输出有关的疑难杂症" target="_blank">进入缓冲区（缓存）的世界，破解一切与输入输出有关的疑难杂症</a></li>
+<li><a href="6187_2.html" title="PHP $_FILES详解" target="_blank">PHP $_FILES详解</a></li>
+<li><a href="vip_7092_2.html" title="Python生成器（send，close，throw）方法详解" target="_blank">Python生成器（send，close，throw）方法详解</a></li>
+<li><a href="../redis/strings_2.html" title="Redis string字符串" target="_blank">Redis string字符串</a></li>
+<li><a href="../csharp/array_2.html" title="C#数组" target="_blank">C#数组</a></li>
+<li><a href="i0jb7nn_2.html" title="JS this到底指向什么？" target="_blank">JS this到底指向什么？</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 4008;
+window.arcId = "f100SxUeWSrCOGK+wAjrxhdDDIeEyw48TyXHHmiRED7oaphXcPHVTo+3Oew";
+window.typeidChain = "192|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

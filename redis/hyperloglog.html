@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Redis HyperLoglog基数统计</title>
+<meta name="description" content="Redis 五种常用数据类型包含有字符串、列表、散列、集合和有序集合，但这些类型并不能满足所有的应用场景，因此，在 Redis 后续版本中不断的扩增其他类型的Redis数据结构来" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="../view/niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="redis.html">Redis</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href="what-is-redis.html">Redis是什么</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href="windows-installer.html">Windows下载安装Redis</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href="linux-installer.html">Ubuntu下载安装Redis</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href="config.html">Redis配置文件</a>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href="data-types.html">Redis数据类型</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href="commands.html">Redis命令行模式</a>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href="keys.html">Redis key键</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href="strings.html">Redis string字符串</a>
+</dd>
+<dd>
+<span class="channel-num">9</span>
+<a href="bitmap.html">Redis bitmap位图</a>
+</dd>
+<dd>
+<span class="channel-num">10</span>
+<a href="incrby.html">Redis数值操作命令</a>
+</dd>
+<dd>
+<span class="channel-num">11</span>
+<a href="lists.html">Redis list列表</a>
+</dd>
+<dd>
+<span class="channel-num">12</span>
+<a href="hashes.html">Redis hash哈希散列</a>
+</dd>
+<dd>
+<span class="channel-num">13</span>
+<a href="sets.html">Redis set集合</a>
+</dd>
+<dd>
+<span class="channel-num">14</span>
+<a href="sorted-set.html">Redis zset有序集合</a>
+</dd>
+<dd>
+<span class="channel-num">15</span>
+<a href="connection.html">Redis连接命令</a>
+</dd>
+<dd>
+<span class="channel-num">16</span>
+<a href="security.html">Redis安全策略</a>
+</dd>
+<dd>
+<span class="channel-num">17</span>
+<a href="client.html">Redis客户端命令</a>
+</dd>
+<dd>
+<span class="channel-num">18</span>
+<a href="server.html">Redis服务器命令</a>
+</dd>
+<dd>
+<span class="channel-num">19</span>
+<a href="hyperloglog.html">Redis基数统计</a>
+</dd>
+<dd>
+<span class="channel-num">20</span>
+<a href="pubsub.html">Redis发布订阅</a>
+</dd>
+<dd>
+<span class="channel-num">21</span>
+<a href="streams.html">Redis消息队列</a>
+</dd>
+<dd>
+<span class="channel-num">22</span>
+<a href="bloom-filter.html">Redis布隆过滤器</a>
+</dd>
+<dd>
+<span class="channel-num">23</span>
+<a href="geo.html">Redis地理位置</a>
+</dd>
+<dd>
+<span class="channel-num">24</span>
+<a href="transaction.html">Redis事务</a>
+</dd>
+<dd>
+<span class="channel-num">25</span>
+<a href="lua-scripts.html">Redis Lua脚本</a>
+</dd>
+<dd>
+<span class="channel-num">26</span>
+<a href="benchmarks.html">Redis性能测试</a>
+</dd>
+<dd>
+<span class="channel-num">27</span>
+<a href="partition.html">Redis分区技术</a>
+</dd>
+<dd>
+<span class="channel-num">28</span>
+<a href="pipeline.html">Redis管道技术</a>
+</dd>
+<dd>
+<span class="channel-num">29</span>
+<a href="backup.html">Redis数据备份和还原</a>
+</dd>
+<dd>
+<span class="channel-num">30</span>
+<a href="rdb.html">Redis RDB持久化</a>
+</dd>
+<dd>
+<span class="channel-num">31</span>
+<a href="aof.html">Redis AOF持久化</a>
+</dd>
+<dd>
+<span class="channel-num">32</span>
+<a href="slaveof.html">Redis主从模式</a>
+</dd>
+<dd>
+<span class="channel-num">33</span>
+<a href="sentinel-model.html">Redis哨兵模式</a>
+</dd>
+<dd>
+<span class="channel-num">34</span>
+<a href="distributed-lock.html">Redis分布式锁</a>
+</dd>
+<dd>
+<span class="channel-num">35</span>
+<a href="cache.html">Redis缓存问题</a>
+</dd>
+<dd>
+<span class="channel-num">36</span>
+<a href="java.html">Java使用Redis</a>
+</dd>
+<dd>
+<span class="channel-num">37</span>
+<a href="php.html">PHP使用Redis</a>
+</dd>
+<dd>
+<span class="channel-num">38</span>
+<a href="python.html">Python使用Redis</a>
+</dd>
+<dd>
+<span class="channel-num">39</span>
+<a href="config-summary.html">Redis配置项汇总</a>
+</dd>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="redis.html">Redis</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Redis HyperLoglog基数统计</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">Redis 经常使用的数据类型有字符串、列表、散列、集合和有序集合，但这些类型并不能满足所有的应用场景，因此，Redis 的后续版本不断的扩增其他数据类型来增强 Redis 适用能力。在 Redis 2.8.9 版本中新增了 HyperLogLog 类型。<br />
+<h2>
+什么是HyperLoglog</h2>
+HyperLoglog 是 Redis 重要的数据类型之一，它非常适用于海量数据的计算、统计，其特点是占用空间小，计算速度快。<br />
+<br />
+HyperLoglog 采用了一种基数估计算法，因此，最终得到的结果会存在一定范围的误差（标准误差为 0.81%）。<span style="background-color: rgb(249, 249, 249);">每个 HyperLogLog key 只占用 12 KB 内存，所以理论上可以存储大约<code>2^64</code>个值，而 set（集合）则是元素越多占用的内存就越多，两者形成了鲜明的对比 。</span><br />
+<p class="tip-box">
+HyperLoglog 使用起来较为方便，但是其内部原理较为复杂，不建议大家深入研究，只要会用即可。</p>
+<h2>
+基数定义</h2>
+基数定义：一个集合中不重复的元素个数就表示该集合的基数，比如集合 {1,2,3,1,2}&nbsp;，它的基数集合为 {1,2,3} ，所以基数为 3。HyperLogLog 正是通过基数估计算法来统计输入元素的基数。<br />
+<br />
+HyperLoglog&nbsp;不会储存元素值本身，因此，它不能像 set 那样，可以返回具体的元素值。HyperLoglog 只记录元素的数量，并使用基数估计算法，快速地计算出集合的基数是多少。<br />
+<h2>
+场景应用</h2>
+HyperLogLog 也有一些特定的使用场景，它最典型的应用场景就是统计网站用户月活量，或者网站页面的 UV(网站独立访客)数据等。<br />
+<br />
+UV 与 PV(页面浏览量) 不同，UV 需要去重，同一个用户一天之内的多次访问只能计数一次。这就要求用户的每一次访问都要带上自身的用户 ID，无论是登陆用户还是未登陆用户都需要一个唯一 ID 来标识。<br />
+<br />
+当一个网站拥有巨大的用户访问量时，我们可以使用 Redis 的&nbsp;HyperLogLog 来统计网站的 UV （网站独立访客）数据，它提供的去重计数方案，虽说不精确，但 0.81% 的误差足以满足 UV 统计的需求。<br />
+<h2>
+常用命令</h2>
+<table>
+<caption>
+HyperLoglog命令</caption>
+<tbody>
+<tr>
+<th>
+命令</th>
+<th>
+说明</th>
+</tr>
+<tr>
+<td>
+PFADD key element [element ...]</td>
+<td>
+添加指定元素到 HyperLogLog key 中。</td>
+</tr>
+<tr>
+<td>
+PFCOUNT key [key ...]</td>
+<td>
+返回指定&nbsp;HyperLogLog key 的基数估算值。</td>
+</tr>
+<tr>
+<td>
+PFMERGE destkey sourcekey [sourcekey ...]</td>
+<td>
+将多个 HyperLogLog key 合并为一个 key。<br />
+&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<h2>
+基本命令</h2>
+HyperLogLog 提供了三个常用命令，分别是<code>PFADD</code>、<code>PFCOUNT</code>和<code>PFMERGE</code>。<br />
+<br />
+下面看一组实例演示：假设有 6 个用户(user01-user06)，他们分别在上午 8 与 9 点访问了<code>www.biancheng.net</code>C语言中文网。
+<pre class="info-box">
+#向指定的key中添加用户
+127.0.0.1:6379&gt; PFADD user:uv:2021011308 user01 user02 user03
+(integer) 1
+#向指定的key中添加用户
+127.0.0.1:6379&gt; PFADD user:uv:2021011309 user04 user05
+(integer) 1
+#统计基数值
+127.0.0.1:6379&gt; PFCOUNT user:uv:2021011308
+(integer) 3
+#重复元素不能添加成功，其基数仍然为3
+127.0.0.1:6379&gt; PFADD user:uv:2021011308 user01 user02
+(integer) 0
+127.0.0.1:6379&gt; PFCOUNT user:uv:2021011308
+(integer) 3
+#添加新元素值
+127.0.0.1:6379&gt; PFADD user:uv:2021011308 user06
+(integer) 1
+#基数值变为4
+127.0.0.1:6379&gt; PFCOUNT user:uv:2021011308
+(integer) 4
+#统计两个key的基数值
+127.0.0.1:6379&gt; PFCOUNT user:uv:2021011308 user:uv:2021011309
+(integer) 6
+#将两个key值合并为一个
+127.0.0.1:6379&gt; PFMERGE user:uv:2021011308-09 user:uv:2021011308 user:uv:2021011309
+OK
+#使用合并后key统计基数值
+127.0.0.1:6379&gt; PFCOUNT user:uv:2021011308-09
+(integer) 6</pre>
+<p>
+在线练习工具：<a href="https://try.redis.io/" target="_blank">https://try.redis.io/</a><br />
+查看更多命令：<a href="https://redis.io/commands" target="_blank">https://redis.io/commands</a></p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="../view/niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/894.html" title="Java Double类" target="_blank">Java Double类</a></li>
+<li><a href="../view/3417.html" title="AOE网求关键路径详解（包含C语言实现代码）" target="_blank">AOE网求关键路径详解（包含C语言实现代码）</a></li>
+<li><a href="../view/5591.html" title="Java中JVM、JRE和JDK三者有什么区别和联系？" target="_blank">Java中JVM、JRE和JDK三者有什么区别和联系？</a></li>
+<li><a href="../view/vip_8357.html" title="MySQL设置默认字符集和校对规则" target="_blank">MySQL设置默认字符集和校对规则</a></li>
+<li><a href="../python_spider/switchyomega.html" title="Proxy SwitchyOmega安装和使用" target="_blank">Proxy SwitchyOmega安装和使用</a></li>
+<li><a href="../hibernate/core-interface.html" title="Hibernate核心接口（5个）" target="_blank">Hibernate核心接口（5个）</a></li>
+<li><a href="../view/1l3lvy9.html" title="Redis SETRANGE命令的用法" target="_blank">Redis SETRANGE命令的用法</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9305;
+window.arcId = "dcd1Bj+ilE7Omd/gt8Q1F3+7tJPPtZLdUGZ4NGQJ8Z3ZqyPydaBqYGNquxY";
+window.typeidChain = "413";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="../view/8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="../view/8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="../view/8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="../view/9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="../view/8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="https://c.biancheng.net/templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/redis/server.html";
+window.nextPageURL = "/redis/pubsub.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

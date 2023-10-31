@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>LevelDB介绍（非常详细）</title>
+<meta name="description" content="从本质上讲，LevelDB 是一个键-值数据库。 键-值数据库主要用于存取、管理关联性的数组。关联性数组又称映射、字典，是一种抽象的数据结构，其数据对象为一个个的 key-value 数据对，" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>LevelDB介绍（非常详细）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">从本质上讲，LevelDB 是一个键-值数据库。<br />
+<br />
+键-值数据库主要用于存取、管理关联性的数组。关联性数组又称映射、字典，是一种抽象的数据结构，其数据对象为一个个的 key-value 数据对，且在整个数据库中每个 key 均是唯一的。<br />
+<br />
+20 世纪 80 年代，关系型数据库在软件系统的后端占据绝对统治地位。Oracle、SQL Server 和 DB2 等成熟的商业产品的本质是类似的，均面向结构化的数据，采用 SQL 语言进行相应的查询与事务操作。<br />
+<br />
+然而随着近年来互联网的兴起，云计算、大数据应用越来越广泛，对于数据库来说也出现了一些需要面对的新情况：
+<ul>
+<li>
+数据量呈指数级增长，存储也开始实现分布式；</li>
+<li>
+查询响应时间要求越来越快，需在 1 秒内完成查询操作；</li>
+<li>
+应用一般需要 7&times;24 小时连续运行，因此对稳定性要求越来越高，通常要求数据库支持热备份，并实现故障下快速无缝切换；</li>
+<li>
+在某些应用中，写数据比读数据更加频繁，对数据写的速度要求也越来越高。</li>
+</ul>
+<br />
+在实际应用中，并不是所有环境下的数据都是完整的结构化数据，非结构化数据普遍存在，因此如何实现对灵活多变的非结构化数据的支持是需要考虑的一个问题。<br />
+<br />
+正是在上述情况的催生下，2010 年开始兴起了一场 NoSQL 运动，而键-值数据库作为 NoSQL 中一种重要的数据库也日益繁荣，因此催生出了许多成功的商业化产品，并得到了广泛应用。<br />
+<br />
+键-值数据库可以应用于许多应用场景。例如对于常见的 Web 场景，可以存储用户的个人信息资料、对文章或博客的评论、邮件等。具体到电子商务领域，可以存储购物车中的商品、产品类别、产品评论。键-值数据库甚至可以存储整个网页，其将网页的 URL 作为 key，网页的内容作为 value。不仅如此，键-值数据库还可以用于构建更为复杂的存储系统。<br />
+<br />
+简而言之，键-值数据库给我们提供了一种新的选择，而在实际的软件架构与应用中，究竟是应用键-值数据库，还是使用传统的关系数据库，则需要综合多种因素，由项目架构师最终确定。<br />
+<h2>
+LevelDB的诞生过程</h2>
+LevelDB 是一种为分布式而生的键-值数据库。<br />
+<br />
+Google 在分布式系统领域一直走在当今世界的前沿。早在 2004 年，Google 开始研发一种结构化的分布式存储系统，该分布式存储系统可扩展至 PB 级别的数据和数千台机器，这一系统就是后来风靡全球的 Bigtable。Bigtable 性能强悍，具有高扩展性与高可用性，在 Google 内部已应用到 60 多个产品与项目（截至本文发布时），比如 Google Earth 和 Google Analytics。目前 Bigtable 是公认为的 Google 三大核心技术之一（另外两个分别为 GFS 与 MapReduce）<br />
+<br />
+2006 年，Google 发表了一篇论文&mdash;&mdash;Bigtable: A Distributed Storage System for Structured Data。这篇论文公布了 Bigtable 的具体实现方法（包括基本原理与技术架构），从而揭开了 Bigtable 的技术面纱。Bigtable 虽然也有行、列、表的概念，但不同于传统的关系数据库，从本质上讲，它是一个稀疏的、分布式的、持久化的、多维的排序键-值映射。<br />
+<br />
+虽然 Google 公布了 Bigtable 的实现论文，但 Google 产品中所使用的 Bigtable 依赖于 Google 其他项目所开发的未开源的库，Google 一直没有将 Bigtable 的代码开源。<br />
+<br />
+然而这一切在 2011 年迎来了转机。Sanjay Ghemawat 和 Jeff Dean 这两位来自 Google 的重量级工程师，为了能将 Bigtable 的实现原理与技术细节分享给大众开发者，于 2011 年基于 Bigtable 的基本原理，采用 C++ 开发了一个高性能的键-值数据库&mdash;&mdash;LevelDB。<br />
+<br />
+由于没有历史的产品包袱，LevelDB 结构简单，不依赖于任何第三方库，具有很好的独立性，虽然其有针对性地对 Bigtable 进行了一定程度的简化，然而 Bigtable 的主要技术思想与数据结构均在 LevelDB 予以体现了。因此 LevelDB 可看作 Bigtable 的简化版或单机版。<br />
+<br />
+LevelDB 诞生时，源码托管在 Google 自家的源码管理平台，后来迁移到目前最流行的开源社区 GitHub 上（https://github.com/google/leveldb）。经过多年的发展，LevelDB 已成为 GitHub 上关注人数较多的 C++ 开源项目之一。<br />
+<br />
+截至目前（2021年1月），LevelDB 发布的稳定版为 1.22。在 Google 产品线中，Chrome 浏览器中涉及的 IndexedDB（基于 HTML5 API 的数据库），就是基于 LevelDB 构建而成的。Riak 分布式数据库也采用 LevelDB 作为其节点的存储引擎。<br />
+<h2>
+LevelDB的特性</h2>
+LevelDB 是一个 C++ 语言编写的高效键-值嵌入式数据库，目前对亿级的数据也有着非常好的读写性能。虽然 LevelDB 有着许多键-值数据库所不具备的优秀特性，但是与 Redis 等一些主流键-值数据库相比也有缺陷。接下来就对 LevelDB 的优缺点进行具体阐述。<br />
+<br />
+LevelDB 的优点体现在：<br />
+<ul>
+<li>
+key 与 value 采用字符串形式，且长度没有限制；</li>
+<li>
+数据能持久化存储，同时也能将数据缓存到内存，实现快速读取；</li>
+<li>
+基于 key 按序存放数据，并且 key 的排序比较函数可以根据用户需求进行定制；</li>
+<li>
+支持简易的操作接口 API，如 Put、Get、Delete，并支持批量写入；</li>
+<li>
+可以针对数据创建数据内存快照；</li>
+<li>
+支持前向、后向的迭代器；</li>
+<li>
+采用 Google 的 Snappy 压缩算法对数据进行压缩，以减少存储空间；</li>
+<li>
+基本不依赖其他第三方模块，可非常容易地移植到 Windows、Linux、UNIX、Android、iOS。</li>
+</ul>
+<br />
+LevelDB 的缺点体现在：
+<ul>
+<li>
+不是传统的关系数据库，不支持 SQL 查询与索引；</li>
+<li>
+只支持单进程，不支持多进程；</li>
+<li>
+不支持多种数据类型；</li>
+<li>
+不支持客户端-服务器的访问模式。用户在应用时，需要自己进行网络服务的封装。</li>
+</ul>
+<br />
+读者可以综合 LevelDB 的优缺点，有针对性地评估其是否适用于实际开发的项目/产品，并对最终是否使用进行决定。<br />
+<h2>
+LevelDB的衍生产品</h2>
+尽管 LevelDB 本身具备非常优异的读写性能，然而还有许多需要完善与提高的地方，比如前面介绍过的只支持单实例、单线程操作，不具备相应的客户端访问模式，支持的数据类型不够丰富等。<br />
+<br />
+正因如此，各知名公司与开发机构，基于 LevelDB 开发了一系列的衍生产品，如 Facebook 开发的 RocksDB、我国开发者基于 LevelDB 开发的类 Redis 的 NoSQL 数据库 SSDB。<br />
+<h4>
+RocksDB</h4>
+RocksDB（https://github.com/facebook/rocksdb）是基于 LevelDB 开发的，并保留、继承了 LevelDB 原有的基本功能，也是一个嵌入式的键-值数据存储库。<br />
+<br />
+RocksDB 设计之初，正值 SSD 硬盘兴起。然而在当时，无论是传统的关系数据库如 MySQL，还是分布式数据库如 HDFS、HBase，均没有充分发挥 SSD 硬盘的数据读写性能。因而 Facebook 当时的目标就是开发一款针对 SSD 硬盘的数据存储产品，从而有了后面的 RocksDB。RocksDB 采用嵌入式的库模式，充分发挥了 SSD 的性能。<br />
+<br />
+RocksDB 兼容 LevelDB 原有的 API，但在开发设计过程中，针对性地对 LevelDB 进行了一系列的优化与完善，具体主要体现在以下几个方面：
+<ul>
+<li>
+针对 SSD 硬盘进行优化，支持更多的 IOPS（I/O Operation per Second），并改进数据压缩，减少数据写入，尽可能延长 SSD 的使用寿命。</li>
+<li>
+针对多 CPU、多核环境进行优化，从而提升整体性能。一般而言，商用的服务器均采用多核的 CPU，RocksDB 不仅支持多线程合并、多线程内存表的插入，同时采用 MVCC，并将数据库的只读与读写操作分开，减少了锁的使用，从而更适合、进行高并发操作。</li>
+<li>
+增加了一系列 LevelDB 不具备的功能，如数据合并、多种压缩算法、按范围查询，以及一些管理统计维护工具。</li>
+</ul>
+<br />
+RocksDB 适用于对数据存取速度要求高的应用场景，例如：
+<ul>
+<li>
+垃圾邮件检测应用需要快速获取实时传递的每一封邮件。</li>
+<li>
+一个消息队列，需要支持海量的消息插入与删除。</li>
+<li>
+作为一个高速缓存，以实现海量数据的实时访问。</li>
+</ul>
+<br />
+在 Facebook 内部，RocksDB 已为其大量业务提供服务。Facebook 还将 RocksDB 与 MySQL 进行结合，将 RocksDB 作为 MySQL 的数据引擎，目前这一项目也已开源，有兴趣的读者可访问 https://github.com/facebook/mysql-5.6 了解。<br />
+<h4>
+SSDB</h4>
+SSDB 是一个高性能、支持丰富数据结构的 NoSQL 数据库，作者在设计时目标就是替代 Redis。<br />
+<br />
+Redis 是一个键-值型内存数据库，其所有数据均在内存中进行操作，因而其数据容易受到内存容量的限制，并且数据不能持久化存储。而 SSDB 不但完全兼容了 Redis 的 API，支持 Redis 客户端的访问，而且提供了与 Redis 一样的集合数据结构，如 list、hash、zset 等。SSDB 底层的数据存储引擎也是基于 LevelDB 开发的，因而实现了数据的持久化存储，且支持的数据容量是 Redis 的 100 倍。<br />
+<br />
+不仅如此，SSDB 还实现了主从同步与负载均衡。可以说，SSDB 是 LevelDB 与 Redis 相结合的产物，其继承了 LevelDB 强大的数据读写性能，也吸取了 Redis 简单易用的操作接口与丰富的数据结构。<br />
+<br />
+SSDB 官网（http://ssdb.io/zh_cn/）公布了其与 Redis 的性能测试对比。在测试中，SSDB 的读性能完全超越了 Redis，而写性能只比 Redis 慢 10%。SSDB 可以将原有的 Redis 数据进行直接迁移。<br />
+<br />
+SSDB 已被数十家公司在多种场景中使用，例如财经类应用用其来存储高速证券行情快照，直播平台用其来存储粉丝关注与在线人数数据、在线广告平台用其来存储实时会话数据、音乐类平台用其来存储专辑封面信息以及评论数据。在这些用户中，许多都是从原来的 Redis 平台迁移而来的，由此可见，SSDB 在性能上的确相当优异，并且可用于许多 Redis 无法胜任的领域。而这一切均归功于底层的数据存储引擎 LevelDB。<br />
+<h2>
+总结</h2>
+本节简要介绍了键-值数据库与 LevelDB 数据库的沿革，分析了 LevelDB 的功能、性能与应用场景，并针对性地介绍了 LevelDB 的两种衍生产品&mdash;&mdash;RocksDB 与 SSDB。<br />
+<br />
+本节的目的在于让读者对 LevelDB 有初步的了解，通过本章读者应搞清楚 LevelDB 究竟是什么，其具有的优势与劣势。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1444.html" title="C++获取字符串长度详解" target="_blank">C++获取字符串长度详解</a></li>
+<li><a href="2504.html" title="Shell let命令：对整数进行数学运算" target="_blank">Shell let命令：对整数进行数学运算</a></li>
+<li><a href="vip_3414.html" title="克鲁斯卡尔算法(Kruskal算法)求最小生成树" target="_blank">克鲁斯卡尔算法(Kruskal算法)求最小生成树</a></li>
+<li><a href="4731.html" title="Java List.contains()方法：判断列表中是否包含指定元素" target="_blank">Java List.contains()方法：判断列表中是否包含指定元素</a></li>
+<li><a href="../redis/security.html" title="Redis安全策略" target="_blank">Redis安全策略</a></li>
+<li><a href="gn6nzg.html" title="学会C语言可以做什么" target="_blank">学会C语言可以做什么</a></li>
+<li><a href="i0j5y7o.html" title="Linux cd命令：切换目录" target="_blank">Linux cd命令：切换目录</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9836;
+window.arcId = "db66jP/8RscmsHn/IIdzRAVfuXgSBA2UcAdWNh/sp1Z3I4Sqfhf3lTbQNHE";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

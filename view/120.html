@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>go build命令（go语言编译命令）完全攻略</title>
+<meta name="description" content="Go 语言的编译速度非常快。Go 1.9 版本后默认利用 Go 语言的并发特性进行函数粒度的并发编译。 Go 语言的程序编写基本以源码方式，无论是自己的代码还是第三方代码，并且以 GOPATH 作为" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../golang/golang.html">Go语言</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href='../golang/intro/intro.html'>Go语言简介</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href='../golang/syntax/syntax.html'>Go语言基本语法</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href='../golang/container/container.html'>Go语言容器</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href='../golang/flow_control/flow_control.html'>流程控制</a>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href='../golang/func/func.html'>Go语言函数</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href='../golang/struct/struct.html'>Go语言结构体</a>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href='../golang/interface/interface.html'>Go语言接口</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href='../golang/package/package.html'>Go语言包（package）</a>
+</dd>
+<dd>
+<span class="channel-num">9</span>
+<a href='../golang/concurrent/concurrent.html'>Go语言并发</a>
+</dd>
+<dd>
+<span class="channel-num">10</span>
+<a href='../golang/reflect/reflect.html'>Go语言反射</a>
+</dd>
+<dd>
+<span class="channel-num">11</span>
+<a href='../golang/102/102.html'>Go语言文件处理</a>
+</dd>
+<dd class="this"> <span class="channel-num">12</span> <a href="../golang/build/build.html">Go语言编译与工具</a> </dd><dl class="dl-sub"><dd>12.1 <a href="120.html">go build命令</a></dd><dd>12.2 <a href="4440.html">go clean命令</a></dd><dd>12.3 <a href="121.html">go run命令</a></dd><dd>12.4 <a href="4441.html">go fmt命令</a></dd><dd>12.5 <a href="122.html">go install命令</a></dd><dd>12.6 <a href="123.html">go get命令</a></dd><dd>12.7 <a href="4442.html">go generate命令</a></dd><dd>12.8 <a href="124.html">go test命令</a></dd><dd>12.9 <a href="125.html">go pprof命令</a></dd><dd>12.10 <a href="vip_7361.html">与C/C++进行交互</a><span class="iconfont iconfont-vip2"></span></dd><dd>12.11 <a href="vip_7362.html">Go语言内存管理</a><span class="iconfont iconfont-vip2"></span></dd><dd>12.12 <a href="vip_7363.html">Go语言垃圾回收</a><span class="iconfont iconfont-vip2"></span></dd><dd>12.13 <a href="vip_7365.html">Go语言实现RSA和AES加解密</a><span class="iconfont iconfont-vip2"></span></dd></dl>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../golang/golang.html">Go语言</a> &gt; <a href="../golang/build/build.html">Go语言编译与工具</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>go build命令（go语言编译命令）完全攻略</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">Go语言的编译速度非常快。Go 1.9 版本后默认利用Go语言的并发特性进行函数粒度的并发编译。<br />
+<br />
+Go语言的程序编写基本以源码方式，无论是自己的代码还是第三方代码，并且以 GOPATH 作为工作目录和一套完整的工程目录规则。因此Go语言中日常编译时无须像 <a href='../cplus/cplus.html' target='_blank'>C++</a> 一样配置各种包含路径、链接库地址等。<br />
+<br />
+Go语言中使用 go build 命令主要用于编译代码。在包的编译过程中，若有必要，会同时编译与之相关联的包。<br />
+<br />
+go build 有很多种编译方法，如无参数编译、文件列表编译、指定包编译等，使用这些方法都可以输出可执行文件。<br />
+<h2>
+go build 无参数编译</h2>
+本小节需要用到的代码具体位置是<code style="font-size: 14px;">./src/chapter11/gobuild</code>。
+<blockquote>
+本套教程所有源码下载地址：<a href="https://pan.baidu.com/s/1ORFVTOLEYYqDhRzeq0zIiQ" target="_blank">https://pan.baidu.com/s/1ORFVTOLEYYqDhRzeq0zIiQ</a>&nbsp;&nbsp;&nbsp; 提取密码：hfyf</blockquote>
+代码相对于 GOPATH 的目录关系如下：
+<p class="info-box">
+.<br />
+└── src<br />
+&nbsp;&nbsp;&nbsp; └── chapter11<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └── gobuild<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ├── lib.go<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └── main.go</p>
+main.go 代码如下：
+<pre class="go">
+package main
+
+import (
+    &quot;fmt&quot;
+)
+
+func main() {
+
+    // 同包的函数
+    pkgFunc()
+
+    fmt.Println(&quot;hello world&quot;)
+}</pre>
+lib.go 代码如下：
+<pre class="go">
+package main
+
+import &quot;fmt&quot;
+
+func pkgFunc() {
+    fmt.Println(&quot;call pkgFunc&quot;)
+}</pre>
+如果源码中没有依赖 GOPATH 的包引用，那么这些源码可以使用无参数 go build。格式如下：
+<p class="info-box">
+go build</p>
+在代码所在目录（<code style="font-size: 14px;">./src/chapter11/gobuild</code>）下使用 go build 命令，如下所示：
+<p class="info-box">
+$ cd src/chapter11/gobuild/<br />
+$ go build<br />
+$ ls<br />
+gobuild&nbsp; lib.go&nbsp; main.go<br />
+$ ./gobuild<br />
+call pkgFunc<br />
+hello world</p>
+命令行指令和输出说明如下：
+<ul>
+<li>
+第 1 行，转到本例源码目录下。</li>
+<li>
+第 2 行，go build 在编译开始时，会搜索当前目录的 go 源码。这个例子中，go build 会找到 lib.go 和 main.go 两个文件。编译这两个文件后，生成当前目录名的可执行文件并放置于当前目录下，这里的可执行文件是 go build。</li>
+<li>
+第 3 行和第 4 行，列出当前目录的文件，编译成功，输出 go build 可执行文件。</li>
+<li>
+第 5 行，运行当前目录的可执行文件 go build。</li>
+<li>
+第 6 行和第 7 行，执行 go build 后的输出内容。</li>
+</ul>
+<h2>
+go build+文件列表</h2>
+编译同目录的多个源码文件时，可以在 go build 的后面提供多个文件名，go build 会编译这些源码，输出可执行文件，&ldquo;go build+文件列表&rdquo;的格式如下：
+<p class="info-box">
+go build file1.go file2.go&hellip;&hellip;</p>
+在代码代码所在目录（./src/chapter11/gobuild）中使用 go build，在 go build 后添加要编译的源码文件名，代码如下：
+<p class="info-box">
+$ go build main.go lib.go<br />
+$ ls<br />
+lib.go&nbsp; main&nbsp; main.go<br />
+$ ./main<br />
+call pkgFunc<br />
+hello world<br />
+$ go build lib.go main.go<br />
+$ ls<br />
+lib&nbsp; lib.go&nbsp; main&nbsp; main.go</p>
+命令行指令和输出说明如下：
+<ul>
+<li>
+第 1 行在 go build 后添加文件列表，选中需要编译的 Go 源码。</li>
+<li>
+第 2 &nbsp;行和第 3 行列出完成编译后的当前目录的文件。这次的可执行文件名变成了 main。</li>
+<li>
+第 4～6 行，执行 main 文件，得到期望输出。</li>
+<li>
+第 7 行，尝试调整文件列表的顺序，将 lib.go 放在列表的首位。</li>
+<li>
+第 8 行和第 9 行，编译结果中出现了 lib 可执行文件。</li>
+</ul>
+<h4>
+提示</h4>
+使用&ldquo;go build+文件列表&rdquo;方式编译时，可执行文件默认选择文件列表中第一个源码文件作为可执行文件名输出。<br />
+<br />
+如果需要指定输出可执行文件名，可以使用<code style="font-size: 14px;">-o</code>参数，参见下面的例子：
+<p class="info-box">
+$ go build -o myexec main.go lib.go<br />
+$ ls<br />
+lib.go&nbsp; main.go&nbsp; myexec<br />
+$ ./myexec<br />
+call pkgFunc<br />
+hello world</p>
+上面代码中，在 go build 和文件列表之间插入了<code style="font-size: 14px;">-o myexec</code>参数，表示指定输出文件名为 myexec。
+<h4>
+注意</h4>
+使用&ldquo;go build+文件列表&rdquo;编译方式编译时，文件列表中的每个文件必须是同一个包的 Go 源码。也就是说，不能像 C++ 一样将所有工程的 Go 源码使用文件列表方式进行编译。编译复杂工程时需要用&ldquo;指定包编译&rdquo;的方式。<br />
+<br />
+&ldquo;go build+文件列表&rdquo;方式更适合使用Go语言编写的只有少量文件的工具。
+<h2>
+go build+包</h2>
+&ldquo;go build+包&rdquo;在设置 GOPATH 后，可以直接根据包名进行编译，即便包内文件被增（加）删（除）也不影响编译指令。
+<h4>
+1) 代码位置及源码</h4>
+本小节需要用到的代码具体位置是<code style="font-size: 14px;">./src/chapter11/goinstall</code>。
+<blockquote>
+本套教程所有源码下载地址：<a href="https://pan.baidu.com/s/1ORFVTOLEYYqDhRzeq0zIiQ" target="_blank">https://pan.baidu.com/s/1ORFVTOLEYYqDhRzeq0zIiQ</a>&nbsp;&nbsp;&nbsp; 提取密码：hfyf</blockquote>
+相对于GOPATH的目录关系如下：
+<p class="info-box">
+.<br />
+└── src<br />
+&nbsp;&nbsp;&nbsp; └── chapter11<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └──goinstall<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ├── main.go<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └── mypkg<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └── mypkg.go</p>
+main.go代码如下：
+<pre class="go">
+package main
+
+import (
+    &quot;chapter11/goinstall/mypkg&quot;
+    &quot;fmt&quot;
+)
+
+func main() {
+
+    mypkg.CustomPkgFunc()
+
+    fmt.Println(&quot;hello world&quot;)
+}</pre>
+mypkg.go代码如下：
+<pre class="go">
+package mypkg
+
+import &quot;fmt&quot;
+
+func CustomPkgFunc() {
+    fmt.Println(&quot;call CustomPkgFunc&quot;)
+}</pre>
+<h4>
+2) 按包编译命令</h4>
+执行以下命令将按包方式编译 goinstall 代码：
+<p class="info-box">
+$ export GOPATH=/home/davy/golangbook/code<br />
+$ go build -o main chapter11/goinstall<br />
+$ ./goinstall<br />
+call CustomPkgFunc<br />
+hello world</p>
+代码说明如下：
+<ul>
+<li>
+第 1 行，设置环境变量 GOPATH，这里的路径是笔者的目录，可以根据实际目录来设置 GOPATH。</li>
+<li>
+第 2 行，<code style="font-size: 14px;">-o</code>执行指定输出文件为 main，后面接要编译的包名。包名是相对于 GOPATH 下的 src 目录开始的。</li>
+<li>
+第 3～5 行，编译成功，执行 main 后获得期望的输出。</li>
+</ul>
+<br />
+读者在参考这个例子编译代码时，需要将 GOPATH 更换为自己的目录。注意 GOPATH 下的目录结构，源码必须放在 GOPATH 下的 src 目录下。所有目录中不要包含中文。
+<h2>
+go build 编译时的附加参数</h2>
+go build 还有一些附加参数，可以显示更多的编译信息和更多的操作，详见下表所示。<br />
+<br />
+<table>
+<caption>
+go build编译时的附加参数</caption>
+<tbody>
+<tr>
+<th>
+附加参数</th>
+<th>
+备 &nbsp;注</th>
+</tr>
+<tr>
+<td>
+-v</td>
+<td>
+编译时显示包名</td>
+</tr>
+<tr>
+<td>
+-p n</td>
+<td>
+开启并发编译，默认情况下该值为 CPU 逻辑核数</td>
+</tr>
+<tr>
+<td>
+-a</td>
+<td>
+强制重新构建</td>
+</tr>
+<tr>
+<td>
+-n</td>
+<td>
+打印编译时会用到的所有命令，但不真正执行</td>
+</tr>
+<tr>
+<td>
+-x</td>
+<td>
+打印编译时会用到的所有命令</td>
+</tr>
+<tr>
+<td>
+-race</td>
+<td>
+开启竞态检测</td>
+</tr>
+</tbody>
+</table>
+<br />
+表中的附加参数按使用频率排列，读者可以根据需要选择使用。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="660.html" title="GCC编译C语言程序完整演示" target="_blank">GCC编译C语言程序完整演示</a></li>
+<li><a href="1453.html" title="C++字符串查找函数详解" target="_blank">C++字符串查找函数详解</a></li>
+<li><a href="2401.html" title="Python __all__变量用法" target="_blank">Python __all__变量用法</a></li>
+<li><a href="../mysql/tan.html" title="MySQL TAN函数：求正切值" target="_blank">MySQL TAN函数：求正切值</a></li>
+<li><a href="2575.html" title="UE4使用什么编译器？" target="_blank">UE4使用什么编译器？</a></li>
+<li><a href="3055.html" title="Android多窗口模式（分屏模式）" target="_blank">Android多窗口模式（分屏模式）</a></li>
+<li><a href="3ljv1fc.html" title="Redis INCRBY命令的用法" target="_blank">Redis INCRBY命令的用法</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 120;
+window.arcId = "c478eUFs2y84RPNVPJS/0dkqCt8D1P7hQnd4lHtVNHBSgvSKJ05FX6JgNg";
+window.typeidChain = "14|1";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="https://c.biancheng.net/templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/golang/build/";
+window.nextPageURL = "/view/4440.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

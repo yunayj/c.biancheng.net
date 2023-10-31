@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Python建造者模式（附带源码）</title>
+<meta name="description" content="肯德基有薯条、鸡腿、鸡翅、鸡米花、可乐、橙汁、火腿汉堡、牛肉汉堡、鸡肉卷等单品，也有很多套餐。 比如，套餐1包括鸡翅、可乐、薯条；套餐2包括鸡腿、火腿汉堡、橙汁、薯条" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Python建造者模式（附带源码）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">肯德基有薯条、鸡腿、鸡翅、鸡米花、可乐、橙汁、火腿汉堡、牛肉汉堡、鸡肉卷等单品，也有很多套餐。<br />
+<br />
+比如，套餐1包括鸡翅、可乐、薯条；套餐2包括鸡腿、火腿汉堡、橙汁、薯条&hellip;&hellip;<br />
+<br />
+这种由各种各样的单品生成各种套餐的模式被称为建造者模式。<br />
+<br />
+建造者模式将一个复杂对象的&ldquo;构建&rdquo;与它的&ldquo;表示&rdquo;进行分离，使得同样的构建过程可以创建不同的表示。<br />
+<br />
+建造者模式与<a href="0lr0gae.html" target="_blank">工厂方法模式</a>是非常相似的。构建与表示分离和创建不同的表示对于工厂方法模式同样具备。建造者模式唯一区别于工厂方法模式的是针对复杂对象的构建。<br />
+<br />
+也就是说：
+<ul>
+<li>
+如果是创建简单对象，我们通常使用工厂方法模式进行创建；</li>
+<li>
+而如果是创建复杂对象，那么此时就可以考虑使用建造者模式。</li>
+</ul>
+<br />
+当需要构建的产品具备复杂创建过程时，可以抽取出共性构建过程，然后交由具体实现类自定义构建流程，使得同样的构建行为可以生产出不同的产品，分离了构建与表示，使构建产品的灵活性大大增加。<br />
+<br />
+<div style="text-align: center;">
+<img alt="Python建造者模式" src="../uploads/allimg/230808/1-230PQ93349406.png" /><br />
+图1：建造者模式</div>
+<br />
+建造者模式（见图1）主要包含以下4种角色：
+<ul>
+<li>
+抽象建造者（Builder）：主要用于规范产品类的各个组成部分，并提供一个返回完整产品的接口。</li>
+<li>
+具体建造者（Concrete Builder）：实现抽象建造者规定的各个方法，返回一个具有好的控件的具体产品。</li>
+<li>
+产品（Product）：构建相当复杂的类型，建造者最终创建的产品类型。</li>
+<li>
+导演者（Director）：指导抽象建造者以特定行为构建出产品，并将其返回给用户。</li>
+</ul>
+<br />
+理解了建造者模式的4种角色，其实就已经掌握建造者模式的真谛：
+<ul>
+<li>
+建造者模式最终返回一个具体的构建复杂的产品；</li>
+<li>
+系统中产品可能只有一种类型或多种类型，但对某些产品族来说，它们具备相同的行为，因此对这些共性行为进行抽象，抽离出抽象建造者；</li>
+<li>
+而对这些行为的具体构建过程，则交由具体建造者负责，不同的具体建造者会构建出不同表示的产品；</li>
+<li>
+而具体要构建出哪种产品，由导演者决定。导演者会选择不同的具体建造者，指导它构建出产品。</li>
+</ul>
+<br />
+这里列举一个现实世界的场景来理解建造者模式的实现。比如某快餐店的菜单上有三大类食品，分别是主食类、小食类和饮料类。每个大类别下又含有对应的单品，包含汉堡、鸡翅、薯条和可乐等。根据客人选择的单品可以一步一步来生成各种订单。<br />
+<br />
+请看下面的 Python 代码：
+<pre class="python">
+class Burger():
+    &quot;&quot;&quot;
+    主食类：名字和价格
+    &quot;&quot;&quot;
+    name = &quot;&quot;
+    price = 0.0
+　
+    def getPrice(self):
+        return self.price
+　
+    def setPrice(self, price):
+        self.price = price
+　
+    def getName(self):
+        return self.name
+　
+　
+class cheeseBurger(Burger):
+    &quot;&quot;&quot;
+    奶酪汉堡
+    &quot;&quot;&quot;
+　
+    def _ _init_ _(self):
+        self.name = &quot;cheese burger&quot;
+        self.price = 10.0
+　
+　
+class spicyChickenBurger(Burger):
+    &quot;&quot;&quot;
+    香辣鸡汉堡
+    &quot;&quot;&quot;
+　
+    def _ _init_ _(self):
+        self.name = &quot;spicy chicken burger&quot;
+        self.price = 15.0
+　
+　
+class Snack():
+    &quot;&quot;&quot;
+    小吃类：名字、价格和类型
+    &quot;&quot;&quot;
+    name = &quot;&quot;
+    price = 0.0
+    type = &quot;SNACK&quot;
+　
+    def getPrice(self):
+        return self.price
+　
+    def setPrice(self, price):
+        self.price = price
+　
+    def getName(self):
+        return self.name
+　
+　
+class chips(Snack):
+    &quot;&quot;&quot;
+    薯条
+    &quot;&quot;&quot;
+　
+    def _ _init_ _(self):
+        self.name = &quot;chips&quot;
+        self.price = 6.0
+　
+　
+class chickenWings(Snack):
+    &quot;&quot;&quot;
+    鸡翅
+    &quot;&quot;&quot;
+　
+    def _ _init_ _(self):
+        self.name = &quot;chicken wings&quot;
+        self.price = 12.0
+　
+　
+class Beverage():
+    &quot;&quot;&quot;
+    饮料
+    &quot;&quot;&quot;
+    name = &quot;&quot;
+    price = 0.0
+    type = &quot;BEVERAGE&quot;
+　
+    def getPrice(self):
+        return self.price
+　
+    def setPrice(self, price):
+        self.price = price
+　
+    def getName(self):
+        return self.name
+　
+　
+class coke(Beverage):
+    &quot;&quot;&quot;
+    可乐
+    &quot;&quot;&quot;
+　
+    def _ _init_ _(self):
+        self.name = &quot;coke&quot;
+        self.price = 4.0
+　
+　
+class milk(Beverage):
+    &quot;&quot;&quot;
+    牛奶
+    &quot;&quot;&quot;
+　
+    def _ _init_ _(self):
+        self.name = &quot;milk&quot;
+        self.price = 5.0
+　
+　
+class order():
+    &quot;&quot;&quot;
+    订单对象，一个订单中包含一份主食、一份小吃、一瓶饮料
+    &quot;&quot;&quot;
+    burger = &quot;&quot;
+    snack = &quot;&quot;
+    beverage = &quot;&quot;
+　
+    def _ _init_ _(self, orderBuilder):
+        self.burger = orderBuilder.bBurger
+        self.snack = orderBuilder.bSnack
+        self.beverage = orderBuilder.bBeverage
+　
+    def show(self):
+        print(&quot;Burger:%s&quot; % self.burger.getName())
+        print(&quot;Snack:%s&quot; % self.snack.getName())
+        print(&quot;Beverage:%s&quot; % self.beverage.getName())
+　
+　
+# 建造者
+class orderBuilder():
+    &quot;&quot;&quot;
+    orderBuilder就是建造者模式中所谓的&ldquo;建造者&rdquo;，
+    将订单的构建与表示分离，以达到解耦的目的。
+    在上面订单的构建过程中，如果将order直接通过参数定义好（其构建与表示没有分离），
+    同时在多处进行订单生成，那么需要修改订单内容时
+    则需要一处一处去修改，业务风险也就提高了不少
+    &quot;&quot;&quot;
+    bBurger = &quot;&quot;
+    bSnack = &quot;&quot;
+    bBeverage = &quot;&quot;
+　
+    def addBurger(self, xBurger):
+        self.bBurger = xBurger
+　
+    def addSnack(self, xSnack):
+        self.bSnack = xSnack
+　
+    def addBeverage(self, xBeverage):
+        self.bBeverage = xBeverage
+　
+    def build(self):
+        return order(self)
+　
+　
+# Director类
+class orderDirector():
+    &quot;&quot;&quot;
+    在建造者模式中，还可以添加一个Director类，用以安排已有模块的构造步骤。
+   当建造者中有比较严格的顺序要求时，该类会有比较大的用处
+    &quot;&quot;&quot;
+    order_builder = &quot;&quot;
+　
+    def _ _init_ _(self, order_builder):
+        self.order_builder = order_builder
+　
+    def createOrder(self, burger, snack, beverage):
+        self.order_builder.addBurger(burger)
+        self.order_builder.addSnack(snack)
+        self.order_builder.addBeverage(beverage)
+        return self.order_builder.build()
+　
+　
+# 场景实现
+if _ _name_ _ == &quot;_ _main_ _&quot;:
+    order_builder = orderBuilder()
+    order_builder.addBurger(spicyChickenBurger())
+    order_builder.addSnack(chips())
+    order_builder.addBeverage(milk())
+    order_1 = order_builder.build()
+    order_1.show()</pre>
+<h4>
+建造者模式的适用场景</h4>
+<ul>
+<li>
+需要生成的产品对象有复杂的内部结构，这些产品对象具备共性。</li>
+<li>
+隔离复杂对象的创建和使用，并使得相同的创建过程可以创建不同的产品。</li>
+</ul>
+<h4>
+建造者模式的优点</h4>
+在建造者模式中，客户端不必知道产品内部组成的细节，将产品本身与产品的创建进行解耦，使得相同的创建过程可以创建不同的产品对象。<br />
+<br />
+每一个具体建造者都是独立的，与其他的具体建造者无关，因此可以很方便地替换具体建造者或增加具体建造者，用户使用不同的具体建造者可以得到不同的产品对象。由于导演者类针对抽象建造者编程，因此增加新的具体建造者时无须修改原有类库的代码，系统扩展方便，符合开闭原则。在编写代码时，代码重用率是尤为重要的。<br />
+<br />
+用户可以更为精细地控制产品的创建过程，将复杂产品的创建步骤分解在不同的方法中，使得创建过程更加清晰，也更方便用户使用程序来控制创建过程。
+<h4>
+建造者模式的缺点</h4>
+建造者模式所创建的产品一般具有较多的共同点，其组成部分相似，如果产品之间的差异较大，例如很多组成部分不相同，则不适合使用建造者模式，因此其使用范围受到一定的限制。<br />
+<br />
+如果产品的内部变化复杂，则可能需要很多具体建造者类实现这种变化，这会导致系统变得庞大，会增加系统的理解难度和运行成本。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="326.html" title="C语言将数组作为函数参数" target="_blank">C语言将数组作为函数参数</a></li>
+<li><a href="3493.html" title="汇编语言MOV指令：将源操作数复制到目的操作数" target="_blank">汇编语言MOV指令：将源操作数复制到目的操作数</a></li>
+<li><a href="6860.html" title="C++ STL deque容器（详解版）" target="_blank">C++ STL deque容器（详解版）</a></li>
+<li><a href="9641.html" title="推荐一套yyds的Java学习资料（非常经典）" target="_blank">推荐一套yyds的Java学习资料（非常经典）</a></li>
+<li><a href="t0wlylp.html" title="JS history对象的使用" target="_blank">JS history对象的使用</a></li>
+<li><a href="otrb6gr.html" title="MySQL删除数据表（DROP TABLE）" target="_blank">MySQL删除数据表（DROP TABLE）</a></li>
+<li><a href="hbr7lhz.html" title="《啊哈C语言！逻辑的挑战(修订版)》PDF下载（高清完整版）" target="_blank">《啊哈C语言！逻辑的挑战(修订版)》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10165;
+window.arcId = "96d0oKSDlV1vQqxdpBJbdOPjApJ7PmK00Ov5LVXJiHFofCJv/H6GrHIV9bq5";
+window.typeidChain = "145|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

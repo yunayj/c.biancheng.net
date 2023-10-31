@@ -1,0 +1,2313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Sentinel：Spring Cloud Alibaba高可用流量控制组件（非常详细）</title>
+<meta name="description" content="Sentinel 是由阿里巴巴中间件团队开发的开源项目，是一种面向分布式微服务架构的轻量级高可用流量控制组件。 Sentinel 主要以流量为切入点，从流量控制、熔断降级、系统负载保护等多" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="../view/niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+	<div id="sidebar" class="toggle-target">
+	<div id="contents">
+		<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="springcloud_2.html">Spring Cloud</a></dt>
+		<dd>
+        	<span class="channel-num">1</span>
+        	<a href="micro-service_2.html">微服务是什么</a>
+        </dd>
+<dd>
+        	<span class="channel-num">2</span>
+        	<a href="what-is-cloud_2.html">Spring Cloud是什么</a>
+        </dd>
+<dd>
+        	<span class="channel-num">3</span>
+        	<a href="eureka_2.html">Spring Cloud Eureka</a>
+        </dd>
+<dd>
+        	<span class="channel-num">4</span>
+        	<a href="ribbon_2.html">Spring Cloud Ribbon</a>
+        </dd>
+<dd>
+        	<span class="channel-num">5</span>
+        	<a href="open-feign_2.html">Spring Cloud OpenFeign</a>
+        </dd>
+<dd>
+        	<span class="channel-num">6</span>
+        	<a href="hystrix_2.html">Spring Cloud Hystrix</a>
+        </dd>
+<dd>
+        	<span class="channel-num">7</span>
+        	<a href="gateway_2.html">Spring Cloud Gateway</a>
+        </dd>
+<dd>
+        	<span class="channel-num">8</span>
+        	<a href="config_2.html">Spring Cloud Config</a>
+        </dd>
+<dd>
+        	<span class="channel-num">9</span>
+        	<a href="what-is-alibaba_2.html">Spring Cloud Alibaba是什么</a>
+        </dd>
+<dd>
+        	<span class="channel-num">10</span>
+        	<a href="nacos_2.html">Spring Cloud Alibaba Nacos</a>
+        </dd>
+<dd>
+        	<span class="channel-num">11</span>
+        	<a href="sentinel_2.html">Spring Cloud Alibaba Sentinel</a>
+        </dd>
+<dd>
+        	<span class="channel-num">12</span>
+        	<a href="seata_2.html">Spring Cloud Alibaba Seata</a>
+        </dd>
+
+	</div>
+</div>
+	<div id="article-wrap">
+		<div id="article">
+			<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="springcloud_2.html">Spring Cloud</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+			<h1>Sentinel：Spring Cloud Alibaba高可用流量控制组件（非常详细）</h1>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+			<div id="arc-body">Sentinel 是由阿里巴巴中间件团队开发的开源项目，是一种面向分布式微服务架构的轻量级高可用流量控制组件。<br />
+<br />
+Sentinel 主要以流量为切入点，从流量控制、熔断降级、系统负载保护等多个维度帮助用户保护服务的稳定性。<br />
+<br />
+Sentinel 具有以下优势:<br />
+<ul>
+	<li>
+		<strong>丰富的应用场景</strong>：Sentinel 承接了阿里巴巴近 10 年的&ldquo;双十一&rdquo;大促流量的核心场景，例如秒杀（将突发流量控制在系统可以承受的范围）、消息削峰填谷、集群流量控制、实时熔断下游不可用服务等。</li>
+	<li>
+		<strong>完备的实时监控</strong>：Sentinel 提供了实时监控功能。用户可以在控制台中看到接入应用的单台机器的秒级数据，甚至是 500 台以下规模集群的汇总运行情况。</li>
+	<li>
+		<strong>广泛的开源生态</strong>：Sentinel 提供了开箱即用的与其它开源框架或库（例如&nbsp;Spring Cloud、Apache Dubbo、gRPC、Quarkus）的整合模块。我们只要在项目中引入相应的依赖并进行简单的配置即可快速地接入 Sentinel。此外，Sentinel 还提供 Java、Go 以及 C++ 等多语言的原生实现。</li>
+	<li>
+		<strong>完善的 SPI 扩展机制</strong>：Sentinel 提供简单易、完善的 SPI 扩展接口，我们可以通过实现这些扩展接口快速地定制逻辑，例如定制规则管理、适配动态数据源等。</li>
+</ul>
+<blockquote>
+	<p>
+		SPI ，全称为 Service Provider Interface，是一种服务发现机制。它可以在 ClassPath 路径下的 META-INF/services 文件夹查找文件，并自动加载文件中定义的类。</p>
+</blockquote>
+从功能上来说，Sentinel 与 Spring Cloud Netfilx Hystrix 类似，但 Sentinel 要比 Hystrix 更加强大，例如 Sentinel 提供了流量控制功能、比 Hystrix 更加完善的实时监控功能等等。
+<h2>
+	Sentinel 的组成</h2>
+Sentinel 主要由以下两个部分组成：
+<ul>
+	<li>
+		Sentinel 核心库：Sentinel 的核心库不依赖任何框架或库，能够运行于 Java 8 及以上的版本的运行时环境中，同时对 Spring Cloud、Dubbo 等微服务框架提供了很好的支持。</li>
+	<li>
+		Sentinel 控制台（Dashboard）：Sentinel 提供的一个轻量级的开源控制台，它为用户提供了机器自发现、簇点链路自发现、监控、规则配置等功能。</li>
+</ul>
+<br />
+Sentinel 核心库不依赖 Sentinel Dashboard，但两者结合使用可以有效的提高效率，让 Sentinel 发挥它最大的作用。
+<h2>
+	Sentinel 的基本概念</h2>
+Sentinel 的基本概念有两个，它们分别是：资源和规则。
+<p>
+	&nbsp;</p>
+<table>
+	<tbody>
+		<tr>
+			<th>
+				基本概念</th>
+			<th>
+				描述</th>
+		</tr>
+		<tr>
+			<td>
+				资源</td>
+			<td>
+				资源是 Sentinel 的关键概念。它可以是 Java 应用程序中的任何内容，例如由应用程序提供的服务或者是服务里的方法，甚至可以是一段代码。<br />
+				<br />
+				我们可以通过 Sentinel 提供的 API 来定义一个资源，使其能够被 Sentinel 保护起来。通常情况下，我们可以使用方法名、URL 甚至是服务名来作为资源名来描述某个资源。</td>
+		</tr>
+		<tr>
+			<td>
+				规则</td>
+			<td>
+				围绕资源而设定的规则。Sentinel 支持流量控制、熔断降级、系统保护、来源访问控制和热点参数等多种规则，所有这些规则都可以动态实时调整。</td>
+		</tr>
+	</tbody>
+</table>
+<h2>
+	@SentinelResource 注解</h2>
+@SentinelResource 注解是 Sentinel 提供的最重要的注解之一，它还包含了多个属性，如下表。<br />
+<br />
+<table>
+	<tbody>
+		<tr>
+			<th>
+				属性</th>
+			<th>
+				说明</th>
+			<th>
+				必填与否</th>
+			<th>
+				使用要求</th>
+		</tr>
+		<tr>
+			<td>
+				value</td>
+			<td>
+				用于指定资源的名称</td>
+			<td>
+				必填</td>
+			<td>
+				-</td>
+		</tr>
+		<tr>
+			<td>
+				entryType</td>
+			<td>
+				entry 类型</td>
+			<td>
+				可选项（默认为 EntryType.OUT）</td>
+			<td>
+				-</td>
+		</tr>
+		<tr>
+			<td>
+				blockHandler</td>
+			<td>
+				服务限流后会抛出&nbsp;BlockException 异常，而&nbsp;blockHandler 则是用来指定一个函数来处理&nbsp;BlockException&nbsp; 异常的。<br />
+				<br />
+				简单点说，该属性用于指定服务限流后的后续处理逻辑。</td>
+			<td>
+				可选项</td>
+			<td>
+				<ul>
+					<li>
+						blockHandler 函数访问范围需要是 public；</li>
+					<li>
+						返回类型需要与原方法相匹配；</li>
+					<li>
+						参数类型需要和原方法相匹配并且最后加一个额外的参数，类型为 BlockException；</li>
+					<li>
+						blockHandler 函数默认需要和原方法在同一个类中，若希望使用其他类的函数，则可以指定 blockHandler&nbsp;为对应的类的 Class 对象，注意对应的函数必需为 static 函数，否则无法解析。</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				blockHandlerClass</td>
+			<td>
+				若&nbsp;blockHandler 函数与原方法不在同一个类中，则需要使用该属性指定&nbsp;blockHandler 函数所在的类。</td>
+			<td>
+				可选项</td>
+			<td>
+				<ul>
+					<li>
+						不能单独使用，必须与&nbsp;blockHandler 属性配合使用；</li>
+					<li>
+						该属性指定的类中的 blockHandler 函数必须为 static 函数，否则无法解析。</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				fallback</td>
+			<td>
+				用于在抛出异常（包括 BlockException）时，提供 fallback 处理逻辑。<br />
+				<br />
+				fallback 函数可以针对所有类型的异常（除了 exceptionsToIgnore 里面排除掉的异常类型）进行处理。</td>
+			<td>
+				可选项</td>
+			<td>
+				<ul>
+					<li>
+						返回值类型必须与原函数返回值类型一致；</li>
+					<li>
+						方法参数列表需要和原函数一致，或者可以额外多一个 Throwable 类型的参数用于接收对应的异常；</li>
+					<li>
+						fallback 函数默认需要和原方法在同一个类中，若希望使用其他类的函数，则可以指定 fallbackClass 为对应的类的 Class 对象，注意对应的函数必需为 static 函数，否则无法解析。</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				fallbackClass&nbsp;</td>
+			<td>
+				若 fallback 函数与原方法不在同一个类中，则需要使用该属性指定 blockHandler 函数所在的类。</td>
+			<td>
+				可选项</td>
+			<td>
+				<ul>
+					<li>
+						不能单独使用，必须与 fallback 或&nbsp;defaultFallback&nbsp; 属性配合使用；</li>
+					<li>
+						该属性指定的类中的 fallback&nbsp;函数必须为 static 函数，否则无法解析。</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				defaultFallback</td>
+			<td>
+				默认的 fallback 函数名称，通常用于通用的 fallback 逻辑（即可以用于很多服务或方法）。<br />
+				<br />
+				默认 fallback 函数可以针对所以类型的异常（除了 exceptionsToIgnore 里面排除掉的异常类型）进行处理。</td>
+			<td>
+				可选项</td>
+			<td>
+				<ul>
+					<li>
+						返回值类型必须与原函数返回值类型一致；</li>
+					<li>
+						方法参数列表需要为空，或者可以额外多一个 Throwable 类型的参数用于接收对应的异常；</li>
+					<li>
+						defaultFallback 函数默认需要和原方法在同一个类中。若希望使用其他类的函数，则可以指定 fallbackClass 为对应的类的 Class 对象，注意对应的函数必需为 static 函数，否则无法解析。</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				exceptionsToIgnore</td>
+			<td>
+				用于指定哪些异常被排除掉，不会计入异常统计中，也不会进入 fallback 逻辑中，而是会原样抛出。</td>
+			<td>
+				可选项</td>
+			<td>
+				<div>
+					-</div>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<blockquote>
+	<p>
+		注：在 Sentinel 1.6.0 之前，fallback 函数只针对降级异常（DegradeException）进行处理，不能处理业务异常。</p>
+</blockquote>
+<h2>
+	Sentinel 控制台</h2>
+Sentinel 提供了一个轻量级的开源控制台 Sentinel Dashboard，它提供了机器发现与健康情况管理、监控（单机和集群）、规则管理与推送等多种功能。<br />
+<br />
+Sentinel 控制台提供的功能如下:
+<ul>
+	<li>
+		<strong>查看机器列表以及健康情况</strong>：Sentinel 控制台能够收集 Sentinel 客户端发送的心跳包，判断机器是否在线。</li>
+	<li>
+		<strong>监控（单机和集群聚合）</strong>：Sentinel 控制台通过 Sentinel 客户端暴露的监控 API，可以实现秒级的实时监控。</li>
+	<li>
+		<strong>规则管理和推送</strong>：通过 Sentinel 控制台，我们还能够针对资源定义和推送规则。</li>
+	<li>
+		<strong>鉴权</strong>：从 Sentinel 1.6.0 起，Sentinel 控制台引入基本的登录功能，默认用户名和密码都是 sentinel。</li>
+</ul>
+<br />
+Sentinel Dashboard 是我们配置和管理规则（例如流控规则、熔断降级规则等）的重要入口之一。通过它，我们不仅可以对规则进行配置和管理，还能实时查看规则的效果。<br />
+<h4>
+	安装 Sentinel 控制台</h4>
+下面我们就来演示下，如何下载和安装 Sentinel 控制台，具体步骤如下。<br />
+<br />
+1. 使用浏览器访问 <a href="https://github.com/alibaba/Sentinel/releases" target="_blank">Sentinel Dashboard 下载页面</a>下载 Sentinel 控制台的 jar 包，如下图。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Sentinel Dashboard 下载" src="../uploads/allimg/211210/10252340N-0_2.png" style="border-width: 1px; border-style: solid;" /><br />
+	图1：Sentinel 控制台下载</div>
+<br />
+2. 打开命令行窗口，跳转到&nbsp;Sentinel Dashboard&nbsp; jar 包所在的目录，执行以下命令，启动 Sentinel Dashboard。<br />
+<pre class="info-box">
+java -jar sentinel-dashboard-1.8.2.jar</pre>
+<br />
+3. 启动完成后，使用浏览器访问&ldquo;http://localhost:8080/&rdquo;，跳转到 Sentinel 控制台登陆页面，如下图。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="sentinel dashboard 登录页" src="../uploads/allimg/211210/10252352J-1_2.png" style="border-width: 1px; border-style: solid;" /><br />
+	图2：Sentinel 控制台登录页</div>
+<br />
+4. 分别输入用户名和密码（默认都是 sentinel），点击下方的登录按钮，结果如下图。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Sentinel Dashboard" src="../uploads/allimg/211210/1025232935-2_2.png" /><br />
+	图3：Sentinel 控制台主页</div>
+<h2>
+	Sentinel 的开发流程</h2>
+Sentinel 的开发流程如下：
+<ol>
+	<li>
+		<strong>引入 Sentinel 依赖</strong>：在项目中引入 Sentinel 的依赖，将 Sentinel 整合到项目中；</li>
+	<li>
+		<strong>定义资源</strong>：通过对主流框架提供适配或&nbsp;Sentinel 提供的显式&nbsp;API 和注解，可以定义需要保护的资源，此外 Sentinel 还提供了资源的实时统计和调用链路分析；</li>
+	<li>
+		<strong>定义规则</strong>：根据实时统计信息，对资源定义规则，例如流控规则、熔断规则、热点规则、系统规则以及授权规则等。</li>
+	<li>
+		<strong>检验规则是否在生效</strong>：运行程序，检验规则是否生效，查看效果。</li>
+</ol>
+<h2>
+	引入 Sentinel 依赖</h2>
+为了减少开发的复杂程度，Sentinel 对大部分的主流框架都进行了适配，例如&nbsp;Web Servlet、Dubbo、Spring Cloud、gRPC、Spring WebFlux 和 Reactor 等。以 Spring Cloud 为例，我们只需要引入&nbsp;spring-cloud-starter-alibaba-sentinel 的依赖，就可以方便地将 Sentinel 整合到项目中。<br />
+<br />
+下面我们就通过一个简单的实例，演示如何将 Sentinel 整合到 Spring Cloud 项目中，步骤如下。<br />
+<br />
+<span style="font-weight: normal;">1. 在主工程&nbsp;spring-cloud-alibaba-demo 下，创建一个名为&nbsp;</span>spring-cloud-alibaba-sentinel-service-8401 的 Spring Boot 模块，并在其 pom.xml 中添加以下依赖。<br />
+<pre class="xml">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+&nbsp;&nbsp;&nbsp; &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+&nbsp;&nbsp;&nbsp; &lt;parent&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;groupId&gt;net.biancheng.c&lt;/groupId&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;artifactId&gt;spring-cloud-alibaba-demo&lt;/artifactId&gt;
+&nbsp;&nbsp;&nbsp; &lt;/parent&gt;
+
+&nbsp;&nbsp;&nbsp; &lt;groupId&gt;net.biancheng.c&lt;/groupId&gt;
+&nbsp;&nbsp;&nbsp; &lt;artifactId&gt;spring-cloud-alibaba-sentinel-service-8401&lt;/artifactId&gt;
+&nbsp;&nbsp;&nbsp; &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+&nbsp;&nbsp;&nbsp; &lt;name&gt;spring-cloud-alibaba-sentinel-service-8401&lt;/name&gt;
+&nbsp;&nbsp;&nbsp; &lt;description&gt;Demo project for Spring Boot&lt;/description&gt;
+&nbsp;&nbsp;&nbsp; &lt;properties&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;java.version&gt;1.8&lt;/java.version&gt;
+&nbsp;&nbsp;&nbsp; &lt;/properties&gt;
+
+&nbsp;&nbsp;&nbsp; &lt;dependencies&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;!--Nacos 服务发现依赖--&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;dependency&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;artifactId&gt;spring-cloud-starter-alibaba-nacos-discovery&lt;/artifactId&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/dependency&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;!--Snetinel 依赖--&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;dependency&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;artifactId&gt;spring-cloud-starter-alibaba-sentinel&lt;/artifactId&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/dependency&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;!--SpringCloud ailibaba sentinel-datasource-nacos 后续做持久化用到--&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;dependency&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;groupId&gt;com.alibaba.csp&lt;/groupId&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;artifactId&gt;sentinel-datasource-nacos&lt;/artifactId&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/dependency&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;dependency&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/dependency&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;dependency&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/dependency&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;dependency&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;artifactId&gt;spring-cloud-starter-openfeign&lt;/artifactId&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/dependency&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;dependency&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;artifactId&gt;spring-boot-devtools&lt;/artifactId&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;scope&gt;runtime&lt;/scope&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;optional&gt;true&lt;/optional&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/dependency&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;dependency&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;artifactId&gt;lombok&lt;/artifactId&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;optional&gt;true&lt;/optional&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/dependency&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;dependency&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;scope&gt;test&lt;/scope&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/dependency&gt;
+&nbsp;&nbsp;&nbsp; &lt;/dependencies&gt;
+
+&nbsp;&nbsp;&nbsp; &lt;build&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;plugins&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;plugin&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;configuration&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;excludes&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;exclude&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;artifactId&gt;lombok&lt;/artifactId&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/exclude&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/excludes&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/configuration&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/plugin&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/plugins&gt;
+&nbsp;&nbsp;&nbsp; &lt;/build&gt;
+&lt;/project&gt;
+</pre>
+<br />
+2. 在&nbsp;spring-cloud-alibaba-sentinel-service-8401 的类路径下，新建一个配置文件 application.yml，配置内容如下。
+<pre class="xml">
+server:
+  port: 8401 #端口
+
+spring:
+  application:
+    name: sentinel-service #服务名
+  cloud:
+    nacos:
+      discovery:
+        #Nacos服务注册中心(集群)地址
+        server-addr: localhost:1111
+
+    sentinel:
+      transport:
+        #配置 Sentinel dashboard 地址
+        dashboard: localhost:8080
+        #默认8719端口，假如被占用会自动从8719开始依次+1扫描,直至找到未被占用的端口
+        port: 8719
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: &#39;*&#39;</pre>
+<br />
+3. 在&nbsp;net.biancheng.c.controller 下，创建一个名为&nbsp;SentinelFlowLimitController 的 Controller 类，代码如下。
+<pre class="java">
+package net.biancheng.c.controller;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@Slf4j
+public class SentinelFlowLimitController {
+
+    @Value(&quot;${server.port}&quot;)
+    private String serverPort;
+
+    @GetMapping(&quot;/testA&quot;)
+    public String testA() {
+        return &quot;c语言中文网提醒您，服务访问成功------testA&quot;;
+    }
+
+    @GetMapping(&quot;/testB&quot;)
+    public String testB() {
+        return &quot;c<span style="font-size: 9.8pt; color: rgb(106, 135, 89); font-family: 宋体, monospace;">语言中文网提醒您，服务访问成功</span>------testB&quot;
+    }
+}</pre>
+<br />
+4. spring-cloud-alibaba-sentinel-service-8401 主启动类代码如下。
+<pre class="java">
+package net.biancheng.c;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+
+@SpringBootApplication
+@EnableDiscoveryClient
+public class SpringCloudAlibabaSentinelService8401Application {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SpringCloudAlibabaSentinelService8401Application.class, args);
+    }
+
+}</pre>
+<br />
+5. 依次启动 Nacos Server 集群、 spring-cloud-alibaba-sentinel-service-8401，使用浏览器访问&ldquo;http://localhost:8401/testA&rdquo;，结果如下图。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="sentinel 使用 demo1" src="../uploads/allimg/211210/102523FU-3_2.png" /><br />
+	图4：Sentinel 示例 1</div>
+<br />
+6. 使用浏览器访问 Sentinel 控制台主页，我们发现在&ldquo;首页&rdquo;下方新增了一个&ldquo;sentinel-servcie&rdquo;的菜单，而这正是 spring-cloud-alibaba-sentinel-service-8401 的服务名（spring.application.name），说明 Sentinel 已经监控到这个服务，如下图。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Sentinel 控制台主页1" src="../uploads/allimg/211210/1025232531-4_2.png" /><br />
+	图5：Sentinel 控制台主页</div>
+<div>
+	<br />
+	7. 点击&ldquo;实时监控&rdquo;，查看 sentinel-service 下各请求的实时监控数据，如下图所示。<br />
+	&nbsp;</div>
+<div style="text-align: center;">
+	<a href="http://new-local.weixueyuan.net/uploads/allimg/211111/6-211111104946192.png" target="_blank"><img alt="Sentinel 监控数据" src="../uploads/allimg/211210/1025233523-5_2.png" style="border-width: 1px; border-style: solid; border-color: black;" /></a><br />
+	图6：Sentinel 实时监控</div>
+<h2>
+	定义资源</h2>
+资源是 Sentinel 中的核心概念之一。在项目开发时，我们只需要考虑这个服务、方法或代码是否需要保护，如果需要保护，就可以将它定义为一个资源。<br />
+<br />
+Sentinel 为我们提供了多种定义资源的方式：
+<ul>
+	<li>
+		适配主流框架自动定义资源</li>
+	<li>
+		通过 SphU 手动定义资源</li>
+	<li>
+		通过 SphO 手动定义资源</li>
+	<li>
+		注解方式定义资源</li>
+</ul>
+<h4>
+	适配主流框架自动定义资源</h4>
+Sentinel 对大部分的主流框架都进行了适配，我们只要引入相关的适配模块（例如 spring-cloud-starter-alibaba-sentinel），Snetinel 就会自动将项目中的服务（包括调用端和服务端）定义为资源，资源名就是服务的请求路径。此时，我们只要再定义一些规则，这些资源就可以享受到 Sentinel 的保护。<br />
+<br />
+我们可以在 Sentinel 控制台的&ldquo;簇点链路&rdquo;中，直接查看被 Sentinel 监控的资源，如下图。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Sentinel 簇点链路" src="../uploads/allimg/211210/1025231c4-6_2.png" /><br />
+	图7：Sentinel 控制台-簇点链路</div>
+<h4>
+	通过 SphU 手动定义资源</h4>
+Sentinel 提供了一个名为 SphU 的类，它包含的 try-catch 风格的 API ，可以帮助我们手动定义资源。<br />
+<br />
+下面我们就通过一个实例，来演示下如何通过 SphU 定义资源。<br />
+<br />
+1. 在 spring-cloud-alibaba-sentinel-service-8401 下的 SentinelFlowLimitController 中，新增一个 testAbySphU() 方法定义一个名为&nbsp;<span style="background-color: initial; color: rgb(102, 102, 102); white-space: pre-wrap;">testAbySphU </span>的资源，代码如下。<br />
+<pre class="java">
+package net.biancheng.c.controller;
+
+import com.alibaba.csp.sentinel.Entry;
+import com.alibaba.csp.sentinel.SphO;
+import com.alibaba.csp.sentinel.SphU;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
+import com.alibaba.csp.sentinel.slots.block.RuleConstant;
+import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
+import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@RestController
+@Slf4j
+public class SentinelFlowLimitController {
+
+    @Value(&quot;${server.port}&quot;)
+    private String serverPort;
+
+    @GetMapping(&quot;/testA&quot;)
+    public String testA() {
+        return testAbySphU();
+    }
+
+    @GetMapping(&quot;/testB&quot;)
+    public String testB() {
+        return &quot;c语言中文网提醒您，服务访问成功------testB&quot;;
+    }
+
+
+    /**
+     * 通过 SphU 手动定义资源
+     * @return
+     */
+    public String testAbySphU() {
+        Entry entry = null;
+        try {
+            entry = SphU.entry(&quot;testAbySphU&quot;);
+            //您的业务逻辑 - 开始
+            log.info(&quot;c语言中文网提醒您，服务访问成功------testA：&quot;+serverPort);
+            return &quot;c语言中文网提醒您，服务访问成功------testA：&quot;+serverPort;
+            //您的业务逻辑 - 结束
+        } catch (BlockException e1) {
+            //流控逻辑处理 - 开始
+            log.info(&quot;c语言中文网提醒您，testA 服务被限流&quot;);
+            return &quot;c语言中文网提醒您，testA 服务被限流&quot;;
+            //流控逻辑处理 - 结束
+        } finally {
+            if (entry != null) {
+                entry.exit();
+            }
+        }
+    }
+}</pre>
+<br />
+2. 重启&nbsp;spring-cloud-alibaba-sentinel-service-8401，使用浏览器访问&ldquo;http://localhost:8401/testA&rdquo;，结果如下。
+<pre class="info-box">
+c语言中文网提醒您，服务访问成功------testA：8401</pre>
+<br />
+3. 访问 Sentinel 控制台主页，点击 sentinel-service 下的&ldquo;簇点链路&rdquo;，结果如下图。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Sentinel SphU" src="../uploads/allimg/211210/1025233335-7_2.png" /><br />
+	图8：Sentinel 通过 SphU 定义资源</div>
+<h4>
+	通过 SphO 手动定义资源</h4>
+Sentinel 还提供了一个名为 SphO 的类，它包含了 if-else 风格的 API，能帮助我们手动定义资源。通过这种方式定义的资源，发生了限流之后会返回 false，此时我们可以根据返回值，进行限流之后的逻辑处理。<br />
+<br />
+下面我们就通过一个实例，来演示下如何通过 SphO 定义资源。<br />
+<br />
+1. 在 spring-cloud-alibaba-sentinel-service-8401 下的 SentinelFlowLimitController 中，新增一个 testBbySphO() 方法定义一个名为 testBbySphO&nbsp;的资源，代码如下。<br />
+<pre class="java">
+package net.biancheng.c.controller;
+
+import com.alibaba.csp.sentinel.Entry;
+import com.alibaba.csp.sentinel.SphO;
+import com.alibaba.csp.sentinel.SphU;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
+import com.alibaba.csp.sentinel.slots.block.RuleConstant;
+import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
+import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@RestController
+@Slf4j
+public class SentinelFlowLimitController {
+
+    @Value(&quot;${server.port}&quot;)
+    private String serverPort;
+
+
+    @GetMapping(&quot;/testA&quot;)
+    public String testA() {
+        return testAbySphU();
+    }
+
+    @GetMapping(&quot;/testB&quot;)
+    public String testB() {
+        return testBbySphO();
+    }
+
+    /**
+     * 通过 SphU 手动定义资源
+     *
+     * @return
+     */
+    public String testAbySphU() {
+        Entry entry = null;
+        try {
+            entry = SphU.entry(&quot;testAbySphU&quot;);
+            //您的业务逻辑 - 开始
+            log.info(&quot;c语言中文网提醒您，服务访问成功------testA：&quot; + serverPort);
+            return &quot;c语言中文网提醒您，服务访问成功------testA：&quot; + serverPort;
+            //您的业务逻辑 - 结束
+        } catch (BlockException e1) {
+            //流控逻辑处理 - 开始
+            log.info(&quot;c语言中文网提醒您，testA 服务被限流&quot;);
+            return &quot;c语言中文网提醒您，testA 服务被限流&quot;;
+            //流控逻辑处理 - 结束
+        } finally {
+            if (entry != null) {
+                entry.exit();
+            }
+        }
+    }
+
+    /**
+     * 通过 SphO 手动定义资源
+     *
+     * @return
+     */
+    public String testBbySphO() {
+        if (SphO.entry(&quot;testBbySphO&quot;)) {
+            // 务必保证finally会被执行
+            try {
+                log.info(&quot;c语言中文网提醒您，服务访问成功------testB：&quot; + serverPort);
+                return &quot;c语言中文网提醒您，服务访问成功------testB：&quot; + serverPort;
+            } finally {
+                SphO.exit();
+            }
+        } else {
+            // 资源访问阻止，被限流或被降级
+            //流控逻辑处理 - 开始
+            log.info(&quot;c语言中文网提醒您，testB 服务被限流&quot;);
+            return &quot;c语言中文网提醒您，testB 服务被限流&quot;;
+            //流控逻辑处理 - 结束
+        }
+    }
+}</pre>
+<br />
+2. 重启&nbsp;spring-cloud-alibaba-sentinel-service-8401，使用浏览器访问&ldquo;http://localhost:8401/testB&rdquo;，结果如下。
+<pre class="info-box">
+c语言中文网提醒您，服务访问成功------testB：8401</pre>
+<br />
+3. 访问 Sentinel 控制台主页，点击 sentinel-service 下的&ldquo;簇点链路&rdquo;，结果如下图。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Sentinel SphO" src="../uploads/allimg/211210/1025235422-8_2.png" /><br />
+	图9：Sentinel 通过 SphO 定义资源</div>
+<h4>
+	注解方式定义资源（推荐）</h4>
+除了以上两种方式外，我们还可以通过 Sentinel 提供的 @SentinelResource 注解定义资源。<br />
+<br />
+下面我们就通过一个实例，来演示下如何通过 @SentinelResource 注解定义资源。<br />
+<br />
+1.&nbsp;将 spring-cloud-alibaba-sentinel-service-8401 中 SentinelFlowLimitController 类中增加以下代码。
+<pre class="java">
+@GetMapping(&quot;/testC&quot;)
+@SentinelResource(value = &quot;testCbyAnnotation&quot;) //通过注解定义资源
+public String testC() {
+    log.info(&quot;c语言中文网提醒您，服务访问成功------testC：&quot; + serverPort);
+    return &quot;c语言中文网提醒您，服务访问成功------testC：&quot; + serverPort;
+}</pre>
+<br />
+2. 重启&nbsp;spring-cloud-alibaba-sentinel-service-8401，使用浏览器访问&ldquo;http://localhost:8401/testC&rdquo;，结果如下。
+<pre class="info-box">
+c语言中文网提醒您，服务访问成功------testC：8401</pre>
+<br />
+3.&nbsp;访问 Sentinel 控制台主页，点击 sentinel-service 下的&ldquo;簇点链路&rdquo;，结果如下图。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Sentinel 注解方式定义资源" src="../uploads/allimg/211210/1025233293-9_2.png" /><br />
+	图10：Sentinel 注解方式定义资源</div>
+<h2>
+	Sentinel 流量控制</h2>
+任何系统处理请求的能力都是有限的，但任意时间内到达系统的请求量往往是随机且不可控的，如果在某一个瞬时时刻请求量急剧增，那么系统就很有可能被瞬时的流量高峰冲垮。为了避免此类情况发生，我们都需要根据系统的处理能力对请求流量进行控制，这就是我们常说的&ldquo;流量控制&rdquo;，简称&ldquo;流控&rdquo;。<br />
+<br />
+Sentinel 作为一种轻量级高可用流量控制组件，流量控制是它最主要的工作之一。<br />
+<br />
+我们可以针对资源定义流控规则，Sentinel 会根据这些规则对流量相关的各项指标进行监控。当这些指标当达到或超过流控规则规定的阈值时，Sentinel 会对请求的流量进行限制（即&ldquo;限流&rdquo;），以避免系统被瞬时的流量高峰冲垮，保障系统的高可用性。<br />
+<br />
+一条流量规则主要由下表中的属性组成，我们可以通过组合这些属性来实现不同的限流效果。<br />
+<br />
+<table>
+	<tbody>
+		<tr>
+			<th>
+				属性</th>
+			<th>
+				说明</th>
+			<th>
+				默认值</th>
+		</tr>
+		<tr>
+			<td>
+				资源名</td>
+			<td>
+				流控规则的作用对象。</td>
+			<td>
+				-</td>
+		</tr>
+		<tr>
+			<td>
+				阈值</td>
+			<td>
+				流控的阈值。</td>
+			<td>
+				-</td>
+		</tr>
+		<tr>
+			<td>
+				阈值类型</td>
+			<td>
+				流控阈值的类型，包括 QPS 或并发线程数。</td>
+			<td>
+				QPS</td>
+		</tr>
+		<tr>
+			<td>
+				针对来源</td>
+			<td>
+				流控针对的调用来源。</td>
+			<td>
+				default，表示不区分调用来源</td>
+		</tr>
+		<tr>
+			<td>
+				流控模式</td>
+			<td>
+				调用关系限流策略，包括直接、链路和关联。</td>
+			<td>
+				直接</td>
+		</tr>
+		<tr>
+			<td>
+				流控效果</td>
+			<td>
+				流控效果（直接拒绝、Warm Up、匀速排队），不支持按调用关系限流。</td>
+			<td>
+				直接拒绝</td>
+		</tr>
+	</tbody>
+</table>
+<blockquote>
+	<p>
+		注：QPS 表示并发请求数，换句话说就是，每秒钟最多通过的请求数。</p>
+</blockquote>
+同一个资源可以创建多条流控规则，Sentinel 会遍历这些规则，直到有规则触发限流或者所有规则遍历完毕为止。<br />
+<br />
+Sentinel 触发限流时，资源会抛出&nbsp;BlockException&nbsp;异常，此时我们可以捕捉 BlockException 来自定义被限流之后的处理逻辑。<br />
+<blockquote>
+	<p>
+		注意：这里我们主要讲解 Sentinel 流控规则的定义与使用，至于详细的流控规则配置，请参考&nbsp;<a href="https://sentinelguard.io/zh-cn/docs/flow-control.html" target="_blank">Sentinel 官方流控文档</a>。</p>
+</blockquote>
+<h4>
+	通过 Sentinel 控制台定义流控规则</h4>
+我们可以通过 Sentinel 控制台，直接对资源定义流控规则，操作步骤如下。<br />
+<br />
+1. 在&nbsp;spring-cloud-alibaba-sentinel-service-8401 的&nbsp;SentinelFlowLimitController 中新增一个名为 testD 的服务方法，代码如下。
+<pre class="java">
+/**
+ * 通过 Sentinel 控制台定义流控规则
+ *
+ * @return
+ */
+@GetMapping(&quot;/testD&quot;)
+public String testD() {
+    log.info(&quot;c语言中文网提醒您，服务访问成功------testD：&quot; + serverPort);
+    return &quot;c语言中文网提醒您，服务访问成功------testD：&quot; + serverPort;
+}
+</pre>
+<br />
+2.&nbsp;重启 spring-cloud-alibaba-sentinel-service-8401，使用浏览器访问&ldquo;http://localhost:8401/testD&rdquo;，结果如下。
+<pre class="info-box">
+c语言中文网提醒您，服务访问成功------testD：8401</pre>
+<br />
+3. 使用浏览器访问&ldquo;http://localhost:8080&rdquo;，登陆 Sentinel 控制台主页，点击 sentinel-sevice 下的&ldquo;簇点链路&rdquo;，结果如下图。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Sentinel 定义流控规则" src="../uploads/allimg/211210/1025235556-10_2.png" /><br />
+	图11：Sentinel 控制台定义流控规则</div>
+<br />
+4. 点击&ldquo;/testD&rdquo;右侧的&ldquo;<strong>+</strong>流控&rdquo;按钮，在弹出的&ldquo;新增流控规则&rdquo;窗口中定义流控规则，如下图。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Sentinel 流控规则配置" src="../uploads/allimg/211210/102523M60-11_2.png" style="border-width: 1px; border-style: solid;" /><br />
+	图12：Sentinel 控制台定义流控规则</div>
+<br />
+5. 点击下方的&ldquo;新增&rdquo;按钮，跳转到&ldquo;流控规则&rdquo;列表，如下图。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Sentinel 流控规则列表" src="../uploads/allimg/211210/1025234B4-12_2.png" /><br />
+	图13：Sentinel 控制台流控规则列表<br />
+	&nbsp;</div>
+<div>
+	6.&nbsp;快速连续（频率大于每秒钟 2 次）访问&ldquo;http://localhost:8401/testD&rdquo;，结果如下。</div>
+<pre class="info-box">
+Blocked by Sentinel (flow limiting)</pre>
+<br />
+若页面中出现以上信息，则说明该服务已被限流，但这种提示是 Sentinel 系统自动生成的，用户体验不好。<br />
+<br />
+7. 在服务代码中使用 @SentinelResource 注解定义资源名称，并在 blockHandler 属性指定一个限流函数，自定义服务限流信息，代码如下。
+<pre class="java">
+/**
+ * 通过 Sentinel 控制台定义流控规则
+ *
+ */
+@GetMapping(&quot;/testD&quot;)
+@SentinelResource(value = &quot;testD-resource&quot;, blockHandler = &quot;blockHandlerTestD&quot;) //通过注解定义资源
+public String testD() {
+    log.info(&quot;c语言中文网提醒您，服务访问成功------testD：&quot; + serverPort);
+    return &quot;c语言中文网提醒您，服务访问成功------testD：&quot; + serverPort;
+}
+
+/**
+ * 限流之后的逻辑
+ * @param exception
+ * @return
+ */
+public String blockHandlerTestD(BlockException exception) {
+    log.info(Thread.currentThread().getName() + &quot;c语言中文网提醒您，TestD服务访问失败! 您已被限流，请稍后重试&quot;);
+    return &quot;c语言中文网提醒您，TestD服务访问失败! 您已被限流，请稍后重试&quot;;
+}</pre>
+<p>
+	<br />
+	在以上代码中，我们通过 @SentinelResource 注解的 blockHandler 属性指定了一个&nbsp;blockHandler 函数，进行限流之后的后续处理。<br />
+	<br />
+	&nbsp;使用 @SentinelResource 注解的 blockHandler&nbsp;属性时，需要注意以下事项：</p>
+<ul>
+	<li>
+		blockHandler 函数访问范围需要是 public；</li>
+	<li>
+		返回类型需要与原方法相匹配；</li>
+	<li>
+		参数类型需要和原方法相匹配并且最后加一个额外的参数，类型为 BlockException；</li>
+	<li>
+		blockHandler 函数默认需要和原方法在同一个类中，若希望使用其他类的函数，则可以指定 blockHandler&nbsp;为对应的类的 Class 对象，注意对应的函数必需为 static 函数，否则无法解析。</li>
+	<li>
+		请务必添加 blockHandler 属性来指定自定义的限流处理方法，若不指定，则会跳转到错误页（用户体验不好）。</li>
+</ul>
+<br />
+7. 重启 spring-cloud-alibaba-sentinel-service-8401，使用浏览器访问 Sentinel 控制台主页，点击 sentinel-sevice 下的&ldquo;簇点链路&rdquo;，结果如下图。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Sentinel控制台定义流控规则" src="../uploads/allimg/211210/1025236140-13_2.png" /><br />
+	图14：Sentinel 控制台-簇点链路</div>
+<br />
+4. 点击资源&ldquo;testD-resource&rdquo;右侧的&ldquo;<strong>+</strong>流控&rdquo;按钮，并在弹出的&ldquo;新增流控规则&rdquo;窗口中为这个资源定义流控规则，流控规则内容为 ：QPS 的阈值为 2（即每秒最多通过 2 个请求），如下图。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Sentinel 控制台新增流控规则" src="../uploads/allimg/211210/1025232063-14_2.png" style="border-width: 1px; border-style: solid;" /><br />
+	图15：Sentinel 控制台新增流控规则</div>
+<br />
+5.&nbsp;快速连续（频率大于每秒钟 2 次）访问&ldquo;http://localhost:8401/testD&rdquo;，结果如下。<br />
+<pre class="info-box">
+c语言中文网提醒您，TestD服务访问失败! 您已被限流，请稍后重试</pre>
+<h4>
+	通过代码定义流控规则</h4>
+我们还可以在服务代码中，调用 FlowRuleManager 类的 loadRules() 方法来定义流控规则，该方法需要一个&nbsp;FlowRule 类型的 List 集合作为其参数，示例代码如下。<br />
+<pre class="java">
+public static void loadRules(List&lt;FlowRule&gt; rules) {
+    currentProperty.updateValue(rules); 
+}</pre>
+<br />
+FlowRule 可以通过以下属性定义流控规则，如下表。<br />
+<br />
+<table>
+	<tbody>
+		<tr>
+			<th>
+				属性</th>
+			<th>
+				说明</th>
+			<th>
+				默认值</th>
+		</tr>
+		<tr>
+			<td>
+				resource</td>
+			<td>
+				资源名，即流控规则的作用对象</td>
+			<td>
+				-</td>
+		</tr>
+		<tr>
+			<td>
+				count</td>
+			<td>
+				限流的阈值。</td>
+			<td>
+				-</td>
+		</tr>
+		<tr>
+			<td>
+				grade</td>
+			<td>
+				流控阈值的类型，包括 QPS 或并发线程数</td>
+			<td>
+				QPS</td>
+		</tr>
+		<tr>
+			<td>
+				limitApp</td>
+			<td>
+				流控针对的调用来源</td>
+			<td>
+				default，表示不区分调用来源</td>
+		</tr>
+		<tr>
+			<td>
+				strategy</td>
+			<td>
+				调用关系限流策略，包括直接、链路和关联</td>
+			<td>
+				直接</td>
+		</tr>
+		<tr>
+			<td>
+				controlBehavior</td>
+			<td>
+				流控效果（直接拒绝、Warm Up、匀速排队），不支持按调用关系限流</td>
+			<td>
+				直接拒绝<br />
+				&nbsp;</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+下面我们就通过一个简单的实例，来演示下如何通过代码定义流控规则，步骤如下。<br />
+<br />
+1. 在 spring-cloud-alibaba-sentinel-service-8401 的 SentinelFlowLimitController 中添加一个 initFlowRules() 方法，为名为 testD-resource 的资源定义流控规则：每秒最多只能通过 2 个请求，即 QPS 的阈值为 2。
+<pre class="java">
+/**
+ * 通过代码定义流量控制规则
+ */
+private static void initFlowRules() {
+    List&lt;FlowRule&gt; rules = new ArrayList&lt;&gt;();
+    //定义一个限流规则对象
+    FlowRule rule = new FlowRule();
+    //资源名称
+    rule.setResource(&quot;testD-resource&quot;);
+     //限流阈值的类型
+    rule.setGrade(RuleConstant.FLOW_GRADE_QPS);
+    // 设置 QPS 的阈值为 2
+    rule.setCount(2);
+    rules.add(rule);
+    //定义限流规则
+    FlowRuleManager.loadRules(rules);
+}</pre>
+<br />
+2. 在&nbsp;testD() 方法中调用&nbsp;initFlowRules() 方法，初始化流控规则，代码如下。<br />
+<br />
+<pre class="java">
+@GetMapping(&quot;/testD&quot;)
+@SentinelResource(value = &quot;testD-resource&quot;, blockHandler = &quot;blockHandlerTestD&quot;) //通过注解定义资源
+public String testD() {
+&nbsp;&nbsp;&nbsp; initFlowRules(); //调用初始化流控规则的方法
+&nbsp;&nbsp;&nbsp; log.info(&quot;c语言中文网提醒您，服务访问成功------testD：&quot; + serverPort);
+&nbsp;&nbsp;&nbsp; return &quot;c语言中文网提醒您，服务访问成功------testD：&quot; + serverPort;
+}</pre>
+<br />
+3. 重启&nbsp;spring-cloud-alibaba-sentinel-service-8401，并使用浏览器访问&ldquo;http://localhost:8401/testD&rdquo;，结果如下。
+<pre class="info-box">
+c语言中文网提醒您，服务访问成功------testD：8401</pre>
+<br />
+4. 快速连续（频率大于每秒钟 2 次）访问&ldquo;http://localhost:8401/testD&rdquo;，结果如下。
+<pre class="info-box">
+c语言中文网提醒您，TestD服务访问失败! 您已被限流，请稍后重试</pre>
+<br />
+5. 打开命令行窗口，执行以下命令查看资源的实时统计信息。
+<pre class="info-box">
+curl http://localhost:8719/cnode?id=testD-resource</pre>
+<br />
+6. 控制台输出内容如下。
+<pre class="info-box">
+idx id                thread    pass      blocked   success    total    aRt   1m-pass   1m-block   1m-all   exceptio
+2   testD-resource      0        0.0       0.0       0.0        0.0      0.0   10        16         26       0.0</pre>
+<br />
+实时统计信息各列名说明如下：
+<ul>
+	<li>
+		thread： 代表当前处理该资源的并发数；</li>
+	<li>
+		pass： 代表一秒内到来到的请求；</li>
+	<li>
+		blocked： 代表一秒内被流量控制的请求数量；</li>
+	<li>
+		success： 代表一秒内成功处理完的请求；</li>
+	<li>
+		total： 代表到一秒内到来的请求以及被阻止的请求总和；</li>
+	<li>
+		RT： 代表一秒内该资源的平均响应时间；</li>
+	<li>
+		1m-pass： 则是一分钟内到来的请求；</li>
+	<li>
+		1m-block： 则是一分钟内被阻止的请求；</li>
+	<li>
+		1m-all： 则是一分钟内到来的请求和被阻止的请求的总和；</li>
+	<li>
+		exception： 则是一秒内业务本身异常的总和。</li>
+</ul>
+<h2>
+	熔断降级规则</h2>
+除了流量控制以外，对调用链路中不稳定资源的熔断降级，也是保障服务高可用的重要措施之一。<br />
+<br />
+在分布式微服务架构中，一个系统往往由多个服务组成，不同服务之间相互调用，组成复杂的调用链路。如果链路上的某一个服务出现故障，那么故障就会沿着调用链路在系统中蔓延，最终导致整个系统瘫痪。Sentinel 提供了熔断降级机制就可以解决这个问题。<br />
+<br />
+Sentinel 的熔断将机制会在调用链路中某个资源出现不稳定状态时（例如调用超时或异常比例升高），暂时切断对这个资源的调用，以避免局部不稳定因素导致整个系统的雪崩。<br />
+<br />
+熔断降级作为服务保护自身的手段，通常在客户端（调用端）进行配置，资源被熔断降级最直接的表现就是抛出 DegradeException 异常。<br />
+<h4>
+	Sentinel 熔断策略</h4>
+Sentinel 提供了 3 种熔断策略，如下表所示。<br />
+<br />
+<table>
+	<tbody>
+		<tr>
+			<th>
+				熔断策略</th>
+			<th>
+				说明</th>
+		</tr>
+		<tr>
+			<td>
+				慢调用比例<br />
+				(SLOW_REQUEST_RATIO）</td>
+			<td>
+				选择以慢调用比例作为阈值，需要设置允许的慢调用 RT（即最大响应时间），若请求的响应时间大于该值则统计为慢调用。<br />
+				<br />
+				当单位统计时长（statIntervalMs）内请求数目大于设置的最小请求数目，且慢调用的比例大于阈值，则接下来的熔断时长内请求会自动被熔断。<br />
+				<br />
+				经过熔断时长后熔断器会进入探测恢复状态（HALF-OPEN 状态），若接下来的一个请求响应时间小于设置的慢调用 RT 则结束熔断，若大于设置的慢调用 RT 则再次被熔断。</td>
+		</tr>
+		<tr>
+			<td>
+				异常比例 (ERROR_RATIO)</td>
+			<td>
+				当单位统计时长（statIntervalMs）内请求数目大于设置的最小请求数目且异常的比例大于阈值，则在接下来的熔断时长内请求会自动被熔断。<br />
+				<br />
+				经过熔断时长后熔断器会进入探测恢复状态（HALF-OPEN 状态），若接下来的一个请求成功完成（没有错误）则结束熔断，否则会再次被熔断。异常比率的阈值范围是 [0.0, 1.0]，代表 0% - 100%。</td>
+		</tr>
+		<tr>
+			<td>
+				异常数 (ERROR_COUNT)</td>
+			<td>
+				当单位统计时长内的异常数目超过阈值之后会自动进行熔断。<br />
+				<br />
+				经过熔断时长后熔断器会进入探测恢复状态（HALF-OPEN 状态），若接下来的一个请求成功完成（没有错误）则结束熔断，否则会再次被熔断。</td>
+		</tr>
+	</tbody>
+</table>
+<blockquote>
+	<p>
+		注意：Sentinel 1.8.0 版本对熔断降级特性进行了全新的改进升级，以上熔断策略针对的是 Sentinel 1.8.0 及以上版本。</p>
+</blockquote>
+<h4>
+	Sentinel 熔断状态</h4>
+Sentinel 熔断降级中共涉及 3 种状态，熔断状态的之间的转换过程如下图。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Sentinel 熔断状态转换" src="../uploads/allimg/211210/10252343H-15_2.png" /><br />
+	图16：Sentinel 熔断状态转换</div>
+<br />
+Sentinel 熔断降级中共涉及 3 种状态，如下表。<br />
+<br />
+<table>
+	<tbody>
+		<tr>
+			<th>
+				状态</th>
+			<th>
+				说明</th>
+			<th>
+				触发条件</th>
+		</tr>
+		<tr>
+			<td>
+				熔断关闭状态<br />
+				（CLOSED）</td>
+			<td>
+				处于关闭状态时，请求可以正常调用资源。</td>
+			<td>
+				满足以下任意条件，Sentinel 熔断器进入熔断关闭状态：
+				<ul>
+					<li>
+						全部请求访问成功。</li>
+					<li>
+						单位统计时长（statIntervalMs）内请求数目小于设置的最小请求数目。</li>
+					<li>
+						未达到熔断标准，例如服务超时比例、异常数、异常比例未达到阈值。</li>
+					<li>
+						处于探测恢复状态时，下一个请求访问成功。</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				熔断开启状态<br />
+				（OPEN）</td>
+			<td>
+				处于熔断开启状态时，熔断器会一定的时间（规定的熔断时长）内，暂时切断所有请求对该资源的调用，并调用相应的降级逻辑使请求快速失败避免系统崩溃。</td>
+			<td>
+				满足以下任意条件，Sentinel 熔断器进入熔断开启状态：
+				<ul>
+					<li>
+						单位统计时长内请求数目大于设置的最小请求数目，且已达到熔断标准，例如请求超时比例、异常数、异常比例达到阈值。</li>
+					<li>
+						处于探测恢复状态时，下一个请求访问失败。</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				探测恢复状态<br />
+				（HALF-OPEN）</td>
+			<td>
+				处于探测恢复状态时，Sentinel 熔断器会允许一个请求调用资源。则若接下来的一个请求成功完成（没有错误）则结束熔断，熔断器进入熔断关闭（CLOSED）状态；否则会再次被熔断，熔断器进入熔断开启（OPEN）状态。</td>
+			<td>
+				在熔断开启一段时间（降级窗口时间或熔断时长，单位为 s）后，Sentinel 熔断器自动会进入探测恢复状态。</td>
+		</tr>
+	</tbody>
+</table>
+<h4>
+	Sentinel 熔断规则属性</h4>
+Sentinel 熔断降级规则包含多个重要属性，如下表所示。<br />
+<br />
+<table>
+	<tbody>
+		<tr>
+			<th>
+				属性</th>
+			<th>
+				说明</th>
+			<th>
+				默认值</th>
+			<th>
+				使用范围</th>
+		</tr>
+		<tr>
+			<td>
+				资源名</td>
+			<td>
+				规则的作用对象。</td>
+			<td>
+				-</td>
+			<td>
+				所有熔断策略</td>
+		</tr>
+		<tr>
+			<td>
+				熔断策略</td>
+			<td>
+				Sentinel 支持3 中熔断策略：慢调用比例、异常比例、异常数策略。</td>
+			<td>
+				慢调用比例</td>
+			<td>
+				所有熔断策略</td>
+		</tr>
+		<tr>
+			<td>
+				最大 RT</td>
+			<td>
+				请求的最大相应时间，请求的响应时间大于该值则统计为慢调用。</td>
+			<td>
+				-</td>
+			<td>
+				慢调用比例</td>
+		</tr>
+		<tr>
+			<td>
+				熔断时长</td>
+			<td>
+				熔断开启状态持续的时间，超过该时间熔断器会切换为探测恢复状态（HALF-OPEN），单位为 s。</td>
+			<td>
+				-</td>
+			<td>
+				所有熔断策略</td>
+		</tr>
+		<tr>
+			<td>
+				最小请求数</td>
+			<td>
+				熔断触发的最小请求数，请求数小于该值时即使异常比率超出阈值也不会熔断（1.7.0 引入）。</td>
+			<td>
+				5</td>
+			<td>
+				所有熔断策略</td>
+		</tr>
+		<tr>
+			<td>
+				统计时长</td>
+			<td>
+				熔断触发需要统计的时长（单位为 ms），如 60*1000 代表分钟级（1.8.0 引入）。</td>
+			<td>
+				1000 ms</td>
+			<td>
+				所有熔断策略</td>
+		</tr>
+		<tr>
+			<td>
+				比例阈值</td>
+			<td>
+				分为慢调用比例阈值和异常比例阈值，即慢调用或异常调用占所有请求的百分比，取值范围 [0.0,1.0]。</td>
+			<td>
+				-</td>
+			<td>
+				慢调用比例 、异常比例</td>
+		</tr>
+		<tr>
+			<td>
+				异常数</td>
+			<td>
+				请求或调用发生的异常的数量。</td>
+			<td>
+				-</td>
+			<td>
+				异常数<br />
+				&nbsp;</td>
+		</tr>
+	</tbody>
+</table>
+<h4>
+	Sentinel 实现熔断降级过程</h4>
+Sentinel 实现熔断降级的步骤如下：
+<ol>
+	<li>
+		在项目中，使用&nbsp;@SentinelResource 注解的 fallback 属性可以为资源指定熔断降级逻辑（方法）。</li>
+	<li>
+		通过 Sentinel 控制台或代码定义熔断规则，包括熔断策略、最小请求数、阈值、熔断时长以及统计时长等。</li>
+	<li>
+		若单位统计时长（statIntervalMs）内，请求数目大于设置的最小请求数目且达到熔断标准（例如请求超时比例、异常数、异常比例达到阈值），Sentinel 熔断器进入熔断开启状态（OPEN）。</li>
+	<li>
+		处于熔断开启状态时，&nbsp;@SentinelResource 注解的 fallback 属性指定的降级逻辑会临时充当主业务逻辑，而原来的主逻辑则暂时不可用。当有请求访问该资源时，会直接调用降级逻辑使请求快速失败，而不会调用原来的主业务逻辑。</li>
+	<li>
+		在经过一段时间（在熔断规则中设置的熔断时长）后，熔断器会进入探测恢复状态（HALF-OPEN），此时 Sentinel 会允许一个请求对原来的主业务逻辑进行调用，并监控其调用结果。</li>
+	<li>
+		若请求调用成功，则熔断器进入熔断关闭状态（CLOSED ），服务原来的主业务逻辑恢复，否则重新进入熔断开启状态（OPEN）。</li>
+</ol>
+<h4>
+	通过 Sentinel 控制台定义熔断降级规则</h4>
+我们可以通过 Sentinel 控制台直接对资源定义熔断降级规则。<br />
+<br />
+下面我们通过一个实例，来演示如何通过 Sentinel 控制台，对资源定义降级规则。<br />
+<br />
+1.&nbsp;在 MySQL 的 bianchengbang_jdbc 数据库中执行以下 SQL，准备测试数据。
+<pre class="info-box">
+DROP TABLE IF EXISTS `dept`;
+CREATE TABLE `dept` (
+  `dept_no` int NOT NULL AUTO_INCREMENT,
+  `dept_name` varchar(255) DEFAULT NULL,
+  `db_source` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`dept_no`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+INSERT INTO `dept` VALUES (&#39;1&#39;, &#39;开发部&#39;, &#39;bianchengbang_jdbc&#39;);
+INSERT INTO `dept` VALUES (&#39;2&#39;, &#39;人事部&#39;, &#39;bianchengbang_jdbc&#39;);
+INSERT INTO `dept` VALUES (&#39;3&#39;, &#39;财务部&#39;, &#39;bianchengbang_jdbc&#39;);
+INSERT INTO `dept` VALUES (&#39;4&#39;, &#39;市场部&#39;, &#39;bianchengbang_jdbc&#39;);
+INSERT INTO `dept` VALUES (&#39;5&#39;, &#39;运维部&#39;, &#39;bianchengbang_jdbc&#39;);</pre>
+<br />
+2. 在主工程 spring-cloud-alibaba-demo 下，创建一个名为&nbsp;spring-cloud-alibaba-provider-mysql-8003 的 Spring Boot 模块，并在其 pom.xml 中添加相关依赖，代码如下。
+<pre class="xml">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+    &lt;parent&gt;
+        &lt;groupId&gt;net.biancheng.c&lt;/groupId&gt;
+        &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+        &lt;artifactId&gt;spring-cloud-alibaba-demo&lt;/artifactId&gt;
+    &lt;/parent&gt;
+
+    &lt;groupId&gt;net.biancheng.c&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-alibaba-provider-mysql-8003&lt;/artifactId&gt;
+    &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+    &lt;name&gt;spring-cloud-alibaba-provider-mysql-8003&lt;/name&gt;
+    &lt;description&gt;Demo project for Spring Boot&lt;/description&gt;
+    &lt;properties&gt;
+        &lt;java.version&gt;1.8&lt;/java.version&gt;
+    &lt;/properties&gt;
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-devtools&lt;/artifactId&gt;
+            &lt;scope&gt;runtime&lt;/scope&gt;
+            &lt;optional&gt;true&lt;/optional&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
+            &lt;artifactId&gt;lombok&lt;/artifactId&gt;
+            &lt;optional&gt;true&lt;/optional&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-starter-alibaba-nacos-discovery&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;net.biancheng.c&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-alibaba-api&lt;/artifactId&gt;
+            &lt;version&gt;${project.version}&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;junit&lt;/groupId&gt;
+            &lt;artifactId&gt;junit&lt;/artifactId&gt;
+            &lt;version&gt;4.12&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;mysql&lt;/groupId&gt;
+            &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+            &lt;version&gt;5.1.49&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;
+            &lt;artifactId&gt;logback-core&lt;/artifactId&gt;
+
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.mybatis.spring.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;mybatis-spring-boot-starter&lt;/artifactId&gt;
+            &lt;version&gt;2.2.0&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;!--添加 Spring Boot 的监控模块--&gt;
+        &lt;!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+
+    &lt;build&gt;
+        &lt;plugins&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+                &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+                &lt;configuration&gt;
+                    &lt;excludes&gt;
+                        &lt;exclude&gt;
+                            &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
+                            &lt;artifactId&gt;lombok&lt;/artifactId&gt;
+                        &lt;/exclude&gt;
+                    &lt;/excludes&gt;
+                &lt;/configuration&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+&lt;/project&gt;</pre>
+<br />
+3. 在 spring-cloud-alibaba-provider-mysql-8003 的类路径下，创建一个配置文件 application.yml，配置如下。<br />
+<pre class="xml">
+server:
+  port: 8003 #端口
+
+spring:
+  application:
+    name: spring-cloud-alibaba-provider-mysql
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:1111
+  ######################### 数据库连接 #################################
+  datasource:
+    username: root        #数据库登陆用户名
+    password: root        #数据库登陆密码
+    url: jdbc:mysql://127.0.0.1:3306/spring_cloud_db2       #数据库url
+    driver-class-name: com.mysql.jdbc.Driver
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: &quot;*&quot;   # * 在yaml 文件属于关键字，所以需要加引号
+###################################### MyBatis 配置 ######################################
+mybatis:
+  # 指定 mapper.xml 的位置
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  #扫描实体类的位置,在此处指明扫描实体类的包，在 mapper.xml 中就可以不写实体类的全路径名
+  type-aliases-package: net.biancheng.c.entity
+  configuration:
+    #默认开启驼峰命名法，可以不用设置该属性
+    map-underscore-to-camel-case: true</pre>
+<br />
+4. 在&nbsp;net.biancheng.c.entity 包下，创建一个名为&nbsp;Dept 的实体类，代码如下。
+<pre class="java">
+package net.biancheng.c.entity;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+
+@AllArgsConstructor
+@NoArgsConstructor //无参构造函数
+@Data // 提供类的get、set、equals、hashCode、canEqual、toString 方法
+@Accessors(chain = true)
+public class Dept implements Serializable {
+    private Integer deptNo;
+    private String deptName;
+    private String dbSource;
+}</pre>
+<br />
+5.&nbsp;在 net.biancheng.c.entity 包下，创建一个名为 CommonResult 的 Java 类，代码如下。
+<pre class="java">
+package net.biancheng.c.entity;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class CommonResult&lt;T&gt; {
+    private Integer code;
+    private String message;
+    private T data;
+
+    public CommonResult(Integer code, String message) {
+        this(code, message, null);
+    }
+}</pre>
+<br />
+6.&nbsp;在 net.biancheng.c.mapper 包下，创建一个名为 DeptMapper 的接口，代码如下。
+<pre class="java">
+package net.biancheng.c.mapper;
+
+import net.biancheng.c.entity.Dept;
+import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
+
+@Mapper
+public interface DeptMapper {
+    //根据主键获取数据
+    Dept selectByPrimaryKey(Integer deptNo);
+
+    //获取表中的全部数据
+    List&lt;Dept&gt; GetAll();
+}</pre>
+<br />
+7. 在&nbsp;spring-cloud-alibaba-provider-mysql-8003 的&nbsp; /resources/mybatis/mapper/&nbsp; 目录下，创建一个名为 DeptMapper.xml 的 MyBatis 映射文件，配置内容如下。
+<pre class="xml">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE mapper PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot; &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+&lt;mapper namespace=&quot;net.biancheng.c.mapper.DeptMapper&quot;&gt;
+    &lt;resultMap id=&quot;BaseResultMap&quot; type=&quot;net.biancheng.c.entity.Dept&quot;&gt;
+        &lt;id column=&quot;dept_no&quot; jdbcType=&quot;INTEGER&quot; property=&quot;deptNo&quot;/&gt;
+        &lt;result column=&quot;dept_name&quot; jdbcType=&quot;VARCHAR&quot; property=&quot;deptName&quot;/&gt;
+        &lt;result column=&quot;db_source&quot; jdbcType=&quot;VARCHAR&quot; property=&quot;dbSource&quot;/&gt;
+    &lt;/resultMap&gt;
+
+    &lt;sql id=&quot;Base_Column_List&quot;&gt;
+        dept_no
+        , dept_name, db_source
+    &lt;/sql&gt;
+
+    &lt;select id=&quot;selectByPrimaryKey&quot; parameterType=&quot;java.lang.Integer&quot; resultMap=&quot;BaseResultMap&quot;&gt;
+        select
+        &lt;include refid=&quot;Base_Column_List&quot;/&gt;
+        from dept
+        where dept_no = #{deptNo,jdbcType=INTEGER}
+    &lt;/select&gt;
+
+    &lt;select id=&quot;GetAll&quot; resultType=&quot;net.biancheng.c.entity.Dept&quot;&gt;
+        select *
+        from dept;
+    &lt;/select&gt;
+&lt;/mapper&gt;</pre>
+<br />
+8. 在&nbsp;net.biancheng.c.service 包下，创建一个名为&nbsp;DeptService 的接口，代码如下。<br />
+<pre class="java">
+package net.biancheng.c.service;
+
+import net.biancheng.c.entity.Dept;
+
+import java.util.List;
+
+public interface DeptService {
+
+    Dept get(Integer deptNo);
+
+    List&lt;Dept&gt; selectAll();
+}</pre>
+<br />
+9. 在&nbsp;net.biancheng.c.service.impl 包下，创建 DeptService 接口的实现类 DeptServiceImpl，代码如下。
+<pre class="java">
+package net.biancheng.c.service.impl;
+
+import net.biancheng.c.entity.Dept;
+import net.biancheng.c.mapper.DeptMapper;
+import net.biancheng.c.service.DeptService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service(&quot;deptService&quot;)
+public class DeptServiceImpl implements DeptService {
+    @Autowired
+    private DeptMapper deptMapper;
+
+    @Override
+    public Dept get(Integer deptNo) {
+        return deptMapper.selectByPrimaryKey(deptNo);
+    }
+
+    @Override
+    public List&lt;Dept&gt; selectAll() {
+        return deptMapper.GetAll();
+    }
+}</pre>
+<br />
+10. 在&nbsp;net.biancheng.c.controller 包下，创建一个名为&nbsp;DeptController 的 Contorller 类，代码如下。
+<pre class="java">
+package net.biancheng.c.controller;
+
+import lombok.extern.slf4j.Slf4j;
+import net.biancheng.c.entity.CommonResult;
+import net.biancheng.c.entity.Dept;
+import net.biancheng.c.service.DeptService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+@RestController
+@Slf4j
+public class DeptController {
+&nbsp;&nbsp;&nbsp; @Autowired
+&nbsp;&nbsp;&nbsp; private DeptService deptService;
+
+&nbsp;&nbsp;&nbsp; @Value(&quot;${server.port}&quot;)
+&nbsp;&nbsp;&nbsp; private String serverPort;
+
+&nbsp;&nbsp;&nbsp; @RequestMapping(value = &quot;/dept/get/{id}&quot;, method = RequestMethod.GET)
+&nbsp;&nbsp;&nbsp; public CommonResult&lt;Dept&gt; get(@PathVariable(&quot;id&quot;) int id) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; log.info(&quot;端口：&quot; + serverPort + &quot;\t+ dept/get/&quot;);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TimeUnit.SECONDS.sleep(1);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; log.info(&quot;休眠 1秒&quot;);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } catch (InterruptedException e) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.printStackTrace();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dept dept = deptService.get(id);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CommonResult&lt;Dept&gt; result = new CommonResult(200, &quot;from mysql,serverPort:&nbsp; &quot; + serverPort, dept);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return result;
+&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp;&nbsp; @RequestMapping(value = &quot;/dept/list&quot;, method = RequestMethod.GET)
+&nbsp;&nbsp;&nbsp; public CommonResult&lt;List&lt;Dept&gt;&gt; list() {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; log.info(&quot;端口：&quot; + serverPort + &quot;\t+ dept/list/&quot;);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; List&lt;Dept&gt; depts = deptService.selectAll();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CommonResult&lt;List&lt;Dept&gt;&gt; result = new CommonResult(200, &quot;from mysql,serverPort:&nbsp; &quot; + serverPort, depts);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return result;
+&nbsp;&nbsp;&nbsp; }
+}
+</pre>
+<br />
+11. spring-cloud-alibaba-provider-mysql-8003 的主启动类代码如下。
+<pre class="java">
+package net.biancheng.c;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+
+@SpringBootApplication
+@EnableDiscoveryClient
+public class SpringCloudAlibabaProviderMysql8003Application {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SpringCloudAlibabaProviderMysql8003Application.class, args);
+    }
+
+}</pre>
+<br />
+12. 在主工程&nbsp;spring-cloud-alibaba-demo 下，创建一个名为&nbsp;spring-cloud-alibaba-consumer-mysql-8803 的 Spring Boot 模块，并在其 pom.xml 添加依赖，内容如下。<br />
+<pre class="xml">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+    &lt;parent&gt;
+        &lt;groupId&gt;net.biancheng.c&lt;/groupId&gt;
+        &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+        &lt;artifactId&gt;spring-cloud-alibaba-demo&lt;/artifactId&gt;
+    &lt;/parent&gt;
+
+    &lt;groupId&gt;net.biancheng.c&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-alibaba-consumer-mysql-8803&lt;/artifactId&gt;
+    &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+    &lt;name&gt;spring-cloud-alibaba-consumer-mysql-8803&lt;/name&gt;
+    &lt;description&gt;Demo project for Spring Boot&lt;/description&gt;
+    &lt;properties&gt;
+        &lt;java.version&gt;1.8&lt;/java.version&gt;
+    &lt;/properties&gt;
+    &lt;dependencies&gt;
+        &lt;!--SpringCloud ailibaba nacos --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-starter-alibaba-nacos-discovery&lt;/artifactId&gt;
+            &lt;exclusions&gt;
+                &lt;exclusion&gt;
+                    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+                    &lt;artifactId&gt;spring-cloud-starter-netflix-ribbon&lt;/artifactId&gt;
+                &lt;/exclusion&gt;
+            &lt;/exclusions&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;!--引入 OpenFeign 的依赖--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-starter-openfeign&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-loadbalancer&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-devtools&lt;/artifactId&gt;
+            &lt;scope&gt;runtime&lt;/scope&gt;
+            &lt;optional&gt;true&lt;/optional&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
+            &lt;artifactId&gt;lombok&lt;/artifactId&gt;
+            &lt;optional&gt;true&lt;/optional&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;!--SpringCloud ailibaba sentinel --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-starter-alibaba-sentinel&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;net.biancheng.c&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-alibaba-api&lt;/artifactId&gt;
+            &lt;version&gt;${project.version}&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+
+    &lt;build&gt;
+        &lt;plugins&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+                &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+                &lt;configuration&gt;
+                    &lt;excludes&gt;
+                        &lt;exclude&gt;
+                            &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
+                            &lt;artifactId&gt;lombok&lt;/artifactId&gt;
+                        &lt;/exclude&gt;
+                    &lt;/excludes&gt;
+                &lt;/configuration&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+&lt;/project&gt;</pre>
+<br />
+13.&nbsp; 在&nbsp;spring-cloud-alibaba-consumer-mysql-8803 的类路径下，创建一个配置文件 application.yml，配置内容如下。
+<pre class="xml">
+server:
+  port: 8803
+spring:
+  application:
+    name: spring-cloud-alibaba-consumer-mysql-feign
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:1111
+    sentinel:
+      transport:
+        dashboard: localhost:8080
+        port: 8719
+
+# 以下配置信息并不是默认配置，而是我们自定义的配置，目的是不在 Controller 内硬编码 服务提供者的服务名
+service-url:
+  nacos-user-service: http://spring-cloud-alibaba-provider-mysql #消费者要方位的微服务名称
+
+# 激活Sentinel对Feign的支持
+feign:
+  sentinel:
+    enabled: true</pre>
+<br />
+14. 在&nbsp;net.biancheng.c.service 包下，创建一个名为&nbsp;DeptFeignService 的接口，代码如下。
+<pre class="java">
+package net.biancheng.c.service;
+
+import net.biancheng.c.entity.CommonResult;
+import net.biancheng.c.entity.Dept;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.List;
+
+@Component
+@FeignClient(value = &quot;spring-cloud-alibaba-provider-mysql&quot;, fallback = DeptFallbackService.class)
+public interface DeptFeignService {
+    @RequestMapping(value = &quot;/dept/get/{id}&quot;, method = RequestMethod.GET)
+    public CommonResult&lt;Dept&gt; get(@PathVariable(&quot;id&quot;) int id);
+
+    @RequestMapping(value = &quot;/dept/list&quot;, method = RequestMethod.GET)
+    public CommonResult&lt;List&lt;Dept&gt;&gt; list();
+}</pre>
+<br />
+15. 在&nbsp;net.biancheng.c.controller 包下，创建一个名为&nbsp;DeptFeignController 的 Controller，代码如下。
+<pre class="java">
+package net.biancheng.c.controller;
+
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.slots.block.degrade.circuitbreaker.CircuitBreaker;
+import com.alibaba.csp.sentinel.slots.block.degrade.circuitbreaker.EventObserverRegistry;
+import com.alibaba.csp.sentinel.util.TimeUtil;
+import lombok.extern.slf4j.Slf4j;
+import net.biancheng.c.entity.CommonResult;
+import net.biancheng.c.entity.Dept;
+import net.biancheng.c.service.DeptFeignService;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+@RestController
+@Slf4j
+public class DeptFeignController {
+    @Resource
+    DeptFeignService deptFeignService;
+
+    @RequestMapping(value = &quot;consumer/feign/dept/get/{id}&quot;, method = RequestMethod.GET)
+    @SentinelResource(value = &quot;fallback&quot;, fallback = &quot;handlerFallback&quot;)
+    public CommonResult&lt;Dept&gt; get(@PathVariable(&quot;id&quot;) int id) {
+        monitor();
+        System.out.println(&quot;---------&gt;&gt;&gt;&gt;主业务逻辑&quot;);
+        CommonResult&lt;Dept&gt; result = deptFeignService.get(id);
+        if (id == 6) {
+            System.err.println(&quot;---------&gt;&gt;&gt;&gt;主业务逻辑，抛出非法参数异常&quot;);
+            throw new IllegalArgumentException(&quot;IllegalArgumentException，非法参数异常....&quot;);
+            //如果查到的记录也是 null 也控制正异常
+        } else if (result.getData() == null) {
+            System.err.println(&quot;---------&gt;&gt;&gt;&gt;主业务逻辑，抛出空指针异常&quot;);
+            throw new NullPointerException(&quot;NullPointerException，该ID没有对应记录,空指针异常&quot;);
+        }
+        return result;
+    }
+
+    @RequestMapping(value = &quot;consumer/feign/dept/list&quot;, method = RequestMethod.GET)
+    public CommonResult&lt;List&lt;Dept&gt;&gt; list() {
+        return deptFeignService.list();
+    }
+
+    //处理异常的回退方法（服务降级）
+    public CommonResult handlerFallback(@PathVariable int id, Throwable e) {
+        System.err.println(&quot;---------&gt;&gt;&gt;&gt;服务降级逻辑&quot;);
+        Dept dept = new Dept(id, &quot;null&quot;, &quot;null&quot;);
+        return new CommonResult(444, &quot;C语言中文网提醒您，服务被降级！异常信息为：&quot; + e.getMessage(), dept);
+    }
+
+    /**
+     * 自定义事件监听器，监听熔断器状态转换
+     */
+    public void monitor() {
+        EventObserverRegistry.getInstance().addStateChangeObserver(&quot;logging&quot;,
+                (prevState, newState, rule, snapshotValue) -&gt; {
+                    SimpleDateFormat format = new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;);
+                    if (newState == CircuitBreaker.State.OPEN) {
+                        // 变换至 OPEN state 时会携带触发时的值
+                        System.err.println(String.format(&quot;%s -&gt; OPEN at %s, 发送请求次数=%.2f&quot;, prevState.name(),
+                                format.format(new Date(TimeUtil.currentTimeMillis())), snapshotValue));
+                    } else {
+                        System.err.println(String.format(&quot;%s -&gt; %s at %s&quot;, prevState.name(), newState.name(),
+                                format.format(new Date(TimeUtil.currentTimeMillis()))));
+                    }
+                });
+    }
+
+}</pre>
+<br />
+在以上代码中，我们通过 @SentinelResource 注解的 fallback 属性指定了一个 fallback 函数，进行熔断降级的后续处理。<br />
+<br />
+使用 @SentinelResource 注解的 blockHandler 属性时，需要注意以下事项：<br />
+<ul>
+	<li>
+		返回值类型必须与原函数返回值类型一致；</li>
+	<li>
+		方法参数列表需要和原函数一致，或者可以额外多一个 Throwable 类型的参数用于接收对应的异常；</li>
+	<li>
+		fallback 函数默认需要和原方法在同一个类中，若希望使用其他类的函数，则可以指定 fallbackClass 为对应的类的 Class 对象，注意对应的函数必需为 static 函数，否则无法解析。</li>
+</ul>
+<br />
+16.&nbsp;spring-cloud-alibaba-consumer-mysql-8803 的主启动类代码如下。
+<pre class="java">
+package net.biancheng.c;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+
+@SpringBootApplication
+@EnableDiscoveryClient
+@EnableFeignClients
+public class SpringCloudAlibabaConsumerMysql8803Application {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SpringCloudAlibabaConsumerMysql8803Application.class, args);
+    }
+
+}</pre>
+<br />
+17. 依次启动&nbsp;spring-cloud-alibaba-provider-mysql-8003 和&nbsp;spring-cloud-alibaba-consumer-mysql-8803，使用浏览器访问&ldquo;http://localhost:8803/consumer/feign/dept/get/3&rdquo;，结果如下。
+<pre class="info-box">
+{&quot;code&quot;:200,&quot;message&quot;:&quot;from mysql,serverPort:  8003&quot;,&quot;data&quot;:{&quot;deptNo&quot;:3,&quot;deptName&quot;:&quot;财务部&quot;,&quot;dbSource&quot;:&quot;spring_cloud_db2&quot;}}</pre>
+<br />
+18. 使用浏览器访问&ldquo;http://localhost:8803/consumer/feign/dept/get/7&rdquo;，结果如下。
+<pre class="info-box">
+{&quot;code&quot;:444,&quot;message&quot;:&quot;C语言中文网提醒您，服务被降级！异常信息为：NullPointerException，该ID没有对应记录,空指针异常&quot;,&quot;data&quot;:{&quot;deptNo&quot;:7,&quot;deptName&quot;:&quot;null&quot;,&quot;dbSource&quot;:&quot;null&quot;}}</pre>
+<br />
+19. 控制台输出如下。
+<pre class="info-box">
+---------&gt;&gt;&gt;&gt;主业务逻辑
+---------&gt;&gt;&gt;&gt;主业务逻辑
+<span style="color:#ff0000;">---------&gt;&gt;&gt;&gt;主业务逻辑，抛出空指针异常
+---------&gt;&gt;&gt;&gt;服务熔断降级逻辑</span></pre>
+<br />
+20. 使用浏览器访问 Sentinel 控制台，在&ldquo;簇点链路&rdquo;列表中，点击 fallback 资源的 &ldquo;<strong>+</strong>熔断&rdquo;按钮，如下图。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Sentinel 熔断" src="../uploads/allimg/211210/102523M28-16_2.png" /><br />
+	图17：Sentinel 熔断降级</div>
+<br />
+21. 在&ldquo;新增熔断规则&rdquo;的窗口中，为名为 &ldquo;fallback&rdquo;的资源定义以下熔断规则，如下图。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/211210/10252332E-17_2.png" style="border-width: 1px; border-style: solid;" /><br />
+	图18：Sentinel 控制台定义熔断规则</div>
+<br />
+在上图中，熔断规则各属性说明如下：
+<ul>
+	<li>
+		异常数为 1；</li>
+	<li>
+		统计时长为 1000 ms（即 1s）；</li>
+	<li>
+		最小请求数为 2；</li>
+	<li>
+		熔断时长为 5 秒；</li>
+</ul>
+<br />
+我们为 fallback 资源定义的熔断规则为：当 1 秒钟内请求数大于 2 个，且请求异常数大于 1 时，服务被熔断，熔断的时长为 5 秒钟。<br />
+<br />
+22. 使用浏览器连续访问&ldquo;http://localhost:8803/consumer/feign/dept/get/7&rdquo;，访问频率大于每秒 2 个请求，结果如下。
+<pre class="info-box">
+{&quot;code&quot;:444,&quot;message&quot;:&quot;C语言中文网提醒您，服务被降级！异常信息为：null&quot;,&quot;data&quot;:{&quot;deptNo&quot;:7,&quot;deptName&quot;:&quot;null&quot;,&quot;dbSource&quot;:&quot;null&quot;}}</pre>
+<br />
+23. 控制台输出如下。
+<pre class="info-box">
+---------&gt;&gt;&gt;&gt;主业务逻辑
+<span style="color:#ff0000;">---------&gt;&gt;&gt;&gt;主业务逻辑，抛出空指针异常
+---------&gt;&gt;&gt;&gt;服务降级逻辑</span>
+---------&gt;&gt;&gt;&gt;主业务逻辑
+<span style="color:#ff0000;">---------&gt;&gt;&gt;&gt;主业务逻辑，抛出空指针异常
+---------&gt;&gt;&gt;&gt;服务降级逻辑</span>
+<strong><span style="color:#ff0000;">CLOSED -&gt; OPEN at 2021-11-17 14:06:47, 发送请求次数=2.00</span></strong>
+</pre>
+<br />
+从控制台输出可以看出，在 14点 06 分 47 秒时，熔断器从熔断关闭状态（CLOSED）切换到熔断开启状态（OPEN）。<br />
+<br />
+23. 在熔断开启开启状态下，使用浏览器访问&ldquo;http://localhost:8803/consumer/feign/dept/get/4&rdquo;，结果页面输出如下。
+<pre class="info-box">
+{&quot;code&quot;:444,&quot;message&quot;:&quot;C语言中文网提醒您，服务被降级！异常信息为：null&quot;,&quot;data&quot;:{&quot;deptNo&quot;:4,&quot;deptName&quot;:&quot;null&quot;,&quot;dbSource&quot;:&quot;null&quot;}}</pre>
+<br />
+24. 控制台输出如下。
+<pre class="info-box">
+---------&gt;&gt;&gt;&gt;主业务逻辑
+<span style="color:#ff0000;">---------&gt;&gt;&gt;&gt;主业务逻辑，抛出空指针异常
+---------&gt;&gt;&gt;&gt;服务降级逻辑</span>
+---------&gt;&gt;&gt;&gt;主业务逻辑
+<span style="color:#ff0000;">---------&gt;&gt;&gt;&gt;主业务逻辑，抛出空指针异常
+---------&gt;&gt;&gt;&gt;服务降级逻辑</span>
+<span style="color:#ff0000;"><strong>CLOSED -&gt; OPEN at 2021-11-17 14:09:19, 发送请求次数=2.00</strong>
+---------&gt;&gt;&gt;&gt;服务降级逻辑
+---------&gt;&gt;&gt;&gt;服务降级逻辑
+---------&gt;&gt;&gt;&gt;服务降级逻辑</span></pre>
+<br />
+从控制台输出可知，当熔断器处于熔断开启状态时，所有的请求都直接交给降级逻辑处理。<br />
+<br />
+25. 继续使用浏览器访问&ldquo;http://localhost:8803/consumer/feign/dept/get/4&rdquo;，结果页面输出如下。
+<pre class="info-box">
+{&quot;code&quot;:200,&quot;message&quot;:&quot;from mysql,serverPort:  8003&quot;,&quot;data&quot;:{&quot;deptNo&quot;:4,&quot;deptName&quot;:&quot;市场部&quot;,&quot;dbSource&quot;:&quot;spring_cloud_db2&quot;}}</pre>
+<br />
+26. 控制台输出如下。
+<pre class="info-box">
+---------&gt;&gt;&gt;&gt;主业务逻辑
+<span style="color:#ff0000;">---------&gt;&gt;&gt;&gt;主业务逻辑，抛出空指针异常
+---------&gt;&gt;&gt;&gt;服务降级逻辑</span>
+---------&gt;&gt;&gt;&gt;主业务逻辑
+<span style="color:#ff0000;">---------&gt;&gt;&gt;&gt;主业务逻辑，抛出空指针异常
+---------&gt;&gt;&gt;&gt;服务降级逻辑</span>
+<span style="color:#ff0000;"><strong>CLOSED -&gt; OPEN at 2021-11-17 14:09:19, 发送请求次数=2.00</strong>
+--&mdash;&mdash;---&gt;&gt;&gt;&gt;服务降级逻辑
+---------&gt;&gt;&gt;&gt;服务降级逻辑
+---------&gt;&gt;&gt;&gt;服务降级逻辑</span>
+<strong><span style="color:#ff0000;">OPEN -&gt; HALF_OPEN at 2021-11-17 14:09:24
+</span></strong><span style="color:#000000;">--&mdash;&mdash;---&gt;&gt;&gt;&gt;主业务逻辑</span><span style="color:#ff0000;">
+<strong>HALF_OPEN -&gt; CLOSED at 2021-11-17 14:09:24</strong></span>
+---------&gt;&gt;&gt;&gt;主业务逻辑
+---------&gt;&gt;&gt;&gt;主业务逻辑</pre>
+<br />
+从以上控制台输出可知，熔断器在经历了 5 秒的熔断时长后，自动切换到了探测恢复状态（HALF-OPEN），并在下一个请求成功的情况下，结束了熔断开启状态，切换到了熔断关闭状态（CLOSED）。<br />
+<h4>
+	通过代码定义熔断规则</h4>
+Sentinel 核心库中提供了的一个名为 DegradeRuleManager 类，我们可以通过调用它的&nbsp;loadRules() 方法来定义熔断降级规则，该方法需要一个 DegradeRule 类型的 List 参数。
+<pre class="java">
+public static void loadRules(List&lt;DegradeRule&gt; rules) {
+    try {
+        currentProperty.updateValue(rules);
+    } catch (Throwable var2) {
+        RecordLog.error(&quot;[DegradeRuleManager] Unexpected error when loading degrade rules&quot;, var2);
+    }
+}</pre>
+<br />
+DegradeRule 类可以用来定义一条熔断规则，它包含多个与熔断规则相关的属性，如下表。<br />
+<br />
+<table>
+	<tbody>
+		<tr>
+			<th>
+				属性</th>
+			<th>
+				说明</th>
+			<th>
+				默认值</th>
+		</tr>
+		<tr>
+			<td>
+				resource</td>
+			<td>
+				资源名，即规则的作用对象</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				grade</td>
+			<td>
+				熔断策略，支持慢调用比例/异常比例/异常数策略</td>
+			<td>
+				慢调用比例</td>
+		</tr>
+		<tr>
+			<td>
+				count</td>
+			<td>
+				慢调用比例模式下为慢调用临界 RT（超出该值计为慢调用）；异常比例/异常数模式下为对应的阈值</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				timeWindow</td>
+			<td>
+				熔断时长，单位为 s</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				minRequestAmount</td>
+			<td>
+				熔断触发的最小请求数，请求数小于该值时即使异常比率超出阈值也不会熔断（1.7.0 引入）</td>
+			<td>
+				5</td>
+		</tr>
+		<tr>
+			<td>
+				statIntervalMs</td>
+			<td>
+				统计时长（单位为 ms），如 60*1000 代表分钟级（1.8.0 引入）</td>
+			<td>
+				1000 ms</td>
+		</tr>
+		<tr>
+			<td>
+				slowRatioThreshold</td>
+			<td>
+				慢调用比例阈值，仅慢调用比例模式有效（1.8.0 引入）</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+下面我们就通过一个实例，演示下如何通过代码定义熔断规则，步骤如下。<br />
+<br />
+1.&nbsp; 在&nbsp;spring-cloud-alibaba-consumer-mysql-8803 的&nbsp;DeptFeignController 中，添加一个名为&nbsp;initDegradeRule 的方法，代码如下。
+<pre class="java">
+/**
+ * 初始化熔断策略
+ */
+private static void initDegradeRule() {
+    List&lt;DegradeRule&gt; rules = new ArrayList&lt;&gt;();
+    DegradeRule rule = new DegradeRule(&quot;fallback&quot;);
+    //熔断策略为异常比例
+    rule.setGrade(CircuitBreakerStrategy.ERROR_RATIO.getType());
+    //异常比例阈值
+    rule.setCount(0.7);
+    //最小请求数
+    rule.setMinRequestAmount(100);
+    //统计市场，单位毫秒
+    rule.setStatIntervalMs(30000);
+    //熔断市场，单位秒
+    rule.setTimeWindow(10);
+    rules.add(rule);
+    DegradeRuleManager.loadRules(rules);
+}</pre>
+<br />
+2. 在&nbsp;DeptFeignController 的 get() 方法中调用 initDegradeRule() 方法初始化熔断规则，代码如下。
+<pre class="java">
+@RequestMapping(value = &quot;consumer/feign/dept/get/{id}&quot;, method = RequestMethod.GET)
+@SentinelResource(value = &quot;fallback&quot;, fallback = &quot;handlerFallback&quot;)
+public CommonResult&lt;Dept&gt; get(@PathVariable(&quot;id&quot;) int id) {
+    initDegradeRule();
+    monitor();
+    System.out.println(&quot;---------&gt;&gt;&gt;&gt;主业务逻辑&quot;);
+    CommonResult&lt;Dept&gt; result = deptFeignService.get(id);
+    if (id == 6) {
+        System.err.println(&quot;---------&gt;&gt;&gt;&gt;主业务逻辑，抛出非法参数异常&quot;);
+        throw new IllegalArgumentException(&quot;IllegalArgumentException，非法参数异常....&quot;);
+        //如果查到的记录也是 null 也控制正异常
+    } else if (result.getData() == null) {
+        System.err.println(&quot;---------&gt;&gt;&gt;&gt;主业务逻辑，抛出空指针异常&quot;);
+        throw new NullPointerException(&quot;NullPointerException，该ID没有对应记录,空指针异常&quot;);
+    }
+    return result;
+}</pre>
+<br />
+3. 重启&nbsp;spring-cloud-alibaba-consumer-mysql-8803，使用浏览器访问&ldquo;http://localhost:8803/consumer/feign/dept/get/1&rdquo;，结果如下。
+<pre class="info-box">
+&quot;code&quot;:200,&quot;message&quot;:&quot;from mysql,serverPort:  8003&quot;,&quot;data&quot;:{&quot;deptNo&quot;:1,&quot;deptName&quot;:&quot;开发部&quot;,&quot;dbSource&quot;:&quot;spring_cloud_db2&quot;}}</pre>
+<br />
+4. 使用浏览器访问 Sentinel 控制主页，点击&ldquo;熔断规则&rdquo;查看熔断规则列表，结果如下图。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Sentinel 代码定义的熔断规则" src="../uploads/allimg/211210/1025234414-18_2.png" /><br />
+	图19：Sentinel 代码定义熔断规则</div>
+<br />
+从上图我们看到，通过代码也能够为资源定义熔断规则。</div>
+			<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="../view/niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/49_3.html" title="Go语言goto语句——跳转到指定的标签" target="_blank">Go语言goto语句——跳转到指定的标签</a></li>
+<li><a href="../view/vip_2272_2.html" title="C++类继承时的作用域嵌套，破解C++继承的一切秘密！" target="_blank">C++类继承时的作用域嵌套，破解C++继承的一切秘密！</a></li>
+<li><a href="../view/3037_2.html" title="C# DataGridView：数据表格控件数据绑定" target="_blank">C# DataGridView：数据表格控件数据绑定</a></li>
+<li><a href="../view/3732_2.html" title="磁盘配额启动的前期准备（设置挂载参数usrquota和grpquota）" target="_blank">磁盘配额启动的前期准备（设置挂载参数usrquota和grpquota）</a></li>
+<li><a href="../view/8117_2.html" title="主流Java ORM框架有哪些？" target="_blank">主流Java ORM框架有哪些？</a></li>
+<li><a href="../ml_alg/knn_2.html" title="KNN最邻近分类算法" target="_blank">KNN最邻近分类算法</a></li>
+<li><a href="../csharp/break-continue-goto_2.html" title="C# break、continue、goto：跳出循环" target="_blank">C# break、continue、goto：跳出循环</a></li>
+</ul>
+</div>
+		</div>
+		
+	</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9500;
+window.arcId = "ede6AJ5/aFPf3RSMgP6esKuhvXi0IUZhPWKBiqjzize4tc1six/1ilaQ4SY";
+window.typeidChain = "434";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="../view/8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="../view/8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="../view/8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="../view/9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="../view/8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="https://m.biancheng.net/templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/springcloud/nacos.html";
+window.nextPageURL = "/springcloud/seata.html";
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Linux parted命令用法详解：创建分区</title>
+<meta name="description" content="parted 命令 是可以在命令行直接分区和格式化的，不过parted交互模式才是更加常用的命令方式。命令如下： [rcxDt@localhost ~]# parted 硬盘设备文件名 #进入交互模式 例如： [root@localhost ~]#" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../linux_tutorial/linux_tutorial.html">Linux</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href='../linux_tutorial/10/10.html'>Linux简介</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href='../linux_tutorial/20/20.html'>Linux安装</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href='../linux_tutorial/file_content/file_content.html'>Linux文件和目录管理</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href='../linux_tutorial/bale_compress/bale_compress.html'>Linux打包（归档）和压缩</a>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href='../linux_tutorial/40/40.html'>Vim文本编辑器</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href='../linux_tutorial/text_processing/text_processing.html'>Linux文本处理（Linux三剑客）</a>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href='../linux_tutorial/50/50.html'>Linux软件安装</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href='../linux_tutorial/60/60.html'>Linux用户和用户组管理</a>
+</dd>
+<dd>
+<span class="channel-num">9</span>
+<a href='../linux_tutorial/70/70.html'>Linux权限管理</a>
+</dd>
+<dd class="this"> <span class="channel-num">10</span> <a href="../linux_tutorial/80/80.html">Linux文件系统管理</a> </dd><dl class="dl-sub"><dd>10.1 <a href="879.html">深度探究硬盘的内部结构</a></dd><dd>10.2 <a href="vip_7665.html">Linux常见的文件系统有哪些，CentOS采用哪种文件系统？</a><span class="iconfont iconfont-vip2"></span></dd><dd>10.3 <a href="vip_5079.html">Linux系统是如何识别硬盘设备和硬盘分区的？</a><span class="iconfont iconfont-vip2"></span></dd><dd>10.4 <a href="883.html">Linux查看文件系统硬盘使用情况（df命令）</a></dd><dd>10.5 <a href="884.html">Linux统计目录或文件所占磁盘空间大小（du命令）</a></dd><dd>10.6 <a href="885.html">Linux挂载文件系统（mount命令）</a></dd><dd>10.7 <a href="vip_5080.html">给Linux系统挂载光盘</a><span class="iconfont iconfont-vip2"></span></dd><dd>10.8 <a href="vip_5081.html">给Linux系统挂载U盘</a><span class="iconfont iconfont-vip2"></span></dd><dd>10.9 <a href="vip_5082.html">Linux开机自动挂载硬件设备（配置/etc/fstab文件）</a><span class="iconfont iconfont-vip2"></span></dd><dd>10.10 <a href="vip_5083.html">修改/etc/fstab文件出错导致Linux不能启动，该怎么办？</a><span class="iconfont iconfont-vip2"></span></dd><dd>10.11 <a href="886.html">Linux卸载文件系统（umount命令）</a></dd><dd>10.12 <a href="887.html">Linux检测和修复文件系统（fsck命令）</a></dd><dd>10.13 <a href="889.html">Linux查看文件系统详细信息（dumpe2fs命令）</a></dd><dd>10.14 <a href="891.html">Linux给硬盘分区（fdisk命令）</a></dd><dd>10.15 <a href="vip_5087.html">Linux fdisk创建分区（主分区、扩展分区和逻辑分区）</a><span class="iconfont iconfont-vip2"></span></dd><dd>10.16 <a href="905.html">Linux对大容量硬盘分区（parted命令）</a></dd><dd>10.17 <a href="898.html">linux格式化分区（mkfs命令）</a></dd><dd>10.18 <a href="3706.html">Linux格式化分区（mke2fs命令）</a></dd><dd>10.19 <a href="6105.html">Linux虚拟内存和物理内存</a></dd><dd>10.20 <a href="vip_7666.html">Linux如何建立交换分区（swap分区）？</a><span class="iconfont iconfont-vip2"></span></dd></dl>
+<dd>
+<span class="channel-num">11</span>
+<a href='../linux_tutorial/90/90.html'>Linux高级文件系统管理</a>
+</dd>
+<dd>
+<span class="channel-num">12</span>
+<a href='../linux_tutorial/14/14.html'>Linux系统管理</a>
+</dd>
+<dd>
+<span class="channel-num">13</span>
+<a href='../linux_tutorial/17/17.html'>Linux备份与恢复</a>
+</dd>
+<dd>
+<span class="channel-num">14</span>
+<a href='../linux_tutorial/13/13.html'>Linux系统服务管理</a>
+</dd>
+<dd>
+<span class="channel-num">15</span>
+<a href='../linux_tutorial/15/15.html'>Linux系统日志管理</a>
+</dd>
+<dd>
+<span class="channel-num">16</span>
+<a href='../linux_tutorial/12/12.html'>Linux启动管理</a>
+</dd>
+<dd>
+<span class="channel-num">17</span>
+<a href='../linux_tutorial/16/16.html'>LAMP环境搭建和LNMP环境搭建</a>
+</dd>
+<dd>
+<span class="channel-num">18</span>
+<a href='../linux_tutorial/18/18.html'>SELinux管理</a>
+</dd>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../linux_tutorial/linux_tutorial.html">Linux</a> &gt; <a href="../linux_tutorial/80/80.html">Linux文件系统管理</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Linux parted命令用法详解：创建分区</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">虽然我们可以使用 fdisk命令对硬盘进行快速的分区，但对高于 2TB 的硬盘分区，此命令却无能为力，此时就需要使用 parted 命令。<br />
+<br />
+<span style="color: rgb(0, 128, 0);">parted 命令</span>是可以在命令行直接分区和格式化的，不过 parted 交互模式才是更加常用的命令方式，进入交互模式的方法如下：<br />
+<p class="info-box">
+[root@localhost ~]# parted 硬盘设备文件名<br />
+#进入交互模式</p>
+例如：
+<p class="info-box">
+[root@localhost ~]# parted /dev/sdb<br />
+#打算继续划分/dev/sdb硬盘<br />
+GNU Parted 2.1<br />
+使用/dev/sdb<br />
+Welcome to GNU Parted! Type &#39;help&#39; to view a list of commands.<br />
+(parted)&nbsp; &nbsp;&lt;--parted 的等待输入交互命令的位置，输入 help，可以看到在交互模式下支持的所有命令</p>
+parted 交互命令比较多，我们介绍常见的命令，如表 1 所示。<br />
+<br />
+<table>
+<caption>
+表 1 parted常见的交互命令</caption>
+<tbody>
+<tr>
+<th>
+parted交互命令</th>
+<th>
+说&nbsp;明</th>
+</tr>
+<tr>
+<td>
+check NUMBER</td>
+<td>
+做一次简单的文件系统检测</td>
+</tr>
+<tr>
+<td>
+cp [FROM-DEVICE] FROM-NUMBER TO-NUMBER</td>
+<td>
+复制文件系统到另一个分区</td>
+</tr>
+<tr>
+<td>
+help [COMMAND]</td>
+<td>
+显示所有的命令帮助</td>
+</tr>
+<tr>
+<td>
+mklabel,mktable LABEL-TYPE</td>
+<td>
+创建新的磁盘卷标（分区表）</td>
+</tr>
+<tr>
+<td>
+mkfs NUMBER FS-TYPE</td>
+<td>
+在分区上建立文件系统</td>
+</tr>
+<tr>
+<td>
+mkpart PART-TYPE [FS-TYPE] START END</td>
+<td>
+创建一个分区</td>
+</tr>
+<tr>
+<td>
+mkpartfs PART-TYPE FS-TYPE START END</td>
+<td>
+创建分区，并建立文件系统</td>
+</tr>
+<tr>
+<td>
+move NUMBER START END</td>
+<td>
+移动分区</td>
+</tr>
+<tr>
+<td>
+name NUMBER NAME</td>
+<td>
+给分区命名</td>
+</tr>
+<tr>
+<td>
+print [devices|free|list,all|NUMBER]</td>
+<td>
+显示分区表、活动设备、空闲空间、所有分区</td>
+</tr>
+<tr>
+<td>
+quit</td>
+<td>
+退出</td>
+</tr>
+<tr>
+<td>
+rescue START END</td>
+<td>
+修复丢失的分区</td>
+</tr>
+<tr>
+<td>
+resize NUMBER START END</td>
+<td>
+修改分区大小</td>
+</tr>
+<tr>
+<td>
+rm NUMBER</td>
+<td>
+删除分区</td>
+</tr>
+<tr>
+<td>
+select DEVICE</td>
+<td>
+选择需要编辑的设备</td>
+</tr>
+<tr>
+<td>
+set NUMBER FLAG STATE</td>
+<td>
+改变分区标记</td>
+</tr>
+<tr>
+<td>
+toggle [NUMBER [FLAG]]</td>
+<td>
+切换分区表的状态</td>
+</tr>
+<tr>
+<td>
+unit UNIT</td>
+<td>
+设置默认的单位</td>
+</tr>
+<tr>
+<td>
+Version</td>
+<td>
+显示版本</td>
+</tr>
+</tbody>
+</table>
+<br />
+【例 1】查看分区表
+<p class="info-box">
+(parted) print<br />
+#进入print指令<br />
+Model: VMware, VMware Virtual S (scsi)<br />
+#硬盘参数，是虚拟机<br />
+Disk/dev/sdb: 21.5GB<br />
+#硬盘大小<br />
+Sector size (logical/physical): 512B/512B<br />
+#扇区大小<br />
+Partition Table: msdos<br />
+#分区表类型，是MBR分区表<br />
+Number Start End Size Type File system 标志<br />
+1 32.3kB 5379MB 5379MB primary<br />
+2 5379MB 21.5GB 16.1GB extended<br />
+5 5379MB 7534MB 2155MB logical ext4<br />
+6 7534MB 9689MB 2155MB logical ext4<br />
+#看到了我们使用fdisk命令创建的分区，其中1分区没被格式化；2分区是扩展分区，不能被格式化</p>
+使用 print 命令可以査看分区表信息，包括硬盘参数、硬盘大小、扇区大小、分区表类型和分区信息。分区信息共有 7 列，分别如下：
+<ol>
+<li>
+Number：分区号，比如，1号就代表 /dec/sdb1；</li>
+<li>
+Start：分区起始位置。这里不再像 fdisk 那样用柱面表示，使用字节表示更加直观；</li>
+<li>
+End：分区结束位置；</li>
+<li>
+Size：分区大小；</li>
+<li>
+Type：分区类型，有 primary、extended、logical 等类型；</li>
+<li>
+Filesystem：文件系统类型；</li>
+<li>
+标志：分区的标记。</li>
+</ol>
+<br />
+【例 2】修改成 GPT 分区表
+<p class="info-box">
+(partcd) mklabel gpt<br />
+#修改分区表命令<br />
+警告：正在使用/dev/sdb上的分区。由于/dev/sdb分区已经挂载，所以有警告。注意，如果强制修改，那么原有分区及数据会消失<br />
+忽略/Ignore/放弃/Cancel? ignore<br />
+#输入ignore忽略报错<br />
+警告：The existing disk label on /dev/sdb will be destroyed and all data on this disk will be lost. Do you want to continue?<br />
+是/Yes/否/No? yes<br />
+#输入 yes<br />
+警告：WARNING: the kernel failed to re-read the partition table on /dev/sdb (设 备或资源忙）.As a result, it may not reflect all of your changes until after reboot.<br />
+#下次重启后才能生效<br />
+(parted) print<br />
+#查看一下分区表<br />
+Model: VMware, VMware Virtual S (scsi)<br />
+Disk /dev/sdb: 21.5GB<br />
+Sector size (logical/physical): 512B/512B<br />
+Partition Table: gpt<br />
+#分区表已经变成 GPT<br />
+Number Start End Size File system Name 标志<br />
+#所有的分区都消失了</p>
+修改了分区表，如果这块硬盘上已经有分区了，那么原有分区和分区中的数据都会消失，而且需要重启系统才能生效。<br />
+<br />
+另外，我们转换分区表的目的是支持大于 2TB 的分区，如果分区并没有大于 2TB，那么这一步是可以不执行的。<br />
+<p class="info-box">
+注意，一定要把 /etc/fstab 文件和原有分区中的内容删除才能重启，否则会报错。</p>
+<br />
+【例 3】建立分区<br />
+因为修改过了分区表，所以/dev/sdb硬盘中的所有数据都消失了，我们就可以重新对这块硬盘分区了。不过，在建立分区时，默认文件系统就只能是 ext2 了。命令如下：<br />
+<p class="info-box">
+(parted)mkpart<br />
+#输入创建分区命令，后面不要参数，全部靠交互<br />
+指定<br />
+分区名称？ []?disk1<br />
+#分区名称，这里命名为disk 1<br />
+文件系统系统？ [ext2]?<br />
+#文件系统类型，直接回车，使用默认文件系统ext2<br />
+起始点？ 1MB<br />
+#分区从1MB开始<br />
+结束点？5GB分区到5GB结束<br />
+#分区完成<br />
+(parted) print<br />
+#查看一下<br />
+Model: VMware, VMware Virtual S (scsi)<br />
+Disk/dev/sdb: 21.5GB<br />
+Sector size (logical/physical): 512B/512B Partition Table: gpt<br />
+Number Start End Size Rle system Name 标志<br />
+1 1049kB 5000MB 4999MB disk1<br />
+#分区1已经出现</p>
+不知道大家有没有注意到，我们现在用 print 查看的分区和第一次查看 MBR 分区表的分区时有些不一样了，少了 Type 这个字段，也就是分区类型字段，多了 Name（分区名）字段。分区类型是用于标识主分区、扩展分区和逻辑分区的，不过这种标识只在 MBR 分区表中使用，现在已经变成了 GPT 分区表，所以就不再有 Type 类型了。<br />
+<br />
+【例 4】建立文件系统<br />
+分区分完后，还需要进行格式化。我们知道，如果使用 parted 交互命令格式化，则只能格式化成 ext2 文件系统。我们在这里要演示一下 parted 命令的格式化方法，所以就格式化成 ext2 文件系统。命令如下：<br />
+<p class="info-box">
+(parted) mkfs<br />
+#格式化命令（很奇怪，也是mkfs，但是这只是parted的交互命令）<br />
+WARNING: you are attempting to use parted to operate on (mkfs) a file system.<br />
+parted&#39;s file system manipulation code is not as robust as what you&#39;ll find in<br />
+dedicated, file-system-specific packages like e2fsprogs. We recommend<br />
+you use parted only to manipulate partition tables, whenever possible.<br />
+Support for performing most operations on most types of file systems<br />
+will be removed in an upcoming release.<br />
+警告：The existing file system will be destroyed and all data on the partition will be lost. Do you want to continue?<br />
+是/Yes/否/No? yes<br />
+#警告你格式化丟失，没关系，已经丢失过了<br />
+分区编号？ 1<br />
+文件系统类型 [ext2]?<br />
+#指定文件系统类型，写别的也没用，直接回车<br />
+(parted) print #格式化完成，查看一下<br />
+Model: VMware, VMware Virtual S (scsi)<br />
+Disk/dev/sdb: 21,5GB<br />
+Sector size (logical/physical): 512B/512B<br />
+Partition Table: gpt<br />
+Number Start End Size File system Name标志<br />
+1 1049kB 5000MB 4999MB ext2 diski<br />
+#拥有了文件系统</p>
+如果要格式化成 ext4 文件系统，那么请 mkfs 命令帮忙吧（注意：不是 parted 交互命令中的 mkfs，而是系统命令 mkfs)。<br />
+<br />
+【例 5】调整分区大小<br />
+parted 命令还有一大优势，就是可以调整分区的大小（在 Windows 中也可以实现，不过要么需要转换成动态磁盘，要么需要依赖第三方工具，如硬盘分区魔术师）。起始 Linux 中 LVM 和 RAID 是可以支持分区调整的，不过这两种方法也可以看成动态磁盘方法，使用 parted 命令调整分区更加简单。<br />
+<br />
+注意，parted 调整已经挂载使用的分区时，是不会影响分区中的数据的，也就是说，数据不会丢失。但是一定要先卸载分区，再调整分区大小，否则数据是会出现问题的。另外，要调整大小的分区必须已经建立了文件系统（格式化），否则会报错。<br />
+<br />
+命令如下：
+<p class="info-box">
+(parted) resize<br />
+分区编号？ 1<br />
+#指定要修改的分区编号<br />
+起始点？ [1049kB]? 1MB<br />
+#分区起始位置<br />
+结束点？ [5000MB]? 6GB<br />
+分区结束位置<br />
+(parted) print<br />
+#查看一下<br />
+Model: VMware, VMware Virtual S (scsi)<br />
+Disk/dev/sdb: 21,5GB<br />
+Sector size (logical/physical): 512B/512B<br />
+Partition Table: gpt<br />
+Number Start End Size File system Name标志<br />
+1 1049kB 6000MB 5999MB ext2 diski<br />
+#分区大小改变</p>
+<br />
+【例 6】删除分区
+<p class="info-box">
+命令如下：<br />
+(parted) rm<br />
+#删除分区命令<br />
+分区编号？ 1<br />
+#指定分区编号<br />
+(parted) print<br />
+#查看一下<br />
+Model: VMware, VMware Virtual S (scsi)<br />
+Disk/dev/sdb: 21.5GB<br />
+Sector size (logical/physical): 512B/512B<br />
+Partition Table: gpt<br />
+Number Start End Size File system Name 标志 #分区消失</p>
+要注意的是，parted 中所有的操作都是立即生效的，没有保存生效的概念。这一点和 fdisk 交互命令明显不同，所以做的所有操作大家要加倍小心。<br />
+<br />
+那么，到底是使用 fdisk 命令，还是使用 parted 命令进行分区呢？这完全看个人习惯，我们更加习惯使用 fdisk 命令。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="615.html" title="vi退出命令" target="_blank">vi退出命令</a></li>
+<li><a href="../mysql/mod.html" title="MySQL MOD函数：求余数" target="_blank">MySQL MOD函数：求余数</a></li>
+<li><a href="2504.html" title="Shell let命令：对整数进行数学运算" target="_blank">Shell let命令：对整数进行数学运算</a></li>
+<li><a href="3970.html" title="打包（归档）和压缩（包含两者的区别）" target="_blank">打包（归档）和压缩（包含两者的区别）</a></li>
+<li><a href="../maven2/idea-import-maven.html" title="IDEA导入Maven项目" target="_blank">IDEA导入Maven项目</a></li>
+<li><a href="../pillow/add-watermark.html" title="Pillow为图片添加水印" target="_blank">Pillow为图片添加水印</a></li>
+<li><a href="../c/atol.html" title="C语言atol()：将字符串转换为长整数（long int）" target="_blank">C语言atol()：将字符串转换为长整数（long int）</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 905;
+window.arcId = "29e1FrvyvhlMRdw5HQWA2kRpbIoQneL+rq4SaxA62LOTyYyWY+fYztNdvQ";
+window.typeidChain = "87|77";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/view/vip_5087.html";
+window.nextPageURL = "/view/898.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

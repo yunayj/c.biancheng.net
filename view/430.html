@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++11 shared_ptr（智能指针）详解</title>
+<meta name="description" content="要确保用 new 动态分配的内存空间在程序的各条执行路径都能被释放是一件麻烦的事情。C++ 11 模板库的 memory 头文件中定义的智能指针，即 shared _ptr 模板，就是用来部分解决这个问题的" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++11 shared_ptr（智能指针）详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">要确保用 new 动态分配的内存空间在程序的各条执行路径都能被释放是一件麻烦的事情。<a href='../cplus/cplus.html' target='_blank'>C++</a> 11 模板库的 &lt;memory&gt; 头文件中定义的智能<a href='../c/80/80.html' target='_blank'>指针</a>，即 shared _ptr 模板，就是用来部分解决这个问题的。<br />
+<br />
+只要将 new 运算符返回的指针 p 交给一个 shared_ptr 对象&ldquo;托管&rdquo;，就不必担心在哪里写<code>delete p</code>语句&mdash;&mdash;实际上根本不需要编写这条语句，托管 p 的 shared_ptr 对象在消亡时会自动执行<code>delete p</code>。而且，该 shared_ptr 对象能像指针 p &mdash;样使用，即假设托管 p 的 shared_ptr 对象叫作 ptr，那么 *ptr 就是 p 指向的对象。<br />
+<br />
+通过 shared_ptr 的构造函数，可以让 shared_ptr 对象托管一个 new 运算符返回的指针，写法如下：
+<p class="info-box">
+shared_ptr&lt;T&gt; ptr(new T);&nbsp; // T 可以是 int、char、类等各种类型</p>
+此后，ptr 就可以像 T* 类型的指针一样使用，即 *ptr 就是用 new 动态分配的那个对象。<br />
+<br />
+多个 shared_ptr 对象可以共同托管一个指针 p，当所有曾经托管 p 的 shared_ptr 对象都解除了对其的托管时，就会执行<code>delete p</code>。<br />
+<br />
+例如下面的程序：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+class A
+{
+public:
+    int i;
+    A(int n):i(n) { };
+    ~A() { cout &lt;&lt; i &lt;&lt; &quot; &quot; &lt;&lt; &quot;destructed&quot; &lt;&lt; endl; }
+};
+int main()
+{
+    shared_ptr&lt;A&gt; sp1(new A(2)); //A(2)由sp1托管，
+    shared_ptr&lt;A&gt; sp2(sp1);       //A(2)同时交由sp2托管
+    shared_ptr&lt;A&gt; sp3;
+    sp3 = sp2;   //A(2)同时交由sp3托管
+    cout &lt;&lt; sp1-&gt;i &lt;&lt; &quot;,&quot; &lt;&lt; sp2-&gt;i &lt;&lt;&quot;,&quot; &lt;&lt; sp3-&gt;i &lt;&lt; endl;
+    A * p = sp3.get();      // get返回托管的指针，p 指向 A(2)
+    cout &lt;&lt; p-&gt;i &lt;&lt; endl;  //输出 2
+    sp1.reset(new A(3));    // reset导致托管新的指针, 此时sp1托管A(3)
+    sp2.reset(new A(4));    // sp2托管A(4)
+    cout &lt;&lt; sp1-&gt;i &lt;&lt; endl; //输出 3
+    sp3.reset(new A(5));    // sp3托管A(5),A(2)无人托管，被delete
+    cout &lt;&lt; &quot;end&quot; &lt;&lt; endl;
+    return 0;
+}</pre>
+程序的输出结果如下：<br />
+2,2,2<br />
+2<br />
+3<br />
+2 destructed<br />
+end<br />
+5 destructed<br />
+4 destructed<br />
+3 destructed<br />
+<br />
+可以用第 14 行及第 16 行的形式让多个 sharecLptr 对象托管同一个指针。这多个 shared_ptr 对象会共享一个对共同托管的指针的&ldquo;托管计数&rdquo;。有 n 个 shared_ptr 对象托管同一个指针 p，则 p 的托管计数就是 n。当一个指针的托管计数减为 0 时，该指针会被释放。shared_ptr 对象消亡或托管了新的指针，都会导致其原托管指针的托管计数减 1。<br />
+<br />
+第 20、21 行，shared_ptr 的 reset 成员函数可以使得对象解除对原托管指针的托管（如果有的话），并托管新的指针。原指针的托管计数会减 1。<br />
+<br />
+输出的第 4 行说明，用 new 创建的动态对象 A(2) 被释放了。程序中没有写 delete 语句，而 A(2) 被释放，是因为程序的第 23 行执行后，已经没有 shared_ptr 对象托管 A(2)，于是 A(2) 的托管计数变为 0。最后一个解除对 A(2) 托管的 shared_ptr 对象会释放 A(2)。<br />
+<br />
+main 函数结束时，sp1、sp2、sp3 对象消亡，各自将其托管的指针的托管计数减为 0，并且释放其托管的指针，于是会有以下输出：<br />
+5 destructed<br />
+4 destructed<br />
+3 destructed<br />
+<br />
+只有指向动态分配的对象的指针才能交给 shared_ptr 对象托管。将指向普通局部变量、全局变量的指针交给 shared_ptr 托管，编译时不会有问题，但程序运行时会出错，因为不能析构一个并没有指向动态分配的内存空间的指针。<br />
+<br />
+注意，不能用下面的方式使得两个 shared_ptr 对象托管同一个指针：
+<pre class="cpp">
+A* p = new A(10);
+shared_ptr &lt;A&gt; sp1(p), sp2(p);</pre>
+sp1 和 sp2 并不会共享同一个对 p 的托管计数，而是各自将对 p 的托管计数都记为 1（sp2 无法知道 p 已经被 sp1 托管过）。这样，当 sp1 消亡时要析构 p，sp2 消亡时要再次析构 p，这会导致程序崩溃。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1913.html" title="以太坊是什么？为什么说它是区块链2.0的代表" target="_blank">以太坊是什么？为什么说它是区块链2.0的代表</a></li>
+<li><a href="2184.html" title="Python位运算符详解" target="_blank">Python位运算符详解</a></li>
+<li><a href="vip_3233.html" title="如何编写自己的Shell配置文件（配置脚本）？" target="_blank">如何编写自己的Shell配置文件（配置脚本）？</a></li>
+<li><a href="../dll/vip_8709.html" title="Linux下显式调用动态链接库" target="_blank">Linux下显式调用动态链接库</a></li>
+<li><a href="../spring_mvc/interceptor.html" title="Spring MVC拦截器（Interceptor）" target="_blank">Spring MVC拦截器（Interceptor）</a></li>
+<li><a href="wnqg7p.html" title="DevOps到底是什么？" target="_blank">DevOps到底是什么？</a></li>
+<li><a href="n0ww2v5.html" title="SYN攻击是什么？如何避免？" target="_blank">SYN攻击是什么？如何避免？</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 430;
+window.arcId = "bd15B15Z7s1+fT+L7Ht1/ubIKXC7AUg50hLQfJf6rPyLY0HOcp5LCYcbDA";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

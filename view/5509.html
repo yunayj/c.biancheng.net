@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Spring Boot Admin的介绍及使用</title>
+<meta name="description" content="Spring Boot 有一个非常好用的监控和管理的源软件，这个软件就是 Spring Boot Admin。该软件能够将 Actuator 中的信息进行界面化的展示，也可以监控所有 Spring Boot 应用的健康状况，提供实时警" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Spring Boot Admin的介绍及使用</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body"><a href='../spring/spring.html' target='_blank'>Spring</a> Boot 有一个非常好用的监控和管理的源软件，这个软件就是 Spring Boot Admin。该软件能够将 Actuator 中的信息进行界面化的展示，也可以监控所有 Spring Boot 应用的健康状况，提供实时警报功能。<br />
+<br />
+主要的功能点有：<br />
+<ul>
+<li>
+显示应用程序的监控状态</li>
+<li>
+应用程序上下线监控</li>
+<li>
+查看 JVM，线程信息</li>
+<li>
+可视化的查看日志以及下载日志文件</li>
+<li>
+动态切换日志级别</li>
+<li>
+Http 请求信息跟踪</li>
+<li>
+其他功能点&hellip;&hellip;</li>
+</ul>
+<br />
+可点击&nbsp;<a href="https://github.com/codecentric/spring-boot-admin">https://github.com/codecentric/spring-boot-admin</a>&nbsp;更多了解 Spring-boot-admin。<br />
+<h2>
+创建Spring Boot Admin项目</h2>
+创建一个 Spring Boot 项目，用于展示各个服务中的监控信息，加上 Spring Boot Admin 的依赖，具体代码如下所示。
+<p class="info-box">
+&lt;dependency&gt;<br />
+&nbsp;&nbsp;&nbsp; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;<br />
+&nbsp;&nbsp;&nbsp; &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;<br />
+&lt;/dependency&gt;<br />
+&lt;dependency&gt;<br />
+&nbsp;&nbsp;&nbsp; &lt;groupId&gt;de.codecentric&lt;/groupId&gt;<br />
+&nbsp;&nbsp;&nbsp; &lt;artifactId&gt;spring-boot-admin-starter-server&lt;/artifactId&gt;<br />
+&nbsp;&nbsp;&nbsp; &lt;version&gt;2.0.2&lt;/version&gt;<br />
+&lt;/dependency&gt;</p>
+创建一个启动类，具体代码如下所示。
+<pre class="java">
+@EnableAdminServer
+@<a href='../spring_boot/spring_boot.html' target='_blank'>SpringBoot</a>Application
+public class App {
+    public static void main(String[] args) {
+        SpringApplication.run(App.class, args);
+    }
+}</pre>
+在属性文件中增加端口配置信息：
+<p class="info-box">
+server.port=9091</p>
+启动程序，访问 Web 地址 http://localhost:9091 就可以看到主页面了，这个时候是没有数据的，如图 1 所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="Spring Boot Admin主页" src="../uploads/allimg/190829/5-1ZR9125001O0.png" /><br />
+图 1&nbsp;&nbsp;Spring Boot Admin主页</div>
+<h2>
+将服务注册到 Spring Boot Admin</h2>
+创建一个 Spring Boot 项目，名称为 spring-boot-admin-client。添加 Spring Boot Admin Client 的 <a href='https://c.biancheng.net/maven/' target='_blank'>Maven</a> 依赖，代码如下所示。
+<p class="info-box">
+&lt;dependency&gt;<br />
+&nbsp;&nbsp;&nbsp; &lt;groupId&gt;de.codecentric&lt;/groupId&gt;<br />
+&nbsp;&nbsp;&nbsp; &lt;artifactId&gt;spring-boot-admin-starter-client&lt;/artifactId&gt;<br />
+&nbsp;&nbsp;&nbsp; &lt;version&gt;2.0.2&lt;/version&gt;<br />
+&lt;/dependency&gt;</p>
+然后在属性文件中添加下面的配置：
+<p class="info-box">
+server.port=9092<br />
+spring.boot.admin.client.url=http://localhost:9091</p>
+<br />
+spring.boot.admin.client.url：Spring Boot Admin 服务端地址。<br />
+<br />
+将服务注册到 Admin 之后我们就可以在 Admin 的 Web 页面中看到我们注册的服务信息了，如图 2 所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="Spring Boot Admin主页（有数据）" src="../uploads/allimg/190829/5-1ZR913002W26.png" /><br />
+图 2&nbsp;&nbsp;Spring Boot Admin主页（有数据）</div>
+<br />
+点击实例信息跳转到详细页面，可以查看更多的信息，如图 3 所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="Spring Boot Admin详情" src="../uploads/allimg/190829/5-1ZR9131004543.png" /><br />
+图 3&nbsp;&nbsp;Spring Boot Admin详情</div>
+<br />
+可以看到详情页面并没有展示丰富的监控数据，这是因为没有将 spring-boot-admin-client 的端点数据暴露出来。<br />
+<br />
+在 spring-boot-admin-client 中加入 actuator 的 Maven 依赖，代码如下所示。
+<p class="info-box">
+&lt;dependency&gt;<br />
+&nbsp;&nbsp;&nbsp; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;<br />
+&nbsp;&nbsp;&nbsp; &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;<br />
+&lt;/dependency&gt;</p>
+然后在属性文件中追加下面的配置：
+<p class="info-box">
+management.endpoints.web.exposure.include=*</p>
+management.endpoints.web.exposure.include：暴露所有的 actuator 端点信息重启 spring-boot-admin-client，我们就可以在详情页面看到更多的数据，如图 4 所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="Spring Boot Admin详情（有数据）" src="../uploads/allimg/190829/5-1ZR9131601Y2.png" /><br />
+图 4&nbsp;&nbsp;Spring Boot Admin详情（有数据）</div>
+<h2>
+监控内容介绍</h2>
+自定义的 Info 信息、健康状态、元数据，如图 5 所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="Spring Boot Admin数据展示（一）" src="../uploads/allimg/190829/5-1ZR9131Q6429.png" style="border-width: 1px; border-style: solid;" /><br />
+图 5&nbsp;&nbsp;Spring Boot Admin数据展示（一）</div>
+<br />
+CPU、线程等信息如图 6 所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="Spring Boot Admin数据展示（二）" src="../uploads/allimg/190829/5-1ZR9132140R8.png" style="border-width: 1px; border-style: solid;" /><br />
+图 6&nbsp;&nbsp;Spring Boot Admin数据展示（二）</div>
+<br />
+内存使用情况如图 7 所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="Spring Boot Admin数据展示（三）" src="../uploads/allimg/190829/5-1ZR91322501P.png" style="border-width: 1px; border-style: solid;" /><br />
+图 7&nbsp;&nbsp;Spring Boot Admin数据展示（三）</div>
+<br />
+配置信息如图 8 所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="Spring Boot Admin数据展示（四）" src="../uploads/allimg/190829/5-1ZR913254U91.png" style="border-width: 1px; border-style: solid;" /><br />
+图 8&nbsp;&nbsp;Spring Boot Admin数据展示（四）</div>
+<br />
+日志级别调整如图 9 所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="Spring Boot Admin数据展示（五）" src="../uploads/allimg/190829/5-1ZR913295E20.png" style="border-width: 1px; border-style: solid;" /><br />
+图 9&nbsp;&nbsp;Spring Boot Admin数据展示（五）</div>
+<br />
+Http请求信息如图 10 所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="Spring Boot Admin数据展示（六）" src="../uploads/allimg/190829/5-1ZR9134320348.png" style="border-width: 1px; border-style: solid;" /><br />
+图 10&nbsp;&nbsp;Spring Boot Admin数据展示（六）</div>
+<h2>
+如何在Admin中查看各个服务的日志</h2>
+Spring Boot Admin 提供了基于 Web 页面的方式实时查看服务输出的本地日志，前提是服务中配置了 logging.file。<br />
+<br />
+我们在 spring-boot-admin-client 的属性文件中增加下面的内容：
+<p class="info-box">
+logging.file=/Users/zhangsan/Downloads/spring-boot-admin-client.log</p>
+重启服务，就可以在 Admin Server 的 Web 页面中看到新加了一个 Logfile 菜单，如图 11 所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="Spring Boot Admin日志" src="../uploads/allimg/190829/5-1ZR9160446321.png" /><br />
+图 11&nbsp;&nbsp;Spring Boot Admin 日志</div>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="998.html" title="Java方法重载" target="_blank">Java方法重载</a></li>
+<li><a href="1052.html" title="Java验证用户名和密码" target="_blank">Java验证用户名和密码</a></li>
+<li><a href="1080.html" title="Linux nohup命令：后台命令脱离终端运行" target="_blank">Linux nohup命令：后台命令脱离终端运行</a></li>
+<li><a href="../matplotlib/math-express.html" title="Matplotlib数学表达式" target="_blank">Matplotlib数学表达式</a></li>
+<li><a href="9413.html" title="Qt控件和事件" target="_blank">Qt控件和事件</a></li>
+<li><a href="../c/atoi.html" title="C语言atoi()：将字符串转换为整数" target="_blank">C语言atoi()：将字符串转换为整数</a></li>
+<li><a href="6l3grgo.html" title="《单片机应用技术(C语言版)》第4版PDF下载（高清完整版）" target="_blank">《单片机应用技术(C语言版)》第4版PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 5509;
+window.arcId = "b57d9l22dNdk7tRrBnboFUC1ATCAMyttXJzaSpgVScDC/LatE3DCj68KZ30";
+window.typeidChain = "192|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

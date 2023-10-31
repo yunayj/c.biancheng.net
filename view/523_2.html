@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C++ hash(STL hash)及其函数模板用法详解</title>
+<meta name="description" content="如果在容器中保存对象及其关联的键，并且不用键来决定 键/对象 对的顺序，那就必须对键值釆用其他方式来确定元素在内存中的位置。如果使用像 string 这样的对象作为键，就会遇到一" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C++ hash(STL hash)及其函数模板用法详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">如果在容器中保存对象及其关联的键，并且不用键来决定 <span style="color:#008000;">键/对象</span> 对的顺序，那就必须对键值釆用其他方式来确定元素在内存中的位置。如果使用像 string 这样的对象作为键，就会遇到一些问题，可能的变量的数目是巨大的。具有 10 个字符的字母字符串可能的个数是 26<sup>10</sup>。这个索引范围没有多大用处。我们需要一种机制来将它变为可接受的范围；而且理想情况下，这个机制可以为每个键生成唯一的值。这也是哈希需要做的事情之一。<br />
+<br />
+哈希是用给定范围的基本类型的数据项，或者用像 string 这样的对象，生成整数值的过程。哈希产生的值叫作哈希值或哈希码，它们通常被用在容器中，用来确定表中对象的位置。像前面所说的那样，理想情况下，每个对象应该产生唯一的哈希值，但这一般是不可能的。当不同键值的个数大于可能的哈希值个数时，显然就会出现上面所说的这种情况，我们早晚会得到重复的哈希值。重复的哈希值也叫作碰撞。<br />
+<br />
+哈希不仅可以在容器中保存对象，它也被应用到很多其他地方，例如密码和加密数据的安全系统中，密码识别有时也包含哈希。在系统中保存明文密码是有很大风险的。保存密码的哈希值要比保存明文密码更安全，更能防范黑客。得到哈希值的黑客需要将哈希值转换为对他们有用的原始密码，而这是一个不可能完成的任务。因此<a href='../stl/stl_2.html' target='_blank'>STL</a>提供的对不同类型数据哈希的能力不仅可以用在关联容器上，也可以被用在更加广阔的场景中。<br />
+<br />
+虽然理解容器的哈希机制没在必要，但是这能让我们对它们能做些什么有一个基本的了解。哈希算法有很多，但却没有可以通用的。为某个场景确定合适的哈希算法并不总是简单。通常都需要对数据分割后再计算。这可能是最简单的处理键的算法了，不管什么类型的键，都会作为数值处理。所以哈希值可能是表达式k%m产生的。<br />
+<br />
+显然，这种方法最多允许有 m 个不同的哈希值，值的范围为 0 到 m-1。可以很容易地看到哪里会产生重复的哈希值。值为 k+m、k+2*m 的键会有重复的哈希值，m 值的选择对于减少重复哈希值的出现至关重要，而且可以保证值是均匀分布的。如果 m 是 2 的幂，也就是 2<sup>n</sup>，哈希值的最小位为 k 的 n 位。这显然不是一个好的结果，因为 k 的大多数位都没有影响到哈希值；理想情况下，键的所有数位应该都可以影响哈希结果。m 通常是一个质数，因为它可以使哈希值更加均匀地分布在这个范围内。<br />
+<br />
+另一种更好的计算哈希值的方式是选择一个常量 a，将它和 k 相乘，用 a*k 除以整数 m 来计算它的余数，然后从 (a*k)%m 的结果中选择一个长度值作为哈希值。显然 a 和 m 的选择是非常重要的。对于 32 位的计算机来说，m 通常选为 2<sup>32</sup>。乘数 a 是和 m 相近的质数，这就意味着 a 和 m 除了 1 之外没有其他的公共因子。此外，a 的二进制表示中头部和尾部不能为 0，否则会和其他头部有 0 或尾部有 0 的键值产生碰撞。基于这些原因，这个算法也被叫作<span style="color:#008000;">乘法哈希</span>。<br />
+<br />
+也有几个专门哈希字符串的算法。其中一个将字符串看作一定个数的单词，使用像乘法算法这样的方法来计算第一个单词的哈希值，然后加上下一个单词，再计算它的哈希值，重复这个过程，直到计算出所有单词最后的哈希值。
+<h2>
+	生成哈希值的函数</h2>
+functional 头文件中定义了无序关联容器使用的特例化 hash&lt;K&gt; 模板。hash&lt;K&gt; 模板定义了可以从 K 类型的对象生成哈希值的函数对象的类型。hash&lt;K&gt; 实例的成员函数&nbsp; operator()() 接受 K 类型的单个参数，然后返回 size_t 类型的哈希值。对于基本类型和<a href='../c/80/80_2.html' target='_blank'>指针</a>类型，也定义了特例化的 hash&lt;K&gt; 模板。<br />
+<br />
+hash&lt;K&gt; 模板专用的算法取决于实现，但是如果它们遵循 <a href='../cplus/cplus_2.html' target='_blank'>C++</a>14 标准的话，需要满足一些具体的要求。这些要求如下：<br />
+<ul>
+	<li>
+		不能拋出异常</li>
+	<li>
+		对于相等的键必须产生相等的哈希值</li>
+	<li>
+		对于不相等的键产生碰撞的可能性必须最小接近 size_t 最大值的倒数</li>
+</ul>
+<br />
+注意，相等键生成相等的哈希值只适用于单次执行。这也就意味着，在不同的场合允许给定的键可以生成不同的哈希值。这就使我们可以在哈希算法中使用随机数，当对密码进行哈希时，这是我们所希望使用的。注意，C++14 为了保持一致性并没有排除给定类型的键的哈希值等同于键的可能。在无序关联容器中，用哈希函数哈希整数值可能就是这种情况。<br />
+<br />
+下面是一个用 hash&lt;K&gt; 生成整数的哈希值的示例：<br />
+<pre class="cpp">
+std::hash&lt;int&gt; hash_int;// Function object to hash int
+std::vector&lt;int&gt; {-5, -2, 2, 5, 10};
+std::transform(std::begin(n), std::end(n),std::ostream_iterator&lt;size_t&gt; (std:: cout,&quot; &quot;),hash_int);</pre>
+这里使用 transform() 算法来哈希 vector 中的元素。transform() 参数中的前两个迭代器指定了被操作元素的范围，第三个参数是一个指定输出地址的迭代器，这里是一个 ostream 迭代器，最后一个参数是应用到范围元素上的函数对象 hash&lt;int&gt;。某次测试的输出结果为：<br />
+<p class="info-box">
+	554121069 2388331168 3958272823 3132668352 1833987007</p>
+在你的 C++ 编译器和库中，可能会产生不同的哈希值，所有的哈希值都是这样。下面是一个哈希浮点数值的示例：<br />
+<pre class="cpp">
+std::hash&lt;double&gt; hash_double;
+std::vector&lt;double&gt; x {3.14,-2.71828, 99.0, 1.61803399,6.62606957E-34};
+std::transform(std::begin(x), std::end(x),std::ostream_iterator&lt;size_t&gt;(std::cout,&quot; &quot;),hash_double);</pre>
+某次测试的输出结果为：<br />
+<p class="info-box">
+	4023697370 332724328 2014146765 3488612130 3968187275</p>
+指针也很容易哈希：<br />
+<pre class="cpp">
+std::hash&lt;Box*&gt; hash_box; // Box class as in Chapter 2
+Box box{1, 2, 3};
+std:: cout &lt;&lt; &quot;Hash value = &quot; &lt;&lt; hash_box (&amp;box)&lt;&lt;std::endl;    // Hash value = 2916986638</pre>
+可以用相同的函数对象来哈希智能指针：<br />
+<pre class="cpp">
+std::hash&lt;Box*&gt; hash_box; // Box class as in Chapter 2
+auto upbox = std::make_unique&lt;Box&gt;(1A 2, 3);
+std::cout &lt;&lt; &quot;Hash value = &quot; &lt;&lt; hash_box(upbox.get())&lt;&lt;std::endl; // Hash value = 1143026886</pre>
+这里调用 unique_ptr&lt;Box&gt; 对象的成员函数 get() 来获取保存自由存储区地址的原生指针，然后将它传给哈希函数。这里使用的 hash&lt;K&gt; 模板也是 unique_ptr&lt;T&gt; 和 shared_ptr&lt;T&gt; 对象的特例化模板。例如，可以对 unique_ptr&lt;Box&gt; 对象而不是对它所包含的原生指针进行哈希：<br />
+<pre class="cpp">
+std::hash&lt;std::unique_ptr&lt;Box&gt;&gt;hash_box; // Box class as in Chapter 2
+auto upbox = std::make_unique&lt;Box&gt;(1, 2, 3);
+std::cout &lt;&lt; &quot;Hash value = &quot;&lt;&lt; hash_box (upbox)&lt;&lt; std::endl; // Hash value = 4291053140</pre>
+原生指针和 unique_ptr 的哈希值是相同的。不要被这个误导，考虑到当一个类型的键没有具体的哈希函数时，这种对指针哈希的能力是很有用的。可以对地址进行哈希，而不是对对象自己。这和指针指向的对象无关。<br />
+<br />
+如果想在无序容器中以指向键的指针为键，而不是以键为键，保存一些对象，思考一下会发生什么。指向键的指针的哈希值和原始键的哈希值有很大的不同，因为它们的地址不同，因而无法用它来检索对象。需要一种可以为使用的任何类型的键生成哈希值的方式。如果键的类型是我们所定义的，我们有一个选择，可以用 STL 提供的哈希函数来为我们定义的类的数据成员生成哈希值。<br />
+<br />
+string 头文件中定义了一些特例化的 hash&lt;K&gt; 模板，它们会生成一些函数对象，这些函数对象生成表示字符串的对象的哈希值。有 4 个特例化的模板，它们分别对应于字符串类型：string、wstring、u16string 和 u32string。<br />
+<br />
+wstring 类型的字符串包含的是 wchar_t 类型的字符；u16string 类型包含的是 charl6_t 类型的字符，它是用 UTF-16 编码的 Unicode 字符；u32string 类型包含的是 char32_t 类型的字符，它是用 UTF-32 编码的 Unicode 字符。<br />
+<br />
+当然，字符类型 char、wchar_t、charl6_t 和 char32_t 都是C++14 中的基本类型。下面是一个对字符串对象进行哈希的示例:<br />
+<pre class="cpp">
+std::hash&lt;std::string&gt; hash_str;
+std::string food {&quot;corned beef&quot;};
+std::cout &lt;&lt; &quot;corned beef hash is &quot; &lt;&lt;hash_str (food) &lt;&lt;std::endl;</pre>
+这里生成了一个函数对象，它用和前面章节中示例相同的方式来哈希 string 对象。本次测试的输出结果如下：<br />
+<p class="info-box">
+	corned beef hash is 3803755380</p>
+这里对 C 风格字符串的哈希没有具体的规定。使用 const char* 类型的 hash&lt;T&gt; 模板会为指针进行特例化。如果想将 C 风格的字符串当作字符序列来哈希生成哈希值，可以先用它生成一个 string 对象，然后使用函数对象 hash&lt;string&gt;。<br />
+<br />
+代码段生成的哈希值都是非常大的数，这看起来对于确定对象在无序容器中的位置没有什么帮助。有几种方式可以用哈希值确定对象在容器中的位置。一个常见的用法是用哈希值的比特序列作为对象在表或树中的索引。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="185_3.html" title="数组之间的赋值，C语言数组之间赋值详解" target="_blank">数组之间的赋值，C语言数组之间赋值详解</a></li>
+<li><a href="682_2.html" title="C++ accumulate函数用法详解" target="_blank">C++ accumulate函数用法详解</a></li>
+<li><a href="868_2.html" title="Linux SetUID（SUID）文件特殊权限用法详解" target="_blank">Linux SetUID（SUID）文件特殊权限用法详解</a></li>
+<li><a href="vip_7082_2.html" title="Java高级应用之通过反射操作泛型" target="_blank">Java高级应用之通过反射操作泛型</a></li>
+<li><a href="7255_2.html" title="C++ STL迭代器适配器是什么？" target="_blank">C++ STL迭代器适配器是什么？</a></li>
+<li><a href="vip_7736_2.html" title="能用STL算法，绝不自己实现！" target="_blank">能用STL算法，绝不自己实现！</a></li>
+<li><a href="../jsp2/commons-fileupload_2.html" title="JSP文件上传（Commons-FileUpload）" target="_blank">JSP文件上传（Commons-FileUpload）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 523;
+window.arcId = "a49702wOdEBB33Pd7QwFGHVso6mBeakY2uh+7bQF7smzc31ZigBlMnV4dg";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

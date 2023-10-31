@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Linux RPM包安装、卸载和升级（rpm命令）详解</title>
+<meta name="description" content="本节讲解如何使用 rpm 命令对 RPM 二进制包进行安装、卸载和升级操作。 我们以安装 apache 程序为例。因为后续章节还会介绍使用源码包的方式安装 apache 程序，读者可以直观地感受到源" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../linux_tutorial/linux_tutorial.html">Linux</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href='../linux_tutorial/10/10.html'>Linux简介</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href='../linux_tutorial/20/20.html'>Linux安装</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href='../linux_tutorial/file_content/file_content.html'>Linux文件和目录管理</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href='../linux_tutorial/bale_compress/bale_compress.html'>Linux打包（归档）和压缩</a>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href='../linux_tutorial/40/40.html'>Vim文本编辑器</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href='../linux_tutorial/text_processing/text_processing.html'>Linux文本处理（Linux三剑客）</a>
+</dd>
+<dd class="this"> <span class="channel-num">7</span> <a href="../linux_tutorial/50/50.html">Linux软件安装</a> </dd><dl class="dl-sub"><dd>7.1 <a href="814.html">Linux软件包</a></dd><dd>7.2 <a href="2868.html">Linux RPM包统一命名规则</a></dd><dd>7.3 <a href="2872.html">Linux RPM包安装、卸载和升级</a></dd><dd>7.4 <a href="817.html">Linux rpm命令查询软件包</a></dd><dd>7.5 <a href="820.html">Linux RPM包验证和数字证书</a></dd><dd>7.6 <a href="822.html">Linux提取RPM包</a></dd><dd>7.7 <a href="2921.html">Linux SRPM源码包安装</a></dd><dd>7.8 <a href="vip_5065.html">Linux重建RPM数据库（修复损坏的RPM数据库）</a><span class="iconfont iconfont-vip2"></span></dd><dd>7.9 <a href="vip_5066.html">RPM包的依赖性及其解决方案</a><span class="iconfont iconfont-vip2"></span></dd><dd>7.10 <a href="2931.html">Linux yum源及配置</a></dd><dd>7.11 <a href="825.html">Linux yum命令</a></dd><dd>7.12 <a href="826.html">Linux yum管理软件组</a></dd><dd>7.13 <a href="2952.html">Linux源码包安装和卸载</a></dd><dd>7.14 <a href="832.html">Linux源码包升级</a></dd><dd>7.15 <a href="vip_5067.html">RPM包和源码包，究竟应该选择哪种安装方式？</a><span class="iconfont iconfont-vip2"></span></dd><dd>7.16 <a href="vip_5072.html">Linux函数库（静态函数库和动态函数库）及其安装过程</a><span class="iconfont iconfont-vip2"></span></dd><dd>7.17 <a href="vip_5073.html">Linux脚本程序包及安装方法详解（以webmin为例）</a><span class="iconfont iconfont-vip2"></span></dd></dl>
+<dd>
+<span class="channel-num">8</span>
+<a href='../linux_tutorial/60/60.html'>Linux用户和用户组管理</a>
+</dd>
+<dd>
+<span class="channel-num">9</span>
+<a href='../linux_tutorial/70/70.html'>Linux权限管理</a>
+</dd>
+<dd>
+<span class="channel-num">10</span>
+<a href='../linux_tutorial/80/80.html'>Linux文件系统管理</a>
+</dd>
+<dd>
+<span class="channel-num">11</span>
+<a href='../linux_tutorial/90/90.html'>Linux高级文件系统管理</a>
+</dd>
+<dd>
+<span class="channel-num">12</span>
+<a href='../linux_tutorial/14/14.html'>Linux系统管理</a>
+</dd>
+<dd>
+<span class="channel-num">13</span>
+<a href='../linux_tutorial/17/17.html'>Linux备份与恢复</a>
+</dd>
+<dd>
+<span class="channel-num">14</span>
+<a href='../linux_tutorial/13/13.html'>Linux系统服务管理</a>
+</dd>
+<dd>
+<span class="channel-num">15</span>
+<a href='../linux_tutorial/15/15.html'>Linux系统日志管理</a>
+</dd>
+<dd>
+<span class="channel-num">16</span>
+<a href='../linux_tutorial/12/12.html'>Linux启动管理</a>
+</dd>
+<dd>
+<span class="channel-num">17</span>
+<a href='../linux_tutorial/16/16.html'>LAMP环境搭建和LNMP环境搭建</a>
+</dd>
+<dd>
+<span class="channel-num">18</span>
+<a href='../linux_tutorial/18/18.html'>SELinux管理</a>
+</dd>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../linux_tutorial/linux_tutorial.html">Linux</a> &gt; <a href="../linux_tutorial/50/50.html">Linux软件安装</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Linux RPM包安装、卸载和升级（rpm命令）详解</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">本节讲解如何使用 rpm 命令对 RPM 二进制包进行安装、卸载和升级操作。<br />
+<br />
+我们以安装 apache 程序为例。因为后续章节还会介绍使用源码包的方式安装 apache 程序，读者可以直观地感受到源码包和 RPM 包的区别。<br />
+<h2>
+RPM包默认安装路径</h2>
+通常情况下，RPM 包采用系统默认的安装路径，所有安装文件会按照类别分散安装到表 1 所示的目录中。<br />
+<br />
+<table>
+<caption>
+表 1 RPM 包默认安装路径</caption>
+<tbody>
+<tr>
+<th>
+安装路径</th>
+<th>
+含&nbsp;义</th>
+</tr>
+<tr>
+<td>
+/etc/</td>
+<td>
+配置文件安装目录</td>
+</tr>
+<tr>
+<td>
+/usr/bin/</td>
+<td>
+可执行的命令安装目录</td>
+</tr>
+<tr>
+<td>
+/usr/lib/</td>
+<td>
+程序所使用的函数库保存位置</td>
+</tr>
+<tr>
+<td>
+/usr/share/doc/</td>
+<td>
+基本的软件使用手册保存位置</td>
+</tr>
+<tr>
+<td>
+/usr/share/man/</td>
+<td>
+帮助文件保存位置</td>
+</tr>
+</tbody>
+</table>
+<br />
+RPM 包的默认安装路径是可以通过命令查询的。<br />
+<br />
+除此之外，RPM 包也支持手动指定安装路径，但此方式并不推荐。因为一旦手动指定安装路径，所有的安装文件会集中安装到指定位置，且系统中用来查询安装路径的命令也无法使用（需要进行手工配置才能被系统识别），得不偿失。<br />
+<br />
+与 RPM 包不同，源码包的安装通常采用手动指定安装路径（习惯安装到 /usr/local/ 中）的方式。既然安装路径不同，同一 apache 程序的源码包和 RPM 包就可以安装到一台 Linux 服务器上（但同一时间只能开启一个，因为它们需要占用同一个 80 端口）。<br />
+<br />
+实际情况中，一台服务器几乎不会同时包含两个 apache 程序，管理员不好管理，还会占用过多的服务器磁盘空间。<br />
+<h2>
+RPM 包的安装</h2>
+安装 RPM 的命令格式为：<br />
+<p class="info-box">
+[root@localhost ~]# rpm -ivh 包全名</p>
+注意一定是包全名。涉及到包全名的命令，一定要注意路径，可能软件包在光盘中，因此需提前做好设备的挂载工作。<br />
+<br />
+此命令中各选项参数的含义为：
+<ul>
+<li>
+-i：安装（install）;</li>
+<li>
+-v：显示更详细的信息（verbose）;</li>
+<li>
+-h：打印 #，显示安装进度（hash）;</li>
+</ul>
+<br />
+例如，使用此命令安装 apache 软件包，如下所示：
+<p class="info-box">
+[root@localhost ~]# rpm -ivh \<br />
+/mnt/cdrom/Packages/httpd-2.2.15-15.el6.centos.1.i686.rpm<br />
+Preparing...<br />
+####################<br />
+[100%]<br />
+1:httpd<br />
+####################<br />
+[100%]</p>
+注意，直到出现两个 100% 才是真正的安装成功，第一个 100% 仅表示完成了安装准备工作。<br />
+<br />
+此命令还可以一次性安装多个软件包，仅需将包全名用空格分开即可，如下所示：<br />
+<p class="info-box">
+[root@localhost ~]# rpm -ivh a.rpm b.rpm c.rpm</p>
+<br />
+如果还有其他安装要求（比如强制安装某软件而不管它是否有依赖性），可以通过以下选项进行调整：<br />
+<ul>
+<li>
+-nodeps：不检测依赖性安装。软件安装时会检测依赖性，确定所需的底层软件是否安装，如果没有安装则会报错。如果不管依赖性，想强制安装，则可以使用这个选项。注意，这样不检测依赖性安装的软件基本上是不能使用的，所以不建议这样做。</li>
+<li>
+-replacefiles：替换文件安装。如果要安装软件包，但是包中的部分文件已经存在，那么在正常安装时会报&quot;某个文件已经存在&quot;的错误，从而导致软件无法安装。使用这个选项可以忽略这个报错而覆盖安装。</li>
+<li>
+-replacepkgs：替换软件包安装。如果软件包已经安装，那么此选项可以把软件包重复安装一遍。</li>
+<li>
+-force：强制安装。不管是否已经安装，都重新安装。也就是 -replacefiles 和 -replacepkgs 的综合。</li>
+<li>
+-test：测试安装。不会实际安装，只是检测一下依赖性。</li>
+<li>
+-prefix：指定安装路径。为安装软件指定安装路径，而不使用默认安装路径。</li>
+</ul>
+<br />
+apache 服务安装完成后，可以尝试启动：<br />
+<p class="info-box">
+[root@localhost ~]# service 服务名 start|stop|restart|status</p>
+各参数含义：
+<ul>
+<li>
+start：启动服务；</li>
+<li>
+stop：停止服务；</li>
+<li>
+restart：重启服务；</li>
+<li>
+status: 查看服务状态；</li>
+</ul>
+<br />
+例如：<br />
+<p class="info-box">
+[root@localhost ~]# service httpd start #启动apache服务</p>
+<br />
+服务启动后，可以查看端口号 80 是否出现。命令如下：
+<p class="info-box">
+[root@localhost ~]# netstat -tlun | grep 80<br />
+tcp 0 0 :::80:::* LISTEN</p>
+也可以在浏览器中输入 Linux 服务器的 IP 地址，访问这个 apache 服务器。目前在 apache 中没有建立任何网页，所以看到的只是测试页，如图 2 所示。
+<div style="text-align: center;">
+<br />
+<img alt="apache测试页" src="../uploads/allimg/181009/2-1Q009123ZWD.jpg" /><br />
+图 2 apache测试页</div>
+<h2>
+RPM包的升级</h2>
+使用如下命令即可实现 RPM 包的升级：
+<p class="info-box">
+[root@localhost ~]# rpm -Uvh 包全名</p>
+-U（大写）选项的含义是：如果该软件没安装过则直接安装；若已经安装则升级至最新版本。<br />
+<br />
+<p class="info-box">
+[root@localhost ~]# rpm -Fvh 包全名</p>
+-F（大写）选项的含义是：如果该软件没有安装，则不会安装，必须安装有较低版本才能升级。<br />
+<h2>
+RPM包的卸载</h2>
+<span style="color:#b22222;">RPM 软件包的卸载要考虑包之间的依赖性。</span>例如，我们先安装的 httpd 软件包，后安装 httpd 的功能模块 mod_ssl 包，那么在卸载时，就必须先卸载 mod_ssl，然后卸载 httpd，否则会报错。<br />
+<p class="info-box">
+软件包卸载和拆除大楼是一样的，本来先盖的 2 楼，后盖的 3 楼，那么拆楼时一定要先拆除 3 楼。</p>
+如果卸载 RPM 软件不考虑依赖性，执行卸载命令会包依赖性错误，例如：
+<p class="info-box">
+[root@localhost ~]# rpm -e httpd<br />
+error: Failed dependencies:<br />
+httpd-mmn = 20051115 is needed by (installed) mod_wsgi-3.2-1.el6.i686<br />
+httpd-mmn = 20051115 is needed by (installed) php-5.3.3-3.el6_2.8.i686<br />
+httpd-mmn = 20051115 is needed by (installed) mod_ssl-1:2.2.15-15.el6.<br />
+centos.1.i686<br />
+httpd-mmn = 20051115 is needed by (installed) mod_perl-2.0.4-10.el6.i686<br />
+httpd = 2.2.15-15.el6.centos.1 is needed by (installed) httpd-manual-2.2.<br />
+15-15.el6.centos.1 .noarch<br />
+httpd is needed by (installed) webalizer-2.21_02-3.3.el6.i686<br />
+httpd is needed by (installed) mod_ssl-1:2.2.15-15.el6.centos.1.i686<br />
+httpd=0:2.2.15-15.el6.centos.1 is needed by(installed)mod_ssl-1:2.2.15-15.el6.centos.1.i686</p>
+<br />
+RPM 软件包的卸载很简单，使用如下命令即可：
+<p class="info-box">
+[root@localhost ~]# rpm -e 包名</p>
+-e 选项表示卸载，也就是 erase 的首字母。<br />
+<br />
+RPM 软件包的卸载命令支持使用&ldquo;-nocteps&rdquo;选项，即可以不检测依赖性直接卸载，但此方式不推荐大家使用，因为此操作很可能导致其他软件也无法征程使用。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="458.html" title="VS2010下载地址和安装教程（图解）" target="_blank">VS2010下载地址和安装教程（图解）</a></li>
+<li><a href="1164.html" title="Shell命令替换：将命令的输出结果赋值给变量" target="_blank">Shell命令替换：将命令的输出结果赋值给变量</a></li>
+<li><a href="2620.html" title="什么是死锁，如何避免死锁（4种方法）" target="_blank">什么是死锁，如何避免死锁（4种方法）</a></li>
+<li><a href="2672.html" title="Shell expr命令：进行整数计算" target="_blank">Shell expr命令：进行整数计算</a></li>
+<li><a href="7577.html" title="HTML单行文本框" target="_blank">HTML单行文本框</a></li>
+<li><a href="9345.html" title="JS for循环语句的用法" target="_blank">JS for循环语句的用法</a></li>
+<li><a href="glr33c1.html" title="Word设置纸张大小（页面大小）" target="_blank">Word设置纸张大小（页面大小）</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 2872;
+window.arcId = "3860Ze8q6HZosMbTGDbQv5DHC4+jsPl+AENxmfgVRy2BYR3/MTf4lU2zzNo";
+window.typeidChain = "84|77";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/view/2868.html";
+window.nextPageURL = "/view/817.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Vue计算属性的使用（非常详细）</title>
+<meta name="description" content="在 Vue 中，可以很方便地将数据使用插值表达式的方式渲染到页面元素中，但是插值表达式的设计初衷是用于简化运算，不应该对插值进行过多的操作。当需要进一步对插值进行处理时，" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Vue计算属性的使用（非常详细）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在 Vue 中，可以很方便地将数据使用插值表达式的方式渲染到页面元素中，但是插值表达式的设计初衷是用于简化运算，不应该对插值进行过多的操作。当需要进一步对插值进行处理时，可以使用 Vue 中的计算属性来完成这一操作。
+<h2>
+Vue 计算属性的使用</h2>
+计算属性在 Vue 的 computed 选项中定义，它可以在模板上进行双向数据绑定以展示出结果或者用作其他处理。<br />
+<br />
+通常用户会在模板中定义表达式，非常便利，Vue 的设计初衷也是用于简单运算的。但是在模板中放入太多逻辑会让模板变得臃肿且难以维护。例如：
+<pre class="html" showmenu="false" shownum="false">
+&lt;div id=&quot;app&quot;&gt;
+    {{message.split(&#39;&#39;).reverse().join(&#39;&#39;)}}
+&lt;/div&gt;</pre>
+上面的插值表达式调用了3个方法来实现字符串的反转，逻辑过于复杂，如果在模板中还要多次使用此处的表达式，就更加难以维护了，此时应该使用计算属性。<br />
+<br />
+计算属性比较适合对多个变量或者对象进行处理后返回一个结果值，也就是说多个变量中的某一个值发生了变化，则绑定的计算属性也会发生变化。<br />
+<br />
+下面是完整的字符串反转的示例，定义了一个 reversedMessage 计算属性，在 input 输入框中输入字符串时，绑定的 message 属性值发生变化，触发 reversedMessage 计算属性，执行对应的函数，最终使字符串反转。<br />
+<br />
+示例1：使用计算属性。
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+    原始字符串：&lt;input type=&quot;text&quot; v-model=&quot;message&quot;&gt;&lt;br/&gt;
+    反转后的字符串：{{reversedMessage}}
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+    //创建一个应用程序实例
+    const vm= Vue.createApp({
+        //该函数返回数据对象
+        data(){
+          return{
+             message: &#39;小庭幽圃绝清佳 &#39;
+           }
+        },
+        computed: {
+            //计算属性的getter
+            reversedMessage(){
+                return this.message.split(&#39;&#39;).reverse().join(&#39;&#39;);
+            }
+        }
+    //在指定的DOM元素上装载应用程序实例的根组件
+    }).mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，输入框下面会显示对象的反转内容，效果如图1所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="字符串翻转效果" src="../uploads/allimg/230729/1-230H9120034a2.png" /><br />
+图1：字符串翻转效果</div>
+<br />
+上面的示例中，当 message 属性的值改变时，reversedMessage 的值也会自动更新，并且会自动同步更新 DOM 部分。<br />
+<br />
+在浏览器的控制台中修改 message 的值，按回车键执行代码，可以发现 reversedMessage 的值也发生了改变，如图2所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="修改 message 的值" src="../uploads/allimg/230729/1-230H91202104a.png" /><br />
+图2：修改 message 的值</div>
+<h2>
+Vue 计算属性的 getter 和 setter 方法</h2>
+计算属性中的每一个属性对应的都是一个对象，对象中包括 getter 和 setter 方法，分别用来获取计算属性和设置计算属性。<br />
+<br />
+默认情况下只有 getter 方法，这种情况下可以简写，例如：
+<pre class="javascript" showmenu="false" shownum="false">
+computed: {
+    fullNname:function(){
+        //
+    }
+}</pre>
+默认情况下是不能直接修改计算属性的，如果需要修改计算属性，就需要提供一个 set 方法。例如：
+<pre class="javascript" showmenu="false" shownum="false">
+computed:{
+    fullNname:{
+        //get方法
+        get:function(){
+            //
+        }
+        //set方法
+        set:function(newValue){
+            //
+        }
+    }
+}</pre>
+提示：通常情况下，getter() 方法需要使用 return 返回内容。而 setter() 方法不需要，它用来改变计算属性的内容。<br />
+<br />
+示例2：getter 和 setter 方法。
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+    &lt;p&gt;商品名称：{{name}}&lt;/p&gt;
+    &lt;p&gt;商品价格：{{price}}&lt;/p&gt;
+    &lt;p&gt;商品名称和价格：{{namePrice}}&lt;/p&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+    //创建一个应用程序实例
+    const vm= Vue.createApp({
+        //该函数返回数据对象
+        data(){
+          return{
+             name:&quot;洗衣机&quot;,
+             price:&quot;6800元&quot;
+           }
+        },
+        computed:{
+            namePrice:{
+                //getter方法，显示时调用
+                get:function(){
+                    //拼接name和price
+                    return this.name+ &quot;**&quot;+this.price;
+                },
+                //setter方法，设置namePrice时调用，其中参数用来接收新设置的值
+                set:function(newName){
+                    var names=newName.split(&#39; &#39;);  //以空格拆分字符串
+                    this.name=names[0];
+                    this.price=names[1];
+                }
+            }
+         }
+      //在指定的DOM元素上装载应用程序实例的根组件
+      }).mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，效果如图3所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="运行效果" src="../uploads/allimg/230729/1-230H912022Q40.png" /><br />
+图3：运行效果</div>
+<br />
+在浏览器的控制台中设置计算属性 namePrice 的值为&ldquo;空调5900元&rdquo;，按回车键，可以发现计算属性的内容变成了&ldquo;空调5900元&rdquo;，效果如图4所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="修改后的效果" src="../uploads/allimg/230729/1-230H912024A09.png" /><br />
+图4：修改后的效果</div>
+<h2>
+Vue 计算属性的缓存</h2>
+Vue 计算属性是基于它们的依赖进行缓存的。计算属性只有在它的相关依赖发生改变时，才会重新求值。<br />
+<br />
+计算属性的写法和方法很相似，完全可以在 methods 中定义一个方法来实现相同的功能。<br />
+<br />
+其实，计算属性的本质就是一个方法，只不过在使用计算属性的时候，把计算属性的名称直接作为属性来使用，并不会把计算属性作为一个方法来调用。<br />
+<br />
+为什么还要使用计算属性而不是定义一个方法呢？<br />
+<br />
+计算属性是基于它的依赖进行缓存的，即只有在相关依赖发生改变时，才会重新求值。例如，在示例1中，只要 message 没有发生改变，多次访问 reversedMessage 计算属性会立即返回之前的计算结果，而不必再次执行函数。<br />
+<br />
+反之，如果使用方法的形式实现，当使用到 reversedMessage 方法时，无论 message 属性是否发生改变，该方法都会重新执行一次，这无形中增加了系统的开销。<br />
+<br />
+在某些情况下，计算属性和方法可以实现相同的功能，但有一个重要的不同点：在调用 methods 中的一个方法时，所有方法都会被调用。<br />
+<br />
+例如下面的示例定义了两个方法 add1 和 add2，分别打印 number+a、number+b，当调用其中的 add1 时，add2 也将被调用。<br />
+<br />
+示例3：方法调用方式。
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+    &lt;button v-on:click=&quot;a++&quot;&gt;a+1&lt;/button&gt;
+    &lt;button v-on:click=&quot;b++&quot;&gt;b+1&lt;/button&gt;
+    &lt;p&gt;number+a={{add1()}}&lt;/p&gt;
+    &lt;p&gt;number+b={{add2()}}&lt;/p&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+   //创建一个应用程序实例
+   const vm= Vue.createApp({
+       //该函数返回数据对象
+       data(){
+         return{
+            a:0,
+            b:0,
+            number:30
+          }
+       },
+       methods: {
+           add1:function(){
+               console.log(&quot;add1&quot;);
+               return this.a+this.number
+           },
+           add2:function(){
+               console.log(&quot;add2&quot;)
+               return this.b+this.number
+           }
+       }
+   //在指定的DOM元素上装载应用程序实例的根组件
+   }).mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，打开控制台，单击<img alt="a+1按钮" src="../uploads/allimg/230729/1-230H9120515154.png" />按钮，可以发现控制台调用了 add1() 和 add2() 方法，如图5所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="方法的调用效果" src="../uploads/allimg/230729/1-230H9120314450.png" /><br />
+图5：方法的调用效果</div>
+<br />
+使用计算属性则不同，计算属性相当于优化了的方法，使用时只会使用对应的计算属性。例如修改上面的示例，把 methods 换成 computed，并把 HTML 中的调用 add1 和 add2 方法的括号去掉。<br />
+<br />
+注意：计算属性的调用不能使用括号，例如 add1、add2。而调用方法需要加上括号，例如 add1()、add2()。<br />
+<br />
+示例4：计算属性调用方式。
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+    &lt;button v-on:click=&quot;a++&quot;&gt;a+1&lt;/button&gt;
+    &lt;button v-on:click=&quot;b++&quot;&gt;b+1&lt;/button&gt;
+    &lt;p&gt;number+a={{add1}}&lt;/p&gt;
+    &lt;p&gt;number+b={{add2}}&lt;/p&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+    //创建一个应用程序实例
+    const vm= Vue.createApp({
+        //该函数返回数据对象
+        data(){
+          return{
+             a:0,
+             b:0,
+             number:30
+           }
+        },
+        computed: {
+            add1:function(){
+                console.log(&quot;number+a&quot;);
+                return this.a+this.number
+            },
+            add2:function(){
+                console.log(&quot;number+b&quot;)
+                return this.b+this.number
+            }
+        }
+    //在指定的DOM元素上装载应用程序实例的根组件
+    }).mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，打开控制台，在页面中单击<img alt="a+1按钮" src="../uploads/allimg/230729/1-230H9120546464.png" />按钮，可以发现控制台只打印了 number+a，如图6所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="计算属性的调用效果" src="../uploads/allimg/230729/1-230H9120333M8.png" /><br />
+图6：计算属性的调用效果</div>
+<br />
+计算属性相较于方法更加优化，但并不是什么情况下都可以使用计算属性，在触发事件时还是使用对应的方法。计算属性一般在数据量比较大、比较耗时的情况下使用（例如搜索），只有虚拟 DOM 与真实 DOM 不同的情况下才会执行 computed。如果你的业务实现不需要有缓存，计算属性可以使用方法来代替。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_5038.html" title="类UNIX系统是什么鬼？" target="_blank">类UNIX系统是什么鬼？</a></li>
+<li><a href="5955.html" title="JS键盘事件（非常详细）" target="_blank">JS键盘事件（非常详细）</a></li>
+<li><a href="vip_6061.html" title="Python函数递归（带实例演示）" target="_blank">Python函数递归（带实例演示）</a></li>
+<li><a href="6236.html" title="PHP instanceof：判断对象是否属于某个类" target="_blank">PHP instanceof：判断对象是否属于某个类</a></li>
+<li><a href="7201.html" title="MySQL数据表添加字段（三种方式）" target="_blank">MySQL数据表添加字段（三种方式）</a></li>
+<li><a href="insertion-sort.html" title="插入排序算法" target="_blank">插入排序算法</a></li>
+<li><a href="3t3f02t.html" title="Vue watch（监听器）详解" target="_blank">Vue watch（监听器）详解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10155;
+window.arcId = "a302PdhhaZ5sTo6UdqAmKSyDKZqZtj71QkU1//5Hw86/QxU0AKq4ikdZRFvm";
+window.typeidChain = "309|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

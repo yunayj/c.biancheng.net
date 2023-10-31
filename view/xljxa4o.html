@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++函数模板（入门必读）</title>
+<meta name="description" content="模板是 C++ 的新特性，这个概念在C语言中是没有的。函数模板不是一个实实在在的函数，而是对逻辑功能相同、但数据类型不同的一组函数的统一描述。 例如定义一个简单的求数组中最" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++函数模板（入门必读）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">模板是 C++ 的新特性，这个概念在C语言中是没有的。函数模板不是一个实实在在的函数，而是对逻辑功能相同、但数据类型不同的一组函数的统一描述。<br />
+<br />
+例如定义一个简单的求数组中最小值的函数，要求可以处理各种数据类型。如果不使用模板，那么开发者不得不针对每种类型定义一个函数：<br />
+<pre class="info-box">
+int myMin(int arr[], int n){...};
+int myMin(double arr[], double n){...};
+......</pre>
+这里只写出了针对 int 型和 double 型数组的函数。为了适应各种情形，还应当编写针对 float， char，short，long，unsigned int 等所有数据类型的函数，甚至还要支持自定义数据类型（如结构体、类）。<br />
+<br />
+显然，这不是好的实现方案，比如一旦算法逻辑发生改变，或者要纠正某个错误，所有的重载函数都需要修改。<br />
+<br />
+简单分析一下上述代码就会发现，所有这些函数在算法逻辑上都是相同的，不同的只是所处理数据的类型。如果能将函数的返回类型以及参数类型当做变量对待，当需要处理不同类型数据的函数时，只要将这些&ldquo;类型变量&rdquo;赋值为所需的类型就好了。这样，只编写一次通用算法逻辑就可以处理所有的数据类型，这就是函数模板的含义。<br />
+<br />
+下面的代码使用函数模板改进了上述求最小值的 myMin() 函数：
+<pre class="info-box">
+template&lt;typename T&gt;
+T myMin(T arr[], T n){...};</pre>
+其中，T 是一个参数，它可以是任意指定的类型。显然通过使用函数模板，避免了定义多余的重载函数，提高了开发效率。<br />
+<h2>
+函数模板的定义</h2>
+函数模板的定义以 template 关键字开始，后跟模板参数列表，该列表通常包含一个或多个类型参数，这些参数用于指定函数接受哪些类型的输入。<br />
+<br />
+语法格式如下：
+<pre class="info-box">
+template &lt;typename T,...&gt;
+返回值类型 函数名(T 参数1, T 参数2, ...) {
+    // 函数体
+}</pre>
+其中，T 是一个类型参数，可以用于函数返回类型、参数类型以及函数体内的变量类型。一个函数模板中，类型参数可以指定多个，中间用逗号分隔即可。<br />
+<br />
+typename 关键字也可以用 class 关键字代替，两者意义相同，都可以用来声明类型参数。但是用 typename 更好一些，可以明白地表示后面的参数是一个&ldquo;类型名&rdquo;。而且 typename 是 C++ 标准化的产物，而 class 关键字则是为了支持 C++ 标准化之前的程序而保留下来的。<br />
+<h2>
+函数模板的使用</h2>
+下面是一个简单的例子，展示了如何使用函数模板来创建一个 swap() 函数：<br />
+<pre class="cpp">
+#include &lt;iostream&gt;
+
+// 函数模板定义
+template &lt;typename T&gt;
+void swap(T &amp;a, T &amp;b) {
+    T temp = a;
+    a = b;
+    b = temp;
+}
+
+int main() {
+    int x = 5, y = 10;
+    std::cout &lt;&lt; &quot;Before swap: x = &quot; &lt;&lt; x &lt;&lt; &quot;, y = &quot; &lt;&lt; y &lt;&lt; std::endl;
+    swap(x, y);  // 使用int类型的swap
+    std::cout &lt;&lt; &quot;After swap: x = &quot; &lt;&lt; x &lt;&lt; &quot;, y = &quot; &lt;&lt; y &lt;&lt; std::endl;
+
+    double m = 5.5, n = 10.5;
+    std::cout &lt;&lt; &quot;Before swap: m = &quot; &lt;&lt; m &lt;&lt; &quot;, n = &quot; &lt;&lt; n &lt;&lt; std::endl;
+    swap(m, n);  // 使用double类型的swap
+    std::cout &lt;&lt; &quot;After swap: m = &quot; &lt;&lt; m &lt;&lt; &quot;, n = &quot; &lt;&lt; n &lt;&lt; std::endl;
+
+    return 0;
+}</pre>
+输出结果为：
+<p class="info-box">
+Before swap: x = 5, y = 10<br />
+After swap: x = 10, y = 5<br />
+Before swap: m = 5.5, n = 10.5<br />
+After swap: m = 10.5, n = 5.5</p>
+在这个示例中，我们定义了函数模板 swap()，该模板接受两个类型为 T 的引用参数。然后，我们在 main() 函数中用不同的数据类型（int 和 double）调用了这个模板函数。<br />
+<h2>
+函数模板的非类型参数</h2>
+在函数模板的模板参数列表中，除了放置类型参数外，还可以使用非类型参数，目的就是为函数引入一个常量，以供定义函数时使用，当然这个常量也可以作为函数参数的默认值使用。<br />
+<br />
+例如，对于一个数组求最小值，可以用一个非类型的参数表示数组长度。
+<pre class="cpp">
+template &lt;typename T,int size&gt;  // 类型参数 T，非类型参数 size 表示数组长度
+T myMin(T arr[]) {
+    T minVal = 0;
+    for (int i = 0; i &lt; size; i++) {
+        if (arr[i] &lt; minVal) {
+            minVal = arr[i];
+        }
+    }
+    return minVal;
+}</pre>
+<h2>
+函数模板的显式实例化</h2>
+对函数模板做显式实例化，指的就是手动指定函数模板的模板参数。<br />
+<br />
+以上面定义好的 myMin() 模板函数为例，调用它时可以显式指定模板参数：<br />
+<pre class="cpp" shownum="false">
+unsigned int arr[5]={1,4,3,5,6};
+myMin&lt;unsigned int, 5&gt;(arr);</pre>
+上述例子中，通过模板实参表 &lt;unsigned int&gt; 强制将函数模板 myMin() 的模板参数 T 指定为 unsigned int。<br />
+<br />
+显式实例化的作用主要是解决模板参数推演时的二义性问题。既然指定了模板参数，那么在使用函数模板时就不必进行参数推演了，也就避免了参数推演的二义性问题。<br />
+<h2>
+函数模板的特化</h2>
+很多时候，定义一个适合所有类型的函数模板非常困难，这主要是因为对于某种逻辑操作，各种数据类型的实现并不相同。<br />
+<br />
+例如，同样是比较大小，整型和浮点型数的比较就与字符串类型的比较不同。整型和浮点型数据只要调用各种比较运算符（&lt;、&gt;、== 等）即可，但是字符串的比较就需要调用专门的比较函数，例如 strcmp() 和 wstrcmp()。而自定义数据类型，如结构体、类，比较大小就更加特殊。在这种情况下就需要用到函数模板的特化。<br />
+<br />
+例如，一个函数模板 myMax() 的定义如下：
+<pre class="cpp">
+template &lt;typename T&gt;
+T myMax(T t1, T t2) {
+    return t1 &gt; t2 ? t1 : t2;
+}</pre>
+如果用 const char* 型实参实例化 myMax() 模板，程序员的本意是比较字符串的大小，但实例化的结果却是比较两个指针的大小。为了获得正确的语义，必须针对 const char* 类型，为函数模板 myMax() 提供特化的版本。<br />
+<br />
+在函数模板特化定义中，先是关键字 template 和一对尖括号&ldquo;&lt;&gt;&rdquo;，然后是函数模板特化的定义。例如，针对 const char * 类型，模板 myMax() 显式特化为：<br />
+<pre class="cpp">
+template &lt;&gt; const char * myMax(const char * t1, const char * t2) {
+    return strcmp(t1, t2) &gt; 0? t1 : t2;
+}</pre>
+由于有了这个特化版本，当在程序中调用函数 myMax(const char*,const char*) 时，真正被调用的是特化的版本，而不是用类型 const char* 实例化的模板。<br />
+<h2>
+总结</h2>
+函数模板是 C++ 编程中一个非常有用的特性，通过它你可以编写灵活、可重用的代码。这不仅简化了代码维护，还提高了代码质量。一旦你熟悉了这一概念，你会发现它在许多不同的编程场景中都非常有用。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_3365.html" title="KMP算法（快速模式匹配算法）C语言详解" target="_blank">KMP算法（快速模式匹配算法）C语言详解</a></li>
+<li><a href="vip_5060.html" title="Vim多窗口编辑模式" target="_blank">Vim多窗口编辑模式</a></li>
+<li><a href="6868.html" title="Java Map集合详解" target="_blank">Java Map集合详解</a></li>
+<li><a href="8184.html" title="JS生成随机数（random()函数）" target="_blank">JS生成随机数（random()函数）</a></li>
+<li><a href="../spring_mvc/model-attribute.html" title="Spring MVC @ModelAttribute注解" target="_blank">Spring MVC @ModelAttribute注解</a></li>
+<li><a href="../ml_alg/random-forest.html" title="集成学习应用：随机森林算法" target="_blank">集成学习应用：随机森林算法</a></li>
+<li><a href="7lj7kim.html" title="《C语言程序设计教程(第3版)》王敬华PDF下载（高清完整版）" target="_blank">《C语言程序设计教程(第3版)》王敬华PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10333;
+window.arcId = "c753DmGh3JogewAVLrQFT0duYU/wP/y9aq7spZ3xwK5OfpvuTFoIutdOXsYU";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C++ STL list容器底层实现（详解版）</title>
+<meta name="description" content="前面在讲 STL list 容器时提到，该容器的底层是用双向链表实现的，甚至一些 STL 版本中（比如 SGI STL），list 容器的底层实现使用的是双向循环链表。 图 1 双向链表和双向循环链表 如图" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C++ STL list容器底层实现（详解版）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">前面在讲 <a href='../stl/stl_2.html' target='_blank'>STL</a> list 容器时提到，该容器的底层是用双向链表实现的，甚至一些 STL 版本中（比如 SGI STL），list 容器的底层实现使用的是双向循环链表。
+<div style="text-align: center;">
+	<br />
+	<img alt="" src="../uploads/allimg/191218/2-19121Q62J3329_2.gif" /><br />
+	图 1 双向链表（ a) ）和双向循环链表（ b) ）</div>
+<blockquote>
+	<p>
+		图 1 中，node 表示链表的头<a href='../c/80/80_2.html' target='_blank'>指针</a>。</p>
+</blockquote>
+如图 1 所示，使用链表存储数据，并不会将它们存储到一整块连续的内存空间中。恰恰相反，各元素占用的存储空间（又称为<span style="color:#008000;">节点</span>）是独立的、分散的，它们之间的线性关系通过指针（图 1 以箭头表示）来维持。
+<h2>
+	list 容器节点结构</h2>
+通过图 1 可以看到，双向链表的各个节点中存储的不仅仅是元素的值，还应包含 2 个指针，分别指向前一个元素和后一个元素。<br />
+<br />
+通过查看 list 容器的源码实现，其对节点的定义如下：<br />
+<pre class="cpp">
+template&lt;typename T,...&gt;
+struct __List_node{
+    //...
+    __list_node&lt;T&gt;* prev;
+    __list_node&lt;T&gt;* next;
+    T myval;
+    //...
+}</pre>
+<blockquote>
+	<p>
+		注意，为了方便读者理解，此代码以及本节后续代码，都省略了和本节核心内容不相关的内容，如果读者对此部分感兴趣，可查看 list 容器实现源码。</p>
+</blockquote>
+可以看到，list 容器定义的每个节点中，都包含 *prev、*next 和 myval。其中，prev 指针用于指向前一个节点；next 指针用于指向后一个节点；myval 用于存储当前元素的值。<br />
+<h2>
+	list容器迭代器的底层实现</h2>
+和 array、vector 这些容器迭代器的实现方式不同，由于 list 容器的元素并不是连续存储的，所以该容器迭代器中，必须包含一个可以指向 list 容器的指针，并且该指针还可以借助重载的 *、++、--、==、!= 等运算符，实现迭代器正确的递增、递减、取值等操作。<br />
+<br />
+因此，list 容器迭代器的实现代码如下：<br />
+<pre class="cpp">
+template&lt;tyepname T,...&gt;
+struct __list_iterator{
+    __list_node&lt;T&gt;* node;
+    //...
+    //重载 == 运算符
+    bool operator==(const __list_iterator&amp; x){return node == x.node;}
+    //重载 != 运算符
+    bool operator!=(const __list_iterator&amp; x){return node != x.node;}
+    //重载 * 运算符，返回引用类型
+    T* operator *() const {return *(node).myval;}
+    //重载前置 ++ 运算符
+    __list_iterator&lt;T&gt;&amp; operator ++(){
+        node = (*node).next;
+        return *this;
+    }
+    //重载后置 ++ 运算符
+    __list_iterator&lt;T&gt;&amp; operator ++(int){
+        __list_iterator&lt;T&gt; tmp = *this;
+        ++(*this);
+        return tmp;
+    }
+    //重载前置 -- 运算符
+    __list_iterator&lt;T&gt;&amp; operator--(){
+        node = (*node).prev;
+        return *this;
+    }
+    //重载后置 -- 运算符
+    __list_iterator&lt;T&gt; operator--(int){
+        __list_iterator&lt;T&gt; tmp = *this;
+        --(*this);
+        return tmp;
+    }
+    //...
+}</pre>
+可以看到，迭代器的移动就是通过操作节点的指针实现的。<br />
+<h2>
+	list容器的底层实现</h2>
+本节开头提到，不同版本的 STL 标准库中，list 容器的底层实现并不完全一致，但原理基本相同。这里以 SGI STL 中的 list 容器为例，讲解该容器的具体实现过程。<br />
+<br />
+SGI STL 标准库中，list 容器的底层实现为双向循环链表，相比双向链表结构的好处是在构建 list 容器时，只需借助一个指针即可轻松表示 list 容器的首尾元素。<br />
+<br />
+如下是 SGI STL 标准库中对 list 容器的定义：<br />
+<pre class="cpp">
+template &lt;class T,...&gt;
+class list
+{
+    //...
+    //指向链表的头节点，并不存放数据
+    __list_node&lt;T&gt;* node;
+    //...以下还有list 容器的构造函数以及很多操作函数
+}</pre>
+另外，为了更方便的实现 list 模板类提供的函数，该模板类在构建容器时，会刻意在容器链表中添加一个空白节点，并作为 list 链表的首个节点（又称头节点）。
+<blockquote>
+	<p>
+		<span style="background-color: rgb(249, 249, 249);">使用双向链表实现的 list 容器，其内部通常包含 2 个指针，并分别指向链表中头部的空白节点和尾部的空白节点（也就是说，其包含 2 个空白节点）。</span></p>
+</blockquote>
+比如，我们经常构造空的 list 容器，其用到的构造函数如下所示：<br />
+<pre class="cpp">
+list() { empty_initialize(); }
+// 用于空链表的建立
+void empty_initialize()
+{
+    node = get_node();//初始化节点
+    node-&gt;next = node; // 前置节点指向自己
+    node-&gt;prev = node; // 后置节点指向自己
+}</pre>
+显然，即便是创建空的 list 容器，它也包含有 1 个节点。<br />
+<br />
+除此之外，list 模板类中还提供有带参的构造函数，它们的实现过程大致分为以下 2 步：
+<ul>
+	<li>
+		调用 empty_initialize() 函数，构造带有头节点的空 list 容器链表；</li>
+	<li>
+		将各个参数按照次序插入到空的 list 容器链表中。</li>
+</ul>
+<br />
+<span style="color:#b22222;">由此可以总结出，list 容器实际上就是一个带有头节点的双向循环链表。</span>如图 2 所示，此为存有 2 个元素的 list 容器：
+<div style="text-align: center;">
+	<br />
+	<img alt="" src="../uploads/allimg/191218/2-19121Q6445Q07_2.gif" /><br />
+	图 1 list 容器底层存储示意图</div>
+<br />
+在此基础上，通过借助 node 头节点，就可以实现 list 容器中的所有成员函数，比如：
+<pre class="cpp">
+//begin()成员函数
+__list_iterator&lt;T&gt; begin(){return (*node).next;}
+//end()成员函数
+__list_iterator&lt;T&gt; end(){return node;}
+//empty()成员函数
+bool empty() const{return (*node).next == node;}
+//front()成员函数
+T&amp; front() {return *begin();}
+//back()成员函数
+T&amp; back() {return *(--end();)}
+//...</pre>
+<blockquote>
+	<p>
+		以上也只是罗列了 list 容器中一部分成员函数的实现方法，其它成员函数的具体实现，这里不再具体描述，感兴趣的读者，可下载 list 容器的实现源码。</p>
+</blockquote>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="892_2.html" title="Java Float类" target="_blank">Java Float类</a></li>
+<li><a href="vip_1750_2.html" title="一个真正带界面的C语言程序" target="_blank">一个真正带界面的C语言程序</a></li>
+<li><a href="vip_2273_2.html" title="C++继承时的对象内存模型" target="_blank">C++继承时的对象内存模型</a></li>
+<li><a href="6123_2.html" title="PHP break和continue语句" target="_blank">PHP break和continue语句</a></li>
+<li><a href="vip_7305_2.html" title="Go语言strconv包：字符串和数值类型的相互转换" target="_blank">Go语言strconv包：字符串和数值类型的相互转换</a></li>
+<li><a href="9765_2.html" title="离职8年，创业8年，说一下真实感受" target="_blank">离职8年，创业8年，说一下真实感受</a></li>
+<li><a href="../c/fopen_2.html" title="C语言fopen()：打开文件" target="_blank">C语言fopen()：打开文件</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 6955;
+window.arcId = "39b036yNIcbCfabXmOjq7c3yYS/SV7jq57O0GbkBOa1qT/XLF+RF8yX4fO4";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

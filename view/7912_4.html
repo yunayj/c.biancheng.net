@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Django Form表单内置字段详解</title>
+<meta name="description" content="在上一节《Django Form表单Field属性与方法》，我们对 Field 基类的常用属性以及重点方法做了介绍，而在前述章节用到的 Form 表单的字段比如 CharField 即为 Field 的子类，而这些子类可以继承" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../django/django_2.html">Django</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Django Form表单内置字段详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在上一节《<a href="7835_2.html">Django Form表单Field属性与方法</a>》，我们对 Field 基类的常用属性以及重点方法做了介绍，而在前述章节用到的 Form 表单的字段比如 CharField 即为 Field 的子类，而这些子类可以继承基类的所有属性及方法，不仅如此它们还定义了一些额外的属性用来限制对字段本身的赋值。下面就开始介绍 Django 表单系统的常用内置字段类型。
+<h2>
+	1. 常用表单字段类型</h2>
+<h4>
+	1) CharField</h4>
+这个字段在 Django Form 表单中代表字符串类型的表单字段，是最常用的表单字段。它的 HTML 控件类型属性 widget 默认使用 TextInput 即表示普通文本输入框。它的源码构造函数如下所示：
+<pre class="python">
+class CharField(Field):
+    def __init__(self, *, max_length=None, min_length=None, strip=True, empty_value=&#39;&#39;, **kwargs):
+        self.max_length = max_length
+        self.min_length = min_length
+        self.strip = strip
+        self.empty_value = empty_value
+        super().__init__(**kwargs)
+</pre>
+使用 max_length 与 min_length 分别可以限制字段值的最大值与最小值，对于不满足的条件字段值，将抛出 ValidationError 异常。strip 属性默认执行 Python 的 strip() 方法，可以除去字符串两端的空格。如果传递的是空值的时候，将会使用 empty_value 属性设定的值，如下所示：
+<pre class="python">
+In [1]: from django import forms
+In [2]: title=forms.CharField(empty_value=&#39;C语言中文网&#39;)
+In [3]: title.clean(&#39;&#39;)
+Out[3]: &#39;C语言中文网&#39;</pre>
+<h4>
+	2) IntegerField</h4>
+它代表整数类型的表单字段，widget 控件默认使用 NumberInput。Django 中它的部分源码如下所示：
+<pre class="python">
+class IntegerField(Field):
+    #控件类型
+    widget = NumberInput
+    default_error_messages = {
+        &#39;invalid&#39;: _(&#39;Enter a whole number.&#39;),
+    }
+    #正则匹配模式
+    re_decimal = re.compile(r&#39;\.0*\s*$&#39;)
+    #构造函数
+    def __init__(self, *, max_value=None, min_value=None, **kwargs):
+        self.max_value, self.min_value = max_value, min_value
+        if kwargs.get(&#39;localize&#39;) and self.widget == NumberInput:
+            # Localized number input is not well supported on most browsers
+            kwargs.setdefault(&#39;widget&#39;, super().widget)
+        super().__init__(**kwargs)</pre>
+max_value 与 min_value 用来限定取值范围，如果给出的值不在这两者的范围之内，那么就会抛出异常。如下所示：
+<pre class="python">
+In [5]: x=forms.IntegerField(max_value=5,min_value=1)
+In [6]: x.clean(&#39;4&#39;)
+#字符串强转为整数型4
+Out[6]: 4
+In [7]: x.clean(&#39;6&#39;)
+....
+#抛出异常
+ValidationError: [&#39;确保该值小于或等于5。&#39;]</pre>
+<h4>
+	3) BooleanField</h4>
+表示布尔类型的表单字段，该字段控件默认使用 CheckboxInput。默认为必填字段，若不填则会抛出异常，可以通过它的 required=False 属性来变为可选，即使不提供也不会抛出异常。
+<h4>
+	4) ChoiceField</h4>
+表示选择类型的表单字段，默认空间使用 Select。它的构造函数如下所示：
+<pre class="python">
+class ChoiceField(Field):
+    widget = Select
+    default_error_messages = {
+        &#39;invalid_choice&#39;: _(&#39;Select a valid choice. %(value)s is not one of the available choices.&#39;),
+    }
+
+    def __init__(self, *, choices=(), **kwargs):
+        super().__init__(**kwargs)
+        self.choices = choices</pre>
+它需要一个二元数组或者能够返回可迭代二元组的函数对象作为参数，它的使用方法如下所示：
+<pre class="python">
+In [28]: Gender=((&#39;M&#39;,&#39;male&#39;),(&#39;F&#39;,&#39;female&#39;))
+In [29]: sex=forms.ChoiceField(choices=Gender)
+In [30]: sex
+Out[30]: &lt;django.forms.fields.ChoiceField at 0x1435430&gt;</pre>
+在页面中 sex 字段对应的选择框中有两个可选值即 male 和 fmale。如果表单被提交，那么只有二元组的第一个元素，也就是 M 和 F 会被提交到后台服务器进行处理。
+<h4>
+	5) EmailField</h4>
+它继承自子类 CharField，可以用验证电子邮件地址的格式是否正确。它的源码如下所示：
+<pre class="python">
+class EmailField(CharField):
+    #默认控件
+    widget = EmailInput
+    default_validators = [validators.validate_email]
+    def __init__(self, **kwargs):
+        super().__init__(strip=True, **kwargs)</pre>
+widget 默认使用 EmailInput。由于需要输入电子邮件的表单比较常见，如用户注册表单、身份验证表单等，所以，这个字段类型用在这些场景中会非常方便。这种验证特定结构的字段还有 UUIDField、GenericIPAddressField、URLField、SlugField 等，它们分别用来验证 UUID（通用唯一识别码）、IP 地址、URL 以及字符串。
+<h4>
+	6) DateTimeField</h4>
+它是用于表示时间的表单字段，默认的 Widget 控件是 DateTimeInput，它接受一个可选参数 input_formats，这个参数是一个列表，列表中的元素可以转换为 Python 方法 datetime.datetime 的时间格式，默认可以接收的时间格式如下所示：
+<pre class="info-box">
+[&#39;%Y-%m-%d %H:%M:%S&#39;,   # &#39;2019-1-5 11:15:57&#39;
+&#39;%Y-%m-%d %H:%M&#39;,       # &#39;2019-3-25 13:30&#39;
+&#39;%Y-%m-%d&#39;,             # &#39;2019-12-5&#39;
+&#39;%m/%d/%Y %H:%M:%S&#39;,    # &#39;10/25/2006 14:30:59&#39;
+&#39;%m/%d/%Y %H:%M&#39;,       # &#39;10/25/2006 14:30&#39;
+&#39;%m/%d/%Y&#39;,             # &#39;10/25/2006&#39;
+&#39;%m/%d/%y %H:%M:%S&#39;,    # &#39;1/15/09 14:30:59&#39;
+&#39;%m/%d/%y %H:%M&#39;,       # &#39;1/15/09 14:30&#39;
+&#39;%m/%d/%y&#39;]             # &#39;1/15/09&#39;</pre>
+DateTimeField 的 clean 方法接受的值类型可以是 datetime.datetime、datetime.date 或符合特定格式的字符串，最终会返回 datetime.datetime 对象或抛出异常。实例如下：
+<pre class="python">
+In [1]: from django import forms
+In [2]: x=forms.DateTimeField(input_formats=[&#39;2019-1-5 11:12:12&#39;])
+In [3]: x
+Out[3]: &lt;django.forms.fields.DateTimeField at 0x6721b50&gt;</pre>
+<h4>
+	7) ComboField</h4>
+字段 ComboField 是一个验证字段。我们使用它可以规定字段的验证规则，它默认的 Widget 控件类型为 TextInput，它接收一个必选参数：fields，是一个用于验证字段值的字段列表，并按提供的参数顺序进行验证。实例如下：
+<pre class="python">
+In [18]: from django.forms import ComboField,CharField,EmailField
+In [19]: f = ComboField(fields=[CharField(max_length=10), EmailField()])
+In [20]: f.clean(&#39;caoxuesong@163.com&#39;)
+.....
+#报错异常
+ValidationError: [&#39;确保该变量包含不超过 10 字符 (目前字符数 18)。&#39;]</pre>
+Django 表单系统提供了多个诸如此类的验证字段，比如&nbsp;MultipleChoiceField、SplitDateTimeField 等。在这里不做介绍，建议参阅官方文档了解即可。<br />
+<br />
+本节介绍了 Django 表单系统的常用字段，这些字段自带的参数可以实现<span style="color:#ff0000;">验证该字段输入值</span>的目的，但是上述字段并没有涵盖所有的字段类型，如果大家感兴趣可以查阅官方文档《<a href="https://docs.djangoproject.com/zh-hans/2.2/ref/forms/fields/">Form fields</a>》进行学习，熟练掌握这些内容对于后续表单系统知识的学习将有很大的帮助。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1866_2.html" title="忽略语法细节，从整体上理解函数" target="_blank">忽略语法细节，从整体上理解函数</a></li>
+<li><a href="3136_2.html" title="Linux mask有效权限详解" target="_blank">Linux mask有效权限详解</a></li>
+<li><a href="6877_2.html" title="C++ STL deque容器添加和删除元素方法完全攻略" target="_blank">C++ STL deque容器添加和删除元素方法完全攻略</a></li>
+<li><a href="vip_8348_2.html" title="MySQL修改和删除事件" target="_blank">MySQL修改和删除事件</a></li>
+<li><a href="../ml_alg/term_2.html" title="机器学习常用术语" target="_blank">机器学习常用术语</a></li>
+<li><a href="9445_2.html" title="初学者如何找到适合自己的编程书籍？" target="_blank">初学者如何找到适合自己的编程书籍？</a></li>
+<li><a href="wbwlmc2_2.html" title="Python tell()方法：返回文件指针的位置" target="_blank">Python tell()方法：返回文件指针的位置</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7912;
+window.arcId = "f98fEaSOETCPqHiBvHGEtYhjyNdL3Sc+nWgVQ9inVEJahmxkJbNY2ITqsL8";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>计数排序算法</title>
+<meta name="description" content="通过统计序列中各个元素出现的次数，完成对整个序列的升序或降序排序，这样的排序算法称为 计数排序算法 。 接下来，我们为您系统地讲解计数排序算法。 计数排序算法的实现思路" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>计数排序算法</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">通过统计序列中各个元素出现的次数，完成对整个序列的升序或降序排序，这样的排序算法称为<span style="color:#008000;">计数排序算法</span>。<br />
+<br />
+接下来，我们为您系统地讲解计数排序算法。
+<h2>
+	计数排序算法的实现思路</h2>
+假设待排序序列为 {4, 2, 2, 8, 3, 3, 1}，使用计数排序算法完成升序排序的过程为：<br />
+1) 找到序列中的最大值（用 max 表示）。对于 {4, 2, 2, 8, 3, 3, 1} 序列来说，最大值是 8。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/210820/2-210R013123N13_2.gif" /></div>
+<br />
+2) 创建一个长度为 max+1、元素初值全部为 0 的数组（Python 中可以使用列表），为数组中 [1,max] 区域内的各个空间建立索引：<br />
+找到序列中的最小值（用 min 表示），作为数组下标为 1 的存储空间的索引；
+<ul>
+	<li>
+		将 max 作为数组下标为 max 的存储空间的索引；</li>
+	<li>
+		将 max-1 作为数组下标为 max-1 的存储空间的索引；</li>
+	<li>
+		将 max-2 作为数组下标为 max-2 的存储空间的索引；</li>
+	<li>
+		......</li>
+</ul>
+<blockquote>
+	<p>
+		为某个存储空间建立索引，其实就是为这个存储空间贴上一个独一无二的标签，借助索引（标签），我们可以快速地找到此空间并访问内部的数据。</p>
+</blockquote>
+本例中，待排序的元素都是整数，可以直接将数组下标作为各个存储空间的索引，如下图所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/210820/2-210R0131300K2_2.gif" /></div>
+<blockquote>
+	<p>
+		对于长度为 max+1 的数组，计数排序算法的实现过程不会用到下标为 0 的数组空间。</p>
+</blockquote>
+3) 统计待排序序列中各个元素的出现次数，存储到以该元素为索引的数组空间中。例如，待排序序列中元素 2 出现了两次，所以索引（下标）为 2 的数组空间中存储 2 。更新后的数组如下图所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/210820/2-210R01313325E_2.gif" /></div>
+<br />
+4) 进一步加工数组中存储的数据。从数组下标为 1 的位置开始，按照如下公式修改数组中存储的元素：
+<p class="info-box">
+	array[i] = array[i-1] + array[i]</p>
+其中 i 的取值范围是 [1, max]，修改后的数组为：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/210820/2-210R01313513W_2.gif" /></div>
+<br />
+5) 遍历待排序列中的元素，以该元素为索引获取数组中存储的值，此值即为序列排序后元素应处的位置。<br />
+<br />
+举个例子，序列中第一个元素是 4，数组中索引 4 对应的值为 6，因此序列排序后元素 4 位于第 6 的位置处，如下图所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/210820/2-210R01314125a_2.gif" /></div>
+<br />
+6) 当确定了一个元素排序后的位置，需要将数组中该元素为索引对应的值减去 1。<br />
+<br />
+例如，我们已经确定了第二个元素 2 在有序序列中位于第 2 个位置，此时将数组下标为 2 处的值减去 1（3-1=2），则数组中第 3 个元素 2 位于有序序列中第 1 的位置上。<br />
+<br />
+以上 6 步就是计数排序算法的整个实现思路，对应的时间复杂度为<code>O(n)</code>。
+<h2>
+	计数排序算法的具体实现</h2>
+实现计数排序算法的伪代码如下：
+<pre class="info-box">
+//计数排序算法，list 为待排序序列
+countingSort(list)
+    size &lt;- len(list)      // 获取 list 序列中的元素个数=
+    max &lt;- getMax(list)    // 找到 list 序列中的最大值
+    array[0...max+1] &lt;- 0    // 定义一个长度为 max+1 的数组，
+    for j &lt;- 0 to size      // 创建 array[max+1] 并统计各个元素的出现次数
+        array[list[j]] &lt;- array[list[j]] + 1
+    for i &lt;- 1 to max       // 对 array[max+1] 存储的元素做累加操作
+        array[i] &lt;- array[i] + array[i - 1];
+    for j &lt;- size to 0 // 根据 array[max+1] 中的累加值，找到各个元素排序后的具体位置
+        output[array[list[i]] - 1] = list[i]; // output存储有序序列
+        array[list[i]] &lt;- array[list[i]] - 1  // 确定一个元素的位置后，array[max+1] 中相应位置的数值要减 1
+    return output[size]</pre>
+<br />
+结合伪代码，如下是采用计数排序算法对 {4, 2, 2, 8, 3, 3, 1} 进行升序排序的 C 语言程序：
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+#define N 7       //待排序序列中的元素个数
+#define MAX 100   //待排序序列中的最大值不能超过 100
+//找到数组中的最大值
+int getMax(int list[]) {
+    int i, max = list[0];
+    for (i = 1; i &lt; N; i++) {
+        if (list[i] &gt; max)
+            max = list[i];
+    }
+    return max;
+}
+
+void countingSort(int list[]) {
+    int i;
+    //第 1 步，找到序列中的最大值
+    int max = getMax(list);
+    //第 2 步，创建一个数组，长度至少为 max+1，并初始化为 0
+    int array[MAX] = { 0 };
+    int output[N] = { 0 };
+    //第 3 步，统计各个元素的出现次数，并存储在相应的位置上
+    for (i = 0; i &lt; N; i++) {
+        array[list[i]]++;
+    }
+    //第 4 步，累加 array 数组中的出现次数
+    for (i = 1; i &lt;= max; i++) {
+        array[i] += array[i - 1];
+    }
+
+    //第 5 步，根据 array 数组中的信息，找到各个元素排序后所在位置，存储在 output 数组中
+    for (i = N - 1; i &gt;= 0; i--) {
+        output[array[list[i]] - 1] = list[i];
+        //第 6 步，数组相应位置上的值减1
+        array[list[i]]--;
+    }
+
+    // 将 output 数组中的数据原封不动地拷贝到 list 数组中
+    for (i = 0; i &lt; N; i++) {
+        list[i] = output[i];
+    }
+}
+
+void printlist(int list[]) {
+    int i;
+    for (i = 0; i &lt; N; ++i) {
+        printf(&quot;%d &quot;, list[i]);
+    }
+}
+
+int main() {
+    int list[] = { 4, 2, 2, 8, 3, 3, 1 };
+    //进行计数排序
+    countingSort(list);
+    printlist(list);
+}</pre>
+<br />
+如下是采用计数排序算法对 {4, 2, 2, 8, 3, 3, 1} 进行升序排序的 Java 程序：
+<pre class="java">
+public class Demo {
+    //找到数组中的最大值
+    public static int getMax(int[] list) {
+        int max = list[0];
+        for (int i = 1; i &lt; list.length; i++) {
+            if (list[i] &gt; max) {
+                max = list[i];
+            }
+        }
+        return max;
+    }
+
+    public static void countingSort(int[] list) {
+        int length = list.length;
+        //第 1 步，找到序列中的最大值
+        int max = getMax(list);
+        //第 2 步，初始化一个 array[max+1]
+        int[] array = new int[max + 1];
+        int[] output = new int[length];
+        //第 3 步，统计各个元素的出现次数，并存储在相应的位置上
+        for (int i = 0; i &lt; length; i++) {
+            array[list[i]]++;
+        }
+        // 第 4 步，累加 array 数组中的出现次数
+        for (int i = 1; i &lt;= max; i++) {
+            array[i] += array[i - 1];
+        }
+        // 第 5 步，根据 array 数组中的信息，找到各个元素排序后所在位置，存储在 output 数组中
+        for (int i = length - 1; i &gt;= 0; i--) {
+            output[array[list[i]] - 1] = list[i];
+            array[list[i]]--;
+        }
+
+        // 将 output 数组中的数据原封不动地拷贝到 list 数组中
+        for (int i = 0; i &lt; length; i++) {
+            list[i] = output[i];
+        }
+    }
+
+    public static void printList(int[] list) {
+        for (int i = 0; i &lt; list.length; i++) {
+            System.out.print(list[i] + &quot; &quot;);
+        }
+    }
+
+    public static void main(String[] args) {
+        // 待排序序列
+        int[] list = new int[] { 4, 2, 2, 8, 3, 3, 1 };
+        //进行计数排序
+        countingSort(list);
+        printList(list);
+    }
+}</pre>
+<br />
+如下是采用计数排序算法对 {4, 2, 2, 8, 3, 3, 1} 进行升序排序的 Python 程序：
+<pre class="python">
+list = [4, 2, 2, 8, 3, 3, 1]
+length = len(list)
+#找到数组中的最大值
+def getMax(list):
+    max = list[0]
+    for i in range(1,length):
+        if list[i] &gt; max:
+            max = list[i]
+    return max
+#实现计数排序算法
+def countingSort(list):
+    #第 1 步，找到序列中的最大值
+    max = getMax(list)
+    #第 2 步，初始化一个 array[max+1]
+    array = [0]*(max+1)
+    output = [0]*length
+    #第 3 步，统计各个元素的出现次数，并存储在相应的位置上
+    for i in range(length):
+        array[list[i]] = array[list[i]]+1
+    #第 4 步，累加 array 数组中的出现次数
+    for i in range(1,max+1):
+        array[i] = array[i] + array[i-1]
+    #第 5 步，根据 array 数组中的信息，找到各个元素排序后所在位置，存储在 output 数组中
+    for i in range(length):
+        output[array[list[i]]-1] = list[i];
+        array[list[i]] = array[list[i]]-1;
+    #将 output 数组中的数据原封不动地拷贝到 list 数组中
+    for i in range(length):
+        list[i] = output[i];
+
+def printlist(list):
+    for i in range(length):
+        print(list[i],end=&#39; &#39;)
+
+countingSort(list)
+printlist(list)</pre>
+<br />
+以上程序的输出结果均为：
+<p class="info-box">
+	1 2 2 3 3 4 8&nbsp;</p>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="261_2.html" title="C语言自动类型转换和强制类型转换详解" target="_blank">C语言自动类型转换和强制类型转换详解</a></li>
+<li><a href="952_2.html" title="Java成员方法的声明和调用" target="_blank">Java成员方法的声明和调用</a></li>
+<li><a href="1859_2.html" title="C语言变量的作用域，加深对全局变量和局部变量的理解" target="_blank">C语言变量的作用域，加深对全局变量和局部变量的理解</a></li>
+<li><a href="7565_2.html" title="数据库系统是什么？它由哪几部分组成？" target="_blank">数据库系统是什么？它由哪几部分组成？</a></li>
+<li><a href="../maven2/auto-deploy_2.html" title="Maven自动化部署" target="_blank">Maven自动化部署</a></li>
+<li><a href="../mongodb2/create-collection_2.html" title="MongoDB创建集合" target="_blank">MongoDB创建集合</a></li>
+<li><a href="6l3grgo_2.html" title="《单片机应用技术(C语言版)》第4版PDF下载（高清完整版）" target="_blank">《单片机应用技术(C语言版)》第4版PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9114;
+window.arcId = "9c2a8vW8BvTd5TvKIVKfxr+VHW4Ogqnx3ihDAm/18xix1/fQdtOg7RC4CMY";
+window.typeidChain = "457|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

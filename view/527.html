@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++ unordered_map初始化详解</title>
+<meta name="description" content="生成 unordered_map 容器和生成 map 一样简单，只要可以用 hashK 的实例哈希 k 类型的键，而且必须能够用 == 运算符来比较键。下面展示了如何定义和初始化 unordered_map： std::unordered_mapstd::s" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++ unordered_map初始化详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">生成 unordered_map 容器和生成 map 一样简单，只要可以用 hash&lt;K&gt; 的实例哈希 k 类型的键，而且必须能够用 == 运算符来比较键。下面展示了如何定义和初始化 unordered_map：<br />
+<pre class="cpp">
+std::unordered_map&lt;std::string, size_t&gt; people {{&quot;Jan&quot;,44}, {&quot;Jim&quot;, 33}, {&quot;Joe&quot;, 99}}; // Name,age</pre>
+这样就生成了一个包含 pair&lt;string，size_t&gt; 元素的容器，并用初始化列表中的元素对它进行了初始化。容器中格子的个数是默认的，它使用 equal_to&lt;String&gt;() 对象来判断键是否相等。它会用定义在 string 头文件中的 hash&lt;string&gt; 来对 string 进行哈希。如果没有提供初始值，默认的构造函数会生成一个空容器，它有默认个数的格子。<br />
+<br />
+当我们知道要在容器中保存多少个元素时，可以在构造函数中指定应该分配的格子的个数：<br />
+<pre class="cpp">
+std::unordered_map&lt;std::string,size_t&gt; people {{ { &quot;Jan&quot;, 44}, {&quot;Jim&quot;, 33}, {&quot;Joe&quot;, 99}}, 10};</pre>
+这个构造函数有两个参数：初始化列表和需要分配的格子数。<br />
+<br />
+也可以用迭代器定义的一段 pair 对象来生成容器。显然，只要这个范围内的 pair 对象都是要求的类型，那么任何对象源都可以接受。例如：<br />
+<pre class="cpp">
+std::vector&lt;std::pair&lt;string, size_t&gt;&gt;folks {{ &quot;Jan&quot;,44}, {&quot;Jim&quot;, 33}, {&quot;Joe&quot;, 99},{&quot;Dan&quot;, 22},{&quot;Ann&quot;, 55}, {&quot;Don&quot;, 77}};
+std::unordered_map&lt;string, size_t&gt; neighbors {std::begin(folks), std::end(folks) , 500};</pre>
+folks 是一个包含 pair&lt;string,size_t&gt; 类型元素的 vector 容器，然后用它的元素来填充 neighbors 容器。这里为 neighbors 分配了 500 个格子，但也可以省略这个参数，使用默认的格子个数。可以为前面的两个构造函数指定定义哈希函数的函数对象。这个函数对象会分别作为第 1 个构造函数的第 3 个参数，以及第 2 个构造函数的第 4 个参数，所以这时需要为第 2 个构造函数指定格子个数。接下来会展示如何在接收初始化列表的构造函数中指定这个参数。<br />
+<br />
+假如我们想要用定义在前面章节中的 Name 对象作为键，那就必须为它定义一个哈希函数和一个恒等运算符，扩展后的类的定义如下：<br />
+<pre class="cpp">
+class Name
+{
+public:
+    size_t hash() const { return std::hash&lt;std::string&gt;()(first+second); }
+    bool operator==(const Name&amp; name) const { return first == name.first &amp;&amp; second== name.second; }
+};</pre>
+在这个示例中，编译器提供的默认的 operator==() 成员函数能够满足我们的要求，但还是想自己定义。成员函数 hash() 用函数对象 hash&lt;string&gt;() 来哈希 Name 对象的成员 first 和 second 所拼接的字符串。<br />
+<br />
+unordered_map 容器的哈希函数只能接受和键同类型的单个参数，它会返回一个 size_t 类型的哈希值。我们可以定义一个满足这些条件的函数对象的类型，这个类型的函数对象会调用 Name 对象的成员函数 hash():
+<pre class="cpp">
+class Hash_Name {
+public:
+    size_t operator()(const Name&amp; name) const { return name.hash(); }
+};</pre>
+当生成 unordered_map 容器时，可以用 Hash_Name 对象作为它的比较函数：<br />
+<pre class="cpp">
+std::unordered_map&lt;Name, size_t, Hash_Name&gt; people
+{{{{&quot;Ann&quot;, &quot;Ounce&quot;}, 25}, {{&quot;Bill&quot;, &quot;Bao&quot;}, 46}, {{&quot;Jack&quot;, &quot;Sprat&quot;}, 77}},500,Hash Name()}</pre>
+这个容器中的元素是 pair&lt;Name, size_t&gt; 类型对象。它的构造函数的第一个参数是一个初始化列表，里面定义了三个这种类型的对象。注意括号是如何嵌套的。最内层的括号中包含 Name 构造函数的参数。它上面的一层包含的是 pair&lt;Name，size_t&gt; 构造函数的参数。<br />
+<br />
+unordered_map 构造函数的第 2 个参数是格子的个数，我们必须指定它，因为我们想使用第 3 个参数，第 3 个参数是用来哈希键的函数对象。Hash_Name 类型的函数对象会作为这个容器的第 3 个模板类型参数。这么做是必要的，因为模板类型参数有一个不同于我们函数对象的类型的默认值。unordered_map 有以元素段为参数的构造函数，它的前两个参数是迭代器，第 3 个参数是格子个数，第 4 个参数是哈希函数。<br />
+<br />
+当需要指定用来比较两个键对象是否相等的函数对象时，必须指定格子个数，函数对象会用键值来生成哈希值。如果我们忽略了 Name 类的成员函数 operator==()，并且假设定义了一个定义了函数对象的类类型 Name_Equal，可以按如下方式在构造函数中指定它：<br />
+<pre class="cpp">
+std::unordered_map&lt;Name, size_t, Hash_Name, Name_Equal〉 people
+{ { { {&quot;Ann&quot;, &quot;Ounce&quot;}, 25}, {{&quot;Bill&rdquo;, &quot;Bao&quot;}, 46},{{&quot;Jack&quot;,&quot;Sprat&quot;}, 77}},500,Hash_Name(), Name_Equal()};</pre>
+这里有一个额外的模板类型参数和一个额外的构造函数参数，因为参数有默认值，所以这个模板类型参数是必要的。模板参数列表中用来比较键的函数对象同样会用在以初始化列表为参数的构造函数中。<br />
+<br />
+unordered_map 也有移动和拷贝构造函数。显然，可以用它们生成容器的副本，副本容器的格子个数、哈希函数都和参数容器相同。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="208.html" title="C++ string（C++字符串）详解" target="_blank">C++ string（C++字符串）详解</a></li>
+<li><a href="vip_5100.html" title="Linux中的哪些数据需要备份？" target="_blank">Linux中的哪些数据需要备份？</a></li>
+<li><a href="5359.html" title="JavaScript中的几个重要概念" target="_blank">JavaScript中的几个重要概念</a></li>
+<li><a href="7770.html" title="MySQL使用二进制日志还原数据库" target="_blank">MySQL使用二进制日志还原数据库</a></li>
+<li><a href="../jsp2/paging.html" title="JSP分页功能" target="_blank">JSP分页功能</a></li>
+<li><a href="9770.html" title="ARM是什么" target="_blank">ARM是什么</a></li>
+<li><a href="9810.html" title="Go语言if语句详解" target="_blank">Go语言if语句详解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 527;
+window.arcId = "ddb2jHSTr606cQLVynOdKDe0c1Vg5HQE+SZPviPfulYgtS2Qzc6t4fY+1Q";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

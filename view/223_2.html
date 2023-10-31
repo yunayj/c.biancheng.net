@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>动态内存分配，C语言动态内存分配详解</title>
+<meta name="description" content="动态内存是相对静态内存而言的。所谓动态和静态就是指内存的分配方式。动态内存是指在堆上分配的内存，而静态内存是指在栈上分配的内存。 前面所写的程序大多数都是在栈上分配" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>动态内存分配，C语言动态内存分配详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">动态内存是相对静态内存而言的。所谓动态和静态就是指内存的分配方式。动态内存是指在堆上分配的内存，而静态内存是指在栈上分配的内存。<br />
+<br />
+前面所写的程序大多数都是在栈上分配的，比如局部变量、形参、函数调用等。栈上分配的内存是由系统分配和释放的，空间有限，在复合语句或函数运行结束后就会被系统自动释放。而堆上分配的内存是由程序员通过编程自己手动分配和释放的，空间很大，存储自由。堆和栈后面还会专门讲，这里先了解一下。<br />
+<h2>
+	传统数组的缺点</h2>
+&ldquo;传统数组&rdquo;就是前面所使用的数组，与动态内存分配相比，传统数组主要有以下几个缺点：<br />
+<br />
+1) 数组的长度必须事先指定，而且只能是常量，不能是变量。比如像下面这么写就是对的：
+<pre class="cpp">
+int a[5];
+而像下面这么写就是错的：
+int length = 5;
+int a[length];  //错误</pre>
+2) 因为数组长度只能是常量，所以它的长度不能在函数运行的过程当中动态地扩充和缩小。<br />
+<br />
+3) 对于数组所占内存空间程序员无法手动编程释放，只能在函数运行结束后由系统自动释放，所以在一个函数中定义的数组只能在该函数运行期间被其他函数使用。<br />
+<br />
+而动态内存就不存在这个问题，因为动态内存是由程序员手动编程释的，所以想什么时候释放就什么时候释放。只要程序员不手动编程释放，就算函数运行结束，动态分配的内存空间也不会被释放，其他函数仍可继续使用它。除非是整个程序运行结束，这时系统为该程序分配的所有内存空间都会被释放。<br />
+<br />
+所谓&ldquo;传统数组&rdquo;的问题，实际上就是静态内存的问题。我们讲传统数组的缺陷实际上就是以传统数组为例讲静态内存的缺陷。本质上讲的是以前所有的内存分配的缺陷。正因为它有这么多缺陷，所以动态内存就变得很重要。动态数组能很好地解决传统数组的这几个缺陷。<br />
+<h2>
+	malloc函数的使用</h2>
+那么动态内存是怎么造出来的？在讲如何动态地把一个数组造出来之前，我们必须要先介绍 malloc 函数的使用。<br />
+<br />
+<span style="color:#b22222;">malloc 是一个系统函数，它是 memory allocate 的缩写。</span>其中memory是&ldquo;内存&rdquo;的意思，allocate是&ldquo;分配&rdquo;的意思。顾名思义 malloc 函数的功能就是&ldquo;分配内存&rdquo;。<span style="color:#b22222;">要调用它必须要包含头文件&lt;stdlib.h&gt;。</span>它的原型为：
+<p class="info-box">
+	# include &lt;stdlib.h&gt;<br />
+	void *malloc(unsigned long size);</p>
+malloc 函数只有一个形参，并且是整型。该函数的功能是在内存的动态存储空间即堆中分配一个长度为size的连续空间。函数的返回值是一个指向所分配内存空间起始地址的指针，类型为 void*型。<br />
+<br />
+简单的理解，malloc 函数的返回值是一个地址，这个地址就是动态分配的内存空间的起始地址。如果此函数未能成功地执行，如内存空间不足，则返回空指针 NULL。<br />
+<br />
+&ldquo;int i=5；&rdquo;表示分配了 4 字节的&ldquo;静态内存&rdquo;。这里需要强调的是：&ldquo;静态内存&rdquo;和&ldquo;静态变量&rdquo;虽然都有&ldquo;静态&rdquo;两个字，但是它们没有任何关系。不要以为&ldquo;静态&rdquo;变量的内存就是&ldquo;静态内存&rdquo;。静态变量的关键字是 static，它与全局变量一样，都是在&ldquo;静态存储区&rdquo;中分配的。这块内存在程序编译的时候就已经分配好了，而且在程序的整个运行期间都存在；而静态内存是在栈中分配的，比如局部变量。<br />
+<br />
+那么，如何判断一个内存是静态内存还是动态内存呢？<span style="color:#b22222;">凡是动态分配的内存都有一个标志：都是用一个系统的动态分配函数来实现的，如 malloc 或 calloc。</span><br />
+<br />
+calloc 和 malloc 的功能很相似，我们一般都用 malloc。calloc 用得很少，这里不做讲解，有兴趣的话可自行查阅。<br />
+<br />
+如何用 malloc 动态分配内存呢？比如：
+<pre class="cpp">
+int *p = (int *)malloc(4);</pre>
+它的意思是：请求系统分配 4 字节的内存空间，并返回第一字节的地址，然后赋给指针变量 p。当用 malloc 分配动态内存之后，上面这个指针变量 p 就被初始化了。<br />
+<br />
+需要注意的是，函数 malloc 的返回值类型为 void* 型，而指针变量 p 的类型是 int* 型，即两个类型不一样，那么可以相互赋值吗？<br />
+<br />
+上面语句是将 void* 型&ldquo;强制类型转换&rdquo;成 int*型，但事实上可以不用转换。<span style="color:#b22222;">C 语言中，void* 型可以不经转换（系统自动转换）地直接赋给任何类型的指针变量（函数指针变量除外）。</span><br />
+<br />
+所以&ldquo;int*p=(int*)malloc(4)；&rdquo;就可以写成&ldquo;int*p=malloc(4)；&rdquo;。此句执行完之后指针变量 p 就指向动态分配内存的首地址了。<br />
+<h2>
+	void和void*</h2>
+可能有人会问，void 不是不会有返回值吗？为什么 malloc 还会有返回值？需要注意的是，malloc 函数的返回值类型是 void*，而不是 void。void*和void是有区别的。<br />
+<br />
+void* 是定义一个无类型的指针变量，它可以指向任何类型的数据。任何类型的指针变量都可以直接赋给 void* 型的指针变量，无需进行强制类型转换。本教程后面很多函数的参数都是 void* 型的，表示它们可以接收任何类型的数据。<br />
+<br />
+同样，根据我们上面所讲的，void* 型也可以直接赋给任何类型的指针变量，而无需进行强制类型转换，但前提是必须在C语言中。<br />
+<br />
+注意，不能对 void* 型的指针变量进行运算操作，如指针的运算、指针的移动等。原因很简单，前面讲int*型的指针变量加 1 就是移动 4 个单元，因为 int* 型的指针变量指向的是 int 型数据；但是 void* 型可以指向任何类型的数据，所以无法知道&ldquo;1&rdquo;所表示的是几个内存单元。<br />
+<br />
+另外，在&ldquo;int*p=malloc(4)；&rdquo;中，指针变量 p 是静态分配的。前面介绍过，动态分配的内存空间都有一个标志，即都是用一个系统的动态分配函数实现的。而指针变量 p 是用传统的方式定义的，所以是静态分配的内存空间。而 p 所指向的内存是动态分配的。<br />
+<br />
+那么，动态分配和静态分配到底有什么区别呢？稍后你就明白了。<br />
+<br />
+我们在前面讲过，编程的时间长了就会发现编程中百分之八九十的问题都属于内存的问题，如内存什么时候分配、什么时候释放、由谁分配、由谁释放、怎么分配、怎么释放、哪块内存可以用、哪块内存不能用、哪块内存可以读、哪块内存可读可写、哪块内存不能读也不能写。这些问题形成了计算机语言的语法规则，如 C 语言语法、<a href='../cplus/cplus_2.html' target='_blank'>C++</a> 语法、<a href='../java/java_2.html' target='_blank'>Java</a> 语法，它们本质上都是内存的问题。包括局部变量、静态变量等都一样。所以内存是很关键的问题。<br />
+<br />
+下面利用&ldquo;int*p=malloc（4）；&rdquo;语句给大家写一个很有意思的程序：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+# include &lt;stdlib.h&gt;  //malloc()的头文件
+int main(void)
+{
+    while (1)
+    {
+        int *p = malloc(1000);   
+    }
+    return 0;
+}</pre>
+这个程序是非常简单的一个木马病毒。只要运行一会儿，你的计算机就死机了。死机速度的快慢取决于 malloc 后面括号中数字的大小。数字越大，&ldquo;死&rdquo;得越快。我们可以试验一下：按&ldquo;Ctrl+Alt+Delete&rdquo;键打开 Windows 任务管理器，然后选择&ldquo;性能&rdquo;，如图 1 所示。<br />
+<div style="text-align: center;">
+	<br />
+	<img alt="" src="../uploads/allimg/180829/2-1PRZ93920301_2.png" /><br />
+	图 1<br />
+	&nbsp;</div>
+图 1 中 CPU 使用的情况是 1%，内存的使用情况是使用了 1.64GB。现在我们运行上面那个程序看看有什么变化。单击&ldquo;编译&rdquo;&rarr;&ldquo;链接&rdquo;&rarr;&ldquo;执行&rdquo;，再看看 Windows 任务管理器有什么变化，如图 2 所示。
+<div style="text-align: center;">
+	<br />
+	<img alt="" src="../uploads/allimg/180829/2-1PRZ9410J17_2.png" /><br />
+	图 2<br />
+	&nbsp;</div>
+CPU 瞬间就使用了 27%，内存瞬间使用了 3.43GB，而且这个数值还在往上涨！当内存全部使用完后会启动虚拟内存，就是把硬盘里的一块区域当成内存来使用。如果虚拟内存也用完了，整个系统就死机了。我们只要把 VC++6.0 中执行时弹出的黑色窗口关掉，CPU 和内存的使用就会恢复正常了。因为把黑窗口关闭后程序就结束了，程序运行结束后系统为该程序分配的内存空间就都会被释放。<br />
+<br />
+这是最简单的一个木马程序，这个程序有一个专业的名称，叫&ldquo;<span style="color:#008000;">内存泄漏</span>&rdquo;。什么是&ldquo;内存泄漏&rdquo;呢？每台电脑都有内存，所有的程序都是先存放到内存里面才能运行。但是上面这个程序将内存空间都占满了，那么其他程序就没有地方存放了，所以内存就好像泄漏了一样。<br />
+<br />
+下面使用 malloc 函数写一个程序，程序的功能是：调用被调函数，将主调函数中动态分配的内存中的数据放大 10 倍。<br />
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+# include &lt;stdlib.h&gt;
+void Decuple(int *i);  //函数声明, decuple是10倍的意思
+int main(void)
+{
+    int *p = malloc(4);
+    *p = 10;
+    Decuple(p);
+    printf(&quot;*p = %d\n&quot;, *p);
+    return 0;
+}
+void Decuple(int *i)
+{
+    *i = (*i) * 10;
+    return;
+}</pre>
+输出结果是：<br />
+*p = 100<br />
+<br />
+当调用 Decuple 函数时，是把指针变量 p 中的地址传递给指针变量 i，此时 i 和 p 指向的是同一个内存单元。所以操作 i 所指向的内存空间就是操作 p 所指向的内存空间。<br />
+<br />
+程序中，int*p=malloc(4); 中的 4 表示分配了 4 字节的动态内存。因为在前面用 sizeof 试过本人的计算机，其给 int 型变量分配的是 4 字节，所以这么写没有问题。但如果把这个程序移植到其他计算机中呢？系统给 int 型变量分配的就不一定是 4 字节（有可能是 8 字节），因此直接写&ldquo;4&rdquo;的可移植性很差。最好的方式为 sizeof（int），即：<br />
+<pre class="cpp">
+int *p = malloc(sizeof(int));</pre>
+sizeof（int）的值是 int 型变量所占的字节数，这样就能很好地表示当前计算机中 int 型变量占几字节。这样写程序的可移植性就增强了。所以动态内存最好是需要多少就构建多少。多了虽然不会有问题，但是会浪费内存，而少了就可能出就可能出问题。<br />
+<br />
+如果还想简单一点的话，也可以像下面这样写：
+<pre class="cpp">
+int *p = malloc(sizeof*p);</pre>
+前面讲过，sizeof 的后面可以紧跟类型，也可以直接跟变量名。如果是变量名，那么就表示该变量在内存中所占的字节数。所以 *p 是 int 型的，那么 sizeof*p 就表示 int 型变量在内存中所占的字节数。<br />
+<h2>
+	free函数的使用</h2>
+前面定义了一个指向动态内存的指针变量 p：<br />
+<pre>
+int *p = malloc(sizeof*p);</pre>
+前面讲过，动态分配的内存空间是由程序员手动编程释放的。那么怎么释放呢？用 free 函数。<br />
+<br />
+free 函数的原型是：<br />
+<p class="info-box">
+	# include &lt;stdlib.h&gt;<br />
+	void free(void *p);</p>
+<span style="color:#b22222;">free 函数无返回值，它的功能是释放指针变量 p 所指向的内存单元。</span>此时 p 所指向的那块内存单元将会被释放并还给操作系统，不再归它使用。操作系统可以重新将它分配给其他变量使用。<br />
+<br />
+需要注意的是，释放并不是指清空内存空间，而是指将该内存空间标记为&ldquo;可用&rdquo;状态，使操作系统在分配内存时可以将它重新分配给其他变量使用。<br />
+<br />
+指针变量 p 被释放之后，它仍然是指向那块内存空间的，只是那块内存空间已经不再属于它了而已。下面写一个程序看一下：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+# include &lt;stdlib.h&gt;
+int main(void)
+{
+    int *p = malloc(sizeof*p);
+    *p = 10;
+    printf(&quot;p = %p\n&quot;, p);
+    free(p);
+    printf(&quot;p = %p\n&quot;, p);
+    return 0;
+}</pre>
+输出结果是：<br />
+p = 002C2ED0<br />
+p = 002C2ED0<br />
+<br />
+由该程序可见，释放前后，p 所指向的内存空间是一样的。所以释放后 p 所指向的仍然是那块内存空间。既然指向的仍然是那块内存空间，那么就仍然可以往里面写数据。可是释放后该内存空间已经不属于它了，该内存空间可能会被分配给其他变量使用。如果其他变量在里面存放了值，而你现在用 p 往里面写入数据就会把那个值给覆盖，这样就会造成其他程序错误。所以当指针变量被释放后，要立刻把它的指向改为 NULL。<br />
+<br />
+那么，当指针变量被释放后，它所指向的内存空间中的数据会怎样呢？free 的标准行为只是表示这块内存可以被再分配，至于它里面的数据是否被清空并没有强制要求。不同的编译器处理的方式可能不一样。我们就看一下 VC++6.0 这个编译器是怎么处理的：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+# include &lt;stdlib.h&gt;
+int main(void)
+{
+    int *p = malloc(sizeof*p);
+    *p = 10;
+    printf(&quot;p = %p\n&quot;, p);
+    printf(&quot;*p = %d\n&quot;, *p);
+    free(p);
+    printf(&quot;p = %p\n&quot;, p);
+    printf(&quot;*p = %d\n&quot;, *p);
+    return 0;
+}</pre>
+输出结果是：<br />
+p = 00842ED0<br />
+*p = 10<br />
+p = 00842ED0<br />
+*p = -572662307<br />
+<br />
+可见在 VC++6.0 中，当指针变量被释放后，虽然它仍然是指向那个内存空间的，但那个内存空间中的值将会被重新置一个非常小的负数。<br />
+<br />
+动态创建的内存如果不用了必须要释放。注意，一个动态内存只能释放一次。如果释放多次程序就会崩溃，因为已经释放了，不能再释放第二次。<br />
+<br />
+<span style="color:#b22222;">综上所述，malloc 和 free 一定要成对存在，一一对应。</span>有 malloc 就一定要有 free，有几个 malloc 就要有几个 free，与此同时，每释放一个指向动态内存的指针变量后要立刻把它指向 NULL。<br />
+<br />
+最后需要强调的是，<span style="color:#b22222;">只有动态创建的内存才能用 free 把它释放掉，静态内存是不能用free释放的。静态内存只能由系统释放。</span>比如：<br />
+<pre class="cpp">
+int a = 10;
+int *p = &amp;a;</pre>
+如果试图用 free(p) 把指针变量 p 所指向的内存空间释放掉，那么编译的时候不会出错，但程序执行的时候立刻就出错。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2860_2.html" title="Shell函数参数" target="_blank">Shell函数参数</a></li>
+<li><a href="3426_2.html" title="什么是查找表" target="_blank">什么是查找表</a></li>
+<li><a href="7583_2.html" title="MySQL ALTER TABLE：修改数据表" target="_blank">MySQL ALTER TABLE：修改数据表</a></li>
+<li><a href="vip_8353_2.html" title="MySQL锁机制（入门篇）" target="_blank">MySQL锁机制（入门篇）</a></li>
+<li><a href="../pandas/merge_2.html" title="Pandas merge合并操作" target="_blank">Pandas merge合并操作</a></li>
+<li><a href="../csharp/function_2.html" title="C#函数/方法详解" target="_blank">C#函数/方法详解</a></li>
+<li><a href="20j528x_2.html" title="PHP number_format()函数的用法" target="_blank">PHP number_format()函数的用法</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 223;
+window.arcId = "9c64ooCvHknqozDXDd3pDcyZnosqN6Vm//iFo6uFleY1xPLN54bzD86Lrg";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++汉诺塔递归算法完全攻略</title>
+<meta name="description" content="汉诺塔是计算机学教科书中常用的游戏，用来说明递归的魔力。该游戏有3个柱子和一组不同大小的圆盘，柱子从圆盘的中心穿过。游戏开始时，所有圆盘叠放在左侧第一个柱子上，如图" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++汉诺塔递归算法完全攻略</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">汉诺塔是计算机学教科书中常用的游戏，用来说明递归的魔力。该游戏有3个柱子和一组不同大小的圆盘，柱子从圆盘的中心穿过。游戏开始时，所有圆盘叠放在左侧第一个柱子上，如图 1 所示。
+<div style="text-align: center;">
+<br />
+<img alt="" src="../uploads/allimg/181130/2-1Q13016021H49.gif" /><br />
+图 1 汉诺塔游戏中的柱子和圆盘</div>
+<br />
+游戏的目标是将所有的圆盘从第一个柱子移动到第三个柱子，同时遵守以下规则：
+<ol>
+<li>
+除了被移动时，所有圆盘都必须放在柱子上。</li>
+<li>
+一次只能移动一个圆盘。</li>
+<li>
+圆盘不能放置在比它小的圆盘上面。</li>
+</ol>
+<br />
+现在来看一看游戏的一些玩法示例。最简单的情况是当只有一个圆盘时：在这种情况下，只要将圆盘从第一个柱子移动到第三个柱子就可以一次性完成游戏。<br />
+<br />
+如果有两个圆盘，则需要通过 3 个步骤解决这个游戏：
+<ol>
+<li>
+将圆盘从第一个柱子移动到第二个柱子（它必须是最上面的一个)。</li>
+<li>
+将圆盘从第一个柱子移动到第三个柱子。</li>
+<li>
+将圆盘从第二个柱子移动到第三个柱子。</li>
+</ol>
+<br />
+请注意，虽然游戏的目的是将圆盘从第一个柱子移动到第三个柱子，但是有必要使用第二个柱子作为一些圆盘的临时安放位置。解决方案的复杂性随着要移动的圆盘数量的增加而迅速增加。移动 3 个圆盘需要 7 步移动，如图 2 所示。<br />
+<div style="text-align: center;">
+<br />
+<img alt="" src="../uploads/allimg/181130/2-1Q130160251150.gif" /><br />
+图 2 汉诺塔 3 个圆盘的 7 步解决方案</div>
+<br />
+这个游戏有一个迷人的传说。根据这个传说，河内寺庙里有一群僧侣，他们有 3 个柱子和 64 个圆盘。这些圆盘最初堆放在第一个柱子上，而僧侣们则需要将它们移动到第三个柱子上。当僧侣们完成任务时，世界将会消亡。<br />
+<br />
+现在回到这个问题本身，来考虑当圆盘的数量不做限制时，一般情况下的解决方案。这个问题可以被描述为：将 n 个圆盘从第一个柱子移动到第三个柱子，使用第二个柱子作为临时柱子。<br />
+<br />
+要理解如何使用循环解决这个问题是非常困难的，但令人高兴的是，设想一个递归解决方案并不困难：如果可以（递归地）将 n-1 个圆盘从第一个柱子移动到第二个柱子，而使用第三个柱子作为临时挂钩，那么最大的圆盘将独自放在第一个柱子上。然后就可以一次性把最大圆盘从第一个柱子移动到第三个柱子。接下来，可以（递归地）将 n-1 个圆盘从第二个柱子移动到第三个柱子，这次使用第一个柱子作为临时柱子。<br />
+<br />
+这个计划可以使用伪代码表示如下。其中，disk 表示圆盘，peg1-3 对应第一个柱子-第三个柱子。<br />
+<pre class="cpp">
+To move n disks from peg 1 to peg 3, u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g peg 2 as a temporary peg:
+    If n &gt; 0 Then
+        Move n-1 disks from peg 1 to peg 2, using peg 3 as a temporary peg.
+        Move a disk from peg 1 to peg 3.
+        Move n-1 disks from peg 2 to peg 3, using peg 1 as a temporary peg.
+    End If</pre>
+现在来编写一个实现这个解决方案的函数，打印解决游戏的一系列动作。以下代码将使用名称而不是数字来描述柱子。该函数的目标是使用临时柱子（peg3）将一叠圆盘从源柱子（peg1）移动到目标柱子（peg2）。以下是函数的代码：<br />
+<pre class="cpp">
+void moveDisks(int n, string source, string dest, string temp)
+{
+    if (n &gt; 0)
+    {
+        //将n-1圆盘从源柱子移动到临时柱子
+        //使用目标柱子作为临时柱子
+        moveDisks(n - 1, source, temp, dest);
+        //将圆盘从源柱子移动到目标柱子
+        cout &lt;&lt; &quot;Move a disk from &quot; &lt;&lt; source &lt;&lt; &quot; to &quot; &lt;&lt; dest &lt;&lt; endl;
+        //将n-1圆盘从临时柱子移动到目标柱子
+        //使用源柱子作为临时柱子
+        moveDisks(n - 1, temp, dest, source);
+    }
+}</pre>
+基本情况在 n = 0 时发生，并且没有要移动的圆盘。在这种情况下，函数调用将不做任何事情返回。下面的程序演示了该函数。
+<pre class="cpp">
+// This program displays a solution to the towers of Hanoi game.
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+// Function prototype
+void moveDisks(int, string, string, string);
+int main()
+{
+    // Play the game with 3 disks
+    moveDisks (3, &quot;peg 1&quot;, &quot;peg 3&quot;, &quot;peg 2&quot;);
+    cout &lt;&lt; &quot;All the disks have been moved!&quot;;
+    return 0;
+}
+void
+
+moveDisks(int n, string source, string dest, string temp)
+{
+    if (n &gt; 0)
+    {
+        // Move n-1 disks from source to temp
+        // using dest as the temporary peg
+        moveDisks(n-1, source, temp, dest);
+       
+        // Move a disk from source to dest
+        cout &lt;&lt; &quot;Move a disk from &quot; &lt;&lt; source &lt;&lt; &quot; to &quot; &lt;&lt; dest &lt;&lt; endl;
+       
+        // Move n-1 disks from temp to dest
+        // using.source as the temporary peg
+        moveDisks(n-1, temp, dest, source);
+    }
+}</pre>
+程序输出结果：
+<p class="info-box">
+Move a disk from peg 1 to peg 3<br />
+Move a disk from peg 1 to peg 2<br />
+Move a disk from peg 3 to peg 2<br />
+Move a disk from peg 1 to peg 3<br />
+Move a disk from peg 2 to peg 1<br />
+Move a disk from peg 2 to peg 3<br />
+Move a disk from peg 1 to peg 3</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1044.html" title="Java try catch语句" target="_blank">Java try catch语句</a></li>
+<li><a href="1863.html" title="Qt QTableWidget及基本操作（详解版）" target="_blank">Qt QTableWidget及基本操作（详解版）</a></li>
+<li><a href="vip_2234.html" title="类其实也是一种作用域" target="_blank">类其实也是一种作用域</a></li>
+<li><a href="3554.html" title="汇编语言OR指令：对两个操作数进行逻辑（按位）或操作" target="_blank">汇编语言OR指令：对两个操作数进行逻辑（按位）或操作</a></li>
+<li><a href="7272.html" title="PHP运算符优先级一览表" target="_blank">PHP运算符优先级一览表</a></li>
+<li><a href="../ml_alg/env.html" title="Python机器学习环境搭建" target="_blank">Python机器学习环境搭建</a></li>
+<li><a href="ctrjshr.html" title="C# if else语句详解" target="_blank">C# if else语句详解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 1556;
+window.arcId = "41a2F/qyCoZQa3eQOdJOpFp8kneRcJO1geOOpAOxqT3rkcQySMwsUXN1Fxs";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>JS实现倒计时效果（附带源码和解析）</title>
+<meta name="description" content="在电商网站上，我们经常会看到某个商品的促销活动倒计时。这种倒计时效果一般是使用JS实现的，实现的原理是通过Date对象分别获取活动开始时间和活动结束时间，然后计算两个时间" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>JS实现倒计时效果（附带源码和解析）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在电商网站上，我们经常会看到某个商品的促销活动倒计时，这种&ldquo;倒计时&rdquo;效果一般是使用 JS 实现的。<br />
+<br />
+JS 实现倒计时效果的原理是：通过 Date 对象分别获取活动开始时间和活动结束时间，然后计算两个时间差，得到的时间差是一个单位为毫秒的数值。通过对该时间差执行一系列的取模、除法等算术运算，同时调用 Math 对象的相关方法，就可将其分别折合为天数、小时数、分钟数和秒数。<br />
+<br />
+对时间差及其折合运算添加定时器后则可以实现时间差的动态变化，一旦时间差等于 0，则清除定时器，使时间差不再变化。<br />
+<br />
+下面通过一个例子来模拟电商网上的倒计时效果。<br />
+<br />
+使用 JS 定时器、Date 对象和 Math 对象实现倒计时效果。
+<pre class="html">
+&lt;!doctype html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;title&gt;使用定时器、Date对象和Math对象实现倒计时效果&lt;/title&gt;
+    &lt;script&gt;
+        window.onload = function(){
+            aInp = document.getElementsByTagName(&#39;input&#39;);
+            var iNow = null
+            var iNew = null
+            var str = &#39;&#39;;
+            var timer = null;
+
+            aInp[2].onclick = function(){
+                clearInterval(timer);
+                iNew = (new Date(aInp[0].value)).getTime();
+                timer = setInterval(function(){
+                    iNow = (new Date()).getTime();
+                    t = Math.floor((iNew-iNow)/1000);
+                    if(t &gt;= 0){
+                        str = Math.floor(t/86400)+&#39;天&#39;+Math.floor(t%86400/3600)+&#39;时&#39;+Math.floor(t%86400%3600/60)+&#39;分&#39;+t%60+&#39;秒&#39;;
+                        aInp[1].value = str;
+                    }else{
+                        clearInterval(timer);
+                    }
+                },1000);
+            };
+        };
+    &lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    距离：&lt;input type=&quot;text&quot; size=&quot;30&quot; value=&quot;2023-07-26 12:00:00&quot;&gt;&lt;br&gt;
+    还剩：&lt;input type=&quot;text&quot; size=&quot;30&quot;&gt;
+    &lt;input type=&quot;button&quot; value=&quot;开始倒计时&quot;&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+在倒计时时，结束时间是固定的，但开始时间是不断变化的，所以，对倒计时中的开始时间需要使用定时器来动态获取。<br />
+<br />
+该示例使用了间歇定时器，在该定时器中，代码 Math.floor((iNew-iNow)/1000) 中的<code>iNew-iNow</code>得到一个单位为毫秒的时间差，<code>(iNew-iNow)/1000</code>将时间差换算为可能包含小数的秒值，使用 Math.floor() 对该秒值进行向下取整运算得到一个整数的秒值。<br />
+<br />
+定时器最后获得的时间差是不断变化的，当时间差为非负数时，将其折合成天数、小时数、分钟数和秒数，对应的 JS 代码分别为：
+<ul>
+	<li>
+		Math.floor(t/86400)</li>
+	<li>
+		Math.floor(t%86400/3600)</li>
+	<li>
+		Math.floor(t%86400%3600/60)</li>
+	<li>
+		t%60</li>
+</ul>
+<br />
+折合后的时间串成一个字符串后显示在第2个文本框中；当时间差为负数时，取消定时器，使文本框中的时间差不再变化。<br />
+<br />
+需要特别注意的是，定时器如果是由事件控制的话，必须先清除定时器，然后再开定时器，否则当事件多次触发时会出现异常，这就是示例中的按钮单击绑定的事件处理函数中的第1行代码即清除定时器的原因。<br />
+<br />
+运行代码，并点击&ldquo;开始倒计时&rdquo;按钮后，效果如下：
+<div style="text-align: center;">
+	<img alt="JS倒计时效果演示" src="../uploads/allimg/230725/1-230H5113GE42_2.png" /></div>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="303_3.html" title="C语言复合语句（语句块）" target="_blank">C语言复合语句（语句块）</a></li>
+<li><a href="3369_2.html" title="矩阵（稀疏矩阵）压缩存储（3种方式）" target="_blank">矩阵（稀疏矩阵）压缩存储（3种方式）</a></li>
+<li><a href="../jsp2/forward_2.html" title="JSP forward动作" target="_blank">JSP forward动作</a></li>
+<li><a href="shortest-path_2.html" title="最短路径算法" target="_blank">最短路径算法</a></li>
+<li><a href="../pillow/install_2.html" title="Pillow的下载与安装" target="_blank">Pillow的下载与安装</a></li>
+<li><a href="9786_2.html" title="Pandas是什么" target="_blank">Pandas是什么</a></li>
+<li><a href="t0w8jmp_2.html" title="《Web前端开发技术——HTML5、CSS3、JavaScript（第3版）》PDF下载（高清完整版）" target="_blank">《Web前端开发技术——HTML5、CSS3、JavaScript（第3版）》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10139;
+window.arcId = "6e76ZwhT6Ca5uUMizCs0RD+q5OLyPNlMgnKQSLqGrTziYt+SbspUP0tepNsv";
+window.typeidChain = "309|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

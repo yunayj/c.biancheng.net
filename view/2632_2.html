@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Python Process创建进程（2种方法）详解</title>
+<meta name="description" content="虽然使用 os.fork() 方法可以启动多个进程，但这种方式显然不适合 Windows，而 Python 是跨平台的语言，所以 Python 绝不能仅仅局限于 Windows 系统，因此 Python 也提供了其他方式在 Windows 下创" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Python Process创建进程（2种方法）详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">前面介绍了使用 os.fork() 函数实现多进程编程，该方法最明显的缺陷就是不适用于 Windows 系统。本节将介绍一种支持 <a href='../python/python_2.html' target='_blank'>Python</a> 在 Windows 平台上创建新进程的方法。<br />
+<br />
+Python multiprocessing 模块提供了 Process 类，该类可用来在 Windows 平台上创建新进程。和使用 Thread 类创建多线程方法类似，使用 Process 类创建多进程也有以下 2 种方式：
+<ol>
+	<li>
+		直接创建 Process 类的实例对象，由此就可以创建一个新的进程；</li>
+	<li>
+		通过继承 Process 类的子类，创建实例对象，也可以创建新的进程。注意，继承 Process 类的子类需重写父类的 run() 方法。</li>
+</ol>
+<br />
+不仅如此，Process 类中也提供了一些常用的属性和方法，如表 1 所示。<br />
+<br />
+<table>
+	<caption>
+		表 1 Python Process类常用属性和方法</caption>
+	<tbody>
+		<tr>
+			<th>
+				属性名或方法名</th>
+			<th>
+				功能</th>
+		</tr>
+		<tr>
+			<td>
+				run()</td>
+			<td>
+				第 2 种创建进程的方式需要用到，继承类中需要对方法进行重写，该方法中包含的是新进程要执行的代码。</td>
+		</tr>
+		<tr>
+			<td>
+				start()</td>
+			<td>
+				和启动子线程一样，新创建的进程也需要手动启动，该方法的功能就是启动新创建的线程。</td>
+		</tr>
+		<tr>
+			<td>
+				join([timeout])</td>
+			<td>
+				和 thread 类 join() 方法的用法类似，其功能是在多进程执行过程，其他进程必须等到调用 join() 方法的进程执行完毕（或者执行规定的 timeout 时间）后，才能继续执行；</td>
+		</tr>
+		<tr>
+			<td>
+				is_alive()</td>
+			<td>
+				判断当前进程是否还活着。</td>
+		</tr>
+		<tr>
+			<td>
+				terminate()</td>
+			<td>
+				中断该进程。</td>
+		</tr>
+		<tr>
+			<td>
+				name属性</td>
+			<td>
+				可以为该进程重命名，也可以获得该进程的名称。</td>
+		</tr>
+		<tr>
+			<td>
+				daemon</td>
+			<td>
+				和守护线程类似，通过设置该属性为 True，可将新建进程设置为&ldquo;守护进程&rdquo;。</td>
+		</tr>
+		<tr>
+			<td>
+				pid</td>
+			<td>
+				返回进程的 ID 号。大多数操作系统都会为每个进程配备唯一的 ID 号。</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+接下来将一一对创建进程的 2 种方法做详细的讲解。<br />
+<h2>
+	通过Process类创建进程</h2>
+和使用 thread 类创建子线程的方式非常类似，使用 Process 类创建实例化对象，其本质是调用该类的构造方法创建新进程。Process 类的构造方法格式如下：
+<p class="info-box">
+	def __init__(self,group=None,target=None,name=None,args=(),kwargs={})</p>
+其中，各个参数的含义为：
+<ul>
+	<li>
+		group：该参数未进行实现，不需要传参；</li>
+	<li>
+		target：为新建进程指定执行任务，也就是指定一个函数；</li>
+	<li>
+		name：为新建进程设置名称；</li>
+	<li>
+		args：为 target 参数指定的参数传递非关键字参数；</li>
+	<li>
+		kwargs：为 target 参数指定的参数传递关键字参数。</li>
+</ul>
+<br />
+下面程序演示了如何用 Process 类创建新进程。
+<pre class="python">
+from multiprocessing import Process
+import os
+print(&quot;当前进程ID：&quot;,os.getpid())
+
+# 定义一个函数，准备作为新进程的 target 参数
+def action(name,*add):
+    print(name)
+    for arc in add:
+        print(&quot;%s --当前进程%d&quot; % (arc,os.getpid()))
+if __name__==&#39;__main__&#39;:
+    #定义为进程方法传入的参数
+    my_tuple = (&quot;http://c.biancheng.net/python/&quot;,\
+                &quot;http://c.biancheng.net/shell/&quot;,\
+                &quot;http://c.biancheng.net/java/&quot;)
+    #创建子进程，执行 action() 函数
+    my_process = Process(target = action, args = (&quot;my_process进程&quot;,*my_tuple))
+    #启动子进程
+    my_process.start()
+    #主进程执行该函数
+    action(&quot;主进程&quot;,*my_tuple)</pre>
+程序执行结果为：
+<p class="info-box">
+	当前进程ID： 12980<br />
+	主进程<br />
+	http://c.biancheng.net/python/ --当前进程12980<br />
+	http://c.biancheng.net/shell/ --当前进程12980<br />
+	http://c.biancheng.net/java/ --当前进程12980<br />
+	当前进程ID： 12860<br />
+	my_process进程<br />
+	http://c.biancheng.net/python/ --当前进程12860<br />
+	http://c.biancheng.net/shell/ --当前进程12860<br />
+	http://c.biancheng.net/java/ --当前进程12860</p>
+<blockquote>
+	<p>
+		需要说明的是，通过 multiprocessing.Process 来创建并启动进程时，程序必须先判断 <code>if __name__==&#39;__main__&#39;:</code>，否则运行该程序会引发异常。</p>
+</blockquote>
+此程序中有 2 个进程，分别为主进程和我们创建的新进程，主进程会执行整个程序，而子进程不会执行 if __name__ == &#39;__main__&#39; 中包含的程序，而是先执行此判断语句之外的所有可执行程序，然后再执行我们分配让它的任务（也就是通过 target 参数指定的函数）。<br />
+<h2>
+	通过Process继承类创建进程</h2>
+和使用 thread 子类创建线程的方式类似，除了直接使用 Process 类创建进程，还可以通过创建 Process 的子类来创建进程。<br />
+<br />
+需要注意的是，在创建 Process 的子类时，需在子类内容重写 run() 方法。实际上，该方法所起到的作用，就如同第一种创建方式中 target 参数执行的函数。<br />
+<br />
+另外，通过 Process 子类创建进程，和使用 Process 类一样，先创建该类的实例对象，然后调用 start() 方法启动该进程。下面程序演示如何通过 Process 子类创建一个进程。
+<pre class="python">
+from multiprocessing import Process
+import os
+print(&quot;当前进程ID：&quot;,os.getpid())
+
+# 定义一个函数，供主进程调用
+def action(name,*add):
+    print(name)
+    for arc in add:
+        print(&quot;%s --当前进程%d&quot; % (arc,os.getpid()))
+
+#自定义一个进程类
+class My_Process(Process):
+    def __init__(self,name,*add):
+        super().__init__()
+        self.name = name
+        self.add = add
+    def run(self):
+        print(self.name)
+        for arc in self.add:
+            print(&quot;%s --当前进程%d&quot; % (arc,os.getpid()))
+
+if __name__==&#39;__main__&#39;:
+    #定义为进程方法传入的参数
+    my_tuple = (&quot;http://c.biancheng.net/python/&quot;,\
+                &quot;http://c.biancheng.net/shell/&quot;,\
+                &quot;http://c.biancheng.net/java/&quot;)
+
+    my_process = My_Process(&quot;my_process进程&quot;,*my_tuple)
+    #启动子进程
+    my_process.start()
+    #主进程执行该函数
+    action(&quot;主进程&quot;,*my_tuple)</pre>
+程序执行结果为：
+<p class="info-box">
+	当前进程ID： 22240<br />
+	主进程<br />
+	http://c.biancheng.net/python/ --当前进程22240<br />
+	http://c.biancheng.net/shell/ --当前进程22240<br />
+	http://c.biancheng.net/java/ --当前进程22240<br />
+	当前进程ID： 18848<br />
+	my_process进程<br />
+	http://c.biancheng.net/python/ --当前进程18848<br />
+	http://c.biancheng.net/shell/ --当前进程18848<br />
+	http://c.biancheng.net/java/ --当前进程18848</p>
+显然，该程序的运行结果与上一个程序的运行结果大致相同，它们只是创建进程的方式略有不同而已。
+<blockquote>
+	<p>
+		推荐读者使用第一种方式来创建进程，因为这种方式不仅编程简单，而且进程直接包装 target 函数，具有更清晰的逻辑结构。</p>
+</blockquote>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="4599_2.html" title="Python try except异常处理详解（入门必读）" target="_blank">Python try except异常处理详解（入门必读）</a></li>
+<li><a href="7266_2.html" title="MySQL查看和修改事务隔离级别" target="_blank">MySQL查看和修改事务隔离级别</a></li>
+<li><a href="vip_7307_2.html" title="Go语言make和new关键字的区别及实现原理" target="_blank">Go语言make和new关键字的区别及实现原理</a></li>
+<li><a href="7381_2.html" title="MySQL恢复数据库（mysql命令）" target="_blank">MySQL恢复数据库（mysql命令）</a></li>
+<li><a href="../numpy/matrix-multiplication_2.html" title="NumPy矩阵乘法" target="_blank">NumPy矩阵乘法</a></li>
+<li><a href="7tj366z_2.html" title="C# break和continue语句：跳出循环" target="_blank">C# break和continue语句：跳出循环</a></li>
+<li><a href="tljc0x1_2.html" title="Linux ps命令：查看进程信息" target="_blank">Linux ps命令：查看进程信息</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 2632;
+window.arcId = "091dCHbG4cl5jdYxG0atmgOdlgTWKHq4gvqMeQye1Z4Nlzm48Mu7stpmYw0";
+window.typeidChain = "145|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++重载&lt;&lt;和&gt;&gt;（C++重载输出运算符和输入运算符）</title>
+<meta name="description" content="在 C++ 中，左移运算符可以和 cout 一起用于输出，因此也常被称为流插入运算符或者输出运算符。实际上，本来没有这样的功能，之所以能和 cout 一起使用，是因为被重载了。 cout 是 o" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++重载&lt;&lt;和&gt;&gt;（C++重载输出运算符和输入运算符）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在 <a href='../cplus/cplus.html' target='_blank'>C++</a> 中，左移运算符<code>&lt;&lt;</code>可以和 cout 一起用于输出，因此也常被称为&ldquo;流插入运算符&rdquo;或者&ldquo;输出运算符&rdquo;。实际上，<code>&lt;&lt;</code>本来没有这样的功能，之所以能和 cout 一起使用，是因为被重载了。<br />
+<br />
+cout 是 ostream 类的对象。ostream 类和 cout 都是在头文件 &lt;iostream&gt; 中声明的。ostream 类将<code>&lt;&lt;</code>重载为成员函数，而且重载了多次。为了使<code>cout&lt;&lt;&quot;Star War&quot;</code>能够成立，ostream 类需要将<code>&lt;&lt;</code>进行如下重载：
+<pre class="cpp">
+ostream &amp; ostream::operator &lt;&lt; (const char* s)
+{
+    //输出s的代码
+    return * this;
+}</pre>
+为了使<code>cout&lt;&lt;5;</code>能够成立，ostream 类还需要将<code>&lt;&lt;</code>进行如下重载：
+<pre class="cpp">
+ostream &amp; ostream::operator &lt;&lt; (int n)
+{
+    //输出n的代码
+    return *this;
+}</pre>
+重载函数的返回值类型为 ostream 的引用，并且函数返回 *this，就使得<code>cout&lt;&lt;&quot;Star War&quot;&lt;&lt;5</code>能够成立。有了上面的重载，<code>cout&lt;&lt;&quot;Star War&quot;&lt;&lt;5;</code>就等价于：
+<p class="info-box">
+( cout.operator&lt;&lt;(&quot;Star War&quot;) ).operator&lt;&lt;(5);</p>
+重载函数返回 *this，使得<code>cout&lt;&lt;&quot;Star War&quot;</code>这个表达式的值依然是 cout（说得更准确一点就是 cout 的引用，等价于 cout），所以能够和<code>&lt;&lt;5</code>继续进行运算。<br />
+<br />
+cin 是 istream 类的对象，是在头文件 &lt;iostream&gt; 中声明的。istream 类将<code>&gt;&gt;</code>重载为成员函数，因此 cin 才能和<code>&gt;&gt;</code>连用以输入数据。一般也将<code>&gt;&gt;</code>称为&ldquo;流提取运算符&rdquo;或者&ldquo;输入运算符&rdquo;。<br />
+<br />
+例题：假定 c 是 Complex 复数类的对象，现在希望写<code>cout&lt;&lt;c;</code>就能以 a+bi 的形式输出 c 的值；写<code>cin&gt;&gt;c;</code>就能从键盘接受 a+bi 形式的输入，并且使得 c.real = a, c.imag = b。<br />
+<br />
+显然，要对<code>&lt;&lt;</code>和<code>&gt;&gt;</code>进行重载，程序如下：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;cstdlib&gt;
+u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+class Complex
+{
+    double real,imag;   
+public:
+    Complex( double r=0, double i=0):real(r),imag(i){ };
+    friend ostream &amp; operator&lt;&lt;( ostream &amp; os,const Complex &amp; c);
+    friend istream &amp; operator&gt;&gt;( istream &amp; is,Complex &amp; c);
+};
+ostream &amp; operator&lt;&lt;( ostream &amp; os,const Complex &amp; c)
+{
+    os &lt;&lt; c.real &lt;&lt; &quot;+&quot; &lt;&lt; c.imag &lt;&lt; &quot;i&quot;; //以&quot;a+bi&quot;的形式输出
+    return os;
+}
+istream &amp; operator&gt;&gt;( istream &amp; is,Complex &amp; c)
+{
+    string s;
+    is &gt;&gt; s;  //将&quot;a+bi&quot;作为字符串读入, &quot;a+bi&quot; 中间不能有空格
+    int pos = s.find(&quot;+&quot;,0);
+    string sTmp = s.substr(0,pos); //分离出代表实部的字符串
+    c.real = atof(sTmp.c_str());//atof库函数能将const char*<a href='../c/80/80.html' target='_blank'>指针</a>指向的内容转换成 float
+    sTmp = s.substr(pos+1, s.length()-pos-2);   //分离出代表虚部的字符串
+    c.imag = atof(sTmp.c_str());
+    return is;
+}
+int main()
+{
+    Complex c;
+    int n;
+    cin &gt;&gt; c &gt;&gt; n;
+    cout &lt;&lt; c &lt;&lt; &quot;,&quot; &lt;&lt; n;
+    return 0;
+}</pre>
+程序的运行结果：<br />
+13.2+133i 87<br />
+13.2+133i,87<br />
+<br />
+因为没有办法修改 ostream 类和 istream 类，所以只能将<code>&lt;&lt;</code>和<code>&gt;&gt;</code>重载为全局函数的形式。由于这两个函数需要访问 Complex 类的私有成员，因此在 Complex 类定义中将它们声明为友元。<br />
+<br />
+<code>cout&lt;&lt;c</code>会被解释成<code>operator&lt;&lt;(cout, c)</code>，因此编写 operator&lt;&lt; 函数时，它的两个参数就不难确定了。<br />
+<br />
+第 13 行，参数 os 只能是 ostream 的引用，而不能是 ostream 对象，因为 ostream 的复制构造函数是私有的，没有办法生成 ostream 参数对象。operator&lt;&lt; 函数的返回值类型设为 ostream &amp;，并且返回 os，就能够实现<code>&lt;&lt;</code>的连续使用，如<code>cout&lt;&lt;c&lt;&lt;5</code>。在本程序中，执行第 34 行的<code>cout&lt;&lt;c</code>进入 operator&lt;&lt; 后，os 引用的就是 cout，因此第 34 行就能产生输出。<br />
+<br />
+用 cin 读入复数时，对应的输入必须是 a+bi 的格式，而且中间不能有空格，如输入 13.2+33.4i。第 21 行的<code>is&gt;&gt;s;</code>读入一个字符串。假定输入的格式没有错误，那么被读入 s&nbsp; 的就是 a+bi 格式的字符串。<br />
+<br />
+读入后需要将字符串中的实部 a 和虚部 b 分离出来，分离的办法就是找出被<code>+</code>隔开的两个子串，然后将两个字符串转换成浮点数。第 24 行调用了标准库函数 atof 来将字符串转换为浮点数。该函数的原型是<code>float atof(const char *)</code>，它在 &lt;cstdlib&gt; 头文件中声明。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_2297.html" title="C++虚析构函数的必要性" target="_blank">C++虚析构函数的必要性</a></li>
+<li><a href="2594.html" title="MySQL修改存储过程（ALTER PROCEDURE）" target="_blank">MySQL修改存储过程（ALTER PROCEDURE）</a></li>
+<li><a href="vip_3445.html" title="快速排序（QSort，快排）算法及C语言实现" target="_blank">快速排序（QSort，快排）算法及C语言实现</a></li>
+<li><a href="7389.html" title="MySQL LIMIT：限制查询结果的条数" target="_blank">MySQL LIMIT：限制查询结果的条数</a></li>
+<li><a href="vip_7663.html" title="Linux如何查看内存的使用情况？" target="_blank">Linux如何查看内存的使用情况？</a></li>
+<li><a href="../sql/null.html" title="SQL NULL：空值" target="_blank">SQL NULL：空值</a></li>
+<li><a href="9twfq08.html" title="Java变量的定义和使用（入门必读）" target="_blank">Java变量的定义和使用（入门必读）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 242;
+window.arcId = "5a16teVqEn0AumMbVi0L/TcN6otKCsbP/G0BHCglaoNCcz5NzuK2fVbqYg";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

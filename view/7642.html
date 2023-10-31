@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Django实现数据表数据插入（创建Model实例）</title>
+<meta name="description" content="在《Django ORM进阶之项目实战》一节，" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../django/django.html">Django</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Django实现数据表数据插入（创建Model实例）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在《<a href="7512_2.html">Django ORM进阶之项目实战</a>》一节，我们利用 Model 模型类创建了 index 应用所需的三张数据表，在本节我们介绍如何实现在 Django 项目中创建 Model 的实例对象，即向数据表中插入数据。<br />
+<br />
+Django 为创建 Model 实例提供了两种方法，一种是直接调用 Model 的 save 方法，另一种是通过对象管理器（objects Manager） 的 create 方法。这种中方法都可以实现创建 Model 实例对象。下面我们使用 Django shell 交互环境依次对这两种方法进行解析。<br />
+<p class="tip-box">
+Django shell 是 Django 提供一种交互环境，类似于 Python shell，开发人员可直接通过 shell 环境 与 Django 项目进行交互，它一种很实用的工具。</p>
+<h2>
+1. save方法创建Model实例</h2>
+在 cmd 命令行进入项目 manage.py 目录下，然后使用如下命令进入 Django shell 环境。<br />
+<p class="info-box">
+python manage.py shell&nbsp;</p>
+然后创建 Model 实例，使用 save() 方法保存数据，如下所示：
+<pre class="python">
+from index.models import Book #导入相关model类
+#创建Book实例化对象
+book=Book(title=&quot;Python&quot;,public=&quot;a&quot;,price=&quot;59.00&quot;,retail_price=&quot;59.00&quot;)
+book.save()# 调用save方法进行保存
+book=Book(title=&quot;Flask&quot;,public=&quot;b&quot;,price=&quot;39.00&quot;,retail_price=&quot;39.00&quot;)
+book.save()# 调用save方法进行保存
+book=Book(title=&quot;Django&quot;,public=&quot;b&quot;,price=&quot;40.00&quot;,retail_price=&quot;40.00&quot;)
+book.save()# </pre>
+最后调用 save 方法进行保存。通过上述代码，我们就在数据库中添加了三条有关书籍的记录。<br />
+<br />
+创建 Book 实例，其实就是填充有关 Model 实例的各个字段，如果设置了默认值或者有允许为 null 的字段可以不填，最后调用 save() 保存实例（该方法没有返回值）。在 save() 执行以后，Django 会将 book实例化数据保存到数据库中。<br />
+<br />
+注意，每创建一条数据都需要调用一次 save() 方法，我们通过查看数据库可以得知数据信息已经保存完毕。如下所示：&nbsp;&nbsp;
+<pre class="info-box">
+mysql&gt; select * from index_book;
++----+--------+--------+-------+--------------+
+| id | title  | public | price | retail_price |
++----+--------+--------+-------+--------------+
+|  1 | Python | a      | 59.00 |        59.00 |
+|  2 | Flask  | b      | 39.00 |        39.00 |
+|  3 | Django | b      | 40.00 |        40.00 |
++----+--------+--------+-------+--------------+
+3 rows in set (0.00 sec)</pre>
+<span style="color:#ff0000;">避坑提示</span>，若在实例化数据对象的过程中，Django shell 出现以这样的报错信息：<br />
+<p class="info-box">
+InternalError: (1366, &quot;Incorrect string value: &#39;\\xE8\\xAF\\xAD\\xE8\\xA8\\x80...&#39; for column &#39;public&#39; at row 1&quot;)</p>
+说明我们添加的 public 字段的信息超过可字段本身的最大长度限制，即 manx_length=50。解决方法是将字段 max_length 值变大然后需要重新执行数据库迁移的操作，或者将你输入的信息缩短从而符合其规定的长度。<br />
+<br />
+save() 方法还可以保存已有对象更改后的信息，比如：
+<pre class="python">
+book.title=&quot;JavaScript&quot;
+book.save()</pre>
+<h2>
+2. create方法创建Model实例</h2>
+除了以上方法外，我们也可以使用管理器对象提供的 create() 方法，使用方法如下所示：
+<pre class="python">
+In [1]: Book.objects.create(title=&quot;Java&quot;,public=&quot;a&quot;,price=&quot;30.00&quot;,retail_price=&quot;30.00&quot;)
+Out[1]: &lt;Book: title:Java public:a price:30.00&gt; #执行create方法存在返回值</pre>
+然后继续插入如下数据：
+<pre class="python">
+from index.models import Book
+In [2]: Book.objects.create(title=&quot;MySQL&quot;,public=&quot;c&quot;,price=&quot;35.00&quot;,retail_price=&quot;35.00&quot;)
+Out[2]: &lt;Book: title:MySQL public:c price:35.00&gt;
+In [3]: Book.objects.create(title=&quot;C#&quot;,public=&quot;a&quot;,price=&quot;45.00&quot;,retail_price=&quot;40.00&quot;)
+Out[3]: &lt;Book: title:C# public:a price:45.00&gt;
+In [4]: Book.objects.create(title=&quot;Redis&quot;,public=&quot;c&quot;,price=&quot;25.00&quot;,retail_price=&quot;25.00&quot;)
+Out[4]: &lt;Book: title:Redis public:c price:25.00&gt;</pre>
+这种创建 Model 实例对象的过程比较简单，create 执行之后就在数据库中插入了一条记录,这也是我们推荐使用的方法。最后访问数据库可以看到最新插入的数据记录：
+<pre class="info-box">
+mysql&gt; select * from index_book;
++----+--------+--------+-------+--------------+
+| id | title  | public | price | retail_price |
++----+--------+--------+-------+--------------+
+|  1 | Python | a      | 59.00 |        59.00 |
+|  2 | Flask  | b      | 39.00 |        39.00 |
+|  3 | Django | b      | 40.00 |        40.00 |
+|  4 | Java   | a      | 30.00 |        30.00 |
+|  5 | MySQL  | c      | 35.00 |        35.00 |
+|  6 | C#     | a      | 45.00 |        40.00 |
+|  7 | Redis  | c      | 25.00 |        25.00 |
++----+--------+--------+-------+--------------+</pre>
+本节我们完成了向数据表插入数据记录的操作，不管是在 shell 环境下，还是项目的代码中都可以使用以上两种方法实现创建 Model 实例。后续章节会将涉及 Django 表的数据查询，我们还会用到本节内容。 </div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="289.html" title="条件编译，C语言条件编译详解" target="_blank">条件编译，C语言条件编译详解</a></li>
+<li><a href="953.html" title="Java this关键字详解（3种用法）" target="_blank">Java this关键字详解（3种用法）</a></li>
+<li><a href="1119.html" title="Java流是什么？输入/输出流又是什么？" target="_blank">Java流是什么？输入/输出流又是什么？</a></li>
+<li><a href="2872.html" title="Linux RPM包安装、卸载和升级（rpm命令）详解" target="_blank">Linux RPM包安装、卸载和升级（rpm命令）详解</a></li>
+<li><a href="4462.html" title="UE4添加人物动画之前后左右移动" target="_blank">UE4添加人物动画之前后左右移动</a></li>
+<li><a href="../redis2/mset.html" title="Redis MSET命令" target="_blank">Redis MSET命令</a></li>
+<li><a href="../matplotlib/images.html" title="Matplotlib image图像处理" target="_blank">Matplotlib image图像处理</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7642;
+window.arcId = "9ba5xQT9qwGMMCsrSQ3o7OBScI9wjya0e2SUK2CGJ3k8Ydz6YMCnLZnADHg";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

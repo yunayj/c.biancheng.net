@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++ STL deque容器底层实现原理（深度剖析）</title>
+<meta name="description" content="事实上，STL 中每个容器的特性，和它底层的实现机制密切相关。《C++ STL deque容器》/view/6860.html一节中，已经给大家介绍了 deque 容器的特性，即擅长在序列的头部和尾部添加或删除元素" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++ STL deque容器底层实现原理（深度剖析）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">事实上，<a href='../stl/stl.html' target='_blank'>STL</a> 中每个容器的特性，和它底层的实现机制密切相关，deque 自然也不例外。《<a href="6860.html" target="_blank">C++ STL deque容器</a>》一节中提到，deque 容器擅长在序列的头部和尾部添加或删除元素。本节将介绍 deque 容器的底层实现机制，探究其拥有此特点的原因。<br />
+<br />
+想搞清楚 deque 容器的实现机制，需要先了解 deque 容器的存储结构以及 deque 容器迭代器的实现原理。<br />
+<h2>
+deque容器的存储结构</h2>
+和 vector 容器采用连续的线性空间不同，deque 容器存储数据的空间是由一段一段等长的连续空间构成，各段空间之间并不一定是连续的，可以位于在内存的不同区域。<br />
+<br />
+为了管理这些连续空间，deque 容器用数组（数组名假设为 map）存储着各个连续空间的首地址。也就是说，map 数组中存储的都是<a href='../c/80/80.html' target='_blank'>指针</a>，指向那些真正用来存储数据的各个连续空间（如图 1 所示）。<br />
+<br />
+<div style="text-align: center;">
+<img alt="deque容器的底层存储机制" src="../uploads/allimg/191213/2-191213161305R5.gif" /><br />
+图 1 deque容器的底层存储机制</div>
+<br />
+通过建立 map 数组，deque 容器申请的这些分段的连续空间就能实现&ldquo;整体连续&rdquo;的效果。换句话说，当 deque 容器需要在头部或尾部增加存储空间时，它会申请一段新的连续空间，同时在 map 数组的开头或结尾添加指向该空间的指针，由此该空间就串接到了 deque 容器的头部或尾部。
+<blockquote>
+<p>
+有读者可能会问，如果 map 数组满了怎么办？很简单，再申请一块更大的连续空间供 map 数组使用，将原有数据（很多指针）拷贝到新的 map 数组中，然后释放旧的空间。</p>
+</blockquote>
+deque 容器的分段存储结构，提高了在序列两端添加或删除元素的效率，但也使该容器迭代器的底层实现变得更复杂。<br />
+<h2>
+deque容器迭代器的底层实现</h2>
+由于 deque 容器底层将序列中的元素分别存储到了不同段的连续空间中，因此要想实现迭代器的功能，必须先解决如下 2 个问题：
+<ol>
+<li>
+迭代器在遍历 deque 容器时，必须能够确认各个连续空间在 map 数组中的位置；</li>
+<li>
+迭代器在遍历某个具体的连续空间时，必须能够判断自己是否已经处于空间的边缘位置。如果是，则一旦前进或者后退，就需要跳跃到上一个或者下一个连续空间中。</li>
+</ol>
+<br />
+为了实现遍历 deque 容器的功能，deque 迭代器定义了如下的结构：
+<pre class="cpp">
+template&lt;class T,...&gt;
+struct __deque_iterator{
+    ...
+    T* cur;
+    T* first;
+    T* last;
+    map_pointer node;//map_pointer 等价于 T**
+}</pre>
+可以看到，迭代器内部包含 4 个指针，它们各自的作用为：
+<ul>
+<li>
+cur：指向当前正在遍历的元素；</li>
+<li>
+first：指向当前连续空间的首地址；</li>
+<li>
+last：指向当前连续空间的末尾地址；</li>
+<li>
+node：它是一个二级指针，用于指向 map 数组中存储的指向当前连续空间的指针。</li>
+</ul>
+<br />
+借助这 4 个指针，deque 迭代器对随机访问迭代器支持的各种运算符进行了重载，能够对 deque 分段连续空间中存储的元素进行遍历。例如：
+<pre class="cpp">
+//当迭代器处于当前连续空间边缘的位置时，如果继续遍历，就需要跳跃到其它的连续空间中，该函数可用来实现此功能
+void set_node(map_pointer new_node){
+    node = new_node;//记录新的连续空间在 map 数组中的位置
+    first = *new_node; //更新 first 指针
+    //更新 last 指针，difference_type(buffer_size())表示每段连续空间的长度
+    last = first + difference_type(buffer_size());
+}
+//重载 * 运算符
+reference operator*() const{return *cur;}
+pointer operator-&gt;() const{return &amp;(operator *());}
+//重载前置 ++ 运算符
+self &amp; operator++(){
+    ++cur;
+    //处理 cur 处于连续空间边缘的特殊情况
+    if(cur == last){
+        //调用该函数，将迭代器跳跃到下一个连续空间中
+        set_node(node+1);
+        //对 cur 重新赋值
+        cur = first;
+    }
+    return *this;
+}
+//重置前置 -- 运算符
+self&amp; operator--(){
+    //如果 cur 位于连续空间边缘，则先将迭代器跳跃到前一个连续空间中
+    if(cur == first){
+        set_node(node-1);
+        cur == last;
+    }
+    --cur;
+    return *this;
+}</pre>
+<h2>
+deque容器的底层实现</h2>
+了解了 deque 容器底层存储序列的结构，以及 deque 容器迭代器的内部结构之后，接下来看看 deque 容器究竟是如何实现的。<br />
+<br />
+deque 容器除了维护先前讲过的 map 数组，还需要维护 start、finish 这 2 个 deque 迭代器。以下为 deque 容器的定义：
+<pre class="cpp">
+//_Alloc为内存分配器
+template&lt;class _Ty,
+    class _Alloc = allocator&lt;_Ty&gt;&gt;
+class deque{
+    ...
+protected:
+    iterator start;
+    iterator finish;
+    map_pointer map;
+...
+}</pre>
+其中，start 迭代器记录着 map 数组中首个连续空间的信息，finish 迭代器记录着 map 数组中最后一个连续空间的信息。另外需要注意的是，<span style="background-color: rgb(249, 249, 249);">和普通 deque 迭代器不同，start 迭代器中的 cur 指针指向的是连续空间中首个元素；而 finish 迭代器中的 cur 指针指向的是连续空间最后一个元素的下一个位置。</span><br />
+<br />
+因此，deque 容器的底层实现如图 2 所示。
+<div style="text-align: center;">
+<br />
+<img alt="deque容器的底层实现" src="../uploads/allimg/191213/2-19121316430U40.gif" /><br />
+图 3 deque容器的底层实现</div>
+<br />
+借助 start 和 finish，以及 deque 迭代器中重载的诸多运算符，就可以实现 deque 容器提供的大部分成员函数，比如：
+<pre class="cpp">
+//begin() 成员函数
+iterator begin() {return start;}
+//end() 成员函数
+iterator end() { return finish;}
+//front() 成员函数
+reference front(){return *start;}
+//back() 成员函数
+reference back(){
+    iterator tmp = finish;
+    --tmp;
+    return *tmp;
+}
+//size() 成员函数
+size_type size() const{return finish - start;}//deque迭代器重载了 - 运算符
+//enpty() 成员函数
+bool empty() const{return finish == start;}</pre>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="90.html" title="Go语言导出包中的标识符——让外部访问包的类型和值" target="_blank">Go语言导出包中的标识符——让外部访问包的类型和值</a></li>
+<li><a href="858.html" title="Linux groupdel命令：刪除用户组" target="_blank">Linux groupdel命令：刪除用户组</a></li>
+<li><a href="1308.html" title="C++ cout输出语句用法详解" target="_blank">C++ cout输出语句用法详解</a></li>
+<li><a href="vip_5061.html" title="Vim显示行号" target="_blank">Vim显示行号</a></li>
+<li><a href="../css3/pseudo-element.html" title="CSS伪元素（非常详细）" target="_blank">CSS伪元素（非常详细）</a></li>
+<li><a href="../python_spider/case02.html" title="Python爬虫抓取猫眼电影排行榜" target="_blank">Python爬虫抓取猫眼电影排行榜</a></li>
+<li><a href="../pandas/timedelta.html" title="Padans Timedelta时间差" target="_blank">Padans Timedelta时间差</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 6908;
+window.arcId = "120fhkC9FjiVIMLe9IXK/qR/LM7bxXrW8aJT38bu2xF6FW8yIrYLFN+eMGE";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

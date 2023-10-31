@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++ array获取（访问）元素</title>
+<meta name="description" content="可以通过在方括号中使用索引表达式汸问和使用数组容器的元素，这和标准数组的访问方式相同，例如： values[4] = values[3] + 2.O*values[1]; 第 5 个元素的值被赋值为右边表达式的值。像这样" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++ array获取（访问）元素</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body"><p>
+可以通过在方括号中使用索引表达式汸问和使用数组容器的元素，这和标准数组的访问方式相同，例如：</p>
+<pre class="cpp">
+values[4] = values[3] + 2.O*values[1];</pre>
+第 5 个元素的值被赋值为右边表达式的值。像这样使用索引时，因为没有做任何边界检査，所以，如果使用越界的索引值去访问或存储元素，就不会被检测到。为了能够检查越界索引值，应该使用成员函数 at():<br />
+<pre class="cpp">
+values.at (4) = values.at(3) + 2.O*values.at(1);</pre>
+这和前一条语句的功能相同，除了当传给 at() 的索引是一个越界值时，这时会抛出 std::out_of_rang 异常。应该总是使用 at()，除非确定索引没有越界。这也产生了一个疑问，为什么 operator[]() 的实现没有进行边界检查？答案是因为性能。如果每次访问元素，都去检查索引值，无疑会产生很多开销。当不存在越界访问的可能时，就能避免这种开销。<br />
+<br />
+数组对象的 size() 函数能够返回 size_t 类型的元素个数值，所以能够像下面这样去计算数组所有元素的和：<br />
+<pre class="cpp">
+double total {};
+for(size_t i {} ; i &lt; values.size() ; ++i)
+{
+    total += values[i];
+}</pre>
+size() 函数的存在，为数组容器提供了标准数组所没有的优势，数组元素能够知道它包含多少元素。接受数组容器作为参数的函数，只需要通过调用容器的成员函数 size()，就能得到元素的个数。不需要去调用 size() 函数来判断一个数组容器是否为空。如果容器中没有元素的话，成员函数 empty() 会返回 true:<br />
+<pre class="cpp">
+if(values.empty())
+    std::cout &lt;&lt; &quot;The container has no elements.\n&quot;;
+else
+    std::cout &lt;&lt; &quot;The container has &quot;&lt;&lt; values.size()&lt;&lt;&quot;elements.\n&quot;;</pre>
+然而，我们很难想象数组容器没有元素的情形，因为当生成一个数组容器时，它的元素个数就固定了，而且无法改变。生成空数组容器的唯一方法是，将模板的第二个参数指定为 0，这种情况基本不可能发生。然而，对于其他元素可变或者元素可删除的容器来说，它们使用 empty() 时的机制是一样的，因此为它们提供了一个一致性的操作。<br />
+<br />
+对于任何可以使用迭代器的容器，都可以使用基于范围的循环，因此能够更加简便地计算容器中所有元素的和：<br />
+<pre class="cpp">
+double total {};
+for(auto&amp;&amp; value : values)
+    total += value;</pre>
+当然，通过把容器作为参数传给函数，也能达到同样的效果。数组容器的成员函数 front() 和 back() 分别返回第一个元素和最后一个元素的引用。成员函数 data() 同样能够返回 &amp;from()，它是容器底层用来存储元素的标准数组的地址，一般不会用到。<br />
+<br />
+模板函数 get&lt;n&gt;() 是一个辅助函数，它能够获取到容器的第 n 个元素。模板参数的实参必须是一个在编译时可以确定的常量表达式，所以它不能是一个循环变量。它只能访问模板参数指定的元素，编译时会对它进行检查。get&lt;n&gt;() 模板提供了一种不需要在运行时检查，但能用安全的索引值访问元素的方式。下面展示如何使用它：<br />
+<pre class="cpp">
+std::array&lt;std::string, 5&gt; words {&quot;one&quot;,&quot;two&quot;,&quot;three&rdquo;,&quot;four&quot;,&quot;five&quot; };
+std::cout &lt;&lt; std::get&lt;3&gt;(words) &lt;&lt; std::endl; // Output words[3]
+std::cout &lt;&lt; std::get&lt;6&gt;(words) &lt;&lt; std::endl; // Compiler error message!</pre>
+下面是一个示例，展示了关于数组容器你到目前为止所学到的知识：
+<pre class="cpp">
+/**示例 1**/
+#include &lt;iostream&gt; // For s<a href='https://c.biancheng.net/ref/tan.html' target='_blank'>tan</a>dard streams
+#include &lt;iomanip&gt;  // For stream manipulators
+#include &lt;array&gt;    // For array&lt;T,N&gt;
+int main()
+{
+    const unsigned int min_wt {100U};
+    const unsigned int max_wt {250U};
+    const unsigned int wt_step {10U};
+    const size_t wt_count {1 + (max_wt - min_wt) / wt_step};
+
+    const unsigned int min_ht {48U};
+    const unsigned int max_ht {84U};
+    const unsigned int ht_step {2U};
+    const size_t ht_count { 1 + (max_ht - min_ht) / ht_step };
+
+    const double lbs_per_kg {2.20462};
+    const double ins_per_m {39.3701};
+
+    std::array&lt;unsigned int, wt_count&gt; weight_lbs;
+    std::array&lt;unsigned int, ht_count&gt; height_ins;
+
+    // Create weights from lOOlbs in steps of lOlbs
+    for (size_t i{}, w{min_wt} ; i &lt; wt_count ; w += wt_step, ++i)
+    {
+        weight_lbs.at(i) = w;
+    }
+
+    //Create heights from 48 inches in steps of 2 inches
+    unsigned int h{min_ht};
+    for(auto&amp; height : height_ins)
+    {
+        height = h;
+        h += ht_step;
+    }
+    //Output table headings
+    std::cout &lt;&lt; std:: setw (7) &lt;&lt;&quot; |&quot;;
+    for (const auto&amp; w : weight_lbs)
+        std::cout &lt;&lt; std:: setw (5) &lt;&lt; w&lt;&lt;&quot;11&quot;;
+    std::cout &lt;&lt; std::endl;
+    // Output line below headings
+    for (size_t i{1} ; i &lt; wt_count ; ++i)
+        std::cout&lt;&lt;&quot;---------&quot;;
+    std::cout &lt;&lt; std::endl;
+    double bmi {};
+    unsigned int feet {};
+    unsigned int inches {};
+    const unsigned int inches_per_foot {12U};
+    for (const auto&amp; h : height_ins)
+    {
+        feet = h / inches_per_foot;
+        inches = h % inches_per_foot;
+        std::cout &lt;&lt; std::setw (2) &lt;&lt;feet &lt;&lt;&quot;&#39;&quot;&lt;&lt;std::setw (2) &lt;&lt; inches &lt;&lt;&quot;\&quot;&quot;&lt;&lt;&quot;|&quot;;
+        std::cout &lt;&lt; std::fixed &lt;&lt;std::setprecision(1);
+        for (const auto&amp; w : weight_lbs)
+        {
+            bmi = h / ins_per_m;
+            bmi = (w / lbs_per_kg) / (bmi*bmi);
+            std::cout &lt;&lt; std:: setw (2) &lt;&lt;&quot;&quot;&lt;&lt;bmi &lt;&lt;&quot; |&quot;;
+        }
+        std::cout &lt;&lt; std::endl;
+    }
+    for (size_t i {1} ; i &lt; wt_count ; ++i)
+        std::cout &lt;&lt; &quot;---------&quot;;
+    std::cout &lt;&lt; &quot;\nBMI from 18.5 to 24.9 is normal&quot; &lt;&lt; std::endl;
+}</pre>
+本节中，不再展示这个示例的输出结果，因为可能会占据很多篇幅。这里有两套参数，每套定义了 4 个有关身高、体重范围的常量，它们被包含在 BMI 表中。因为身高、体重都是整数、非负数，所以存放在数组容器中的身高和体重都是 unsigned int 类型的元素。<br />
+<br />
+在循环中，可以用适当的值初始化容器。第一个循环展示了 at() 函数的使用，这里也可以放心地使用 weight_lbs[i]。接下来的两个循环分别输出了表的列头，以及一条用来分隔表头和表的横线。数据表是以循环嵌套的方式生成的。外循环遍历身高并输出英尺和英寸的最左一列的身高。内循环遍历体重，输出当前身高每行的 BMI 值。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="5855.html" title="Java求数组元素的最大和最小值" target="_blank">Java求数组元素的最大和最小值</a></li>
+<li><a href="7334.html" title="Django Admin后台管理系统" target="_blank">Django Admin后台管理系统</a></li>
+<li><a href="../spring_boot/starter.html" title="Spring Boot starter入门" target="_blank">Spring Boot starter入门</a></li>
+<li><a href="../css3/responsive.html" title="CSS响应式布局（自适应布局）教程" target="_blank">CSS响应式布局（自适应布局）教程</a></li>
+<li><a href="../jstl/sql-transaction.html" title="&lt;sql:transaction&gt;标签" target="_blank">&lt;sql:transaction&gt;标签</a></li>
+<li><a href="greedy.html" title="贪心算法" target="_blank">贪心算法</a></li>
+<li><a href="9339.html" title="JS变量定义和赋值" target="_blank">JS变量定义和赋值</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 412;
+window.arcId = "fd63kIacnZQxMtcngiVahfKrNGh0sJs5uuFwlFYk7XJtwcW7Mc/PNlgHkA";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

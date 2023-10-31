@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>go pprof命令（Go语言性能分析命令）完全攻略</title>
+<meta name="description" content="Go语言工具链中的go pprof可以帮助开发者快速分析及定位各种性能问题，如CPU消耗、内存分配及阻塞分析。 性能分析首先需要使用runtime.pprof包嵌入到待分析程序的入口和结束处。runtime" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../golang/golang.html">Go语言</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href='../golang/intro/intro.html'>Go语言简介</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href='../golang/syntax/syntax.html'>Go语言基本语法</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href='../golang/container/container.html'>Go语言容器</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href='../golang/flow_control/flow_control.html'>流程控制</a>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href='../golang/func/func.html'>Go语言函数</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href='../golang/struct/struct.html'>Go语言结构体</a>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href='../golang/interface/interface.html'>Go语言接口</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href='../golang/package/package.html'>Go语言包（package）</a>
+</dd>
+<dd>
+<span class="channel-num">9</span>
+<a href='../golang/concurrent/concurrent.html'>Go语言并发</a>
+</dd>
+<dd>
+<span class="channel-num">10</span>
+<a href='../golang/reflect/reflect.html'>Go语言反射</a>
+</dd>
+<dd>
+<span class="channel-num">11</span>
+<a href='../golang/102/102.html'>Go语言文件处理</a>
+</dd>
+<dd class="this"> <span class="channel-num">12</span> <a href="../golang/build/build.html">Go语言编译与工具</a> </dd><dl class="dl-sub"><dd>12.1 <a href="120.html">go build命令</a></dd><dd>12.2 <a href="4440.html">go clean命令</a></dd><dd>12.3 <a href="121.html">go run命令</a></dd><dd>12.4 <a href="4441.html">go fmt命令</a></dd><dd>12.5 <a href="122.html">go install命令</a></dd><dd>12.6 <a href="123.html">go get命令</a></dd><dd>12.7 <a href="4442.html">go generate命令</a></dd><dd>12.8 <a href="124.html">go test命令</a></dd><dd>12.9 <a href="125.html">go pprof命令</a></dd><dd>12.10 <a href="vip_7361.html">与C/C++进行交互</a><span class="iconfont iconfont-vip2"></span></dd><dd>12.11 <a href="vip_7362.html">Go语言内存管理</a><span class="iconfont iconfont-vip2"></span></dd><dd>12.12 <a href="vip_7363.html">Go语言垃圾回收</a><span class="iconfont iconfont-vip2"></span></dd><dd>12.13 <a href="vip_7365.html">Go语言实现RSA和AES加解密</a><span class="iconfont iconfont-vip2"></span></dd></dl>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../golang/golang.html">Go语言</a> &gt; <a href="../golang/build/build.html">Go语言编译与工具</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>go pprof命令（Go语言性能分析命令）完全攻略</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">Go语言工具链中的 go pprof 可以帮助开发者快速分析及定位各种性能问题，如 CPU 消耗、内存分配及阻塞分析。<br />
+<br />
+性能分析首先需要使用 runtime.pprof 包嵌入到待分析程序的入口和结束处。runtime.pprof 包在运行时对程序进行每秒 100 次的采样，最少采样 1 秒。然后将生成的数据输出，让开发者写入文件或者其他媒介上进行分析。<br />
+<br />
+go pprof 工具链配合 Graphviz 图形化工具可以将 runtime.pprof 包生成的数据转换为 PDF 格式，以图片的方式展示程序的性能分析结果。
+<h2>
+安装第三方图形化显式分析数据工具（Graphviz）</h2>
+Graphviz 是一套通过文本描述的方法生成图形的工具包。描述文本的语言叫做 DOT。<br />
+<br />
+在&nbsp;<a href="http://www.graphviz.org" target="_blank">www.graphviz.org</a>&nbsp;网站可以获取到最新的 Graphviz 各平台的安装包。<br />
+<br />
+CentOS 下，可以使用 yum 指令直接安装：
+<p class="info-box">
+$ yum install graphiviz</p>
+<h2>
+安装第三方性能分析来分析代码包</h2>
+runtime.pprof 提供基础的运行时分析的驱动，但是这套接口使用起来还不是太方便，例如：
+<ul>
+<li>
+输出数据使用 io.Writer 接口，虽然扩展性很强，但是对于实际使用不够方便，不支持写入文件。</li>
+<li>
+默认配置项较为复杂。</li>
+</ul>
+<br />
+很多第三方的包在系统包 runtime.pprof 的技术上进行便利性封装，让整个测试过程更为方便。这里使用 github.com/pkg/profile 包进行例子展示，使用下面代码安装这个包：
+<p class="info-box">
+$ go get github.com/pkg/profile</p>
+<h2>
+性能分析代码</h2>
+下面代码故意制造了一个性能问题，同时使用 github.com/pkg/profile 包进行性能分析。
+<blockquote>
+本套教程所有源码下载地址：<a href="https://pan.baidu.com/s/1ORFVTOLEYYqDhRzeq0zIiQ" target="_blank">https://pan.baidu.com/s/1ORFVTOLEYYqDhRzeq0zIiQ</a>&nbsp;&nbsp;&nbsp; 提取密码：hfyf</blockquote>
+基准测试代码如下（具体文件：./src/chapter11/profile/cpu.go）：
+<pre class="go">
+package main
+
+import (
+    &quot;github.com/pkg/profile&quot;
+    &quot;time&quot;
+)
+
+func joinSlice() []string {
+
+    var arr []string
+
+    for i := 0; i &lt; 100000; i++ {
+     // 故意造成多次的切片添加(append)操作, 由于每次操作可能会有内存重新分配和移动, 性能较低
+        arr = append(arr, &quot;arr&quot;)
+    }
+
+    return arr
+}
+
+func main() {
+    // 开始性能分析, 返回一个停止接口
+    stopper := profile.Start(profile.CPUProfile, profile.ProfilePath(&quot;.&quot;))
+
+    // 在main()结束时停止性能分析
+    defer stopper.Stop()
+
+    // 分析的核心逻辑
+    joinSlice()
+
+    // 让程序至少运行1秒
+    time.Sleep(time.Second)
+}</pre>
+代码说明如下：
+<ul>
+<li>
+第 4 行，引用 github.com/pkg/profile 第三方包封装。</li>
+<li>
+第 14 行，为了进行性能分析，这里在已知元素大小的情况下，还是使用 append() 函数不断地添加切片。性能较低，在实际中应该避免，这里为了性能分析，故意这样写。</li>
+<li>
+第 22 行，使用 profile.Start 调用 github.com/pkg/profile 包的开启性能分析接口。这个 Start 函数的参数都是可选项，这里需要指定的分析项目是 profile.CPUProfile，也就是 CPU 耗用。profile.ProfilePath(&quot;.&quot;) 指定输出的分析文件路径，这里指定为当前文件夹。profile.Start() 函数会返回一个 Stop 接口，方便在程序结束时结束性能分析。</li>
+<li>
+第 25 行，使用 defer，将性能分析在 main() 函数结束时停止。</li>
+<li>
+第 28 行，开始执行分析的核心。</li>
+<li>
+第 31 行，为了保证性能分析数据的合理性，分析的最短时间是 1 秒，使用 time.Sleep() 在程序结束前等待 1 秒。如果你的程序默认可以运行 1 秒以上，这个等待可以去掉。</li>
+</ul>
+<br />
+性能分析需要可执行配合才能生成分析结果，因此使用命令行对程序进行编译，代码如下：
+<p class="info-box">
+$ go build -o cpu cpu.go<br />
+$ ./cpu<br />
+$ go tool pprof --pdf cpu cpu.pprof &gt; cpu.pdf</p>
+代码说明如下：
+<ul>
+<li>
+第 1 行将 cpu.go 编译为可执行文件 cpu。</li>
+<li>
+第 2 行运行可执行文件，在当前目录输出 cpu.pprof 文件。</li>
+<li>
+第 3 行，使用 go tool 工具链输入 cpu.pprof 和 cpu 可执行文件，生成 PDF 格式的输出文件，将输出文件重定向为 cpu.pdf 文件。这个过程中会调用 Graphviz 工具，Windows 下需将 Graphviz 的可执行目录添加到环境变量 PATH 中。</li>
+</ul>
+<br />
+最终生成 cpu.pdf 文件，使用 PDF 查看器打开文件，观察后发现下图所示的某个地方可能存在瓶颈。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/180820/1-1PR0130104114.jpg" /><br />
+图：性能分析</div>
+<br />
+图中的每一个框为一个函数调用的路径，第 3 个方框中 joinSlice 函数耗费了 50% 的 CPU 时间，存在性能瓶颈。重新优化代码，在已知切片元素数量的情况下直接分配内存，代码如下：
+<pre class="go">
+func joinSlice() []string {
+
+    const count = 100000
+
+    var arr []string = make([]string, count)
+
+    for i := 0; i &lt; count; i++ {
+        arr[i] = &quot;arr&quot;
+    }
+
+    return arr
+}</pre>
+代码说明如下：
+<ul>
+<li>
+第 5 行，将切片预分配 count 个数量，避免之前使用 append() 函数的多次分配。</li>
+<li>
+第 8 行，预分配后，直接对每个元素进行直接赋值。</li>
+</ul>
+<br />
+重新运行上面的代码进行性能分析，最终得到的 cpu.pdf 中将不会再有耗时部分。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="395.html" title="fseek、ftell和rewind函数，C语言fseek、ftell和rewind函数详解" target="_blank">fseek、ftell和rewind函数，C语言fseek、ftell和rewind函数详解</a></li>
+<li><a href="3613.html" title="Linux绝对路径和相对路径" target="_blank">Linux绝对路径和相对路径</a></li>
+<li><a href="minimum-spanning-tree.html" title="最小生成树" target="_blank">最小生成树</a></li>
+<li><a href="../matplotlib/the-first-plot.html" title="第一个Matplotlib绘图程序" target="_blank">第一个Matplotlib绘图程序</a></li>
+<li><a href="../csharp/collection.html" title="C#集合（Collection）" target="_blank">C#集合（Collection）</a></li>
+<li><a href="lqzzvv.html" title="RT-Thread是什么？" target="_blank">RT-Thread是什么？</a></li>
+<li><a href="70wavq1.html" title="C++内联函数详解" target="_blank">C++内联函数详解</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 125;
+window.arcId = "0f15fIenx0z23yA+U3GbIIWhNiqDwhAjb6LlCd9OXJDTUDV0nTh03n6R9w";
+window.typeidChain = "14|1";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="https://c.biancheng.net/templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/view/124.html";
+window.nextPageURL = "/view/vip_7361.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

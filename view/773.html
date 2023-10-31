@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Shell变量的作用域：Shell全局变量、环境变量和局部变量</title>
+<meta name="description" content="Shell 变量的 作用域（Scope） ，就是 Shell 变量的有效范围（可以使用的范围）。 Shell 变量的作用域可以分为三种： 有的变量可以在当前 Shell 脚本的任意位置使用，这叫做 全局变量（g" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Shell变量的作用域：Shell全局变量、环境变量和局部变量</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">Shell 变量的<span style="color:#008000;">作用域（Scope）</span>，就是 Shell 变量的有效范围（可以使用的范围）。<br />
+<br />
+在不同的作用域中，同名的变量不会相互干涉，就好像 A 班有个叫小明的同学，B 班也有个叫小明的同学，虽然他们都叫小明（对应于变量名），但是由于所在的班级（对应于作用域）不同，所以不会造成混乱。但是如果同一个班级中有两个叫小明的同学，就必须用类似于&ldquo;大小明&rdquo;、&ldquo;小小明&rdquo;这样的命名来区分他们。<br />
+<br />
+Shell 变量的作用域可以分为三种：
+<ul>
+<li>
+有的变量只能在函数内部使用，这叫做<span style="color: rgb(0, 128, 0);">局部变量（local variable）</span>；</li>
+<li>
+有的变量可以在当前 Shell 进程中使用，这叫做<span style="color:#008000;">全局变量（global variable）</span>；</li>
+<li>
+而有的变量还可以在子进程中使用，这叫做<span style="color: rgb(0, 128, 0);">环境变量（environment variable）</span>。</li>
+</ul>
+<h2>
+Shell 局部变量</h2>
+Shell 也支持自定义函数，但是 Shell 函数和 <a href='../cplus/cplus.html' target='_blank'>C++</a>、<a href='../java/java_3.html' target='_blank'>Java</a>、<a href='../csharp/csharp.html' target='_blank'>C#</a> 等其他编程语言函数的一个不同点就是：在 Shell 函数中定义的变量默认也是全局变量，它和在函数外部定义变量拥有一样的效果。请看下面的代码：
+<pre class="sh">
+#!/bin/bash
+
+#定义函数
+function func(){
+    a=99
+}
+
+#调用函数
+func
+
+#输出函数内部的变量
+echo $a</pre>
+输出结果：<br />
+99<br />
+<br />
+a 是在函数内部定义的，但是在函数外部也可以得到它的值，证明它的作用域是全局的，而不是仅限于函数内部。<br />
+<br />
+要想变量的作用域仅限于函数内部，可以在定义时加上<code style="font-size: 14px;">local</code>命令，此时该变量就成了局部变量。请看下面的代码：
+<pre class="sh">
+#!/bin/bash
+
+#定义函数
+function func(){
+    local a=99
+}
+
+#调用函数
+func
+
+#输出函数内部的变量
+echo $a</pre>
+输出结果为空，表明变量 a 在函数外部无效，是一个局部变量。<br />
+<br />
+Shell 变量的这个特性和 <a href='../js/js.html' target='_blank'>JavaScript</a> 中的变量是类似的。在 JavaScript 函数内部定义的变量，默认也是全局变量，只有加上<code style="font-size: 14px;">var</code>关键字，它才会变成局部变量。<br />
+<br />
+本节只是演示了函数的定义和调用，并没有对语法细节作过多说明，后续我们将在《<a href="1009.html" target="_blank">Shell函数</a>》一节中进行深入讲解。<br />
+<h2>
+Shell 全局变量</h2>
+所谓全局变量，就是指变量在当前的整个 Shell 进程中都有效。每个 Shell 进程都有自己的作用域，彼此之间互不影响。<span style="color:#b22222;">在 Shell 中定义的变量，默认就是全局变量。</span><br />
+<br />
+想要实际演示全局变量在不同 Shell 进程中的互不相关性，可在图形界面下同时打开两个 Shell，或使用两个终端远程连接到服务器（SSH）。<br />
+<br />
+首先打开一个 Shell 窗口，定义一个变量 a 并赋值为 99，然后打印，这时在同一个 Shell 窗口中是可正确打印变量 a 的值的。然后再打开一个新的 Shell 窗口，同样打印变量 a 的值，但结果却为空，如图 1 所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="打开两个Shell窗口" src="../uploads/allimg/180930/1-1P930113JUZ.png" /><br />
+图1：打开两个 Shell 窗口</div>
+<br />
+这说明全局变量 a 仅仅在定义它的第一个 Shell 进程中有效，对新的 Shell 进程没有影响。这很好理解，就像小王家和小徐家都有一部电视机（变量名相同），但是同一时刻小王家和小徐家的电视中播放的节目可以是不同的（变量值不同）。<br />
+<br />
+需要强调的是，全局变量的作用范围是当前的 Shell 进程，而不是当前的 Shell 脚本文件，它们是不同的概念。打开一个 Shell 窗口就创建了一个 Shell 进程，打开多个 Shell 窗口就创建了多个 Shell 进程，每个 Shell 进程都是独立的，拥有不同的进程 ID。在一个 Shell 进程中可以使用 source 命令执行多个 Shell 脚本文件，此时全局变量在这些脚本文件中都有效。<br />
+<br />
+例如，现在有两个 Shell 脚本文件，分别是 a.sh 和 b.sh。a.sh 的代码如下：
+<pre class="sh">
+#!/bin/bash
+echo $a
+b=200</pre>
+b.sh 的代码如下：
+<pre class="sh">
+#!/bin/bash
+echo $b</pre>
+打开一个 Shell 窗口，输入以下命令：
+<pre class="info-box">
+[c.biancheng.net]$ a=99
+[c.biancheng.net]$ . ./a.sh
+99
+[c.biancheng.net]$ . ./b.sh
+200</pre>
+这三条命令都是在一个进程中执行的，从输出结果可以发现，在 Shell 窗口中以命令行的形式定义的变量 a，在 a.sh 中有效；在 a.sh 中定义的变量 b，在 b.sh 中也有效，变量 b 的作用范围已经超越了 a.sh。<br />
+<br />
+注意，必须在当前进程中运行 Shell 脚本，不能在新进程中运行 Shell 脚本，不了解的读者请转到《<a href="739.html" target="_blank">执行Shell脚本</a>》。<br />
+<h2>
+Shell 环境变量</h2>
+全局变量只在当前 Shell 进程中有效，对其它 Shell 进程和子进程都无效。如果使用<code>export</code>命令将全局变量导出，那么它就在所有的子进程中也有效了，这称为&ldquo;环境变量&rdquo;。<br />
+<br />
+环境变量被创建时所处的 Shell 进程称为父进程，如果在父进程中再创建一个新的进程来执行 Shell 命令，那么这个新的进程被称作 Shell 子进程。当 Shell 子进程产生时，它会继承父进程的环境变量为自己所用，所以说环境变量可从父进程传给子进程。不难理解，环境变量还可以传递给孙进程。<br />
+<br />
+注意，两个没有父子关系的 Shell 进程是不能传递环境变量的，并且环境变量只能向下传递而不能向上传递，即&ldquo;传子不传父&rdquo;。<br />
+<br />
+创建 Shell 子进程最简单的方式是运行 bash 命令，如图 2 所示。<br />
+<div style="text-align: center;">
+<img alt="进入Shell子进程" src="../uploads/allimg/190418/1-1Z41QJGN02.gif" /><br />
+图2：进入 Shell 子进程</div>
+<br />
+通过<code>exit</code>命令可以一层一层地退出 Shell。<br />
+<br />
+下面演示一下环境变量的使用：
+<pre class="info-box">
+[c.biancheng.net]$ a=22       #定义一个全局变量
+[c.biancheng.net]$ echo $a    #在当前Shell中输出a，成功
+22
+[c.biancheng.net]$ bash       #进入Shell子进程
+[c.biancheng.net]$ echo $a    #在子进程中输出a，失败
+
+[c.biancheng.net]$ exit       #退出Shell子进程，返回上一级Shell
+exit
+[c.biancheng.net]$ export a   #将a导出为环境变量
+[c.biancheng.net]$ bash       #重新进入Shell子进程
+[c.biancheng.net]$ echo $a    #在子进程中再次输出a，成功
+22
+[c.biancheng.net]$ exit       #退出Shell子进程
+exit
+[c.biancheng.net]$ exit       #退出父进程，结束整个Shell会话</pre>
+可以发现，默认情况下，a 在 Shell 子进程中是无效的；使用 export 将 a 导出为环境变量后，在子进程中就可以使用了。<br />
+<br />
+<code>export a</code>这种形式是在定义变量 a 以后再将它导出为环境变量，如果想在定义的同时导出为环境变量，可以写作<code>export a=22</code>。<br />
+<br />
+我们一直强调的是环境变量在 Shell 子进程中有效，并没有说它在所有的 Shell 进程中都有效；如果你通过终端创建了一个新的 Shell 窗口，那它就不是当前 Shell 的子进程，环境变量对这个新的 Shell 进程仍然是无效的。请看下图：
+<div style="text-align: center;">
+<img alt="环境变量在不同的Shell窗口中无效" src="../uploads/allimg/190418/1-1Z41QKS3523.gif" /></div>
+第一个窗口中的环境变量 a 在第二个窗口中就无效。
+<h4>
+环境变量也是临时的</h4>
+通过 export 导出的环境变量只对当前 Shell 进程以及所有的子进程有效，如果最顶层的父进程被关闭了，那么环境变量也就随之消失了，其它的进程也就无法使用了，所以说环境变量也是临时的。<br />
+<br />
+有读者可能会问，如果我想让一个变量在所有 Shell 进程中都有效，不管它们之间是否存在父子关系，该怎么办呢？<br />
+<br />
+只有将变量写入 Shell 配置文件中才能达到这个目的！Shell 进程每次启动时都会执行配置文件中的代码做一些初始化工作，如果将变量放在配置文件中，那么每次启动进程都会定义这个变量。不知道如何修改配置文件的读者请猛击《<a href="vip_3232.html" target="_blank">Shell配置文件的加载</a>》《<a href="vip_3233.html" target="_blank">编写自己的Shell配置文件</a>》。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="306_2.html" title="|和||的区别，C语言|和||的区别详解" target="_blank">|和||的区别，C语言|和||的区别详解</a></li>
+<li><a href="1274.html" title="什么是Web标准（网页标准）" target="_blank">什么是Web标准（网页标准）</a></li>
+<li><a href="vip_2220.html" title="C++函数编译原理和成员函数的实现" target="_blank">C++函数编译原理和成员函数的实现</a></li>
+<li><a href="2315.html" title="Python try except else（异常处理）用法详解" target="_blank">Python try except else（异常处理）用法详解</a></li>
+<li><a href="2413.html" title="MySQL创建数据库（CREATE DATABASE语句）" target="_blank">MySQL创建数据库（CREATE DATABASE语句）</a></li>
+<li><a href="vip_3520.html" title="Linux中的信号是什么？" target="_blank">Linux中的信号是什么？</a></li>
+<li><a href="../c/exp.html" title="C语言exp()函数：返回以e的x次幂（次方）" target="_blank">C语言exp()函数：返回以e的x次幂（次方）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 773;
+window.arcId = "72eaX7Hjcs47hqc7QMi2CF7R8Fw89pVUT13W1lWlSU7WadU/L0L1KF+onw";
+window.typeidChain = "210|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

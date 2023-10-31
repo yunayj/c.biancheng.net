@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++类成员的访问范围（C++ private、public、protected）</title>
+<meta name="description" content="在类的定义中，可以用 private、public 和 protected 三种关键字来指定成员可被访问的范围。 private：用来指定私有成员。一个类的私有成员，不论是成员变量还是成员函数，都只能在该类的" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++类成员的访问范围（C++ private、public、protected）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在类的定义中，可以用 private、public 和 protected 三种关键字来指定成员可被访问的范围。<br />
+<br />
+private：用来指定私有成员。一个类的私有成员，不论是成员变量还是成员函数，都只能在该类的成员函数内部才能被访问。<br />
+<br />
+public：用来指定公有成员。一个类的公有成员在任何地方都可以被访问。<br />
+<br />
+protected：用来指定保护成员。这需要等介绍&ldquo;继承&rdquo;之后再解释。<br />
+<br />
+三种关键字出现的次数和先后次序都没有限制。成员变量的可访问范围由离它前面最近的那个访问范围说明符决定。<br />
+<br />
+如果某个成员前面没有访问范围说明符，则对 class 来说，该成员默认地被认为是私有成员；对 struct 来说，该成员默认地被认为是公有成员。例如：
+<pre class="cpp">
+class A
+{
+    int m, n;
+public:
+    int a, b;
+    int func1();
+private:
+    int c, d;
+    void func2();
+public:
+    char e;
+    int f;
+    int func3();
+};</pre>
+在上面的类 A 中，成员 a、b 和 func1 是公有的，c、d 和 func2 是私有的，e、f 和 func3 又是公有的。m 和 n 没有指定可访问范围，则是私有的。如果把 class 换成 struct，那么 m 和 n 就是公有的。<br />
+<br />
+下面的程序可以说明公有成员和私有成员的区别。假设一个企业员工管理程序的一小部分代码如下：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;cstring&gt;
+u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+class CEmployee {
+private:
+    char szName[30];  //名字
+public:
+    int salary;  //工资
+    void setName(char* name);
+    void getName(char* name);
+    void averageSalary(CEmployee el, CEmployee e2);
+};
+void CEmployee::setName(char* name) {
+    strcpy(szName, name);  //ok
+}
+void CEmployee::getName(char* name) {
+    strcpy(name, szName);  //ok
+}
+void CEmployee::averageSalary(CEmployee el, CEmployee e2)
+{
+    salary = (el.salary + e2.salary) / 2;
+}
+int main()
+{
+    CEmployee e;
+    strcpy(e.szName, &quot;Tom1234567889&quot;);  //编译出错，不能访问私有成员
+    e.setName(&quot;Tom&quot;);  //ok
+    e.salary = 5000;  //ok
+    return 0;
+}</pre>
+在上面的程序中，szName 是私有成员，其他成员都是公有的。<br />
+<br />
+私有成员只能在成员函数内部访问，因此第 14 行和第 17 行没有问题，这两条语句都是在访问函数所作用的那个对象的 szName 私有成员。另外，类的成员函数内部可以访问任何同类对象的私有成员。<br />
+<br />
+所谓成员函数内部，指的就是成员函数的函数体内部。main 函数中的语句，如第 26 行，当然就不在 CEmployee 的成员函数内部，因此该行试图访问 e 这个对象的 szName 私有成员变量就会导致编译错误。<br />
+<br />
+而第 27 行虽然也不属于 CEmployee 类的成员函数内部，但其访问的是对象 e 的公有成员 setName，因此没有问题。同理，第 28 行也没有问题。<br />
+<br />
+在 CEmployee 类的成员函数外面，若要访问 CEmployee 对象的 szName 私有成员变量，不能直接访问，只能通过两个成员函数 setName 和 getName 间接进行访问。
+<h2>
+&ldquo;隐藏&rdquo;的作用</h2>
+设置私有成员的机制叫作&ldquo;隐藏&rdquo;。&ldquo;隐藏&rdquo;的一个目的就是强制对成员变量的访问一定要通过成员函数进行。这样做的好处是，如果以后修改了成员变量的类型等属性，只需要更改成员函数即可；否则，所有直接访问成员变量的语句都需要修改。<br />
+<br />
+以上面的企业员工管理程序为例，如果 szName 不是私有的，那么整个程序中可能会有很多类似于第 26 行
+<p class="info-box">
+strcpy(man1, szName, &quot;Tom1234567889&quot;);</p>
+这样的语句。假设需要将该程序移植到内存空间紧张的手持设备上，希望将 CEmployee 类的成员变量 szName 改为 char szName[5]，以便节约空间，那么所有这样的语句都要找出来检查一番并修改，以防止数组越界。这显然很麻烦。<br />
+<br />
+如果将 szName 变为私有的，则除了 CEmployee 类的成员函数内部，其他地方不可能出现第 26 行那样对 szName 直接访问的语句，所有对 szName 的访问都是通过成员函数进行的。例如：
+<p class="info-box">
+e.setName(&quot;Tom12345678909887&quot;);</p>
+就算 szName 的长度变短了，上面的语句也不需要修改，只要修改 setName 成员函数，在其中去掉超长的部分，确保数组不越界就可以了。<br />
+<br />
+可见，&ldquo;隐藏&rdquo;有利于程序的修改。<br />
+<br />
+&ldquo;隐藏&rdquo;机制还可以避免对对象的不正确操作。有的成员函数只是设计用来让同类的成员函数调用的，并不希望对外开放，因此就可以将它们声明为私有的，隐藏起来。<br />
+<br />
+现代软件开发绝大多数是合作完成的，一个程序员设计了一个类，可能被许多程序员使用。在设计类的时候，应当尽可能隐藏使用者不需要知道的实现细节，只留下必要的接口（即一些成员函数）来对对象进行操作，这样能够避免类的使用者随意使用成员函数和成员变量而导致错误。<br />
+<br />
+就像数字照相机的设计者会用外壳将内部的电路全部封装隐藏起来，用户不需要知道数字照相机的具体工作原理以及其中有哪些器件，只要能通过设计者留下的接口，即外壳上的各种按钮来使用照相机即可。如果把内部的电路、器件、开关都暴露给用户，那么外行用户很可能会把照相机弄坏。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="804.html" title="Linux Vim三种工作模式（命令模式、输入模式和编辑模式）详解" target="_blank">Linux Vim三种工作模式（命令模式、输入模式和编辑模式）详解</a></li>
+<li><a href="1852.html" title="Qt QPlainTextEdit用法详解" target="_blank">Qt QPlainTextEdit用法详解</a></li>
+<li><a href="2343.html" title="C++ static_cast、dynamic_cast、const_cast和reinterpret_cast（四种类型转换运算符）" target="_blank">C++ static_cast、dynamic_cast、const_cast和reinterpret_cast（四种类型转换运算符）</a></li>
+<li><a href="7041.html" title="Python复数类型（complex）详解" target="_blank">Python复数类型（complex）详解</a></li>
+<li><a href="../jstl/sql-update.html" title="&lt;sql:update&gt;标签" target="_blank">&lt;sql:update&gt;标签</a></li>
+<li><a href="mbrrunu.html" title="GET和POST请求的区别" target="_blank">GET和POST请求的区别</a></li>
+<li><a href="wbr8y3q.html" title="《Web前端实用技术示例教程》PDF下载（高清完整版）" target="_blank">《Web前端实用技术示例教程》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 219;
+window.arcId = "3e80y7UAQ43lHhkzfpXyGQSBYHuiicJoTumwChV9Gi+t6g4QsBECP/v6og";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

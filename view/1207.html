@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>进程的创建和终止（超详细）</title>
+<meta name="description" content="大多数系统的进程能够并发执行，它们可以动态创建和删除。因此，操作系统必须提供机制，用于创建进程和终止进程。 进程创建 进程在执行过程中可能创建多个新的进程。 创建进程" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>进程的创建和终止（超详细）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">大多数系统的进程能够并发执行，它们可以动态创建和删除。因此，操作系统必须提供机制，用于创建进程和终止进程。<br />
+<h2>
+进程创建</h2>
+进程在执行过程中可能创建多个新的进程。<span style="color:#b22222;">创建进程称为</span><span style="color:#008000;">父进程</span><span style="color:#b22222;">，而新的进程称为</span><span style="color:#008000;">子进程</span><span style="color:#b22222;">。</span>每个新进程可以再创建其他进程，从而形成<span style="color:#008000;">进程树</span>。<br />
+<br />
+大多数的操作系统（包括 UNIX、Linux 和 Windows）对进程的识别采用的是唯一的<span style="color:#008000;">进程标识符（pid）</span>，pid 通常是一个整数值。系统内的每个进程都有一个唯一 pid，它可以用作索引，以便访问内核中的进程的各种属性。
+<div style="text-align: center;">
+<br />
+<img alt="典型Linux系统的一个进程树" src="../uploads/allimg/181102/2-1Q1021100135W.gif" /><br />
+图 1 典型Linux系统的一个进程树</div>
+<br />
+图 1 显示了 Linux 操作系统的一个典型进程树，包括进程的名称和 pid（我们通常使用进程这个术语，不过 Linux 偏爱&quot;<span style="color:#008000;">任务</span>&quot;这个术语）。进程 init（它的 pid 总是 1），作为所有用户进程的根进程或父进程。一旦系统启动后，进程init可以创建各种用户进程，如 Web 服务器、打印服务器、ssh 服务器等。<br />
+<br />
+在图 1 中，kthreadd 和 sshd 为 init 的两个子进程。kthreadd 进程负责创建额外进程，以便执行内核任务（这里为 khelper 和 pdflush）。sshd 进程负责管理通过 ssh 连到系统的客户端。login 进程负责管理直接登录到系统的客户端。在这个例子中，客户已登录，并且使用 bash 外壳，它所分配的 pid 为 8416。采用 bash 命令行界面，这个进程还创建了进程 ps 和 emacs 编辑器。<br />
+<br />
+对于 UNIX 和 Linux 系统，我们可以通过 ps 命令得到一个进程列表。例如，命令<br />
+<p class="info-box">
+ps -el</p>
+可以列出系统中的所有当前活动进程的完整信息。通过递归跟踪父进程一直到进程 init，可以轻松构造类似图 1 所示的进程树。<br />
+<br />
+一般来说，当一个进程创建子进程时，该子进程需要一定的资源（CPU 时间、内存、文件、I/O 设备等）来完成任务。子进程可以从操作系统那里直接获得资源，也可以只从父进程那里获得资源子集。父进程可能要在子进程之间分配资源或共享资源（如内存或文件）。限制子进程只能使用父进程的资源，可以防止创建过多进程，导致系统超载。<br />
+<br />
+除了提供各种物理和逻辑资源外，父进程也可能向子进程传递初始化数据（或输入）。例如，假设有一个进程，其功能是在终端屏幕上显示文件如 image.jpg 的状态。当该进程被创建时，它会从父进程处得到输入，即文件名称 image.jpg。通过这个名称，它会打开文件，进而写出内容。它也可以得到输出设备名称。另外，有的操作系统会向子进程传递资源。对于这种系统，新进程可得到两个打开文件，即 image.jpg 和终端设备，并且可以在这两者之间进行数据传输。<br />
+<br />
+当进程创建新进程时，可有两种执行可能：
+<ol>
+<li>
+父进程与子进程并发执行。</li>
+<li>
+父进程等待，直到某个或全部子进程执行完。</li>
+</ol>
+<br />
+新进程的地址空间也有两种可能：
+<ol>
+<li>
+子进程是父进程的复制品（它具有与父进程同样的程序和数据）。</li>
+<li>
+子进程加载另一个新程序。</li>
+</ol>
+<br />
+为了说明这些不同，首先看一看 UNIX 操作系统。在 UNIX 中，正如以前所述，每个进程都用一个唯一的整型进程标识符来标识。通过系统调用&nbsp;<span style="color:#008000;">fork()</span>，可创建新进程。新进程的地址空间复制了原来进程的地址空间。这种机制允许父进程与子进程轻松通信。这两个进程（父和子）都继续执行处于系统调用 fork() 之后的指令，但有一点不同：对于新（子）进程，系统调用 fork() 的返回值为 0；而对于父进程，返回值为子进程的进程标识符（非零）。<br />
+<br />
+通常，在系统调用 fork() 之后，有个进程使用系统调用 exec()，以用新程序来取代进程的内存空间。系统调用 exec() 加载二进制文件到内存中（破坏了包含系统调用 exec() 的原来程序的内存内容），并开始执行。采用这种方式，这两个进程能相互通信，并能按各自方法运行。父进程能够创建更多子进程，或者如果在子进程运行时没有什么可做，那么它采用系统调用 wait() 把自己移出就绪队列，直到子进程终止。因为调用 exec() 用新程序覆盖了进程的地址空间，所以调用 exec() 除非出现错误，不会返回控制。<br />
+<pre class="cpp">
+#include &lt;sys/types.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+int main()
+{
+    pid_t pid;
+    /* fork a child process */
+    pid = fork();
+    if (pid &lt; 0) { /* error occurred */\
+        fprintf(stderr, &quot;Fork Failed&quot;);
+        return 1;
+    }
+    else if (pid == 0) { /* child process */
+        execlp(&quot;/bin/ls&quot;，&quot;ls&quot;，NULL);
+    }
+    else { /* parent process */
+        /* parent will wait for the child to complete */
+        wait(NULL);
+        printf(&quot;Child Complete&quot;);
+    }
+    return 0;
+}</pre>
+以上所示的 C 程序说明了上述 UNIX 系统调用例子中。这里有两个不同进程，但运行同一程序。这两个进程的唯一差别是：子进程的 pid 值为0，而父进程的 pid 值大于0（实际上，它就是子进程的 pid）。子进程继承了父进程的权限、调度属性以及某些资源，诸如打开文件。<br />
+<br />
+通过系统调用 execlp()（这是系统调用 exec() 的一个版本），子进程采用 UNIX 命令 /bin/ls（用来列出目录清单）来覆盖其地址空间。通过系统调用 wait()，父进程等待子进程的完成。当子进程完成后（通过显示或隐式调用 exit()），父进程会从 wait() 调用处开始继续，并且结束时会调用系统调用 exit()。这可用图 2 表示。
+<div style="text-align: center;">
+<br />
+<img alt="" src="../uploads/allimg/181102/2-1Q102110425511.gif" /><br />
+图 2 通过系统调用 fork() 创建进程</div>
+<br />
+当然，没有什么可以阻止子进程不调用 exec()，而是继续作为父进程的副本来执行。在这种情况下，父进程和子进程会并发执行，并采用同样的代码指令。由于子进程是父进程的一个副本，这两个进程都有各自的数据副本。<br />
+<br />
+作为另一个例子，接下来看一看 Windows 的进程创建。进程创建采用 Windows API 函数 CreateProcess()，它类似于 fork()（这是父进程用于创建子进程的）。不过，fork() 让子进程继承了父进程的地址空间，而 CreateProcess() 在进程创建时要求将一个特定程序加载到子进程的地址空间。再者，fork() 不需要传递任何参数，而 CreateProcess() 需要传递至少 10 个参数。
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+#include &lt;windows.h&gt;
+int main(VOID)
+{
+    STARTUPINFO si;
+    PR0CESS_INF0RMATI0N pi;
+    /* allocate memory */
+    ZeroMemory(&amp;si, sizeof(si));
+    si.cb = sizeof(si);
+    ZeroMemory(&amp;pi， sizeof(pi));
+    /* create child process */
+    if (!CreateProcess(NULL, /* use command line */
+    &quot;C: \\WIND0WS\\system32\\mspaint. exe&quot; , /* command */ NULL, /* don，t inherit process handle */
+    NULL, /* don^ inherit thread handle */
+    FALSE, /* disable handle inheritance */
+    0, /* no creation flags */
+    NULL, /* use parentJs environment block */
+    NULL, /* use parent1s existing directory */
+    &amp;si,
+    &amp;pi))
+    {
+        fprintf (stderr, &quot;Create Process Failed&quot;);
+        return -1;
+    }
+    /* parent will wait for the child to complete */
+    WaitForSingleObject(pi.hProcess,INFINITE);
+    printf(&quot;Child Complete&quot;);
+    /* close handles */
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
+}</pre>
+以上所示的 C 程序演示了函数 CreateProcess()，它创建了一个子进程，并且加载了应用程序 mspaint.exe。这里选择了 10 个参数中的许多默认值来传递给 CreateProcess()。<br />
+<br />
+传递给 CreateProcess() 的两个参数，为结构 STARTUPINFO 和 PROCESS-INFORMATION 的实例：
+<ul>
+<li>
+结构 STARTUPINFO 指定新进程的许多特性，如窗口大小和外观、标准输入与输出的文件句柄等；</li>
+<li>
+结构 PR0CESS_INF0RMATI0N 含新进程及其线程的句柄与标识符。</li>
+</ul>
+在进行 CeateProcess() 之前，调用函数 ZeroMemory() 来为这些结构分配内存。<br />
+<br />
+函数 CreateProcess() 的头两个参数是应用程序名称和命令行参数。如果应用程序名称为 NULL（这里就是 NULL），那么命令行参数指定了所要加载的应用程序。在这个例子中，加载的是 Microsoft Windows 的 mspaint.exe 应用程序。<br />
+<br />
+除了这两个初始参数之外，这里使用系统默认参数来继承进程和线程句柄，并指定没有创建标志；另外，这里还使用了父进程的已有环境块和启动目录。最后，提供了两个指向程序刚开始时所创建的结构 STARTUPINFO 和 PROCESS_INFORMATION 的指针。<br />
+<br />
+在 UNIX 系统调用例子中，父进程通过调用 wait() 系统调用等待子进程的完成；而在 Windows 中与此相当的是 WaitForSingleObject()，用于等待进程完成，它的参数指定了子进程的句柄即 pi.hProcess。一旦子进程退出，控制会从函数 WaitForSingleObject() 回到父进程。<br />
+<h2>
+进程终止</h2>
+当进程完成执行最后语句并且通过系统调用 <span style="color:#008000;">exit()&nbsp;</span>请求操作系统删除自身时，进程终止。这时，进程可以返回状态值（通常为整数）到父进程（通过系统调用 wait()）。所有进程资源，如物理和虚拟内存、打开文件和 I/O 缓冲区等，会由操作系统释放。<br />
+<br />
+在其他情况下也会出现进程终止。进程通过适当系统调用（如 Windows 的 Terminate-Process()），可以终止另一进程。通常，只有终止进程的父进程才能执行这一系统调用。否则，用户可以任意终止彼此的作业。记住，如果终止子进程，则父进程需要知道这些子进程的标识符。因此，当一个进程创建新进程时，新创建进程的标识符要传递到父进程。<br />
+<br />
+父进程终止子进程的原因有很多，如：
+<ol>
+<li>
+子进程使用了超过它所分配的资源。（为判定是否发生这种情况，父进程应有一个机制，以检查子进程的状态）。</li>
+<li>
+分配给子进程的任务，不再需要。</li>
+<li>
+父进程正在退出，而且操作系统不允许无父进程的子进程继续执行。</li>
+</ol>
+<br />
+有些系统不允许子进程在父进程已终止的情况下存在。对于这类系统，如果一个进程终止（正常或不正常），那么它的所有子进程也应终止。这种现象，称为<span style="color:#008000;">级联终止</span>，通常由操作系统来启动。<br />
+<br />
+为了说明进程执行和终止，下面以 Linux 和 UNIX 系统为例：可以通过系统调用 exit() 来终止进程，还可以将退出状态作为参数来提供。<br />
+<p class="info-box">
+/* exit with status 1 */<br />
+exit(1);</p>
+事实上，在正常终止时，exit() 可以直接调用（如上所示），也可以间接调用（通过 main() 的返回语句）。<br />
+<br />
+父进程可以通过系统调用 wait()，等待子进程的终止。系统调用 wait() 可以通过参数，让父进程获得子进程的退出状态；这个系统调用也返回终止子进程的标识符，这样父进程能够知道哪个子进程已经终止了：<br />
+<p class="info-box">
+pid_t pid;<br />
+int status;<br />
+pid = wait(festatus);</p>
+当一个进程终止时，操作系统会释放其资源。不过，它位于进程表中的条目还是在的，直到它的父进程调用 wait()；这是因为进程表包含了进程的退出状态。当进程已经终止，但是其父进程尚未调用 wait()，这样的进程称为<span style="color:#008000;">僵尸进程</span>。<br />
+<br />
+所有进程终止时都会过渡到这种状态，但是一般而言僵尸只是短暂存在。一旦父进程调用了 wait()，僵尸进程的进程标识符和它在进程表中的条目就会释放。<br />
+<br />
+如果父进程没有调用 wait() 就终止，以致于子进程成为孤儿进程，那么这会发生什么？Linux 和 UNIX 对这种情况的处理是：将 init 进程作为孤儿进程的父进程。进程 init 定期调用 wait()，以便收集任何孤儿进程的退出状态，并释放孤儿进程标识符和进程表条目。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1983.html" title="C语言带参宏定义和函数的区别" target="_blank">C语言带参宏定义和函数的区别</a></li>
+<li><a href="3412.html" title="深度优先生成树和广度优先生成树（详解版）" target="_blank">深度优先生成树和广度优先生成树（详解版）</a></li>
+<li><a href="7487.html" title="Django初始化项目环境精讲" target="_blank">Django初始化项目环境精讲</a></li>
+<li><a href="../mybatis/one-to-many.html" title="MyBatis一对多关联查询" target="_blank">MyBatis一对多关联查询</a></li>
+<li><a href="9783.html" title="Go语言变量和常量详解" target="_blank">Go语言变量和常量详解</a></li>
+<li><a href="ennd56.html" title="大白话聊栈溢出（stack overflow）" target="_blank">大白话聊栈溢出（stack overflow）</a></li>
+<li><a href="q0r3o95.html" title="BIOS固件是什么？" target="_blank">BIOS固件是什么？</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 1207;
+window.arcId = "ad8aALaaiqTkIIqK7ynqL0NU+yovDsTbVfFBvjEgqaO/LBjSsSq0+Ivfj0Q";
+window.typeidChain = "113|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

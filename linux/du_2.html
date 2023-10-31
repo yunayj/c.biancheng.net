@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>du命令_Linux du命令：查看文件夹和文件的磁盘占用情况</title>
+<meta name="description" content="du 命令，全称是 disk usage，用来展示磁盘使用量的统计信息。 du 和 df 算是一对同门师兄弟，du 侧重在文件夹和文件的磁盘占用方面，而 df 则侧重在文件系统级别的磁盘占用方面。这两个" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="../view/niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>du命令_Linux du命令：查看文件夹和文件的磁盘占用情况</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">du 命令，全称是 disk usage，用来展示磁盘使用量的统计信息。<br />
+<br />
+du 和 df 算是一对同门师兄弟，du 侧重在文件夹和文件的磁盘占用方面，而 df 则侧重在文件系统级别的磁盘占用方面。这两个命令都非常的基础，也是每位 Linux 工程师都应该掌握的命令。
+<h2>
+	du 的最常用用法</h2>
+最常用的用法，当然就是查看当前所在文件夹的总磁盘占用量了。
+<pre class="info-box">
+#列出当前目录下的文件和子文件夹
+[roc@roclinux ruanjian]$ ls -F
+curl-7.34.0.tar.gz  soft/  wordpress-4.4.1.tar.gz
+ 
+#计算当前文件夹的总磁盘占用量, -s选项表示计算总和, -h选项表示以恰当的K/M/G单位展示
+[roc@roclinux ruanjian]$ du -sh .
+51M</pre>
+<br />
+这里有一个比较有意思的事情，在 Linux 命令中，<code>-h</code>选项常常代表&ldquo;展示帮助信息&rdquo;，即 --help 的缩写形式。但是，du 命令却不走寻常路，它的<code>-h</code>选项是 --human-readable 的缩写形式，表示以人类可读的形式展示磁盘使用量的单位名称（K/M/G）。
+<h2>
+	说说 -s 选项和 -c 选项的作用</h2>
+<code>-s</code>选项，是 --summarize 的缩写形式，其作用是对 du 的每一个给定参数计算其磁盘使用量，我们来看例子。
+<pre class="info-box">
+#当前文件夹下有2个tar.gz文件和1个soft文件夹
+[roc@roclinux ruanjian]$ ls -F
+curl-7.34.0.tar.gz  soft/  wordpress-4.4.1.tar.gz
+ 
+#通配形式的参数首先被Shell解析, 然后-s选项发挥作用, 展示每一个参数对应的磁盘空间使用量
+[roc@roclinux ruanjian]$ du -sh *
+3.4M    curl-7.34.0.tar.gz
+41M     soft
+6.8M    wordpress-4.4.1.tar.gz</pre>
+<br />
+而<code>-c</code>选项，是 --total 的缩写形式，它表示的是针对输出的各个对象来计算其磁盘使用量的总和。比如，我们想计算当前文件夹下所有后缀是 tar.gz 的文件的磁盘使用量总和，那么命令是这样的：
+<pre class="info-box">
+[roc@roclinux ruanjian]$ du -ch *.tar.gz
+3.4M    curl-7.34.0.tar.gz
+6.8M    wordpress-4.4.1.tar.gz
+11M     总用量</pre>
+可以看到，最后一行展示出的 11M，便是<code>-c</code>选项起到的求和作用。<br />
+<br />
+当然，<code>-c</code>选项也可以计算文件和文件夹的混合求和：
+<pre class="info-box">
+[roc@roclinux ruanjian]$ du -ch curl-7.34.0.tar.gz soft
+3.4M    curl-7.34.0.tar.gz
+41M     soft
+45M     总用量</pre>
+<br />
+在运维中，我们通常需要计算某一段时间范围内的日志文件的磁盘使用量，那么<code>-c</code>选项就可以很好地满足需求了。
+<h2>
+	用 --max-depth 选项控制深度</h2>
+文件夹是可以嵌套的，有的时候，我们只想展示第一级或第二级子文件夹的信息，而不希望 du 统计的层次太深，那么我们可以用 --max-depth 选项来进行控制。<br />
+<br />
+我们绘制了一个示意图，movies 文件中存储了中美两国 2016 年和 2017 年的一些电影大片，而且是按照类型来分的，包括探险片、爱情片、动作片。从图 1 中可以看出，movies 文件夹中共有 3 级子文件夹。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/180925/3-1P9251529522Y_2.jpg" /><br />
+	图1</div>
+<br />
+从图 1 中，我们可以很清晰地看到，当 --max-depth 是 0、1、2 时，du 分别对应哪一目录层级。<br />
+<br />
+我们通过下面的例子，来实际看一下 --max-depth 的效果。
+<pre class="info-box">
+#我们模拟了和图8完全一致的目录结构
+[roc@roclinux movies]$ tree
+.
+|-- China
+|   |-- 2016
+|   |   |-- Action
+|   |   |   `-- yip_man.avi
+|   |   |-- Adventure
+|   |   |   `-- hero.avi
+|   |   `-- Romance
+|   |       `-- rose.avi
+|   `-- 2017
+|       |-- Action
+|       |   `-- drunken_master.avi
+|       |-- Adventure
+|       |   `-- treatment.avi
+|       `-- Romance
+|           `-- banquet.avi
+`-- USA
+    |-- 2016
+    |   |-- Action
+    |   |   `-- gian.avi
+    |   |-- Adventure
+    |   |   `-- patton.avi
+    |   `-- Romance
+    |       `-- god_father.avi
+    `-- 2017
+        |-- Action
+        |   `-- african_queen.avi
+        |-- Adventure
+        |   `-- star_wars.avi
+        `-- Romance
+            `-- citizen_kane.avi
+ 
+ 
+#当--max-depth设定为0时, 只显示当前文件夹总大小
+#可见, --max-depth=0的作用, 相当于-s
+[roc@roclinux movies]$ du --max-depth=0 -h .
+5.2G
+ 
+#当--max-depth设定为1时, 则增加显示了第一级的文件夹大小
+[roc@roclinux movies]$ du --max-depth=1 -h .
+2.7G     ./China
+2.5G     ./USA
+5.2G     .
+ 
+#当--max-depth设定为2时, 则会继续增加显示下一级子文件夹
+[roc@roclinux movies]$ du --max-depth=2 -h .
+1.4G     ./China/2017
+1.3G     ./China/2016
+2.7G     ./China
+1.2G     ./USA/2017
+1.3G     ./USA/2016
+2.5G     ./USA
+5.2G     .</pre>
+以此类推，大家应该能够理解 --max-depth 的作用了吧。
+<h2>
+	-a 选项让 du 更博爱</h2>
+默认情况下，du 命令只会关心文件夹，输出的都是文件夹的空间使用量，而不会关注单个文件。<br />
+<br />
+如果想让 du 也关心单个的文件，有两种方法：
+<ol>
+	<li>
+		通过参数形式直接指定</li>
+	<li>
+		通过<code>-a</code>选项让 du 输出包括文件夹和文件在内的完整统计信息</li>
+</ol>
+<br />
+<pre class="info-box">
+#如果不指定-a选项
+[roc@roclinux ruanjian]$ du -h .
+41M     ./soft
+51M     .
+ 
+#指定了-a选项之后, du则会刨根问底儿地把所有文件夹和文件都展示出来
+[roc@roclinux ruanjian]$ du -ah .
+6.8M    ./wordpress-4.4.1.tar.gz
+3.4M    ./curl-7.34.0.tar.gz
+980K    ./soft/redis-2.6.16.tar.gz
+40M     ./soft/go1.1.2.Linux-amd64.tar.gz
+41M     ./soft
+51M     .</pre>
+<code>-a</code>选项的威力还是很大的，即便是隐藏文件也会被囊括进来的，这时，有些用户的问题就随之而来了&hellip;&hellip;
+<h2>
+	我想排除隐藏文件和隐藏文件夹，该怎么做</h2>
+我猜就会有同学问这个问题的，所以，早就准备好了解决方案，是通过 du 的另一个重要参数 --exclude 来实现的。
+<pre class="info-box">
+#我们随意模拟了几个隐藏的文件和文件夹
+[roc@roclinux ruanjian]$ du -ah .
+6.8M    ./wordpress-4.4.1.tar.gz
+3.4M    ./curl-7.34.0.tar.gz
+980K    ./soft/redis-2.6.16.tar.gz
+40M     ./soft/go1.1.2.Linux-amd64.tar.gz
+120K    ./soft/.abc
+0       ./.bbc/ddd
+0       ./.bbc/.ccc
+51M     .
+ 
+#用--exclude的一个很简单的正则匹配, 就可以完美解决问题啦
+[roc@roclinux ruanjian]$ du -ah --exclude=&quot;*/.*&quot; .
+6.8M    ./wordpress-4.4.1.tar.gz
+3.4M    ./curl-7.34.0.tar.gz
+980K    ./soft/redis-2.6.16.tar.gz
+40M     ./soft/go1.1.2.Linux-amd64.tar.gz
+41M     ./soft
+51M     .</pre>
+<br />
+当然，学会了 --exclude 选项后，你完全可以根据自己的需求去过滤掉其他文件和文件夹了。
+<h2>
+	什么文件占满了我的磁盘</h2>
+磁盘被占满，是 Linux 工程师经常遇到的问题，如果能够熟练使用 du 和 sort 形成组合拳，那么找到元凶并非难事。
+<pre class="info-box">
+#只想看当前文件夹下第一级的大小排序
+[roc@roclinux ruanjian]$ du -sh *|sort -nr
+41M     soft
+6.8M    wordpress-4.4.1.tar.gz
+3.4M    curl-7.34.0.tar.gz
+ 
+#想看当前文件夹和其子文件夹下的大排序
+[roc@roclinux ruanjian]$ du -ah .|sort -hr
+51M     .
+41M     ./soft
+40M     ./soft/go1.1.2.Linux-amd64.tar.gz
+6.8M    ./wordpress-4.4.1.tar.gz
+3.4M    ./curl-7.34.0.tar.gz
+980K    ./soft/redis-2.6.16.tar.gz</pre>
+<br />
+这里补充一个 sort 的知识点，那就是<code>-h</code>选项和<code>-n</code>选项的区别：
+<ul>
+	<li>
+		<code>-n</code>选项，按数值进行比较，只会傻傻地比较数字，它会认为 98 K大于 2G。</li>
+	<li>
+		<code>-h</code>选项，会更加聪明，先优先比较单位（G&gt;M&gt;K），然后再对数值进行比较。</li>
+</ul>
+<h2>
+	单位名称那些事</h2>
+du 命令的单位名称有必要单独拿出来说说，这里面还是有不少坑的。<br />
+<br />
+首先，要明确的是，du 的默认单位是 KB，也就是 1024bytes。我们来看一个例子。
+<pre class="info-box">
+#这里的单位就是KB, 按1KB=1024bytes计算, 是3530752bytes
+[roc@roclinux ruanjian]$ du curl-7.34.0.tar.gz
+3448    curl-7.34.0.tar.gz
+ 
+#而这里可以很清楚地看到是MB
+[roc@roclinux ruanjian]$ du -h curl-7.34.0.tar.gz
+3.4M    curl-7.34.0.tar.gz</pre>
+<br />
+但 du 的单位，其实并没有这么简单，有不少只幕后黑手都可能会控制它，我们来一一曝光它们：
+<ol>
+	<li>
+		如果你通过 --block-size 选项设置了块大小，那么，这就会成为你 du 输出信息的单位。</li>
+	<li>
+		假如上一条没满足，且你设置了环境变量 DU_BLOCK_SIZE，则这会成为你 du 输出信息的单位。</li>
+	<li>
+		假如上两条都没满足，且你设置了环境变量 BLOCK_SIZE，则这会成为你 du 输出信息的单位。</li>
+	<li>
+		假如前三条都没满足，且你设置了环境变量 BLOCKSIZE，则这会成为你 du 输出信息的单位。</li>
+	<li>
+		假如前四条都没满足，且你开启了环境变量 POSIXLY_CORRECT，则 du 输出信息的单位会是 512 bytes。</li>
+	<li>
+		假如前面的五条都没满足，那么 du 的输出信息的单位就是 1024 bytes，也就是 KB。</li>
+</ol>
+<h2>
+	为什么 du 和 ls 输出的值不同</h2>
+如果我告诉你说 du 和 ls 针对同一个文件，展示的大小是不一样的，你会不会很惊讶呢？<br />
+<br />
+下面我们就用一个活生生的例子，先把这个&ldquo;奇观&rdquo;给大家展示出来。
+<pre class="info-box">
+#有一个文件, 里面只输入了a、b两个英文字母
+[roc@roclinux ruanjian]$ cat myword
+ab
+ 
+#用下面的方法, 我们可以把文件中的控制字符也展示出来, 发现除了a、b外还包括了一个结尾符
+[roc@roclinux ruanjian]$ sed -n l myword
+ab$
+ 
+#用ls来查看大小, 发现展示的是3字节
+[roc@roclinux ruanjian]$ ls -l myword
+-rw-rw-r-- 1 roc roc 3 2月  18 15:53 myword
+ 
+#用du来查看大小, 竟然展示的是4KB字节
+[roc@roclinux ruanjian]$ du myword
+4       myword</pre>
+<br />
+du 命令的作者也太粗心了吧，竟然连字母个数都数不清么？冤枉啊！其实，du 和 ls 在展示文件大小时，是存在着本质区别的：
+<ul>
+	<li>
+		du 展示的是磁盘空间占用量。</li>
+	<li>
+		ls 展示的是文件内容的大小。</li>
+</ul>
+<br />
+可能这两句话还不足以让你理解两者的区别，我们举一个形象的例子。中秋节时，中国人走亲访友时都会购买月饼礼盒，月饼的体积可以认为是文件内容大小，而加上包装礼盒的总体积可以认为是磁盘空间使用量。<br />
+<br />
+那么，在 Linux 的世界里，每个文件也要有包装么？要想解答这个问题，我们就要简单介绍下 Linux 文件系统的原理了。文件系统进驻磁盘之初，就会将磁盘按照固定数据块（block）大小进行分隔切块，通常情况下每一个固定数据块大小会被设定为 4096bytes，也就是 4KB。<br />
+<br />
+与此同时，大部分文件系统规定：
+<ol>
+	<li>
+		一个数据块中最多存放一个文件的内容，当没存满时，剩余的空间不得被其他文件使用。</li>
+	<li>
+		当一个文件的内容较大时，则可以存储到多个数据块中。</li>
+</ol>
+<br />
+讲到这里，相信你应该有所领悟了，正是因为这样的管理规则，使得 du 和 ls 在大小展示上出现了差异。<br />
+<br />
+我们再回过头来看一下刚才那个例子：
+<pre class="info-box">
+#有一个文件, 里面只输入了a、b两个英文字母
+[roc@roclinux ruanjian]$ cat myword
+ab
+ 
+#用这个方法, 我们可以把文件里的控制字符也展示出来, 发现除了a、b外还包括了一个结尾符。
+[roc@roclinux ruanjian]$ sed -n l myword
+ab$
+ 
+#用ls来查看大小, 发现展示的是3字节
+[roc@roclinux ruanjian]$ ls -l myword
+-rw-rw-r-- 1 roc roc 3 2月  18 15:53 myword
+ 
+#用du来查看大小, 发现竟然展示的是4KB
+[roc@roclinux ruanjian]$ du myword
+4       myword</pre>
+<br />
+文件 myword 中只有三个字符，两个可见字符（ab）和一个控制字符（$），因此，这个文件的内容大小就是 3bytes，但是限于 Linux 文件系统的限制，它需要占用一个数据块来存储这个文件，因此这个文件实际占用的磁盘空间就是 4KB 了。<br />
+<br />
+这种情况使得 du 往往会比 ls 展示的文件大小要大一些。但是，还存在一种情况，那就是 du 展示的数值比 ls 展示的数值要小，这种现象，你知道原因么？
+<h2>
+	Linux 世界中也存在黑洞</h2>
+说&ldquo;黑洞&rdquo;有些危言耸听，叫&ldquo;空洞&rdquo;或许更恰当些。&ldquo;空洞&rdquo;可以让一个文件的内容看起来很大，但其实磁盘占用却很小。这个表达，如果转换成 ls 和 du 命令的话，就是：&ldquo;空洞&rdquo;可以让一个文件的 ls 输出值很大，但 du 的输出值很小。<br />
+<br />
+这是怎么做到的呢？让我们来亲手造一个&ldquo;空洞&rdquo;，一起见证奇迹（会用到 dd 命令）：
+<pre class="info-box">
+#这是我们原有的那个文件
+[roc@roclinux ruanjian]$ cat myword
+ab
+[roc@roclinux ruanjian]$ ls -l myword
+-rw-rw-r-- 1 roc roc 3 2月  18 15:53 myword
+ 
+#在myword文件中, 用dd神器来创造一个大小为1G的空洞
+[roc@roclinux ruanjian]$ dd if=/dev/zero of=myword oflag=append bs=1M seek=1024 count=0
+记录了0+0 的读入
+记录了0+0 的写出
+0字节(0 B)已复制, 1.44e-05 秒, 0.0 kB/秒
+ 
+#我们看看myword文件内部发生了什么, 看到\000了么, 这就是空洞!
+[roc@roclinux ruanjian]$ sed -n l myword
+ab$
+\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
+\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
+\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
+\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
+\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
+\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
+(此处省略数百行)
+ 
+#用ls查看, myword已经变成1GB啦, 好大!
+[roc@roclinux ruanjian]$ ls -hl myword
+-rw-rw-r-- 1 roc roc 1.0G 2月  18 16:41 myword
+ 
+#用du查看, myword现回原形, 还是那么小, 只增加了一个字节而已
+[roc@roclinux ruanjian]$ du myword
+4       myword</pre>
+<br />
+我们为大家展示了&ldquo;du 的值远小于 ls 值的情况&rdquo;，因为一个文件中的空洞，并不实际占用磁盘空间，但是这个空洞本身会被认为是文件内容的一部分，所以 ls 的值才会显示得那么大，而 du 的值还是会保持原大小。<br />
+<br />
+多说一句，一个存在空洞的文件，官方术语叫作&ldquo;稀疏文件&rdquo;，英文叫作&ldquo;sparse file&rdquo;，它本质上是由文件偏移来控制的，如果对这个奇观感兴趣，可以去深入研究《UNIX 环境高级编程》，里面有更深入的描述和解释。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="../view/niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/333_3.html" title="数组的存储，C语言数组的存储实质详解" target="_blank">数组的存储，C语言数组的存储实质详解</a></li>
+<li><a href="../view/765_2.html" title="Java变量的声明和初始化" target="_blank">Java变量的声明和初始化</a></li>
+<li><a href="../view/877_2.html" title="Linux sudo命令用法详解：系统权限管理" target="_blank">Linux sudo命令用法详解：系统权限管理</a></li>
+<li><a href="../view/1439_2.html" title="C++ basic_string（字符串类模板）详解" target="_blank">C++ basic_string（字符串类模板）详解</a></li>
+<li><a href="../mongodb2/regex_2.html" title="MongoDB正则表达式" target="_blank">MongoDB正则表达式</a></li>
+<li><a href="../tkinter/entry-widget_2.html" title="Tkinter Entry输入控件" target="_blank">Tkinter Entry输入控件</a></li>
+<li><a href="../view/1nq3rk_2.html" title="C语言中有哪些运算符" target="_blank">C语言中有哪些运算符</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 684;
+window.arcId = "fa66OqeJI32WeoF1RVUpyC9CmbvPma+aZbT039I1yOjvb0VavevH0frHyQ";
+window.typeidChain = "71|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="../view/8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="../view/8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="../view/8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="../view/9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="../view/8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

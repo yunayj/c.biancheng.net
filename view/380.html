@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C语言动态内存管理和动态内存分配</title>
+<meta name="description" content="动态内存管理 在编写程序时，通常并不知道需要处理的数据量，或者难以评估所需处理数据量的变动程度。在这种情况下，要达到有效的资源利用，必须在运行时动态地分配所需内存，" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C语言动态内存管理和动态内存分配</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body"><h2>
+动态内存管理</h2>
+在编写程序时，通常并不知道需要处理的数据量，或者难以评估所需处理数据量的变动程度。在这种情况下，要达到有效的资源利用，必须在运行时动态地分配所需内存，并在使用完毕后尽早释放不需要的内存，这就是<span style="color:#006400;">动态内存管理</span>原理。<br />
+<br />
+<span style="color:#b22222;">动态内存管理同时还具有一个优点：当程序在具有更多内存的系统上需要处理更多数据时，不需要重写程序。</span>标准库提供以下四个函数用于动态内存管理：<br />
+<br />
+(1) malloc（）、calloc（）<br />
+分配新的内存区域。<br />
+<br />
+(2) realloc（）<br />
+调整已分配的内存区域。<br />
+<br />
+(3) free（）<br />
+释放已分配的内存区域。<br />
+<br />
+<span style="color:#b22222;">上述所有函数都声明在头文件 stdlib.h 中。</span>对象在内存中所占空间的大小是以字节数量为单位计算的。许多头文件（包括 stdlib.h）专门定义了类型 size_t 用来保存这种内存空间的相关信息。例如，sizeof 运算符以类型 size_t 返回字节数量。
+<h2>
+动态内存分配</h2>
+<span style="color:#b22222;">两个内存分配函数 malloc（）和 calloc（）的参数不一样</span>：<br />
+<pre class="cpp">
+void*malloc（size_t size）；</pre>
+函数 malloc（）分配连续的内存区域，其大小不小于 size。当程序通过 malloc（）获得内存区域时，内存中的内容尚未决定。<br />
+<br />
+<pre class="cpp">
+void*calloc（size_t count，size_t size）；</pre>
+函数 calloc（）分配一块内存区域，其大小至少是 count_size。换句话说，上述语句分配的空间应足够容纳一个具有 count 个元素的数组，每个元素占用 size 个字节。而且，calloc（）会把内存中每个字节都初始化为 0。<br />
+<br />
+<span style="color:#b22222;">两个函数都返回 void 指针，这种指针被称为无类型指针（typeless pointer）。</span>返回指针的值是所分配内存区域中第一个字节的地址，当<span style="color:#b22222;">分配内存失败时，返回空指针。</span><br />
+<br />
+当程序将这个 void 指针赋值给不同类型的指针变量时，编译器会隐式地进行相应的类型转换。然而，一些程序员倾向于使用显式类型转换。当获取所分配的内存位置时，所使用的指针类型决定了该如何翻译该位置的数据。<br />
+<br />
+下面是一些示例：
+<pre class="cpp">
+#include &lt;stdlib.h&gt;                       // 提供函数原型
+typedef struct { long key;
+                 /* ...其他成员... */
+               } Record;                // 一个结构类型
+float *myFunc( size_t n )
+{
+   // 为一个double类型对象分配存储空间
+   double *dPtr = malloc( sizeof(double) );
+   if  ( dPtr == NULL )                 // 内存不足
+   {
+     /* ...处理错误... */
+     return NULL;
+   }
+   else                                 // 获得内存：使用它
+   {
+     *dPtr = 0.07;
+     /* ... */
+   }
+   // 为两个Record类型分配存储空间
+   Record *rPtr;
+   if  ( ( rPtr = malloc( 2 * sizeof(Record) ) == NULL )
+   {
+     /* ...处理内存不足错误... */
+     return NULL;
+   }
+   // 为一个具有n个float元素的数组分配存储空间
+   float *fPtr = malloc( n * sizeof(float) );
+   if ( fPtr == NULL )
+    {
+     /* ...处理错误... */
+     return NULL;
+    }
+    /* ... */
+    return fPtr;
+}</pre>
+<br />
+将所分配的内存区域中每个字节都初始化为 0，这种方式很有意义，它确保不只把分配给结构对象的内存都默认地初始化为 0，连成员之间的填补位置也是 0。<br />
+<br />
+在这种情况下，函数 calloc（）比 malloc（）更有优势，虽然在部分 C 语言实现版本中，它的运行效率不及后者。对于要分配的内存空间，函数calloc（）的表示方式有所区别。可以把上述示例中的部分语句使用函数 calloc（）重新编写：
+<pre class="cpp">
+// 为一个double类型对象分配存储空间
+double *dPtr = calloc( 1, sizeof(double) );
+// 为两个Record类型分配存储空间
+Record *rPtr;
+if ( ( rPtr = calloc( 2, sizeof(Record) ) == NULL )
+{ /* ...处理内存不足错误... */ }
+// 为一个具有n个float元素的数组分配存储空间
+float *fPtr = calloc( n, sizeof(float));</pre>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="344.html" title="C语言可变参数函数" target="_blank">C语言可变参数函数</a></li>
+<li><a href="829.html" title="Java去除字符串中的空格（trim()）" target="_blank">Java去除字符串中的空格（trim()）</a></li>
+<li><a href="1760.html" title="C语言中的正负数及其输出" target="_blank">C语言中的正负数及其输出</a></li>
+<li><a href="3514.html" title="汇编语言OFFSET运算符：返回数据标号的偏移量" target="_blank">汇编语言OFFSET运算符：返回数据标号的偏移量</a></li>
+<li><a href="4984.html" title="JSP JSTL &lt;c:if&gt;标签：条件判断标签" target="_blank">JSP JSTL &lt;c:if&gt;标签：条件判断标签</a></li>
+<li><a href="vip_7730.html" title="C++ STL流迭代器(istream_iterator和ostream_iterator)" target="_blank">C++ STL流迭代器(istream_iterator和ostream_iterator)</a></li>
+<li><a href="f0w5517.html" title="Java关键字一览表" target="_blank">Java关键字一览表</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 380;
+window.arcId = "d2bbSP87jNY8M5vWBFTtEzoOmtafO2rPtg+CvOo7sle/VoyoDHV+pnIy9Q";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

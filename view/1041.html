@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Linux单用户模式（修改密码、运行级别）方法详解</title>
+<meta name="description" content="Linux 的单用户模式有些类似 Windows 的安全模式，只启动最少的程序用于系统修复。在单用户模式（运行级别为 1）中，Linux 引导进入根 Shell，网络被禁用，只有少数进程运行。 单用户模" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Linux单用户模式（修改密码、运行级别）方法详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">很多新手当面对&ldquo;忘记 root 账户密码导致无法登陆系统&rdquo;这个问题时，直接选择重新系统。其实大可不必，我只需要进入 emergency mode（单用户模式）更新 root 账户的密码即可。<br />
+<br />
+Linux 的单用户模式有些类似 Windows 的安全模式，只启动最少的程序用于系统修复。在单用户模式（运行级别为 1）中，Linux 引导进入根 Shell，网络被禁用，只有少数进程运行。<br />
+<br />
+单用户模式可以用来修改文件系统损坏、还原配置文件、移动用户数据等。<br />
+<h2>
+如何进入单用户模式</h2>
+现在，我们假设系统出现了问题，已经不能正常登录了。那么，如何进入单用户模式呢？<br />
+<br />
+首先需要重启服务器，在 GRUB 读秒界面按任意键，进入 GRUB 菜单界面，如图 1 所示。<br />
+<div style="text-align: center;">
+<br />
+<img alt="GRUB菜单界面" src="../uploads/allimg/191022/2-191022123130M9.gif" /><br />
+图 1 GRUB菜单界面</div>
+<br />
+在想要进入单用户模式的 Linux 菜单上按&quot;e&quot;键，就会进入 GRUB 编辑界面，如图 2 所示。
+<div style="text-align: center;">
+<br />
+<img alt="GRUB编辑界面" src="../uploads/allimg/191022/2-191022123144K3.gif" /><br />
+图 2 GRUB编辑界面</div>
+<br />
+在 GRUB 编辑界面中，移动光标到第二行 kernel 行，然后继续按&quot;e&quot;键，进入行编辑界面。在此行最后输入&quot;空格 single&quot;，代表启动进入单用户模式（注意：空格必须存在），如图 3 所示。<br />
+<div style="text-align: center;">
+<br />
+<img alt="GRUB行编辑界面" src="../uploads/allimg/191022/2-191022123201E1.gif" /><br />
+图 3 GRUB行编辑界面</div>
+<br />
+然后按回车键，就会回到上一个界面，如图 2 所示。再按&quot;b&quot;键（启动），就会启动进入单用户模式。单用户模式是不需要输入用户名和密码就能直接进入提示符界面的，如图 4 所示。<br />
+<div style="text-align: center;">
+<br />
+<img alt="单用户模式提示符界面" src="../uploads/allimg/191022/2-19102212323E96.gif" /><br />
+图 4 单用户模式提示符界面</div>
+<br />
+我们已经登录了 Linux 系统的单用户模式，而且是不需要输入用户名和密码就可以直接进入的。这时如果有系统问题，就可以在单用户模式中进行修复了。<br />
+<h2>
+单用户模式常见的错误修复</h2>
+我们已经进入了单用户模式，那么我们在单用户模式中主要可以修复哪些系统错误呢？下面举几个例子。<br />
+<h4>
+遗忘root密码</h4>
+这是管理员最容易犯的错误，应该如何修复呢？当然是使用单用户模式进行修复了，因为进入单用户模式的最大特点就是不需要输入用户名和密码。既然已经登录了单用户模式，那么直接给 root 用户设定新密码即可。 命令如下：<br />
+<p class="info-box">
+[root@localhost /]# passwd root</p>
+运行效果如图 5 所示。
+<div style="text-align: center;">
+<br />
+<img alt="单用户模式修改 root 密码" src="../uploads/allimg/191022/2-1910221233441V.gif" /><br />
+图 5 单用户模式修改 root 密码</div>
+<h4>
+修改系统默认运行级别</h4>
+如果我们把系统的默认运行级别修改错误，比如改为了 0 或 6，系统就不能正常启动了。这时也可以利用单用户模式进行修复，只需直接修改默认运行级别配置文件 /etc/inittab，把系统默认运行级别修改回来即可。命令如下：<br />
+<p class="info-box">
+[root@localhost /]# vi /etc/inittab<br />
+id:3:initdefault:<br />
+#把默认运行级别修改为3或5。注意：系统的默认运行级别只能使用3或5</p>
+理论上，只要能够进入单用户模式，那么系统错误就可以在单用户模式中进行修复。当然，判断系统到底哪里出现了问题，是需要大量的经验积累的。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1099.html" title="Linux日志文件格式分析" target="_blank">Linux日志文件格式分析</a></li>
+<li><a href="1129.html" title="Java系统流" target="_blank">Java系统流</a></li>
+<li><a href="1375.html" title="C++ break和continue用法详解" target="_blank">C++ break和continue用法详解</a></li>
+<li><a href="3120.html" title="ACL权限是什么，Linux ACL访问控制权限（包含开启方式）" target="_blank">ACL权限是什么，Linux ACL访问控制权限（包含开启方式）</a></li>
+<li><a href="4703.html" title="Java isEmpty()方法：判断字符串是否为空" target="_blank">Java isEmpty()方法：判断字符串是否为空</a></li>
+<li><a href="../spring_mvc/file-download.html" title="Spring MVC文件下载" target="_blank">Spring MVC文件下载</a></li>
+<li><a href="st30pqm.html" title="C#选择排序算法（附带源码）" target="_blank">C#选择排序算法（附带源码）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 1041;
+window.arcId = "a2c5NUmI62XR6cTDnVwCeW/omqV9X8vfa5zq0yEgiP4SeJzgc5QqGVYPbL4";
+window.typeidChain = "210|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Vue prop属性：父组件向子组件传递数据</title>
+<meta name="description" content="在 Vue 中，组件是当作自定义元素来使用的，而元素一般是有属性的，同样组件也可以有属性。 在使用组件时，给元素设置属性，组件内部如何接收呢？首先需要在组件代码中注册一些" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Vue prop属性：父组件向子组件传递数据</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在 Vue 中，组件是当作自定义元素来使用的，而元素一般是有属性的，同样组件也可以有属性。<br />
+<br />
+在使用组件时，给元素设置属性，组件内部如何接收呢？首先需要在组件代码中注册一些自定义的属性，称为 prop，这些 prop 是在组件的 props 选项中定义的；之后，在使用组件时，就可以把这些 prop 的名字作为元素的属性名来使用，通过属性向组件传递数据，这些数据将作为组件实例的属性被使用。<br />
+<h2>
+	prop的基本用法</h2>
+下面看一个示例，使用 prop 属性向子组件传递数据，这里传递&ldquo;庭院深深深几许，云窗雾阁春迟。&rdquo;，在子组件的 props 选项中接收 prop 属性，然后使用插值语法在模板中渲染 prop 属性。<br />
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+    &lt;blog-content date-title=&quot;庭院深深深几许，云窗雾阁春迟。&quot;&gt;&lt;/blog-content&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+    //创建一个应用程序实例
+    const vm= Vue.createApp({});
+    vm.component(&#39;blog-content&#39;, {
+      props: [&#39;dateTitle&#39;],
+      //date-title就像data定义的数据属性一样
+      template: &#39;&lt;h3&gt;{{ dateTitle }}&lt;/h3&gt;&#39;,
+      //在该组件中可以使用&ldquo;this.dateTitle&rdquo;这种形式调用prop属性
+      created(){
+          console.log(this.dateTitle);
+      }
+    });
+    //在指定的DOM元素上装载应用程序实例的根组件
+    vm.mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，效果如下图所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/230922/2-230922164325949_2.gif" /><br />
+	图 1 使用prop属性向子组件传递数据</div>
+<br />
+HTML 中的 attribute 名是不区分大小写的，所以浏览器会把所有大写字符解释为小写字符，prop 属性也适用这种规则。当使用 DOM 中的模板时，dateTitle（驼峰命名法）的 prop 名需要使用其等价的 date-title（短横线分隔命名）命名。<br />
+<br />
+上面的示例中，使用 prop 属性向子组件传递了字符串值，还可以传递数字。这只是它的一个简单用法。通常情况下，可以使用 v-bind 来传递动态的值，传递数组和对象时也需要使用 v-bind 指令。<br />
+<br />
+修改上面的示例，在 Vue 实例中定义 title 属性，以传递到子组件中去。示例代码如下。
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+  &lt;blog-content v-bind:date-title=&quot;content&quot;&gt;&lt;/blog-content&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+  //创建一个应用程序实例
+   const vm= Vue.createApp({
+      //该函数返回数据对象
+      data(){
+        return{
+          content:&quot;玉瘦檀轻无限恨，南楼羌管休吹。&quot;
+         }
+      }
+  });
+  vm.component(&#39;blog-content&#39;, {
+      props: [&#39;dateTitle&#39;],
+      template: &#39;&lt;h3&gt;{{ dateTitle }}&lt;/h3&gt;&#39;,
+    });
+  //在指定的DOM元素上装载应用程序实例的根组件
+  vm.mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，效果如下图所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/230922/2-2309221643455J_2.gif" /><br />
+	图 2 传递title属性到子组件</div>
+<br />
+在上面的示例中，在 Vue 实例中向子组件中传递数据，通常情况下多用于组件向组件传递数据。下面的示例创建了两个组件，在页面中渲染其中一个组件，而在这个组件中使用另一个组件，并传递 title 属性。
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+  &lt;!--使用blog-content组件--&gt;
+  &lt;blog-content&gt;&lt;/blog-content&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+  //创建一个应用程序实例
+  const vm= Vue.createApp({ });
+  vm.component(&#39;blog-content&#39;, {
+      // 使用blog-title组件，并传递content
+      template: &#39;&lt;div&gt;&lt;blog-title v-bind:date-title=&quot;title&quot;&gt;&lt;/blog-title&gt;
+&lt;/div&gt;&#39;,
+      data:function(){
+          return{
+              title:&quot;明朝准拟南轩望，洗出庐山万丈青。&quot;
+          }
+      }
+  });
+  vm.component(&#39;blog-title&#39;, {
+      props: [&#39;dateTitle&#39;],
+      template: &#39;&lt;h3&gt;{{ dateTitle }}&lt;/h3&gt;&#39;,
+  });
+  //在指定的DOM元素上装载应用程序实例的根组件
+  vm.mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，效果如下图所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/230922/2-23092216440Q96_2.gif" /><br />
+	图 3 组件之间传递数据</div>
+<br />
+如果组件需要传递多个值，则可以定义多个 prop 属性。
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+  &lt;!--使用blog-content组件--&gt;
+  &lt;blog-content&gt;&lt;/blog-content&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+  //创建一个应用程序实例
+  const vm= Vue.createApp({ });
+  vm.component(&#39;blog-content&#39;, {
+      // 使用blog-title组件，并传递content
+      template: &#39;&lt;div&gt;&lt;blog-title :name=&quot;name&quot; :price=&quot;price&quot; :num=&quot;num&quot;&gt;
+&lt;/blog-title&gt;&lt;/div&gt;&#39;,
+      data:function(){
+          return{
+              name:&quot;苹果&quot;,
+              price:&quot;6.88元&quot;,
+             num:&quot;2800公斤&quot;
+          }
+      }
+  });
+  vm.component(&#39;blog-title&#39;, {
+      props: [&#39;name&#39;,&#39;price&#39;,&#39;num&#39;],
+      template: &#39;&lt;ul&gt;&lt;li&gt;{{name}}&lt;/li&gt;&lt;li&gt;{{price}}&lt;/li&gt;&lt;li&gt;{{num}}&lt;/li&gt;&lt;/ul&gt; &#39;,
+  });
+  //在指定的DOM元素上装载应用程序实例的根组件
+  vm.mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，效果如下图所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/230922/2-230922164430c7_2.gif" /><br />
+	图 4 传递多个值</div>
+<br />
+从上面的示例可以看到，代码以字符串数组形式列出多个 prop 属性：
+<pre class="info-box">
+props: [&#39;name&#39;,&#39;price&#39;,&#39;num&#39;],</pre>
+但是，通常希望每个 prop 属性都有指定的值类型。这时，可以以对象形式列出 prop，这些 property 的名称和值分别是 prop 各自的名称和类型，例如：
+<pre class="info-box">
+props: {
+  name: String,
+  price: String,
+  num: String,
+}</pre>
+<h2>
+	单向数据流</h2>
+所有的 prop 属性传递数据都是单向的。父组件的 prop 属性的更新会向下流动到子组件中，但是反过来则不行。这样会防止从子组件意外变更父级组件的数据，从而导致应用的数据流向难以理解。<br />
+<br />
+另外，每次父级组件发生变更时，子组件中所有的 prop 属性都将会刷新为最新的值。这意味着不应该在一个子组件内部改变 prop 属性。如果这样做，Vue 会在浏览器的控制台中发出警告。<br />
+<br />
+有两种情况可能需要改变组件的 prop 属性。第一种情况是定义一个 prop 属性，以方便父组件传递初始值，在子组件内将这个 prop 作为一个本地的 prop 数据来使用。遇到这种情况，解决办法是在本地的 data 选项中定义一个属性，然后将 prop 属性值作为其初始值，后续操作只访问这个 data 属性。示例代码如下：
+<pre class="info-box">
+props: [&#39;initDate&#39;],
+data: function () {
+  return {
+      title: this.initDate
+  }
+}</pre>
+第二种情况是 prop 属性接收数据后需要转换后使用。这种情况可以使用计算属性来解决。示例代码如下：
+<pre class="info-box">
+props: [&#39;size&#39;],
+computed: {
+  nowSize:function(){
+      return this.size.trim().toLowerCase()
+  }
+}</pre>
+后续的内容直接访问计算属性 nowSize 即可。<br />
+<br />
+在 JavaScript 中，对象和数组是通过引用传入的，所以对于一个数组或对象类型的 prop 属性来说，在子组件中改变这个对象或数组本身将会影响父组件的状态。<br />
+<h2>
+	prop验证</h2>
+当开发一个可复用的组件时，父组件希望通过 prop 属性传递的数据类型符合要求。例如，组件定义一个 prop 属性是一个对象类型，结果父组件传递的是一个字符串的值，这明显不合适。<br />
+<br />
+因此，Vue.js 提供了prop属性的验证规则，在定义 props 选项时，使用一个带验证需求的对象来代替之前使用的字符串数组（props: [&#39;name&#39;,&#39;price&#39;,&#39;city&#39;]）。代码如下：
+<pre class="info-box">
+vm.component(&#39;my-component&#39;, {
+  props: {
+      // 基础的类型检查 (&#39;null&#39;和&#39;undefined&#39; 会通过任何类型验证)
+      name: String,
+      // 多个可能的类型
+      price: [String, Number],
+      // 必填的字符串
+      city: {
+          type: String,
+          required: true
+      },
+      // 带有默认值的数字
+      prop1: {
+          type: Number,
+          default: 100
+      },
+      // 带有默认值的对象
+      prop2: {
+          type: Object,
+          // 对象或数组默认值必须从一个工厂函数获取
+          default: function () {
+              return { message: &#39;hello&#39; }
+          }
+      },
+      // 自定义验证函数
+      prop3: {
+          validator: function (value) {
+              // 这个值必须匹配下列字符串中的一个
+              return [&#39;success&#39;, &#39;warning&#39;, &#39;danger&#39;].indexOf(value) !== -1
+          }
+      }
+  }
+})</pre>
+为组件的 prop 指定验证要求后，如果有一个需求没有被满足，则 Vue 会在浏览器控制台中发出警告。<br />
+<br />
+上面代码验证的 type 可以是下面原生构造函数中的一个：
+<pre class="info-box">
+String
+Number
+Boolean
+Array
+Object
+Date
+Function
+Symbol</pre>
+另外，type 还可以是一个自定义的构造函数，并且通过 instanceof 来进行检查确认。例如，给定下列现成的构造函数：
+<pre class="info-box">
+function Person (firstName, lastName) {
+  this.firstName = firstName
+  this.lastName = lastName
+}</pre>
+可以通过以下代码验证name的值是不是通过new Person创建的。
+<pre class="info-box">
+vm.component(&#39;blog-content&#39;, {
+  props: {
+      name: Person
+  }
+})</pre>
+<h2>
+	非prop的属性</h2>
+在使用组件的时候，父组件可能会向子组件传入未定义 prop 的属性值，这样也是可以的。组件可以接收任意的属性，而这些外部设置的属性会被添加到子组件的根元素上。<br />
+<br />
+示例代码如下：
+<pre class="html">
+&lt;style&gt;
+  .bg1{
+      background: #C1FFE4;
+  }
+  .bg2{
+      width: 120px;
+  }
+&lt;/style&gt;
+&lt;div id=&quot;app&quot;&gt;
+  &lt;!--使用blog-content组件--&gt;
+  &lt;input-con class=&quot;bg2&quot; type=&quot;text&quot;&gt;&lt;/input-con&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+  //创建一个应用程序实例
+  const vm= Vue.createApp({ });
+  vm.component(&#39;input-con&#39;, {
+     template: &#39;&lt;input class=&quot;bg1&quot;&gt;&#39;,
+  });
+  //在指定的DOM元素上装载应用程序实例的根组件
+  vm.mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，输入&ldquo;九曲黄河万里沙&rdquo;，打开控制台，效果如下图所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/230922/2-230922164551225_2.gif" /><br />
+	图 5 非prop的属性</div>
+<br />
+从上面的示例可以看出，input-con 组件没有定义任何 prop，根元素是 &lt;input&gt;，在 DOM 模板中使用 &lt;input-con&gt; 元素时设置了 type 属性，这个属性将被添加到 input-con 组件的根元素 input 上，渲染结果为 &lt;input type=&quot;text&quot;&gt;。<br />
+<br />
+另外，在 input-con 组件的模板中还使用了 class 属性 bg1，同时在 DOM 模板中也设置了 class 属性 bg2，这种情况下，两个 class 属性的值会被合并，最终渲染的结果为 &lt;input class=&quot;bg1 bg2&quot; type=&quot;text&quot;&gt;。<br />
+<br />
+要注意的是，只有 class 和 style 属性的值会合并，对于其他属性而言，从外部提供给组件的值会替换掉组件内容设置好的值。假设 input-con 组件的模板是 &lt;input type=&quot;text&quot;&gt;，如果父组件传入 type=&quot;password&quot;，就会替换掉 type=&quot;text&quot;，最后渲染结果就会变成 &lt;input type=&quot;password&quot;&gt;。<br />
+<br />
+例如修改上面的示例：
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+  &lt;!--使用blog-content组件--&gt;
+  &lt;input-con class=&quot;bg2&quot; type=&quot; password &quot;&gt;&lt;/input-con&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+  //创建一个应用程序实例
+  const vm= Vue.createApp({ });
+  vm.component(&#39;input-con&#39;, {
+     template: &#39;&lt;input class=&quot;bg1&quot; type=&quot;text&quot;&gt;&#39;,
+  });
+  //在指定的DOM元素上装载应用程序实例的根组件
+  vm.mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，然后输入&ldquo;12345678&rdquo;，可以发现 input 的类型为&ldquo;password&rdquo;，效果如图 6 所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/230922/2-23092216461L49_2.gif" /><br />
+	图 6 外部组件的值替换掉组件设置好的值</div>
+<br />
+如果不希望组件的根元素继承外部设置的属性，可以在组件的选项中设置 inheritAttrs: false。例如修改上面的示例代码：
+<pre class="info-box">
+Vue.component(&#39;input-con&#39;, {
+  template: &#39;&lt;input class=&quot;bg1&quot; type=&quot;text&quot;&gt;&#39;,
+  inheritAttrs: false,
+});</pre>
+再次运行项目，可以发现父组件传递的 type=&quot;password&quot; 子组件并没有继承。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_3416_2.html" title="拓扑排序算法及C语言实现" target="_blank">拓扑排序算法及C语言实现</a></li>
+<li><a href="5863_2.html" title="Java不规则数组" target="_blank">Java不规则数组</a></li>
+<li><a href="6554_2.html" title="MongoDB删除数据：remove()和delete()方法" target="_blank">MongoDB删除数据：remove()和delete()方法</a></li>
+<li><a href="../redis2/sinterstore_2.html" title="Redis SINTERSTORE命令" target="_blank">Redis SINTERSTORE命令</a></li>
+<li><a href="../jstl/c-choose-when-otherwise_2.html" title="&lt;c:choose&gt;&lt;c:when&gt;和&lt;c:otherwise&gt;标签" target="_blank">&lt;c:choose&gt;&lt;c:when&gt;和&lt;c:otherwise&gt;标签</a></li>
+<li><a href="../csharp/property_2.html" title="C#属性（Property）" target="_blank">C#属性（Property）</a></li>
+<li><a href="../c/rewind_2.html" title="C语言rewind()：移动位置指针到文件开头" target="_blank">C语言rewind()：移动位置指针到文件开头</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10506;
+window.arcId = "55f5qXoOUTiSdhRTWE1V9UBf2E67kxhllZd6wek7WULDNMZz8DpKaKMUlc30";
+window.typeidChain = "309|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

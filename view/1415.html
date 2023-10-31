@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++数组初始化方法详解</title>
+<meta name="description" content="有时在程序中设置变量值比输入变量值更合适。但是，为数组的各个元素编写单独的赋值语句可能意味着大量的输入，对于大型数组而言尤其如此。 例如，来看一个程序： #include iostr" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++数组初始化方法详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">有时在程序中设置变量值比输入变量值更合适。但是，为数组的各个元素编写单独的赋值语句可能意味着大量的输入，对于大型数组而言尤其如此。<br />
+<br />
+例如，来看一个程序：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+
+int main()
+{
+    const int NUM_MONTHS = 12;
+    int days[NUM_MONTHS];
+    days[0] = 31; // January
+    days[1] = 28; // February
+    days[2] = 31; // March
+    days[3] = 30; // April
+    days[4] = 31; // May
+    days[5] = 30; // June
+    days[6] = 31; // July
+    days[7] = 31; // August
+    days[8] = 30; // September
+    days[9] = 31; // October
+    days[10] = 30; // November
+    days[11] = 31; // December
+    for (int month = 0; month &lt; NUM_MONTHS; month++)
+    {
+        cout &lt;&lt; &quot;Month &quot;&lt;&lt; setw (2) &lt;&lt; (month+1) &lt;&lt; &quot; has &quot;;
+        cout &lt;&lt; days[month] &lt;&lt; &quot; days.\n&quot;;
+    }
+    return 0;
+}</pre>
+程序输出结果：
+<p class="info-box">
+Month&nbsp; 1 has 31 days.<br />
+Month&nbsp; 2 has 28 days.<br />
+Month&nbsp; 3 has 31 days.<br />
+Month&nbsp; 4 has 30 days.<br />
+Month&nbsp; 5 has 31 days.<br />
+Month&nbsp; 6 has 30 days.<br />
+Month&nbsp; 7 has 31 days.<br />
+Month&nbsp; 8 has 31 days.<br />
+Month&nbsp; 9 has 30 days.<br />
+Month 10 has 31 days.<br />
+Month 11 has 30 days.<br />
+Month 12 has 31 days.</p>
+幸运的是，还有一个选择，<a href='../cplus/cplus.html' target='_blank'>C++</a> 允许在定义数组时初始化数组。通过使用初始化列表，可以在创建数组时轻松初始化数组的所有元素。以下语句定义 days 数组，并使用之前程序中赋值语句集所建立的相同值对其进行初始化：<br />
+<p class="info-box">
+int days [NUM_MONTHS] = {31，28，31，30，31，30，31，31，30，31，30, 31};</p>
+这些值按照它们出现在列表中的顺序存储在数组元素中（第一个值 31 存储在 days[0]&nbsp; 中，第二个值 28 存储在 days [1] 中，等等）。图 1 显示了初始化后数组的内容。
+<div style="text-align: center;">
+<br />
+<img alt="通过初始化列表赋值后的数组内容" src="../uploads/allimg/181120/2-1Q120141313203.gif" /><br />
+图 1 通过初始化列表赋值后的数组内容</div>
+<br />
+下面程序是上边程序的修改版。它在创建 days 数组时即对其进行了初始化，而不是使用单独的赋值语句。请注意，初始化列表分散在多行中。该程序还添加了一个 string 对象数组来保存月份名称：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+#include &lt;string&gt;
+using namespace std;
+
+int main()
+{
+    const int NUM_MONTHS = 12;
+    string name[NUM_MONTHS]={ &quot;January&quot;, &quot;February&quot;, &quot;March&quot;, &quot;April&quot;, &quot;May&quot; , &quot;June&quot;, &quot;July&quot;, &quot;August&quot;, &quot;September&quot;, &quot;october&quot;, &quot;November&quot;, &quot;December&quot;};
+    int days[NUM_MONTHS] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    for (int month = 0; month &lt; NUM_MONTHS; month++)
+    {
+        cout &lt;&lt; setw(9) &lt;&lt; left &lt;&lt; name[month] &lt;&lt; &quot; has &quot;;
+        cout &lt;&lt; days [month] &lt;&lt; &quot; days. \n&quot;;
+    }
+    return 0;
+}</pre>
+程序输出结果：
+<p class="info-box">
+January&nbsp;&nbsp; has 31 days.<br />
+February&nbsp; has 28 days.<br />
+March&nbsp;&nbsp;&nbsp;&nbsp; has 31 days.<br />
+April&nbsp;&nbsp;&nbsp;&nbsp; has 30 days.<br />
+May&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; has 31 days.<br />
+June&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; has 30 days.<br />
+July&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; has 31 days.<br />
+August&nbsp;&nbsp;&nbsp; has 31 days.<br />
+September has 30 days.<br />
+october&nbsp;&nbsp; has 31 days.<br />
+November&nbsp; has 30 days.<br />
+December&nbsp; has 31 days.</p>
+到目前为止，已经演示了如何使用数值填充数组，然后显示所有的值。但是，有时候可能还需要更多功能，例如从数组中检索一个特定的值。下面程序是上面程序的变化版本，它可以显示用户选择的月份中有多少天。
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+#include &lt;string&gt;
+using namespace std;
+
+int main()
+{
+    const int NUM_MONTHS = 12;
+    int choice;
+    string name[NUM_MONTHS]={ &quot;January&quot;, &quot;February&quot;, &quot;March&quot;, &quot;April&quot;, &quot;May&quot; , &quot;June&quot;, &quot;July&quot;, &quot;August&quot;, &quot;September&quot;, &quot;october&quot;, &quot;November&quot;, &quot;December&quot;};
+    int days[NUM_MONTHS] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    cout &lt;&lt; &quot;This program will tell you how many days are &quot;&lt;&lt; &quot;in any month.\n\n&quot;;
+    // Display the months
+    for (int month = 1; month &lt;= NUM_MONTHS; month++)
+        cout &lt;&lt; setw (2) &lt;&lt; month &lt;&lt; &quot; &quot; &lt;&lt; name [month-1] &lt;&lt; endl;
+    cout &lt;&lt; &quot;\nEnter the number of the month you want: &quot;;
+    cin &gt;&gt; choice;
+    // Use the choice the user entered to get the name of
+    // the month and its number of days from the arrays.
+    cout &lt;&lt; &quot;The month of &quot; &lt;&lt; name [choice-1] &lt;&lt; &quot; has &quot; &lt;&lt; days[choice-1] &lt;&lt; &quot; days.\n&quot;;
+    return 0;
+}</pre>
+程序输出结果为：
+<p class="info-box">
+This program will tell you how many days are in any month.<br />
+<br />
+1 January<br />
+2 February<br />
+3 March<br />
+4 April<br />
+5 May<br />
+6 June<br />
+7 July<br />
+8 August<br />
+9 September<br />
+10 october<br />
+11 November<br />
+12 December<br />
+<br />
+Enter the number of the month you want: 4<br />
+The month of April has 30 days.</p>
+<h2>
+从数组元素1开始</h2>
+真实世界中存在着大量的逻辑上以 1 开头的事物，在给这样的事物建立模型时，很多教师会偏向于让学生不要使用元素 0，而改为从元素 1 开始存储实际数据。一年中的月份数就是一个很好的例子。在这种情况下，可以声明 name 和 days 数组每个都有 13 个元素，并按以下方式对它们进行初始化：<br />
+<pre class="cpp">
+string name[NUM_MONTHS+1]={&quot; &quot;, &quot;January&quot;, &quot;February&quot;, &quot;March&quot;, &quot;April&quot;, &quot;May&quot; , &quot;June&quot;, &quot;July&quot;, &quot;August&quot;, &quot;September&quot;, &quot;october&quot;, &quot;November&quot;, &quot;December&quot;};
+int days[NUM_MONTHS+1] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};</pre>
+注意数组元素 0 没有被使用。它只是一个虚拟的值。这样可以将一月份的名称存储在 name[1] 中，二月份的名称将存储在 name[2] 中，以此类推。同样，1 月份的天数将保存在 days[1] 元素中，2 月份的天数将保存在 days[2] 元素中，以此类推。<br />
+<br />
+如果使用上述方法定义和初始化数组，则循环应该改写为以下形式。它将显示数组元素 1〜12 的内容，而不是像以前那样显示元素 0〜11。<br />
+<pre class="cpp">
+for (int month = 1; month &lt;= NUM_MONTHS; month++)
+{
+    cout &lt;&lt; setw(9) &lt;&lt; left &lt;&lt; name[month] &lt;&lt; &quot; has &quot;;
+    cout &lt;&lt; days[month] &lt;&lt; &quot; days.\n&quot;;
+}</pre>
+如果实际数据以元素 1 开始存储，那么也不需要将数组下标加 1 来定位特定的数据。以下是列出每个月编号和名称的语句修改：<br />
+<pre class="cpp">
+for (int month = 1; month &lt;= NUM_MONTHS; month++)
+    cout &lt;&lt; setw (2) &lt;&lt; month &lt;&lt; &quot; &quot; &lt;&lt; name [month] &lt;&lt; endl;</pre>
+显示用户所选月份的天数的代码应修改为如下所示。<br />
+<p class="info-box">
+cout &lt;&lt; &quot;The month of &quot; &lt;&lt; name[choice] &lt;&lt; &quot; has &quot;&lt;&lt; days [choice] &lt;&lt; &quot; days . \n&quot;;</p>
+<h2>
+数组部分初始化</h2>
+当一个数组被初始化时，C++ 并不是必须获得每个元素的值，也可以只初始化数组的一部分，如下所示：<br />
+<p class="info-box">
+int numbers[7] = {1, 2, 4, 8};</p>
+这个定义只初始化了一个7元素数组中的前 4 个元素，如图 2 所示。
+<div style="text-align: center;">
+<br />
+<img alt="数组允许部分初始化" src="../uploads/allimg/181120/2-1Q12014153J33.gif" /><br />
+图 2 数组允许部分初始化</div>
+<br />
+值得一提的是，图 2 中未被初始化的元素将全部被设置为零。这是数字数组部分初始化时发生的情况。当一个 string 对象数组被部分初始化时，未初始化的元素将全部包含空字符串，即长度为 0 的字符串。即使部分初始化的数组在局部定义，也会如此。但是，如果本地数组完全未初始化，则其元素将包含&ldquo;垃圾&rdquo;，就像其他局部变量一样。<br />
+<br />
+下面的程序显示了在部分初始化之后的 numbers 数组的内容：<br />
+<pre class="cpp">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main ()
+{
+    const int SIZE = 7;
+    int numbers[SIZE] = {1, 2, 4, 8}; // Initialize the first 4 elements
+    cout &lt;&lt; &quot;Here are the contents of the array: \n&quot;;
+    for (int index = 0; index &lt; SIZE; index++)
+    cout &lt;&lt; numbers [index] &lt;&lt; &quot; &quot;;
+    cout &lt;&lt; endl;
+    return 0;
+}</pre>
+程序输出结果：
+<p class="info-box">
+Here are the contents of the array:<br />
+1 2 4 8 0 0 0</p>
+虽然数组初始化列表的值可以比数组的元素少，但不允许有比数组元素更多的值。以下语句是非法的，因为 numbers 数组只能包含 7 个值，但初始化列表中却包含 8 个值。<br />
+<p class="info-box">
+int numbers [7] = {1, 2, 4, 8, 3, 5, 7, 9};&nbsp;&nbsp;&nbsp; //不合法</p>
+另外，如果留下了某个元素未初始化，那么该元素之后的所有元素都应该保留为未初始化。C++ 不提供跳过初始化列表中元素的方法。以下是另一个非法的例子：<br />
+<p class="info-box">
+int numbers [7] = {1, , 4, , 3, 5, 7};&nbsp;&nbsp;&nbsp; // 不合法</p>
+<h2>
+隐式数组大小</h2>
+可以通过提供一个包含每个元素值的初始化列表来定义一个数组而不指定它的大小。C++ 会计算初始化列表中的项目数，并为数组提供相应数量的元素。例如，以下定义创建 了一个包含5个元素的数组：<br />
+<p class="info-box">
+double ratings [] = {1.0,1.5,2.0,2.5,3.0};</p>
+注意，如果省略大小声明符，则必须指定一个初始化列表。否则，C++ 不知道该数组有多大。<br />
+<h2>
+初始化变量的新方法</h2>
+到目前为止，已经介绍过的定义和初始化常规变量的方法是使用赋值语句，示例如下：<br />
+<p class="info-box">
+int value = 5；</p>
+但是，我们已经学习过使用函数、数组以及类，所以现在是时候来介绍另外两种在定义变量的同时即进行初始化的方法。<br />
+<br />
+第一种新方法是使用函数符号初始化变量。它看起来就像是给一个函数传递参数。如果您已经掌握了类的内容，那么就会注意到，它也很像是在创建类对象时给一个构造函数传递值。以下是使用函数符号定义变量 value 并初始化其值为 5 的示例语句：<br />
+<p class="info-box">
+int value (5);</p>
+第二种初始化变量的新方法是 C++ 11 中新引入的，使用大括号表示法。它看起来就像是刚刚上面所看到的初始化数组的方法，但是其中有两点区别：<br />
+<ol>
+<li>
+因为常规变量只能一次保存一个值，所以通过这种方法初始化变量时，大括号中只有一个值；</li>
+<li>
+和数组初始化列表不一样，通过这种方法初始化变量时，在大括号前面没有赋值运算符（=）。</li>
+</ol>
+<br />
+以下是使用大括号表示法定义变量 value 并初始化其值为5的示例语句。<br />
+<p class="info-box">
+int value{5}; //该语句仅在C++ 11或更高版本中合法</p>
+绝大多数程序员会继续使用赋值运算符来初始化常规变量，本书也将如此，但是，大括号表示法提供了一项优点，它会检查用来初始化变量的值，并确保匹配变量的数据类型。例如，假设 doubleVal 是一个 double 类型变量，存储在其中的值为 6.2。则使用赋值运算符时，可以编写以下两种形式的语句之一：<br />
+<pre class="cpp">
+int valuel = 4.9；    //该语句将给valuel赋值为。4
+int vaule2 = doubleVal;    // 该语句将给 value2 赋值为 6</pre>
+在这两种情况下，值的小数点部分都会被先截断，然后才赋值给被定义的变量。这虽然可能会导致一些问题，但 C++ 编译器是允许的，它也会提出警告，但却仍然能生成可执行文件，并且可以运行。不过，如果在这里使用的是大括号表示法，则编译器会指出这些语句产生了一个错误，并且不会生成可执行文件。必须先修复该错误，然后重新编译项目才能运行该程序。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1130.html" title="Linux memcache安装和配置（自启动）过程详解" target="_blank">Linux memcache安装和配置（自启动）过程详解</a></li>
+<li><a href="2448.html" title="MySQL非空约束（NOT NULL）" target="_blank">MySQL非空约束（NOT NULL）</a></li>
+<li><a href="3868.html" title="认识一下Qt用到的开发工具" target="_blank">认识一下Qt用到的开发工具</a></li>
+<li><a href="vip_6059.html" title="Python函数返回多个值的方法（入门必读）" target="_blank">Python函数返回多个值的方法（入门必读）</a></li>
+<li><a href="7197.html" title="C++ STL set emplace()和emplace_hint()方法详解" target="_blank">C++ STL set emplace()和emplace_hint()方法详解</a></li>
+<li><a href="8639.html" title="VS2017 Pthreads多线程库配置教程" target="_blank">VS2017 Pthreads多线程库配置教程</a></li>
+<li><a href="tower-of-hanoi.html" title="汉诺塔问题（分治+源码+动画演示）" target="_blank">汉诺塔问题（分治+源码+动画演示）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 1415;
+window.arcId = "e0e26QZqJBppjsVdFuDMWUK0/NJCvqFLw8qe7h6gxUnWBWmzxMxDkXi7JEs";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

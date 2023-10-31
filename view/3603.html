@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>汇编语言IMUL指令：有符号数乘法</title>
+<meta name="description" content="IMUL（有符号数乘法）指令执行有符号整数乘法。与 MUL 指令不同，IMUL 会保留乘 积的符号，实现的方法是，将乘积低半部分的最高位符号扩展到高半部分。 x86 指令集支持三种格式的 I" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>汇编语言IMUL指令：有符号数乘法</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">IMUL（有符号数乘法）指令执行有符号整数乘法。与 MUL 指令不同，IMUL 会保留乘 积的符号，实现的方法是，将乘积低半部分的最高位符号扩展到高半部分。<br />
+<br />
+x86 指令集支持三种格式的 IMUL 指令：单操作数、双操作数和三操作数。单操作数格式中，乘数和被乘数大小相同，而乘积的大小是它们的两倍。<br />
+<h4>
+单操作数格式</h4>
+单操作数格式将乘积存放在 AX、DX:AX 或 EDX:EAX 中：<br />
+<p class="info-box">
+IMUL reg/mem8&nbsp;&nbsp;&nbsp; ; AX = AL * reg/mem8<br />
+IMUL reg/meml6&nbsp;&nbsp;&nbsp; ; DX:AX = AX * reg/meml6<br />
+IMUL reg/mem32&nbsp;&nbsp;&nbsp; ; EDX:EAX = EAX * reg/mem32</p>
+和 MUL 指令一样，其乘积的存储大小使得溢出不会发生。同时，如果乘积的高半部分不是其低半部分的符号扩展，则进位标志位和溢出标志位置 1。利用这个特点可以决定是否忽略乘积的高半部分。<br />
+<h4>
+双操作数格式（32位模式）</h4>
+32 位模式中的双操作数 IMUL 指令把乘积存放在第一个操作数中，这个操作数必须是寄存器。第二个操作数（乘数）可以是寄存器、内存操作数和立 即数。16位格式如下所示：<br />
+<p class="info-box">
+IMUL regl6, reg/meml6<br />
+IMUL regl6, imm8<br />
+IMUL regl6, imml6</p>
+32 位操作数类型如下所示，乘数可以是 32 位寄存器、32 位内存操作数或立即数（8 位 或 32 位）：<br />
+<p class="info-box">
+IMUL reg32, reg/mem32<br />
+IMUL reg32, inun8<br />
+IMUL reg32, imm32</p>
+双操作数格式会按照目的操作数的大小来截取乘积。如果被丢弃的是有效位，则溢出标志位和进位标志位置 1。因此，在执行了有两个操作数的 IMUL 操作后，必须检查这些标志位中的一个。<br />
+<h4>
+三操作数格式</h4>
+32 位模式下的三操作数格式将乘积保存在第一个操作数中。第二个操作数可以是 16 位寄存器或内存操作数，它与第三个操作数相乘，该操作数是一个8位或16 位立即数：<br />
+<p class="info-box">
+IMUL regl6, reg/meml6,imm8<br />
+IMUL regl6, reg/meml6, iirrnl6</p>
+而 32 位寄存器或内存操作数可以与 8 位或 32 位立即数相乘：<br />
+<p class="info-box">
+IMUL reg32, reg/mem32, imm8<br />
+IMUL reg32, reg/mem32, imm32</p>
+IMUL 执行时，若乘积有效位被丢弃，则溢出标志位和进位标志位置 1。因此，在执行了有三个操作数的 IMUL 操作后，必须检查这些标志位中的一个。<br />
+<h2>
+在 64 位模式下执行 IMUL</h2>
+在 64 位模式下，IMUL 指令可以使用 64 位操作数。在单操作数格式中，64 位寄存器或内存操作数与 RAX 相乘，产生一个 128 位且符号扩展的乘积存放到 RDX:RAX 寄存器中。在下面的例子中，RBX 与 RAX 相乘，产生 128 位的乘积 -16。<br />
+<p class="info-box">
+mov rax, -4<br />
+mov rbx, 4<br />
+imul rbx&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; RDX = 0FFFFFFFFFFFFFFFFh, RAX = -16</p>
+也就是说，十进制数 -16 在 RAX 中表示为十六进制 FFFF FFFF FFF0，而 RDX 只包含 TRAX 的高位扩展，即它的符号位。<br />
+<br />
+三操作数格式也可以用于 64 位模式。如下例所示，被乘数 (-16) 乘以 4，生成 RAX 中的乘积 -64：<br />
+<pre class="asm">
+.data
+multiplicand QWORD -16
+.code
+imul rax, multiplicand, 4       ; RAX = FFFFFFFFFFFFFFC0 (-64)</pre>
+<h4>
+无符号乘法</h4>
+由于有符号数和无符号数乘积的低半部分是相同的，因此双操作数和三操作数的 IMUL 指令也可以用于无符号乘法。但是这种做法也有一点不便的地方：进位标志位和溢出标志位将无法表示乘积的高半部分是否为零。<br />
+<h2>
+IMUL 示例</h2>
+下述指令执行 48 乘以 4，乘积 +192 保存在 AX 中。虽然乘积是正确的，但是 AH 不是 AL 的符号扩展，因此溢出标志位置 1：<br />
+<p class="info-box">
+mov al,48<br />
+mov bl, 4<br />
+imul bl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; AX = 00C0h, OF = 1</p>
+下述指令执行 -4 乘以 4，乘积 -16 保存在 AX 中。AH 是 AL 的符号扩展，因此溢出标志位清零：<br />
+<p class="info-box">
+mov al, -4<br />
+mov bl, 4<br />
+imul bl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; AX = FFF0h, OF = 0</p>
+下述指令执行 48 乘以 4，乘积 +192 保存在 DX:AX 中。DX 是 AX 的符号扩展，因此溢出标志位清零：<br />
+<p class="info-box">
+mov ax, 48<br />
+mov bx, 4<br />
+imul bx&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; DX:AX = 000000C0h, OF = 0</p>
+下述指令执行 32 位有符号乘法 (4 823 424*-423)，乘积 -2 040 308 352 保存在 EDX:EAX 中。溢出标志位清零，因为 EDX 是 EAX 的符号扩展：<br />
+<p class="info-box">
+mov eax, +4823424<br />
+mov ebx, -423<br />
+imul ebx&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; EDX:EAX = FFFFFFFF86635D80h, OF = 0</p>
+下述指令展示了双操作数格式：<br />
+<pre class="asm">
+.data
+word1 SWORD 4
+dword1 SDWORD 4
+.code
+mov ax, -16            ; AX = -16
+mov bx, 2              ; BX = 2
+imul bx, ax            ; BX = -32
+imul bx, 2             ; BX = -64
+imul bx, word1         ; BX = -256
+mov eax, -16           ; EAX = -16
+mov ebx, 2             ; EBX = 2
+imul ebx, eax          ; EBX = -32
+imul ebx, 2            ; EBX = -64
+imul ebx, dword1       ; EBX = -256</pre>
+双操作数和三操作数 IMUL 指令的目的操作数大小与乘数大小相同。因此，有可能发生有符号溢出。执行这些类型的 IMUL 指令后，总要检查溢岀标志位。下面的双操作数指令展示了有符号溢出，因为 -64000 不适合 16 位目的操作数：<br />
+<p class="info-box">
+mov ax, -32000<br />
+imul ax, 2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; OF = 1</p>
+下面的指令展示的是三操作数格式，包括了有符号溢出的例子：<br />
+<pre class="asm">
+.data
+word1 SWORD 4
+dword1 SDWORD 4
+.code
+imul bx, word1, -16             ; BX = word1 * -16
+imul ebx, dword1, -16           ; EBX = dword1 * -16
+imul ebx, dword1, -2000000000   ; 有符号溢出！</pre>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="3386.html" title="二叉树的链式存储结构（C语言详解）" target="_blank">二叉树的链式存储结构（C语言详解）</a></li>
+<li><a href="7274.html" title="C++ STL 反向迭代器适配器（reverse_iterator）详解" target="_blank">C++ STL 反向迭代器适配器（reverse_iterator）详解</a></li>
+<li><a href="../redis2/zrem.html" title="Redis ZREM命令" target="_blank">Redis ZREM命令</a></li>
+<li><a href="9853.html" title="ROS机器人操作系统简介（非常详细）" target="_blank">ROS机器人操作系统简介（非常详细）</a></li>
+<li><a href="qiqevt.html" title="C语言while循环" target="_blank">C语言while循环</a></li>
+<li><a href="ptrbj3c.html" title="Java标识符命名规范" target="_blank">Java标识符命名规范</a></li>
+<li><a href="z0wvigw.html" title="C++ bool（布尔）类型详解" target="_blank">C++ bool（布尔）类型详解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 3603;
+window.arcId = "7438jxOtBhSM4h81Kckg5EowW8wstP92P8dH0gF9Ps5V7jKm0X+NdKYUDsw";
+window.typeidChain = "448|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

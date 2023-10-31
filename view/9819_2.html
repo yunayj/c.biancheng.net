@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Python求最小公倍数（2种实现方案）</title>
+<meta name="description" content="求任意两个正整数的最小公倍数（Least Common Multiple，LCM）。 问题分析 如果有一个自然数 a 能被自然数 b 整除，则称 a 为 b 的倍数，b 为 a 的约数，对于两个整数来说，最小公倍数是指这" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Python求最小公倍数（2种实现方案）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">求任意两个正整数的最小公倍数（Least Common Multiple，LCM）。<br />
+<h2>
+	问题分析</h2>
+如果有一个自然数 a 能被自然数 b 整除，则称 a 为 b 的倍数，b 为 a 的约数，对于两个整数来说，最小公倍数是指这两个数共有倍数中最小的一个。计算最小公倍数时，通常会借助最大公约数来辅助计算，即最小公倍数=两数的乘积/最大公约（因）数，解题时要避免和最大公约（因）数问题混淆。<br />
+<br />
+对于最小公倍数的求解，除了利用最大公约数外还可根据定义进行算法设计。要求任意两个正整数的最小公倍数，就是求出一个最小的能同时被两个整数整除的自然数。<br />
+<h2>
+	第一种实现方案</h2>
+根据定义可知，两个整数的最小公倍数不小于两数中的任意一个，若大数不是小数的倍数，则可由大数开始利用递增的方法找到第一个满足条件的数。利用定义求最小公倍数的关键是找到两个整数中较大的数。<br />
+<br />
+对于输入的两个正整数 m 和 n，每次输入的大小顺序可能不同，为了使程序具有一般性，首先对整数 m 和 n 进行大小排序，规定变量 m 中存储大数、变量 n 中存储小数。<br />
+<br />
+若输入的两个数，大数 m 是小数 n 的倍数，那么大数 m 即为所求的最小公倍数；若大数 m 不能被小数 n 整除，则需要寻找一个能同时被两数整除的自然数，即从大数 m 开始依次向后递增直到找到第一个能同时被两数整除的数为止，故循环变量 i 的初值为 m。需要注意的是，在找到第一个满足条件的 i 值后，循环没必要继续进行，故用 break 来结束循环。<br />
+<br />
+对应代码为：
+<pre class="python">
+if __name__ == &quot;__main__&quot;:
+    print(&quot;请输入两个整数&quot;)
+    m = int(input(&quot;m = &quot;))
+    n = int(input(&quot;n = &quot;))
+    if m &lt; n: # 比较两个数的大小，使得m中存储大数，n中存储小数
+        temp = m
+        m = n
+        n = temp
+    i = m
+    while i &gt; 0: # 从大数开始寻找满足条件的自然数
+        if i % m == 0 and i % n == 0:
+            # 输出满足条件的自然数并结束循环
+            print(&quot;%d 和 %d 的最小公倍数为：%d&quot; %(m, n, i))
+            break
+        i += 1</pre>
+运行过程为：
+<p class="info-box">
+	请输入两个整数<br />
+	m = 4<br />
+	n = 5<br />
+	5 和 4 的最小公倍数为：20</p>
+<h2>
+	第二种实现方案</h2>
+最小公倍数不可以像最大公约数那样直接利用辗转相除法求出，但可以借助辗转相除法求得的最大公约数来求最小公倍数。<br />
+<br />
+在已知最大公约数的情况下，借助公式最小公倍数=两数的乘积/最大公约（因）数，即可求出两整数的最小公倍数。<br />
+<br />
+对应代码如下：
+<pre class="python">
+if __name__ == &quot;__main__&quot;:
+    print(&quot;请输入两个整数&quot;)
+    m = int(input(&quot;m = &quot;))
+    n = int(input(&quot;n = &quot;))
+    k = m * n # k存储两数的乘积
+    print(&quot;%d 和 %d 的最小公倍数为： &quot; %(m, n), end=&quot;&quot;)
+    if m &lt; n: # 比较两个数的大小，使得m存储大数，n存储小数
+        temp = m
+        m = n
+        n = temp
+    b = m % n # b存储m除以n的余数
+    while b != 0:
+        m = n # 原来的小数作为下次运算时的大数
+        n = b # 将上一次的余数作为下次相除时的小数
+        b = m % n
+    resultNum = k // n # 两数乘积除以最大公约数即为它们的最小公倍数
+    print(&quot;%d&quot; %resultNum)</pre>
+运行结果为：
+<p class="info-box">
+	请输入两个整数<br />
+	m = 4<br />
+	n = 5<br />
+	4 和 5 的最小公倍数为： 20</p>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="413_2.html" title="C++ array迭代器及用法" target="_blank">C++ array迭代器及用法</a></li>
+<li><a href="2215_2.html" title="Python if else条件语句详解" target="_blank">Python if else条件语句详解</a></li>
+<li><a href="vip_2304_2.html" title="C++ RTTI机制下的对象内存模型（透彻）" target="_blank">C++ RTTI机制下的对象内存模型（透彻）</a></li>
+<li><a href="../mysql/unix_timestamp_2.html" title="MySQL UNIX_TIMESTAMP函数：获取UNIX时间戳" target="_blank">MySQL UNIX_TIMESTAMP函数：获取UNIX时间戳</a></li>
+<li><a href="5396_2.html" title="Go语言实现Web服务器" target="_blank">Go语言实现Web服务器</a></li>
+<li><a href="vip_7733_2.html" title="如何将const_iterator转换为iterator类型迭代器？" target="_blank">如何将const_iterator转换为iterator类型迭代器？</a></li>
+<li><a href="../redis2/incr_2.html" title="Redis INCR命令" target="_blank">Redis INCR命令</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9819;
+window.arcId = "6b6594dq4eUewZCQGLlbHtP4kTBFcBtCGCxBHtHm7uyTsLCY0KQLGv0jRmQ";
+window.typeidChain = "145|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Go语言输出正弦函数（Sin）图像</title>
+<meta name="description" content="在 Go 语言中，正弦函数由 math 包提供，函数入口为 math.Sin。正弦函数的参数为 float64，返回值也是 float64。在使用正弦函数时，根据实际精度可以进行转换。 Go 语言的标准库支持对图片" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Go语言输出正弦函数（Sin）图像</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在Go语言中，正弦函数由 math 包提供，函数入口为 math.Sin，正弦函数的参数为 float64，返回值也是 float64。在使用正弦函数时，根据实际精度可以进行转换。<br />
+<br />
+Go语言的标准库支持对图片像素进行访问，并且支持输出各种图片格式，如 JPEG、PNG、GIF 等。<br />
+<br />
+首先给出本节完整的代码：
+<pre class="go">
+package main
+
+import (
+    &quot;image&quot;
+    &quot;image/color&quot;
+    &quot;image/png&quot;
+    &quot;log&quot;
+    &quot;math&quot;
+    &quot;os&quot;
+)
+
+func main() {
+
+    // 图片大小
+    const size = 300
+    // 根据给定大小创建灰度图
+    pic := image.NewGray(image.Rect(0, 0, size, size))
+
+    // 遍历每个像素
+    for x := 0; x &lt; size; x++ {
+        for y := 0; y &lt; size; y++ {
+            // 填充为白色
+            pic.SetGray(x, y, color.Gray{255})
+        }
+    }
+
+    // 从0到最大像素生成x坐标
+    for x := 0; x &lt; size; x++ {
+
+        // 让sin的值的范围在0~2Pi之间
+        s := float64(x) * 2 * math.Pi / size
+
+        // sin的幅度为一半的像素。向下偏移一半像素并翻转
+        y := size/2 - math.Sin(s)*size/2
+
+        // 用黑色绘制sin轨迹
+        pic.SetGray(x, int(y), color.Gray{0})
+    }
+
+    // 创建文件
+    file, err := os.Create(&quot;sin.png&quot;)
+
+    if err != nil {
+        log.Fatal(err)
+    }
+    // 使用png格式将数据写入文件
+    png.Encode(file, pic) //将image信息写入文件中
+
+    // 关闭文件
+    file.Close()
+}</pre>
+<h2>
+设置图片背景色</h2>
+以下是设置图片背景的代码：
+<pre class="go">
+// 图片大小
+const size = 300
+
+// 根据给定大小创建灰度图
+pic := image.NewGray(image.Rect(0, 0, size, size))
+
+// 遍历每个像素
+for x := 0; x &lt; size; x++ {
+    for y := 0; y &lt; size; y++ {
+        // 填充为白色
+        pic.SetGray(x, y, color.Gray{255})
+    }
+}</pre>
+代码说明如下：
+<ul>
+<li>
+第 2 行，声明一个 size 常量，值为 300。</li>
+<li>
+第 5 行，使用 image 包的 NewGray() 函数创建一个图片对象，使用区域由 image.Rect 结构提供，image.Rect 描述一个方形的两个定位点 (x1,y1) 和 (x2,y2)，image.Rect(0,0,size,size) 表示使用完整灰度图像素，尺寸为宽 300，长 300。</li>
+<li>
+第 8 行和第 9 行，遍历灰度图的所有像素。</li>
+<li>
+第 11 行，将每一个像素的灰度设为 255，也就是白色。</li>
+</ul>
+<br />
+灰度图是一种常见的图片格式，一般情况下颜色由 8 位组成，灰度范围为 0～255，0 表示黑色，255 表示白色。<br />
+<br />
+初始化好的灰度图默认的灰度值都是 0，对的是黑色，由于显示效果的效果不是很好，所以这里将所有像素设置为 255，也就是白色。
+<h2>
+绘制正弦函数轨迹</h2>
+正弦函数是一个周期函数，定义域是实数集，取值范围是 [-1, 1]。用编程的通俗易懂的话来说就是：math.Sin 函数的参数支持任意浮点数范围，函数返回值的范围总是在 -1～1 之间（包含 1、-1）。<br />
+<br />
+要将正弦函数放在图片上需要考虑以下一些因素：
+<ul>
+<li>
+math.Sin 的返回值在 -1～1 之间，需要考虑将正弦的输出幅度变大，可以将 math.Sin 的返回值乘以一个常量进行放大。</li>
+<li>
+图片的坐标系原点在左上角，而 math.Sin 基于笛卡尔坐标系原点在左下角，需要对图像进行上下翻转和平移。</li>
+</ul>
+<br />
+将这些处理逻辑汇总为代码如下：
+<pre class="go">
+// 从0到最大像素生成x坐标
+for x := 0; x &lt; size; x++ {
+
+    // 让sin的值的范围在0~2Pi之间
+    s := float64(x) * 2 * math.Pi / size
+
+    // sin的幅度为一半的像素。向下偏移一半像素并翻转
+    y := size/2 - math.Sin(s)*size/2
+
+    // 用黑色绘制sin轨迹
+    pic.SetGray(x, int(y), color.Gray{0})
+}</pre>
+代码说明如下：<br />
+1) 第 2 行，生成 0 到 size（300）的 x 坐标轴。<br />
+<br />
+2) 第 5 行，计算 math.Sin 的定义域，这段代码等效为：
+<pre class="go">
+rate := x / size
+s := rate * 2 * math.Pi</pre>
+x 的范围是 0 到 size，因此除以 size 后，rate 的范围是 0～1 之间，再乘以 2&pi;&nbsp;后，s 的范围刚好是 0～2&pi; 之间。<br />
+<br />
+float64(x) 表示将整型的 x 变量转换为 float64 类型，之后运算的所有表达式将以 float64 类型进行。<br />
+<br />
+3) 第 8 行中，math.Sin(s)*size/2 表示将正弦函数的返回值幅度从 1 扩大到二分之一的 size。负号表示将正弦函数图形以图形中心上下翻转。叠加 size/2 表示将图形在 y 轴上向下偏移二分之一的 size（图片坐标系的 y 向下）。<br />
+<br />
+4) 第 11 行将计算好的 x 轴和 y 轴数据，以灰度为 0（黑色）使用 SetGray() 方法填充到像素中。<br />
+<br />
+写入图片的正弦函数图像如下图所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/180810/1-1PQ01IS2215.png" /></div>
+<h2>
+写入图片文件</h2>
+内存中的正弦函数图形是不可见的，我们选用 PNG 格式将图形输出为文件，Go语言提供了文件创建函数和 PNG 格式写入函数，代码如下：
+<pre class="go">
+// 创建文件
+file, err := os.Create(&quot;sin.png&quot;)
+
+if err != nil {
+    log.Fatal(err)
+}
+// 使用PNG格式将数据写入文件
+png.Encode(file, pic)  //将image信息写入文件中
+
+// 关闭文件
+file.Close()</pre>
+代码说明如下：
+<ul>
+<li>
+第 2 行，创建 sin.png 的文件。</li>
+<li>
+第 4 行，如果创建文件失败，返回错误，打印错误并终止。</li>
+<li>
+第 8 行，使用 PNG 包，将图形对象写入文件中。</li>
+<li>
+第 11 行，关闭文件。</li>
+</ul>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="852.html" title="Java StringBuffer类详解" target="_blank">Java StringBuffer类详解</a></li>
+<li><a href="4380.html" title="Python dict字典方法完全攻略（全）" target="_blank">Python dict字典方法完全攻略（全）</a></li>
+<li><a href="vip_7061.html" title="Java项目实战：五子棋游戏（附带源码和解析）" target="_blank">Java项目实战：五子棋游戏（附带源码和解析）</a></li>
+<li><a href="vip_7365.html" title="Go语言实现RSA和AES加解密" target="_blank">Go语言实现RSA和AES加解密</a></li>
+<li><a href="../numpy/ndarray.html" title="NumPy ndarray对象" target="_blank">NumPy ndarray对象</a></li>
+<li><a href="9852.html" title="Ceph分布式存储介绍（非常详细）" target="_blank">Ceph分布式存储介绍（非常详细）</a></li>
+<li><a href="8lw546n.html" title="Go语言指针的定义和使用（入门必读）" target="_blank">Go语言指针的定义和使用（入门必读）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 15;
+window.arcId = "a7f0eLl4fQwR6qvD2hn7wjCH7ZI76qe0lMJyrXkr9hGpT0OI+pI10fUW";
+window.typeidChain = "6|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

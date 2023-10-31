@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++引用（入门必读）</title>
+<meta name="description" content="虽然指针的使用非常灵活和高效，但使用起来不是非常方便，很容易导致某些不易察觉的错误。 C++ 引入了一种比指针更加便捷的方式，就是引用（Reference）。 引用的定义 引用也是一种" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++引用（入门必读）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">虽然指针的使用非常灵活和高效，但使用起来不是非常方便，很容易导致某些不易察觉的错误。C++ 引入了一种比指针更加便捷的方式，就是引用（Reference）。<br />
+<h2>
+引用的定义</h2>
+引用也是一种数据类型，但是引用不能独立存在，必须依附某个变量。换句话说，定义一个引用，必须要指明是哪个变量的引用。<br />
+<br />
+引用的定义方式类似于指针，只是用<code>&amp;</code>取代了<code>*</code>，语法格式为为：<br />
+<pre class="info-box">
+类型 &amp;引用名 = 目标变量名;</pre>
+<code>&amp;</code>是引用修饰符，表示定义的是一个引用。<br />
+<br />
+例如：
+<pre class="cpp" shownum="false">
+int a;
+int &amp;b = a;</pre>
+引用一旦定义，就始终跟目标变量绑定，不能改变为其他变量的引用。假设 b 是变量 a 的引用，那么在 b 的生命周期内，b 始终都是 a 的引用，而不能再改变为其他变量的引用。<br />
+<br />
+引用在其生命周期内完全可以替代其目标变量。也就是说，所有施加于引用上的操作，其效果都等同于直接对引用的目标变量进行操作。而且一旦目标变量的值发生了改变，引用的值也会发生同样的改变。<br />
+<br />
+例如：<br />
+<pre class="cpp">
+#include &lt;iostream&gt;
+
+int main()
+{
+    int a = 10;
+    int&amp; b = a;
+    std::cout &lt;&lt; &quot;b=&quot; &lt;&lt; b &lt;&lt; &quot;,a=&quot; &lt;&lt; a &lt;&lt; std::endl;
+
+    b = 20;
+    std::cout &lt;&lt; &quot;b=&quot; &lt;&lt; b &lt;&lt; &quot;,a=&quot; &lt;&lt; a &lt;&lt; std::endl;
+
+    a = 100;
+    std::cout &lt;&lt; &quot;b=&quot; &lt;&lt; b &lt;&lt; &quot;,a=&quot; &lt;&lt; a &lt;&lt; std::endl;
+   
+    return 0; 
+}</pre>
+输出结果为：
+<p class="info-box">
+b=10,a=10<br />
+b=20,a=20<br />
+b=100,a=100</p>
+读者可以把引用看做是变量的一个别名，定义一个引用只不过是给变量另外起了一个名字，这样两个名字拥有一个实体，对一个名字的操作自然也会影响到另外一个名字。<br />
+<br />
+注意，和引用绑定的必须是先前定义好的某个变量，而不能是临时数据。例如：
+<pre class="cpp">
+int a;
+int &amp;b = a; // 正确
+
+int &amp;c = 12; // 错误，不能绑定临时数据</pre>
+<h2>
+const引用</h2>
+定义引用时也可以用 const 进行修饰，其结果为一个常引用，语法格式如下：<br />
+<pre class="info-box">
+const 类型 &amp;引用名 = 目标变量名;</pre>
+举个简单的例子：
+<pre class="cpp">
+int a = 10;
+const int&amp; b = a;
+
+a = 100; // 正确，变量 a 的值可以修改
+b = 20; // 错误，不能通过常引用修改变量的值</pre>
+示例中为 a 定义了 const 的引用 b，这样就可以限制通过引用 b 来修改目标变量 a，相当于给了这个别名只读不写的权限。<br />
+<br />
+一般的引用在定义时必须有一个已经存在的变量，而常引用则没有这样的限制，可以定义一个临时数据的常引用。例如：<br />
+<pre class="cpp" shownum="false">
+const int&amp; a = 12; //正确</pre>
+<h2>
+引用VS指针</h2>
+和 C 语言相比，引用是 C++ 所特有的，在很多情况下，引用提供了与指针操作同等的功能，但是引用和指针还是有一些区别的。<br />
+<br />
+引用必须与一个变量绑定，不存在没有任何目标的引用。因此如果在使用的过程中有可能出现什么都不指向的情况，则应该使用指针，可以把一个空值给指针。而若一个变量肯定指向某个对象，不允许为空，则可以使用引用。<br />
+<br />
+引用仅仅是一个变量实体的别名。因此在使用引用之前，不需要检测其合法性。但指针在使用之前必须检测其指向的对象是否为空，不能对空指针进行取值操作。<br />
+<br />
+指针可以重新赋值以重新指向新的对象，引用在初始化之后就不可以改变指向对象了。<br />
+<br />
+指针可以指向数组的地址来替代数组使用，而引用不可以替代数组，引用只能指向数组中的某一个元素。<br />
+<br />
+指针可以用于在堆上生成的对象，delete 的对象只能是一个指针，不能是引用。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1863.html" title="Qt QTableWidget及基本操作（详解版）" target="_blank">Qt QTableWidget及基本操作（详解版）</a></li>
+<li><a href="2625.html" title="MySQL Workbench使用教程" target="_blank">MySQL Workbench使用教程</a></li>
+<li><a href="vip_6172.html" title="Python os模块详解" target="_blank">Python os模块详解</a></li>
+<li><a href="vip_7329.html" title="Go语言实现日志系统（支持多种输出方式）" target="_blank">Go语言实现日志系统（支持多种输出方式）</a></li>
+<li><a href="../jsp2/include_command.html" title="JSP include指令" target="_blank">JSP include指令</a></li>
+<li><a href="70jbvzm.html" title="Redis GET命令的用法" target="_blank">Redis GET命令的用法</a></li>
+<li><a href="9bwk5ij.html" title="C++重载&gt;&gt;和&lt;&lt;（重载输入和输出运算符）" target="_blank">C++重载&gt;&gt;和&lt;&lt;（重载输入和输出运算符）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10313;
+window.arcId = "fba3r5YqQK+4YXPnef0t1x+0ULyRqbDk1TBaRMN93N52h5H9TVamoRQ0/WpS";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

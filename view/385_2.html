@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>内存泄漏的场景分析和避免方法总结，C语言内存泄漏详解</title>
+<meta name="description" content="大家都知道，在堆上分配的内存，如果不再使用了，就应该及时释放，以便后面其他地方可以重用。而在 C 语言中，内存管理器不会自动回收不再使用的内存。如果忘了释放不再使用的" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>内存泄漏的场景分析和避免方法总结，C语言内存泄漏详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">大家都知道，在堆上分配的内存，如果不再使用了，就应该及时释放，以便后面其他地方可以重用。而在 C 语言中，内存管理器不会自动回收不再使用的内存。如果忘了释放不再使用的内存，这些内存就不能被重用了，这就造成了<span style="color:#008000;">内存泄漏</span>。<br />
+<br />
+内存泄漏几乎是很难避免的，不管是老手还是新手，都存在这个问题，甚至 Windows 与 Linux 这类系统软件也或多或少存在着内存泄漏。<br />
+<br />
+也许对一般的应用软件来说，这个问题似乎不是那么突出与严重。一两处内存泄漏通常并不致于让程序崩溃，也不会带来逻辑上的错误，而且在进程退出时，系统会自动释放所有与该进程相关的内存（共享内存除外），所以内存泄漏的后果相对来说还是比较温和的。但是，量变会导致质变，一旦内存泄漏过多以致耗尽内存，后续内存分配将会失败，程序就可能因此而崩溃。<br />
+<br />
+在常见情况下，内存泄漏的主要可见症状就是罪魁进程的速度减慢。原因是体积大的进程更有可能被系统换出，让别的进程运行，而且大的进程在换进换出时花费的时间也更多。即使泄漏的内存本身并不被引用，但它仍然可能存在于页面中（内容自然是垃圾），这样就增加了进程的工作页数量，降低了性能。<br />
+<br />
+下面展示了一些导致内存泄漏的常见场景。<br />
+<h4>
+	1) 指针重新赋值</h4>
+看下面一段示例代码：<br />
+<pre class="cpp">
+char * p = (char *)malloc(10);
+char * np = (char *)malloc(10);</pre>
+其中，指针变量 p 和 np 分别被分配了 10 个字节的内存，它们各自的内存如图 1 所示。<br />
+<div style="text-align: center;">
+	<br />
+	<img alt="" src="../uploads/allimg/180910/2-1P91013302T40_2.jpg" style="width: 500px; height: 106px;" /><br />
+	图 1 p 和 np 赋值前的内存</div>
+<br />
+如果程序需要执行如下赋值语句：<br />
+<pre class="cpp">
+p=np;</pre>
+这时候，指针变量 p 被 np 指针重新赋值，其结果是 p 以前所指向的内存位置变成了孤立的内存，如图 2 所示。它无法释放，因为没有指向该位置的引用，从而导致 10 字节的内存泄漏。<br />
+<div style="text-align: center;">
+	<br />
+	<img alt="" src="../uploads/allimg/180910/2-1P910133056457_2.jpg" style="width: 500px; height: 118px;" /><br />
+	图 2 p 和 np 赋值后的内存</div>
+<br />
+因此，在对指针赋值前，一定确保内存位置不会变为孤立的。<br />
+<h4>
+	2) 错误的内存释放</h4>
+假设有一个指针变量 p，它指向一个 10 字节的内存位置。该内存位置的第三个字节又指向某个动态分配的 10 字节的内存位置，如图 3 所示。<br />
+<div style="text-align: center;">
+	<br />
+	<img alt="" src="../uploads/allimg/180910/2-1P910133120920_2.jpg" style="width: 600px; height: 142px;" /><br />
+	图 3 p 所指向的内存</div>
+<br />
+如果程序需要执行如下赋值语句时：<br />
+<pre class="cpp">
+free(p);</pre>
+很显然，如果通过调用 free 来释放指针 p，则 np 指针也会因此而变得无效。np 以前所指向的内存位置也无法释放，因为已经没有指向该位置的指针。换句话说，np 所指向的内存位置变为孤立的，从而导致内存泄漏。<br />
+<br />
+因此，每当释放结构化的元素，而该元素又包含指向动态分配的内存位置的指针时，应首先遍历子内存位置（如本示例中的 np），并从那里开始释放，然后再遍历回父节点，如下面的代码所示：<br />
+<pre class="cpp">
+free(p-&gt;np);
+free(p);</pre>
+<h4>
+	3) 返回值的不正确处理</h4>
+有时候，某些函数会返回对动态分配的内存的引用，如下面的示例代码所示：<br />
+<pre class="cpp">
+char *f()
+{
+    return (char *)malloc(10);
+}
+void f1()
+{
+    f();
+}</pre>
+很明显，函数 f1 中对 f 函数的调用并未处理该内存位置的返回地址，其结果将导致 f 函数所分配的 10 个字节的块丢失，并导致内存泄漏。<br />
+<h4>
+	4) 在内存分配后忘记使用 free 进行释放</h4>
+最后，要避免这些内存相关的问题导致的内存越界与内存遗漏等错误，可以参考如下几点进行：<br />
+<ul>
+	<li>
+		确保没有在访问空指针。</li>
+	<li>
+		每个内存分配函数都应该有一个 free 函数与之对应，alloca 函数除外。</li>
+	<li>
+		每次分配内存之后都应该及时进行初始化，可以结合 memset 函数进行初始化，calloc 函数除外。</li>
+	<li>
+		每当向指针写入值时，都要确保对可用字节数和所写入的字节数进行交叉核对。</li>
+	<li>
+		在对指针赋值前，一定要确保没有内存位置会变为孤立的。</li>
+	<li>
+		每当释放结构化的元素（而该元素又包含指向动态分配的内存位置的指针）时，都应先遍历子内存位置并从那里开始释放，然后再遍历回父节点。</li>
+	<li>
+		始终正确处理返回动态分配的内存引用的函数返回值。</li>
+</ul>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2809_2.html" title="C# get和set访问器：获取和设置字段（属性）的值" target="_blank">C# get和set访问器：获取和设置字段（属性）的值</a></li>
+<li><a href="4732_2.html" title="Java List.get()方法：获取列表指定位置的元素" target="_blank">Java List.get()方法：获取列表指定位置的元素</a></li>
+<li><a href="vip_6002_2.html" title="Python使用字典格式化字符串" target="_blank">Python使用字典格式化字符串</a></li>
+<li><a href="6802_2.html" title="使用Java 8新增的Predicate操作Collection集合" target="_blank">使用Java 8新增的Predicate操作Collection集合</a></li>
+<li><a href="6877_2.html" title="C++ STL deque容器添加和删除元素方法完全攻略" target="_blank">C++ STL deque容器添加和删除元素方法完全攻略</a></li>
+<li><a href="../tkinter/label_2.html" title="Tkinter Label标签控件" target="_blank">Tkinter Label标签控件</a></li>
+<li><a href="9819_2.html" title="Python求最小公倍数（2种实现方案）" target="_blank">Python求最小公倍数（2种实现方案）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 385;
+window.arcId = "16b0L+PCULjLk5axsCwob4035yuXE08UnlSKdKgM6RC5tJzbHIUKJX38yQ";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

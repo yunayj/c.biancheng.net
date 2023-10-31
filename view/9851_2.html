@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>目标检测介绍（非常详细）</title>
+<meta name="description" content="计算机视觉（Computer Vision，CV）是一门教计算机如何看世界的学科。计算机视觉包含多个分支，其中图像分类、目标检测、图像分割、目标跟踪等是计算机视觉领域最重要的研究课题。" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>目标检测介绍（非常详细）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">计算机视觉（Computer Vision，CV）是一门教计算机如何&ldquo;看&rdquo;世界的学科。计算机视觉包含多个分支，其中图像分类、目标检测、图像分割、目标跟踪等是计算机视觉领域最重要的研究课题。<br />
+<h2>
+	什么是目标检测</h2>
+本节讨论的目标检测是指通过编写特定的算法代码，让计算机从一张图像中找出若干特定目标的方法。<br />
+<br />
+目标检测包含两层含义：
+<ul>
+	<li>
+		判定图像上有哪些目标物体，解决目标物体存在性的问题；</li>
+	<li>
+		判定图像中目标物体的具体位置，解决目标物体在哪里的问题。</li>
+</ul>
+<br />
+目标检测和图像分类最大的区别在于目标检测需要做更细粒度的判定，不仅要判定是否包含目标物体，还要给出各个目标物体的具体位置。<br />
+<br />
+如下图所示，目标检测算法关注的是&ldquo;人体&rdquo;这一特定目标物体，图像中不但检测出了两个小朋友（人体），还准确地框出了两个小朋友在图像中的位置。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/221121/2-221121100632206_2.jpg" /><br />
+	图 1 人体检测示例</div>
+<h2>
+	目标检测技术发展简史</h2>
+在过去的二十几年里，以 2014 年为分界点，目标检测技术大致可分为两个阶段：在 2014 年之前，目标检测问题都基于传统算法；在 2014 年之后，目标检测问题主要基于深度学习算法。<br />
+<h3>
+	1、传统算法</h3>
+在传统算法阶段，检测器完全依靠人工设计特征。人们使用了非常多的技巧，目的在于让检测器获取更强的表达能力，同时尽可能地降低对计算资源的消耗。其中，有几种检测器的出现对目标检测技术的发展产生了重要影响。<br />
+<h4>
+	1) Viola Jones检测器</h4>
+Viola Jones 检测器是 P.Viola 和 M.Jones 针对人脸检测场景提出的。在同等的算法精度下，Viola Jones 检测器比同时期的其他算法有几十到上百倍的速度提升。<br />
+<br />
+Viola Jones 检测器采用最直接的滑动窗口方法，检测框遍历图像上所有的尺度和位置，查看检测框是否包含人脸目标。这种滑动窗口看似简单，却需要耗费非常多的计算时间。<br />
+<br />
+Viola Jones 检测器的优势在于使用了积分图像、特征筛选、级联检测的策略，使得算法速度有了巨大的提升。该检测器使用 Hear 特征，通过积分图像的技巧，大幅减少了特征的重复计算。在特征选择上，Viola Jones 检测器基于 Adaboost 方法，从大量特征中选出若干适合检测任务的特征。在检测过程中，Viola Jones 检测器使用检测步骤级联的方式，更聚焦于目标的确认，避免在背景区域耗费过多的计算资源。<br />
+<h4>
+	2) HOG检测器</h4>
+HOG（Histogram of Oriented Gradients，梯度方向直方图）特征是一种重要的尺度不变特征，由 N.Dalal 和 B.Triggs 于 2005 年提出，核心思想是用规则的网格将图像划分成大小相同的子块，在每一个子块中计算梯度方向直方图。通过这种方式，可以大大消除尺度变化和光照的影响。在相当长的时间里，HOG 都是处理检测问题的一种重要特征，尤其是在行人检测场景，HOG 有着极为重要的应用。<br />
+<h4>
+	3) DPM检测器</h4>
+DPM（Deformable Part Model，可变形组件模型）是一种基于组件的检测算法，由 P.Felzenszwalb 于 2008 年提出，后来 R.Girshick 对其进行了多项重要改进。<br />
+<br />
+DPM 在特征层面对经典的 HOG 特征进行了扩展，也使用了滑动窗口方法，基于 SVM 进行分类，其核心思想是将待检测目标拆分成一系列部件，把检测一个复杂目标的问题转换成检测多个简单部件的问题。例如，将检测汽车转换成分别检测窗子、车体和车轮这 3 个部件。<br />
+<br />
+虽然如今检测算法的性能已经远超 DPM，但 DPM 采用的问题拆分思想对后续检测算法的发展起到了深远的影响，现在很多检测问题都基于这一思想设计解决方案。也正因如此，P.Felzenszwalb 和 R.Girshick 在 2010 年获得了 PASCAL VOC 授予的终身成就奖。<br />
+<h3>
+	2、深度学习算法</h3>
+HOG 和 DPM 检测器之后，再也没有出现特别突出的人工目标检测器，尤其是在 2010 年~2012 年，目标检测算法性能的提升非常缓慢，基本上处于停滞状态。<br />
+<br />
+直到 2012 年，基于卷积神经网络（CNN）的特征在图像分类任务中取得了巨大的进展，CNN 特征重新被业界重视起来。2014 年 R.Girshick 等人将 CNN 特征应用到了目标检测场景中，此后，目标检测算法有了飞速的发展。<br />
+<br />
+从算法处理的流程来划分，基于深度学习的目标检测算法可分为两阶段（Two-Stage）算法和一阶段（One-Stage）算法，两阶段算法需要先进行候选框的筛选，然后判断候选框是否框中了待检测目标，并对目标的位置进行修正；一阶段算法没有筛选候选框的过程，而是直接回归目标框的位置坐标和目标的分类概率。<br />
+<h4>
+	1) 两阶段算法</h4>
+两阶段算法包含选择候选框和修正目标分类/位置两个阶段，对这两个阶段的不同处理方式，构成了不同的算法方案。<br />
+<br />
+<strong>① R-CNN算法</strong><br />
+2014 年，R.Girshick 等人提出了 R-CNN 算法。R-CNN 算法的思路非常简单，首先基于 Selective Search 方法从原始图像中筛选出若干候选框，然后将每个候选框中的图像缩放的固定尺度送入卷积网络提取特征，最后通过支持向量机（SVM）方法对特征进行分类，判断候选框中的图像是背景还是我们关注的目标类型。<br />
+<br />
+在 VOC2007 数据集上，R-CNN 算法相比之前的检测算法，在性能有了显著的提升（从 33.7% 提升到 58.5%），是检测算法的一个里程碑式的突破。<br />
+<br />
+虽然 R-CNN 在算法性能上取得了巨大的进展，但弊端也非常明显，因为需要分别从 2000 多个候选框中提取特征，所以效率非常低，后续各种算法正是为了解决这一问题而提出的一系列改进方案。<br />
+<br />
+<strong>② SPP-Net算法</strong><br />
+2014 年，何恺明等人提出了 SPP-Net（Spatial Pyramid Pooling Networks，空间金字塔池化网络）算法。<br />
+<br />
+R-CNN 算法要求输入卷积网络用来提取特征的子图像尺寸固定，比如Alex-Net就要求输入的图像大小为固定的 224 &times; 224 像素，而 SPP-Net 算法则去掉了这一限制。<br />
+<br />
+SPP-Net 算法基于一个空间金字塔池化层（SPP layer），无论输入的子图像大小如何，都会将子图像采样成固定大小的图像。在使用 SPP-Net 进行检测的过程中，对原始图像只需要进行一次卷积网络计算，在得到整幅图像的特征图之后，通过空间金字塔池化层将每个候选框区域（ROI）都分别采样成相同尺寸的子图像，将相同尺寸的各个子图像送入后续的网络进行特征提取，提取的特征具有相同的维数，最后送入全连接层进行分类。<br />
+<br />
+SPP-Net 不需要进行多次卷积网络计算，与 R-CNN 相比，在算法精度不变的情况下，算法的速度有了 20 倍的大幅提升。<br />
+<br />
+<strong>③ Fast R-CNN算法</strong><br />
+2015 年，R.Girshick 等人提出了 Fast R-CNN 算法，其本质是在 R-CNN 和 SPP-Net 的基础上进行了进一步改进。Fast R-CNN 可以在网络里同时预测目标的分类概率和位置偏移。<br />
+<br />
+在 VOC2007 数据集上，Fast R-CNN 将 mAP（mean Average Precision，平均精度均值）从 58.5% 提升至 70.0%，算法速度也比 R-CNN 有了 200 倍的提升。虽然 Fast R-CNN 的性能和速度相比 R-CNN 和 SPP-Net 有了明显的改善，但整体速度仍然受到候选框检测算法的制约，为了解决这个问题，Faster R-CNN 算法诞生了。<br />
+<br />
+<strong>④ Faster R-CNN算法</strong><br />
+2015 年，S.Ren 等人提出了 Faster R-CNN 算法，Faster R-CNN 是第一个端到端算法，也是第一个接近实时深度学习的目标检测算法。使用 ZF-Net 网络骨架，在 VOC2007 数据集上，mAP 达到了 73.2%，算法速度达到了 17fps。<br />
+<br />
+Faster R-CNN 最主要的贡献是使用卷积网络检测候选框。检测候选框、预测目标的类别、回归目标位置的偏移量，共享底层卷积特征，整个算法流程融合成了一个完整的端到端学习框架。Faster R-CNN 突破了候选框检测的速度瓶颈，是一种十分重要的两阶段算法。<br />
+<br />
+<strong>⑤ FPN算法</strong><br />
+2017 年，Lin 等人在 Faster R-CNN 的基础上提出了 FPN（Feature Pyramid Net works，特征金字塔策略）算法。<br />
+<br />
+在 FPN 之前，绝大多数深度学习检测器都是基于卷积网络最顶层的特征图进行计算的。深层特征包含全局信息，却弱化了细节信息，使用深层特征在小目标检测，尤其是精准定位方面，有着较大的劣势。<br />
+<br />
+FPN 采用 top-down 结构以及侧连方法，将深层特征和浅层特征进行融合，使得特征既包含全局信息又包含细节信息。另外，检测计算也基于特征金字塔的多层特征图，具有更强的多尺度适应性。基于 FPN 的 Faster R-CNN 算法在 COCO 数据集上取得了最优的性能。当前，FPN 已经成为构建检测算法的基础策略。<br />
+<h4>
+	2) 一阶段算法</h4>
+一阶段算法和两阶段算法最主要的区别，就是没有单独的候选框筛选阶段，而是直接回归目标的位置坐标和分类概率。<br />
+<br />
+常用的一阶段算法如下：<br />
+<br />
+<strong>① YOLO算法</strong><br />
+2015 年，R.Joseph 等人提出了 YOLO（You Look Only Once）算法，这是首个深度学习领域的一阶段算法。<br />
+<br />
+从名字就可以看出，YOLO 没有两阶段算法中提取候选框和验证分类两个步骤，图像送入一个神经网络就能完成整个预测过程。YOLO 算法的实现方案是，先把原始图像划分成网格，然后基于网格的每个单元格回归目标的类别概率和位置坐标。<br />
+<br />
+作为一阶段算法，YOLO 的一个最大优点就是速度快，在 VOC2007 数据集上，mAP 为 63.4%，检测算法速度可以达到 45fps；YOLO 的加速版本 mAP 为 52.7%，速度甚至可以达到惊人的 155fps。<br />
+<br />
+不过，YOLO 也有不尽如人意的地方，在目标位置的精度上比两阶段算法有所降低，尤其是在对一些小目标的检测方面，效果明显变差。正因为存在这些问题，后续 YOLO 的版本以及其他一阶段算法，都致力于更好地解决上述问题。<br />
+<br />
+<strong>② SSD算法</strong><br />
+2015 年，W.Liu 等人提出了 SSD（Single Shot MultiBox Detector）算法，这是深度学习领域的第二个一阶段算法。<br />
+<br />
+与仅使用最顶层特征图进行预测的方法不同，SSD 最主要的贡献是引入了基于多尺度特征图的检测策略，显著提升了算法的性能，尤其是在小目标检测方面，相比 YOLO 有了明显的改善，在 VOC2007 数据集上，mAP 达到了 76.8%。<br />
+<br />
+<strong>③ Retina-Net算法</strong><br />
+Retina-Net 算法的主要目的是解决正负样本不平衡的问题。常规的一阶段算法在提取训练样本的过程中，背景样本的比例远大于目标样本的比例。正负样本的极度不平衡会导致训练过程中模型较少关注目标样本，这也是一阶段算法的精度低于两阶段算法的主要原因。<br />
+<br />
+Retina-Net 算法引入了损失函数，其核心思想是在训练过程中，对传统的交叉熵损失加上权重，使得错分的样本产生的损失在最终损失中占有更大的比例。引入损失函数，使得一阶段算法在保持速度优势的前提下，保证了目标检测的精度。<br />
+<br />
+<strong>④ FCOS算法</strong><br />
+2019 年，沈春华团队提出了 FCOS（Fully Convolutional One-Stage）算法。和 SSD 等一阶段算法不同，FCOS 是一种&ldquo;anchor free&rdquo;方法，回归目标位置不需要预先设定 anchor，在待检测目标尺度和形态变化较大的场景中有重要的应用。<br />
+<br />
+另外，FCOS 算法在具体实现的过程中也使用了 FPN 策略，对于多尺度的目标有更好的检测效果。<br />
+<h2>
+	典型的应用场景</h2>
+目标检测是计算机视觉最基本的问题之一，具有极为广泛的应用，下面简单介绍几个典型的应用场景。
+<h4>
+	1) 人脸识别</h4>
+人脸识别是基于人的面部特征进行身份识别的一种生物识别技术，通过采集含有人脸的图像或视频流，自动检测和跟踪人脸，进而对检测到的人脸进行识别，通常也叫作人像识别、面部识别。<br />
+<br />
+人脸识别系统主要包括 4 个部分，分别为人脸图像采集/检测、人脸图像预处理、人脸图像特征提取以及身份匹配与识别。其中人脸图像采集/检测是进行后续识别的基础。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/221121/2-22112111160B41_2.jpg" /><br />
+	图 2 人脸检测示例</div>
+<br />
+如图 2 所示，通过检测框把后续识别算法的处理区域从整个图像限制到人脸区域。近年来，人脸识别技术已经取得了长足的发展，目前广泛应用于公安、交通、支付等多个实际场景。<br />
+<h4>
+	2) 智慧交通</h4>
+智慧交通是目标检测的一个重要应用领域，主要包括如下场景：
+<ul>
+	<li>
+		交通流量监控与红绿灯配时控制：通过视觉算法，对道路卡口相机和电警相机中采集的视频图像进行分析，根据相应路段的车流量，调整红绿灯配时策略，提升交通通行能力。</li>
+	<li>
+		异常事件检测：通过视觉算法，检测各种交通异常事件，包括非机动车驶入机动车道、车辆占用应急车道以及监控危险品运输车辆驾驶员的驾驶行为、交通事故实时报警等，第一时间将异常事件上报给交管部门。</li>
+	<li>
+		交通违法事件检测和追踪：通过视觉算法，发现套牌车辆、收费站逃费现象，跟踪肇事车辆，对可疑车辆/行人进行全程轨迹追踪，通过视觉技术手段，极大地提升公安/交管部门的监管能力。</li>
+	<li>
+		自动驾驶：自动驾驶是当今热门的研究领域，是一个多种前沿技术高度交叉的研究方向，其中视觉相关算法主要包含对道路、车辆以及行人的检测，对交通标志物以及路旁物体的检测识别等。主流的人工智能公司都投入了大量的资源进行自动驾驶方面的研发，目前已经初步实现了受限路况条件下的自动驾驶，但距离实现不受路况、天气等因素影响的自动驾驶（L4级别），尚有相当大的一段距离。</li>
+</ul>
+<br />
+从根本上看，交通场景中各种具体应用的底层实现，都是以目标检测技术为基础的，即对道路、车辆以及行人进行检测。<br />
+<h2>
+	目标检测领域重要的公开评测集</h2>
+如何对算法进行比较呢？一个重要的方法就是在相同的公开数据集上进行评测，根据评测得到的性能指标，大致判断算法优劣。评测集在算法领域有至关重要的作用，接下来介绍几个在目标检测领域有较大影响力的公开评测集。<br />
+<h4>
+	1) PASCAL VOC</h4>
+PASCAL VOC（Visual Object Classes）挑战赛是计算机视觉领域早期重要的比赛之一，包括图像分类、目标检测、场景分割、事件检测 4 个主题。<br />
+<br />
+在目标检测方向，最常用的评测集是 VOC2007 和 VOC2012。评测集包含 20 类日常生活中常见的物品，分别是人、鸟、猫、奶牛、狗、马、羊、飞机、自行车、船、公共汽车、小轿车、摩托车、火车、瓶子、椅子、餐桌、盆栽、沙发、电视。VOC2007 包含 5000 张训练图像和 1.2 万个标注目标；VOC2012 包含 1.1 万张训练图像和 2.7 万个标注目标。不过，随着近几年更大规模评测集的发布，VOC 评测集的重要性正在逐步降低。<br />
+<h4>
+	2) ILSVRC</h4>
+ILSVRC（ImageNet Large Scale Visual Recognition Challenge，大规模图像识别挑战赛）从 2010 年开始每年都会举办，其中包含一个目标检测主题。<br />
+<br />
+ILSVRC 的目标检测的评测集包含 200 种类别，评测集中图像的数量和目标的数量比 VOC 的评测集高两个数量级。以 ILSVRC-14 评测集为例，其中包含 51.7 万张训练图像和 53.4 万个标注目标。<br />
+<h4>
+	3) MS-COCO</h4>
+MS-COCO 是当前最具挑战的目标检测评测集，从 2015 年开始，基于 MS-COCO 的目标检测比赛每年举行一次，一直持续至今。<br />
+<br />
+MS-COCO 包含的检测目标类别不及 ILSVRC，但包含更多实例。以 MS-COCO-17 为例，其中包含 80 个类别，16.4 万张训练图像和 89.7 万个标注目标。<br />
+<br />
+与 VOC 和 ILSVRC 相比，MS-COCO 最大的进步在于除了标注每个目标实例的包围盒之外，还标注了每个实例的分割信息。<br />
+除此之外，MS-COCO 包含了很多小目标（占有区域不足整幅图像的 1%）以及众多密集目标。这些特点使得 MS-COCO 的数据分布更接近真实世界，因此成为目前目标检测领域最为重要的评测集之一。<br />
+<h4>
+	4) Open Images</h4>
+Open Images 挑战赛始于 2018 年，包含两个主题：
+<ul>
+	<li>
+		标准的目标检测；</li>
+	<li>
+		目标之间的关系分析。</li>
+</ul>
+<br />
+其中检测任务的评测集包含 600 种目标类别，合计 191 万张训练图像和 1544 万个标注目标。<br />
+<h4>
+	5) 其他特定场景的目标检测评测集</h4>
+除了上述通用场景的目标检测评测集，在一些重要领域，如行人检测、人脸检测、文本检测、交通信号灯及交通标志检测等，也都有对应的评测集。下表列出了一些在特定领域比较有影响力的评测集。<br />
+<br />
+<table>
+	<tbody>
+		<tr>
+			<th colspan="3">
+				表：行人检测评测集</th>
+		</tr>
+		<tr>
+			<th>
+				评测集</th>
+			<th>
+				发布时间</th>
+			<th>
+				描述</th>
+		</tr>
+		<tr>
+			<td>
+				MIT Ped</td>
+			<td>
+				2000&nbsp;年</td>
+			<td>
+				最早的行人检测评测集，包含 500 张训练图像和 200 张测试图像，资源链接：http://cbcl.mit.edu/software-datasets/PedestrianData.html</td>
+		</tr>
+		<tr>
+			<td>
+				INRIA</td>
+			<td>
+				2005&nbsp;年</td>
+			<td>
+				早期最重要的行人检测评测集，资源链接：http://pascal.inrialpes.fr/data/human/</td>
+		</tr>
+		<tr>
+			<td>
+				Caltech</td>
+			<td>
+				2009&nbsp;年</td>
+			<td>
+				著名的行人检测评测集，包含 19 万个训练样本和 16 万个测试样本，资 源链接：http://www.vision.caltech.edu/Image_Datasets/CaltechPedestrians/</td>
+		</tr>
+		<tr>
+			<td>
+				KITTI</td>
+			<td>
+				2012&nbsp;年</td>
+			<td>
+				著名的交通场景分析评测集，包含 10 万个行人数据，资源链接：http://www.cvlibs.net/datasets/kitti/index.php</td>
+		</tr>
+		<tr>
+			<td>
+				CityPersons</td>
+			<td>
+				2017&nbsp;年</td>
+			<td>
+				基于 CityScapes 数据集，包含 1.9 万个训练样本和 1.1 万个测试样本。 资源链接：https://www.cityscapes-dataset.com/</td>
+		</tr>
+		<tr>
+			<td>
+				EuroCity</td>
+			<td>
+				2018&nbsp;年</td>
+			<td>
+				大规模行人检测数据集，数据来自 12 个欧洲国家的 31 个城市，包含&nbsp;4.7 万张图像，合计 23.8 万个目标实例。</td>
+		</tr>
+		<tr>
+			<th colspan="3">
+				表：人脸检测评测集</th>
+		</tr>
+		<tr>
+			<td>
+				FDDB</td>
+			<td>
+				2010&nbsp;年</td>
+			<td>
+				来自雅虎的数据，包含 2800 张图像、5000 张人脸。涵盖多种姿态以 及遮挡或对焦不准的情况。资源链接：http://vis-www.cs.umass.edu/fddb/ index.html</td>
+		</tr>
+		<tr>
+			<td>
+				AFLW</td>
+			<td>
+				2011&nbsp;年</td>
+			<td>
+				来自 Flickr 的数据，包含 2.2 万张图像、2.6 万张人脸，涵盖人脸关键点标注。 资源链接：https://www.tugraz.at/institute/icg/research/team-bischof/lrs/downloads/aflw/</td>
+		</tr>
+		<tr>
+			<td>
+				IJB</td>
+			<td>
+				2015&nbsp;年</td>
+			<td>
+				有 5 万张图像，包括检测和识别两个任务。资源链接：https://www.nist.gov/programs-projects/face-challenges</td>
+		</tr>
+		<tr>
+			<td>
+				WiderFace</td>
+			<td>
+				2016&nbsp;年</td>
+			<td>
+				较大的人脸检测评测集之一，包含 3.2 万张图像、39.4 万张人脸，样本包含多种姿态以及遮挡情况。资源链接：http://mmlab.ie.cuhk.edu.hk/&nbsp;projects/WIDERFace/</td>
+		</tr>
+		<tr>
+			<td>
+				UFDD</td>
+			<td>
+				2018&nbsp;年</td>
+			<td>
+				包含 6000 张图像、1.1 万测试样本，涵盖运动模糊、对焦模糊等场景。 资源链接：http://www.ufdd.info/</td>
+		</tr>
+		<tr>
+			<th colspan="3">
+				表：文本检测评测集</th>
+		</tr>
+		<tr>
+			<td>
+				ICDAR</td>
+			<td>
+				2003&nbsp;年</td>
+			<td>
+				早期的文本检测公开评测集。资源链接：http://rrc.cvc.uab.es/</td>
+		</tr>
+		<tr>
+			<td>
+				STV</td>
+			<td>
+				2010&nbsp;年</td>
+			<td>
+				来自 Google Street View 的数据，包含 350 张图像，720 个文本实例。资源链接：http://tc11.cvc.uab.es/datasets/SVT_1</td>
+		</tr>
+		<tr>
+			<td>
+				MSRA-TD500</td>
+			<td>
+				2012&nbsp;年</td>
+			<td>
+				包含 500 张室内及室外图像，包含英文和中文文本。资源链接：http://www.iapr-tc11.org/mediawiki/index.php/MSRA Text Detection 500 Database&nbsp;(MSRA-TD500)</td>
+		</tr>
+		<tr>
+			<td>
+				IIIT5k</td>
+			<td>
+				2012&nbsp;年</td>
+			<td>
+				包含 1100 张图像、5000 个单词，来自街景和纯数字图像。资源链接：http://cvit.iiit.ac.in/projects/SceneTextUnderstanding/IIIT5K.html</td>
+		</tr>
+		<tr>
+			<td>
+				COCOText</td>
+			<td>
+				2016&nbsp;年</td>
+			<td>
+				基于 MS-COCO 的大规模文本检测评测集，包含 6.3 万个图像、17.3 万个带标注的文本。资源链接：https://bgshih.github.io/cocotext/</td>
+		</tr>
+		<tr>
+			<th colspan="3">
+				表：交通信号灯及交通标志检测评测集</th>
+		</tr>
+		<tr>
+			<td>
+				TLR</td>
+			<td>
+				2009&nbsp;年</td>
+			<td>
+				由巴黎一辆运行的车辆拍摄，包含 1.1 万帧视频，涵盖 9200 个交通灯实例。资源链接：http://www.1ara.prd.fr/benchmarks/trafficlightsrecognition</td>
+		</tr>
+		<tr>
+			<td>
+				LISA</td>
+			<td>
+				2012&nbsp;年</td>
+			<td>
+				最早的交通信号评测集，包含 6600 段视频和 325 张图像，涵盖 47 种美国交通标志的 7800 个实例。资源链接：http://cvrr.ucsd.edu/LISA/lisa-traffic-sign-dataset.html</td>
+		</tr>
+		<tr>
+			<td>
+				GTSDB</td>
+			<td>
+				2013&nbsp;年</td>
+			<td>
+				著名的交通信号检测评测集之一，涵盖不同天气条件及时段，包含 900&nbsp;张图像、1200&nbsp;种交通标志。资源链接：http://benchmark.ini.rub.de/?section=gtsdb&amp;subsection=news</td>
+		</tr>
+		<tr>
+			<td>
+				BelgianTSD</td>
+			<td>
+				2012&nbsp;年</td>
+			<td>
+				涵盖 269 种交通标志，包含 7300 张静态图像、12 万帧视频、1.1 万带 3D 位置标注的交通标志实例。资源链接：https://btsd.ethz.ch/shareddata/</td>
+		</tr>
+		<tr>
+			<td>
+				TT100K</td>
+			<td>
+				2016&nbsp;年</td>
+			<td>
+				大规模交通标志检测评测集。涵盖 128 个类别、3 万个实例，合计&nbsp;10 万张 2048X2048 像素的高清图像。每个实例都标注了类别标&nbsp;签、包围盒以及像素级别的掩码。资源链接：http://cg.cs.tsinghua.edu.cn/traffic%2Dsign/</td>
+		</tr>
+		<tr>
+			<td>
+				BSTL</td>
+			<td>
+				2017 年</td>
+			<td>
+				大规模交通灯检测评测集，包含 5000 静态图像、8300 帧视频，其中有 2.4 万个交通灯实例。资源链接：https://hci.iwr.uni-heidelberg.de/mode/6132</td>
+		</tr>
+	</tbody>
+</table></div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="447_2.html" title="C++ list（STL list）访问（获取）元素方法详解" target="_blank">C++ list（STL list）访问（获取）元素方法详解</a></li>
+<li><a href="vip_2103_2.html" title="用一个实例来深入剖析函数进栈出栈的过程" target="_blank">用一个实例来深入剖析函数进栈出栈的过程</a></li>
+<li><a href="vip_2205_2.html" title="到底在声明中还是定义中指定默认参数" target="_blank">到底在声明中还是定义中指定默认参数</a></li>
+<li><a href="8066_2.html" title="关于C语言中文网" target="_blank">关于C语言中文网</a></li>
+<li><a href="8631_2.html" title="Linux Mutex互斥锁详解" target="_blank">Linux Mutex互斥锁详解</a></li>
+<li><a href="../mybatis/bind_2.html" title="MyBatis bind标签" target="_blank">MyBatis bind标签</a></li>
+<li><a href="anqhqm_2.html" title="Python函数和方法的区别" target="_blank">Python函数和方法的区别</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9851;
+window.arcId = "8c5eXMR3Pdh6a4wCcqTrw2m0lshSy5LzfJoCGPqanWltr+CvFsySWbuoFmY";
+window.typeidChain = "145|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

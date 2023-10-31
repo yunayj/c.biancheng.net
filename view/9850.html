@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++ char16_t和char32_t字符类型详解</title>
+<meta name="description" content="在 C++11 标准中添加两种新的字符类型 char16_t 和 char32_t，它们分别用来对应 Unicode 字符集的 UTF-16 和 UTF-32 两种编码方法。 正式介绍 char16_t 和 char32_t 之前，需要先弄清楚字符集和编码方" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++ char16_t和char32_t字符类型详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在 C++11 标准中添加两种新的字符类型 char16_t 和 char32_t，它们分别用来对应 Unicode 字符集的 UTF-16 和 UTF-32 两种编码方法。<br />
+<br />
+正式介绍 char16_t 和 char32_t 之前，需要先弄清楚字符集和编码方法的区别。<br />
+<h2>
+字符集和编码方法</h2>
+通常我们所说的字符集是指系统支持的所有抽象字符的集合，通常一个字符集的字符是稳定的。<br />
+<br />
+编码方法是利用数字和字符集建立对应关系的一套方法，这个方法可以有很多种，比如 Unicode 字符集就有 UTF-8、UTF-16 和 UTF-32 这 3 种编码方法。除了 Unicode 字符集，我们常见的字符集还包括 ASCII 字符集、GB2312 字符集、BIG5 字符集等，它们都有各自的编码方法。<br />
+<br />
+字符集需要和编码方式对应，如果这个对应关系发生了错乱，那么我们就会看到计算机世界中令人深恶痛绝的乱码。不过，现在的计算机世界逐渐达成了一致，就是尽量以 Unicode 作为字符集标准，那么剩下的工作就是处理 UTF-8、UTF-16 和 UTF-32 这 3 种编码方法的问题了。<br />
+<br />
+UTF-8、UTF-16 和 UTF-32 简单来说是使用不同大小内存空间的编码方法。<br />
+<br />
+UTF-32 是最简单的编码方法，该方法用一个 32 位的内存空间（也就是 4 字节）存储一个字符编码，由于 Unicode 字符集的最大个数为 0x10FFFF（ISO 10646），因此 4 字节的空间完全能够容纳任何一个字符编码。UTF-32 编码方法的优点显而易见，它非常简单，计算字符串长度和查找字符都很方便；缺点也很明显，太占用内存空间。<br />
+<br />
+UTF-16 编码方法所需的内存空间从 32 位缩小到 16 位（占用 2 字节），但是由于存储空间的缩小，因此 UTF-16 最多只能支持 0xFFFF 个字符，这显然不太够用，于是 UTF-16 采用了一种特殊的方法来表达无法表示的字符。<br />
+<br />
+简单来说，从 0x0000~0xD7FF 以及 0xE000~0xFFFF 直接映射到 Unicode 字符集，而剩下的 0xD800~0xDFFF 则用于映射 0x10000~0x10FFFF 的 Unicode 字符集，映射方法为：字符编码减去 0x10000 后剩下的 20 比特位分为高位和低位，高 10 位的映射范围为 0xD800~0xDBFF，低 10 位的映射范围为 0xDC00~0xDFFF。<br />
+<br />
+例如 0x10437，减去 0x10000 后的高低位分别为 0x1 和 0x37，分别加上 0xD800 和 0xDC00 的结果是 0xD801 和 0xDC37。<br />
+<br />
+幸运的是，一般情况下 0xFFFF 足以覆盖日常字符需求，我们也不必为了 UTF-16 的特殊编码方法而烦恼。UTF-16 编码的优势是可以用固定长度的编码表达常用的字符，所以计算字符长度和查找字符也比较方便。另外，在内存空间使用上也比 UTF-32 好得多。<br />
+<br />
+最后说一下我们最常用的 UTF-8 编码方法，它是一种可变长度的编码方法。<br />
+<br />
+由于 UTF-8 编码方法只占用 8 比特位（1 字节），因此要表达完数量高达 0x10FFFF 的字符集，它采用了一种前缀编码的方法。这个方法可以用 1~4 字节表示字符个数为 0x10FFFF 的 Unicode（ISO 10646）字符集。为了尽量节约空间，常用的字符通常用 1~2 字节就能表达，其他的字符才会用到 3~4 字节，所以在内存空间可以使用 UTF-8，但是计算字符串长度和查找字符在 UTF-8 中却是一个令人头痛的问题。<br />
+<br />
+下表展示了 UTF-8 对应的范围：<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+代码范围十六进制</th>
+<th>
+UTF-8二进制</th>
+<th>
+注释</th>
+</tr>
+<tr>
+<td>
+000000~00007F<br />
+128&nbsp;个代码</td>
+<td>
+0ZZZZZZZ</td>
+<td>
+ASCII 字符范围，字节由零开始</td>
+</tr>
+<tr>
+<td>
+000080~0007FF<br />
+1920&nbsp;个代码</td>
+<td>
+110yyyyy&nbsp;10zzzzzz</td>
+<td>
+第 1 字节由 110 开始，接着的字节由 10 开始</td>
+</tr>
+<tr>
+<td>
+000800~00D7FF<br />
+00E000~00FFFF<br />
+61440&nbsp;个代码</td>
+<td>
+1110xxxx 10yyyyyy 10zzzzzz</td>
+<td>
+第 1 字节 1110 开始，接着的字节由 10 开始</td>
+</tr>
+<tr>
+<td>
+010000~10FFFF<br />
+1048576&nbsp;个代码</td>
+<td>
+11110WWW 10XXXXXX<br />
+10yyyyyy 10zzzzzz</td>
+<td>
+将由 11110 开始，接着的字节从 10 开始</td>
+</tr>
+</tbody>
+</table>
+<h2>
+char16_t和char32_t</h2>
+对于 UTF-8 编码方法而言，普通类型似乎是无法满足需求的，毕竟普通类型无法表达变长的内存空间。所以一般情况下我们直接使用基本类型 char 进行处理，而过去也没有一个针对 UTF-16 和 UTF-32 的字符类型。<br />
+<br />
+到了 C++11，char16_t 和 char32_t 的出现打破了这个尴尬的局面。除此之外，C++11 标准还为 3 种编码提供了新前缀用于声明 3 种编码字符和字符串的字面量，它们分别是 UTF-8 的前缀 u8、UTF-16 的前缀 u 和 UTF-32 的前缀 U：<br />
+<pre class="cpp">
+char utf8c = u8&#39;a&#39;; // C++17标准
+//char utf8c = u8&#39;好&#39;;
+char16_t utf16c = u&#39;好&#39;;
+char32_t utf32c = U&#39;好&#39;;
+char utf8[] = u8&quot;你好世界&quot;;
+char16_t utf16[] = u&quot;你好世界&quot;;
+char32_t utf32[] = U&quot;你好世界&quot;;</pre>
+在上面的代码中，分别使用 UTF-8、UTF-16 和 UTF-32 编码的字符和字符串对变量进行了初始化，代码很简单，不过还是有两个地方值得一提。<br />
+<br />
+<code>char utf8c = u8&#39;a&#39;; </code>在 C++11 标准中实际上是无法编译成功的，因为在 C++11 标准中 u8 只能作为字符串字面量的前缀，而无法作为字符的前缀。这个问题直到 C++17 标准才得以解决，所以上述代码需要 C++17 的环境来执行编译。<br />
+<br />
+<code>char utf8c = u8&#39;好&#39;;</code> 是无法通过编译的，因为存储&ldquo;好&rdquo;需要 3 字节，显然 utf8c 只能存储 1 字节，所以会编译失败。<br />
+<h2>
+wchar_t存在的问题</h2>
+在 C++98 的标准中提供了一个 wchar_t 字符类型，并且还提供了前缀 L，用它表示一个宽字符。事实上 Windows 系统的 API 使用的就是 wchar_t，它在 Windows 内核中是一个最基础的字符类型：<br />
+<pre class="info-box">
+HANDLE CreateFileW(
+    LPCWSTR lpFileName,
+    ...
+);
+CreateFileW(L&quot;c:\\tmp.txt&quot;,...);</pre>
+上面是一段在 Windows 系统上创建文件的伪代码，可以看出 Windows 为创建文件的 API 提供了宽字符版本，其中 LPCWSTR 实际上是 const wchar_t 的指针类型，我们可以通过 L 前缀来定义一个 wchar_t 类型的字符串字面量，并且将其作为实参传入 API。<br />
+<br />
+讨论到这里读者会产生一个疑问，既然已经有了处理宽字符的字符类型，那么为什么又要加入新的字符类型呢？<br />
+<br />
+没错，wchar_t 确实在一定程度上能够满足我们对于字符表达的需求，但是起初在定义 wchar_t 时并没有规定其占用内存的大小。于是就给了实现者充分的自由，以至于在 Windows 上 wchar_t 是一个 16 位长度的类型（2 字节），而在 Linux 和 macOS 上 wchar_t 却是 32 位的（4 字节）。这导致了一个严重的后果，我们写出的代码无法在不同平台上保持相同行为。而 char16_t 和 char32_t 的出现解决了这个问题，它们明确规定了其所占内存空间的大小，让代码在任何平台上都能够有一致的表现。<br />
+<h2>
+新字符串连接</h2>
+由于字符类型增多，因此我们还需要了解一下字符串连接的规则：如果两个字符串字面量具有相同的前缀，则生成的连接字符串字面量也具有该前缀，如下表所示。<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+源代码</th>
+<th>
+等同于</th>
+<th>
+&nbsp;</th>
+<th>
+源代码</th>
+<th>
+等同于</th>
+<th>
+&nbsp;</th>
+<th>
+源代码</th>
+<th>
+等同于</th>
+</tr>
+<tr>
+<td>
+u&quot;a&quot; u&quot;b&quot;</td>
+<td>
+u&quot;ab&quot;</td>
+<td>
+&nbsp;</td>
+<td>
+U&quot;a&quot;&nbsp;U&quot;b&quot;</td>
+<td>
+U&quot;ab&quot;</td>
+<td>
+&nbsp;</td>
+<td>
+L&quot;a&quot;&nbsp;L&quot;b&quot;</td>
+<td>
+L&quot;ab&quot;</td>
+</tr>
+<tr>
+<td>
+u&quot;a&quot; &quot;b&quot;</td>
+<td>
+u&quot;ab&quot;</td>
+<td>
+&nbsp;</td>
+<td>
+U&quot;a&quot; &quot;b&quot;</td>
+<td>
+U&quot;ab&quot;</td>
+<td>
+&nbsp;</td>
+<td>
+L&quot;a&quot; &quot;b&quot;</td>
+<td>
+L&quot;ab&quot;</td>
+</tr>
+<tr>
+<td>
+&quot;a&quot; u&quot;b&quot;</td>
+<td>
+u&quot;ab&quot;</td>
+<td>
+&nbsp;</td>
+<td>
+&quot;a&quot; U&quot;b&quot;</td>
+<td>
+U&quot;ab&quot;</td>
+<td>
+&nbsp;</td>
+<td>
+&quot;a&quot; L&quot;b&quot;</td>
+<td>
+L&quot;ab&quot;</td>
+</tr>
+</tbody>
+</table>
+<br />
+如果其中一个字符串字面量没有前缀，则将其视为与另一个字符串字面量具有相同前缀的字符串字面量，其他的连接行为由具体实现者定义。另外，这里的连接操作是编译时的行为，而不是一个转换。<br />
+<br />
+需要注意的是，进行连接的字符依然是保持独立的，也就是说不会因为字符串连接，将两个字符合并为一个，例如连接 &quot;\xA&quot; &quot;B&quot;的结果应该是 &quot;\nB&quot;（换行符和字符B），而不是一个字符 &quot;\xAB&quot;。<br />
+<h2>
+库对新字符类型的支持</h2>
+随着新字符类型加入 C++11 标准，相应的库函数也加入进来。<br />
+<br />
+C11 在中增加了 4 个字符的转换函数，包括：
+<pre class="cpp">
+size_t mbrtoc16(char16_t* pc16, const char* s, size_t n, mbstate_t* ps);
+size_t c16rtomb(char* s, char16_t c16, mbstate_t* ps);
+size_t mbrtoc32(char32_t* pc32, const char* s, size_t n, mbstate_t* ps);
+size_t c32rtomb(char* s, char32_t c32, mbstate_t* ps);</pre>
+它们的功能分别是多字节字符和 UTF-16 编码字符互转，以及多字节字符和 UTF-32 编码字符互转。在 C++11 中，我们可以通过包含<code>&lt;cuchar&gt;</code>来使用这 4 个函数。<br />
+<br />
+当然 C++11 中也添加了 C++ 风格的转发方法 std::wstring_convert 以及 std::codecvt。使用类模板 std::wstring_convert 和 std::codecvt 相结合，可以对多字节字符串和宽字符串进行转换。不过这里并不打算花费篇幅介绍这些转换方法，因为它们在 C++17 标准中已经不被推荐使用了，所以应该尽量避免使用它们。<br />
+<br />
+除此之外，C++ 标准库的字符串也加入了对新字符类型的支持，例如：<br />
+<pre class="cpp">
+using u16string = basic_string;
+using u32string = basic_string;
+using wstring = basic_string;</pre>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1928.html" title="卷积神经网络(CNN,ConvNet)及其原理详解" target="_blank">卷积神经网络(CNN,ConvNet)及其原理详解</a></li>
+<li><a href="2430.html" title="MySQL创建数据表（CREATE TABLE语句）" target="_blank">MySQL创建数据表（CREATE TABLE语句）</a></li>
+<li><a href="3925.html" title="SELinux配置文件（/etc/selinux/config）" target="_blank">SELinux配置文件（/etc/selinux/config）</a></li>
+<li><a href="7847.html" title="C++11移动构造函数详解" target="_blank">C++11移动构造函数详解</a></li>
+<li><a href="../thread/vip_8622.html" title="使用C++11进行多线程编程" target="_blank">使用C++11进行多线程编程</a></li>
+<li><a href="../jsp2/custom-tag.html" title="JSP自定义标签" target="_blank">JSP自定义标签</a></li>
+<li><a href="ql38ta7.html" title="《HTML与CSS基础教程 Web前端开发精品课》PDF下载（高清完整版）" target="_blank">《HTML与CSS基础教程 Web前端开发精品课》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9850;
+window.arcId = "bd689er1e23UonYiGNYMWnDgK5YuHFt1n5LsxqaFz1dcVwDid2qmpf/t78g";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

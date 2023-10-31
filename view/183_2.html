@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>清空输入缓冲器，C语言清空输入缓冲区完全攻略</title>
+<meta name="description" content="本节，在学习如何清空输入缓冲区之前，我们先来介绍一下输入缓冲区的概念。 输入缓冲区 所有从键盘输入的数据，不管是字符还是数字，都是先存储在内存的缓冲区中，叫作 键盘输" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>清空输入缓冲器，C语言清空输入缓冲区完全攻略</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">本节，在学习如何清空输入缓冲区之前，我们先来介绍一下&ldquo;输入缓冲区&rdquo;的概念。<br />
+<h2>
+输入缓冲区</h2>
+所有从键盘输入的数据，不管是字符还是数字，都是先存储在内存的缓冲区中，叫作<span style="color:#008000;">&ldquo;键盘输入缓冲区&rdquo;</span>，简称&ldquo;<span style="color:#008000;">输入缓冲区</span>&rdquo;或&ldquo;<span style="color:#008000;">输入流</span>&rdquo;。我们先来看一个程序：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int a, b, c;
+    scanf(&quot;%d&quot;, &amp;a);
+    printf(&quot;a = %d\n&quot;, a);
+    scanf(&quot;%d&quot;, &amp;b);
+    printf(&quot;b = %d\n&quot;, b);
+    scanf(&quot;%d&quot;, &amp;c);
+    printf(&quot;c = %d\n&quot;, c);
+    return 0;
+}</pre>
+输出结果是：<br />
+1<br />
+a = 1<br />
+2<br />
+b = 2<br />
+3<br />
+c = 3<br />
+或者：<br />
+1 2 3<br />
+a = 1<br />
+b = 2<br />
+c = 3<br />
+<br />
+从输出结果可以看出，不管是一个一个地输入：1（回车）2（回车）3（回车）；还是三个数字一次性输入：1（空格）2（空格）3（回车），这两种输入方法的结果都是一样的。原因是从键盘输入的数据都会被依次存入缓冲区，不管是数字还是字符都会被当成数据存进去。但只有按回车，scanf 才会进去取数据，所取数据的个数取决于 scanf 中&ldquo;输入参数&rdquo;的个数。因此不在于怎么输入，可以存一个取一个，也可以一次性全存入进去，然后一个个取。<br />
+<br />
+那么一次性全存进去，scanf 是如何取数据的呢？这就好比开闸放水，我们将水一次性全部放到闸里以后，开一次闸就放掉一点，开一次闸就放掉一点，直到放光了为止。开闸的动作就相当于调用一次 scanf，开闸的开关就是回车；每开一次闸放掉多少水，取决于 scanf 中&ldquo;输入参数&rdquo;的个数。<br />
+<br />
+所以，输入的数据放在输入缓冲区中，先输入的排在最前面，后输入的依次往后排。如果 scanf 中&ldquo;输入参数&rdquo;的个数只有一个，那么我们调用一次 scanf 就把缓冲区中离出口最近的一个数据输出给 scanf，也就是把排在最前面的一个数据输出给 scanf。输出后，缓冲区中就没有这个数据了。<br />
+<br />
+如果 scanf 中&ldquo;输入参数&rdquo;的个数为 n，那么就从排在最前面的开始，依次往后取 n 个数据输出给 scanf。没取完的仍旧放在缓冲区中，直到取用完毕为止。如果缓冲区中的数据全被取完了，但还有 scanf 要取数据，那就要再从键盘输入数据。<br />
+<h2>
+%d和%c读取缓冲区的差别</h2>
+需要注意的是，对于 %d，在缓冲区中，空格、回车、Tab 键都只是分隔符，不会被 scanf 当成数据取用。%d 遇到它们就跳过，取下一个数据。但是如果是 %c，那么空格、回车、Tab 键都会被当成数据输出给 scanf 取用，例如下面这个程序：<br />
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int a, c;
+    char b;
+    scanf(&quot;%d%c%d&quot;, &amp;a, &amp;b, &amp;c);
+    printf(&quot;a = %d, b = %c, c = %d\n&quot;, a, b, c);
+    return 0;
+}</pre>
+输出结果是：<br />
+1 5 6<br />
+a = 1, b =&nbsp; , c = 5<br />
+<br />
+在此程序中，原本希望的是将数字 1 赋给变量 a，将字符 &#39;5&#39; 赋给变量 b，将数字 6 赋给变量 c。但从输出结果可以看出，按一下回车，scanf 开始到缓冲区中取数据，因为&ldquo;输入参数&rdquo;有三个，所以 scanf 从缓冲区中取三个数据。数字 1 赋给变量 a，而因为变量 b 是 %c，所以前三种情况分别将空格、回车和 Tab 键赋给变量 b，然后数字 5 赋给变量 c，而数字 6 仍然在缓冲区中，等待下一个 scanf 来取。这样的话就会有一个问题，我们看下面这个程序：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int a;
+    char i;
+    while (1)
+    {   
+        printf(&quot;请输入一个数字:&quot;);
+        scanf(&quot;%d&quot;, &amp;a);
+        printf(&quot;a = %d\n&quot;, a);
+        printf(&quot;您想继续吗(Y/N):&quot;);
+        scanf(&quot;%c&quot;, &amp;i);
+        if ((&#39;Y&#39; == i) || (&#39;y&#39; == i))
+        {
+            ;
+        }
+        else
+        {
+            break;  // 跳出本层循环体
+        }
+    }
+    return 0;
+}</pre>
+输出结果是：<br />
+请输入一个数字:10<br />
+a = 10您想继续吗(Y/N):<br />
+<br />
+当我们输入&ldquo;10&rdquo;之后希望系统问：&ldquo;您想继续吗（Y/N）：&rdquo;，若为&ldquo;Y&rdquo;就再重新输入一个值，然后输出，否则就跳出本循环体。但是执行的时候我们发现，刚按完&ldquo;10&rdquo;然后回车，直接就结束了，都不给我们输入&ldquo;Y&rdquo;和&ldquo;N&rdquo;的机会，这是为什么？<br />
+<br />
+因为输入&ldquo;10&rdquo;然后回车，&ldquo;10&rdquo;赋给了a，但是回车遗留在了缓冲区，所以等下面又遇到&ldquo;scanf(&quot;%c&quot;，&amp;i);&rdquo;的时候就直接把字符 &#39;\n&#39; 赋给变量 i 了（注意，按回车不是把回车符 &#39;\r&#39; 存到缓冲区，而是把换行符 &#39;\n&#39; 存进去了，因为按回车确实就是换行）。字符 &#39;\n&#39; 明显不等于字符 &#39;Y&#39;，所以直接 break 跳出本层循环体。<br />
+<br />
+那么该怎么办呢？方法有两个
+<ol>
+<li>
+既然不想将字符&#39;\n&#39; 赋给变量 i，那么就先定义一个字符变量 ch，然后用 scanf 将字符 &#39;\n&#39; 取出来给变量 ch，这样就有机会输入&ldquo;Y&rdquo;或者&ldquo;N&rdquo;了；</li>
+<li>
+直接清空输入缓冲区。</li>
+</ol>
+<h2>
+用scanf吸收回车</h2>
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int a;
+    char i;
+    char ch;
+    while (1)
+    {
+        printf(&quot;请输入一个数字:&quot;);
+        scanf(&quot;%d&quot;, &amp;a);
+        printf(&quot;a = %d\n&quot;, a);
+        printf(&quot;您想继续吗(Y/N):&quot;);
+        scanf(&quot;%c&quot;, &amp;ch);  //用scanf吸收回车
+        scanf(&quot;%c&quot;, &amp;i);
+        if ((&#39;Y&#39; == i) || (&#39;y&#39; == i))
+        {
+            ;
+        }
+        else
+        {
+            break;  // 跳出本层循环体
+        }
+    }
+    return 0;
+}</pre>
+输出结果是：<br />
+请输入一个数字:10<br />
+a = 10您想继续吗, Y想, N不想:Y<br />
+请输入一个数字:5<br />
+a = 5您想继续吗, Y想, N不想:Y<br />
+请输入一个数字:333<br />
+a = 333您想继续吗, Y想, N不想:N<br />
+<br />
+这时有人说，如果缓冲区前面排了三个字符&#39;\x20&#39;（空格），我都不需要，想先把它们取出来，那是不是要先定义三个变量呢？当然不是！存储不需要的垃圾字符只需要一个变量即可，因为它们都是垃圾，所以直接覆盖就行了。取一个后，再取一个就把第一个覆盖，再取一个就再覆盖。<br />
+<br />
+但是在实际编程中，一般不会用 scanf 吸收回车，也不会用 scanf 给一个字符变量赋值，因为有更简单的方法，就是用 getchar()。getchar() 是专门从缓冲区读取一个字符的函数。它是&ldquo;吸收回车专业户&rdquo;，简单、方便、好用。<br />
+<h2>
+getchar()</h2>
+该函数的原型为：
+<p class="info-box">
+# include &lt;stdio.h&gt;<br />
+int getchar(void);</p>
+功能是从缓冲区中读取一个字符。这个函数非常简单，连参数都没有，非常好用。下面用 scanf 给字符变量赋值和吸收回车的程序用 getchar() 修改一下：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int a;
+    char ch;
+    while (1)
+    {
+        printf(&quot;请输入一个数字:&quot;);
+        scanf(&quot;%d&quot;, &amp;a);
+        printf(&quot;a = %d\n&quot;, a);
+        printf(&quot;您想继续吗(Y/N):&quot;);
+        getchar();  /*用getchar吸收回车, 简单、方便、好用, 都不需要定义变量用来存储获取的回车符*/
+        ch = getchar();  //用getchar从缓冲区中读取一个字符赋给字符变量ch
+        if ((&#39;Y&#39; == ch) || (&#39;y&#39; == ch))
+        {
+            ;
+        }
+        else
+        {
+            break;  // 跳出本层循环体
+        }
+    }
+    return 0;
+}</pre>
+输出结果是：<br />
+请输入一个数字:10<br />
+a = 10您想继续吗(Y/N):y<br />
+请输入一个数字:5<br />
+a = 5您想继续吗(Y/N):y<br />
+请输入一个数字:333<br />
+a = 333您想继续吗(Y/N):n<br />
+<br />
+在程序中，&ldquo;ch=getchar()；&rdquo;这句之前我们先用 getchar() 清空缓冲区，然后重新从键盘输入一个字符。同样，必须按回车 getchar() 才会进去取这个字符。这时候需要注意的是，同 scanf 一样，按的这个回车也会被遗留在缓冲区中，大家要注意。<br />
+<br />
+这时有人会说，如果前面有多个 scanf 给 int 型变量赋值，那么每个 scanf 都会遗留一个回车，那这时是不是有几个 scanf 就要用几个 getchar() 呢？<br />
+<br />
+回答是&ldquo;不需要&rdquo;，仍然只需要一个 getchar()！前面说过，当 scanf 用 %d 取缓冲区数据的时候，如果遇到空格、回车或 Tab 键就跳过去。不仅如此，这些被跳过去的空白符都被释放了。所以假如前面有三个 scanf 给 int 型变量赋值，那么第一个 scanf 输入回车后把回车遗留在了缓冲区，而第二个 scanf 取值时会越过第一个 scanf 遗留在缓冲区中的回车，那么这个回车就会从缓冲区中释放。但第二个 scanf 取完值后也在缓冲区中留下了一个回车，而当第三个 scanf 到缓冲区中取值时会跳过第二个 scanf 遗留的回车，这个回车同样也会从缓冲区中释放，所以归根结底最后缓冲区中只有一个回车，也就是说，缓冲区中永远不可能遗留多个回车。<br />
+<br />
+下面来写一个程序验证一下：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int a, b, c, d;
+    char ch;
+    printf(&quot;请输入第一个数:&quot;);
+    scanf(&quot;%d&quot;, &amp;a);
+    printf(&quot;请输入第二个数:&quot;);
+    scanf(&quot;%d&quot;, &amp;b);
+    printf(&quot;请输入第三个数:&quot;);
+    scanf(&quot;%d&quot;, &amp;c);
+    printf(&quot;您想继续吗(Y/N):&quot;);
+    getchar();  //只需要用一个getchar吸收回车
+    ch = getchar();  //用getchar获取一个字符赋给ch
+    if ((&#39;Y&#39; == ch) || (&#39;y&#39; == ch))
+    {
+        printf(&quot;请输入密码:&quot;);
+        scanf(&quot;%d&quot;, &amp;d);
+        printf(&quot;恭喜成功获得密码%d\n&quot;, d);
+    }
+    return 0;
+}</pre>
+输出结果是：<br />
+请输入第一个数:1<br />
+请输入第二个数:2<br />
+请输入第三个数:3<br />
+您想继续吗(Y/N):y<br />
+请输入密码:5678<br />
+恭喜成功获得密码5678<br />
+<br />
+由此我们知道，当用 %d 获取输入流中的数据的时候，如果遇到字符（空格、回车、Tab 除外），则直接从输入流中退出来，什么都不取。但如果是用 %c 获取，那么任何数据都会被当作一个字符。所以如果你要从输入流中取一个字符，但在之前使用过 scanf，那么此时就必须要先用 getchar() 吸收回车。否则取到的将不是你想要的字符，而是 scanf 遗留在输入流中的回车。如果你要从输入流中取的不是字符，那就不需要用 getchar() 吸收回车了。<br />
+<br />
+以上详细分析了什么时候需要吸收回车，什么时候不需要。但实际编程中，程序往往很长，我们很难预测到下一次到缓冲区中取数据的是 %d 还是 %c 或者是 gets()、fgets()。所以为了避免忘记吸收回车或耗费精力考虑回车的问题，习惯上 scanf 后面都加上 getchar()。<br />
+<h2>
+fflush（stdin）</h2>
+前面介绍了使用 getchar() 吸收回车的方法，除此之外还有一个更强大、更直接的方法，就是直接将输入缓冲区全部清空。<br />
+<br />
+清空缓冲区只需加一句 fflush(stdin) 即可。fflush 是包含在文件 stdio.h 中的函数。stdin 是&ldquo;标准输入&rdquo;的意思。std 即 standard（标准），in 即 input（输入），合起来就是标准输入。<span style="color:#b22222;">fflush(stdin) 的功能是：清空输入缓冲区。</span>下面将前面的一个程序修改一下：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int a;
+    char i;
+    while (1)
+    {
+        printf(&quot;请输入一个数字:&quot;);
+        scanf(&quot;%d&quot;, &amp;a);  //因为读取的是数字, 所以不需要清空缓冲区
+        printf(&quot;a = %d\n&quot;, a);
+        printf(&quot;您想继续吗, Y想, N不想:&quot;);
+        fflush(stdin);
+        scanf(&quot;%c&quot;, &amp;i);
+        if (&#39;Y&#39;==i || &#39;y&#39;==i)
+        {
+            ;
+        }
+        else
+        {
+            break;  // 跳出本层循环体
+        }
+    }
+    return 0;
+}</pre>
+输出结果是：<br />
+请输入一个数字:10safa<br />
+a = 10<br />
+您想继续吗, Y想, N不想:Y<br />
+请输入一个数字:58jlkj\*&amp;**^<br />
+a = 58<br />
+您想继续吗, Y想, N不想:N<br />
+<br />
+fflush 一般用于清除用户前面遗留的垃圾数据，提高代码的健壮性。因为如果是自己编程的话，一般都会按要求输入。但对于用户而言，难免会有一些误操作，多输入了一些其他没有用的字符，如果程序中不对此进行处理的话可能会导致程序瘫痪。所以编程时一定要考虑到各种情况，提高代码的健壮性和容错性。使用 fflush 就可以将用户输入的垃圾数据全部清除。<br />
+<br />
+但是 fflush 有一个问题，就是可移植性。并不是所有的编译器都支持 fflush，比如 gcc 就不支持。那么此时怎么办？还是用 getchar（）。<br />
+<h2>
+getchar()的高级用法</h2>
+<p class="info-box">
+while (getchar() != &#39;\n&#39;);</p>
+这种用法其实在前面也使用过，它可以完全代替 fflush(stdion) 来清空缓冲区。不管用户输入多少个没用的字符，他最后都得按回车，而且只能按一次。只要他按回车那么回车之前的字符就都会被 getchar() 取出来。只要 getchar() 取出来的不是回车 (&#39;\n&#39;) 那么就会一直取，直到将用户输入的垃圾字符全部取完为止。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="200.html" title="二维数组的定义、初始化和输出，C语言二维数组详解" target="_blank">二维数组的定义、初始化和输出，C语言二维数组详解</a></li>
+<li><a href="901.html" title="Java Boolean类" target="_blank">Java Boolean类</a></li>
+<li><a href="1038.html" title="Java中的异常（Exception）：什么是异常？异常产生的原因及常见的几种异常类型" target="_blank">Java中的异常（Exception）：什么是异常？异常产生的原因及常见的几种异常类型</a></li>
+<li><a href="1094.html" title="Java图书信息查询" target="_blank">Java图书信息查询</a></li>
+<li><a href="5572.html" title="Go语言os包用法简述" target="_blank">Go语言os包用法简述</a></li>
+<li><a href="8207.html" title="Django unittest测试框架特性简述" target="_blank">Django unittest测试框架特性简述</a></li>
+<li><a href="../pandas/loc-iloc.html" title="Pandas loc/iloc用法详解" target="_blank">Pandas loc/iloc用法详解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 183;
+window.arcId = "2ce9BnUcptN3JLS/rAehBpmd/wE4kewazbpJMFILlKS+MDc9k0uXNZ0rig";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

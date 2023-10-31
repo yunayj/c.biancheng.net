@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Vue事件修饰符详解</title>
+<meta name="description" content="Vue 可以对事件添加一些通用的限制，例如添加阻止事件冒泡，Vue 对这种事件的限制提供了特定的写法，称之为修饰符。 Vue 事件修饰符的语法如下： v-on:事件.修饰符 在事件处理程序中" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Vue事件修饰符详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">Vue 可以对事件添加一些通用的限制，例如添加阻止事件冒泡，Vue 对这种事件的限制提供了特定的写法，称之为修饰符。<br />
+<br />
+Vue 事件修饰符的语法如下：
+<pre class="info-box">
+v-on:事件.修饰符</pre>
+在事件处理程序中，调用 event.preventDefault()（阻止默认行为）或 event.stopPropagation()（阻止事件冒泡）是非常常见的需求。尽管可以在方法中轻松实现这一点，但更好的方式是使用纯粹的数据逻辑，而不是去处理 DOM 事件细节。<br />
+<br />
+Vue 事件修饰符处理了许多 DOM 事件的细节，让我们不再需要花费大量的时间去处理这些烦恼的事情，而将更多的精力用于程序的逻辑处理。<br />
+<br />
+在 Vue 中，事件修饰符主要有：
+<ul>
+<li>
+stop：等同于 JavaScript 中的 event.stopPropagation()，阻止事件冒泡。</li>
+<li>
+capture：与事件冒泡的方向相反，事件捕获由外到内。</li>
+<li>
+self：只会触发自己范围内的事件。</li>
+<li>
+once：只会触发一次。</li>
+<li>
+prevent：等同于 JavaScript 中的 event.preventDefault()，阻止默认事件的发生。</li>
+<li>
+passive：执行默认行为。</li>
+</ul>
+<br />
+下面分别来看一下每个修饰符的用法。<br />
+<h2>
+stop事件修饰符</h2>
+stop 修饰符用来阻止事件冒泡。<br />
+<br />
+在下面的示例中，创建一个 div 元素，在其内部也创建一个 div 元素，并分别为它们添加单击事件。根据事件的冒泡机制可以得知，当单击内部的 div 元素之后，会扩散到父元素 div，从而触发父元素的单击事件。<br />
+<pre class="html">
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;冒泡事件&lt;/title&gt;
+&lt;style&gt;
+    .outside{
+        width: 200px;
+        height: 100px;
+        border: 1px solid red;
+        text-align: center;
+    }
+    .inside{
+        width: 100px;
+        height: 50px;
+        border:1px solid black;
+        margin:15% 25%;
+    }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div id=&quot;app&quot;&gt;
+    &lt;div class=&quot;outside&quot; @click=&quot;outside&quot;&gt;
+        &lt;div class=&quot;inside&quot; @click =&quot;inside&quot;&gt;冒泡事件&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+    //创建一个应用程序实例
+    const vm= Vue.createApp({
+        methods: {
+            outside: function () {
+                alert(&quot;外面div的单击事件&quot;)
+            },
+            inside: function () {
+                alert(&quot;内部div的单击事件&quot;)
+            }
+        }
+    //在指定的DOM元素上装载应用程序实例的根组件
+    }).mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，单击内部（inside）元素，触发自身事件，效果如下图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230906/2-230Z616144DZ.gif" /><br />
+图 1 触发内部元素事件</div>
+<br />
+根据事件的冒泡机制，也会触发外部（outside）元素，效果如下图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230906/2-230Z61615092E.gif" /><br />
+图 2 触发外部元素事件</div>
+<br />
+使用 stop 修饰符阻止事件冒泡。修改上面 HTML 对应的代码：
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+    &lt;div class=&quot;outside&quot; @click=&quot;outside&quot;&gt;
+        &lt;div class=&quot;inside&quot; @click.stop=&quot;inside&quot;&gt;阻止事件冒泡&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</pre>
+在 Chrome 浏览器中运行程序，单击内部的 div 后，将不再触发父元素单击事件，如下图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230906/2-230Z6161532H2.gif" /><br />
+图 3 只触发内部元素事件</div>
+<h2>
+capture事件修饰符</h2>
+事件捕获模式与事件冒泡模式是一对相反的事件处理流程，当想要将页面元素的事件流改为事件捕获模式时，只需要在父级元素的事件上使用 capture 修饰符即可。若有多个该修饰符，则由外而内触发。<br />
+<br />
+在下面的示例中，创建了 3 个 div 元素，把它们分别嵌套，并添加单击事件。为外层的两个 div 元素添加 capture 修饰符，当单击内部的 div 元素时，将从外向内触发含有 capture 修饰符的 div 元素的事件。
+<pre class="html">
+&lt;style&gt;
+    .outside{
+        width: 300px;
+        height: 180px;
+        color:white;
+        font-size: 30px;
+        background: red;
+        margin-top: 120px;
+    }
+    .center{
+        width: 200px;
+        height: 120px;
+        background: #17a2b8;
+    }
+    .inside{
+        width: 100px;
+        height: 60px;
+        background: #a9b4ba;
+    }
+&lt;/style&gt;
+&lt;div id=&quot;app&quot;&gt;
+    &lt;div class=&quot;outside&quot; @click.capture=&quot;outside&quot;&gt;
+        &lt;div class=&quot;center&quot; @click.capture=&quot;center&quot;&gt;
+            &lt;div class=&quot;inside&quot; @click=&quot;inside&quot;&gt;内部&lt;/div&gt;
+            中间
+        &lt;/div&gt;
+        外层
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+    //创建一个应用程序实例
+    const vm= Vue.createApp({
+        methods: {
+            outside:function(){
+                alert(&quot;外面的div&quot;)
+            },
+            center:function(){
+                alert(&quot;中间的div&quot;)
+            },
+            inside: function () {
+                alert(&quot;内部的div&quot;)
+            }
+        }
+    //在指定的DOM元素上装载应用程序实例的根组件
+    }).mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，单击内部的 div 元素，会先触发添加了 capture 修饰符的外层 div 元素，然后触发中间 div 元素，最后触发单击的内部元素。<br />
+<h2>
+self事件修饰符</h2>
+self 修饰符可以理解为跳过冒泡事件和捕获事件，只有直接作用在该元素上的事件才可以执行。<br />
+<br />
+self 修饰符会监视事件是否直接作用在元素上，若不是，则冒泡跳过该元素。<br />
+<br />
+例如：
+<pre class="html">
+&lt;style&gt;
+    .outside{
+        width: 300px;
+        height: 180px;
+        color:white;
+        font-size: 30px;
+        background: red;
+        margin-top: 100px;
+    }
+    .center{
+        width: 200px;
+        height: 120px;
+        background: #17a2b8;
+    }
+    .inside{
+        width: 100px;
+        height: 60px;
+        background: #a9b4ba;
+    }
+&lt;/style&gt;
+&lt;div id=&quot;app&quot;&gt;
+    &lt;div class=&quot;outside&quot; @click=&quot;outside&quot;&gt;
+        &lt;div class=&quot;center&quot; @click.self=&quot;center&quot;&gt;
+            &lt;div class=&quot;inside&quot; @click=&quot;inside&quot;&gt;内部&lt;/div&gt;
+            中间
+        &lt;/div&gt;
+        外层
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+    //创建一个应用程序实例
+    const vm= Vue.createApp({
+        methods: {
+            outside: function () {
+                alert(&quot;外面的div&quot;)
+            },
+            center: function () {
+                alert(&quot;中间的div&quot;)
+            },
+            inside: function () {
+                alert(&quot;内部的div&quot;)
+            }
+        }
+    //在指定的DOM元素上装载应用程序实例的根组件
+    }).mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，单击内部的 div 后，触发该元素的单击事件。由于中间 div 添加了 self 修饰符，因此直接单击该元素就会跳过，内部 div 执行完毕后，外层的 div 紧接着执行。<br />
+<h2>
+once事件修饰符</h2>
+有时需要只执行一次的操作，比如微信朋友圈点赞，便可以使用 once 修饰符来完成。<br />
+<br />
+不像其他只能对原生的 DOM 事件起作用的修饰符，once 修饰符还能被用到自定义的组件事件上。<br />
+<br />
+例如：
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+    &lt;button @click.once=&quot;add&quot;&gt;点赞 {{num }}&lt;/button&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+    //创建一个应用程序实例
+    const vm= Vue.createApp({
+        //该函数返回数据对象
+        data(){
+          return{
+             num:0
+           }
+        },
+        methods:{
+            add:function(){
+                this.num +=1
+            },
+        }
+    //在指定的DOM元素上装载应用程序实例的根组件
+    }).mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，单击&ldquo;点赞0&rdquo;按钮，count 值从 0 变成 1，之后，无论再单击多少次，count 的值仍然是 1，效果如下图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230906/2-230Z6161620937.gif" /><br />
+图 4 once修饰符作用效果</div>
+<h2>
+prevent事件修饰符</h2>
+prevent 修饰符用于阻止默认行为，例如 &lt;a&gt; 标签，当单击标签时，默认行为会跳转到对应的链接，如果在 &lt;a&gt; 标签上添加 prevent 修饰符，则不会跳转到对应的链接。<br />
+<br />
+注意，不要把 passive 和 prevent 修饰符一起使用，因为 prevent 将会被忽略，同时浏览器可能会展示一个警告。passive 修饰符会告诉浏览器不想阻止事件的默认行为。<br />
+<br />
+例如：
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+    &lt;div style=&quot;margin-top: 100px&quot;&gt;
+        &lt;a @click.prevent=&quot;alert()&quot; href=&quot;https://cn.vuejs.org&quot; &gt;阻止跳转&lt;/a&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+    //创建一个应用程序实例
+    const vm= Vue.createApp({
+        methods:{
+            alert:function(){
+                alert(&quot;阻止&lt;a&gt;标签的链接&quot;)
+            }
+        }
+     //在指定的DOM元素上装载应用程序实例的根组件
+    }).mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，单击&ldquo;阻止跳转&rdquo;链接，触发 alert() 事件弹出&ldquo;阻止 &lt;a&gt; 标签的链接&rdquo;，效果如下图所示；然后单击&ldquo;确定&rdquo;按钮，可以发现页面将不再进行跳转。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230906/2-230Z616164T60.gif" /><br />
+图 5 prevent修饰符</div>
+<h2>
+passive事件修饰符</h2>
+明明是默认执行的行为，为什么还要使用 passive 修饰符呢？原因是浏览器只有等内核线程执行到事件监听器对应的 JavaScript 代码时，才能知道内部是否会调用 preventDefault 函数来阻止事件的默认行为，所以浏览器本身是没有办法对这种场景进行优化的。在这种场景下，用户的手势事件无法快速产生，会导致页面无法快速执行滑动逻辑，从而让用户感觉到页面卡顿。<br />
+<br />
+通俗地说，就是每次事件产生时，浏览器都会去查询一下是否有 preventDefault 阻止该次事件的默认动作，加上 passive 修饰符就是为了告诉浏览器，不用查询了，没有 preventDefault 阻止默认行为。<br />
+<br />
+passive 修饰符一般用在滚动监听、@scoll 和 @touchmove 中。因为滚动监听过程中，移动每个像素都会产生一次事件，每次都使用内核线程查询 prevent 会使滑动卡顿，通过 passive 修饰符将内核线程查询跳过，可以大大提升滑动的流畅度。<br />
+<br />
+注意，使用修饰符时，顺序很重要，相应的代码会以同样的顺序产生。因此，使用 v-on:click.prevent.self 会阻止所有的单击，而 v-on:click.self.prevent 只会阻止对元素自身的单击。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="372.html" title="C语言结构类型的定义" target="_blank">C语言结构类型的定义</a></li>
+<li><a href="vip_2254.html" title="编译器会为const引用创建临时变量" target="_blank">编译器会为const引用创建临时变量</a></li>
+<li><a href="5131.html" title="Go语言反射规则浅析" target="_blank">Go语言反射规则浅析</a></li>
+<li><a href="7243.html" title="MySQL触发器到底是什么？" target="_blank">MySQL触发器到底是什么？</a></li>
+<li><a href="vip_8339.html" title="MySQL如何处理无效数据值？" target="_blank">MySQL如何处理无效数据值？</a></li>
+<li><a href="vip_8346.html" title="MySQL如何创建并执行事件？" target="_blank">MySQL如何创建并执行事件？</a></li>
+<li><a href="nlr526t.html" title="PHP常量的定义和使用" target="_blank">PHP常量的定义和使用</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10396;
+window.arcId = "eb81/V6QeWROWhZ9K26/3xppKRbR556N7DyxK8inBxlBsCe/a3VuOCLfw5SO";
+window.typeidChain = "309|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

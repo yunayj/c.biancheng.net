@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>汇编语言MUL指令：无符号数乘法</title>
+<meta name="description" content="32 位模式下，MUL（无符号数乘法）指令有三种类型： 第一种执行 8 位操作数与 AL 寄存器的乘法； 第二种执行 16 位操作数与 AX 寄存器的乘法； 第三种执行 32 位操作数与 EAX 寄存器的乘" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>汇编语言MUL指令：无符号数乘法</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">32 位模式下，MUL（无符号数乘法）指令有三种类型：<br />
+<ul>
+<li>
+第一种执行 8 位操作数与 AL 寄存器的乘法；</li>
+<li>
+第二种执行 16 位操作数与 AX 寄存器的乘法；</li>
+<li>
+第三种执行 32 位操作数与 EAX 寄存器的乘法。</li>
+</ul>
+<br />
+乘数和被乘数的大小必须保持一致，乘积的大小则是它们的一倍。这三种类型都可以使用寄存器和内存操作数，但不能使用立即数：<br />
+<p class="info-box">
+MUL reg/mem8<br />
+MUL reg/meml6<br />
+MUL reg/mem32</p>
+MUL 指令中的单操作数是乘数。下表按照乘数的大小，列出了默认的被乘数和乘积。由于目的操作数是被乘数和乘数大小的两倍，因此不会发生溢岀。<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+被乘数</td>
+<th>
+乘数</td>
+<th>
+乘积</td>
+</tr>
+<tr>
+<td>
+AL</td>
+<td>
+reg/mem8</td>
+<td>
+AX</td>
+</tr>
+<tr>
+<td>
+AX</td>
+<td>
+reg/mem16</td>
+<td>
+DX:AX</td>
+</tr>
+<tr>
+<td>
+EAX</td>
+<td>
+reg/mem32</td>
+<td>
+EDX:EAX</td>
+</tr>
+</tbody>
+</table>
+<br />
+如果乘积的高半部分不为零，则 MUL 会把进位标志位和溢出标志位置 1。因为进位标志位常常用于无符号数的算术运算，在此我们也主要说明这种情况。例如，当 AX 乘以一个 16 位操作数时，乘积存放在 DX 和 AX 寄存器对中。其中，乘积的高 16 位存放在 DX，低 16 位存放在 AX。如果 DX 不等于零，则进位标志位置 1，这就意味着隐含的目的操作数的低半部分容纳不了整个乘积。<br />
+<br />
+有个很好的理由要求在执行 MUL 后检查进位标志位，即，确认忽略乘积的高半部分是否安全。<br />
+<h2>
+MUL 示例</h2>
+下述语句实现 AL 乘以 BL，乘积存放在 AX 中。由于 AH（乘积的高半部分）等于零，因此进位标志位被清除（CF=0）：<br />
+<p class="info-box">
+mov al, 5h<br />
+mov bl, 10h<br />
+mul bl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; AX = 0050h, CF = 0</p>
+下图展示了寄存器内容的变化：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/190510/4-1Z510130943117.gif" /></div>
+<br />
+下述语句实现 16 位值 2000h 乘以 0100h。由于乘积的高半部分（存放于 DX）不等于零，因此进位标志位被置 1：<br />
+<pre class="asm">
+.data
+val1 WORD 2000h
+val2 WORD 0l00h
+.code
+mov ax, val1           ; AX = 2000h
+mul val2               ; DX:AX = 00200000h, CF = 1</pre>
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/190510/4-1Z51013100Hc.gif" /></div>
+<br />
+下述语句实现 12345h 乘以 1000h，产生的 64 位乘积存放在 EDX 和 EAX 寄存器对中。EDX 中存放的乘积高半部分为零，因此进位标志位被清除：<br />
+<p class="info-box">
+mov eax, 12345h<br />
+mov ebx, 1000h<br />
+mul ebx&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; EDX:EAX = 0000000012345000h, CF = 0</p>
+下图展示了寄存器内容的变化：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/190510/4-1Z51013102V96.gif" /></div>
+<h2>
+在 64 位模式下使用 MUL</h2>
+64 位模式下，MUL 指令可以使用 64 位操作数。一个 64 位寄存器或内存操作数与 RAX 相乘，产生的 128 位乘积存放到 RDX:RAX 寄存器中。下例中，RAX 乘以 2，就是将 RAX 中的每一位都左移一位。RAX 的最高位溢出到 RDX 寄存器，使得 RDX 的值为 0000 0000 0000 0001h：<br />
+<p class="info-box">
+mov rax, 0FFFF0000FFFF0000h<br />
+mov rbx, 2<br />
+mul rbx&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; RDX:RAX = 0000000000000001FFFE0001FFFE0000</p>
+下面的例子中，RAX 乘以一个 64 位内存操作数。该寄存器的值乘以 16，因此，其中的每个十六进制数字都左移一位（一次移动 4 个二进制位就相当于乘以 16）。<br />
+<pre class="asm">
+.data
+multiplier QWORD 10h
+.code
+mov rax, OAABBBBCCCCDDDDh
+mul multiplier       ; RDX:RAX = 00000000000000000AABBBBCCCCDDDDOh</pre>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_2114.html" title="符号——链接的粘合剂" target="_blank">符号——链接的粘合剂</a></li>
+<li><a href="2126.html" title="OSI网络七层模型简明教程" target="_blank">OSI网络七层模型简明教程</a></li>
+<li><a href="../mysql/week.html" title="MySQL WEEK函数：获取指定日期是一年中的第几周" target="_blank">MySQL WEEK函数：获取指定日期是一年中的第几周</a></li>
+<li><a href="8641.html" title="线程终止执行的三种方法（Linux）" target="_blank">线程终止执行的三种方法（Linux）</a></li>
+<li><a href="../numpy/string-function.html" title="NumPy字符串处理函数" target="_blank">NumPy字符串处理函数</a></li>
+<li><a href="ltjleeu.html" title="Redis SETNX命令的用法" target="_blank">Redis SETNX命令的用法</a></li>
+<li><a href="a0raogu.html" title="HTML &lt;center&gt;标签：使文字水平居中" target="_blank">HTML &lt;center&gt;标签：使文字水平居中</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 3602;
+window.arcId = "b7e9Q/i6IMI4dZKXVFcaXBM1ow/OJ7bQQ7rgCDYNmkd/auAAEPPW6iKfRvc";
+window.typeidChain = "448|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

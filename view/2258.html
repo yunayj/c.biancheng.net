@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Python函数参数传递机制（超级详细）</title>
+<meta name="description" content="Python 的参数值是如何传入函数的呢？这是由 Python 函数的参数传递机制来控制的。Python 中函数的参数传递机制都是值传递。所谓值传递，就是将实际参数值的副本（复制品）传入函数，" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Python函数参数传递机制（超级详细）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body"><a href='../python/python.html' target='_blank'>Python</a>中，函数参数由实参传递给形参的过程，是由参数传递机制来控制的。通过学习《Python函数值传递和引用传递》一节我们知道，根据实际参数的类型不同，函数参数的传递方式分为值传递和引用传递（又称为地址传递），本节将对这两种传递机制做深度剖析。
+<h2>
+Python函数参数的值传递机制</h2>
+所谓值传递，实际上就是将实际参数值的副本（复制品）传入函数，而参数本身不会受到任何影响。<br />
+<p class="info-box">
+值传递的方式，类似于《西游记》里的孙悟空，它复制一个假孙悟空，假孙悟空具有的能力和真孙悟空相同，可除妖或被砍头。但不管这个假孙悟空遇到什么事，真孙悟空都不会受到任何影响。与此类似，传入函数的是实际参数值的复制品，不管在函数中对这个复制品如何操作，实际参数值本身不会受到任何影响。</p>
+下面程序演示了函数参数进行值传递的效果：<br />
+<pre class="python">
+def swap(a , b) :
+    # 下面代码实现a、b变量的值交换
+    a, b = b, a
+    print(&quot;swap函数里，a的值是&quot;, \
+        a, &quot;；b的值是&quot;, b)
+a = 6
+b = 9
+swap(a , b)
+print(&quot;交换结束后，变量a的值是&quot;, \
+    a , &quot;；变量b的值是&quot;, b)</pre>
+运行上面程序，将看到如下运行结果：<br />
+<p class="info-box">
+swap函数里，a的值是 9 ；b的值是 6<br />
+交换结束后，变量a的值是 6 ；变量b的值是 9</p>
+从上面的运行结果来看，在 swap() 函数里，a 和 b 的值分别是 9、6，交换结束后，变量 a 和 b 的值依然是 6、9。从这个运行结果可以看出，程序中实际定义的变量 a 和 b，并不是 swap() 函数里的 a 和 b 。<br />
+<br />
+正如前面所讲的，swap() 函数里的 a 和 b 只是主程序中变量 a 和 b 的复制品。下面通过示意图来说明上面程序的执行过程。<br />
+<br />
+上面程序开始定义了 a、b 两个局部变量，这两个变量在内存中的存储示意图如图 1 所示。
+<div style="text-align: center;">
+<br />
+<img alt="主栈区中 a、b 变量存储示意图" src="../uploads/allimg/190213/2-1Z2131J304295.gif" /><br />
+图 1 主栈区中 a、b 变量存储示意图</div>
+<br />
+当程序执行 swap() 函数时，系统进入 swap() 函数，并将主程序中的 a、b 变量作为参数值传入 swap() 函数，但传入 swap() 函数的只是 a、b 的副本，而不是 a、b 本身。进入 swap() 函数后，系统中产生了 4 个变量，这 4 个变量在内存中的存储示意图如图 2 所示。
+<div style="text-align: center;">
+<br />
+<img alt="主栈区的变量作为参数值传入swap()函数后存储示意图" src="../uploads/allimg/190213/2-1Z2131J33SX.gif" /><br />
+图 2 主栈区的变量作为参数值传入 swap() 函数后存储示意图</div>
+<br />
+当在主程序中调用 swap() 函数时，系统分别为主程序和 swap() 函数分配两块栈区，用于保存它们的局部变量。将主程序中的 a、b 变量作为参数值传入 swap() 函数，实际上是在 swap() 函数栈区中重新产生了两个变量 a、b，并将主程序栈区中 a、b 变量的值分别赋值给 swap() 函数栈区中的 a、b 参数（就是对 swap() 函数的 a、b 两个变量进行初始化）。此时，系统存在两个 a 变量、两个 b 变量，只是存在于不同的栈区中而己。<br />
+<br />
+程序在 swap() 函数中交换 a、b 两个变量的值，实际上是对图 2 中灰色区域的 a、b 变量进行交换。交换结束后，输出 swap() 函数中 a、b 变量的值，可以看到 a 的值为 9，b 的值为 6，此时在内存中的存储示意图如图 3 所示。
+<div style="text-align: center;">
+<br />
+<img alt="swap()函数中a、b 交换之后的存储示意图" src="../uploads/allimg/190213/2-1Z2131J4355M.gif" /><br />
+图 3 swap() 函数中 a、b 交换之后的存储示意图</div>
+<br />
+对比图 3 与图 1，可以看到两个示意图中主程序栈区中 a、b 的值并未有任何改变，程序改变的只是 swap() 函数栈区中 a、b 的值。这就是值传递的实质：当系统开始执行函数时，系统对形参执行初始化，就是把实参变量的值赋给函数的形参变量，在函数中操作的并不是实际的实参变量。
+<h2>
+Python函数参数的引用传递</h2>
+如果实际参数的数据类型是可变对象（列表、字典），则函数参数的传递方式将采用引用传递方式。需要注意的是，引用传递方式的底层实现，采用的依然还是值传递的方式。<br />
+<br />
+下面程序示范了引用传递参数的效果：
+<pre class="python">
+def swap(dw):
+    # 下面代码实现dw的a、b两个元素的值交换
+    dw[&#39;a&#39;], dw[&#39;b&#39;] = dw[&#39;b&#39;], dw[&#39;a&#39;]
+    print(&quot;swap函数里，a元素的值是&quot;,\
+        dw[&#39;a&#39;], &quot;；b元素的值是&quot;, dw[&#39;b&#39;])
+dw = {&#39;a&#39;: 6, &#39;b&#39;: 9}
+swap(dw)
+print(&quot;交换结束后，a元素的值是&quot;,\
+    dw[&#39;a&#39;], &quot;；b元素的值是&quot;, dw[&#39;b&#39;])</pre>
+运行上面程序，将看到如下运行结果：
+<p class="info-box">
+swap函数里，a元素的值是 9 ；b元素的值是 6<br />
+交换结束后，a元素的值是 9 ；b元素的值是 6</p>
+从上面的运行结果来看，在 swap() 函数里，dw 字典的 a、b 两个元素的值被交换成功。不仅如此，当 swap() 函数执行结束后，主程序中 dw 字典的 a、b 两个元素的值也被交换了。这很容易造成一种错觉，即在调用 swap() 函数时，传入 swap() 函数的就是 dw 字典本身，而不是它的复制品。但这只是一种错觉，下面还是结合示意图来说明程序的执行过程。<br />
+<br />
+程序开始创建了一个字典对象，并定义了一个 dw 引用变量（其实就是一个指针）指向字典对象，这意味着此时内存中有两个东西：对象本身和指向该对象的引用变量。此时在系统内存中的存储示意图如图 4 所示：
+<div style="text-align: center;">
+<br />
+<img alt="主程序创建了字典对象后存储示意图" src="../uploads/allimg/190213/2-1Z2131J551L5.gif" /><br />
+图 4 主程序创建了字典对象后存储示意图</div>
+<br />
+接下来主程序开始调用 swap() 函数，在调用 swap() 函数时，dw 变量作为参数传入 swap() 函数，这里依然采用值传递方式：把主程序中 dw 变量的值赋给 swap() 函数的 dw 形参，从而完成 swap() 函数的 dw 参数的初始化。值得指出的是，主程序中的 dw 是一个引用变量（也就是一个指针），它保存了字典对象的地址值，当把 dw 的值赋给 swap() 函数的 dw 参数后，就是让 swap() 函数的 dw 参数也保存这个地址值，即也会引用到同一个字典对象。图 5 显示了 dw 字典传入 swap() 函数后的存储示意图。
+<div style="text-align: center;">
+<br />
+<img alt="dw字典传入swap()函数后存储示意图" src="../uploads/allimg/190213/2-1Z2131J63I52.gif" /><br />
+图 5 dw 字典传入 swap() 函数后存储示意图</div>
+<br />
+从图 5 来看，这种参数传递方式是不折不扣的值传递方式，系统一样复制了dw 的副本传入 swap() 函数。但由于 dw 只是一个引用变量，因此系统复制的是 dw 变量，并未复制字典本身。<br />
+<br />
+当程序在 swap() 函数中操作 dw 参数时，由于 dw 只是一个引用变量，故实际操作的还是字典对象。此时，不管是操作主程序中的 dw 变量，还是操作 swap() 函数里的 dw 参数，其实操作的都是它们共同引用的字典对象，它们引用的是同一个字典对象。因此，当在 swap() 函数中交换 dw 参数所引用字典对象的 a、b 两个元素的值后，可以看到在主程序中 dw 变量所引用字典对象的 a、b 两个元素的值也被交换了。<br />
+<br />
+为了更好地证明主程序中的 dw 和 swap() 函数中的 dw 是两个变量，在 swap() 函数的最后一行增加如下代码：<br />
+<p class="info-box">
+#把dw 直接赋值为None，让它不再指向任何对象<br />
+dw = None</p>
+运行上面代码，结果是 swap() 函数中的 dw 变量不再指向任何对象，程序其他地方没有任何改变。主程序调用 swap() 函数后，再次访问 dw 变量的 a、b 两个元素，依然可以输出 9、6。可见，主程序中的 dw 变量没有受到任何影响。实际上，当在 swap() 函数中增加&ldquo;dw =None&rdquo;代码后，在内存中的存储示意图如图 6 所示。
+<div style="text-align: center;">
+<br />
+<img alt="将swap()函数中的dw赋值为None 后存储示意图" src="../uploads/allimg/190213/2-1Z2131JK5157.gif" /><br />
+图 6 将 swap() 函数中的 dw 赋值为 None 后存储示意图</div>
+<br />
+从图 6 来看，把 swap() 函数中的 dw 赋值为 None 后，在 swap() 函数中失去了对字典对象的引用，不可再访问该字典对象。但主程序中的 dw 变量不受任何影响，依然可以引用该字典对象，所以依然可以输出字典对象的 a、b 元素的值。<br />
+<br />
+通过上面介绍可以得出如下两个结论：
+<ol>
+<li>
+不管什么类型的参数，在 Python 函数中对参数直接使用&ldquo;=&rdquo;符号赋值是没用的，直接使用&ldquo;=&rdquo;符号赋值并不能改变参数。</li>
+<li>
+如果需要让函数修改某些数据，则可以通过把这些数据包装成列表、字典等可变对象，然后把列表、字典等可变对象作为参数传入函数，在函数中通过列表、字典的方法修改它们，这样才能改变这些数据。</li>
+</ol>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_1801.html" title="C语言模拟密码输入（显示星号）" target="_blank">C语言模拟密码输入（显示星号）</a></li>
+<li><a href="3150.html" title="Docker容器（container）详解" target="_blank">Docker容器（container）详解</a></li>
+<li><a href="vip_5952.html" title="Python浮点数精度问题（包含解决方案）" target="_blank">Python浮点数精度问题（包含解决方案）</a></li>
+<li><a href="vip_7735.html" title="自定义STL算法规则，应优先使用函数对象！" target="_blank">自定义STL算法规则，应优先使用函数对象！</a></li>
+<li><a href="vip_8083.html" title="数学不好，对学数据结构有影响吗？" target="_blank">数学不好，对学数据结构有影响吗？</a></li>
+<li><a href="ni668b.html" title="自学资源汇总" target="_blank">自学资源汇总</a></li>
+<li><a href="5lj5grs.html" title="Redis HINCRBY命令的用法" target="_blank">Redis HINCRBY命令的用法</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 2258;
+window.arcId = "c06enykhen3hvZ0IlmsY8mRmCbI4gXU+HRKsFXszW6tdfLLwwNk//hFnL4I";
+window.typeidChain = "145|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

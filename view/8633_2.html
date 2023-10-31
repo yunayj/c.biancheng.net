@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Linux条件变量详解</title>
+<meta name="description" content="假设一个进程中包含多个线程，这些线程共享变量 x，我们希望某个（或某些）线程等待 x==10 条件成立后再执行后续的代码，该如何实现呢？ 您可能想到用 while 循环实现，例如： void" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Linux条件变量详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">假设一个进程中包含多个线程，这些线程共享变量 x，我们希望某个（或某些）线程等待 &quot;x==10&#39; 条件成立后再执行后续的代码，该如何实现呢？<br />
+<br />
+您可能想到用 while 循环实现，例如：
+<pre class="cpp">
+void* threadFun(void * args){
+    while(x != 10){
+        sleep(5);
+    }
+    // 待条件成立后，执行后续的代码
+}</pre>
+当线程执行此函数时，会判断 x 的值是否等于 10，如果不等则间隔 5 秒后再重复判断，直到 x 的值等于 10 ，线程才能执行后续的代码。<br />
+<br />
+直观上看，while 循环确实能够阻塞线程，但这种方法存在严重的效率问题。当线程因条件不成立进入等待状态时，如果此时恰好有另一个线程将 x 的值改为 10，该线程必须等待 5 秒后才能继续执行。如果我们将等待时间缩短（或者直接将 sleep(5) 注释掉），线程将反复判断 x 的值是否等于 10，它可能会一直霸占着 CPU 资源，导致其它线程无法执行，x 变量的值会出现&ldquo;长时间不改变&rdquo;的情况。<br />
+<br />
+针对类似的场景，我们推荐您用<span style="color:#008000;">条件变量</span>来实现。和互斥锁、信号量类似，条件变量本质也是一个全局变量，它的功能是阻塞线程，直至接收到&ldquo;条件成立&rdquo;的信号后，被阻塞的线程才能继续执行。<br />
+<br />
+一个条件变量可以阻塞多个线程，这些线程会组成一个等待队列。当条件成立时，条件变量可以解除线程的&ldquo;被阻塞状态&rdquo;。也就是说，条件变量可以完成以下两项操作：
+<ul>
+	<li>
+		阻塞线程，直至接收到&ldquo;条件成立&rdquo;的信号；</li>
+	<li>
+		向等待队列中的一个或所有线程发送&ldquo;条件成立&rdquo;的信号，解除它们的&ldquo;被阻塞&rdquo;状态。</li>
+</ul>
+<br />
+为了避免多线程之间发生&ldquo;抢夺资源&rdquo;的问题，条件变量在使用过程中必须和一个互斥锁搭配使用。如果您不了解互斥锁或者对互斥锁一知半解，请先阅读《<a href="../thread/vip_8615_2.html" target="_blank">Linux互斥锁实现线程同步</a>》一文。
+<h2>
+	条件变量的具体用法</h2>
+POSIX 标准中，条件变量用 pthread_cond_t 类型的变量表示，此类型定义在<code>&lt;pthread.h&gt;</code>头文件中。举个例子：
+<pre class="cpp" shownum="false">
+#include &lt;pthread.h&gt;
+pthread_cond_t myCond;</pre>
+由此，我们就成功创建了一个条件变量。要想使用 myCond 条件变量，还需要进行初始化操作。
+<h4>
+	1) 初始化条件变量</h4>
+初始化条件变量的方式有两种，一种是直接将 PTHREAD_COND_INITIALIZER 赋值给条件变量，例如：
+<pre class="cpp" shownum="false">
+pthread_cond_t myCond = PTHREAD_COND_INITIALIZER;</pre>
+<br />
+还可以借助 pthread_cond_init() 函数初始化条件变量，语法格式如下：
+<pre class="info-box">
+int pthread_cond_init(pthread_cond_t * cond, const pthread_condattr_t * attr);</pre>
+参数 cond 用于指明要初始化的条件变量；参数 attr 用于自定义条件变量的属性，通常我们将它赋值为 NULL，表示以系统默认的属性完成初始化操作。<br />
+<br />
+pthread_cond_init() 函数初始化成功时返回数字 0，反之函数返回非零数。<br />
+<blockquote>
+	<p>
+		当 attr 参数为 NULL 时，以上两种初始化方式完全等价。</p>
+</blockquote>
+<h4>
+	2) 阻塞当前线程，等待条件成立</h4>
+当条件不成立时，条件变量可以阻塞当前线程，所有被阻塞的线程会构成一个等待队列。<br />
+<br />
+阻塞线程可以借助以下两个函数实现：
+<pre class="info-box">
+int pthread_cond_wait(pthread_cond_t* cond, pthread_mutex_t* mutex);
+int pthread_cond_timedwait(pthread_cond_t* cond, pthread_mutex_t* mutex, const struct timespec* abstime); </pre>
+cond 参数表示已初始化好的条件变量；mutex 参数表示与条件变量配合使用的互斥锁；abstime 参数表示阻塞线程的时间。
+<blockquote>
+	<p>
+		注意，abstime 参数指的是绝对时间，例如您打算阻塞线程 5 秒钟，那么首先要得到当前系统的时间，然后再加上 5 秒，最终得到的时间才是传递的实参值。</p>
+</blockquote>
+调用两个函数之前，我们必须先创建好一个互斥锁并完成&ldquo;加锁&rdquo;操作，然后才能作为实参传递给 mutex 参数。两个函数会完成以下两项工作：
+<ul>
+	<li>
+		阻塞线程，直至接收到&ldquo;条件成立&rdquo;的信号；</li>
+	<li>
+		当线程被添加到等待队列上时，将互斥锁&ldquo;解锁&rdquo;。</li>
+</ul>
+<br />
+也就是说，函数尚未接收到&ldquo;条件成立&rdquo;的信号之前，它将一直阻塞线程执行。注意，当函数接收到&ldquo;条件成立&rdquo;的信号后，它并不会立即结束对线程的阻塞，而是先完成对互斥锁的&ldquo;加锁&rdquo;操作，然后才解除阻塞。
+<blockquote>
+	<p>
+		<span style="background-color: rgb(249, 249, 249);">两个函数都以&ldquo;原子操作&rdquo;的方式完成&ldquo;阻塞线程+解锁&rdquo;或者&ldquo;重新加锁+解除阻塞&rdquo;这两个过程。所谓&ldquo;原子操作&rdquo;，即当有多个线程执行相同的某个过程时，虽然它们都会访问互斥锁和条件变量，但之间不会相互干扰。</span></p>
+</blockquote>
+以上两个函数都能用来阻塞线程，它们的区别在于：pthread_cond_wait() 函数可以永久阻塞线程，直到条件变量成立的那一刻；pthread_cond_timedwait() 函数只能在 abstime 参数指定的时间内阻塞线程，超出时限后，该函数将重新对互斥锁执行&ldquo;加锁&rdquo;操作，并解除对线程的阻塞，函数的返回值为 ETIMEDOUT。<br />
+<br />
+如果函数成功接收到了&ldquo;条件成立&rdquo;的信号，重新对互斥锁完成了&ldquo;加锁&rdquo;并使线程继续执行，函数返回数字 0，反之则返回非零数。<br />
+<blockquote>
+	<p>
+		POSIX 标准规定，pthread_cond_wait() 和 pthread_cond_timedwait() 函数是可以作为&ldquo;取消点&rdquo;的函数。当线程接收到&ldquo;强制终止执行&rdquo;的信号后，执行到这两个函数时，线程就会终止执行。有关强制终止执行线程和&ldquo;取消点&rdquo;的具体含义，您可以阅读《<a href="../thread/vip_8613_2.html" target="_blank">终止线程执行，这个坑千万别踩！</a>》一文。</p>
+</blockquote>
+<h4>
+	3) 解除线程的&ldquo;阻塞&rdquo;状态</h4>
+对于被 pthread_cond_wait() 或 pthread_cond_timedwait() 函数阻塞的线程，我们可以借助如下两个函数向它们发送&ldquo;条件成立&rdquo;的信号，解除它们的&ldquo;被阻塞&rdquo;状态：
+<pre class="info-box">
+int pthread_cond_signal(pthread_cond_t* cond);
+int pthread_cond_broadcast(pthread_cond_t* cond);</pre>
+cond 参数表示初始化好的条件变量。当函数成功解除线程的&ldquo;被阻塞&rdquo;状态时，返回数字 0，反之返回非零数。<br />
+<br />
+两个函数都能解除线程的&ldquo;被阻塞&rdquo;状态，区别在于：
+<ul>
+	<li>
+		pthread_cond_signal() 函数至少解除一个线程的&ldquo;被阻塞&rdquo;状态，如果等待队列中包含多个线程，优先解除哪个线程将由操作系统的线程调度程序决定；</li>
+	<li>
+		pthread_cond_broadcast() 函数可以解除等待队列中所有线程的&ldquo;被阻塞&rdquo;状态。</li>
+</ul>
+<br />
+由于互斥锁的存在，解除阻塞后的线程也不一定能立即执行。当互斥锁处于&ldquo;加锁&rdquo;状态时，解除阻塞状态的所有线程会组成等待互斥锁资源的队列，等待互斥锁&ldquo;解锁&rdquo;。<br />
+<h4>
+	4) 销毁条件变量</h4>
+对于初始化好的条件变量，我们可以调用 pthread_cond_destory() 函数销毁它。<br />
+<br />
+pthread_cond_destory() 函数的语法格式如下：
+<pre class="info-box">
+int pthread_cond_destroy(pthread_cond_t *cond);</pre>
+cond 参数表示要销毁的条件变量。如果函数成功销毁 cond 参数指定的条件变量，返回数字 0，反之返回非零数。<br />
+<br />
+值得一提的是，销毁后的条件变量还可以调用 pthread_cond_init() 函数重新初始化后使用。<br />
+<h2>
+	条件变量的实际应用</h2>
+接下来，通过一个实例给您演示条件变量的具体用法。
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+#include &lt;pthread.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+//初始化互斥锁
+pthread_mutex_t myMutex = PTHREAD_MUTEX_INITIALIZER;
+//初始化条件变量
+pthread_cond_t myCond = PTHREAD_COND_INITIALIZER;
+//设置全局变量
+int x = 0;
+//线程执行的函数
+void * waitForTrue(void *args) {
+    int res;
+    //条件变量阻塞线程之前，先对互斥锁执行&ldquo;加锁&rdquo;操作
+    res = pthread_mutex_lock(&amp;myMutex);
+    if (res != 0) {
+        printf(&quot;waitForTrue 加锁失败\n&quot;);
+        return NULL;
+    }
+    printf(&quot;------等待 x 的值为 10\n&quot;);
+    if (pthread_cond_wait(&amp;myCond, &amp;myMutex) == 0) {
+        printf(&quot;x = %d\n&quot;, x);
+    }
+    //最终将互斥锁解锁
+    pthread_mutex_unlock(&amp;myMutex);
+    return NULL;
+}
+//线程执行的函数
+void * doneForTrue(void *args) {
+    int res;
+
+    while (x != 10) {
+        //对互斥锁执行&ldquo;加锁&rdquo;操作
+        res = pthread_mutex_lock(&amp;myMutex);
+        if (res == 0) {
+            x++;
+            printf(&quot;doneForTrue：x = %d\n&quot;, x);
+            sleep(1);
+            //对互斥锁&ldquo;解锁&rdquo;
+            pthread_mutex_unlock(&amp;myMutex);
+        }
+    }
+    //发送&ldquo;条件成立&rdquo;的信号，解除 mythread1 线程的&ldquo;被阻塞&rdquo;状态
+    res = pthread_cond_signal(&amp;myCond);
+    if (res != 0) {
+        printf(&quot;解除阻塞失败\n&quot;);
+    }
+    return NULL;
+}
+int main() {
+    int res;
+    pthread_t mythread1, mythread2;
+    res = pthread_create(&amp;mythread1, NULL, waitForTrue, NULL);
+    if (res != 0) {
+        printf(&quot;mythread1线程创建失败\n&quot;);
+        return 0;
+    }
+    res = pthread_create(&amp;mythread2, NULL, doneForTrue, NULL);
+    if (res != 0) {
+        printf(&quot;mythread2线程创建失败\n&quot;);
+        return 0;
+    }
+    //等待 mythread1 线程执行完成
+    res = pthread_join(mythread1, NULL);
+    if (res != 0) {
+        printf(&quot;1：等待线程失败\n&quot;);
+    }
+    //等待 mythread2 线程执行完成
+    res = pthread_join(mythread2, NULL);
+    if (res != 0) {
+        printf(&quot;2：等待线程失败\n&quot;);
+    }
+    //销毁条件变量
+    pthread_cond_destroy(&amp;myCond);
+    return 0;
+}</pre>
+假设程序编写在 thread.c 文件中，执行过程如下：
+<p class="info-box">
+	[root@localhost ~]# gcc thread.c -o thread.exe -lpthread<br />
+	[root@localhost ~]# ./thread.exe<br />
+	------等待 x 的值为 10<br />
+	doneForTrue：x = 1<br />
+	doneForTrue：x = 2<br />
+	doneForTrue：x = 3<br />
+	doneForTrue：x = 4<br />
+	doneForTrue：x = 5<br />
+	doneForTrue：x = 6<br />
+	doneForTrue：x = 7<br />
+	doneForTrue：x = 8<br />
+	doneForTrue：x = 9<br />
+	doneForTrue：x = 10<br />
+	x = 10</p>
+程序中共创建了 2 个线程 mythread1 和 mythread2，其中 mythread1 线程借助条件变量实现了&ldquo;直到变量 x 的值为 10 时，才继续执行后续代码&rdquo;的功能，mythread1 线程用于将 x 的变量修改为 10，同时向 mythread1 线程发送&ldquo;条件成立&rdquo;的信号，唤醒 mythread1 线程并继续执行。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="18_2.html" title="Go语言字符类型（byte和rune）" target="_blank">Go语言字符类型（byte和rune）</a></li>
+<li><a href="636_2.html" title="vi字符串检索（查找）命令" target="_blank">vi字符串检索（查找）命令</a></li>
+<li><a href="3406_2.html" title="什么是生成树，生成树（生成森林）详解" target="_blank">什么是生成树，生成树（生成森林）详解</a></li>
+<li><a href="vip_5080_2.html" title="给Linux系统挂载光盘" target="_blank">给Linux系统挂载光盘</a></li>
+<li><a href="../python_spider/case03_2.html" title="Python爬虫：抓取多级页面数据" target="_blank">Python爬虫：抓取多级页面数据</a></li>
+<li><a href="6t3k18f_2.html" title="C++局部变量和全局变量详解" target="_blank">C++局部变量和全局变量详解</a></li>
+<li><a href="xlr45bh_2.html" title="C++条件编译详解" target="_blank">C++条件编译详解</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8633;
+window.arcId = "a00bhTSZOKcVBkDRqQ4IcrwNQuRmm2BCEL0mi9MSZapprgHR1P+2fCJ9Ne4";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

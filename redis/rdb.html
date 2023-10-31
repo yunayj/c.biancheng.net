@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Redis RDB持久化详解（原理+配置策略）</title>
+<meta name="description" content="Redis 提供了两种持久化机制：第一种是 RDB，又称快照（snapshot）模式，第二种是 AOF 日志，也就追加模式，本节讲解 Redis RDB持久化。" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="../view/niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="redis.html">Redis</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href="what-is-redis.html">Redis是什么</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href="windows-installer.html">Windows下载安装Redis</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href="linux-installer.html">Ubuntu下载安装Redis</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href="config.html">Redis配置文件</a>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href="data-types.html">Redis数据类型</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href="commands.html">Redis命令行模式</a>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href="keys.html">Redis key键</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href="strings.html">Redis string字符串</a>
+</dd>
+<dd>
+<span class="channel-num">9</span>
+<a href="bitmap.html">Redis bitmap位图</a>
+</dd>
+<dd>
+<span class="channel-num">10</span>
+<a href="incrby.html">Redis数值操作命令</a>
+</dd>
+<dd>
+<span class="channel-num">11</span>
+<a href="lists.html">Redis list列表</a>
+</dd>
+<dd>
+<span class="channel-num">12</span>
+<a href="hashes.html">Redis hash哈希散列</a>
+</dd>
+<dd>
+<span class="channel-num">13</span>
+<a href="sets.html">Redis set集合</a>
+</dd>
+<dd>
+<span class="channel-num">14</span>
+<a href="sorted-set.html">Redis zset有序集合</a>
+</dd>
+<dd>
+<span class="channel-num">15</span>
+<a href="connection.html">Redis连接命令</a>
+</dd>
+<dd>
+<span class="channel-num">16</span>
+<a href="security.html">Redis安全策略</a>
+</dd>
+<dd>
+<span class="channel-num">17</span>
+<a href="client.html">Redis客户端命令</a>
+</dd>
+<dd>
+<span class="channel-num">18</span>
+<a href="server.html">Redis服务器命令</a>
+</dd>
+<dd>
+<span class="channel-num">19</span>
+<a href="hyperloglog.html">Redis基数统计</a>
+</dd>
+<dd>
+<span class="channel-num">20</span>
+<a href="pubsub.html">Redis发布订阅</a>
+</dd>
+<dd>
+<span class="channel-num">21</span>
+<a href="streams.html">Redis消息队列</a>
+</dd>
+<dd>
+<span class="channel-num">22</span>
+<a href="bloom-filter.html">Redis布隆过滤器</a>
+</dd>
+<dd>
+<span class="channel-num">23</span>
+<a href="geo.html">Redis地理位置</a>
+</dd>
+<dd>
+<span class="channel-num">24</span>
+<a href="transaction.html">Redis事务</a>
+</dd>
+<dd>
+<span class="channel-num">25</span>
+<a href="lua-scripts.html">Redis Lua脚本</a>
+</dd>
+<dd>
+<span class="channel-num">26</span>
+<a href="benchmarks.html">Redis性能测试</a>
+</dd>
+<dd>
+<span class="channel-num">27</span>
+<a href="partition.html">Redis分区技术</a>
+</dd>
+<dd>
+<span class="channel-num">28</span>
+<a href="pipeline.html">Redis管道技术</a>
+</dd>
+<dd>
+<span class="channel-num">29</span>
+<a href="backup.html">Redis数据备份和还原</a>
+</dd>
+<dd>
+<span class="channel-num">30</span>
+<a href="rdb.html">Redis RDB持久化</a>
+</dd>
+<dd>
+<span class="channel-num">31</span>
+<a href="aof.html">Redis AOF持久化</a>
+</dd>
+<dd>
+<span class="channel-num">32</span>
+<a href="slaveof.html">Redis主从模式</a>
+</dd>
+<dd>
+<span class="channel-num">33</span>
+<a href="sentinel-model.html">Redis哨兵模式</a>
+</dd>
+<dd>
+<span class="channel-num">34</span>
+<a href="distributed-lock.html">Redis分布式锁</a>
+</dd>
+<dd>
+<span class="channel-num">35</span>
+<a href="cache.html">Redis缓存问题</a>
+</dd>
+<dd>
+<span class="channel-num">36</span>
+<a href="java.html">Java使用Redis</a>
+</dd>
+<dd>
+<span class="channel-num">37</span>
+<a href="php.html">PHP使用Redis</a>
+</dd>
+<dd>
+<span class="channel-num">38</span>
+<a href="python.html">Python使用Redis</a>
+</dd>
+<dd>
+<span class="channel-num">39</span>
+<a href="config-summary.html">Redis配置项汇总</a>
+</dd>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="redis.html">Redis</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Redis RDB持久化详解（原理+配置策略）</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">Redis 是一款基于内存的非关系型数据库，它会将数据全部存储在内存中。但是如果 Redis 服务器出现某些意外情况，比如宕机或者断电等，那么内存中的数据就会全部丢失。因此必须有一种机制能够保证 Redis 储存的数据不会因故障而丢失，这就是 Redis 的数据持久化机制。<br />
+<br />
+数据的持久化存储是 Redis 的重要特性之一，它能够将内存中的数据保存到本地磁盘中，实现对数据的持久存储。这样即使在服务器发生故障之后，也能通过本地磁盘对数据进行恢复。<br />
+<br />
+Redis 提供了两种持久化机制：第一种是 RDB，又称快照（snapshot）模式，第二种是 AOF 日志，也就追加模式。本节先讲解 RDB 快照模式，关于 AOF 日志会在《<a href="aof.html" target="_blank">Redis AOF持久化详解</a>》一节讲解。<br />
+<h2>
+RDB快照模式原理</h2>
+RDB 即快照模式，它是 Redis 默认的数据持久化方式，它会将数据库的快照保存在 dump.rdb 这个二进制文件中。
+<p class="tip-box">
+提示：所谓&ldquo;快照&rdquo;就是将内存数据以二进制文件的形式保存起来。</p>
+我们知道 Redis 是单线程的，也就说一个线程要同时负责多个客户端套接字的并发读写，以及内存数据结构的逻辑读写。<br />
+<br />
+Redis 服务器不仅需要服务线上请求，同时还要备份内存快照。在备份过程中 Redis 必须进行文件 IO 读写，而 IO 操作会严重服务器的性能。那么如何实现既不影响客户端的请求，又实现快照备份操作呢，这时就用到了多进程。<br />
+<br />
+Redis 使用操作系统的多进程 COW(Copy On Write) 机制来实现快照持久化操作。<br />
+<br />
+RDB 实际上是 Redis 内部的一个定时器事件，它每隔一段固定时间就去检查当前数据发生改变的次数和改变的时间频率，看它们是否满足配置文件中规定的持久化触发条件。当满足条件时，Redis 就会通过操作系统调用 fork() 来创建一个子进程，该子进程与父进程享有相同的地址空间。<br />
+<br />
+Redis 通过子进程遍历整个内存空间来获取存储的数据，从而完成数据持久化操作。注意，此时的主进程则仍然可以对外提供服务，父子进程之间通过操作系统的 COW 机制实现了数据段分离，从而保证了父子进程之间互不影响。
+<h2>
+RDB持久化触发策略</h2>
+RDB 持久化提供了两种触发策略：一种是手动触发，另一种是自动触发。
+<h4>
+1) 手动触发策略</h4>
+手动触发是通过<code>SAVAE</code>命令或者<code>BGSAVE</code>命令将内存数据保存到磁盘文件中。如下所示：<br />
+<pre class="info-box">
+127.0.0.1:6379&gt; SAVE
+OK
+127.0.0.1:6379&gt; BGSAVE
+Background saving started
+127.0.0.1:6379&gt;  LASTSAVE
+(integer) 1611298430</pre>
+上述命令<code>BGSAVE</code>从后台执行数据保存操作，其可用性要优于执行 SAVE 命令。<br />
+<br />
+SAVE 命令会阻塞 Redis 服务器进程，直到 dump.rdb 文件创建完毕为止，在这个过程中，服务器不能处理任何的命令请求。<br />
+<br />
+<code>BGSAVE</code>命令是非阻塞式的，所谓非阻塞式，指的是在该命令执行的过程中，并不影响 Redis 服务器处理客户端的其他请求。这是因为 Redis 服务器会 fork() 一个子进程来进行持久化操作（比如创建新的 dunp.rdb 文件），而父进程则继续处理客户端请求。当子进程处理完后会向父进程发送一个信号，通知它已经处理完毕。此时，父进程会用新的 dump.rdb 文件覆盖掉原来的旧文件。<br />
+<br />
+因为<code>SAVE</code>命令无需创建子进程，所以执行速度要略快于<code>BGSAVE</code>命令，但是<code>SAVE</code>命令是阻塞式的，因此其可用性欠佳，如果在数据量较少的情况下，基本上体会不到两个命令的差别，不过仍然建议您使用 <code>BGSAVE</code>命令。<br />
+<p class="tip-box">
+注意：LASTSAVE 命令用于查看 BGSAVE 命令是否执行成功。</p>
+<h4>
+2) 自动触发策略</h4>
+自动触发策略，是指 Redis 在指定的时间内，数据发生了多少次变化时，会自动执行<code>BGSAVE</code>命令。自动触发的条件包含在了 Redis 的配置文件中，如下所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="Redis RDB数据持久化" src="../uploads/allimg/210913/1606446203-0.gif" /><br />
+图1：数据持久化策略</div>
+<br />
+上图所示， save m n 的含义是在时间 m 秒内，如果 Redis 数据至少发生了 n 次变化，那么就自动执行<code>BGSAVE</code>命令。配置策略说明如下：<br />
+<ul>
+<li>
+save 900 1 表示在 900 秒内，至少更新了 1 条数据，Redis 自动触发 BGSAVE&nbsp;命令，将数据保存到硬盘。</li>
+<li>
+save 300 10 表示在 300 秒内，至少更新了 10 条数据，Redis 自动触 BGSAVE 命令，将数据保存到硬盘。</li>
+<li>
+save 60 10000 表示 60 秒内，至少更新了 10000 条数据，Redis 自动触发 BGSAVE 命令，将数据保存到硬盘。</li>
+</ul>
+<br />
+只要上述三个条件任意满足一个，服务器就会自动执行<code>BGSAVE</code>命令。当然您可以根据实际情况自己调整触发策略。
+<p class="tip-box">
+注意：每次创建 RDB 文件之后，Redis 服务器为实现自动持久化而设置的时间计数和次数计数就会被清零，并重新开始计数，因此多个策略的效果不会叠加。</p>
+<h2>
+RDB持久化优劣势</h2>
+最后我们对 RDB 持久化的优劣势做简单地分析：<br />
+<br />
+我们知道，在 RDB 持久化的过程中，子进程会把 Redis 的所有数据都保存到新建的 dump.rdb 文件中，这是一个既消耗资源又浪费时间的操作。因此 Redis 服务器不能过于频繁地创建 rdb 文件，否则会严重影响服务器的性能。<br />
+<br />
+RDB 持久化的最大不足之处在于，最后一次持久化的数据可能会出现丢失的情况。我们可以这样理解，在 持久化进行过程中，服务器突然宕机了，这时存储的数据可能并不完整，比如子进程已经生成了 rdb 文件，但是主进程还没来得及用它覆盖掉原来的旧 rdb 文件，这样就把最后一次持久化的数据丢失了。<br />
+<br />
+RDB 数据持久化适合于大规模的数据恢复，并且还原速度快，如果对数据的完整性不是特别敏感（可能存在最后一次丢失的情况），那么 RDB 持久化方式非常合适。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="../view/niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/vip_2329.html" title="C++类模板中的静态成员" target="_blank">C++类模板中的静态成员</a></li>
+<li><a href="../view/vip_7078.html" title="Java 8中Map新增的方法" target="_blank">Java 8中Map新增的方法</a></li>
+<li><a href="../view/7182.html" title="C++ STL map emplace()和emplace_hint()方法详解" target="_blank">C++ STL map emplace()和emplace_hint()方法详解</a></li>
+<li><a href="../view/7565.html" title="数据库系统是什么？它由哪几部分组成？" target="_blank">数据库系统是什么？它由哪几部分组成？</a></li>
+<li><a href="../json/compare.html" title="JSON对比工具" target="_blank">JSON对比工具</a></li>
+<li><a href="../c/perror.html" title="C语言perror()：打印errno的值" target="_blank">C语言perror()：打印errno的值</a></li>
+<li><a href="../c/atoll.html" title="C语言atoll()：将字符串转换为超长整数（long long int）" target="_blank">C语言atoll()：将字符串转换为超长整数（long long int）</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9317;
+window.arcId = "e2776qQmkfvDXP99hbPl+nThs/xSCfUO82Ork4rBDTKS/OWXVqEyHgOqZnQ";
+window.typeidChain = "413";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="../view/8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="../view/8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="../view/8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="../view/9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="../view/8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/redis/backup.html";
+window.nextPageURL = "/redis/aof.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

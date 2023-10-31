@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>JS作用域（全局作用域+局部作用域）</title>
+<meta name="description" content="作用域（Scope）是当前执行环境的上下文（Current Context of Execution），它限制了变量、函数等的可见性，在当前作用域下定义的变量、函数等只能在当前及内部嵌套的子作用域中访问，而" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>JS作用域（全局作用域+局部作用域）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">作用域（Scope）是当前执行环境的上下文（Current Context of Execution），它限制了变量、函数等的可见性，在当前作用域下定义的变量、函数等只能在当前及内部嵌套的子作用域中访问，而不能在外层或父作用域中访问，这样可以避免变量和函数的命名冲突，还可以形成私有数据，从而保护数据不被外部作用域中的代码篡改。<br />
+<br />
+在 JavaScript 中，作用域分为全局作用域（Global Scope）和局部作用域（Local Scope）两种。
+<h2>
+JS 全局作用域</h2>
+在全局作用域中定义的变量、函数等可以在任何地方访问。在 JS 源代码最外层定义的变量、函数等都是在全局作用域中的。<br />
+<br />
+例如，下方代码中的变量 a 和 func() 函数都定义在全局作用域中，并且在函数中可以访问全局作用域中的 a，代码如下：
+<pre class="javascript">
+let a=  10;
+function func(){ console.log(a) }
+a;       //10
+func();  //10</pre>
+之前提到过最好不要使用 var 关键字定义变量，这是因为在浏览器环境中，使用 var 定义的全局变量，同时也会注册到全局对象 window 中（Node环境下不会），并且在浏览器开发环境中有经常需要使用到第三方库的情况，稍有不慎就会有同名的变量同时被注册到全局变量中，导致互相覆盖而引发问题，代码如下：
+<pre class="javascript">
+var x=10;
+globalThis.x;  //10;
+var x=&quot;Hello&quot;;
+globalThis.x;  //&quot;Hello&quot;</pre>
+上方代码使用 var 定义了一个全局作用域的变量，并且使用 globalThis 访问全局变量，后面又使用同名变量覆盖了它的值，当再次访问时会发现变量值改变了，后续如果想再做与数字相关的操作，就会有问题。
+<p class="tip-box">
+globalThis 是 ES2020 中的新特性，用于统一访问全局对象，即在浏览器中是 window，而在 node 中则是global。</p>
+关于覆盖的问题，JavaScript 中使用 var 关键字定义的变量可以重复定义，后定义的变量会覆盖前边的，代码如下：
+<pre class="javascript">
+var a=5;
+var a=6;
+console.log(a);  //6</pre>
+要避免这个问题，可以使用 let 关键字，代码如下：
+<pre class="javascript">
+let b=  10;
+let b=  12;
+console.log(b);  //SyntaxError:标识符b重复定义</pre>
+需要注意的是，如果是在 Chrome 开发者工具中的 Console 面板编写代码，则允许使用 let 重复定义变量，这是为了方便在同一个 Console 环境下，使用相同的变量名编写不同的测试代码，省去思考新变量名的困扰。
+<h2>
+JS 局部作用域</h2>
+在函数中定义变量时，会创建一个局部作用域，在函数外边无法访问函数内部的变量，无论是使用 var、let 还是 const 定义的，代码如下：
+<pre class="javascript">
+function func(){var x=5};
+x;  //引用错误:x未定义</pre>
+局部作用域可以访问全局作用域中的变量和函数，也可以访问父级及以上作用域中的变量和函数，如果有同名的变量或函数，则子作用域会覆盖父作用域中的变量或函数，代码如下：
+<pre class="javascript">
+let x=5;
+function outerFunc(){
+    let x=4;
+    function innerFunc(){
+        let x=7;
+        console.log(x);
+    }
+    console.log(x);
+    return innerFunc;
+}
+let innerFunc=outerFunc();
+innerFunc();
+console.log(x);</pre>
+上方代码输出结果是：<br />
+4<br />
+7<br />
+5<br />
+<br />
+首先，代码一开始定义了全局作用域的 x，其值为 5，而在 outerFunc() 函数中，定义了同名变量 x，它的值为 4，这时 x 的值在 outerFunc() 中是 4，覆盖了全局中的 5。<br />
+<br />
+后面又在 outerFunc() 中定义了 innerFunc() 函数，并且在里边再次覆盖了 x 的值，变成了 7，而 7 这个值只会在 innerFunc() 中有效，在 innerFunc() 大括号结束的时候就会失效，因此在 innerFunc() 定义的下方打印 x 的值仍然是 4。<br />
+<br />
+当 outerFunc() 结束时，它里边的 x 也失效了，所以最外边使用 console.log(x) 时打印出的是全局作用域中的 x，其值为 5。
+<h4>
+块级作用域</h4>
+在局部作用域中，还有一个块级作用域（Block Scope）的概念。像 {} 语句块、if 语句、循环语句等会形成块级作用域，使用 let 或 const 定义的变量具有块级作用域，它们只在定义的大括号语句块中生效，离开大括号之后就不能访问了，代码如下：
+<pre class="javascript">
+{
+    let i=10;
+}
+console.log(i);  //引用错误,i未定义
+for(let j=0;j&lt;10;j++){}
+console.log(j);  //引用错误,j未定义</pre>
+不过对于 var 定义的变量，则没有块级作用域的概念，在上述语句块中使用 var 定义变量之后，在语句块之外还是可以访问的，它的作用域跟语句块所在的作用域是同级的。<br />
+<br />
+例如，使用 var 定义循环的变量，如果循环被定义在全局作用域中，则 var 定义的变量也属于全局作用域，在 for 循环结束后仍然可以访问它的值，代码如下：
+<pre class="javascript">
+for(var j=0;j&lt;10;j++){}
+console.log(j);  //10</pre>
+这里的 j 最后运行 j++ 之后会变成 10，在循环结束之后仍然可以访问它的值。<br />
+<br />
+JavaScript 的作用域属于静态作用域，称为词法作用域（Lexical Scope），它的意思是，作用域在编写代码的时候就已经确定了，而动态作用域是程序在运行的时候，才去动态地判断作用域。<br />
+<br />
+词法作用域可以让理解作用域变得更简单，只需看代码就能够知道某个变量的作用域了，例如在函数中定义的作用域只需看该函数的大括号在哪里结束，那么变量的作用域就会在哪里结束。
+<h2>
+JS 提升机制</h2>
+这里需要区分一下声明和定义，声明指的是只指定变量名但不赋值，例如 var a，定义这里指的是指定变量名并赋值，例如 var a=1。<br />
+<br />
+在 JavaScript 中，函数和使用 var 声明的变量有提升（Hoisting）机制，可以先使用后声明。JavaScript 编译器会提前检查代码中的函数及 var 变量，把它们提升到当前作用域的顶部，这样就能保证代码的正常运行了。<br />
+<br />
+例如，测试使用 var 声明的变量的提升机制，代码如下：
+<pre class="javascript">
+x=5;
+console.log(x);  //5
+var x;</pre>
+上边代码中的 var x 声明被提升到了 x=5 的上方，作为第一行代码，然后才给 x 赋值为 5，这样打印出来的值就是 5。<br />
+<br />
+需要注意的是，变量在提升的时候，因为只有声明部分被提升，所以如果在声明变量的同时进行了定义，再在上方访问该变量就会返回 undefined，代码如下：
+<pre class="javascript">
+console.log(x);  //undefined
+var x=5;
+console.log(x);  //5</pre>
+它相当于如下代码：
+<pre class="javascript">
+var x;
+console.log(x);  //undefined
+x=5;
+console.log(x);  //5</pre>
+代码中的 var x 被提升到最顶部，剩下的赋值语句则保持在原位。<br />
+<br />
+而如果使用 let 或者 const 关键字定义变量，则不能提前使用它们定义的变量，而是会直接抛出异常，代码如下：
+<pre class="javascript">
+a=5;
+console.log(a); //引用错误,不能在初始化之前访问a
+let a;</pre>
+对于函数，使用 function 关键字定义的普通函数全部都会被提升到作用域的顶部。例如下方代码中，函数的定义会移动到 printValue() 上方，代码如下：
+<pre class="javascript">
+printValue();  //10
+function printValue(){ console.log(10) }</pre>
+但是，对于保存在变量中的函数表达式则不会有提升机制，因为只有声明部分被提升了，而使用函数表达式进行赋值的部分并未被提升，代码如下：
+<pre class="javascript">
+printValue();
+var printValue=function(){console.log(10)}  //类型错误:printValue不是函数</pre>
+利用函数的提升，可以把函数定义的细节放到代码后边，把函数的调用放到前边，以便关注代码所执行的操作，屏蔽具体的实现细节，这样可以增强代码的可读性。<br />
+<br />
+对于变量的提升机制，并不推荐使用，因为这样很难看出来变量是在哪定义的，从而容易引发问题，尤其是当有同名变量和函数名覆盖的时候，最难理解，代码如下：
+<pre class="javascript">
+function func(){
+    return x;
+    x=5;
+    function x(){}
+    var x;
+}
+console.log(func());</pre>
+代码输出的结果如下：<br />
+function x(){}<br />
+<br />
+可以看到 func() 函数最后返回的 x 值为函数 x()，而不是 5。<br />
+<br />
+这是因为 function x(){} 的定义首先被提升到了 func() 函数的第1行，var x 则按顺序提升到了第2行，由于声明变量x的时候并没有赋值，它不会覆盖掉函数 x() 的定义，之后就直接运行到 return x 语句了，返回了函数 x()，而 x=5 并没有机会被执行，代码如下：
+<pre class="javascript">
+function func(){
+    function x(){}
+    var x;
+    return x;
+    x=5;
+}</pre>
+<h2>
+JS 临时隔离区</h2>
+使用 let 关键字定义的变量，不能在初始化之前访问的原因是，它的声明被放到了临时隔离区（Temporal Dead Zone，TDZ）。临时隔离区会在执行块级作用域的第1行代码前生效，在变量初始化完成之后才会把变量从隔离区里释放出来。<br />
+<br />
+来看一个例子，代码如下：
+<pre class="javascript">
+let a=5;
+function test(){
+    console.log(a);  //引用错误,不能在初始化之前访问  &#39;a&#39;
+    let a=6;
+}
+test();</pre>
+在代码中，函数 test() 的外部和内部定义了同名的变量 a，但是在函数中打印a的值时却抛出了错误。<br />
+<br />
+这就是临时隔离区的作用，虽然 test() 函数的外部作用域中有 a 变量，但是在函数内部这个块级的作用域中，它会在一开始把最后边 a 变量的声明放到临时隔离区中，只有在执行完 a=6 时才会从隔离区释放出来，在此期间，是不能访问隔离区中的变量的，所以打印 a 的值抛出了引用错误。<br />
+<br />
+之所以称它为临时隔离区，是因为它只短暂地存在于变量初始化的过程中，而不是按代码的位置来判断是否放入隔离区，例如下方示例是可以正常执行的，代码如下：
+<pre class="javascript">
+let a=5;
+function test(){
+    const inner=()=&gt;console.log(a);
+    let a=6;
+    inner();
+}
+test();  //6</pre>
+这是因为在 inner() 函数调用前，临时隔离区在 let a=6 这行代码之后就已经结束了，a 在 test() 函数这个作用域中已经成功被初始化为 6，再在 inner() 中就可以访问它的值了。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="4.html" title="Go语言的性能如何？" target="_blank">Go语言的性能如何？</a></li>
+<li><a href="592.html" title="C++ equal(STL equal)比较算法详解" target="_blank">C++ equal(STL equal)比较算法详解</a></li>
+<li><a href="vip_2088.html" title="调试信息的输出" target="_blank">调试信息的输出</a></li>
+<li><a href="../c/log.html" title="C语言log()函数：返回x的自然对数（以e为底的对数）" target="_blank">C语言log()函数：返回x的自然对数（以e为底的对数）</a></li>
+<li><a href="vip_5080.html" title="给Linux系统挂载光盘" target="_blank">给Linux系统挂载光盘</a></li>
+<li><a href="vip_8353.html" title="MySQL锁机制（入门篇）" target="_blank">MySQL锁机制（入门篇）</a></li>
+<li><a href="9451.html" title="Dev C++调试程序方法详解" target="_blank">Dev C++调试程序方法详解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10042;
+window.arcId = "4970WNcDjtlkfZkIuCzNCWULFUXmRCKqLmY6WI0SzoJr3Xyfkqy1457Zh6Ua";
+window.typeidChain = "309|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

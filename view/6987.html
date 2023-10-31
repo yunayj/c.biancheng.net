@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++ STL priority_queue容器适配器详解</title>
+<meta name="description" content="和 queue 容器适配器类似，priority_queue 模拟的也是队列这种存储结构，但 priority_queue 并没有严格按照先入先出（FIFO）的原则存取数据，而是如图 1 所示，当有新元素进入 priority_queue 中时" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../stl/stl.html">STL</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href='../stl/stl_basic/stl_basic.html'>STL基础</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href='../stl/sequence_container/sequence_container.html'>STL序列式容器</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href='../stl/map_set/map_set.html'>STL关联式容器</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href='../stl/unordered_container/unordered_container.html'>STL无序关联式容器</a>
+</dd>
+<dd class="this"> <span class="channel-num">5</span> <a href="../stl/container_adapters/container_adapters.html">STL容器适配器</a> </dd><dl class="dl-sub"><dd>5.1 <a href="6967.html">什么是容器适配器？</a></dd><dd>5.2 <a href="6971.html">C++ STL stack容器适配器</a></dd><dd>5.3 <a href="vip_7726.html">【STL实践项目】stack容器适配器实现计算器</a><span class="iconfont iconfont-vip2"></span></dd><dd>5.4 <a href="6978.html">C++ STL queue容器适配器详解</a></dd><dd>5.5 <a href="vip_7727.html">【STL实践项目】queue容器模拟超市结账环节</a><span class="iconfont iconfont-vip2"></span></dd><dd>5.6 <a href="6987.html">C++ STL priority_queue容器适配器详解</a></dd><dd>5.7 <a href="vip_7728.html">priority_queue容器如何实现自定义排序？</a><span class="iconfont iconfont-vip2"></span></dd><dd>5.8 <a href="vip_7729.html">深度剖析priority_queue容器适配器的底层实现</a><span class="iconfont iconfont-vip2"></span></dd></dl>
+<dd>
+<span class="channel-num">6</span>
+<a href='../stl/iterator_adaptor/iterator_adaptor.html'>STL迭代器适配器</a>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href='../stl/algorithms/algorithms.html'>C++常用算法</a>
+</dd>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../stl/stl.html">STL</a> &gt; <a href="../stl/container_adapters/container_adapters.html">STL容器适配器</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++ STL priority_queue容器适配器详解</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">priority_queue 容器适配器模拟的也是队列这种存储结构，即使用此容器适配器存储元素只能<span style="background-color: rgb(249, 249, 249);">&ldquo;从一端进（称为队尾），从另一端出（称为队头）&rdquo;</span><span style="background-color: rgb(249, 249, 249);">，且每次只能访问 priority_queue 中位于队头的元素。</span><br />
+<br />
+但是，priority_queue 容器适配器中元素的存和取，遵循的并不是 &ldquo;First in,First out&rdquo;（先入先出）原则，而是&ldquo;First in，Largest out&rdquo;原则。直白的翻译，指的就是先进队列的元素并不一定先出队列，而是优先级最大的元素最先出队列。
+<blockquote>
+<p>
+注意，&ldquo;First in，Largest out&rdquo;原则是笔者为了总结 priority_queue 存取元素的特性自创的一种称谓，仅为了方便读者理解。</p>
+</blockquote>
+那么，priority_queue 容器适配器中存储的元素，优先级是如何评定的呢？很简单，每个 priority_queue 容器适配器在创建时，都制定了一种排序规则。根据此规则，该容器适配器中存储的元素就有了优先级高低之分。<br />
+<br />
+举个例子，假设当前有一个 priority_queue 容器适配器，其制定的排序规则是按照元素值从大到小进行排序。根据此规则，自然是 priority_queue 中值最大的元素的优先级最高。<br />
+<br />
+priority_queue 容器适配器为了保证每次从队头移除的都是当前优先级最高的元素，每当有新元素进入，它都会根据既定的排序规则找到优先级最高的元素，并将其移动到队列的队头；同样，当 priority_queue 从队头移除出一个元素之后，它也会再找到当前优先级最高的元素，并将其移动到队头。<br />
+<br />
+基于&nbsp;priority_queue 的这种特性，因此该容器适配器有被称为<span style="color: rgb(0, 128, 0);">优先级队列</span>。
+<blockquote>
+<p>
+priority_queue 容器适配器&ldquo;First in，Largest out&rdquo;的特性，和它底层采用堆结构存储数据是分不开的。有关该容器适配器的底层实现，后续章节会进行深度剖析。</p>
+</blockquote>
+<a href='../stl/stl.html' target='_blank'>STL</a> 中，priority_queue 容器适配器的定义如下：
+<pre class="cpp">
+template &lt;typename T,
+        typename Container=std::vector&lt;T&gt;,
+        typename Compare=std::less&lt;T&gt; &gt;
+class priority_queue{
+    //......
+}</pre>
+可以看到，priority_queue 容器适配器模板类最多可以传入 3 个参数，它们各自的含义如下：
+<ul>
+<li>
+typename T：指定存储元素的具体类型；</li>
+<li>
+typename Container：指定 priority_queue 底层使用的基础容器，默认使用 vector 容器。
+<blockquote>
+<p>
+作为 priority_queue 容器适配器的底层容器，其必须包含 empty()、size()、front()、push_back()、pop_back() 这几个成员函数，<a href="../stl/stl.html" target="_blank">STL</a>&nbsp;序列式容器中只有 vector 和 deque 容器符合条件。</p>
+</blockquote>
+</li>
+<li>
+typename Compare：指定容器中评定元素优先级所遵循的排序规则，默认使用<code style="font-size: 14px;">std::less&lt;T&gt;</code>按照元素值从大到小进行排序，还可以使用<code style="font-size: 14px;">std::greater&lt;T&gt;</code>按照元素值从小到大排序，但更多情况下是使用自定义的排序规则。
+<blockquote>
+<p>
+其中，std::less&lt;T&gt; 和 std::greater&lt;T&gt; 都是以函数对象的方式定义在 &lt;function&gt; 头文件中。关于如何自定义排序规则，后续章节会做详细介绍。</p>
+</blockquote>
+</li>
+</ul>
+<h2>
+创建priority_queue的几种方式</h2>
+由于 priority_queue 容器适配器模板位于<code style="font-size: 14px;">&lt;queue&gt;</code>头文件中，并定义在 std 命名空间里，因此在试图创建该类型容器之前，程序中需包含以下 2 行代码：
+<pre class="cpp">
+#include &lt;queue&gt;
+u<a href="https://c.biancheng.net/ref/sin.html" target="_blank">sin</a>g namespace std;</pre>
+<br />
+创建 priority_queue 容器适配器的方法，大致有以下几种。<br />
+1) 创建一个空的 priority_queue 容器适配器，第底层采用默认的 vector 容器，排序方式也采用默认的 std::less&lt;T&gt; 方法：
+<pre class="cpp">
+std::priority_queue&lt;int&gt; values;</pre>
+<br />
+2) 可以使用普通数组或其它容器中指定范围内的数据，对 priority_queue 容器适配器进行初始化：
+<pre class="cpp">
+//使用普通数组
+int values[]{4,1,3,2};
+std::priority_queue&lt;int&gt;copy_values(values,values+4);//{4,2,3,1}
+
+//使用序列式容器
+std::array&lt;int,4&gt;values{ 4,1,3,2 };
+std::priority_queue&lt;int&gt;copy_values(values.begin(),values.end());//{4,2,3,1}</pre>
+注意，以上 2 种方式必须保证数组或容器中存储的元素类型和 priority_queue 指定的存储类型相同。另外，用来初始化的数组或容器中的数据不需要有序，priority_queue 会自动对它们进行排序。<br />
+<br />
+3) 还可以手动指定 priority_queue 使用的底层容器以及排序规则，比如：
+<pre class="cpp">
+int values[]{ 4,1,2,3 };
+std::priority_queue&lt;int, std::deque&lt;int&gt;, std::greater&lt;int&gt; &gt;copy_values(values, values+4);//{1,3,2,4}</pre>
+事实上，std::less&lt;T&gt; 和 std::greater&lt;T&gt; 适用的场景是有限的，更多场景中我们会使用自定义的排序规则。
+<blockquote>
+<p>
+由于自定义排序规则的方式不只一种，因此这部分知识将在后续章节做详细介绍。</p>
+</blockquote>
+<h2>
+priority_queue提供的成员函数</h2>
+priority_queue 容器适配器提供了表 2 所示的这些成员函数。<br />
+<br />
+<table>
+<caption>
+表 2 priority_queue 提供的成员函数</caption>
+<tbody>
+<tr>
+<th>
+成员函数</th>
+<th>
+功能</th>
+</tr>
+<tr>
+<td>
+empty()</td>
+<td>
+如果 priority_queue 为空的话，返回 true；反之，返回 false。</td>
+</tr>
+<tr>
+<td>
+size()</td>
+<td>
+返回 priority_queue&nbsp;中存储元素的个数。</td>
+</tr>
+<tr>
+<td>
+top()</td>
+<td>
+返回 priority_queue&nbsp;中第一个元素的引用形式。</td>
+</tr>
+<tr>
+<td>
+push(const T&amp; obj)</td>
+<td>
+根据既定的排序规则，将元素 obj 的副本存储到 priority_queue&nbsp;中适当的位置。</td>
+</tr>
+<tr>
+<td>
+push(T&amp;&amp; obj)</td>
+<td>
+根据既定的排序规则，将元素 obj 移动存储到 priority_queue&nbsp;中适当的位置。</td>
+</tr>
+<tr>
+<td>
+emplace(Args&amp;&amp;... args)</td>
+<td>
+Args&amp;&amp;... args 表示构造一个存储类型的元素所需要的数据（对于类对象来说，可能需要多个数据构造出一个对象）。此函数的功能是根据既定的排序规则，在容器适配器适当的位置直接生成该新元素。</td>
+</tr>
+<tr>
+<td>
+pop()</td>
+<td>
+移除 priority_queue&nbsp;容器适配器中第一个元素。</td>
+</tr>
+<tr>
+<td>
+swap(priority_queue&lt;T&gt;&amp; other)</td>
+<td>
+将两个 priority_queue 容器适配器中的元素进行互换，需要注意的是，进行互换的 2 个 priority_queue 容器适配器中存储的元素类型以及底层采用的基础容器类型，都必须相同。</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>
+和 queue 一样，priority_queue 也没有迭代器，因此访问元素的唯一方式是遍历容器，通过不断移除访问过的元素，去访问下一个元素。</p>
+</blockquote>
+下面的程序演示了表 2 中部分成员函数的具体用法：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;queue&gt;
+#include &lt;array&gt;
+#include &lt;functional&gt;
+u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+
+int main()
+{
+    //创建一个空的priority_queue容器适配器
+    std::priority_queue&lt;int&gt;values;
+    //使用 push() 成员函数向适配器中添加元素
+    values.push(3);//{3}
+    values.push(1);//{3,1}
+    values.push(4);//{4,1,3}
+    values.push(2);//{4,2,3,1}
+    //遍历整个容器适配器
+    while (!values.empty())
+    {
+        //输出第一个元素并移除。
+        std::cout &lt;&lt; values.top()&lt;&lt;&quot; &quot;;
+        values.pop();//移除队头元素的同时，将剩余元素中优先级最大的移至队头
+    }
+    return 0;
+}</pre>
+运行结果为：
+<p class="info-box">
+4 3 2 1</p>
+<blockquote>
+<p>
+表 2 中其它成员函数的用法也非常简单，这里不再给出具体示例，后续章节用法会做具体介绍。</p>
+</blockquote>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="465.html" title="Code::Blocks下载地址和安装教程（图解）" target="_blank">Code::Blocks下载地址和安装教程（图解）</a></li>
+<li><a href="2133.html" title="TCP/IP协议族" target="_blank">TCP/IP协议族</a></li>
+<li><a href="5812.html" title="Java正则表达式详解" target="_blank">Java正则表达式详解</a></li>
+<li><a href="../redis2/zrevrange.html" title="Redis ZREVRANGE命令" target="_blank">Redis ZREVRANGE命令</a></li>
+<li><a href="9563.html" title="剑指大厂：小白入职大厂完全攻略，很肝~" target="_blank">剑指大厂：小白入职大厂完全攻略，很肝~</a></li>
+<li><a href="ilrwrl9.html" title="pip（Python包管理工具）使用教程" target="_blank">pip（Python包管理工具）使用教程</a></li>
+<li><a href="t0w8jmp.html" title="《Web前端开发技术——HTML5、CSS3、JavaScript（第3版）》PDF下载（高清完整版）" target="_blank">《Web前端开发技术——HTML5、CSS3、JavaScript（第3版）》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 6987;
+window.arcId = "91f4lRn4/RHXCF6r3rK3toCSrlpynp5hR88lHuPuT8rl+5TWZlH9bPGekC0";
+window.typeidChain = "63|58";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/view/vip_7727.html";
+window.nextPageURL = "/view/vip_7728.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

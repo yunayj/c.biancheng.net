@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>单元测试数据库配置及常用测试工具</title>
+<meta name="description" content="经过前面几节的讲解，相信大家对 Django 单元测试有了全面的了解。主要给大家介绍了三个方面的知识点，如何针对 Django 的不同模块执行测试用例，如何利用装饰器进行跳过测试和预期" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../django/django_2.html">Django</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>单元测试数据库配置及常用测试工具</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">经过前面几节的讲解，相信大家对 Django 单元测试有了全面的了解。主要给大家介绍了三个方面的知识点，如何针对 Django 的不同模块执行测试用例，如何利用装饰器进行跳过测试和预期失败以及如何编写测试用例代码。<br />
+<br />
+在整个单元测试过程中还有值得我们优化的环节，比如前面进行 ExampleTest 类测试时，我们发现 Django 会为单元测试创建新的数据库，但是你会发现这个过程很消耗时间，一个还好，如果很多个测试单元呢？再就是本节我们还会介绍一些单元测试中常用的工具方法，通过本节的学习你会对单元测试更加了解。<br />
+<h2>
+	1. Django单元测试数据库配置</h2>
+默认测试数据库的名称是将 settings.py 文件中&nbsp; DATABASES 变量配置的 NAME 值的前面加上 test_。如下所示：<br />
+<p class="info-box">
+	Creating test database for alias &#39;default&#39; (&#39;test_bookstoredb&#39;)...</p>
+上述创建方式使用了默认的文件系统，即以 MySQL 数据库的形式生成了相关的数据文件。Django为了解决数据库创建与销毁耗时的问题，也为我们提供了解决方案。我们可以通过配置使用轻量级数据库 SQLite 来解决此问题，此时 Django 将会在内存（memory）中创建数据库。
+<h4>
+	1) 为单元测试添加配置信息</h4>
+我们在 settings_test.py 文件添加对 SQLite 数据库的配置信息，如下所示：
+<pre class="python">
+if &#39;test&#39; in sys.argv:
+    DATABASES[&#39;default&#39;] = {&#39;ENGINE&#39;: &#39;django.db.backends.sqlite3&#39;,}
+</pre>
+然后我们可以使用如下命令执行测试用例：<br />
+<p class="info-box">
+	python manage.py test -v 3 index.tests.ExampleTest</p>
+最后你会发现执行的速度比之前快很对，几乎不用等待。通过命令行界面可以看到，创建的默认数据数已经更改了方式，这个数据库在内存在完成了创建，如下所示：
+<pre class="python">
+C:\Users\Administrator\Book\BookStore&gt;python manage.py test -v 3 index.tests.ExampleTest
+Creating test database for alias &#39;default&#39; (&#39;file:memorydb_default?mode=memory&amp;cache=shared&#39;)...#内存中生成临时文件
+Operations to perform:
+  Synchronize unmigrated apps: messages, staticfiles</pre>
+由此可见适应 SQLite 时，同样也会在执行测试时候创建数据库，只不过这个创建与销毁的过程发生在内存中，要比使用默认的文件系统快的得多。
+<h2>
+	2. Django单元测试的常用工具</h2>
+在《<a href="8193_6.html" target="_blank">Django项目编写单元测试用例</a>》我们介绍了编写单元测试代码的流程方法，Django 中提供了不止一种的测试方法，我们也可以叫它们为测试工具，下面我们就给大家简单介绍一下常用的几种工具，分别是标记测试与内置断言方法。
+<h4>
+	1) 标记测试</h4>
+所谓标记测试就是仅执行测试方法的子集，这里需要用到一个装饰器即 django.test.tag 装饰器，它可以应用在测试方法或者测试类上。我们对这样测试方法进行简单演示，如下所示：
+<pre class="python">
+from index.models import Book, PubName
+from django.test import TestCase, tag
+class ExampleTest(TestCase):
+    def setUp(self):
+        self.pub1=PubName.objects.create(pubname=&quot;编程帮出版&quot;)
+    @tag(&#39;tagone&#39;) #添加标记
+    def test_model(self):
+        book=Book.objects.create(title=&#39;Servlet&#39;,price=&#39;35.00&#39;, retail_price=&#39;35.00&#39;,pub=self.pub1)
+        self.assertTrue(book is not None)
+        self.assertNotEqual(Book.objects.count(),8)
+        self.assertEqual(Book.objects.count(),1)
+    @tag(&#39;tagsecond&#39;)#添加标记
+    def test_view(self):
+        book=Book.objects.create(title=&#39;Jsp&#39;,price=&#39;25.00&#39;, retail_price=&#39;25.00&#39;,pub=self.pub1)
+        response=self.client.get(&#39;/index/update_book/%d/&#39;% book.id)#视图访问获取response
+        response[&#39;X-Token&#39;]=&#39;C语言中文网&#39;
+        self.assertEqual(response.status_code,200)
+        self.assertEqual(response[&#39;X-Token&#39;],&#39;=?utf-8?b?Q+ivreiogOS4reaWh+e9kQ==?=&#39;,&#39;not sucessful&#39;)
+    def tearDown(self):
+        print(&#39;清理测试环境&#39;)</pre>
+使用如下命令进行测试标记的执行：<br />
+<p class="info-box">
+	python manage.py test --tag=tagone --tag=tagsecond index.tests.ExampleTest</p>
+上面是同时执行两个标记测试，也可以只选择一个执行，大家在书写命令的时候要注意格式。我们还可以使用如下参数来排除不想执行的测试方法：<br />
+<p class="info-box">
+	--exclude-tag=tagsecond&nbsp;</p>
+<h4>
+	2) Django内置断言方法</h4>
+在《<a href="8186_6.html" target="_blank">Python unittest模块实现单元测试</a>》一节，我们介绍过使用断言的方法来进行测试，不过这是 unittest 框架提供的断言方法。Django 不仅继承了 unittest 框架的这些方法，还定义了一些内置的断言方法，下面我们常用的方法进行一下简单的总结：
+<pre class="python">
+class ExampleTest(TestCase)
+    def test_assert1(self):
+        &quot;&quot;&quot;
+        django内置断言的方法测试
+        &quot;&quot;&quot;
+        #&nbsp;用来断言可执行对象的调用引发了异常，且在异常中发现了对应的信息
+        with self.assertRaisesMessage(ValueError,&#39;invalid literal for int()&#39;):
+            int(&#39;a&#39;)
+
+    def test_assert2(self):
+        #判断HTML是否相等基于HTML语义，常用来检验返回模板的视图
+        self.assertHTMLEqual(&quot;&lt;p&gt;hello c.biancheng.net&lt;/p&gt;&quot;,&quot; &lt;p&gt;hello c.biancheng.net&lt;/p&gt;&quot;)
+        self.assertHTMLNotEqual(&quot;&lt;p&gt;hello c.biancheng.net&lt;/p&gt;&quot;,&quot;&lt;p&gt;hello c.biancheng.net&lt;/p&gt;&quot;)
+
+    def test_assert3(self):
+        #用来断言JSON字符串是否相等，校验JsonResponse视图返回对象
+        self.assertJSONEqual(&#39;{&quot;name&quot;:&quot;John&quot;,&quot;age&quot;:15}&#39;,&#39;{&quot;age&quot;:15,&quot;name&quot;:&quot;John&quot;}&#39;)
+        self.assertJSONNotEqual(&#39;{&quot;a&quot;:1,&quot;b&quot;:2}&#39;,&#39;{&quot;a&quot;:2,&quot;c&quot;:1}&#39;)
+
+    def test_asseret4(self):
+        #断言查询集合是否与给定的列表内容相等，给定列表也可包含多个元素
+        book = Book.objects.create(title=&#39;Servlet&#39;, price=&#39;35.00&#39;, retail_price=&#39;35.00&#39;, pub=self.pub1)
+        #repr(a)将对象a转换为字符串格式
+        self.assertQuerysetEqual(Book.objects.all(),[repr(book)])</pre>
+&nbsp;除了上面介绍的内置断言方法外，Django 还提供了一些其他的方法，这里就不逐一介绍了，有兴趣的可见参考官方文档《<a href="https://docs.djangoproject.com/zh-hans/2.2/topics/testing/tools/" target="_blank">Django单元测试工具</a>》。
+<h2>
+	3. coverage统计测试代码覆盖率</h2>
+测试代码覆盖率描述的是多少源代码经过了测试，它表达的是代码测试的程度。Python 的第三方库 coverage.py 可以用来统计测试代码的覆盖率，Django 可以轻松地与 coverage.py 实现配合。在使用 coverage 之前需要对它进行安装，使用 pip 包管理工具安装即可：<br />
+<p class="info-box">
+	pip install coverage</p>
+安装完成后之后，需要在 manage.py 所在目录执行下面的命令：<br />
+<p class="info-box">
+	coverage run --source=&#39;.&#39; manage.py test</p>
+在 CMD 命令行工具中就可以看到测试输出了，然后再使用 coverage 工具的 coverage report --skip-covered 命令查看测试代码覆盖率，最后可以得到如下结果：<br />
+<pre class="info-box">
+C:\Users\Administrator\Book\BookStore&gt;coverage report --skip-covered
+Name                 Stmts   Miss  Cover
+----------------------------------------
+BookStore\views.py      84     30    64%
+BookStore\wsgi.py        4      4     0%
+index\admin.py          19      1    95%
+index\apps.py            3      3     0%
+index\forms.py          59     23    61%
+index\models.py         36      2    94%
+index\test.py           41      8    80%
+index\views.py         245    170    31%
+manage.py               12      2    83%
+user\apps.py             3      3     0%
+user\backends.py        17     17     0%
+user\models.py           8      1    88%
+user\signals.py          6      1    83%
+user\views.py          150    106    29%
+----------------------------------------
+TOTAL                  857    371    57%
+
+30 files skipped due to complete coverage.</pre>
+结果展示中的字段含义：
+<ul>
+	<li>
+		Stmts：代表语句总数；</li>
+	<li>
+		Miss：代表未执行到的语句数；</li>
+	<li>
+		Cover：代表测试代码覆盖率，计算公式 Cover=(Stmts-Miss)/Stmts。</li>
+</ul>
+<br />
+我们还可以生成 HTML 版的测试报告，它更加直观，易于阅读，同时方便我们查找未被覆盖的代码，执行<code>coverage html</code>命令后，便可以在 manage.py 同级目录下生成一个名叫 htmlcov 的文件夹，使用浏览器打开其中的 index.html 文件，可以得到如下所示：<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/200729/9-200H91G443361_2.gif" /><br />
+	图1：HTML格式的测试代码覆盖率报告<br />
+	&nbsp;</div>
+但是我们要正确的认识测试代码覆盖率这个概念，覆盖率高只是说明对当前项目的测试比较充分，它不能说明代码的质量高。 关于单元测试的章节到这里就讲解完毕了。单元测试在项目中扮演着重要的角色，在开发阶它可以帮助发现可能存在的问题、帮助重构，并且降低重构出错的风险。在项目后期，单元测试可以看作项目的一份说明文档，所以，理解并学会编写单元测试用例是十分有必要的。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1016_2.html" title="Linux内核（内核模块）的加载过程（超详细）" target="_blank">Linux内核（内核模块）的加载过程（超详细）</a></li>
+<li><a href="2195_2.html" title="C++变量的定义位置" target="_blank">C++变量的定义位置</a></li>
+<li><a href="../mysql/left_2.html" title="MySQL LEFT函数：从左侧截取字符串" target="_blank">MySQL LEFT函数：从左侧截取字符串</a></li>
+<li><a href="../jsp2/config_2.html" title="JSP config对象" target="_blank">JSP config对象</a></li>
+<li><a href="../redis/sorted-set_2.html" title="Redis zset有序集合（底层原理+图解）" target="_blank">Redis zset有序集合（底层原理+图解）</a></li>
+<li><a href="3bwwn45_2.html" title="Django入门教程（简明版）" target="_blank">Django入门教程（简明版）</a></li>
+<li><a href="el3eii6_2.html" title="C++ switch case语句详解" target="_blank">C++ switch case语句详解</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8208;
+window.arcId = "8d56OtjD2eiPnjAvdWp45VFcA2tRILArbOSsyEBluMqgvdvQ14jLqOMke/s";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

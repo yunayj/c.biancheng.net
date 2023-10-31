@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Django MTV和MVC的区别</title>
+<meta name="description" content="在上一节，我们了解Django 的诞生以及Web 框架的概念。本节我们将介绍 Django 的设计模式即MTV。在Web开发领域有着非常著名的MVC设计模式那么他们两者有什么不同呢？首先们我们应该了解" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../django/django.html">Django</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Django MTV和MVC的区别</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在上一节《<a href="7284.html" target="_blank">Django是什么</a>》中，我们对 Django 的诞生以及&nbsp;Web 框架的概念有了基本的了解，本节我们介绍 Django 的设计模式，也就是 MTV。<br />
+<br />
+在 Web 开发领域还有另外一个非常著名的设计模式&mdash;&mdash;MVC，它和 MTV 又有什么区别呢？这也是本节关注的重点内容。
+<h2>
+1. MVC设计模式</h2>
+我们先对 MVC 设计模式进行介绍，它是 Web 设计模式的经典之作，MTV 模式也是在它的基础上衍生而来。<br />
+<br />
+MVC 是 Model-View-Controller 的缩写，其中每个单词都有其不同的含义：<br />
+<ul>
+<li>
+Modle&nbsp;代表数据存储层，是对数据表的定义和数据的增删改查；</li>
+<li>
+View&nbsp;代表视图层，是系统前端显示部分，它负责显示什么和如何进行显示；</li>
+<li>
+Controller&nbsp;代表控制层，负责根据从 View&nbsp;层输入的指令来检索 Model 层的数据，并在该层编写代码产生结果并输出。</li>
+</ul>
+<br />
+<div style="text-align: center;">
+<img alt="mvc设计模式示意图" src="../uploads/allimg/200306/9-200306133A4S0.png" /><br />
+图1：MVC 设计模式示意图</div>
+<br />
+MVC 设计模式的请求与响应过程描述如下：
+<ul>
+<li>
+用户通过浏览器向服务器发起 request 请求，Controller 层接受请求后，同时向&nbsp;Model 层和 View 发送指令；</li>
+<li>
+Mole 层根据指令与数据库交互并选择相应业务数据，然后将数据发送给 Controller 层；</li>
+<li>
+View 层接收到 Controller 的指令后，加载用户请求的页面，并将此页面发送给 Controller 层；</li>
+<li>
+Controller 层接收到 Model 层和 View 层的数据后，将它们组织成响应格式发送给浏览器，浏览器通过解析后把页面展示出来。</li>
+</ul>
+<br />
+MVC 的 3 层之间紧密相连，但又相互独立，每一层的修改都不会影响其它层，每一层都提供了各自独立的接口供其它层调用，MVC 的设计模式降低了代码之间的耦合性（即关联性），增加了模块的可重用性，这就是 MVC 的设计模式。<br />
+<h2>
+2. MTV设计模式</h2>
+那么 Django 的 MTV 又是怎么回事呢？下面讲解 Django 的设计模式。<br />
+<br />
+Django 借鉴了经典的 MVC 模式，它也将交互的过程分为了 3 个层次，也就是 MTV 设计模式；<br />
+<ul>
+<li>
+Model：数据存储层，处理所有数据相关的业务，和数据库进行交互，并提供数据的增删改查；</li>
+<li>
+Template：模板层（也叫表现层）具体来处理页面的显示；</li>
+<li>
+View：业务逻辑层，处理具体的业务逻辑，它的作用是连通Model 层和 Template 。</li>
+</ul>
+<br />
+<div style="text-align: center;">
+<img alt="MTV设计模式示意图" src="../uploads/allimg/200306/9-20030613324XL.png" /><br />
+图2：Django MTV 设计模式示意图</div>
+<br />
+我们按照 MVC 的设计模式对 MTV 进行分析，MTV 设计模式中，用 View 层取代了 Controller 层的位置，用 Template 层取代了原来 View 层的位置。<br />
+<br />
+初次接触 Django 的设计模式的人，可能会对 Template 层产生疑问，其实 Template 英文的含义就是&ldquo;模板&rdquo;的意思，你可以简单理解成，它是一个 HTML 页面 ，HTML 页面的渲染在视图层完成。<br />
+<br />
+同样我们也对 MTV 设计模式的请求与响应过程进行描述：
+<ul>
+<li>
+用户通过浏览器对服务器发起 request 请求，服务器接收请求后，通过 View 的业务逻辑层进行分析，同时向 Model 层和 Template 层发送指令；</li>
+<li>
+Mole 层与数据库进行交互，将数据返回给 View 层；</li>
+<li>
+Template 层接收到指令后，调用相应的模板，并返回给 View 层；</li>
+<li>
+View 层接收到模板与数据后，首先对模板进行渲染（即将相应的数据赋值给模板），然后组织成响应格式返回给浏览器，浏览器进行解析后并最终呈现给用户。</li>
+</ul>
+<br />
+通过以上两种设计模式的比较， 我们可以得出 MTV 是 MVC 的一种细化，将原来 MVC 中的 V 层拿出来进行分离，视图的显示与如何显示交给 Template 层，而 View 层更专注于实现业务逻辑。其实在 Django 是有 Controller 层的，只不过它由框架本身来实现，所以我们不用关心它。Django 更关注于M、T 和 V。<br />
+<br />
+本节介绍了 MTV 与 MVC 设计模式，大家理解并记忆它们，对后续的 Django 学习会有很大帮助。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="195.html" title="C++引用类型详解" target="_blank">C++引用类型详解</a></li>
+<li><a href="vip_1762.html" title="C语言整数的取值范围以及数值溢出" target="_blank">C语言整数的取值范围以及数值溢出</a></li>
+<li><a href="vip_5081.html" title="给Linux系统挂载U盘" target="_blank">给Linux系统挂载U盘</a></li>
+<li><a href="8115.html" title="主流Java Web开发框架有哪些？" target="_blank">主流Java Web开发框架有哪些？</a></li>
+<li><a href="m0wxyzl.html" title="C++ static静态成员函数（入门必读）" target="_blank">C++ static静态成员函数（入门必读）</a></li>
+<li><a href="el3xqsc.html" title="CSS !important用法详解" target="_blank">CSS !important用法详解</a></li>
+<li><a href="kbrfuoe.html" title="Redis HLEN命令的用法" target="_blank">Redis HLEN命令的用法</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7288;
+window.arcId = "e78dzKk0E1BujIqDGJtHdlAmKeUOTUnlTlOrlwJu7I3lDR327MOUWRV/5zs";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

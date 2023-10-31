@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Dev C++调试程序方法详解</title>
+<meta name="description" content="所谓调试程序，就是控制编译器一行一行地执行代码，过程中可以清楚看到每个变量值的变化情况、函数的调用过程等，进而发现程序中隐藏的错误或者低效的代码。 作为一款免费、开" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Dev C++调试程序方法详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">所谓调试程序，就是控制编译器一行一行地执行代码，过程中可以清楚看到每个变量值的变化情况、函数的调用过程等，进而发现程序中隐藏的错误或者低效的代码。<br />
+<br />
+作为一款免费、开源的 C/C++ IDE，Dev C++ 内嵌 GCC 编译器和 GDB 调试器，既能编译、运行程序，也能调试程序。本节，我们以一段完整的 C 语言程序为例，系统地学一下如何用 Dev C++ 调试程序。
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+int add(int a,int b){
+    int c = a+b;
+    return c;
+}
+int main(){
+    int a=10,b=20;
+    int sum = add(a,b);
+    printf(&quot;sum = %d&quot;,sum);
+    return 0;
+}</pre>
+<h2>
+	Dev C++调试程序</h2>
+默认情况下，程序会瞬间从开头执行到结尾，除非中途出现错误（称为&ldquo;运行时错误&rdquo;，比如读写内存失败、数组越界等）。要想让程序暂停执行，就需要设置一个断点。<br />
+<br />
+所谓断点（BreakPoint），可以简单地理解成障碍物，汽车遇到障碍物不能通行，程序遇到断点就会暂停执行。Dev C++ 给程序设置断点的方法很简单，想在哪一行代码处暂停执行，直接单击代码所在行的行号即可。例如：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/211105/1A123E30-0_2.gif" /><br />
+	图 1 Dev C++添加断点</div>
+<br />
+如上图所示，我们成功地在第 7 行代码处添加了一个断点。注意，以正常方式点击&ldquo;编译运行&rdquo;按钮（快捷键是 &quot;Fn+F11&quot;）运行程序，断点是不会生效的，只有点击&ldquo;调试&rdquo;按钮（快捷键是 Fn+F5）运行程序时才有效。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/211105/1A1234210-1_2.gif" /><br />
+	图 2 调试程序</div>
+<blockquote>
+	<p>
+		注意，只有在&ldquo;Debug&rdquo;模式下才能使用调试功能，如图 2 所示，本节选用的是&ldquo;TDM-GCC 4.9.2 64-bit Debug&rdquo;模式。</p>
+</blockquote>
+点击&ldquo;调试&rdquo;按钮，或者按下快捷键&ldquo;Fn+F5&rdquo;，程序开始执行，直到第 7 行代码处（当前行代码尚未运行）暂停，如下所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/211105/1A1233U9-2_2.gif" /><br />
+	图 3 断点发挥作用</div>
+<br />
+当程序暂时执行时，借助调试窗口中的按钮可以查看某些变量的值，还可以控制编译器继续往下执行程序。整个调试窗口中，常用的按钮以及含义分别是：
+<ul>
+	<li>
+		添加查看：查看某个变量的值，还可以看到值的变化情况；</li>
+	<li>
+		下一步：控制编译器向下执行一行语句；</li>
+	<li>
+		单步进入：功能和&ldquo;下一步&rdquo;按钮类似，不同之处在于，当程序中调用某个自定义的函数时，此按钮可以进入到函数内部，继续调试函数内部的代码，而 &quot;下一步&quot; 按钮不会；</li>
+	<li>
+		跳过：继续执行程序，遇到下一个断点暂停执行；</li>
+	<li>
+		停止执行：停止调试程序。</li>
+</ul>
+<br />
+举个例子，点击&ldquo;添加查看&rdquo;按钮监视变量 sum 值的变化情况，添加之后如下图所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/211105/1A123E16-3_2.gif" /><br />
+	图 4 添加要监控的变量</div>
+<br />
+初始状态下，变量 sum 的值为 0。点击&ldquo;下一步&rdquo;，执行第 7 行代码，箭头光标指向第 8 行，变量 sum 的值仍为 0。再点击&ldquo;下一步&rdquo;，执行第 8 行代码，箭头光标指向第 9 行，变量 sum 的值变为 30。<br />
+<blockquote>
+	<p>
+		当箭头光标指向第 8 行代码时，点击&ldquo;单步进入&rdquo;按钮，箭头光标会进入 add() 函数并指向第 3 行代码，感兴趣的读者可自行尝试。</p>
+</blockquote>
+<br />
+调试过程中，Dev C++ 支持同时监控多个变量，还支持在程序中设置多个断点，如下图所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/211105/1A1235223-4_2.gif" /><br />
+	图 5 多个断点和监控多个变量</div>
+<h2>
+	Dev C++调试注意事项</h2>
+对于修改后的程序，调试程序之前一定要先编译程序。<br />
+<br />
+目前，多数人使用的都是 Windows 10 操作系统，但遗憾地是，即便是最新版本的 Dev C++（目前的最新版本是 5.11），在 Windows 10 上的兼容性并不好，有时会出现各种奇葩的问题。<br />
+<br />
+举个例子，某些版本的 Dev C++ 调试 C++ 程序时，遇到 endl 会出现&ldquo;卡死&rdquo;的情况，无法继续调试程序。遇到这种情况，比如容易的解决方案是：将 endl 用 &#39;\n&#39; 替换，就可以解决这个问题。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1450_2.html" title="C++字符串输入输出操作详解" target="_blank">C++字符串输入输出操作详解</a></li>
+<li><a href="2250_2.html" title="Python函数关键字参数及用法" target="_blank">Python函数关键字参数及用法</a></li>
+<li><a href="vip_3243_2.html" title="Shell代码块重定向（对一组命令进行重定向）" target="_blank">Shell代码块重定向（对一组命令进行重定向）</a></li>
+<li><a href="../numpy/byte-swap_2.html" title="NumPy字节交换" target="_blank">NumPy字节交换</a></li>
+<li><a href="../matplotlib/axes-formatting_2.html" title="Matplotlib坐标轴格式" target="_blank">Matplotlib坐标轴格式</a></li>
+<li><a href="f0r37f3_2.html" title="Word设置页眉和页脚（多种方式）" target="_blank">Word设置页眉和页脚（多种方式）</a></li>
+<li><a href="dtwdfeo_2.html" title="《C语言精彩编程200例》全彩版PDF下载（高清完整版）" target="_blank">《C语言精彩编程200例》全彩版PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9451;
+window.arcId = "cda39V7n2sovcnkc0cLHEozw84Dzmnukb3gbwU9cAIduLrAlwphVi+PMqxY";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

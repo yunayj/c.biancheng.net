@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++字符串和数字转换完全攻略</title>
+<meta name="description" content="以字符串形式存储的数字和以数字形式存储的数字之间是有区别的。 例如，字符串 2679 就不是一个数字：它是由 2、6、7、9 这 4 个字符的 ASCII 码组成的序列。由于字符串 2679 不是一个数" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++字符串和数字转换完全攻略</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">以字符串形式存储的数字和以数字形式存储的数字之间是有区别的。<br />
+<br />
+例如，字符串 &quot;2679&quot; 就不是一个数字：它是由 2、6、7、9 这 4 个字符的 ASCII 码组成的序列。由于字符串 &quot;2679&quot; 不是一个数字，所以编译器将不允许对它进行加法、乘法和除法之类的数学运算。以数字表示的字符串必须首先转换为数字形式，然后才能与算术运算符一起使用。<br />
+<br />
+同样地，数字形式的程序值，例如 int、long 和 double 等，有时也需要转换为字符串形式，这样结果字符串才能立即输出到文件或其他输入输出设备，或者存入内存中的某个字符串对象，供以后使用。<br />
+<br />
+当用户在键盘上输入一个数字时，该数字以字符串的形式输入，就好像用户输入的一系列字符（数字）。在 <a href='../cplus/cplus.html' target='_blank'>C++</a> 中，这样的数字通常通过流提取运算符 &gt;&gt; 来读取。在存储到数字类型的变量之前，该运算符会根据需要自动执行转换。在输出期间，数字到字符串的反向转换由流输出运算符 &lt;&lt; 执行。<br />
+<h2>
+使用字符串流对象进行数字转换</h2>
+C++ 有两个类，<span style="color:#008000;">ostringstream </span>和<span style="color:#008000;"> istringstream</span>，可以用来对内存中的值执行字符串/数字转换。<br />
+<br />
+ostringstream 类是 ostream 的子类（cout 也属于该类），并使用流插入运算符 &lt;&lt; 将数值转换为字符串。ostringstream 类型对象的工作方式与cout和文件对象的工作方式相同，但它不是将数据写入屏幕或文件，而是写入它所包含的字符串对象中。<br />
+<br />
+每次在 ostringstream 对象上使用 &lt;&lt; 时，它都会执行必要的数字到字符串的转换，并将结果追加到其字符串的末尾。除了支持 ostream 类的所有成员函数和运算符外，ostringstream 对象还支持表 1 中所示的 str 成员函数。<br />
+<br />
+istringstream 类是从 istream 派生的。它内部包含一个字符串对象，函数将它作为可以从中&quot;读取&quot;的输入流。<br />
+<br />
+输入流可以在创建对象时由 istringstream 构造函数设置，也可以在创建对象后通过调用 str(string s) 函数来设置。流提取操作符 &gt;&gt; 从封闭的字符串中读取，并在必要时将字符串转换为数字。表 1 列出了 istringstream 的成员函数，必须在程序中包含 <code>sstream</code> 头文件才能使用这些类。<br />
+<br />
+<table>
+<caption>
+表 1 ostringstream 和 istringstream 类的成员函数</caption>
+<tbody>
+<tr>
+<th>
+成员函数</th>
+<th>
+描&nbsp;述</th>
+</tr>
+<tr>
+<td>
+istringstream(string s)</td>
+<td>
+istringstream 的构造函数：设置对象的输入流的初始值。示例：<br />
+istringstream istr (&quot;50 64 28<span style="font-size: 10px;">&quot;</span>);</td>
+</tr>
+<tr>
+<td>
+ostringstream(string s)</td>
+<td>
+ostringstream 的构造函数：设置对象的输出流的初始值。示例：<br />
+ostringstream ostr(&quot;50 64 28&quot;);</td>
+</tr>
+<tr>
+<td>
+string str()</td>
+<td>
+返回 ostringstream 或 istringstream 对象中包含的字符串。示例：<br />
+string is&nbsp;=&nbsp;istr.str();<br />
+string os = ostr.str ();</td>
+</tr>
+<tr>
+<td>
+void str(string &amp;s)</td>
+<td>
+设置作为对象的输入或输出流的字符串。示例：<br />
+ostr.str (<span style="font-size: 10px;">&quot;</span>50 64 28<span style="font-size: 10px;">&quot;</span>);<br />
+istr.str(&quot;50 64 28<span style="font-size: 10px;">&quot;</span>);</td>
+</tr>
+</tbody>
+</table>
+<br />
+下面的程序演示了这些类的用法：<br />
+<pre class="cpp">
+//This program illustrates the use of sstream objects
+#include &lt;sstream&gt;
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+
+int main()
+{
+    string str = &quot;John 20 50&quot;; // string to read from
+    const char *cstr = &quot;Amy 30 42&quot;; // Cstring to read from
+    istringstream istr1 (str);    // istr1 will read from str
+    istringstream istr2; // istr2 will read from cstr
+    ostringstream ostr; // The ostringstream object to write to
+    string name;
+    int score1, score2, average_score;
+
+    // Read name and scores and compute average then write to ostr
+    istr1 &gt;&gt; name &gt;&gt; score1 &gt;&gt; score2;
+    average_score = (score1 + score2)/2;
+    ostr &lt;&lt; name &lt;&lt; &quot; has average score&quot; &lt;&lt; average_score &lt;&lt; &quot;\n&quot;;
+    // Set istr2 to read from the C string and repeat the above
+    istr2.str(cstr);
+    istr2 &gt;&gt; name &gt;&gt; score1 &gt;&gt; score2;
+    average_score = (score1 + score2)/2;
+    ostr &lt;&lt; name &lt;&lt; &quot; has average score&quot; &lt;&lt; average_score &lt;&lt; &quot;\n&quot;;
+    // Switch to hexadeximal output on ostr
+    ostr &lt;&lt; hex;
+    // Write Amy&#39;s scores in hexadecimal
+    ostr &lt;&lt; name &lt;&lt; &quot;&#39;s scores in hexadecimal are: &quot; &lt;&lt; score1 &lt;&lt; &quot; and &quot; &lt;&lt; score2 &lt;&lt; &quot;\n&quot;;
+    // Extract the string from ostr and print it to the screen
+    cout &lt;&lt; ostr.str();
+    return 0;
+}</pre>
+程序输出结果：
+<p class="info-box">
+John has average score35<br />
+Amy has average score36<br />
+Amy&#39;s scores in hexadecimal are: 1e and 2a</p>
+请注意，这些类具有 ostream 和 istream 对象的全部功能，包括使用八进制和十六进制等不同进制将数字转换为字符串的能力。当然，它们也是有缺陷的，它们强制程序员创建 sstream 对象，只有这样才能使用它们的插入和提取运算符执行转换。<br />
+<h2>
+数字转换函数</h2>
+C++ 11 提供了若干 to_string(T value) 函数来将 T 类型的数字值转换为字符串形式。以下是几个 to_string() 函数的列表：<br />
+<p class="info-box">
+string to_string(int value)<br />
+string to_string(long value)<br />
+string to_string(double value)</p>
+来看以下代码示例：<br />
+<pre class="cpp">
+int a = 5;
+string str = to_string(a*a);
+cout &lt;&lt; &quot; The square of 5 is &quot; &lt;&lt; str &lt;&lt; endl;</pre>
+以上示例即显示了该系列函数的用法。它将打印如下字符串：<br />
+<p class="info-box">
+The square of 5 is 25</p>
+to_string() 函数无法处理非十进制整数的转换。如果需要该功能，则应该使用 ostringsteam 对象来完成该转换。<br />
+<br />
+字符串到数字的转换可以通过 stoX() 系列函数来执行。该系列函数的成员可以将字符串转换为 int、long、float 和 double 类型的数字。具体语法如下所示：<br />
+<p class="info-box">
+int stoi(const strings str, size_t* pos = 0, int base = 10)<br />
+long stol(const strings str, size_t* pos = 0, int base = 10)<br />
+float stof(const strings str, size_t* pos = 0)<br />
+double stod(const strings str, size_t* pos = 0)</p>
+第一个形参 str 是一个字符串（例如 &quot;-342&quot; 或 &quot;3.48&quot; 等），它将被转换为恰当的数字形式。这些函数可以将 str 可能的最长前缀转换为数字，并返回一个整数地址 pos，pos 中保存了 str 无法被转换的第一个字符的索引。类型 size_t 是在标准库中定义的，常用于表示无符号整数的大小或数组、矢量、字符串中的一个索引。<br />
+<br />
+例如，如果试图转换字符串 &quot;-34iseven&quot;，则将成功返回整数 -34，而无法转换的第一个字符的位置 pos 则被设置为 3。base 形参仅适用于整数转换，指示用于转换的进制。pos 和 base 形参都是可选的，所以它们可以被忽略。如果 pos 被忽略，则不会存储停止字符的索引。如果 base 被忽略，则默认为十进制。如果字符串 str 包含一个无效值，例如 &quot;is-34 even?&quot;，则不会进行转换，函数将抛出一个 invalid_argument 异常。<br />
+<br />
+下面的程序演示了字符串转换函数的用法：
+<pre class="cpp">
+// This program demonstrates the use of the stoXXX()
+// numeric conversion functions.
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+using namespace std;
+
+int main()
+{
+    string str; // string to convert
+    size_t pos; // Hold position of stopping character
+    //Convert string to double
+    str = &quot;-342.57is a number&quot;;
+    cout &lt;&lt; &quot;The string is &quot; &lt;&lt; str &lt;&lt; endl;
+    double d = stod(str, &amp;pos);
+    cout &lt;&lt; &quot;The converted double is &quot; &lt;&lt; d &lt;&lt; endl;
+    cout &lt;&lt; &quot;The stopping character is &quot; &lt;&lt; str[pos] &lt;&lt; &quot; at position &quot; &lt;&lt; pos &lt;&lt; endl;
+    // Convert string to int (default to decimal)
+    str = &quot;-342.57is a number&quot;;
+    cout &lt;&lt; &quot;\nThe string is &quot; &lt;&lt; str &lt;&lt; endl;
+    int i = stoi(str, &amp;pos);
+    cout &lt;&lt; &quot;The converted integer is &quot; &lt;&lt; i &lt;&lt; endl;
+    cout &lt;&lt; &quot;The stopping character is &quot; &lt;&lt; str[pos] &lt;&lt;&quot; at position &quot; &lt;&lt; pos &lt;&lt; endl;
+    // Convert string to int (base is binary)
+    str = &quot;01110binary number&quot;;
+    cout &lt;&lt; &quot;\nThe string is &quot; &lt;&lt; str &lt;&lt; endl;
+    i = stoi (str, &amp;pos, 2);
+    cout &lt;&lt; &quot;The converted binary integer is &quot; &lt;&lt; i &lt;&lt; endl;
+    cout &lt;&lt; &quot;The stopping character is &quot; &lt;&lt; str[pos] &lt;&lt; &quot; at position &quot; &lt;&lt; pos &lt;&lt; endl;
+    return 0;
+}</pre>
+程序输出结果：
+<p class="info-box">
+The string is -342.57is a number<br />
+The converted double is -342.57<br />
+The stopping character is i at position 7<br />
+<br />
+The string is -342.57is a number<br />
+The converted integer is -342<br />
+The stopping character is . at position 4<br />
+<br />
+The string is 01110binary number<br />
+The converted binary integer is 14<br />
+The stopping character is b at position 5</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2382.html" title="GCC -l选项：手动添加链接库" target="_blank">GCC -l选项：手动添加链接库</a></li>
+<li><a href="2607.html" title="MySQL修改和删除索引（DROP INDEX）" target="_blank">MySQL修改和删除索引（DROP INDEX）</a></li>
+<li><a href="../c/abs.html" title="C语言abs()函数：求整数的绝对值" target="_blank">C语言abs()函数：求整数的绝对值</a></li>
+<li><a href="vip_5907.html" title="C语言2048小游戏源码下载和思路解析" target="_blank">C语言2048小游戏源码下载和思路解析</a></li>
+<li><a href="6587.html" title="Java Object类详解" target="_blank">Java Object类详解</a></li>
+<li><a href="../python_spider/pymysql.html" title="Python Pymysql实现数据存储" target="_blank">Python Pymysql实现数据存储</a></li>
+<li><a href="../csharp/queue.html" title="C# Queue：队列" target="_blank">C# Queue：队列</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 1527;
+window.arcId = "afacpQTJJrEuZa5Y9LRLj3RMa+YXMd36IZ8yGP+HVgWrTtpkxlrtJ/GKMQM";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

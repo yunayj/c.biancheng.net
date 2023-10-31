@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>MySQL删除数据表（DROP TABLE）</title>
+<meta name="description" content="删除数据表就是将数据库中已经存在的表从数据库中删除。 注意，在删除表的同时，表的定义和表中所有的数据均会被删除。因此，在进行删除操作前，最好对表中的数据做一个备份，" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>MySQL删除数据表（DROP TABLE）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">删除数据表就是将数据库中已经存在的表从数据库中删除。<br />
+<br />
+注意，在删除表的同时，表的定义和表中所有的数据均会被删除。因此，在进行删除操作前，最好对表中的数据做一个备份，以免造成无法挽回的后果。<br />
+<br />
+本文将详细讲解 MySQL 数据库表的删除方法。
+<h2>
+	删除没有被关联的表</h2>
+在 MySQL 中，使用 DROP TABLE 可以一次删除一个或多个没有被其他表关联的数据表。<br />
+<br />
+语法格式如下：
+<p class="info-box">
+	DROP TABLE [IF EXISTS]表1, 表2,&hellip;,表n;</p>
+其中，&ldquo;表n&rdquo;指要删除的表的名称，后面可以同时删除多个表，只需将要删除的表名依次写在后面，相互之间用逗号隔开即可。如果要删除的数据表不存在，则 MySQL 会提示一条错误信息：
+<p class="info-box">
+	ERROR 1051 (42S02): Unknown table &#39;表名&#39;</p>
+参数&ldquo;IF EXISTS&rdquo;用于在删除前判断删除的表是否存在，加上该参数后，再删除表的时候，如果表不存在，SQL 语句可以顺利执行，但是会发出警告（warning）。<br />
+<br />
+首先，创建一个名为 tb_dept2 的数据表，具体的 SQL 语句如下：
+<pre class="sql" showmenu="false" shownum="false">
+CREATE TABLE tb_dept2
+(
+id INT PRIMARY KEY,
+name VARCHAR(22) UNIQUE,
+location VARCHAR(50)
+);</pre>
+下面使用删除语句将该表删除。<br />
+<br />
+【示例1】删除数据表 tb_dept2，SQL 语句如下：
+<pre class="sql" showmenu="false" shownum="false">
+DROP TABLE IF EXISTS tb_dept2;</pre>
+语句执行完毕之后，使用 SHOW TABLES 命令查看当前数据库中所有的表，SQL 语句如下：
+<pre class="info-box">
+mysql&gt; SHOW TABLES;
++---------------------+
+| Tables_in_test_db   |
++---------------------+
+| tb_dept             |
+| tb_deptment3        |
+&hellip;省略部分内容</pre>
+从执行结果可以看到，数据表列表中已经不存在名称为 tb_dept2 的表，删除操作成功。
+<h2>
+	删除被其他表关联的主表</h2>
+在数据表之间存在外键关联的情况下，如果直接删除父表，结果会显示失败，原因是直接删除将破坏表的参照完整性。如果必须要删除，可以先删除与它关联的子表，再删除父表，只是这样就同时删除了两个表中的数据。<br />
+<br />
+有的情况下可能要保留子表，这时若要单独删除父表，只需将关联的表的外键约束条件取消，然后删除父表即可，下面讲解这种方法。<br />
+<br />
+在数据库中创建两个关联表，首先创建表tb_dept2，SQL 语句如下：
+<pre class="sql" showmenu="false" shownum="false">
+CREATE TABLE tb_dept2
+(
+id INT PRIMARY KEY,
+name VARCHAR(22),
+location VARCHAR(50)
+);</pre>
+接下来创建表 tb_emp，SQL 语句如下：
+<pre class="sql" showmenu="false" shownum="false">
+CREATE TABLE tb_emp
+(
+id INT PRIMARY KEY,
+name VARCHAR(25),
+deptId INT,
+salary FLOAT,
+CONSTRAINT fk_emp_dept FOREIGN KEY (deptId) REFERENCES tb_dept2(id)
+);</pre>
+使用 SHOW CREATE TABLE 命令查看表 tb_emp 的外键约束，结果如下：
+<pre class="info-box">
+mysql&gt; SHOW CREATE TABLE tb_emp\G
+*** 1. row ***
+    Table: tb_emp
+Create Table: CREATE TABLE `tb_emp` (
+`id` INT NOT NULL,
+  `name` varchar(25) DEFAULT NULL,
+  `deptId` INT DEFAULT NULL,
+  `salary` float DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_emp_dept` (`deptId`),
+  CONSTRAINT `fk_emp_dept` FOREIGN KEY (`deptId`) REFERENCES `tb_dept2` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci</pre>
+可以看到，以上执行结果创建了两个关联表 tb_dept2 和表 tb_emp，其中：
+<ul>
+	<li>
+		tb_emp 表为子表，具有名称为 fk_emp_dept 的外键约束；</li>
+	<li>
+		tb_dept2 为父表，其主键 id 被子表 tb_emp 所关联。</li>
+</ul>
+<br />
+【示例2】删除被数据表 tb_emp 关联的数据表 tb_dept2。<br />
+<br />
+首先试着直接删除父表 tb_dept2，输入如下删除语句：
+<pre class="info-box">
+mysql&gt; DROP TABLE tb_dept2;
+ERROR 3730 (HY000): Cannot drop table &#39;tb_dept2&#39; referenced by a foreign key constraINT &#39;fk_emp_dept&#39; on table &#39;tb_emp&#39;.</pre>
+如前所述，在存在外键约束的情况下，主表不能被直接删除。<br />
+<br />
+接下来，解除关联子表 tb_emp 的外键约束，SQL 语句如下：
+<pre class="sql" showmenu="false" shownum="false">
+ALTER TABLE tb_emp DROP FOREIGN KEY fk_emp_dept;</pre>
+语句成功执行后，将取消表 tb_emp 和表 tb_dept2 之间的关联关系。此时，可以输入删除语句，将原来的父表 tb_dept2 删除掉，SQL 语句如下：
+<pre class="sql" showmenu="false" shownum="false">
+DROP TABLE tb_dept2;</pre>
+最后通过<code>SHOW TABLES;</code>查看数据表列表：
+<pre class="info-box">
+mysql&gt; SHOW TABLES;
++---------------------+
+| Tables_in_test_db   |
++---------------------+
+| tb_dept             |
+| tb_deptment3        |
+&hellip;省略部分内容</pre>
+可以看到，数据表列表中已经不存在名称为 tb_dept2 的表。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1913_2.html" title="以太坊是什么？为什么说它是区块链2.0的代表" target="_blank">以太坊是什么？为什么说它是区块链2.0的代表</a></li>
+<li><a href="3405_2.html" title="什么是连通图，（强）连通图详解" target="_blank">什么是连通图，（强）连通图详解</a></li>
+<li><a href="3452_2.html" title="什么是外部排序算法" target="_blank">什么是外部排序算法</a></li>
+<li><a href="4361_2.html" title="Go语言channel超时机制" target="_blank">Go语言channel超时机制</a></li>
+<li><a href="4743_2.html" title="Java List.subList()方法：获取列表中指定范围的子列表" target="_blank">Java List.subList()方法：获取列表中指定范围的子列表</a></li>
+<li><a href="../sql/inner-join_2.html" title="SQL INNER JOIN：内连接" target="_blank">SQL INNER JOIN：内连接</a></li>
+<li><a href="../csharp/sortedList_2.html" title="C# SortedList：排序列表" target="_blank">C# SortedList：排序列表</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10186;
+window.arcId = "64151a3RM0dS6L9lsLdlJrR2zmSM+f9DVmr/PRc221z0AVlQcJQVyRDIzxIA";
+window.typeidChain = "345|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

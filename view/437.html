@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++ deque修改（替换、更改）元素详解</title>
+<meta name="description" content="deque 的成员函数 assign() 可以替换现有的所有元素。它有三个重版版本；替换的新内容可以是由初始化列表指定的元素，也可以是由迭代器指定的一段元素，或是一个特定对象的多个副本" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++ deque修改（替换、更改）元素详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">deque 的成员函数 assign() 可以替换现有的所有元素。它有三个重版版本；替换的新内容可以是由初始化列表指定的元素，也可以是由迭代器指定的一段元素，或是一个特定对象的多个副本。<br />
+<br />
+这里展示了如何使用初始化列表来替换 deque 容器中的内容：<br />
+<pre class="cpp">
+std::deque&lt;std::string&gt; words {&quot;one&quot;, &quot;two&quot;, &quot;three&quot;, &quot;four&quot;};
+auto init_list = {std::string{&quot;seven&quot;}, std::string{ &quot;eight&quot;}, std::string{&quot;nine&quot;}};
+words.assign(init_list);</pre>
+最后一条语句用 init_list 中的 string 对象替换掉了 words 中的元素。注意，这里不能直接把字符放入初始化列表。如果这么做，init_list 的类型会被推导为 initializer_list&lt;const char*&gt;，然而 assign() 需要的是一个 initializer_list&lt;string&gt; 类型的实参，这样就无法通过编译。当然，也可以不单独定义 init_list，可以在 assign() 的实参中定义初始化列表，例如：<br />
+<pre class="cpp">
+words.assign({&quot;seven&rdquo;，&quot;eight&quot;,&quot;nine&quot;});</pre>
+因为 words 的成员函数 assign() 需要一个 initializer_list&lt;string&gt; 类型的实参，编译器会用字符串列表生成一个这种类型的初始化列表。为了给 deque 容器赋值，需要提供两个迭代器作为参数：<br />
+<pre class="cpp">
+std::vector&lt;std::string&gt; wordset {&quot;this&quot;,&quot;that&quot;,&quot;these&quot;,&quot;those&quot;};
+words.assign(std::begin(wordset)+1, --std::end(wordset));
+//Assigns &quot;that&quot; and &quot;these&quot;</pre>
+assign() 函数只需要输入迭代器，因此可以使用任何类别的迭代器。最后一种可能是，用重复的对象来替换容器中的内容：<br />
+<pre class="cpp">
+words.assign(8,&quot;eight&quot;); //Assign eight ins<a href='https://c.biancheng.net/ref/tan.html' target='_blank'>tan</a>ces of string(&quot;eight&quot;)</pre>
+第一个参数指定了替换当前容器内容的第二个参数的个数。vector 也提供了一套同样的 assign() 函数，所以可以更换一套新的 vector 容器元素。也可以使用赋值操作符来替换赋值运算符左边的 deque 容器的内容。赋值运算的右操作数必须和左操作数是相同类型，也可以是一个初始化列表。vector 容器同样也支持这些操作。下面是一个为 deque 替换一套新元素的示例：<br />
+<pre class="cpp">
+std::deque&lt;std::string&gt; words {&quot;one&quot;,&quot;two&quot;,&quot;three&quot;, &quot;four&quot;};
+std::deque&lt;std::string&gt; other_words;
+other_words = words; // other_words same contents as words
+words = {&quot;seven&quot;, &quot;eight&quot;, &quot;nine&quot;}; // words contents replaced</pre>
+执行完这些语句后，otlier_words 会包含和 words 相同的元素，words 则包含初始化列表中的那些元素。赋完值后，容器的大小会反映赋值元素的个数。为一个 vector 容器替换一套新的元素(来自于同类型的 vector 容器或初始化列表)，它的大小和这套新元素相同。<br />
+<br />
+下面是一个使用 deque 容器的完整示例：<br />
+<pre class="cpp">
+// U<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g a deque container
+#include &lt;iostream&gt; // For standard streams
+#include &lt;algorithm&gt; // For copy()
+#include &lt;deque&gt; // For deque container
+#include &lt;string&gt; // For string classes
+#include &lt;iterator&gt; // For front_insert_iterator &amp; stream iterators
+
+using std::string;
+
+int main()
+{
+    std::deque&lt;string&gt; names;
+    std::cout &lt;&lt; &quot;Enter first names separated by spaces. Enter Ctrl+Z on a new line to end:\n&quot;;
+    std::copy(std::istream_iterator &lt; string &gt; {std::cin}, std::istream_iterator &lt; string &gt; {}, std::front_inserter(names));
+    std::cout &lt;&lt; &quot;\nIn reverse order, the names you entered are:\n&quot;;
+    std::copy(std::begin(names), std::end(names), std::ostream_iterator &lt; string &gt; {std::cout, &quot;  &quot;});
+    std::cout &lt;&lt; std::endl;
+}</pre>
+运行结果为：
+<p class="info-box">
+Enter first names separated by spaces. Enter Ctrl+Z on a new line to end:<br />
+Fred Jack Jim George Mary Zor Rosie<br />
+^Z<br />
+<br />
+In reverse order, the names you entered are:<br />
+Rosie&nbsp; Zor&nbsp; Mary&nbsp; George&nbsp; Jim&nbsp; Jack&nbsp; Fred</p>
+该程序读入几个任意长度的字符串，然后把它们存储在 names 容器中。copy() 算法将从 istream_iterator&lt;string&gt; 获取到的序列，输入到 names 容器的 front_insert_itemtor 中，这个迭代器是由函数 front_inserter() 返回的。<br />
+<br />
+copy() 的第一个参数是用来输入的开始迭代器，第二个参数是对应的结束迭代器。当使用键盘输入 <code>Ctrl+Z</code> 时，输入迭代器会对应为结束迭代器；如果是从文件流中读取数据，当读到 <code>EOF</code> 时，也会产生一个结束迭代器。因为 deque 容器有成员函数 push_front()，可以用来在序列的头部添加元素，所以我们这里可以使用 front_insert_iterator； front_insert_iterator 通过调用 push_front()在容器中添加元素，因此它适用于有成员函数 push_front() 的任何容器。<br />
+<br />
+输出也是由 copy() 算法生成的。前两个参数是用来指定元素范围的迭代器，这些元素被复制到第三个参数所指定的位置。因为前两个参数正好是 deque 容器的开始和结束迭代器，因此会复制 deque 容器的全部元素。目的地是一个接收字符串对象的 ostream_iterator，它会将这些字符串对象写入标准输出流。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="150.html" title="C++对象数组中使用构造函数" target="_blank">C++对象数组中使用构造函数</a></li>
+<li><a href="466.html" title="Code::Blocks汉化教程（附带汉化包）" target="_blank">Code::Blocks汉化教程（附带汉化包）</a></li>
+<li><a href="vip_1764.html" title="小数在内存中是如何存储的，揭秘诺贝尔奖级别的设计（长篇神文）" target="_blank">小数在内存中是如何存储的，揭秘诺贝尔奖级别的设计（长篇神文）</a></li>
+<li><a href="2312.html" title="C++重载[]（下标运算符）详解" target="_blank">C++重载[]（下标运算符）详解</a></li>
+<li><a href="../spring_boot/auto-config.html" title="Spring Boot自动配置原理" target="_blank">Spring Boot自动配置原理</a></li>
+<li><a href="../css3/float.html" title="CSS float（浮动）" target="_blank">CSS float（浮动）</a></li>
+<li><a href="2ingx9.html" title="容器到底是什么？它和虚拟机有什么不同？" target="_blank">容器到底是什么？它和虚拟机有什么不同？</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 437;
+window.arcId = "5695tuL034/+woclnME5sHknW/oBDZtJrFlW4kELRwAT9L8oUh7aMVYvAg";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

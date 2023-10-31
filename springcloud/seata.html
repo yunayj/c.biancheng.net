@@ -1,0 +1,2971 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Seata：Spring Cloud Alibaba分布式事务组件（非常详细）</title>
+<meta name="description" content="随着业务的不断发展，单体架构已经无法满足我们的需求，分布式微服务架构逐渐成为大型互联网平台的首选，但所有使用分布式微服务架构的应用都必须面临一个十分棘手的问题，那" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="../view/niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="springcloud.html">Spring Cloud</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href="micro-service.html">微服务是什么</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href="what-is-cloud.html">Spring Cloud是什么</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href="eureka.html">Spring Cloud Eureka</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href="ribbon.html">Spring Cloud Ribbon</a>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href="open-feign.html">Spring Cloud OpenFeign</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href="hystrix.html">Spring Cloud Hystrix</a>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href="gateway.html">Spring Cloud Gateway</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href="config.html">Spring Cloud Config</a>
+</dd>
+<dd>
+<span class="channel-num">9</span>
+<a href="what-is-alibaba.html">Spring Cloud Alibaba是什么</a>
+</dd>
+<dd>
+<span class="channel-num">10</span>
+<a href="nacos.html">Spring Cloud Alibaba Nacos</a>
+</dd>
+<dd>
+<span class="channel-num">11</span>
+<a href="sentinel.html">Spring Cloud Alibaba Sentinel</a>
+</dd>
+<dd>
+<span class="channel-num">12</span>
+<a href="seata.html">Spring Cloud Alibaba Seata</a>
+</dd>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="springcloud.html">Spring Cloud</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Seata：Spring Cloud Alibaba分布式事务组件（非常详细）</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body"><p>
+随着业务的不断发展，单体架构已经无法满足我们的需求，分布式微服务架构逐渐成为大型互联网平台的首选，但所有使用分布式微服务架构的应用都必须面临一个十分棘手的问题，那就是&ldquo;分布式事务&rdquo;问题。<br />
+<br />
+在分布式微服务架构中，几乎所有业务操作都需要多个服务协作才能完成。对于其中的某个服务而言，它的数据一致性可以交由其自身数据库事务来保证，但从整个分布式微服务架构来看，其全局数据的一致性却是无法保证的。<br />
+&nbsp;</p>
+<p>
+例如，用户在某电商系统下单购买了一件商品后，电商系统会执行下 4 步：</p>
+<ol>
+<li>
+调用订单服务创建订单数据</li>
+<li>
+调用库存服务扣减库存</li>
+<li>
+调用账户服务扣减账户金额</li>
+<li>
+最后调用订单服务修改订单状态</li>
+</ol>
+<br />
+<p>
+为了保证数据的正确性和一致性，我们必须保证所有这些操作要么全部成功，要么全部失败，否则就可能出现类似于商品库存已扣减，但用户账户资金尚未扣减的情况。各服务自身的事务特性显然是无法实现这一目标的，此时，我们可以通过分布式事务框架来解决这个问题。</p>
+<div>
+&nbsp;</div>
+Seata 就是这样一个分布式事务处理框架，它是由阿里巴巴和蚂蚁金服共同开源的分布式事务解决方案，能够在微服务架构下提供高性能且简单易用的分布式事务服务。
+<h2>
+Seata 的发展历程</h2>
+阿里巴巴作为国内最早一批进行应用分布式（微服务化）改造的企业，很早就遇到微服务架构下的分布式事务问题。<br />
+<br />
+阿里巴巴对于分布式事务问题先后发布了以下解决方案：<br />
+<ul>
+<li>
+2014 年，阿里中间件团队发布 TXC（Taobao Transaction Constructor），为集团内应用提供分布式事务服务。</li>
+<li>
+2016 年，TXC 在经过产品化改造后，以 GTS（Global Transaction Service） 的身份登陆阿里云，成为当时业界唯一一款云上分布式事务产品。在阿云里的公有云、专有云解决方案中，开始服务于众多外部客户。</li>
+<li>
+2019 年起，基于 TXC 和 GTS 的技术积累，阿里中间件团队发起了开源项目 Fescar（Fast &amp; EaSy Commit And Rollback, FESCAR），和社区一起建设这个分布式事务解决方案。</li>
+<li>
+2019 年 fescar 被重命名为了seata（simple extensiable autonomous transaction architecture）。</li>
+<li>
+TXC、GTS、Fescar 以及 seata 一脉相承，为解决微服务架构下的分布式事务问题交出了一份与众不同的答卷。</li>
+</ul>
+<h2>
+分布式事务相关概念</h2>
+分布式事务主要涉及以下概念：<br />
+<ul>
+<li>
+<strong>事务</strong>：由一组操作构成的可靠、独立的工作单元，事务具备 ACID 的特性，即原子性、一致性、隔离性和持久性。</li>
+<li>
+<strong>本地事务</strong>：本地事务由本地资源管理器（通常指数据库管理系统 DBMS，例如 MySQL、Oracle 等）管理，严格地支持&nbsp;ACID 特性，高效可靠。本地事务不具备分布式事务的处理能力，隔离的最小单位受限于资源管理器，即本地事务只能对自己数据库的操作进行控制，对于其他数据库的操作则无能为力。</li>
+<li>
+<strong>全局事务</strong>：全局事务指的是一次性操作多个资源管理器完成的事务，由一组分支事务组成。</li>
+<li>
+<strong>分支事务</strong>：在分布式事务中，就是一个个受全局事务管辖和协调的本地事务。</li>
+</ul>
+<br />
+我们可以将分布式事务理解成一个包含了若干个分支事务的全局事务。全局事务的职责是协调其管辖的各个分支事务达成一致，要么一起成功提交，要么一起失败回滚。此外，通常分支事务本身就是一个满足 ACID 特性的本地事务。<br />
+<h2>
+Seata 整体工作流程</h2>
+Seata 对分布式事务的协调和控制，主要是通过 XID 和 3 个核心组件实现的。
+<h4>
+XID</h4>
+XID 是全局事务的唯一标识，它可以在服务的调用链路中传递，绑定到服务的事务上下文中。
+<h4>
+核心组件</h4>
+Seata 定义了 3 个核心组件：
+<ul>
+<li>
+TC（Transaction Coordinator）：事务协调器，它是事务的协调者（这里指的是 Seata 服务器），主要负责维护全局事务和分支事务的状态，驱动全局事务提交或回滚。</li>
+<li>
+TM（Transaction Manager）：事务管理器，它是事务的发起者，负责定义全局事务的范围，并根据 TC 维护的全局事务和分支事务状态，做出开始事务、提交事务、回滚事务的决议。</li>
+<li>
+RM（Resource Manager）：资源管理器，它是资源的管理者（这里可以将其理解为各服务使用的数据库）。它负责管理分支事务上的资源，向 TC 注册分支事务，汇报分支事务状态，驱动分支事务的提交或回滚。</li>
+</ul>
+<br />
+以上三个组件相互协作，TC 以 Seata 服务器（Server）形式独立部署，TM 和 RM 则是以 Seata Client 的形式集成在微服务中运行，其整体工作流程如下图。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211210/102A115W-0.png" /><br />
+图1：Sentinel 的工作流程</div>
+&nbsp;<br />
+Seata 的整体工作流程如下：<br />
+<ol>
+<li>
+TM 向 TC 申请开启一个全局事务，全局事务创建成功后，TC 会针对这个全局事务生成一个全局唯一的 XID；</li>
+<li>
+XID 通过服务的调用链传递到其他服务;</li>
+<li>
+RM 向 TC 注册一个分支事务，并将其纳入 XID 对应全局事务的管辖；</li>
+<li>
+TM 根据 TC 收集的各个分支事务的执行结果，向 TC 发起全局事务提交或回滚决议；</li>
+<li>
+TC 调度 XID 下管辖的所有分支事务完成提交或回滚操作。</li>
+</ol>
+<h2>
+Seata AT 模式</h2>
+Seata 提供了 AT、TCC、SAGA 和 XA 四种事务模式，可以快速有效地对分布式事务进行控制。<br />
+<br />
+在这四种事务模式中使用最多，最方便的就是 AT 模式。与其他事务模式相比，AT 模式可以应对大多数的业务场景，且基本可以做到无业务入侵，开发人员能够有更多的精力关注于业务逻辑开发。
+<h3>
+AT 模式的前提</h3>
+任何应用想要使用 Seata 的 AT 模式对分布式事务进行控制，必须满足以下 2 个前提：<br />
+<ul>
+<li>
+必须使用支持本地 ACID 事务特性的关系型数据库，例如 MySQL、Oracle 等；</li>
+<li>
+应用程序必须是使用 JDBC 对数据库进行访问的 JAVA 应用。</li>
+</ul>
+<br />
+此外，我们还需要针对业务中涉及的各个数据库表，分别创建一个&nbsp;UNDO_LOG（回滚日志）表。不同数据库在创建 UNDO_LOG 表时会略有不同，以 MySQL 为例，其 UNDO_LOG 表的创表语句如下：
+<pre class="info-box">
+CREATE TABLE `undo_log` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `branch_id` bigint(20) NOT NULL,
+  `xid` varchar(100) NOT NULL,
+  `context` varchar(128) NOT NULL,
+  `rollback_info` longblob NOT NULL,
+  `log_status` int(11) NOT NULL,
+  `log_created` datetime NOT NULL,
+  `log_modified` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `ux_undo_log` (`xid`,`branch_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;</pre>
+<h3>
+AT 模式的工作机制</h3>
+Seata 的 AT 模式工作时大致可以分为以两个阶段，下面我们就结合一个实例来对 AT 模式的工作机制进行介绍。<br />
+<br />
+假设某数据库中存在一张名为 webset 的表，表结构如下。<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+列名</th>
+<th>
+类型</th>
+<th>
+主键</th>
+</tr>
+<tr>
+<td>
+id</td>
+<td>
+bigint(20)</td>
+<td>
+&radic;</td>
+</tr>
+<tr>
+<td>
+name</td>
+<td>
+varchar(255)</td>
+<td>
+&nbsp;</td>
+</tr>
+<tr>
+<td>
+url</td>
+<td>
+varchar(255)</td>
+<td>
+&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<br />
+<br />
+在某次分支事务中，我们需要在 webset 表中执行以下操作。
+<pre class="info-box">
+update webset set url = &#39;c.biancheng.net&#39; where name = &#39;C语言中文网&#39;;</pre>
+<h4>
+一阶段</h4>
+Seata AT 模式一阶段的工作流程如下图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="Seata AT 模式一阶段" src="../uploads/allimg/211210/102A12G8-1.png" /><br />
+图2：Seata AT 模式一阶段</div>
+<br />
+Seata AT 模式一阶段工作流程如下。<br />
+<br />
+1. 获取 SQL 的基本信息：Seata 拦截并解析业务 SQL，得到 SQL 的操作类型（UPDATE）、表名（webset）、判断条件（where name = &#39;C语言中文网&#39;）等相关信息。<br />
+<br />
+2. 查询前镜像：根据得到的业务 SQL 信息，生成&ldquo;前镜像查询语句&rdquo;。
+<pre class="info-box">
+select id,name,url from webset where  name=&#39;C语言中文网&#39;;</pre>
+<br />
+执行&ldquo;前镜像查询语句&rdquo;，得到即将执行操作的数据，并将其保存为&ldquo;前镜像数据（beforeImage）&rdquo;。<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+id</th>
+<th>
+name</th>
+<th>
+url</th>
+</tr>
+<tr>
+<td>
+1</td>
+<td>
+C语言中文网</td>
+<td>
+biancheng.net</td>
+</tr>
+</tbody>
+</table>
+<br />
+3. 执行业务 SQL（update webset set url = &#39;c.biancheng.net&#39; where name = &#39;C语言中文网&#39;;），将这条记录的 url 修改为 c.biancheng.net。<br />
+<br />
+4. 查询后镜像：根据&ldquo;前镜像数据&rdquo;的主键（id : 1），生成&ldquo;后镜像查询语句&rdquo;。
+<pre class="info-box">
+select id,name,url from webset where  id= 1;</pre>
+<br />
+执行&ldquo;后镜像查询语句&rdquo;，得到执行业务操作后的数据，并将其保存为&ldquo;后镜像数据（afterImage）&rdquo;。<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+id</th>
+<th>
+name</th>
+<th>
+url</th>
+</tr>
+<tr>
+<td>
+1</td>
+<td>
+C语言中文网</td>
+<td>
+c.biancheng.net</td>
+</tr>
+</tbody>
+</table>
+<br />
+5. 插入回滚日志：将前后镜像数据和业务 SQL 的信息组成一条回滚日志记录，插入到 UNDO_LOG 表中，示例回滚日志如下。
+<pre class="java-script">
+{
+&nbsp; &quot;@class&quot;: &quot;io.seata.rm.datasource.undo.BranchUndoLog&quot;,
+&nbsp; &quot;xid&quot;: &quot;172.26.54.1:8091:5962967415319516023&quot;,
+&nbsp; &quot;branchId&quot;: 5962967415319516027,
+&nbsp; &quot;sqlUndoLogs&quot;: [
+&nbsp;&nbsp;&nbsp; &quot;java.util.ArrayList&quot;,
+&nbsp;&nbsp;&nbsp; [
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;@class&quot;: &quot;io.seata.rm.datasource.undo.SQLUndoLog&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;sqlType&quot;: &quot;UPDATE&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;tableName&quot;: &quot;webset&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;beforeImage&quot;: {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;@class&quot;: &quot;io.seata.rm.datasource.sql.struct.TableRecords&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;tableName&quot;: &quot;webset&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;rows&quot;: [
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;java.util.ArrayList&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;@class&quot;: &quot;io.seata.rm.datasource.sql.struct.Row&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;fields&quot;: [
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;java.util.ArrayList&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;@class&quot;: &quot;io.seata.rm.datasource.sql.struct.Field&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;name&quot;: &quot;id&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;keyType&quot;: &quot;PRIMARY_KEY&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;type&quot;: -5,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;value&quot;: [
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;java.lang.Long&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; },
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;@class&quot;: &quot;io.seata.rm.datasource.sql.struct.Field&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;name&quot;: &quot;url&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;keyType&quot;: &quot;NULL&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;type&quot;: 12,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;value&quot;: &quot;biancheng.net&quot;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; },
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;afterImage&quot;: {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;@class&quot;: &quot;io.seata.rm.datasource.sql.struct.TableRecords&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;tableName&quot;: &quot;webset&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;rows&quot;: [
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;java.util.ArrayList&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;@class&quot;: &quot;io.seata.rm.datasource.sql.struct.Row&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;fields&quot;: [
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;java.util.ArrayList&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;@class&quot;: &quot;io.seata.rm.datasource.sql.struct.Field&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;name&quot;: &quot;id&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;keyType&quot;: &quot;PRIMARY_KEY&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;type&quot;: -5,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;value&quot;: [
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;java.lang.Long&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; },
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;@class&quot;: &quot;io.seata.rm.datasource.sql.struct.Field&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;name&quot;: &quot;url&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;keyType&quot;: &quot;NULL&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;type&quot;: 12,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;value&quot;: &quot;c.biancheng.net&quot;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; ]
+&nbsp; ]
+}</pre>
+<br />
+6. 注册分支事务，生成行锁：在这次业务操作的本地事务提交前，RM 会向 TC 注册分支事务，并针对主键 id 为 1 的记录生成行锁。<br />
+<blockquote>
+<p>
+以上所有操作均在同一个数据库事务内完成，可以保证一阶段的操作的原子性。</p>
+</blockquote>
+7. 本地事务提交：将业务数据的更新和前面生成的 UNDO_LOG 一并提交。<br />
+<br />
+8. 上报执行结果：将本地事务提交的结果上报给 TC。<br />
+<h4>
+二阶段：提交</h4>
+当所有的 RM 都将自己分支事务的提交结果上报给 TC 后，TM 根据 TC 收集的各个分支事务的执行结果，来决定向 TC 发起全局事务的提交或回滚。<br />
+<br />
+若所有分支事务都执行成功，TM 向 TC 发起全局事务的提交，并批量删除各个 RM 保存的 UNDO_LOG 记录和行锁；否则全局事务回滚。
+<h4>
+二阶段：回滚</h4>
+若全局事务中的任何一个分支事务失败，则 TM 向 TC 发起全局事务的回滚，并开启一个本地事务，执行如下操作。<br />
+<br />
+1. 查找 UNDO_LOG 记录：通过 XID 和分支事务 ID（Branch ID）&nbsp;查找所有的 UNDO_LOG 记录。<br />
+<br />
+2. 数据校验：将&nbsp;UNDO_LOG 中的后镜像数据（afterImage）与当前数据进行比较，如果有不同，则说明数据被当前全局事务之外的动作所修改，需要人工对这些数据进行处理。<br />
+<br />
+3. 生成回滚语句：根据 UNDO_LOG 中的前镜像（beforeImage）和业务 SQL 的相关信息生成回滚语句：
+<pre class="info-box">
+update webset set url= &#39;biancheng.net&#39; where id = 1;</pre>
+<br />
+4. 还原数据：执行回滚语句，并将前镜像数据、后镜像数据以及行锁删除。<br />
+<br />
+5. 提交事务：提交本地事务，并把本地事务的执行结果（即分支事务回滚的结果）上报给 TC。<br />
+<h2>
+下载 Seata 服务器</h2>
+1. 使用浏览器访问&ldquo;<a href="https://github.com/seata/seata/releases/tag/v1.4.2" style="text-decoration-line: underline;" target="_blank">https://github.com/seata/seata/releases/tag/v1.4.2</a>&rdquo;，在 Seata Server 下载页面分别下载&ldquo;seata-server-1.4.2.zip&rdquo;，如下图。<br />
+<br />
+<div style="text-align: center;">
+<img alt="Seata 服务器下载" src="../uploads/allimg/211210/102A11F5-2.png" style="border-width: 1px; border-style: solid;" /><br />
+图3：Seata 服务器下载页面</div>
+<br />
+2. 解压 seata-server-1.4.2.zip，其目录结构如下图。<br />
+<br />
+<div style="text-align: center;">
+<img alt="Seata Server 目录结构" src="../uploads/allimg/211210/102A15918-3.png" style="border-width: 1px; border-style: solid;" /><br />
+图4：Seata Server 目录结构</div>
+<br />
+Seata Server 目录中包含以下子目录：
+<ul>
+<li>
+bin：用于存放 Seata Server 可执行命令。</li>
+<li>
+conf：用于存放 Seata Server 的配置文件。</li>
+<li>
+lib：用于存放 Seata Server 依赖的各种 Jar 包。</li>
+<li>
+logs：用于存放 Seata Server 的日志。</li>
+</ul>
+<h2>
+Seata 配置中心</h2>
+所谓&ldquo;配置中心&rdquo;，就像是一个&ldquo;大衣柜&rdquo;，内部存放着各种各样的配置文件，我们可以根据自己的需要从其中获取指定的配置文件，加载到对应的客户端中。<br />
+<br />
+Seata 支持多种配置中心：
+<ul>
+<li>
+nacos</li>
+<li>
+consul</li>
+<li>
+apollo</li>
+<li>
+etcd</li>
+<li>
+zookeeper</li>
+<li>
+file （读本地文件，包含 conf、properties、yml 等配置文件）</li>
+</ul>
+<h2>
+Seata 整合 Nacos 配置中心</h2>
+对于 Seata 来说，Nacos 是一种重要的配置中心实现。<br />
+<br />
+Seata 整合 Nacos 配置中心的操作步骤十分简单，大致步骤如下.<br />
+<h4>
+添加 Maven 依赖</h4>
+我们需要将 nacos-client 的 Maven 依赖添加到项目的 pom.xml 文件中：<br />
+<pre class="xml">
+&lt;dependency&gt;
+    &lt;groupId&gt;io.seata&lt;/groupId&gt;
+    &lt;artifactId&gt;seata-spring-boot-starter&lt;/artifactId&gt;
+    &lt;version&gt;最新版&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.alibaba.nacos&lt;/groupId&gt;
+    &lt;artifactId&gt;nacos-client&lt;/artifactId&gt;
+    &lt;version&gt;1.2.0及以上版本&lt;/version&gt;
+&lt;/dependency&gt;</pre>
+<br />
+在 Spring Cloud 项目中，通常只需要在 pom.xml 中添加&nbsp;spring-cloud-starter-alibaba-seata 依赖即可，代码如下。
+<pre class="xml">
+&lt;!--引入 seata 依赖--&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-starter-alibaba-seata&lt;/artifactId&gt;
+&lt;/dependency&gt;</pre>
+<h4>
+Seata Server 配置</h4>
+在 Seata Server 安装目录下的 config/registry.conf 中，将配置方式（config.type）修改为 Nacos，并对 Nacos 配置中心的相关信息进行配置，示例配置如下。
+<pre class="xml">
+config {
+  # Seata 支持 file、nacos 、apollo、zk、consul、etcd3 等多种配置中心
+  #配置方式修改为 nacos
+  type = &quot;nacos&quot;
+
+  nacos {
+    #修改为使用的 nacos 服务器地址
+    serverAddr = &quot;127.0.0.1:1111&quot;
+    #配置中心的命名空间
+    namespace = &quot;&quot;
+    #配置中心所在的分组
+    group = &quot;SEATA_GROUP&quot;
+    #Nacos 配置中心的用户名
+    username = &quot;nacos&quot;
+    #Nacos 配置中心的密码
+    password = &quot;nacos&quot;
+  }
+}</pre>
+<h4>
+Seata Client 配置</h4>
+我们可以在 Seata Client（即微服务架构中的服务）中，通过 application.yml 等配置文件对 Nacos 配置中心进行配置，示例代码如下。<br />
+<pre class="xml">
+seata:
+  config:
+    type: nacos
+    nacos:
+      server-addr: 127.0.0.1:1111 # Nacos 配置中心的地址
+      group : &quot;SEATA_GROUP&quot;  #分组
+      namespace: &quot;&quot;
+      username: &quot;nacos&quot;   #Nacos 配置中心的用于名
+      password: &quot;nacos&quot;  #Nacos 配置中心的密码</pre>
+<h4>
+上传配置到 Nacos 配置中心</h4>
+在完成了 Seata 服务端和客户端的相关配置后，接下来，我们就可以将配置上传的 Nacos 配置中心了，操作步骤如下。<br />
+<br />
+1. 我们需要获取一个名为 config.txt 的文本文件，该文件包含了 Seata 配置的所有参数明细。<br />
+<br />
+我们可以通过&nbsp;<a href="https://github.com/seata/seata/archive/refs/tags/v1.4.2.zip" target="_blank">Seata Server 源码</a>/script/config-center 目录中获取 config.txt，然后根据自己需要修改其中的配置，如下图。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211210/102A15H9-4.png" style="border-width: 1px; border-style: solid;" /><br />
+图5：config.txt</div>
+<br />
+2. 在 /script/config-center/nacos 目录中，有以下 2 个 Seata 脚本：
+<ul>
+<li>
+nacos-config.py：python 脚本。</li>
+<li>
+nacos-config.sh：为 Linux 脚本，我们可以在 Windows 下通过 Git 命令，将 config.txt 中的 Seata 配置上传到 Nacos 配置中心。</li>
+</ul>
+<br />
+在 seata-1.4.2\script\config-center\nacos 目录下，右键鼠标选择 Git Bush Here，并在弹出的 Git 命令窗口中执行以下命令，将 config.txt 中的配置上传到 Nacos 配置中心。
+<pre class="info-box">
+sh nacos-config.sh -h 127.0.0.1 -p 1111  -g SEATA_GROUP -u nacos -w nacos</pre>
+<br />
+Git 命令各参数说明如下：
+<ul>
+<li>
+-h：Nacos 的 host，默认取值为 localhost</li>
+<li>
+-p：端口号，默认取值为 8848</li>
+<li>
+-g：Nacos 配置的分组，默认取值为&nbsp;SEATA_GROUP</li>
+<li>
+-u：Nacos 用户名</li>
+<li>
+-w：Nacos 密码</li>
+</ul>
+<h4>
+验证 Nacos 配置中心</h4>
+在以上所有步骤完成后，启动 Nacos Server，登陆 Nacos 控制台查看配置列表，结果如下图。<br />
+<br />
+<div style="text-align: center;">
+<img alt="Seata Nacos配置中心" src="../uploads/allimg/211210/102A1J07-5.png" /><br />
+图6：Seata Nacos 配置中心</div>
+<h2>
+Seata 注册中心</h2>
+所谓&ldquo;注册中心&rdquo;，可以说是微服务架构中的&ldquo;通讯录&rdquo;，它记录了服务与服务地址的映射关系。<br />
+<br />
+在分布式微服务架构中，各个微服务都可以将自己注册到注册中心，当其他服务需要调用某个服务时，就可以从这里找到它的服务地址进行调用，常见的服务注册中心有 Nacos、Eureka、zookeeper 等。<br />
+<br />
+Seata 支持多种服务注册中心：
+<ul>
+<li>
+eureka</li>
+<li>
+consul</li>
+<li>
+nacos</li>
+<li>
+etcd</li>
+<li>
+zookeeper</li>
+<li>
+sofa</li>
+<li>
+redis</li>
+<li>
+file （直连）</li>
+</ul>
+<br />
+Seata 通过这些服务注册中心，我们可以获取 Seata Sever 的服务地址，进行调用。<br />
+<h2>
+Seata 整合 Nacos 注册中心</h2>
+对于 Seata 来说，Nacos 是一种重要的注册中心实现。<br />
+<br />
+Seata 整合 Nacos 注册中心的步骤十分简单，步骤如下。
+<h4>
+添加 Maven 依赖</h4>
+将 nacos-client 的 Maven 依赖添加到项目的 pom.xml 文件中：
+<pre class="xml">
+&lt;dependency&gt;
+    &lt;groupId&gt;io.seata&lt;/groupId&gt;
+    &lt;artifactId&gt;seata-spring-boot-starter&lt;/artifactId&gt;
+    &lt;version&gt;最新版&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.alibaba.nacos&lt;/groupId&gt;
+    &lt;artifactId&gt;nacos-client&lt;/artifactId&gt;
+    &lt;version&gt;1.2.0及以上版本&lt;/version&gt;
+&lt;/dependency&gt;</pre>
+<br />
+在 Spring Cloud 项目中，通常只需要在 pom.xml 中添加&nbsp;spring-cloud-starter-alibaba-seata 依赖即可，代码如下。
+<pre class="xml">
+&lt;!--引入 seata 依赖--&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-starter-alibaba-seata&lt;/artifactId&gt;
+&lt;/dependency&gt;</pre>
+<h4>
+Seata Server 配置注册中心</h4>
+在 Seata Server 安装目录下的 config/registry.conf 中，将注册方式（registry.type）修改为 Nacos，并对 Nacos 注册中心的相关信息进行配置，示例配置如下。
+<pre class="xml">
+registry {
+  # Seata 支持 file 、nacos 、eureka、redis、zk、consul、etcd3、sofa 作为其注册中心
+  # 将注册方式修改为 nacos
+  type = &quot;nacos&quot;
+
+  nacos {
+    application = &quot;seata-server&quot;
+    # 修改 nacos 注册中心的地址
+    serverAddr = &quot;127.0.0.1:1111&quot;
+    group = &quot;SEATA_GROUP&quot;
+    namespace = &quot;&quot;
+    cluster = &quot;default&quot;
+    username = &quot;&quot;
+    password = &quot;&quot;
+  }
+}</pre>
+<h4>
+Seata Client 配置注册中心</h4>
+我们可以在 Seata Client 的 application.yml 中，对 Nacos 注册中心进行配置，示例配置如下。
+<pre class="xml">
+seata:
+  registry:
+    type: nacos
+    nacos:
+      application: seata-server  
+      server-addr: 127.0.0.1:1111 # Nacos 注册中心的地址
+      group : &quot;SEATA_GROUP&quot; #分组
+      namespace: &quot;&quot;   
+      username: &quot;nacos&quot;   #Nacos 注册中心的用户名
+      password: &quot;nacos&quot;   # Nacos 注册中心的密码</pre>
+<h4>
+验证 Nacos 注册中心</h4>
+在以上所有步骤完成后，先启动 Nacos Server 再启动 Seata Server，登录 Nacos 控制台查看服务列表，结果如下图。<br />
+<br />
+<div style="text-align: center;">
+<img alt="Seata Nacos 注册中心" src="../uploads/allimg/211210/102A142R-6.png" /><br />
+图7：Seata Nacos 注册中心</div>
+<br />
+从图 9 可以看出，seata-server 服务已经注册到了 Nacos 注册中心。<br />
+<h2>
+Seata 事务分组</h2>
+事务分组是 Seata 提供的一种 TC（Seata Server） 服务查找机制。<br />
+<br />
+Seata 通过事务分组获取 TC 服务，流程如下：<br />
+<ol>
+<li>
+在应用中配置事务分组。</li>
+<li>
+应用通过配置中心去查找配置：<code>service.vgroupMapping.{事务分组}</code>，该配置的值就是 TC 集群的名称。</li>
+<li>
+获得集群名称后，应用通过一定的前后缀 + 集群名称去构造服务名。</li>
+<li>
+得到服务名后，去注册中心去拉取服务列表，获得后端真实的 TC 服务列表。</li>
+</ol>
+<br />
+下面我们以 Nacos 服务注册中心为例，介绍 Seata 事务的使用。
+<h4>
+Seata Server 配置</h4>
+在 Seata Server 的&nbsp;config/registry.conf 中，进行如下配置。<br />
+<pre class="xml">
+registry {
+  # file 、nacos 、eureka、redis、zk、consul、etcd3、sofa
+  type = &quot;nacos&quot;                #使用 Nacos作为注册中心
+  nacos {
+    serverAddr = &quot;127.0.0.1:1111&quot;    # Nacos 注册中心的地址
+    namespace = &quot;&quot;              # Nacos 命名空间id，&quot;&quot; 为 Nacos 保留 public 空间控件，用户勿配置 namespace = &quot;public&quot;
+    cluster = &quot;c.biancheng.net&quot;         # seata-server在 Nacos 的集群名
+  }
+}
+config {
+  # file、nacos 、apollo、zk、consul、etcd3
+  type = &quot;nacos&quot;                # 使用nacos作为配置中心
+  nacos {
+    serverAddr = &quot;localhost&quot;
+    namespace = &quot;&quot;
+    cluster = &quot;default&quot;
+  }
+}</pre>
+<h4>
+Seata Client 配置</h4>
+Seata Client 中 application.yml 的配置如下。
+<pre class="xml">
+spring:
+     alibaba:
+      seata:
+        tx-service-group: service-order-group  #事务分组名
+
+seata:
+  registry:
+    type: nacos   #从 Nacos 获取 TC 服务
+    nacos:
+      server-addr: 127.0.0.1:1111
+  config:
+    type: nacos   #使用 Nacos 作为配置中心
+    nacos:
+      server-addr: 127.0.0.1:1111
+      name</pre>
+<br />
+在以上配置中，我们通过&nbsp;spring.cloud.alibaba.seata.tx-service-group 来配置 Seata 事务分组名，其默认取值为：<code>服务名-fescar-service-group</code>。<br />
+<h4>
+上传配置到 Nacos</h4>
+将以下配置上传到 Nacos 配置中心。<br />
+<pre class="info-box">
+service.vgroupMapping.service-order-group=c.biancheng.net</pre>
+<br />
+在以上配置中，
+<ul>
+<li>
+service-order-group：为事务分组的名称；</li>
+<li>
+c.biancheng.net：为 TC 集群的名称。</li>
+</ul>
+<h4>
+获取事务分组</h4>
+1. 先启动 Nacos，再启动 Seata Server，最后再启动 Seata Client。<br />
+<br />
+2. Seata Client 在启动时，会从 application.yml 的配置中，根据 spring.cloud.alibaba.seata.tx-service-group 获取事务分组的名称：service-order-group。
+<h4>
+获取 TC 集群名</h4>
+使用事务分组名&ldquo;service-order-group&rdquo;拼接成&ldquo;service.vgroupMapping.service-order-group&rdquo;，并从 Nacos 配置中心获取该配置的取值，这个值就是 TC 集群的名称：&ldquo;c.biancheng.net&rdquo;。
+<h4>
+查找 TC 服务</h4>
+根据 TC 集群名、Nacos 注册中心的地址（server-addr）以及命名空间（namespace），在 Nacos 注册中心找到真实的 TC 服务列表。
+<h4>
+总结</h4>
+通过事务分组获取服务名，共需要以下 3 步：
+<ol>
+<li>
+服务启动时，从配置文件中获取服务分组的名称；</li>
+<li>
+从配置中心，通过事务分组名获取 TC 集群名；</li>
+<li>
+根据 TC 群组名以及其他信息构建服务名，获取真实的 TC 服务列表。</li>
+</ol>
+<h2>
+启动 Seata Server</h2>
+<h4>
+1. 建表</h4>
+Seata Server 共有以下 3 种存储模式（store.mode）:<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+模式</th>
+<th>
+说明</th>
+<th>
+准备工作</th>
+</tr>
+<tr>
+<td>
+file</td>
+<td>
+文件存储模式，默认存储模式；<br />
+<br />
+该模式为单机模式，全局事务的会话信息在内存中读写，并持久化本地文件 root.data，性能较高</td>
+<td>
+-</td>
+</tr>
+<tr>
+<td>
+db</td>
+<td>
+数据库存储模式；<br />
+<br />
+该模式为高可用模式，全局事务会话信息通过数据库共享，性能较低。</td>
+<td>
+建数据库表</td>
+</tr>
+<tr>
+<td>
+redis</td>
+<td>
+缓存处处模式；<br />
+<br />
+Seata Server 1.3 及以上版本支持该模式，性能较高，但存在事务信息丢失风险,</td>
+<td>
+配置 redis 持久化配置</td>
+</tr>
+</tbody>
+</table>
+<br />
+<br />
+在 db 模式下，我们需要针对全局事务的会话信息创建以下 3 张数据库表。
+<ul>
+<li>
+全局事务表，对应的表为：global_table</li>
+<li>
+分支事务表，对应的表为：branch_table</li>
+<li>
+全局锁表，对应的表为：lock_table</li>
+</ul>
+<br />
+在 MySQL 中，创建一个名为 seata 的数据库实例，并在该数据库内执行以下 SQL。<br />
+<br />
+global_table 的建表 SQL 如下。
+<pre class="info-box">
+-- -------------------------------- The script used when storeMode is &#39;db&#39; --------------------------------
+-- the table to store GlobalSession data
+CREATE TABLE IF NOT EXISTS `global_table`
+(
+    `xid`                       VARCHAR(128) NOT NULL,
+    `transaction_id`            BIGINT,
+    `status`                    TINYINT      NOT NULL,
+    `application_id`            VARCHAR(32),
+    `transaction_service_group` VARCHAR(32),
+    `transaction_name`          VARCHAR(128),
+    `timeout`                   INT,
+    `begin_time`                BIGINT,
+    `application_data`          VARCHAR(2000),
+    `gmt_create`                DATETIME,
+    `gmt_modified`              DATETIME,
+    PRIMARY KEY (`xid`),
+    KEY `idx_gmt_modified_status` (`gmt_modified`, `status`),
+    KEY `idx_transaction_id` (`transaction_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;</pre>
+<br />
+branch_table 的建表 SQL 如下。
+<pre class="info-box">
+-- the table to store BranchSession data
+CREATE TABLE IF NOT EXISTS `branch_table`
+(
+    `branch_id`         BIGINT       NOT NULL,
+    `xid`               VARCHAR(128) NOT NULL,
+    `transaction_id`    BIGINT,
+    `resource_group_id` VARCHAR(32),
+    `resource_id`       VARCHAR(256),
+    `branch_type`       VARCHAR(8),
+    `status`            TINYINT,
+    `client_id`         VARCHAR(64),
+    `application_data`  VARCHAR(2000),
+    `gmt_create`        DATETIME(6),
+    `gmt_modified`      DATETIME(6),
+    PRIMARY KEY (`branch_id`),
+    KEY `idx_xid` (`xid`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;</pre>
+<br />
+lock_table 的建表 SQL 如下。
+<pre class="info-box">
+-- the table to store lock data
+CREATE TABLE IF NOT EXISTS `lock_table`
+(
+    `row_key`        VARCHAR(128) NOT NULL,
+    `xid`            VARCHAR(96),
+    `transaction_id` BIGINT,
+    `branch_id`      BIGINT       NOT NULL,
+    `resource_id`    VARCHAR(256),
+    `table_name`     VARCHAR(32),
+    `pk`             VARCHAR(36),
+    `gmt_create`     DATETIME,
+    `gmt_modified`   DATETIME,
+    PRIMARY KEY (`row_key`),
+    KEY `idx_branch_id` (`branch_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;</pre>
+<h4>
+2. 修改 Seata Server 配置</h4>
+在 seata-server-1.4.2/conf/ 目录下的 registry.conf 中，将 Seata Server 的服务注册方式（registry.type）和配置方式（config.type）都修改为 Nacos，修改内容如下。
+<pre class="xml">
+registry {
+&nbsp; # file 、nacos 、eureka、redis、zk、consul、etcd3、sofa
+&nbsp; # 将注册方式修改为 nacos
+&nbsp; type = &quot;nacos&quot;
+
+&nbsp; nacos {
+&nbsp;&nbsp;&nbsp; application = &quot;seata-server&quot;
+&nbsp;&nbsp;&nbsp; # 修改 nacos 的地址
+&nbsp;&nbsp;&nbsp; serverAddr = &quot;127.0.0.1:1111&quot;
+&nbsp;&nbsp;&nbsp; group = &quot;SEATA_GROUP&quot;
+&nbsp;&nbsp;&nbsp; namespace = &quot;&quot;
+&nbsp;&nbsp;&nbsp; cluster = &quot;default&quot;
+&nbsp;&nbsp;&nbsp; username = &quot;&quot;
+&nbsp;&nbsp;&nbsp; password = &quot;&quot;
+&nbsp; }
+}
+
+config {
+&nbsp; # file、nacos 、apollo、zk、consul、etcd3
+&nbsp; #配置方式修改为 nacos
+&nbsp; type = &quot;nacos&quot;
+
+&nbsp; nacos {
+&nbsp;&nbsp;&nbsp; #修改为使用的 nacos 服务器地址
+&nbsp;&nbsp;&nbsp; serverAddr = &quot;127.0.0.1:1111&quot;
+&nbsp;&nbsp;&nbsp; namespace = &quot;&quot;
+&nbsp;&nbsp;&nbsp; group = &quot;SEATA_GROUP&quot;
+&nbsp;&nbsp;&nbsp; username = &quot;nacos&quot;
+&nbsp;&nbsp;&nbsp; password = &quot;nacos&quot;
+&nbsp;&nbsp;&nbsp; #不使用 seataServer.properties 方式配置
+&nbsp;&nbsp;&nbsp; #dataId = &quot;seataServer.properties&quot;
+&nbsp; }
+}
+</pre>
+<h4>
+3. 将 Seata 配置上传到 Nacos</h4>
+1) 下载并解压 Seata Server 的源码 seata-1.4.2.zip，然后修改 seata-1.4.2/script/config-center 目录下的 config.txt，修改内容如下。
+<pre class="info-box">
+#将 Seata Server 的存储模式修改为 db
+store.mode=db
+# 数据库驱动
+store.db.driverClassName=com.mysql.cj.jdbc.Driver
+# 数据库 url
+store.db.url=jdbc:mysql://127.0.0.1:3306/seata?useSSL=false&amp;characterEncoding=UTF-8&amp;useUnicode=true&amp;serverTimezone=UTC 
+# 数据库的用户名
+store.db.user=root 
+# 数据库的密码
+store.db.password=root
+# 自定义事务分组
+service.vgroupMapping.service-order-group=default 
+service.vgroupMapping.service-storage-group=default
+service.vgroupMapping.service-account-group=default </pre>
+<br />
+2) 在 seata-1.4.2\script\config-center\nacos 目录下，右键鼠标选择 Git Bush Here，在弹出的 Git 命令窗口中执行以下命令，将 config.txt 中的配置上传到 Nacos 配置中心。
+<pre class="info-box">
+sh nacos-config.sh -h 127.0.0.1 -p 1111  -g SEATA_GROUP -u nacos -w nacos</pre>
+<br />
+3) 当 Git 命令窗口出现以下执行日志时，则说明配置上传成功。
+<pre class="info-box">
+=========================================================================
+Complete initialization parameters,  total-count:87 ,  failure-count:0
+=========================================================================
+Init nacos config finished, please start seata-server.</pre>
+<br />
+4) 使用浏览器访问 Nacos 服务器主页，查看 Nacos 配置列表，如下图。<br />
+<br />
+<div style="text-align: center;">
+<a href="http://new-local.weixueyuan.net/uploads/allimg/211122/6-211122105344107.png"><img alt="Seata 配置上传到Nacos" src="../uploads/allimg/211210/102A13029-7.png" /></a><br />
+图8：Seata 配置上传到 Nacos</div>
+<blockquote>
+<p>
+注意：在使用 Git 命令将配置上传到 Nacos 前，应该先确保 Nacos 服务器已启动。</p>
+</blockquote>
+<h4>
+4. 启动 Seata Server</h4>
+双击 Seata Server 端 bin 目录下的启动脚本 seata-server.bat ，启动 Seata Server。<br />
+<br />
+<div style="text-align: center;">
+<img alt="Seata Server 启动脚本" src="../uploads/allimg/211210/102A12O6-8.png" style="border-width: 1px; border-style: solid;" /><br />
+图9：Seata Server 启动脚本</div>
+<br />
+Seata Server 启动日志如下。<br />
+<pre class="info-box">
+16:52:48,549 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback-test.xml]
+16:52:48,549 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback.groovy]
+16:52:48,550 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Found resource [logback.xml] at [file:/C:/Users/79330/Desktop/seata-server-1.4.2/conf/logback.xml]
+16:52:48,551 |-WARN in ch.qos.logback.classic.LoggerContext[default] - Resource [logback.xml] occurs multiple times on the classpath.
+16:52:48,551 |-WARN in ch.qos.logback.classic.LoggerContext[default] - Resource [logback.xml] occurs at [jar:file:/C:/Users/79330/Desktop/seata-server-1.4.2/lib/seata-server-1.4.2.jar!/logback.xml]
+&hellip;&hellip;
+SLF4J: A number (18) of logging calls during the initialization phase have been intercepted and are
+SLF4J: now being replayed. These are subject to the filtering rules of the underlying logging system.
+SLF4J: See also http://www.slf4j.org/codes.html#replay
+16:52:49.003  INFO --- [                     main] io.seata.config.FileConfiguration        : The file name of the operation is registry
+16:52:49.008  INFO --- [                     main] io.seata.config.FileConfiguration        : The configuration file used is C:\Users\79330\Desktop\seata-server-1.4.2\conf\registry.conf
+16:52:51.063  INFO --- [                     main] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} inited
+16:52:51.981  INFO --- [                     main] i.s.core.rpc.netty.NettyServerBootstrap  : Server started, listen port: 8091</pre>
+<h2>
+业务系统集成 Seata&nbsp;</h2>
+接下来，我们就以电商系统为例，来演示下业务系统是如何集成 Seata 的。<br />
+<br />
+<p>
+在电商系统中，用户下单购买一件商品，需要以下 3 个服务提供支持：</p>
+<ul>
+<li>
+Order（订单服务）：创建和修改订单。</li>
+<li>
+Storage（库存服务）：对指定的商品扣除仓库库存。</li>
+<li>
+Account（账户服务） ：从用户帐户中扣除商品金额。</li>
+</ul>
+<p>
+<br />
+这三个微服务分别使用三个不同的数据库，架构图如下所示。<br />
+&nbsp;</p>
+<div style="text-align: center;">
+<img alt="Seata 案例架构" src="../uploads/allimg/211210/102A1MP-9.png" /><br />
+图10：电商系统架构图</div>
+<p>
+<br />
+当用户从这个电商网站购买了一件商品后，其服务调用步骤如下：</p>
+<ol>
+<li>
+调用 Order 服务，创建一条订单数据，订单状态为&ldquo;未完成&rdquo;；</li>
+<li>
+调用 Storage 服务，扣减商品库存；</li>
+<li>
+调用 Account 服务，从用户账户中扣除商品金额；</li>
+<li>
+调用 Order 服务，将订单状态修改为&ldquo;已完成&rdquo;。</li>
+</ol>
+<h4>
+创建订单（Order）服务</h4>
+1. 在 MySQL 数据库中，新建一个名为 seata-order 的数据库实例，并通过以下 SQL 语句创建 2 张表：t_order（订单表）和 undo_log（回滚日志表）。
+<pre class="info-box">
+-- ----------------------------
+-- Table structure for t_order
+-- ----------------------------
+DROP TABLE IF EXISTS `t_order`;
+CREATE TABLE `t_order` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` bigint DEFAULT NULL COMMENT &#39;用户id&#39;,
+  `product_id` bigint DEFAULT NULL COMMENT &#39;产品id&#39;,
+  `count` int DEFAULT NULL COMMENT &#39;数量&#39;,
+  `money` decimal(11,0) DEFAULT NULL COMMENT &#39;金额&#39;,
+  `status` int DEFAULT NULL COMMENT &#39;订单状态：0：未完成；1：已完结&#39;,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for undo_log
+-- ----------------------------
+DROP TABLE IF EXISTS `undo_log`;
+CREATE TABLE `undo_log` (
+  `branch_id` bigint NOT NULL COMMENT &#39;branch transaction id&#39;,
+  `xid` varchar(128) NOT NULL COMMENT &#39;global transaction id&#39;,
+  `context` varchar(128) NOT NULL COMMENT &#39;undo_log context,such as serialization&#39;,
+  `rollback_info` longblob NOT NULL COMMENT &#39;rollback info&#39;,
+  `log_status` int NOT NULL COMMENT &#39;0:normal status,1:defense status&#39;,
+  `log_created` datetime(6) NOT NULL COMMENT &#39;create datetime&#39;,
+  `log_modified` datetime(6) NOT NULL COMMENT &#39;modify datetime&#39;,
+  UNIQUE KEY `ux_undo_log` (`xid`,`branch_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;</pre>
+<br />
+2. 在主工程 spring-cloud-alibaba-demo 下，创建一个名为&nbsp;spring-cloud-alibaba-seata-order-8005 的 Spring Boot 模块，并在其 pom.xml 中添加以下依赖，内容如下。
+<pre class="xml">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+    &lt;parent&gt;
+        &lt;groupId&gt;net.biancheng.c&lt;/groupId&gt;
+        &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+        &lt;artifactId&gt;spring-cloud-alibaba-demo&lt;/artifactId&gt;
+    &lt;/parent&gt;
+
+    &lt;groupId&gt;net.biancheng.c&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-alibaba-seata-order-8005&lt;/artifactId&gt;
+    &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+    &lt;name&gt;spring-cloud-alibaba-seata-order-8005&lt;/name&gt;
+    &lt;description&gt;Demo project for Spring Boot&lt;/description&gt;
+    &lt;properties&gt;
+        &lt;java.version&gt;1.8&lt;/java.version&gt;
+        &lt;seata.version&gt;1.4.2&lt;/seata.version&gt;
+    &lt;/properties&gt;
+    &lt;dependencies&gt;
+        &lt;!--nacos 服务注册中心--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-starter-alibaba-nacos-discovery&lt;/artifactId&gt;
+            &lt;exclusions&gt;
+                &lt;exclusion&gt;
+                    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+                    &lt;artifactId&gt;spring-cloud-starter-netflix-ribbon&lt;/artifactId&gt;
+                &lt;/exclusion&gt;
+            &lt;/exclusions&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;!--引入 OpenFeign 的依赖--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-starter-openfeign&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-loadbalancer&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;!--引入 seata 依赖--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-starter-alibaba-seata&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-devtools&lt;/artifactId&gt;
+            &lt;scope&gt;runtime&lt;/scope&gt;
+            &lt;optional&gt;true&lt;/optional&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
+            &lt;artifactId&gt;lombok&lt;/artifactId&gt;
+            &lt;optional&gt;true&lt;/optional&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;net.biancheng.c&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-alibaba-api&lt;/artifactId&gt;
+            &lt;version&gt;${project.version}&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;junit&lt;/groupId&gt;
+            &lt;artifactId&gt;junit&lt;/artifactId&gt;
+            &lt;version&gt;4.12&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;mysql&lt;/groupId&gt;
+            &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+            &lt;version&gt;8.0.19&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;
+            &lt;artifactId&gt;logback-core&lt;/artifactId&gt;
+
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.mybatis.spring.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;mybatis-spring-boot-starter&lt;/artifactId&gt;
+            &lt;version&gt;2.2.0&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;!--添加 Spring Boot 的监控模块--&gt;
+        &lt;!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;!--SpringCloud ailibaba sentinel --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-starter-alibaba-sentinel&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;!--配置中心 nacos--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-starter-alibaba-nacos-config&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+
+    &lt;/dependencies&gt;
+
+    &lt;build&gt;
+        &lt;plugins&gt;
+            &lt;!--mybatis自动生成代码插件--&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.mybatis.generator&lt;/groupId&gt;
+                &lt;artifactId&gt;mybatis-generator-maven-plugin&lt;/artifactId&gt;
+                &lt;version&gt;1.4.0&lt;/version&gt;
+                &lt;configuration&gt;
+                    &lt;configurationFile&gt;src/main/resources/mybatis-generator/generatorConfig.xml&lt;/configurationFile&gt;
+                    &lt;verbose&gt;true&lt;/verbose&gt;
+                    &lt;!-- 是否覆盖，true表示会替换生成的JAVA文件，false则不覆盖 --&gt;
+                    &lt;overwrite&gt;true&lt;/overwrite&gt;
+                &lt;/configuration&gt;
+                &lt;dependencies&gt;
+                    &lt;!--mysql驱动包--&gt;
+                    &lt;dependency&gt;
+                        &lt;groupId&gt;mysql&lt;/groupId&gt;
+                        &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+                        &lt;version&gt;8.0.19&lt;/version&gt;
+                    &lt;/dependency&gt;
+                    &lt;dependency&gt;
+                        &lt;groupId&gt;org.mybatis.generator&lt;/groupId&gt;
+                        &lt;artifactId&gt;mybatis-generator-core&lt;/artifactId&gt;
+                        &lt;version&gt;1.4.0&lt;/version&gt;
+                    &lt;/dependency&gt;
+                &lt;/dependencies&gt;
+            &lt;/plugin&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+                &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+&lt;/project&gt;</pre>
+<br />
+3. 在 spring-cloud-alibaba-seata-order-8005 的类路径（/resources 目录）下，创建一个配置文件 bootstrap.yml，配置内容如下。
+<pre class="xml">
+spring:
+  cloud:
+    ## Nacos认证信息
+    nacos:
+      config:
+        username: nacos
+        password: nacos
+        context-path: /nacos
+        server-addr: 127.0.0.1:1111 # 设置配置中心服务端地址
+        namespace:   # Nacos 配置中心的namespace。需要注意，如果使用 public 的 namcespace ，请不要填写这个值，直接留空即可</pre>
+<br />
+4. 在 spring-cloud-alibaba-seata-order-8005 的类路径（/resources 目录）下，创建一个配置文件 application.yml，配置内容如下。
+<pre class="xml">
+spring:
+  application:
+    name: spring-cloud-alibaba-seata-order-8005 #服务名
+  #数据源配置
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver #数据库驱动
+    name: defaultDataSource
+    url: jdbc:mysql://localhost:3306/seata_order?serverTimezone=UTC #数据库连接地址
+    username: root  #数据库的用户名
+    password: root  #数据库密码
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:1111 #nacos 服务器地址
+        namespace: public #nacos 命名空间
+        username:
+        password:
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8080  #Sentinel 控制台地址
+        port: 8719
+
+    alibaba:
+      seata:
+        #自定义服务群组，该值必须与 Nacos 配置中的 service.vgroupMapping.{my-service-group}=default 中的 {my-service-group}相同
+        tx-service-group: service-order-group
+server:
+  port: 8005  #端口
+seata:
+  application-id: ${spring.application.name}
+  #自定义服务群组，该值必须与 Nacos 配置中的 service.vgroupMapping.{my-service-group}=default 中的 {my-service-group}相同
+  tx-service-group: service-order-group
+  service:
+    grouplist:
+      #Seata 服务器地址
+      seata-server: 127.0.0.1:8091
+  # Seata 的注册方式为 nacos
+  registry:
+    type: nacos
+    nacos:
+      server-addr: 127.0.0.1:1111
+  # Seata 的配置中心为 nacos
+  config:
+    type: nacos
+    nacos:
+      server-addr: 127.0.0.1:1111
+
+feign:
+  sentinel:
+    enabled: true #开启 OpenFeign 功能
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: &quot;*&quot;
+
+###################################### MyBatis 配置 ######################################
+mybatis:
+  # 指定 mapper.xml 的位置
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  #扫描实体类的位置,在此处指明扫描实体类的包，在 mapper.xml 中就可以不写实体类的全路径名
+  type-aliases-package: net.biancheng.c.entity
+  configuration:
+    #默认开启驼峰命名法，可以不用设置该属性
+    map-underscore-to-camel-case: true</pre>
+<br />
+<br />
+5. 在&nbsp;net.biancheng.c.entity 包下，创建一个名为 Order 的实体类，代码如下。
+<pre class="java">
+package net.biancheng.c.entity;
+
+import java.math.BigDecimal;
+
+public class Order {
+    private Long id;
+
+    private Long userId;
+
+    private Long productId;
+
+    private Integer count;
+
+    private BigDecimal money;
+
+    private Integer status;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
+    public BigDecimal getMoney() {
+        return money;
+    }
+
+    public void setMoney(BigDecimal money) {
+        this.money = money;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+}</pre>
+<br />
+6. 在&nbsp;net.biancheng.c.mapper 包下，创建一个名为&nbsp;OrderMapper 的 Mapper 接口，代码如下。
+<pre class="java">
+package net.biancheng.c.mapper;
+
+import net.biancheng.c.entity.Order;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+@Mapper
+public interface OrderMapper {
+    int deleteByPrimaryKey(Long id);
+
+    int insert(Order record);
+
+    int create(Order order);
+
+    int insertSelective(Order record);
+
+    //2 修改订单状态，从零改为1
+    void update(@Param(&quot;userId&quot;) Long userId, @Param(&quot;status&quot;) Integer status);
+
+    Order selectByPrimaryKey(Long id);
+
+    int updateByPrimaryKeySelective(Order record);
+
+    int updateByPrimaryKey(Order record);
+}</pre>
+<br />
+7. 在 /resouces/mybatis/mapper 目录下，创建一个名为&nbsp;OrderMapper.xml 的 MyBatis 映射文件，代码如下。<br />
+<pre class="xml">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE mapper PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot; &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+&lt;mapper namespace=&quot;net.biancheng.c.mapper.OrderMapper&quot;&gt;
+&nbsp;&nbsp;&nbsp; &lt;resultMap id=&quot;BaseResultMap&quot; type=&quot;net.biancheng.c.entity.Order&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;id column=&quot;id&quot; jdbcType=&quot;BIGINT&quot; property=&quot;id&quot;/&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;result column=&quot;user_id&quot; jdbcType=&quot;BIGINT&quot; property=&quot;userId&quot;/&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;result column=&quot;product_id&quot; jdbcType=&quot;BIGINT&quot; property=&quot;productId&quot;/&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;result column=&quot;count&quot; jdbcType=&quot;INTEGER&quot; property=&quot;count&quot;/&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;result column=&quot;money&quot; jdbcType=&quot;DECIMAL&quot; property=&quot;money&quot;/&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;result column=&quot;status&quot; jdbcType=&quot;INTEGER&quot; property=&quot;status&quot;/&gt;
+&nbsp;&nbsp;&nbsp; &lt;/resultMap&gt;
+&nbsp;&nbsp;&nbsp; &lt;sql id=&quot;Base_Column_List&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; id
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , user_id, product_id, count, money, status
+&nbsp;&nbsp;&nbsp; &lt;/sql&gt;
+&nbsp;&nbsp;&nbsp; &lt;select id=&quot;selectByPrimaryKey&quot; parameterType=&quot;java.lang.Long&quot; resultMap=&quot;BaseResultMap&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;include refid=&quot;Base_Column_List&quot;/&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; from t_order
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where id = #{id,jdbcType=BIGINT}
+&nbsp;&nbsp;&nbsp; &lt;/select&gt;
+&nbsp;&nbsp;&nbsp; &lt;delete id=&quot;deleteByPrimaryKey&quot; parameterType=&quot;java.lang.Long&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; delete
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; from t_order
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where id = #{id,jdbcType=BIGINT}
+&nbsp;&nbsp;&nbsp; &lt;/delete&gt;
+&nbsp;&nbsp;&nbsp; &lt;insert id=&quot;insert&quot; parameterType=&quot;net.biancheng.c.entity.Order&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; insert into t_order (id, user_id, product_id,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; count, money, status)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{productId,jdbcType=BIGINT},
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #{count,jdbcType=INTEGER}, #{money,jdbcType=DECIMAL}, #{status,jdbcType=INTEGER})
+&nbsp;&nbsp;&nbsp; &lt;/insert&gt;
+&nbsp;&nbsp;&nbsp; &lt;insert id=&quot;insertSelective&quot; parameterType=&quot;net.biancheng.c.entity.Order&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; insert into t_order
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;trim prefix=&quot;(&quot; suffix=&quot;)&quot; suffixOverrides=&quot;,&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;if test=&quot;id != null&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; id,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/if&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;if test=&quot;userId != null&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; user_id,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/if&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;if test=&quot;productId != null&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; product_id,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/if&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;if test=&quot;count != null&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; count,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/if&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;if test=&quot;money != null&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; money,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/if&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;if test=&quot;status != null&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; status,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/if&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/trim&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;trim prefix=&quot;values (&quot; suffix=&quot;)&quot; suffixOverrides=&quot;,&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;if test=&quot;id != null&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #{id,jdbcType=BIGINT},
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/if&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;if test=&quot;userId != null&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #{userId,jdbcType=BIGINT},
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/if&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;if test=&quot;productId != null&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #{productId,jdbcType=BIGINT},
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/if&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;if test=&quot;count != null&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #{count,jdbcType=INTEGER},
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/if&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;if test=&quot;money != null&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #{money,jdbcType=DECIMAL},
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/if&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;if test=&quot;status != null&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #{status,jdbcType=INTEGER},
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/if&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/trim&gt;
+&nbsp;&nbsp;&nbsp; &lt;/insert&gt;
+&nbsp;&nbsp;&nbsp; &lt;insert id=&quot;create&quot; parameterType=&quot;net.biancheng.c.entity.Order&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; insert into t_order (user_id, product_id,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; count, money, status)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; values (#{userId,jdbcType=BIGINT}, #{productId,jdbcType=BIGINT},
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #{count,jdbcType=INTEGER}, #{money,jdbcType=DECIMAL}, #{status,jdbcType=INTEGER})
+
+&nbsp;&nbsp;&nbsp; &lt;/insert&gt;
+&nbsp;&nbsp;&nbsp; &lt;update id=&quot;updateByPrimaryKeySelective&quot; parameterType=&quot;net.biancheng.c.entity.Order&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update t_order
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;set&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;if test=&quot;userId != null&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; user_id = #{userId,jdbcType=BIGINT},
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/if&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;if test=&quot;productId != null&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; product_id = #{productId,jdbcType=BIGINT},
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/if&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;if test=&quot;count != null&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; count = #{count,jdbcType=INTEGER},
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/if&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;if test=&quot;money != null&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; money = #{money,jdbcType=DECIMAL},
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/if&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;if test=&quot;status != null&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; status = #{status,jdbcType=INTEGER},
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/if&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/set&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where id = #{id,jdbcType=BIGINT}
+&nbsp;&nbsp;&nbsp; &lt;/update&gt;
+&nbsp;&nbsp;&nbsp; &lt;update id=&quot;updateByPrimaryKey&quot; parameterType=&quot;net.biancheng.c.entity.Order&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update t_order
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set user_id&nbsp;&nbsp;&nbsp; = #{userId,jdbcType=BIGINT},
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; product_id = #{productId,jdbcType=BIGINT},
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; count&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = #{count,jdbcType=INTEGER},
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; money&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = #{money,jdbcType=DECIMAL},
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; status&nbsp;&nbsp;&nbsp;&nbsp; = #{status,jdbcType=INTEGER}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where id = #{id,jdbcType=BIGINT}
+&nbsp;&nbsp;&nbsp; &lt;/update&gt;
+
+&nbsp;&nbsp;&nbsp; &lt;update id=&quot;update&quot;&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update t_order
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set status = 1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where user_id = #{userId}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and status = #{status};
+&nbsp;&nbsp;&nbsp; &lt;/update&gt;
+&lt;/mapper&gt;</pre>
+<br />
+8. 在 net.biancheng.c.service 包下，创建一个名为&nbsp;OrderService 的 Service 接口，代码如下。
+<pre class="java">
+package net.biancheng.c.service;
+
+import net.biancheng.c.entity.Order;
+
+public interface OrderService {
+    /**
+     * 创建订单数据
+     * @param order
+     */
+    CommonResult create(Order order);
+}</pre>
+<br />
+9. 在 net.biancheng.c.service 包下，创建一个名为 StorageService 的接口，代码如下。
+<pre class="java">
+package net.biancheng.c.service;
+
+import net.biancheng.c.entity.CommonResult;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+@FeignClient(value = &quot;spring-cloud-alibaba-seata-storage-8006&quot;)
+public interface StorageService {
+    @PostMapping(value = &quot;/storage/decrease&quot;)
+    CommonResult decrease(@RequestParam(&quot;productId&quot;) Long productId, @RequestParam(&quot;count&quot;) Integer count);
+}</pre>
+<br />
+10. 在 net.biancheng.c.service 包下，创建一个名为 AccountService 的接口，代码如下。
+<pre class="java">
+package net.biancheng.c.service;
+
+import net.biancheng.c.entity.CommonResult;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.math.BigDecimal;
+
+@FeignClient(value = &quot;spring-cloud-alibaba-seata-account-8007&quot;)
+public interface AccountService {
+    @PostMapping(value = &quot;/account/decrease&quot;)
+    CommonResult decrease(@RequestParam(&quot;userId&quot;) Long userId, @RequestParam(&quot;money&quot;) BigDecimal money);
+}</pre>
+<br />
+11. 在&nbsp;net.biancheng.c.service.impl 包下，创建&nbsp;OrderService 接口的实现类&nbsp;OrderServiceImpl，代码如下。
+<pre class="java">
+package net.biancheng.c.service.impl;
+
+import io.seata.spring.annotation.GlobalTransactional;
+import lombok.extern.slf4j.Slf4j;
+import net.biancheng.c.entity.Order;
+import net.biancheng.c.mapper.OrderMapper;
+import net.biancheng.c.service.AccountService;
+import net.biancheng.c.service.OrderService;
+import net.biancheng.c.service.StorageService;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+
+@Service
+@Slf4j
+public class OrderServiceImpl implements OrderService {
+    @Resource
+    private OrderMapper orderMapper;
+    @Resource
+    private StorageService storageService;
+    @Resource
+    private AccountService accountService;
+
+    /**
+     * 创建订单-&gt;调用库存服务扣减库存-&gt;调用账户服务扣减账户余额-&gt;修改订单状态
+     * 简单说：下订单-&gt;扣库存-&gt;减余额-&gt;改订单状态
+     */
+    @Override
+    @GlobalTransactional(name = &quot;fsp-create-order&quot;, rollbackFor = Exception.class)
+    public CommonResult create(Order order) {
+        log.info(&quot;-----&gt;开始新建订单&quot;);
+        //1 新建订单
+        order.setUserId(new Long(1));
+        order.setStatus(0);
+        orderMapper.create(order);
+        //2 扣减库存
+        log.info(&quot;-----&gt;订单服务开始调用库存服务，开始扣减库存&quot;);
+        storageService.decrease(order.getProductId(), order.getCount());
+        log.info(&quot;-----&gt;订单微服务开始调用库存，扣减库存结束&quot;);
+        //3 扣减账户
+        log.info(&quot;-----&gt;订单服务开始调用账户服务，开始从账户扣减商品金额&quot;);
+        accountService.decrease(order.getUserId(), order.getMoney());
+        log.info(&quot;-----&gt;订单微服务开始调用账户，账户扣减商品金额结束&quot;);
+        //4 修改订单状态，从零到1,1代表已经完成
+        log.info(&quot;-----&gt;修改订单状态开始&quot;);
+        orderMapper.update(order.getUserId(), 0);
+        log.info(&quot;-----&gt;修改订单状态结束&quot;);
+        log.info(&quot;-----&gt;下订单结束了-------&gt;&quot;);
+        return new CommonResult(200, &quot;订单创建成功&quot;);
+    }
+}</pre>
+<br />
+12. 在&nbsp;net.biancheng.c.controller 包下，创建一个名为&nbsp;OrderController 的 Controller，代码如下。
+<pre class="java">
+package net.biancheng.c.controller;
+
+import net.biancheng.c.entity.CommonResult;
+import net.biancheng.c.entity.Order;
+import net.biancheng.c.service.OrderService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.math.BigDecimal;
+
+@RestController
+public class OrderController {
+    @Autowired
+    private OrderService orderService;
+
+    @GetMapping(&quot;/order/create/{productId}/{count}/{money}&quot;)
+    public CommonResult create(@PathVariable(&quot;productId&quot;) Integer productId, @PathVariable(&quot;count&quot;) Integer count
+            , @PathVariable(&quot;money&quot;) BigDecimal money) {
+        Order order = new Order();
+        order.setProductId(Integer.valueOf(productId).longValue());
+        order.setCount(count);
+        order.setMoney(money);
+        return orderService.create(order);
+    }
+}</pre>
+<br />
+13. 主启动类代码如下。
+<pre class="java">
+package net.biancheng.c;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+
+@EnableDiscoveryClient
+@EnableFeignClients
+@SpringBootApplication(scanBasePackages = &quot;net.biancheng&quot;)
+public class SpringCloudAlibabaSeataOrder8005Application {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SpringCloudAlibabaSeataOrder8005Application.class, args);
+    }
+}</pre>
+<h4>
+搭建库存（Storage）服务</h4>
+1. 在 MySQL 数据库中，新建一个名为 seata-storage 的数据库实例，并通过以下 SQL 语句创建 2 张表：t_storage（库存表）和 undo_log（回滚日志表）。
+<pre class="info-box">
+-- ----------------------------
+-- Table structure for t_storage
+-- ----------------------------
+DROP TABLE IF EXISTS `t_storage`;
+CREATE TABLE `t_storage` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `product_id` bigint DEFAULT NULL COMMENT &#39;产品id&#39;,
+  `total` int DEFAULT NULL COMMENT &#39;总库存&#39;,
+  `used` int DEFAULT NULL COMMENT &#39;已用库存&#39;,
+  `residue` int DEFAULT NULL COMMENT &#39;剩余库存&#39;,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of t_storage
+-- ----------------------------
+INSERT INTO `t_storage` VALUES (&#39;1&#39;, &#39;1&#39;, &#39;100&#39;, &#39;0&#39;, &#39;100&#39;);
+
+-- Table structure for undo_log
+-- ----------------------------
+DROP TABLE IF EXISTS `undo_log`;
+CREATE TABLE `undo_log` (
+  `branch_id` bigint NOT NULL COMMENT &#39;branch transaction id&#39;,
+  `xid` varchar(128) NOT NULL COMMENT &#39;global transaction id&#39;,
+  `context` varchar(128) NOT NULL COMMENT &#39;undo_log context,such as serialization&#39;,
+  `rollback_info` longblob NOT NULL COMMENT &#39;rollback info&#39;,
+  `log_status` int NOT NULL COMMENT &#39;0:normal status,1:defense status&#39;,
+  `log_created` datetime(6) NOT NULL COMMENT &#39;create datetime&#39;,
+  `log_modified` datetime(6) NOT NULL COMMENT &#39;modify datetime&#39;,
+  UNIQUE KEY `ux_undo_log` (`xid`,`branch_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT=&#39;AT transaction mode undo table&#39;;</pre>
+<br />
+2. 在主工程 spring-cloud-alibaba-demo 下，创建一个名为 spring-cloud-alibaba-seata-storage-8006 的 Spring Boot 模块，并在其 pom.xml 中添加以下依赖，内容如下。<br />
+<pre class="xml">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+    &lt;parent&gt;
+        &lt;groupId&gt;net.biancheng.c&lt;/groupId&gt;
+        &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+        &lt;artifactId&gt;spring-cloud-alibaba-demo&lt;/artifactId&gt;
+    &lt;/parent&gt;
+
+    &lt;groupId&gt;net.biancheng.c&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-alibaba-seata-storage-8006&lt;/artifactId&gt;
+    &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+    &lt;name&gt;spring-cloud-alibaba-seata-storage-8006&lt;/name&gt;
+    &lt;description&gt;Demo project for Spring Boot&lt;/description&gt;
+    &lt;properties&gt;
+        &lt;java.version&gt;1.8&lt;/java.version&gt;
+        &lt;seata.version&gt;1.4.2&lt;/seata.version&gt;
+    &lt;/properties&gt;
+    &lt;dependencies&gt;
+        &lt;!--nacos 服务注册中心--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-starter-alibaba-nacos-discovery&lt;/artifactId&gt;
+            &lt;exclusions&gt;
+                &lt;exclusion&gt;
+                    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+                    &lt;artifactId&gt;spring-cloud-starter-netflix-ribbon&lt;/artifactId&gt;
+                &lt;/exclusion&gt;
+            &lt;/exclusions&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;!--引入 OpenFeign 的依赖--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-starter-openfeign&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-loadbalancer&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;!--seata 依赖--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-starter-alibaba-seata&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-devtools&lt;/artifactId&gt;
+            &lt;scope&gt;runtime&lt;/scope&gt;
+            &lt;optional&gt;true&lt;/optional&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
+            &lt;artifactId&gt;lombok&lt;/artifactId&gt;
+            &lt;optional&gt;true&lt;/optional&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;net.biancheng.c&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-alibaba-api&lt;/artifactId&gt;
+            &lt;version&gt;${project.version}&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;junit&lt;/groupId&gt;
+            &lt;artifactId&gt;junit&lt;/artifactId&gt;
+            &lt;version&gt;4.12&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;mysql&lt;/groupId&gt;
+            &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+            &lt;version&gt;8.0.19&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;
+            &lt;artifactId&gt;logback-core&lt;/artifactId&gt;
+
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.mybatis.spring.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;mybatis-spring-boot-starter&lt;/artifactId&gt;
+            &lt;version&gt;2.2.0&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;!--添加 Spring Boot 的监控模块--&gt;
+        &lt;!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;!--SpringCloud ailibaba sentinel --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-starter-alibaba-sentinel&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;!--配置中心 nacos--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-starter-alibaba-nacos-config&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+
+    &lt;build&gt;
+        &lt;plugins&gt;
+            &lt;!--mybatis自动生成代码插件--&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.mybatis.generator&lt;/groupId&gt;
+                &lt;artifactId&gt;mybatis-generator-maven-plugin&lt;/artifactId&gt;
+                &lt;version&gt;1.4.0&lt;/version&gt;
+                &lt;configuration&gt;
+                    &lt;configurationFile&gt;src/main/resources/mybatis-generator/generatorConfig.xml&lt;/configurationFile&gt;
+                    &lt;verbose&gt;true&lt;/verbose&gt;
+                    &lt;!-- 是否覆盖，true表示会替换生成的JAVA文件，false则不覆盖 --&gt;
+                    &lt;overwrite&gt;true&lt;/overwrite&gt;
+                &lt;/configuration&gt;
+                &lt;dependencies&gt;
+                    &lt;!--mysql驱动包--&gt;
+                    &lt;dependency&gt;
+                        &lt;groupId&gt;mysql&lt;/groupId&gt;
+                        &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+                        &lt;version&gt;8.0.19&lt;/version&gt;
+                    &lt;/dependency&gt;
+                    &lt;dependency&gt;
+                        &lt;groupId&gt;org.mybatis.generator&lt;/groupId&gt;
+                        &lt;artifactId&gt;mybatis-generator-core&lt;/artifactId&gt;
+                        &lt;version&gt;1.4.0&lt;/version&gt;
+                    &lt;/dependency&gt;
+                &lt;/dependencies&gt;
+            &lt;/plugin&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+                &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+&lt;/project&gt;</pre>
+<br />
+3.&nbsp; 在 spring-cloud-alibaba-seata-storage-8006 的类路径（/resources 目录）下，创建一个配置文件 bootstrap.yml，配置内容如下。
+<pre class="xml">
+spring:
+  cloud:
+    ## Nacos认证信息
+    nacos:
+      config:
+        username: nacos
+        password: nacos
+        context-path: /nacos
+        server-addr: 127.0.0.1:1111 # 设置配置中心服务端地址
+        namespace:   # Nacos 配置中心的namespace。需要注意，如果使用 public 的 namcespace ，请不要填写这个值，直接留空即可</pre>
+<br />
+4. 在 spring-cloud-alibaba-seata-storage-8006 的类路径（/resources 目录）下，创建一个配置文件 application.yml，配置内容如下。
+<pre class="xml">
+spring:
+  application:
+    name: spring-cloud-alibaba-seata-storage-8006
+
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    name: defaultDataSource
+    url: jdbc:mysql://localhost:3306/seata_storage?serverTimezone=UTC
+    username: root
+    password: root
+   
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:1111
+        namespace: public
+        username:
+        password:
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8080
+        port: 8719
+
+    alibaba:
+      seata:
+        tx-service-group: service-storage-group
+
+server:
+  port: 8006
+seata:
+  application-id: ${spring.application.name}
+  tx-service-group: service-storage-group
+
+  service:
+    grouplist:
+      seata-server: 127.0.0.1:8091
+
+  registry:
+    type: nacos
+    nacos:
+      server-addr: 127.0.0.1:1111
+
+  config:
+    type: nacos
+    nacos:
+      server-addr: 127.0.0.1:1111
+
+feign:
+  sentinel:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: &quot;*&quot;
+###################################### MyBatis 配置 ######################################
+mybatis:
+  # 指定 mapper.xml 的位置
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  #扫描实体类的位置,在此处指明扫描实体类的包，在 mapper.xml 中就可以不写实体类的全路径名
+  type-aliases-package: net.biancheng.c.entity
+  configuration:
+    #默认开启驼峰命名法，可以不用设置该属性
+    map-underscore-to-camel-case: true</pre>
+<br />
+5. 在 net.biancheng.c.entity 包下，创建一个名为 Storage 的实体类，代码如下。
+<pre class="java">
+package net.biancheng.c.entity;
+
+public class Storage {
+    private Long id;
+
+    private Long productId;
+
+    private Integer total;
+
+    private Integer used;
+
+    private Integer residue;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
+
+    public Integer getTotal() {
+        return total;
+    }
+
+    public void setTotal(Integer total) {
+        this.total = total;
+    }
+
+    public Integer getUsed() {
+        return used;
+    }
+
+    public void setUsed(Integer used) {
+        this.used = used;
+    }
+
+    public Integer getResidue() {
+        return residue;
+    }
+
+    public void setResidue(Integer residue) {
+        this.residue = residue;
+    }
+}</pre>
+<br />
+6. 在 net.biancheng.c.mapper 包下，创建一个名为 StorageMapper 的接口，代码如下。
+<pre class="java">
+package net.biancheng.c.mapper;
+
+import net.biancheng.c.entity.Storage;
+import org.apache.ibatis.annotations.Mapper;
+
+@Mapper
+public interface StorageMapper {
+    Storage selectByProductId(Long productId);
+
+    int decrease(Storage record);
+}</pre>
+<br />
+7. 在 /resouces/mybatis/mapper 目录下，创建一个名为 StorageMapper.xml 的 MyBatis 映射文件，代码如下。
+<pre class="xml">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE mapper PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot; &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+&lt;mapper namespace=&quot;net.biancheng.c.mapper.StorageMapper&quot;&gt;
+    &lt;resultMap id=&quot;BaseResultMap&quot; type=&quot;net.biancheng.c.entity.Storage&quot;&gt;
+        &lt;id column=&quot;id&quot; jdbcType=&quot;BIGINT&quot; property=&quot;id&quot;/&gt;
+        &lt;result column=&quot;product_id&quot; jdbcType=&quot;BIGINT&quot; property=&quot;productId&quot;/&gt;
+        &lt;result column=&quot;total&quot; jdbcType=&quot;INTEGER&quot; property=&quot;total&quot;/&gt;
+        &lt;result column=&quot;used&quot; jdbcType=&quot;INTEGER&quot; property=&quot;used&quot;/&gt;
+        &lt;result column=&quot;residue&quot; jdbcType=&quot;INTEGER&quot; property=&quot;residue&quot;/&gt;
+    &lt;/resultMap&gt;
+    &lt;sql id=&quot;Base_Column_List&quot;&gt;
+        id
+        , product_id, total, used, residue
+    &lt;/sql&gt;
+    &lt;update id=&quot;decrease&quot; parameterType=&quot;net.biancheng.c.entity.Storage&quot;&gt;
+        update t_storage
+        &lt;set&gt;
+            &lt;if test=&quot;total != null&quot;&gt;
+                total = #{total,jdbcType=INTEGER},
+            &lt;/if&gt;
+            &lt;if test=&quot;used != null&quot;&gt;
+                used = #{used,jdbcType=INTEGER},
+            &lt;/if&gt;
+            &lt;if test=&quot;residue != null&quot;&gt;
+                residue = #{residue,jdbcType=INTEGER},
+            &lt;/if&gt;
+        &lt;/set&gt;
+        where product_id = #{productId,jdbcType=BIGINT}
+    &lt;/update&gt;
+
+    &lt;select id=&quot;selectByProductId&quot; parameterType=&quot;java.lang.Long&quot; resultMap=&quot;BaseResultMap&quot;&gt;
+        select
+        &lt;include refid=&quot;Base_Column_List&quot;/&gt;
+        from t_storage
+        where product_id = #{productId,jdbcType=BIGINT}
+    &lt;/select&gt;
+&lt;/mapper&gt;</pre>
+<br />
+8. 在&nbsp;net.biancheng.c.service 包下，创建一个名为&nbsp;StorageService 的 Service 接口，代码如下。
+<pre class="java">
+package net.biancheng.c.service;
+
+public interface StorageService {
+    int decrease(Long productId, Integer count);
+}</pre>
+<br />
+9. 在&nbsp;net.biancheng.c.service.impl 包下，创建&nbsp;StorageService 的实现类&nbsp;StorageServiceImpl，代码如下。<br />
+<pre class="java">
+package net.biancheng.c.service.impl;
+
+import lombok.extern.slf4j.Slf4j;
+import net.biancheng.c.entity.Storage;
+import net.biancheng.c.mapper.StorageMapper;
+import net.biancheng.c.service.StorageService;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+
+@Service
+@Slf4j
+public class StorageServiceImpl implements StorageService {
+    @Resource
+    StorageMapper storageMapper;
+
+    @Override
+    public int decrease(Long productId, Integer count) {
+        log.info(&quot;-------&gt;storage-service中扣减库存开始&quot;);
+        log.info(&quot;-------&gt;storage-service 开始查询商品是否存在&quot;);
+        Storage storage = storageMapper.selectByProductId(productId);
+        if (storage != null &amp;&amp; storage.getResidue().intValue() &gt;= count.intValue()) {
+            Storage storage2 = new Storage();
+            storage2.setProductId(productId);
+            storage.setUsed(storage.getUsed() + count);
+            storage.setResidue(storage.getTotal().intValue() - storage.getUsed());
+            int decrease = storageMapper.decrease(storage);
+            log.info(&quot;-------&gt;storage-service 扣减库存成功&quot;);
+            return decrease;
+        } else {
+            log.info(&quot;-------&gt;storage-service 库存不足，开始回滚！&quot;);
+            throw new RuntimeException(&quot;库存不足，扣减库存失败！&quot;);
+        }
+    }
+}</pre>
+<br />
+10. 在&nbsp;net.biancheng.c.controller 包下，创建一个名为&nbsp;StorageController 的 Controller 类，代码如下。<br />
+<pre class="java">
+package net.biancheng.c.controller;
+
+import lombok.extern.slf4j.Slf4j;
+import net.biancheng.c.entity.CommonResult;
+import net.biancheng.c.service.StorageService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+
+@RestController
+@Slf4j
+public class StorageController {
+    @Resource
+    private StorageService storageService;
+    @Value(&quot;${server.port}&quot;)
+    private String serverPort;
+
+    @PostMapping(value = &quot;/storage/decrease&quot;)
+    CommonResult decrease(@RequestParam(&quot;productId&quot;) Long productId, @RequestParam(&quot;count&quot;) Integer count) {
+        int decrease = storageService.decrease(productId, count);
+        CommonResult result;
+        if (decrease &gt; 0) {
+            result = new CommonResult(200, &quot;from mysql,serverPort:  &quot; + serverPort, decrease);
+        } else {
+            result = new CommonResult(505, &quot;from mysql,serverPort:  &quot; + serverPort, &quot;库存扣减失败&quot;);
+        }
+        return result;
+    }
+}</pre>
+<br />
+11. 主启动类的代码如下。
+<pre class="java">
+package net.biancheng.c;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+
+@EnableDiscoveryClient
+@EnableFeignClients
+@SpringBootApplication(scanBasePackages = &quot;net.biancheng&quot;)
+public class SpringCloudAlibabaSeataStorage8006Application {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SpringCloudAlibabaSeataStorage8006Application.class, args);
+    }
+
+}</pre>
+<h4>
+搭建账户（Account）服务</h4>
+1. 在 MySQL 数据库中，新建一个名为 seata-account 的数据库实例，并通过以下 SQL 语句创建 2 张表：t_account（账户表）和 undo_log（回滚日志表）。
+<pre class="info-box">
+DROP TABLE IF EXISTS `t_account`;
+CREATE TABLE `t_account` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT &#39;id&#39;,
+  `user_id` bigint DEFAULT NULL COMMENT &#39;用户id&#39;,
+  `total` decimal(10,0) DEFAULT NULL COMMENT &#39;总额度&#39;,
+  `used` decimal(10,0) DEFAULT NULL COMMENT &#39;已用余额&#39;,
+  `residue` decimal(10,0) DEFAULT &#39;0&#39; COMMENT &#39;剩余可用额度&#39;,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of t_account
+-- ----------------------------
+INSERT INTO `t_account` VALUES (&#39;1&#39;, &#39;1&#39;, &#39;1000&#39;, &#39;0&#39;, &#39;1000&#39;);
+
+-- ----------------------------
+-- Table structure for undo_log
+-- ----------------------------
+DROP TABLE IF EXISTS `undo_log`;
+CREATE TABLE `undo_log` (
+  `branch_id` bigint NOT NULL COMMENT &#39;branch transaction id&#39;,
+  `xid` varchar(128) NOT NULL COMMENT &#39;global transaction id&#39;,
+  `context` varchar(128) NOT NULL COMMENT &#39;undo_log context,such as serialization&#39;,
+  `rollback_info` longblob NOT NULL COMMENT &#39;rollback info&#39;,
+  `log_status` int NOT NULL COMMENT &#39;0:normal status,1:defense status&#39;,
+  `log_created` datetime(6) NOT NULL COMMENT &#39;create datetime&#39;,
+  `log_modified` datetime(6) NOT NULL COMMENT &#39;modify datetime&#39;,
+  UNIQUE KEY `ux_undo_log` (`xid`,`branch_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;</pre>
+<br />
+2. 在主启动类&nbsp;spring-cloud-alibaba-seata-account-8007 下，创建一个名为&nbsp;spring-cloud-alibaba-seata-account-8007 的 Spring Boot 模块，并在其 pom.xml 中添加以下依赖，代码如下。
+<pre class="xml">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+    &lt;parent&gt;
+        &lt;groupId&gt;net.biancheng.c&lt;/groupId&gt;
+        &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+        &lt;artifactId&gt;spring-cloud-alibaba-demo&lt;/artifactId&gt;
+    &lt;/parent&gt;
+
+    &lt;groupId&gt;net.biancheng.c&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-alibaba-seata-account-8007&lt;/artifactId&gt;
+    &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+    &lt;name&gt;spring-cloud-alibaba-seata-account-8007&lt;/name&gt;
+    &lt;description&gt;Demo project for Spring Boot&lt;/description&gt;
+    &lt;properties&gt;
+        &lt;java.version&gt;1.8&lt;/java.version&gt;
+        &lt;seata.version&gt;1.4.2&lt;/seata.version&gt;
+    &lt;/properties&gt;
+    &lt;dependencies&gt;
+        &lt;!--nacos 服务注册中心--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-starter-alibaba-nacos-discovery&lt;/artifactId&gt;
+            &lt;exclusions&gt;
+                &lt;exclusion&gt;
+                    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+                    &lt;artifactId&gt;spring-cloud-starter-netflix-ribbon&lt;/artifactId&gt;
+                &lt;/exclusion&gt;
+            &lt;/exclusions&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;!--引入 OpenFeign 的依赖--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-starter-openfeign&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-loadbalancer&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;!--seata--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-starter-alibaba-seata&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-devtools&lt;/artifactId&gt;
+            &lt;scope&gt;runtime&lt;/scope&gt;
+            &lt;optional&gt;true&lt;/optional&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
+            &lt;artifactId&gt;lombok&lt;/artifactId&gt;
+            &lt;optional&gt;true&lt;/optional&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;net.biancheng.c&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-alibaba-api&lt;/artifactId&gt;
+            &lt;version&gt;${project.version}&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;junit&lt;/groupId&gt;
+            &lt;artifactId&gt;junit&lt;/artifactId&gt;
+            &lt;version&gt;4.12&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;mysql&lt;/groupId&gt;
+            &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+            &lt;version&gt;8.0.19&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;
+            &lt;artifactId&gt;logback-core&lt;/artifactId&gt;
+
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.mybatis.spring.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;mybatis-spring-boot-starter&lt;/artifactId&gt;
+            &lt;version&gt;2.2.0&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;!--添加 Spring Boot 的监控模块--&gt;
+        &lt;!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;!--SpringCloud ailibaba sentinel --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-starter-alibaba-sentinel&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-starter-alibaba-nacos-config&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+
+    &lt;build&gt;
+        &lt;plugins&gt;
+            &lt;!--mybatis自动生成代码插件--&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.mybatis.generator&lt;/groupId&gt;
+                &lt;artifactId&gt;mybatis-generator-maven-plugin&lt;/artifactId&gt;
+                &lt;version&gt;1.4.0&lt;/version&gt;
+                &lt;configuration&gt;
+                    &lt;configurationFile&gt;src/main/resources/mybatis-generator/generatorConfig.xml&lt;/configurationFile&gt;
+                    &lt;verbose&gt;true&lt;/verbose&gt;
+                    &lt;!-- 是否覆盖，true表示会替换生成的JAVA文件，false则不覆盖 --&gt;
+                    &lt;overwrite&gt;true&lt;/overwrite&gt;
+                &lt;/configuration&gt;
+                &lt;dependencies&gt;
+                    &lt;!--mysql驱动包--&gt;
+                    &lt;dependency&gt;
+                        &lt;groupId&gt;mysql&lt;/groupId&gt;
+                        &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+                        &lt;version&gt;8.0.19&lt;/version&gt;
+                    &lt;/dependency&gt;
+                    &lt;dependency&gt;
+                        &lt;groupId&gt;org.mybatis.generator&lt;/groupId&gt;
+                        &lt;artifactId&gt;mybatis-generator-core&lt;/artifactId&gt;
+                        &lt;version&gt;1.4.0&lt;/version&gt;
+                    &lt;/dependency&gt;
+                &lt;/dependencies&gt;
+            &lt;/plugin&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+                &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+&lt;/project&gt; </pre>
+<br />
+3. 在 spring-cloud-alibaba-seata-account-8007 的类路径（/resources 目录）下，创建一个配置文件 bootstrap.yml，配置内容如下。
+<pre class="xml">
+spring:
+  cloud:
+    ## Nacos认证信息
+    nacos:
+      config:
+        username: nacos
+        password: nacos
+        context-path: /nacos
+        server-addr: 127.0.0.1:1111 # 设置配置中心服务端地址
+        namespace:   # Nacos 配置中心的namespace。需要注意，如果使用 public 的 namcespace ，请不要填写这个值，直接留空即可</pre>
+<br />
+4. 在 spring-cloud-alibaba-seata-account-8007 的类路径（/resources 目录）下，创建一个配置文件 application.yml，配置内容如下。<br />
+<pre class="xml">
+spring:
+  application:
+    name: spring-cloud-alibaba-seata-account-8007
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    name: defaultDataSource
+    url: jdbc:mysql://localhost:3306/seata_account?serverTimezone=UTC
+    username: root
+    password: root
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:1111
+        namespace: public
+        username:
+        password:
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8080
+        port: 8719
+
+    alibaba:
+      seata:
+        tx-service-group: service-account-group
+
+server:
+  port: 8007
+seata:
+  application-id: ${spring.application.name}
+  tx-service-group: service-account-group
+
+  service:
+    grouplist:
+      seata-server: 127.0.0.1:8091
+
+  registry:
+    type: nacos
+    nacos:
+      server-addr: 127.0.0.1:1111
+
+  config:
+    type: nacos
+    nacos:
+      server-addr: 127.0.0.1:1111
+
+feign:
+  sentinel:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: &quot;*&quot;
+
+###################################### MyBatis 配置 ######################################
+mybatis:
+  # 指定 mapper.xml 的位置
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  #扫描实体类的位置,在此处指明扫描实体类的包，在 mapper.xml 中就可以不写实体类的全路径名
+  type-aliases-package: net.biancheng.c.entity
+  configuration:
+    #默认开启驼峰命名法，可以不用设置该属性
+    map-underscore-to-camel-case: true</pre>
+<br />
+5. 在 net.biancheng.c.entity 包下，创建一个名为 Account 的实体类，代码如下。
+<pre class="java">
+package net.biancheng.c.entity;
+
+import java.math.BigDecimal;
+
+public class Account {
+    private Long id;
+
+    private Long userId;
+
+    private BigDecimal total;
+
+    private BigDecimal used;
+
+    private BigDecimal residue;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+    }
+
+    public BigDecimal getUsed() {
+        return used;
+    }
+
+    public void setUsed(BigDecimal used) {
+        this.used = used;
+    }
+
+    public BigDecimal getResidue() {
+        return residue;
+    }
+
+    public void setResidue(BigDecimal residue) {
+        this.residue = residue;
+    }
+}</pre>
+<br />
+6. 在&nbsp;net.biancheng.c.mapper 包下，创建一个名为&nbsp;AccountMapper 的接口，代码如下。
+<pre class="java">
+package net.biancheng.c.mapper;
+
+import net.biancheng.c.entity.Account;
+import org.apache.ibatis.annotations.Mapper;
+
+import java.math.BigDecimal;
+
+@Mapper
+public interface AccountMapper {
+    Account selectByUserId(Long userId);
+
+    int decrease(Long userId, BigDecimal money);
+}</pre>
+<br />
+7. 在 /resouces/mybatis/mapper 目录下，创建一个名为 AccountMapper.xml 的 MyBatis 映射文件，代码如下。
+<pre class="xml">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE mapper PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot; &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+&lt;mapper namespace=&quot;net.biancheng.c.mapper.AccountMapper&quot;&gt;
+    &lt;resultMap id=&quot;BaseResultMap&quot; type=&quot;net.biancheng.c.entity.Account&quot;&gt;
+        &lt;id column=&quot;id&quot; jdbcType=&quot;BIGINT&quot; property=&quot;id&quot;/&gt;
+        &lt;result column=&quot;user_id&quot; jdbcType=&quot;BIGINT&quot; property=&quot;userId&quot;/&gt;
+        &lt;result column=&quot;total&quot; jdbcType=&quot;DECIMAL&quot; property=&quot;total&quot;/&gt;
+        &lt;result column=&quot;used&quot; jdbcType=&quot;DECIMAL&quot; property=&quot;used&quot;/&gt;
+        &lt;result column=&quot;residue&quot; jdbcType=&quot;DECIMAL&quot; property=&quot;residue&quot;/&gt;
+    &lt;/resultMap&gt;
+    &lt;sql id=&quot;Base_Column_List&quot;&gt;
+        id
+        , user_id, total, used, residue
+    &lt;/sql&gt;
+    &lt;select id=&quot;selectByUserId&quot; resultType=&quot;net.biancheng.c.entity.Account&quot;&gt;
+        select
+        &lt;include refid=&quot;Base_Column_List&quot;/&gt;
+        from t_account
+        where user_id = #{userId,jdbcType=BIGINT}
+    &lt;/select&gt;
+    &lt;update id=&quot;decrease&quot;&gt;
+        UPDATE t_account
+        SET residue = residue - #{money},
+            used    = used + #{money}
+        WHERE user_id = #{userId};
+    &lt;/update&gt;
+&lt;/mapper&gt;</pre>
+<br />
+8. 在 net.biancheng.c.service 包下，创建一个名为&nbsp;AccountService 的接口，代码如下。
+<pre class="java">
+package net.biancheng.c.service;
+import org.springframework.web.bind.annotation.RequestParam;
+import java.math.BigDecimal;
+
+public interface AccountService {
+
+    /**
+     * 扣减账户余额
+     *
+     * @param userId 用户id
+     * @param money  金额
+     */
+    int decrease(@RequestParam(&quot;userId&quot;) Long userId, @RequestParam(&quot;money&quot;) BigDecimal money);
+}</pre>
+<br />
+9. 在 net.biancheng.c.service.impl 包下，创建&nbsp;AccountService 的实现类&nbsp;AccountServiceImpl，代码如下。
+<pre class="java">
+package net.biancheng.c.service.impl;
+
+import lombok.extern.slf4j.Slf4j;
+import net.biancheng.c.entity.Account;
+import net.biancheng.c.mapper.AccountMapper;
+import net.biancheng.c.service.AccountService;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+
+@Service
+@Slf4j
+public class AccountServiceImpl implements AccountService {
+
+    @Resource
+    AccountMapper accountMapper;
+
+    @Override
+    public int decrease(Long userId, BigDecimal money) {
+
+        log.info(&quot;-------&gt;account-service 开始查询账户余额&quot;);
+        Account account = accountMapper.selectByUserId(userId);
+        log.info(&quot;-------&gt;account-service 账户余额查询完成，&quot; + account);
+        if (account != null &amp;&amp; account.getResidue().intValue() &gt;= money.intValue()) {
+            log.info(&quot;-------&gt;account-service 开始从账户余额中扣钱！&quot;);
+            int decrease = accountMapper.decrease(userId, money);
+            log.info(&quot;-------&gt;account-service 从账户余额中扣钱完成&quot;);
+            return decrease;
+        } else {
+            log.info(&quot;账户余额不足，开始回滚！&quot;);
+            throw new RuntimeException(&quot;账户余额不足！&quot;);
+        }
+    }
+
+}</pre>
+<br />
+10. 主启动类代码如下。
+<pre class="java">
+package net.biancheng.c;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+
+@EnableDiscoveryClient
+@EnableFeignClients
+@SpringBootApplication(scanBasePackages = &quot;net.biancheng&quot;)
+public class SpringCloudAlibabaSeataAccount8007Application {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SpringCloudAlibabaSeataAccount8007Application.class, args);
+    }
+}</pre>
+<br />
+11. 依次启动 Nacos Server（集群）和 Seata Server（集群），最后启动 spring-cloud-alibaba-seata-order-8005，当控制台出现以下日志时，说明该服务已经成功连接上 Seata Server（TC）。
+<pre class="info-box">
+2021-11-25 15:16:27.389&nbsp; INFO 19564 --- [&nbsp; restartedMain] com.zaxxer.hikari.HikariDataSource&nbsp;&nbsp;&nbsp; : defaultDataSource - Start completed.
+2021-11-25 15:16:27.553&nbsp; INFO 19564 --- [&nbsp; restartedMain] i.s.c.r.netty.NettyClientChannelManager&nbsp;: will connect to 172.30.194.1:8091
+2021-11-25 15:16:27.553&nbsp; INFO 19564 --- [&nbsp; restartedMain] i.s.c.rpc.netty.RmNettyRemotingClient&nbsp;&nbsp;: RM will register :jdbc:mysql://localhost:3306/seata_order
+2021-11-25 15:16:27.557&nbsp; INFO 19564 --- [&nbsp; restartedMain] i.s.core.rpc.netty.NettyPoolableFactory&nbsp;: NettyPool create channel to transactionRole:RMROLE,address:172.30.194.1:8091,msg:&lt; RegisterRMRequest{resourceIds=&#39;jdbc:mysql://localhost:3306/seata_order&#39;, applicationId=&#39;spring-cloud-alibaba-seata-order-8005&#39;, transactionServiceGroup=&#39;service-order-group&#39;} &gt;
+2021-11-25 15:16:28.699&nbsp; INFO 19564 --- [&nbsp; restartedMain] i.s.c.rpc.netty.RmNettyRemotingClient&nbsp;&nbsp;: register RM success. client version:1.3.0, server version:1.4.2,channel:[id: 0xc6da1cb4, L:/172.30.194.1:49945 - R:/172.30.194.1:8091]
+2021-11-25 15:16:28.707&nbsp; INFO 19564 --- [&nbsp; restartedMain] i.s.core.rpc.netty.NettyPoolableFactory&nbsp;: register success, cost 78 ms, version:1.4.2,role:RMROLE,channel:[id: 0xc6da1cb4, L:/172.30.194.1:49945 - R:/172.30.194.1:8091]
+</pre>
+<br />
+12.&nbsp;启动 spring-cloud-alibaba-seata-storage-8006，当控制台出现以下日志时，说明该服务已经成功连接上 Seata Server（TC）。
+<pre class="info-box">
+2021-11-25 15:16:28.621  INFO 14772 --- [  restartedMain] com.zaxxer.hikari.HikariDataSource       : defaultDataSource - Start completed.
+2021-11-25 15:16:28.969  INFO 14772 --- [  restartedMain] i.s.c.r.netty.NettyClientChannelManager  : will connect to 172.30.194.1:8091
+2021-11-25 15:16:28.970  INFO 14772 --- [  restartedMain] i.s.c.rpc.netty.RmNettyRemotingClient    : RM will register :jdbc:mysql://localhost:3306/seata_storage
+2021-11-25 15:16:28.974  INFO 14772 --- [  restartedMain] i.s.core.rpc.netty.NettyPoolableFactory  : NettyPool create channel to transactionRole:RMROLE,address:172.30.194.1:8091,msg:&lt; RegisterRMRequest{resourceIds=&#39;jdbc:mysql://localhost:3306/seata_storage&#39;, applicationId=&#39;spring-cloud-alibaba-seata-storage-8006&#39;, transactionServiceGroup=&#39;service-storage-group&#39;} &gt;
+2021-11-25 15:16:30.171  INFO 14772 --- [  restartedMain] i.s.c.rpc.netty.RmNettyRemotingClient    : register RM success. client version:1.3.0, server version:1.4.2,channel:[id: 0x7311ae2a, L:/172.30.194.1:52026 - R:/172.30.194.1:8091]
+2021-11-25 15:16:30.182  INFO 14772 --- [  restartedMain] i.s.core.rpc.netty.NettyPoolableFactory  : register success, cost 174 ms, version:1.4.2,role:RMROLE,channel:[id: 0x7311ae2a, L:/172.30.194.1:52026 - R:/172.30.194.1:8091]</pre>
+<br />
+13.&nbsp;启动 spring-cloud-alibaba-seata-account-8007，当控制台出现以下日志时，说明该服务已经成功连接上 Seata Server（TC）。
+<pre class="info-box">
+2021-11-25 15:16:29.914  INFO 8616 --- [  restartedMain] com.zaxxer.hikari.HikariDataSource       : defaultDataSource - Start completed.
+2021-11-25 15:16:30.253  INFO 8616 --- [  restartedMain] i.s.c.r.netty.NettyClientChannelManager  : will connect to 172.30.194.1:8091
+2021-11-25 15:16:30.253  INFO 8616 --- [  restartedMain] i.s.c.rpc.netty.RmNettyRemotingClient    : RM will register :jdbc:mysql://localhost:3306/seata_account
+2021-11-25 15:16:30.257  INFO 8616 --- [  restartedMain] i.s.core.rpc.netty.NettyPoolableFactory  : NettyPool create channel to transactionRole:RMROLE,address:172.30.194.1:8091,msg:&lt; RegisterRMRequest{resourceIds=&#39;jdbc:mysql://localhost:3306/seata_account&#39;, applicationId=&#39;spring-cloud-alibaba-seata-account-8007&#39;, transactionServiceGroup=&#39;service-account-group&#39;} &gt;
+2021-11-25 15:16:31.930  INFO 8616 --- [  restartedMain] i.s.c.rpc.netty.RmNettyRemotingClient    : register RM success. client version:1.3.0, server version:1.4.2,channel:[id: 0xa57ead6d, L:/172.30.194.1:52057 - R:/172.30.194.1:8091]
+2021-11-25 15:16:31.941  INFO 8616 --- [  restartedMain] i.s.core.rpc.netty.NettyPoolableFactory  : register success, cost 114 ms, version:1.4.2,role:RMROLE,channel:[id: 0xa57ead6d, L:/172.30.194.1:52057 - R:/172.30.194.1:8091]</pre>
+<br />
+14. 使用浏览器访问&ldquo;http://localhost:8005/order/createByAnnotation/1/2/20&rdquo;，结果如下。
+<pre class="info-box">
+{&quot;code&quot;:200,&quot;message&quot;:&quot;订单创建成功&quot;,&quot;data&quot;:null}</pre>
+<br />
+15. 执行以下 SQL 语句，查询 seata_order 数据库中的 t_order 表。
+<pre class="info-box">
+SELECT * FROM seata_order.t_order;</pre>
+<br />
+结果如下。<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+id</th>
+<th>
+user_id</th>
+<th>
+product_id</th>
+<th>
+count</th>
+<th>
+money</th>
+<th>
+status</th>
+</tr>
+<tr>
+<td>
+1</td>
+<td>
+&nbsp;</td>
+<td>
+1</td>
+<td>
+2</td>
+<td>
+20</td>
+<td>
+1</td>
+</tr>
+</tbody>
+</table>
+<br />
+从上表可以看出，已经创建一条订单数据，且订单状态（status）已修改为&ldquo;已完成&rdquo;。<br />
+<br />
+16. 执行以下 SQL 语句，查询 seata_storage 数据库中的 t_storage 表。
+<pre class="info-box">
+SELECT * FROM seata_storage.t_storage;</pre>
+<br />
+结果如下。<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+id</th>
+<th>
+product_id</th>
+<th>
+total</th>
+<th>
+used</th>
+<th>
+residue</th>
+</tr>
+<tr>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+100</td>
+<td>
+2</td>
+<td>
+98</td>
+</tr>
+</tbody>
+</table>
+<br />
+从上表可以看出，商品库存已经扣减 2 件，仓库中商品储量从 100 件减少到了 98 件。<br />
+<br />
+17. 执行以下 SQL 语句，查询 seata_account 数据库中的 t_account 表，
+<pre class="info-box">
+SELECT * FROM seata_account.t_account;</pre>
+<br />
+结果如下。<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+id</th>
+<th>
+user_id</th>
+<th>
+total</th>
+<th>
+used</th>
+<th>
+residue</th>
+</tr>
+<tr>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1000</td>
+<td>
+20</td>
+<td>
+980</td>
+</tr>
+</tbody>
+</table>
+<br />
+从上表可以看出，账户余额已经扣减，金额从 1000 元减少到了 980 元。<br />
+<br />
+18. 使用浏览器访问&ldquo;http://localhost:8005/order/createByAnnotation/1/10/1000&rdquo;，结果如下。
+<pre class="info-box">
+Whitelabel Error Page
+This application has no explicit mapping for /error, so you are seeing this as a fallback.
+
+Thu Nov 25 15:27:03 CST 2021
+There was an unexpected error (type=Internal Server Error, status=500).
+[500] during [POST] to [http://spring-cloud-alibaba-seata-account-8007/account/decrease?userId=1&amp;money=1000] [AccountService#decrease(Long,BigDecimal)]: [{&quot;timestamp&quot;:&quot;2021-11-25T07:27:03.512+00:00&quot;,&quot;status&quot;:500,&quot;error&quot;:&quot;Internal Server Error&quot;,&quot;trace&quot;:&quot;java.lang.RuntimeException: 账户余额不足！\r\n\tat net.biancheng.c.service.impl.AccountServiceImpl.decrease(... (5673 bytes)]
+feign.FeignException$InternalServerError: [500] during [POST] to [http://spring-cloud-alibaba-seata-account-8007/account/decrease?userId=1&amp;money=1000] [AccountService#decrease(Long,BigDecimal)]: [{&quot;timestamp&quot;:&quot;2021-11-25T07:27:03.512+00:00&quot;,&quot;status&quot;:500,&quot;error&quot;:&quot;Internal Server Error&quot;,&quot;trace&quot;:&quot;java.lang.RuntimeException: 账户余额不足！\r\n\tat net.biancheng.c.service.impl.AccountServiceImpl.decrease(... (5673 bytes)]</pre>
+<br />
+注：在本次请求中，用户购买 10 件商品（商品 ID 为 1），商品总价为 1000 元，此时用户账户余额 为 980 元，因此账户服务会抛出&ldquo;账户余额不足！&rdquo;的运行时异常。<br />
+<br />
+19.&nbsp;再次查询 t_order、t_storage 和 t_account 表，结果如下。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211210/102A1Ab-10.png" /><br />
+图11：分布式事务问题</div>
+<br />
+从上图可以看出：<br />
+<ul>
+<li>
+t_order（订单表）：订单服务生成了一条订单数据（id 为 2），但订单状态（status）为未完成（0）；</li>
+<li>
+t_storage（库存表）：商品库存已扣减；</li>
+<li>
+t_account（账户表）：账户金额不足，账户（Account）服务出现异常，进而导致账户金额并未扣减。</li>
+</ul>
+<h4>
+@GlobalTransactional 注解</h4>
+在分布式微服务架构中，我们可以使用 Seata 提供的 @GlobalTransactional 注解实现分布式事务的开启、管理和控制。<br />
+<br />
+当调用 @GlobalTransaction 注解的方法时，TM 会先向 TC 注册全局事务，TC 生成一个全局唯一的 XID，返回给 TM。<br />
+<br />
+@GlobalTransactional 注解既可以在类上使用，也可以在类方法上使用，该注解的使用位置决定了全局事务的范围，具体关系如下：<br />
+<ul>
+<li>
+在类中某个方法使用时，全局事务的范围就是该方法以及它所涉及的所有服务。</li>
+<li>
+在类上使用时，全局事务的范围就是这个类中的所有方法以及这些方法涉及的服务。</li>
+</ul>
+<br />
+接下来，我们就使用 @GlobalTransactional 注解对业务系统进行改造，步骤如下。<br />
+<br />
+1. 在&nbsp;spring-cloud-alibaba-seata-order-8005 的 net.biacheng.c 包下的&nbsp;OrderController 中，添加一个名为&nbsp;createByAnnotation 的方法，代码如下。
+<pre class="java">
+/**
+ * 使用 @GlobalTransactional 注解对分布式事务进行管理
+ * @param productId
+ * @param count
+ * @param money
+ * @return
+ */
+@GetMapping(&quot;/order/createByAnnotation/{productId}/{count}/{money}&quot;)
+@GlobalTransactional(name = &quot;c-biancheng-net-create-order&quot;, rollbackFor = Exception.class)
+public CommonResult createByAnnotation(@PathVariable(&quot;productId&quot;) Integer productId, @PathVariable(&quot;count&quot;) Integer count
+        , @PathVariable(&quot;money&quot;) BigDecimal money) {
+    Order order = new Order();
+    order.setProductId(Integer.valueOf(productId).longValue());
+    order.setCount(count);
+
+    order.setMoney(money);
+    return orderService.create(order);
+}</pre>
+<blockquote>
+<p>
+从以上代码可以看出，添加的 createByAnnotation() 方法与&nbsp;create() 方法无论是参数还是代码逻辑都一摸一样，唯一的不同就是前者标注了 @GlobalTransactional 注解。</p>
+</blockquote>
+2. 将数据恢复到浏览器访问&ldquo;http://localhost:8005/order/createByAnnotation/1/2/20&rdquo;之后。<br />
+<br />
+3. 重启订单（Order）服务、库存（Storage）服务和账户（Account）服务，并使用浏览器访问&ldquo;http://localhost:8005/order/createByAnnotation/1/10/1000&rdquo;，结果如下。
+<pre class="info-box">
+Whitelabel Error Page
+This application has no explicit mapping for /error, so you are seeing this as a fallback.
+
+Thu Nov 25 15:27:03 CST 2021
+There was an unexpected error (type=Internal Server Error, status=500).
+[500] during [POST] to [http://spring-cloud-alibaba-seata-account-8007/account/decrease?userId=1&amp;money=1000] [AccountService#decrease(Long,BigDecimal)]: [{&quot;timestamp&quot;:&quot;2021-11-25T07:27:03.512+00:00&quot;,&quot;status&quot;:500,&quot;error&quot;:&quot;Internal Server Error&quot;,&quot;trace&quot;:&quot;java.lang.RuntimeException: 账户余额不足！\r\n\tat net.biancheng.c.service.impl.AccountServiceImpl.decrease(... (5673 bytes)]
+feign.FeignException$InternalServerError: [500] during [POST] to [http://spring-cloud-alibaba-seata-account-8007/account/decrease?userId=1&amp;money=1000] [AccountService#decrease(Long,BigDecimal)]: [{&quot;timestamp&quot;:&quot;2021-11-25T07:27:03.512+00:00&quot;,&quot;status&quot;:500,&quot;error&quot;:&quot;Internal Server Error&quot;,&quot;trace&quot;:&quot;java.lang.RuntimeException: 账户余额不足！\r\n\tat net.biancheng.c.service.impl.AccountServiceImpl.decrease(... (5673 bytes)]</pre>
+<div>
+<br />
+在本次请求中，用户购买商品的总价为 1000 元，但用户账户余额只有 980 元，因此账户服务会抛出运行时异常，异常信息为&ldquo;账户余额不足！&rdquo;。<br />
+&nbsp;</div>
+4. spring-cloud-alibaba-seata-order-8005 控制台输出如下（标红部分为回滚日志）。
+<pre class="info-box">
+2021-11-25 15:26:57.586  INFO 19564 --- [nio-8005-exec-1] n.b.c.service.impl.OrderServiceImpl      : -----&gt;开始新建订单
+2021-11-25 15:26:58.276  INFO 19564 --- [nio-8005-exec-1] n.b.c.service.impl.OrderServiceImpl      : -----&gt;订单服务开始调用库存服务，开始扣减库存
+2021-11-25 15:26:58.413  WARN 19564 --- [nio-8005-exec-1] c.l.c.ServiceInstanceListSupplierBuilder : LoadBalancerCacheManager not available, returning delegate without caching.
+2021-11-25 15:27:00.705  INFO 19564 --- [nio-8005-exec-1] n.b.c.service.impl.OrderServiceImpl      : -----&gt;订单微服务开始调用库存，扣减库存结束
+2021-11-25 15:27:00.705  INFO 19564 --- [nio-8005-exec-1] n.b.c.service.impl.OrderServiceImpl      : -----&gt;订单服务开始调用账户服务，开始从账户扣减商品金额
+2021-11-25 15:27:00.723  WARN 19564 --- [nio-8005-exec-1] c.l.c.ServiceInstanceListSupplierBuilder : LoadBalancerCacheManager not available, returning delegate without caching.
+<span style="color:#ff0000;">2021-11-25 15:27:03.665  INFO 19564 --- [h_RMROLE_1_1_16] i.s.c.r.p.c.RmBranchRollbackProcessor    : rm handle branch rollback process:xid=172.30.194.1:8091:2702361983450404762,branchId=2702361983450404764,branchType=AT,resourceId=jdbc:mysql://localhost:3306/seata_order,applicationData=null
+2021-11-25 15:27:03.670  INFO 19564 --- [h_RMROLE_1_1_16] io.seata.rm.AbstractRMHandler            : Branch Rollbacking: 172.30.194.1:8091:2702361983450404762 2702361983450404764 jdbc:mysql://localhost:3306/seata_order
+2021-11-25 15:27:03.738  INFO 19564 --- [h_RMROLE_1_1_16] i.s.r.d.undo.AbstractUndoLogManager      : xid 172.30.194.1:8091:2702361983450404762 branch 2702361983450404764, undo_log deleted with GlobalFinished
+2021-11-25 15:27:03.742  INFO 19564 --- [h_RMROLE_1_1_16] io.seata.rm.AbstractRMHandler            : Branch Rollbacked result: PhaseTwo_Rollbacked
+2021-11-25 15:27:03.817  INFO 19564 --- [nio-8005-exec-1] i.seata.tm.api.DefaultGlobalTransaction  : [172.30.194.1:8091:2702361983450404762] rollback status: Rollbacked</span>
+2021-11-25 15:27:03.853 ERROR 19564 --- [nio-8005-exec-1] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is feign.FeignException$InternalServerError: [500] during [POST] to [http://spring-cloud-alibaba-seata-account-8007/account/decrease?userId=1&amp;money=1000] [AccountService#decrease(Long,BigDecimal)]: [{&quot;timestamp&quot;:&quot;2021-11-25T07:27:03.512+00:00&quot;,&quot;status&quot;:500,&quot;error&quot;:&quot;Internal Server Error&quot;,&quot;trace&quot;:&quot;java.lang.RuntimeException: 账户余额不足！\r\n\tat net.biancheng.c.service.impl.AccountServiceImpl.decrease(... (5673 bytes)]] with root cause</pre>
+<br />
+5.&nbsp;spring-cloud-alibaba-seata-storage-8006 控制台输出如下。（标红部分为回滚日志）
+<pre class="info-box">
+2021-11-25 15:26:59.315  INFO 14772 --- [nio-8006-exec-1] n.b.c.service.impl.StorageServiceImpl    : -------&gt;storage-service中扣减库存开始
+2021-11-25 15:26:59.316  INFO 14772 --- [nio-8006-exec-1] n.b.c.service.impl.StorageServiceImpl    : -------&gt;storage-service 开始查询商品是否存在
+2021-11-25 15:27:00.652  INFO 14772 --- [nio-8006-exec-1] n.b.c.service.impl.StorageServiceImpl    : -------&gt;storage-service 扣减库存成功
+<span style="color:#ff0000;">2021-11-25 15:27:03.568  INFO 14772 --- [h_RMROLE_1_1_16] i.s.c.r.p.c.RmBranchRollbackProcessor    : rm handle branch rollback process:xid=172.30.194.1:8091:2702361983450404762,branchId=2702361983450404769,branchType=AT,resourceId=jdbc:mysql://localhost:3306/seata_storage,applicationData=null
+2021-11-25 15:27:03.572  INFO 14772 --- [h_RMROLE_1_1_16] io.seata.rm.AbstractRMHandler            : Branch Rollbacking: 172.30.194.1:8091:2702361983450404762 2702361983450404769 jdbc:mysql://localhost:3306/seata_storage
+2021-11-25 15:27:03.631  INFO 14772 --- [h_RMROLE_1_1_16] i.s.r.d.undo.AbstractUndoLogManager      : xid 172.30.194.1:8091:2702361983450404762 branch 2702361983450404769, undo_log deleted with GlobalFinished
+2021-11-25 15:27:03.635  INFO 14772 --- [h_RMROLE_1_1_16] io.seata.rm.AbstractRMHandler            : Branch Rollbacked result: PhaseTwo_Rollbacked</span></pre>
+<br />
+6.&nbsp;spring-cloud-alibaba-seata-account-8007 控制台输出如下（标红部分为回滚日志）。
+<pre class="info-box">
+2021-11-25 15:27:03.366  INFO 8616 --- [nio-8007-exec-1] n.b.c.service.impl.AccountServiceImpl    : -------&gt;account-service 开始查询账户余额
+2021-11-25 15:27:03.484  INFO 8616 --- [nio-8007-exec-1] n.b.c.service.impl.AccountServiceImpl    : -------&gt;account-service 账户余额查询完成，net.biancheng.c.entity.Account@2a95537f
+<span style="color:#ff0000;">2021-11-25 15:27:03.485  INFO 8616 --- [nio-8007-exec-1] n.b.c.service.impl.AccountServiceImpl    : 账户余额不足，开始回滚！
+2021-11-25 15:27:03.499 ERROR 8616 --- [nio-8007-exec-1] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is java.lang.RuntimeException: 账户余额不足！] with root cause
+java.lang.RuntimeException: 账户余额不足！</span></pre>
+<br />
+7. 到 MySQL 数据库中，再次查询 t_order、t_storage 和 t_account 表，结果如下。<br />
+<br />
+<div style="text-align: center;">
+<img alt="数据库表" src="../uploads/allimg/211210/102A1M09-11.png" /><br />
+图12：Seata 事务回滚</div>
+<div>
+<br />
+从图 12 可以看出，这次并没有出现分布式事务造成的数据不一致问题。<br />
+&nbsp;</div>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="../view/niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/505.html" title="C语言求回文数（详解版）" target="_blank">C语言求回文数（详解版）</a></li>
+<li><a href="../view/525.html" title="C语言直接插入排序算法" target="_blank">C语言直接插入排序算法</a></li>
+<li><a href="../view/1321.html" title="C++ double和float（浮点类型）详解" target="_blank">C++ double和float（浮点类型）详解</a></li>
+<li><a href="../view/5068.html" title="Python进程和线程（包含两者区别）" target="_blank">Python进程和线程（包含两者区别）</a></li>
+<li><a href="../view/vip_8366.html" title="实际应用中，如何将MySQL数据库迁移到其它机器？" target="_blank">实际应用中，如何将MySQL数据库迁移到其它机器？</a></li>
+<li><a href="../css3/animation.html" title="CSS动画（animation）10分钟入门教程" target="_blank">CSS动画（animation）10分钟入门教程</a></li>
+<li><a href="../c/tan.html" title="C语言tan()：求正切" target="_blank">C语言tan()：求正切</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9501;
+window.arcId = "db84pX2E3ZCEOS2JpOkYS8kKMKku7MYrw+1jXLLuNriMWptQCgj0pW9+3oU";
+window.typeidChain = "434";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="../view/8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="../view/8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="../view/8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="../view/9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="../view/8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="https://c.biancheng.net/templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/springcloud/sentinel.html";
+window.nextPageURL = "/springcloud/seata.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

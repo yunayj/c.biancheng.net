@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Shell环境变量设置方法详解</title>
+<meta name="description" content="环境变量和用户自定义变量最主要的区别在于，环境变量是全局变量，而用户自定义变量是局部变量。用户自定义变量只在当前的 Shell 中生效，而环境变量会在当前 Shell 和这个 Shell 的" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Shell环境变量设置方法详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">环境变量和用户自定义变量最主要的区别在于，环境变量是全局变量，而用户自定义变量是局部变量。用户自定义变量只在当前的 Shell 中生效，而环境变量会在当前 Shell 和这个 Shell 的所有子 Shell 中生效。如果把环境变量写入相应的配置文件，那么这个环境变量就会在所有的 Shell 中生效。<br />
+<br />
+这是有区别的，如果环境变量不写入配置文件，那么当前 Shell 一旦终止，这个环境变量就会消失，而只有写入配置文件才会永久地在所有 Shell 中生效。<br />
+<br />
+在 Linux 中一般通过环境变量配置操作系统的环境，如提示符、查找命令的路径、用户家目录等，这些系统默认的环境变量的变量名是固定的，我们只能修改变量的值。<br />
+<br />
+当然，我们也可以手工定义环境变量，不过这些自定义的环境变量不能修改操作系统环境，其只是一个全局变量而已。<br />
+<h2>
+	环境变量设置</h2>
+环境变量和用户自定义变量的设置方法相比，只需通过 export 命令将变量声明为环境变量即可。命令如下：<br />
+<p class="info-box">
+	[root@localhost ~]# export age=&quot;18&quot;<br />
+	#使用export声明的变量就是环境变量</p>
+这样年龄就是环境变量了。当然也可以先把变量声明为本地变量，再用 export 声明为环境变量，命令如下：<br />
+<p class="info-box">
+	[root@localhost ~]# gender=male<br />
+	[root@localhost ~]# export gender</p>
+这样性别也被声明为环境变量了。前面说过，用户自定义变量和环境变量的区别就是：用户自定义变量只能在当前 Shell 中有效，而环境变量在当前 Shell 和所有子 Shell 中有效。比如：<br />
+<p class="info-box">
+	[root@localhost ~]# name=&quot;zhang san&quot;<br />
+	#把姓名声明为本地变量<br />
+	[root@localhost ~]# export age=&quot;18&quot;<br />
+	#年龄声明为本地变量<br />
+	[root@localhost ~]# gender=male<br />
+	#性别声明为本地变量<br />
+	[root@localhost ~]# export gender<br />
+	#性别升级为环境变量</p>
+<br />
+然后我们查询一下这些变量：
+<p class="info-box">
+	[root@localhost ~]# set<br />
+	&hellip;省略部分内容&hellip;<br />
+	gender=male<br />
+	name=&#39;zhang san&#39;<br />
+	age=18</p>
+在当前 Shell 中可以看到这三个变量。<br />
+<p class="info-box">
+	[root@localhost ~]# bash<br />
+	#再调用一次bash，也就是进入子Shell<br />
+	[root@localhost ~]# set<br />
+	#再次查询变量<br />
+	&hellip;省略部分输出&hellip;<br />
+	age=18<br />
+	gender=male<br />
+	#在子Shell中只能看到环境变量&quot;age&quot;和&quot;gender&quot;，而不能查询到用户自定义变量&quot;name&quot;</p>
+可以看到，在子 Shell 中只能看到环境变量&quot;age&quot;和&quot;gender&quot;，这就是环境变量和用户自定义变量的区别。<br />
+<h2>
+	环境变量查询和删除</h2>
+set 既可以查询所有的变量，也可以查询环境变量，我们刚刚 的实验就是使用 set 命令进行环境变量查询。当然，也可以使用 env 命进行环境变量的查询，命令如下：<br />
+<p class="info-box">
+	[root@localhost ~]# env<br />
+	HOSTNAME=localhost.localdomain<br />
+	SELINUX_ROLE_REQUESTED=<br />
+	SHELL=/bin/bash<br />
+	&hellip;省略部分输出&hellip;</p>
+env 和 set 命令的区别是，set 命令可以查看所有变量，而 env 命令只能查看环境变量。我们可以发现系统默认有很多的环境变量，这边环境变量的具体含义会在后续章节中详细介绍。<br />
+<br />
+再来说说环境变量的删除。其实环境变量的删除方法和用户自定义变量是一样的，都使用 unset 命令，命令如下：<br />
+<p class="info-box">
+	[root@localhost ~]# unset gender<br />
+	[root@localhost ~]# env | grep gender<br />
+	#删除环境变量gender</p>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2229_2.html" title="Python（for和while）循环嵌套及用法" target="_blank">Python（for和while）循环嵌套及用法</a></li>
+<li><a href="vip_3381_2.html" title="广义表的深度和长度（C语言）详解" target="_blank">广义表的深度和长度（C语言）详解</a></li>
+<li><a href="vip_6006_2.html" title="Python嵌套循环实现冒泡排序" target="_blank">Python嵌套循环实现冒泡排序</a></li>
+<li><a href="../sql/syntax_2.html" title="SQL语法" target="_blank">SQL语法</a></li>
+<li><a href="../jstl/fn-indexof_2.html" title="fn:indexOf()函数" target="_blank">fn:indexOf()函数</a></li>
+<li><a href="ynnw99_2.html" title="C语言指针" target="_blank">C语言指针</a></li>
+<li><a href="10wc9d4_2.html" title="Redis HMGET命令的用法" target="_blank">Redis HMGET命令的用法</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 960;
+window.arcId = "0614zOxMbX4wRPaEI5EZRtxtm+z+KHYCl8JO9YG8AvyguYXWhE5zBCuKSg";
+window.typeidChain = "210|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

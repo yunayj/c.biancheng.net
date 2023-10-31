@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>sed命令_Linux sed命令：替换、删除、更新文件中的内容</title>
+<meta name="description" content="sed 是 stream editor 的缩写，中文称之为流编辑器。 sed 命令是一个面向行处理的工具，它以行为处理单位，针对每一行进行处理，处理后的结果会输出到标准输出（STDOUT）。你会发现 sed" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="../view/niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>sed命令_Linux sed命令：替换、删除、更新文件中的内容</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">sed 是 stream editor 的缩写，中文称之为&ldquo;流编辑器&rdquo;。<br />
+<br />
+sed 命令是一个面向行处理的工具，它以&ldquo;行&rdquo;为处理单位，针对每一行进行处理，处理后的结果会输出到标准输出（STDOUT）。你会发现 sed 命令是很懂礼貌的一个命令，它不会对读取的文件做任何贸然的修改，而是将内容都输出到标准输出中。<br />
+<br />
+我们来看看 sed 的命令格式：
+<pre class="info-box">
+sed command file</pre>
+<ul>
+	<li>
+		command 部分：针对每行的内容所要进行的处理（这部分很重要很重要）。</li>
+	<li>
+		file 部分：要处理的文件，如果忽略 file 参数，则 sed 会把标准输入作为处理对象。</li>
+</ul>
+<h2>
+	sed 的工作原理是什么</h2>
+刚才我们说了，sed 命令是面向&ldquo;行&rdquo;进行处理的，每一次处理一行内容。处理时，sed 会把要处理的行存储在缓冲区中，接着用 sed 命令处理缓冲区中的内容，处理完成后，把缓冲区的内容送往屏幕。接着处理下一行，这样不断重复，直到文件末尾。这个缓冲区被称为&ldquo;模式空间&rdquo;（pattern space）。<br />
+<br />
+如前面所说，在这个处理过程中，sed 命令并不会对文件本身进行任何更改。<br />
+<br />
+我们来一起看一个最最简单的 sed 命令的例子，让大家对它有个感性的认识。
+<pre class="info-box">
+#我们先来看看原文件的内容
+[roc@roclinux ~]$ cat roc.txt
+test 1
+test2
+testtest
+XtestX
+BBtest
+ 
+#我们想用sed命令来删除文件中带字符&ldquo;2&rdquo;的行
+[roc@roclinux ~]$ sed &#39;/2/d&#39; roc.txt
+test 1
+testtest
+XtestX
+BBtest</pre>
+<br />
+此例子是利用 sed 来删除 roc.txt 文件中含有字符&ldquo;2&rdquo;的行。看到了吧，例子很简单，这个命令的 command 部分是<code>/2/d</code>，而且它是用单引号括起来的。你也一定要学着这样做，用到 sed，别忘了用单引号将 command 部分括起来。<br />
+<br />
+<code>/2/d</code>中的 d 表示删除，意思是说，只要某行内容中含有字符 2，就删掉这一行。（sed 所谓的删除都是在模式空间中执行的，不会真正改动 roc.txt 原文件。）
+<h2>
+	想用 sed 命令实现 cut 命令的效果</h2>
+假如我们想实现类似于 cut-d：-f 1/etc/passwd 的效果，也就是以冒号为间隔符提取第 1 个域，用 sed 命令应该怎么操作呢？
+<pre class="info-box">
+#先来一起看看/etc/passwd文件的内容
+[roc@roclinux ~]$ head -n 5 /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+ 
+#我们这回用sed命令来提取文件中每行的第一个域, 间隔符是冒号
+[roc@roclinux ~]$ head -n 5 /etc/passwd|sed &#39;s/:.*$//&#39;
+root
+bin
+daemon
+adm
+lp</pre>
+<br />
+看到了吧，我们将 command 部分指定成了<code>&#39;s/：.*$//&#39;</code>，表示我们要把每一行的第一个冒号到结尾的部分都清空，这样留下的便是第一个冒号前的内容啦。
+<h2>
+	sed 都有哪些好用的选项</h2>
+说到 sed 命令的选项，就不得不提<code>-n</code>选项，想把这个选项介绍清楚，还是要费一些脑子和笔墨的。<br />
+<br />
+前面提到，sed 会将模式空间里的行经过处理后输出到标准输出，这是默认的处理方式。也就是说，除非你使用&ldquo;d&rdquo;来删除此行，否则经过&ldquo;模式空间&rdquo;处理的行都是会被输出到标准输出（屏幕）上的。我们一起来看下面的例子：
+<pre class="info-box">
+#还是先来看看原文件的内容
+[roc@roclinux ~]$ cat roc.txt
+1
+2
+3
+4
+5
+ 
+#仔细看, 输出中出现了两个&ldquo;4&rdquo;
+[roc@roclinux ~]$ sed &lsquo;/4/p&rsquo; roc.txt
+1
+2
+3
+4
+4
+5</pre>
+看，所有的原始文件内容都被输出来了，而且含有字符4的行被输出了两遍。<br />
+<br />
+但这就是 sed 命令的工作原理，它会不问青红皂白地把经过处理的行先输出出来，然后再执行后面的动作。（在这里我们设定了 p，表示打印此行。）这明显不符合我们的初衷，我们只是想让 sed 命令找到含有 4 的行再输出。<br />
+<br />
+这时候，不妨加上<code>-n</code>选项试一试，你会发现，结果变得如你所愿了。
+<pre class="info-box">
+[roc@roclinux ~]$ sed -n &#39;/4/p&#39; roc.txt
+4</pre>
+<br />
+<code>-n</code>选项会很严肃地警告 sed 命令：除非是明确表明要输出的行，否则不要给我胡乱输出。<code>-n</code>选项经常和 p 配合使用，其含义就是，输出那些匹配的行。
+<h2>
+	command 部分花样很多</h2>
+还记得我们在前面介绍过的，sed 命令的命令格式是这样的：
+<pre class="info-box">
+$ sed command file</pre>
+其中，command 部分是 sed 命令的精髓，对 command 部分的掌握程度决定了你是不是 sed 高手。<br />
+<br />
+command 部分可以分为两块知识：一块是范围设定，一块是动作处理。<br />
+<br />
+范围设定，可以采用两种不同的方式来表达：
+<ol>
+	<li>
+		指定行数：比如&lsquo;3，5&rsquo;表示第 3、第 4 和第 5行；而&lsquo;5，$&rsquo;表示第 5 行至文件最后一行。</li>
+	<li>
+		模式匹配：比如/^[^dD]/表示匹配行首不是以 d 或 D 开头的行。</li>
+</ol>
+<br />
+而动作处理部分，会提供很丰富的动作供你选择，下面就来介绍几个最常用的动作吧：
+<ul>
+	<li>
+		d：表示删除行。</li>
+	<li>
+		p：打印该行。</li>
+	<li>
+		r：读取指定文件的内容。</li>
+	<li>
+		w：写入指定文件。</li>
+	<li>
+		a：在下面插入新行新内容。</li>
+</ul>
+<h2>
+	展示 sed 实力的时候到了</h2>
+事实胜于雄辩，我们打算通过四个例子，让大家感受到 sed 命令真的是一位&ldquo;实力派&rdquo;选手。<br />
+<br />
+第一个例子，我们来显示 test 文件的第 10 行到第 20 行的内容：
+<pre class="info-box">
+#我们采用了刚才提到的指定行区间的方法
+[roc@roclinux ~]$ sed -n &#39;10,20p&#39; test</pre>
+<br />
+第二个例子，我们尝试将所有以 d 或 D 开头的行里的所有小写 x 字符变为大写 X 字符：
+<pre class="info-box">
+[roc@roclinux ~]$ sed &#39;/^[dD]/s/x/X/g&#39; test</pre>
+<br />
+这个用法值得一讲，我们在 command 部分采用了 /AA/s/BB/CC/g 的语法格式，这表示我们要匹配到文件中带有 AA 的行，并且将这些行中所有的 BB 替换成 CC。<br />
+<br />
+第三个例子，我们要删除每行最后的两个字符：
+<pre class="info-box">
+#点号表示一个单个字符, 两个点号就表示两个单个字符
+[roc@roclinux ~]$ sed &#39;s/..$//&#39; test</pre>
+<br />
+有人可能会问，用 sed&lsquo;/..$/d&rsquo;test 为什么不行呢，d 不是表示删除么？用 d 是不行的，这是因为 d 表示删除整行内容，而非字符。<code>&#39;/..$/d&#39;</code>表示的是匹配所有末尾含有两个字符的行，然后删除这一整行内容，显然这和我们的初衷是相悖的。<br />
+<br />
+第四个例子，我们希望删除每一行的前两个字符：
+<pre class="info-box">
+[roc@roclinux ~]$ sed &#39;s/..//&#39; test</pre>
+<br />
+通过这四个例子，相信大家对 sed 命令的最常见用法已经有了很直观的认识了，不妨在自己的实际工作中把这些知识用起来吧。
+<h2>
+	&amp; 符号的妙用</h2>
+我们仍然通过一个场景来讲解这个知识点。
+<pre class="info-box">
+#按照惯例, 先展示文件的内容
+[roc@roclinux ~]$ cat mysed.txt
+Beijing
+London
+ 
+#我们使用到了&amp;符号, 大家试着猜一猜它的作用
+[roc@roclinux ~]$ sed &#39;s/B.*/&amp;2008/&#39; mysed.txt
+Beijing2008
+London</pre>
+<br />
+不卖关子，答案揭晓啦，这个命令的作用是将包含&lsquo;B.*&rsquo;的字符串后面加上 2008 四个字符。这个命令中我们用到了 &amp; 字符，在 sed 命令中，它表示的是&ldquo;之前被匹配的部分&rdquo;，在我们的例子中当然就是 Beijing 啦！<br />
+<br />
+我们再通过一个例子强化一下大家对&amp;符号的理解：
+<pre class="info-box">
+#这个例子或许更易理解
+[roc@roclinux 20160229]$ sed &#39;s/Bei/&amp;2008/&#39; mysed.txt
+Bei2008jing
+London</pre>
+<h2>
+	sed 中的括号有深意</h2>
+在 sed 命令中，其实小括号&lsquo;（）&rsquo;也是有深意的。我们开门见山，通过一个例子，让大家见识一下小括号的威力：
+<pre class="info-box">
+[roc@roclinux ~]$ echo &quot;hello world&quot; | sed &#39;s/\(hello\).*/world \1/&#39;
+world hello</pre>
+我们看到，原本是&ldquo;hello world&rdquo;，经过 sed 的处理，输出变成了&ldquo;world hello&rdquo;。<br />
+<br />
+这个例子中就用到了小括号的知识，我们称之为&ldquo;sed 的预存储技术&rdquo;，也就是命令中被&ldquo;（&rdquo;和&ldquo;）&rdquo;括起来的内容会被依次暂存起来，存储到 \1、\2&hellip;里面。这样你就可以使用&lsquo;\N&rsquo;形式来调用这些预存储的内容了。<br />
+<br />
+来继续看一个例子，我们希望只在每行的第一个和最后一个 Beijing 后面加上 2008 字符串，言下之意就是，除了每行的第一个和最后一个 2008 之外，这一行中间出现的 Beijing 后面就不要加 2008 啦。这个需求，真的是很复杂很个性化，但 sed 命令仍然可以很好地满足：
+<pre class="info-box">
+#先看下文件内容, 第一行中出现了4个Beijing
+[roc@roclinux ~]$ cat mysed.txt
+Beijing Beijing Beijing Beijing
+London London London London
+ 
+#效果实现啦, 可是, 命令真的好复杂
+[roc@roclinux ~]$ sed &#39;s/\(Beijing\)\(.*\)\(Beijing\)/\12008\2\32008/&#39; mysed.txt
+Beijing2008 Beijing Beijing Beijing2008
+London London London London</pre>
+<br />
+这个命令确实足够复杂，用流行的语言说就是&ldquo;足够虐心&rdquo;。这个例子中我们再次使用了预存储技术，存储了三项内容，分别代表第一个 Beijing、中间的内容、最后的 Beijing。而针对<code>\1</code>和<code>\3</code>，我们在其后面追加了 2008 这个字符串。
+<h2>
+	更聪明的定位行范围</h2>
+实践是学习知识最好的方法，相信大家看了这个例子后，就明白如何更好地定位行范围了：
+<pre class="info-box">
+#文件内容展示一下
+[roc@roclinux ~]$ cat mysed.txt
+Beijing 2003
+Beijing 2004
+Beijing 2005
+Beijing 2006
+Beijing 2007
+Beijing 2008
+Beijing 2007
+ 
+#我们想展示匹配了2005的行和2007的行之间的内容
+[roc@roclinux ~]$ sed -n &lsquo;/2005/,/2007/p&rsquo; mysed.txt
+Beijing 2005
+Beijing 2006
+Beijing 2007</pre>
+<br />
+我们使用 /2005/ 来匹配行范围的首行，用 /2008/ 来匹配行范围的尾行。可以看到，在匹配尾行时，只要遇到第一个符合要求的行，就会停止，而不会再继续向后匹配了。所以，sed 命令只是匹配到了第一个 2007，并没有匹配到第二个 2007。
+<h2>
+	用 -e 选项来设置多个 command</h2>
+还记得 command 部分吧，现在有一个好消息要告诉你，那就是 sed 命令可以包含不只一个 command。如果要包含多个 command，只需在每个 command 前面分别加上一个-e选项即可。
+<pre class="info-box">
+#我们通过2个-e选项设置了两个command
+[roc@roclinux ~]$ sed -n -e &lsquo;1,2p&rsquo; -e &lsquo;4p&rsquo; mysed.txt
+Beijing 2003
+Beijing 2004
+Beijing 2006</pre>
+<br />
+有一个地方值得大家注意，那就是<code>-e</code>选项的后面要立即接 command 内容，不允许再夹杂其他选项。<br />
+<br />
+<code>-e</code>选项支持设置多个 command，这原本是一件好事情，让我们可以更方便地实现一些替换效果。但是，这也给我们带来了幸福的烦恼，假如我们设定了很多个 command，那它们的执行顺序是怎样的呢？<br />
+<br />
+如果这一点不搞明白，<code>-e</code>选项带来的或许只有混乱而非便捷。我们来一起看看下面的例子：
+<pre class="info-box">
+#先看看文件的内容
+[roc@roclinux ~]$ cat mysed.txt
+Beijing 2003
+Beijing 2004
+Beijing 2005
+Beijing 2006
+Beijing 2007
+Beijing 2008
+ 
+#我们设置了两个command
+[roc@roclinux ~]$ sed -e &lsquo;s/Beijing/London/g&rsquo; -e &lsquo;/Beijing/d&rsquo; mysed.txt
+London 2003
+London 2004
+London 2005
+London 2006
+London 2007
+London 2008</pre>
+<br />
+前一个 command 表示将 Beijing 替换为 London，而后一个 command 表示要删除包含了 Beijing 字符串的行，但是最后的结果却是输出了所有行，并没有发现被删除的行。这是因为第一个 command 已经将 Beijing 都替换成了 London，所以怪第二个 command 找不到 Beijing 了。<br />
+<br />
+我们再来把上面例子中的 command 颠倒一下位置，看看效果如何：
+<pre class="info-box">
+#我们先指定删除动作, 再指定替换动作
+[roc@roclinux 20160229]$ sed -e &#39;/Beijing/d&#39; -e &#39;s/Beijing/London/g&#39; mysed.txt
+[roc@roclinux 20160229]$</pre>
+<br />
+通过这两个小例子，我们可以很清晰地看到，多个 command 之间，是按照在命令中的先后顺序来执行的。
+<h2>
+	用 -f 选项设定 command 文件</h2>
+如果你的 sed 命令的 command 部分很长，那么可以将内容写到一个单独的文件中，然后使用<code>-f</code>选项来指定这个文件作为我们 sed 命令的 command 部分：
+<pre class="info-box">
+#这是我们事先写好的文件
+[roc@roclinux ~]$ cat callsed
+/2004/,/2006/p
+ 
+#我们用-f选项来指定command文件
+[roc@roclinux ~]$ sed -n -f callsed mysed.txt
+Beijing 2004
+Beijing 2005
+Beijing 2006</pre>
+<br />
+很好理解吧，<code>-f</code>选项并不难，而且我会经常使用，因为一些比较常用的匹配规则，我都会存到单独的文件中，不用再费脑子记忆啦。
+<h2>
+	内容插入</h2>
+sed 命令远比你想象的要强大，它不仅可以处理本行内容，还可以在这一行的后面插入内容：
+<pre class="info-box">
+#我们将要插入的内容保存到一个单独的文件中
+[roc@roclinux ~]$ cat ins.txt
+====China====
+ 
+#展示一下我们要处理的文件
+[roc@roclinux ~]$ cat mysed.txt
+Beijing 2003
+Beijing 2004
+Beijing 2005
+Beijing 2006
+Beijing 2007
+Beijing 2008
+ 
+#看, 我们使用r来实现插入
+[roc@roclinux ~]$ sed &lsquo;/2005/r ins.txt&rsquo; mysed.txt
+Beijing 2003
+Beijing 2004
+Beijing 2005
+====China====
+Beijing 2006
+Beijing 2007
+Beijing 2008</pre>
+通过效果可以看出来，我们在文件中的含有 2005 字符串的行的下面一行插入了 ins.txt 文件的内容。<br />
+<br />
+除了可以通过指定文件来插入外，其实还可以使用 a\ 在特定行的&ldquo;下面&rdquo;插入特定内容：
+<pre class="info-box">
+#文件内容
+[roc@roclinux ~]$ cat new.txt
+Beijing 2004
+Beijing 2005
+Beijing 2006
+ 
+#我们希望在2004的下一行插入China
+[roc@roclinux ~]$ sed &lsquo;/2004/a\China&rsquo; mysed.txt
+Beijing 2003
+Beijing 2004
+China
+Beijing 2005
+Beijing 2006
+Beijing 2007
+Beijing 2008</pre>
+可以看到，我们只要使用<code>a\</code>然后加上要插入的内容就可以轻松实现啦。<br />
+<br />
+有些同学会问，既然可以在一行的下面插入内容，那是否可以在一行的上面插入内容呢？答案是当然可以，那就是使用<code>i\</code>动作：
+<pre class="info-box">
+[roc@roclinux ~]$ sed &lsquo;/2004/i\China&rsquo; mysed.txt
+Beijing 2003
+China
+Beijing 2004
+Beijing 2005
+Beijing 2006
+Beijing 2007
+Beijing 2008 </pre>
+<h2>
+	说一说 y 动作</h2>
+在介绍 y 动作之前，我们先来看看它可以实现什么效果：
+<pre class="info-box">
+#原文件内容
+[roc@roclinux ~]$ cat mysed.txt
+Beijing 2003
+Beijing 2004
+Beijing 2005
+Beijing 2006
+Beijing 2007
+Beijing 2008
+ 
+#y就是按照字符顺序, 实现前后的替换
+[roc@roclinux 20160229]$ sed &#39;y/ei/ie/&#39; mysed.txt
+Biejeng 2003
+Biejeng 2004
+Biejeng 2005
+Biejeng 2006
+Biejeng 2007
+Biejeng 2008</pre>
+这个例子其实已经很清楚了，我们希望将所有的 e 和 i 互换。<br />
+<br />
+有些同学会问，<code>y///</code>和<code>s///</code>有什么区别呢？主要有以下两点：
+<ul>
+	<li>
+		y 的语法格式是 y/source/dest/，表示将 source 中的字符对位替换为 dest 中的字符。而 s 的语法格式是 s/regexp/replacement/，表示通过正则匹配到的内容替换为 replacement 部分。</li>
+	<li>
+		y 只是简单的逐字替换，没有很多花样。s 支持 &amp; 符号和预存储等特性，可以实现更多灵活的替换效果。</li>
+</ul>
+<br />
+这时，一些 GEEK 或许会想到一种情况，那就是 y/ee/ei/ 会产生什么效果呢？因为这里面出现了两个同样的字符，我们还是通过例子来看一下：
+<pre class="info-box">
+[roc@roclinux 20160229]$ sed &#39;y/ee/ie/&#39; mysed.txt
+Biijing 2003
+Biijing 2004
+Biijing 2005
+Biijing 2006
+Biijing 2007
+Biijing 2008</pre>
+<br />
+看到了吧，如果 source 部分出现了重复的字符，则只有第一次出现的对位替换会产生效果，后面的并不会起作用。或许下面这个例子更加清晰些：
+<pre class="info-box">
+#原文件内容
+[roc@roclinux ~]$ cat mysed.txt
+Beijing 2003
+Beijing 2004
+Beijing 2005
+Beijing 2006
+Beijing 2007
+Beijing 2008
+ 
+#iji到iba的替换中, 只有j到b起到了效果
+[roc@roclinux 20160229]$ sed &#39;y/iji/iba/&#39; mysed.txt
+Beibing 2003
+Beibing 2004
+Beibing 2005
+Beibing 2006
+Beibing 2007
+Beibing 2008</pre>
+<h2>
+	通过 n 动作来控制行的下移</h2>
+有时我们希望实现隔行处理的效果，比如只需对偶数行做某个替换，这时候，我们就需要 n 动作的帮忙啦：
+<pre class="info-box">
+#原文件内容
+[roc@roclinux ~]$ cat mysed.txt
+Beijing 2003
+Beijing 2004
+Beijing 2005
+Beijing 2006
+Beijing 2007
+Beijing 2008
+ 
+#我们同时使用了n动作和y动作
+[roc@roclinux ~]$ sed &lsquo;/200/{n;y/eijng/EIJNG/;}&rsquo; mysed.txt
+Beijing 2003
+BEIJING 2004
+Beijing 2005
+BEIJING 2006
+Beijing 2007
+BEIJING 2008</pre>
+<br />
+你会发现，大写的 BEIJING 是隔行出现的。这就是<code>n</code>选项在起作用，它的真实作用是将下一行内容放到处理缓存中，这样，就让当前这一行躲避开了替换动作，是不是有点像小时候玩游戏时通过左右键躲避开 BOSS 的大招，哈哈。
+<h2>
+	将指定行写入到特定文件中</h2>
+文章要进入尾声了，我们最后再教大家一个非常实用的动作，那就是 w 动作，它可以将匹配到的内容写入到另一个文件中，即用来实现内容的筛选与保存：
+<pre class="info-box">
+#将包含2004、2005、2006的行保存到new.txt文件中
+[roc@roclinux ~]$ sed &lsquo;/200[4-6]/w new.txt&rsquo; mysed.txt
+Beijing 2003
+Beijing 2004
+Beijing 2005
+Beijing 2006
+Beijing 2007
+Beijing 2008
+ 
+#我们要的内容已经乖乖到碗里来了
+[roc@roclinux ~]$ cat new.txt
+Beijing 2004
+Beijing 2005
+Beijing 2006</pre>
+<br />
+好了，sed 的流艺术系列到这里就全部结束啦，相信你对 sed 已经有了初步的认识，可以在实战中露两手了。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="../view/niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/2035_2.html" title="C语言共用体（C语言union用法）详解" target="_blank">C语言共用体（C语言union用法）详解</a></li>
+<li><a href="../view/6467_2.html" title="SNMP协议是什么？" target="_blank">SNMP协议是什么？</a></li>
+<li><a href="../view/6555_2.html" title="MongoDB find()方法：查询数据" target="_blank">MongoDB find()方法：查询数据</a></li>
+<li><a href="../view/vip_7057_2.html" title="Java中到底有没有多维数组（长篇神文）？" target="_blank">Java中到底有没有多维数组（长篇神文）？</a></li>
+<li><a href="../view/7618_2.html" title="MySQL my.cnf配置文件详解" target="_blank">MySQL my.cnf配置文件详解</a></li>
+<li><a href="../jstl/c-if_2.html" title="&lt;c:if&gt;标签" target="_blank">&lt;c:if&gt;标签</a></li>
+<li><a href="../view/cb3jjgl_2.html" title="Word删除文字下方的波浪线" target="_blank">Word删除文字下方的波浪线</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 711;
+window.arcId = "2932tlBba5rxJ4KZbVfQtc7vX5l7ku4p4PXM41mItCDCDjiYxokZyJXaDQ";
+window.typeidChain = "71|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="../view/8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="../view/8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="../view/8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="../view/9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="../view/8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

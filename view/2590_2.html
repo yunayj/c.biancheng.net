@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>MySQL自定义函数（CREATE FUNCTION）</title>
+<meta name="description" content="在使用 MySQL 的过程中，MySQL 自带的函数可能完成不了我们的业务需求，这时候就需要自定义函数。 自定义函数是一种与存储过程十分相似的过程式数据库对象。它与存储过程一样，都是" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>MySQL自定义函数（CREATE FUNCTION）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在使用 <a href='../mysql/mysql_2.html' target='_blank'>MySQL</a> 的过程中，MySQL 自带的函数可能完成不了我们的业务需求，这时候就需要自定义函数。<br />
+<br />
+自定义函数是一种与存储过程十分相似的过程式数据库对象。它与存储过程一样，都是由 SQL 语句和过程式语句组成的代码片段，并且可以被应用程序和其他 SQL 语句调用。<br />
+<br />
+自定义函数与存储过程之间存在几点区别：
+<ul>
+	<li>
+		自定义函数不能拥有输出参数，这是因为自定义函数自身就是输出参数；而存储过程可以拥有输出参数。</li>
+	<li>
+		自定义函数中必须包含一条 RETURN 语句，而这条特殊的 SQL 语句不允许包含于存储过程中。</li>
+	<li>
+		可以直接对自定义函数进行调用而不需要使用 CALL 语句，而对存储过程的调用需要使用 CALL 语句。</li>
+</ul>
+<h2>
+	创建并使用自定义函数</h2>
+可以使用 CREATE FUNCTION 语句创建自定义函数。<br />
+<br />
+语法格式如下：
+<p class="info-box">
+	CREATE FUNCTION &lt;函数名&gt; ( [ &lt;参数1&gt; &lt;类型1&gt; [ , &lt;参数2&gt; &lt;类型2&gt;] ] &hellip; )<br />
+	&nbsp; RETURNS &lt;类型&gt;<br />
+	&nbsp; &lt;函数主体&gt;</p>
+语法说明如下：
+<ul>
+	<li>
+		<code>&lt;函数名&gt;</code>：指定自定义函数的名称。注意，自定义函数不能与存储过程具有相同的名称。</li>
+	<li>
+		<code>&lt;参数&gt;&lt;类型&gt;</code>：用于指定自定义函数的参数。这里的参数只有名称和类型，不能指定关键字 IN、OUT 和 INOUT。</li>
+	<li>
+		<code>RETURNS&lt;类型&gt;</code>：用于声明自定义函数返回值的数据类型。其中，<code>&lt;类型&gt;</code>用于指定返回值的数据类型。</li>
+	<li>
+		<code>&lt;函数主体&gt;</code>：自定义函数的主体部分，也称函数体。所有在存储过程中使用的 SQL 语句在自定义函数中同样适用，包括前面所介绍的局部变量、SET 语句、流程控制语句、游标等。除此之外，自定义函数体还必须包含一个 <code>RETURN&lt;值&gt;</code> 语句，其中<code>&lt;值&gt;</code>用于指定自定义函数的返回值。</li>
+</ul>
+<br />
+在 RETURN VALUE 语句中包含 SELECT 语句时，SELECT 语句的返回结果只能是一行且只能有一列值。<br />
+<br />
+若要查看数据库中存在哪些自定义函数，可以使用 SHOW FUNCTION STATUS 语句；若要查看数据库中某个具体的自定义函数，可以使用 SHOW CREATE FUNCTION&lt;函数名&gt; 语句，其中<code>&lt;函数名&gt;</code>用于指定该自定义函数的名称。<br />
+<br />
+【实例 1】创建存储函数，名称为 StuNameById，该函数返回 SELECT 语句的查询结果，数值类型为字符串类型，输入的 SQL 语句和执行结果如下所示。
+<pre class="info-box">
+mysql&gt; CREATE FUNCTION StuNameById()
+    -&gt; RETURNS VARCHAR(45)
+    -&gt; RETURN
+    -&gt; (SELECT name FROM tb_students_info
+    -&gt; WHERE id=1);
+Query OK， 0 rows affected (0.09 sec)</pre>
+<blockquote>
+	<p>
+		注意：当使用 DELIMITER 命令时，应该避免使用反斜杠&ldquo;\&rdquo;字符，因为反斜杠是 MySQL 的转义字符。</p>
+</blockquote>
+成功创建自定义函数后，就可以如同调用系统内置函数一样，使用关键字 SELECT 调用用户自定义的函数，语法格式为：
+<p class="info-box">
+	SELECT &lt;自定义函数名&gt; ([&lt;参数&gt; [,...]])</p>
+【实例 2】调用自定义函数 StuNameById，查看函数的运行结果，如下所示。
+<pre class="info-box">
+mysql&gt; SELECT StuNameById();
++---------------+
+| StuNameById() |
++---------------+
+| Dany          |
++---------------+
+1 row in set (0.24 sec)</pre>
+<h2>
+	修改自定义函数</h2>
+可以使用 ALTER FUNCTION 语句来修改自定义函数的某些相关特征。若要修改自定义函数的内容，则需要先删除该自定义函数，然后重新创建。
+<h2>
+	删除自定义函数</h2>
+自定义函数被创建后，一直保存在数据库服务器上以供使用，直至被删除。删除自定义函数的方法与删除存储过程的方法基本一样，可以使用 DROP FUNCTION 语句来实现。<br />
+<br />
+语法格式如下：
+<p class="info-box">
+	DROP FUNCTION [ IF EXISTS ] &lt;自定义函数名&gt;</p>
+语法说明如下。<br />
+<code>&lt;自定义函数名&gt;</code>：指定要删除的自定义函数的名称。<br />
+<code>IF EXISTS</code>：指定关键字，用于防止因误删除不存在的自定义函数而引发错误。<br />
+<br />
+【实例 3】删除自定义函数 StuNameById，查看函数的运行结果，如下所示。
+<pre class="info-box">
+mysql&gt; DROP FUNCTION StuNameById;
+Query OK, 0 rows affected (0.09 sec)
+mysql&gt; SELECT StuNameById();
+ERROR 1305 (42000): FUNCTION test_db.StuNameById does not exist</pre>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="93_2.html" title="Go语言goroutine（轻量级线程）" target="_blank">Go语言goroutine（轻量级线程）</a></li>
+<li><a href="453_2.html" title="VS2015下载地址和安装教程（图解）" target="_blank">VS2015下载地址和安装教程（图解）</a></li>
+<li><a href="3037_2.html" title="C# DataGridView：数据表格控件数据绑定" target="_blank">C# DataGridView：数据表格控件数据绑定</a></li>
+<li><a href="4750_2.html" title="Java Map.keySet()方法：获取Map集合的所有键名" target="_blank">Java Map.keySet()方法：获取Map集合的所有键名</a></li>
+<li><a href="6795_2.html" title="Java Iterator（迭代器）遍历Collection集合元素" target="_blank">Java Iterator（迭代器）遍历Collection集合元素</a></li>
+<li><a href="7521_2.html" title="C++ lower_bound()函数用法详解" target="_blank">C++ lower_bound()函数用法详解</a></li>
+<li><a href="vip_8118_2.html" title="目前主流的Java Web开发框架，初学者一定要了解！" target="_blank">目前主流的Java Web开发框架，初学者一定要了解！</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 2590;
+window.arcId = "792872NdBkD5W5Gr9mfODRtG5uHIRxBC13cdWtdv4Acl+iNEa471Ejvx4ic";
+window.typeidChain = "345|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

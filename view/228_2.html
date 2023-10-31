@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>函数指针及其定义和用法，C语言函数指针详解</title>
+<meta name="description" content="函数指针大家了解一下就行了，用得不多，但一定要认识它。 什么是函数指针 如果在程序中定义了一个函数，那么在编译时系统就会为这个函数代码分配一段存储空间， 这段存储空间" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>函数指针及其定义和用法，C语言函数指针详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">函数指针大家了解一下就行了，用得不多，但一定要认识它。<br />
+<h2>
+	什么是函数指针</h2>
+如果在程序中定义了一个函数，那么在编译时系统就会为这个函数代码分配一段存储空间，<span style="color:#b22222;">这段存储空间的首地址称为这个函数的地址</span>。而且函数名表示的就是这个地址。既然是地址我们就可以定义一个指针变量来存放，这个指针变量就叫作<span style="color:#008000;">函数指针变量</span>，简称<span style="color:#008000;">函数指针</span>。<br />
+<br />
+那么这个指针变量怎么定义呢？虽然同样是指向一个地址，但指向函数的指针变量同我们之前讲的指向变量的指针变量的定义方式是不同的。例如：
+<pre class="cpp">
+int(*p)(int, int);</pre>
+这个语句就定义了一个指向函数的指针变量 p。首先它是一个指针变量，所以要有一个&ldquo;*&rdquo;，即（*p）；其次前面的 int 表示这个指针变量可以指向返回值类型为 int 型的函数；后面括号中的两个 int 表示这个指针变量可以指向有两个参数且都是 int 型的函数。所以合起来这个语句的意思就是：定义了一个指针变量 p，该指针变量可以指向返回值类型为 int 型，且有两个整型参数的函数。p 的类型为 int(*)(int，int)。<br />
+<br />
+所以函数指针的定义方式为：<br />
+<p class="info-box">
+	函数返回值类型 (* 指针变量名) (函数参数列表);</p>
+&ldquo;函数返回值类型&rdquo;表示该指针变量可以指向具有什么返回值类型的函数；&ldquo;函数参数列表&rdquo;表示该指针变量可以指向具有什么参数列表的函数。这个参数列表中只需要写函数的参数类型即可。<br />
+<br />
+我们看到，函数指针的定义就是将&ldquo;函数声明&rdquo;中的&ldquo;函数名&rdquo;改成&ldquo;（*指针变量名）&rdquo;。但是这里需要注意的是：&ldquo;（*指针变量名）&rdquo;两端的括号不能省略，括号改变了运算符的优先级。如果省略了括号，就不是定义函数指针而是一个函数声明了，即声明了一个返回值类型为指针型的函数。<br />
+<br />
+那么怎么判断一个指针变量是指向变量的指针变量还是指向函数的指针变量呢？首先看变量名前面有没有&ldquo;*&rdquo;，如果有&ldquo;*&rdquo;说明是指针变量；其次看变量名的后面有没有带有形参类型的圆括号，如果有就是指向函数的指针变量，即函数指针，如果没有就是指向变量的指针变量。<br />
+<br />
+<span style="color:#b22222;">最后需要注意的是，指向函数的指针变量没有 ++ 和 -- 运算。</span><br />
+<h2>
+	如何用函数指针调用函数</h2>
+给大家举一个例子：<br />
+<pre class="cpp">
+int Func(int x);   /*声明一个函数*/
+int (*p) (int x);  /*定义一个函数指针*/
+p = Func;          /*将Func函数的首地址赋给指针变量p*/</pre>
+赋值时函数 Func 不带括号，也不带参数。由于函数名 Func 代表函数的首地址，因此经过赋值以后，指针变量 p 就指向函数 Func() 代码的首地址了。<br />
+<br />
+下面来写一个程序，看了这个程序你们就明白函数指针怎么使用了：<br />
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int Max(int, int);  //函数声明
+int main(void)
+{
+    int(*p)(int, int);  //定义一个函数指针
+    int a, b, c;
+    p = Max;  //把函数Max赋给指针变量p, 使p指向Max函数
+    printf(&quot;please enter a and b:&quot;);
+    scanf(&quot;%d%d&quot;, &amp;a, &amp;b);
+    c = (*p)(a, b);  //通过函数指针调用Max函数
+    printf(&quot;a = %d\nb = %d\nmax = %d\n&quot;, a, b, c);
+    return 0;
+}
+int Max(int x, int y)  //定义Max函数
+{
+    int z;
+    if (x &gt; y)
+    {
+        z = x;
+    }
+    else
+    {
+        z = y;
+    }
+    return z;
+}</pre>
+输出结果是：<br />
+please enter a and b:3 4<br />
+a = 3<br />
+b = 4<br />
+max = 4<br />
+<h4>
+	【知识扩展】</h4>
+指针是 C 语言的精华，也是 C 语言的难点，没学会指针就是没学会 C 语言。如果你觉得函数指针还能勉强接受的话，可以尝试理解一些更复杂的指针，例如：
+<pre class="cpp">
+char *(* c[10])(int **p);
+int (*(*(*pfunc)(int *))[5])(int *);</pre>
+以上两个指针能分析清楚的话，那么 99% 的 C 语言指针问题都难不住你。<br />
+<br />
+实际上，理清楚复杂的 C 语言指针结构是有窍门的，只要掌握了窍门，再复杂的指针也是可以理解的，感兴趣的读者请<span class="btn-more-info" keyword="C玩转指针" type="more">猛击这里</span>了解详情。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="951_2.html" title="Shell（Bash）单引号、双引号和反引号用法详解" target="_blank">Shell（Bash）单引号、双引号和反引号用法详解</a></li>
+<li><a href="1108_2.html" title="Linux日志分析工具（logwatch）安装及使用" target="_blank">Linux日志分析工具（logwatch）安装及使用</a></li>
+<li><a href="vip_2084_2.html" title="即时窗口的使用" target="_blank">即时窗口的使用</a></li>
+<li><a href="3751_2.html" title="Linux edquota命令：修改用户（群组）的磁盘配额" target="_blank">Linux edquota命令：修改用户（群组）的磁盘配额</a></li>
+<li><a href="9770_2.html" title="ARM是什么" target="_blank">ARM是什么</a></li>
+<li><a href="nnqqk1_2.html" title="Python的实际应用领域（9个）" target="_blank">Python的实际应用领域（9个）</a></li>
+<li><a href="../c/sprintf_2.html" title="C语言sprintf()：将格式化数据输出到数组中" target="_blank">C语言sprintf()：将格式化数据输出到数组中</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 228;
+window.arcId = "9d27UiZenop6J4ccyUh7YCK5UlkOZfrtPKKkzXFZ1VaTWzDcqxYNuFeOsw";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

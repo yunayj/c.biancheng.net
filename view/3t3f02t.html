@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Vue watch（监听器）详解</title>
+<meta name="description" content="在 Vue.js 中，当需要在数据发生变化且需要执行异步代码或开销比较大的逻辑时，使用 compute 属性不合适，开发者可以自定义一个 watch 监听器，来监听数据的变化。 举个简单的例子：" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Vue watch（监听器）详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在 Vue.js 中，当需要在数据发生变化且需要执行异步代码或开销比较大的逻辑时，使用 compute 属性不合适，开发者可以自定义一个 watch 监听器，来监听数据的变化。<br />
+<br />
+举个简单的例子：
+<pre class="html">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+
+&lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;title&gt;test Vue.js&lt;/title&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script type=&quot;text/javascript&quot; src=&quot;../static/js/Vue.js&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+    &lt;div id=&quot;app&quot;&gt;
+        &lt;p&gt;
+            输入问题：
+            &lt;input v-model=&quot;question&quot;&gt;
+        &lt;/p&gt;
+        &lt;p&gt;{{ answer }}&lt;/p&gt;
+    &lt;/div&gt;
+
+    &lt;script&gt;
+        const vm = new Vue({
+            el: &quot;#app&quot;,
+            data: {
+                question: &#39;&#39;,
+                answer: &#39;输入问题，我才好给你答案&#39;
+            },
+            watch: {
+                // 监听question的变化，自动调用
+                question: function () {
+                    this.answer = &#39;等待你输入问题&#39;;
+                    this.debouncedGetAnswer();
+                }
+            },
+            created: function () {
+                // 500ms后调用getAnswer方法，控制调用频率
+                this.debouncedGetAnswer = _.debounce(this.getAnswer, 500);
+            },
+            methods: {
+                getAnswer: function () {
+                    this.answer = &quot;思索中&hellip;&quot;;
+                    window.setTimeout(getResult, 500);
+                }
+            }
+        });
+
+        function getResult() {
+            console.log(&quot;1111&quot;);
+            vm.$data.answer = &quot;答案是:&quot; + (1 + Math.random());
+        }
+    &lt;/script&gt;
+&lt;/body&gt;
+
+&lt;/html&gt;</pre>
+在上面的代码中，定义了一个 question 监听器，用于监听 question 数据属性。当 question 数据属性发生变化时，会自动执行 question 监听器后面的函数内容。在 question 监听器的函数逻辑中执行的是一个异步延时代码。<br />
+<h2>
+计算属性和watch监听器的对比</h2>
+watch 监听器是 Vue.js 提供的一种用来观察和响应 Vue.js 实例上的数据变动的一种方式，一般只用于变动的开销比较大或异步方法调用的情况。否则使用计算属性要比使用 watch 监听器合适。<br />
+<br />
+虽然可以用 watch 监听器监听 firstName1 和 lastName1 的变化，但是用计算属性计算 fullName2 要简单得多，代码如下：<br />
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+    FirstName1 &lt;input type=&quot;text&quot; v-model=&quot;firstName1&quot;&gt; LastName1 &lt;input type=&quot;text&quot; v-model=&quot;lastName1&quot;&gt;&lt;br/&gt;
+    FullName1 {{ fullName1 }}&lt;br/&gt;&lt;br/&gt;
+    FirstName2 &lt;input type=&quot;text&quot; v-model=&quot;firstName2&quot;&gt; LastName2 &lt;input type=&quot;text&quot; v-model=&quot;lastName2&quot;&gt;&lt;br/&gt;
+    FullName2 {{ fullName2 }}&lt;br/&gt;&lt;br/&gt;
+&lt;/div&gt;
+
+&lt;script type=&quot;text/javascript&quot;&gt;
+
+    const vm = new Vue({
+        el: &#39;#app&#39;,
+        data: {
+            firstName1: &#39;&#39;,
+            lastName1: &#39;&#39;,
+            fullName1: &#39;&#39;, // This will be updated via watch
+            firstName2: &#39;&#39;,
+            lastName2: &#39;&#39;
+        },
+        watch: {
+            firstName1: function() {
+                this.fullName1 = this.firstName1 + &#39; &#39; + this.lastName1;
+            },
+            lastName1: function() {
+                this.fullName1 = this.firstName1 + &#39; &#39; + this.lastName1;
+            }
+        },
+        computed: {
+            fullName2: function() {
+                return this.firstName2 + &#39; &#39; + this.lastName2;
+            }
+        }
+    });
+
+&lt;/script&gt;</pre>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_1872.html" title="C语言多层递归函数（最烧脑的一种递归）" target="_blank">C语言多层递归函数（最烧脑的一种递归）</a></li>
+<li><a href="2227.html" title="C++ static静态成员变量详解" target="_blank">C++ static静态成员变量详解</a></li>
+<li><a href="vip_2302.html" title="C++ RTTI机制精讲（C++运行时类型识别机制）" target="_blank">C++ RTTI机制精讲（C++运行时类型识别机制）</a></li>
+<li><a href="3008.html" title="Vim移动光标快捷键汇总" target="_blank">Vim移动光标快捷键汇总</a></li>
+<li><a href="vip_5081.html" title="给Linux系统挂载U盘" target="_blank">给Linux系统挂载U盘</a></li>
+<li><a href="7596.html" title="C++文本文件读写操作详解" target="_blank">C++文本文件读写操作详解</a></li>
+<li><a href="9375.html" title="JS解析JSON" target="_blank">JS解析JSON</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10416;
+window.arcId = "fb34TypxPwK9GwLSGLcbRb9VeI+yF4F8TDm+JrRuVRjiL0g6On0Zx3EouZ66";
+window.typeidChain = "309|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

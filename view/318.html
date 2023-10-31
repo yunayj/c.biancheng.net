@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C语言跳转语句（break语句，continue语句，goto语句，return语句）</title>
+<meta name="description" content="跳转语句（jump statement）可以中断当前程序的执行流程，并从另一个不同的点继续执行程序。如果程序跳转到变量的作用域范围之外，变量会被销毁。C 语言有四种语句会造成无条件跳转" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C语言跳转语句（break语句，continue语句，goto语句，return语句）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">跳转语句（jump statement）可以中断当前程序的执行流程，并从另一个不同的点继续执行程序。如果程序跳转到变量的作用域范围之外，变量会被销毁。<span style="color:#b22222;">C 语言有四种语句会造成无条件跳转：break、continue、goto 和 return。</span>
+<h2>
+break 语句</h2>
+<span style="color:#b22222;">break 语句只能用于循环体内或 switch 语句内，并且会使得程序流跳转到该循环或该 switch 语句后面的第一条语句。</span>break 语句的语法如下：
+<p class="info-box">
+break;</p>
+<br />
+因此，无论在循环体内什么位置，break 语句都可以造成循环的结束。例如，例 1 的 while 循环可以依据用户的请求而结束（输入非数字的字符串），也可能因为数字超出程序许可范围而结束。<br />
+<br />
+【例1】break 语句
+<pre class="cpp">
+// 读取用户输入的分数，范围在0到100之间
+// 将分数存储在数组中
+// 返回值：所存储值的个数
+//---------------------------------------------------------------
+int getScores( short scores[ ], int len )
+{
+   int i = 0;
+   puts( &quot;Please enter scores between 0 and 100.\n&quot;
+         &quot;Press &lt;Q&gt; and &lt;Return&gt; to quit.\n&quot; );
+   while ( i &lt; len )
+   {
+      printf( &quot;Score No. %2d: &quot;, i+1 );
+      if ( scanf( &quot;%hd&quot;, &amp;scores[i] ) != 1 )
+         break;      // 未读到数据：结束循环
+      if ( scores[i] &lt; 0 || scores[i] &gt; 100 )
+      {
+         printf( &quot;%d: Value out of range.\n&quot;, scores[i] );
+         break;      // 抛弃这个值，并结束循环
+       }
+       ++i;
+   }
+   return i;         // 已存储的数据个数
+}</pre>
+<h2>
+continue 语句</h2>
+<span style="color:#b22222;">continue 语句只能在循环体内使用</span>，并且会造成程序流跳过当前循环中尚未执行的代码部分。它的语法如下：
+<p class="info-box">
+continue;</p>
+<br />
+在 while 或 do...while 循环中，当遇到 continue 语句时，程序会跳转到循环的控制表达式，并进行下一次的循环条件计算。在 for 循环中，程序会跳转到循环头部的第三个表达式，并进行下一次的循环条件计算。<br />
+<br />
+在例 1 中，一旦输入值超出许可范围，第二条 break 语句会立即中止数据输入循环。为了让用户还有机会输入正确的值，把第二条 break 语句用 continue 取代。那么这个程序就会跳转到 while 循环的下一次循环，忽略自增 i 的语句：
+<pre class="cpp">
+// 读取分数
+// --------------------------
+int getScores( short scores[ ], int len )
+{
+   /* ... （同例6-7） ... */
+   while ( i &lt; len )
+   {
+      /* ... （同例6-7） ... */
+      if ( scores[i] &lt; 0 || scores[i] &gt; 100 )
+      {
+         printf( &quot;%d : Value out of range.\n&quot;, scores[i] );
+         continue;             // 抛弃这个值，并读取另一个值
+      }
+      ++i;                     // 已存储的数据个数加1
+   }
+   return i;           // 已存储的数据个数
+}</pre>
+<h2>
+goto 语句</h2>
+<span style="color:#b22222;">goto 语句会造成无条件跳转，它跳转到同一个函数中的另一条语句。跳转的目的地使用标签名称来指定</span>，语法如下：
+<p class="info-box">
+goto 标签名称;</p>
+<br />
+一个标签由标签名称及其后面的冒号组成：
+<p>
+标签名称: 语句</p>
+<br />
+标签有自己的命名空间，也就是说，<span style="color:#b22222;">标签可以使用与变量或类型一样的名称</span>，而不会发生冲突。标签可以被放在任何语句的前面，并且一条语句也可以有多个标签。<br />
+<br />
+<span style="color:#b22222;">标签的目的是标识 goto 语句的目的地</span>，对于语句本身，没有任何影响，被贴上标签的语句依然可以由上而下顺序地执行。下面的函数在 return 语句后面加上了标签，标记了一个错误处理程序的进入点：
+<pre class="cpp">
+// 在函数内部处理错误
+// ----------------------------------
+#include &lt;stdbool.h&gt;                            // 定义布尔值，true和false（C99）
+#define MAX_ARR_LENGTH 1000
+bool calculate( double arr[ ], int len, double* result )
+{
+   bool error = false;
+   if ( len &lt; 1 || len &gt; MAX_ARR_LENGTH )
+     goto error_exit;
+   for ( int i = 0; i &lt; len; ++i )
+   {
+     /* ... 一些计算操作，其可能造成错误标志error被设定...
+      */
+     if ( error )
+        goto error_exit;
+     /* ... 继续计算；结果被存储到变量 *result 中...
+      */
+   }
+   return true;                               // 如果没有错误，程序会执行到此处
+
+   error_exit:                        // 错误处理子程序
+   *result = 0.0;
+   return false;
+}</pre>
+<br />
+如果跳转会跨越变量的声明与初始化语句，那么就不应该利用goto语句从语句块外跳转到语句块内。然而，如果跳转跨越了对可变长度数组的定义，而跳到了其作用域的内部，那么这种跳跃是非法的：
+<pre class="cpp">
+static const int maxSize = 1000;
+double func( int n )
+{
+   double x = 0.0;
+   if ( n &gt; 0 &amp;&amp; n &lt; maxSize )
+   {
+      double arr[n];                      // 一个变长度数组
+      again:
+      /* ... */
+      if ( x == 0.0 )
+        goto again;                           // 合法：在arr的作用域内跳转
+   }
+   if ( x &lt; 0.0 )
+      goto again;                             // 非法: 从arr的作用域外跳转到作用域内
+
+   return x;
+}</pre>
+<br />
+如果使用太多 goto 语句，程序代码会变得可读性很差，因此，只有在非常有必要时才应该使用 goto 语句，比如从很深的嵌套循坏中跳离。实际上，在任何使用到 goto 语句的地方，都可以采用其他方式的语句进行改写。<br />
+<br />
+<span style="color:#b22222;">goto 语句只允许进行局部跳转：也就是在当前所在函数的内部跳转。</span>C 语言还提供了一个特性，允许进行非局部跳转，即可以跳转到程序的任何点，做法是利用标准宏 setjmp（）和标准函数 longjmp（）。<br />
+<br />
+宏 setjmp（）在程序中设置一个地点，将程序流的必要处理信息存储起来，这样的话，当调用函数 longjmp（）时，就可以在任何时刻返回到该地点继续执行。
+<h2>
+return 语句</h2>
+<span style="color:#b22222;">return 语句会中止执行当前函数，跳转回到调用该函数的位置</span>：
+<p class="info-box">
+return [表达式];</p>
+<br />
+这里的表达式会被计算，且结果会被传送给函数调用者，当作被调用函数的返回值。如有必要，返回值会被转换到被调用函数的返回值类型。<br />
+<br />
+一个函数内可以有任意多个 return 语句：
+<pre class="cpp">
+// 返回两个整数类型参数中的较小值
+int min( int a, int b )
+{
+   if ( a &lt; b ) return a;
+   else             return b;
+}</pre>
+<br />
+该函数体内的 if else 语句可以用下面这一条语句来替代：
+<pre class="cpp">
+return ( a &lt; b ? a : b );</pre>
+<br />
+括号不会影响 return 语句的执行行为。然而，复杂的 return 表达式常常被放在括号内，以提高代码的可阅读性。<br />
+<br />
+<span style="color:#b22222;">不带任何表达式的 return 语句仅能在类型为 void 的函数中使用。</span>事实上，这样的函数也根本不需要 return 语句。如果在函数内没有 return 语句，程序流会在函数块尾部结束，然后返回到调用该函数的地方。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1164.html" title="Shell命令替换：将命令的输出结果赋值给变量" target="_blank">Shell命令替换：将命令的输出结果赋值给变量</a></li>
+<li><a href="4360.html" title="Python tuple元组详解" target="_blank">Python tuple元组详解</a></li>
+<li><a href="vip_7047.html" title="Java项目实战：实现淡旺季飞机票打折" target="_blank">Java项目实战：实现淡旺季飞机票打折</a></li>
+<li><a href="vip_7064.html" title="Java中的空对象（null）是怎么回事？" target="_blank">Java中的空对象（null）是怎么回事？</a></li>
+<li><a href="../pandas/statistical-functions.html" title="Python Pandas统计函数" target="_blank">Python Pandas统计函数</a></li>
+<li><a href="ltjk632.html" title="Java关键字一览表" target="_blank">Java关键字一览表</a></li>
+<li><a href="dtr258p.html" title="《Web前端设计基础（第2版）》PDF下载（高清完整版）" target="_blank">《Web前端设计基础（第2版）》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 318;
+window.arcId = "c0a5k1B2Fu3cMW3rL3/WPYKpL8RFNuEj5GPKKttoxXoJpryTVkGQBvf5DQ";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Qt pro文件详解</title>
+<meta name="description" content="默认情况下，每个 Qt 项目都包含一个后缀名为 .pro 、名称和项目名相同的文件，我们通常称它为 项目管理文件 或者 工程管理文件 （简称 pro 文件）。 例如，新建一个 Qt 项目，如下图" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Qt pro文件详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">默认情况下，每个 Qt 项目都包含一个后缀名为<code>.pro</code>、名称和项目名相同的文件，我们通常称它为<span style="color:#008000;">项目管理文件</span>或者<span style="color:#008000;">工程管理文件</span>（简称 pro 文件）。<br />
+<br />
+例如，新建一个 Qt 项目，如下图所示：<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211028/1A9111P2-0.gif" /><br />
+图 1 项目结构</div>
+<br />
+该项目的项目名为 Demo，项目中共包含 4 个文件，其中 Demo.pro 就是项目管理文件。<br />
+<br />
+任何一个 Qt 项目都至少包含一个 pro 文件，此文件负责存储与当前项目有关的配置信息，比如：
+<ul>
+<li>
+项目中用到了哪些模块？</li>
+<li>
+项目中包含哪些源文件，哪些头文件，它们的存储路径是什么？</li>
+<li>
+项目使用哪个图片作为应用程序的图标？</li>
+<li>
+项目最终生成的可执行文件的名称是什么？</li>
+</ul>
+<blockquote>
+<p>
+所谓模块，可以简单地理解为文件夹或者压缩包，内部包含多个功能相近的类。作为一款成熟的 GUI 框架，Qt 提供了大量的类，根据这些类的功能，Qt 将它们分成了几个组，每个组称为一个模块。打开 Qt Creator 的帮助界面并搜索&ldquo;All modules&rdquo;，可以看到 Qt 的所有模块。</p>
+</blockquote>
+一个项目中可能包含上百个源文件，Qt 编译这些源文件的方法是：先由 qmake 工具根据 pro 文件记录的配置信息生成相应的 makefile 文件，然后执行 make 命令完成对整个项目的编译。也就是说，pro 文件存储的配置信息是用来告知编译器如何编译当前项目的，所以一个 Qt 项目要想完美运行，既要保证各个源文件中程序的正确性，还要保证 pro 文件中配置信息的合理性。<br />
+<br />
+对于一个刚刚创建好的 Qt 项目，pro 文件并不是空的，而是包含一些基本的配置信息。实际开发中，Qt 会自动修改 pro 文件的内容，但有时也需要我们手动修改，例如程序中用到某个第三方库时，就需要我们手动修改 pro 文件。<br />
+<br />
+接下来，我们就为大家详细地讲解 pro 文件中各个配置信息的含义，以及如何手动修改 pro 文件。<br />
+<h2>
+pro文件中的配置信息</h2>
+在图 1 所示的 Demo 项目中，双击打开 Demo.pro 项目管理文件，会看到如下内容：
+<p class="info-box">
+#-------------------------------------------------<br />
+#<br />
+# Project created by QtCreator 2021-08-31T16:05:04<br />
+#<br />
+#-------------------------------------------------<br />
+<br />
+QT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; += core gui<br />
+<br />
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets<br />
+<br />
+TARGET = Demo<br />
+TEMPLATE = app<br />
+<br />
+# The following define makes your compiler emit warnings if you use<br />
+# any feature of Qt which as been marked as deprecated (the exact warnings<br />
+# depend on your compiler). Please consult the documentation of the<br />
+# deprecated API in order to know how to port your code away from it.<br />
+DEFINES += QT_DEPRECATED_WARNINGS<br />
+<br />
+# You can also make your code fail to compile if you use deprecated APIs.<br />
+# In order to do so, uncomment the following line.<br />
+# You can also select to disable deprecated APIs only up to a certain version of Qt.<br />
+#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000&nbsp;&nbsp;&nbsp; # disables all the APIs deprecated before Qt 6.0.0<br />
+<br />
+<br />
+SOURCES += \<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; main.cpp \<br />
+&nbsp;&nbsp;&nbsp; mainwindow.cpp<br />
+<br />
+HEADERS += \<br />
+&nbsp;&nbsp;&nbsp; mainwindow.h</p>
+以上是 Demo.pro 配置文件中默认包含的内容。其中，<code>#</code>号是注释符号，除了以<code>#</code>号开头的注释内容外，其它内容都是当前项目的配置信息，比如<code>QT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; += core gui</code>、<code>TARGET = Demo</code>等。<br />
+<br />
+pro 文件可以存储上百条配置信息，每条配置信息由三部分构成：
+<ol>
+<li>
+前半部分是关键字，也称配置项，用来指明配置信息的含义；</li>
+<li>
+中间用 +=、-=、= 等数学符号连接配置项和它对应的值；</li>
+<li>
+后半部分是配置项对应的值，一个配置项可以对应多个值，每个值代表不同的含义。</li>
+</ol>
+<br />
+例如在&nbsp;<code>QT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; += core gui</code>中，<code>Qt</code>是配置项，<code>core </code>和<code>gui</code>是该配置项的值，中间用<code>+= </code>符号连接。下表给大家罗列了一些常用的配置项以及它们各自的含义。<br />
+<br />
+<table>
+<caption>
+表 1 Qt pro文件常用配置项</caption>
+<tbody>
+<tr>
+<th>
+配置项</th>
+<th>
+含 义</th>
+</tr>
+<tr>
+<td>
+QT</td>
+<td>
+指定项目中用到的所有模块，默认值为 core 和 gui，中间用 += 符号连接。</td>
+</tr>
+<tr>
+<td>
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets</td>
+<td>
+如果 QT 版本大于 4（Qt5 或更高版本），则需要添加 widgets 模块，该模块包含所有控件类。</td>
+</tr>
+<tr>
+<td>
+TARGET</td>
+<td>
+指定程序成功运行后生成的可执行文件的名称，中间用 = 符号连接。</td>
+</tr>
+<tr>
+<td>
+TEMPLATE</td>
+<td>
+指定如何运行当前程序，默认值为 app，表示当前程序是一个应用程序，可以直接编译、运行。常用的值还有 lib，表示将当前程序编译成库文件。</td>
+</tr>
+<tr>
+<td>
+DEFINES</td>
+<td>
+在程序中新定义一个指定的宏，比如&nbsp;DEFINES += xxx，如同在程序中添加了 #define xxx 语句。</td>
+</tr>
+<tr>
+<td>
+SOURCES</td>
+<td>
+指定项目中包含的所有 .cpp 源文件。</td>
+</tr>
+<tr>
+<td>
+HEADERS</td>
+<td>
+指定项目中包含的所有 .h 头文件。</td>
+</tr>
+<tr>
+<td>
+FORMS</td>
+<td>
+指定项目中包含的 ui 文件。</td>
+</tr>
+<tr>
+<td>
+INCLUDEPATH</td>
+<td>
+指定头文件的存储路径，例如：INCLUDEPATH += /opt/ros/include</td>
+</tr>
+<tr>
+<td>
+CONFIG</td>
+<td>
+经常对应的值有：
+<ul>
+<li>
+release：以 release 模式编译程序；</li>
+<li>
+debug：以 debug 模式编译程序；</li>
+<li>
+warn_on：编译器输出尽可能多的警告；</li>
+<li>
+c++11：启动 C++11 标准支持。</li>
+</ul>
+例如 CONFIG += c++11。</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>
+根据上表中对各个配置项的讲解，您可以很轻松地搞清楚 Demo.pro 文件中各个配置项的含义，这里不再过多赘述。</p>
+</blockquote>
+上表中，大部分配置项不需要我们手动修改，比如 SOURCES、HEADERS、FORMS 等，当我们添加或者删除项目中的源文件时，Qt 会自动修改这些配置项。有些配置项需要手动修改，比如 QT 配置项，接下来重点给大家讲解 QT 的用法。<br />
+<h2>
+QT配置项</h2>
+前面提到，Qt 根据各个类的功能将它们分到不同的模块，因此程序中要想使用某个类，必须完成两项准备工作：
+<ol>
+<li>
+引入包含该类的头文件，通常情况下，Qt 中每个类的类名和包含它的头文件的名称是相同的，比如 QWiget 窗口类位于<code>&lt;QWidget&gt;</code>头文件中；</li>
+<li>
+将该类所属的模块添加到 pro 项目管理文件中。</li>
+</ol>
+<p>
+&nbsp;</p>
+<code>QT&nbsp;</code>用来指明当前项目中用到的所有模块，它的默认值是 core 和 gui，分别表示引入 Core 模块和 GUI 模块：
+<ul>
+<li>
+Core 模块包含了 Qt GUI 界面开发的核心功能，其它所有模块都需要依赖于这个模块，它是所有 Qt GUI 项目必备的模块；</li>
+<li>
+GUI 模块提供了用于开发 GUI 应用程序的必要的一些类。</li>
+</ul>
+<br />
+每个新创建的 Qt GUI 项目中，都默认包含 Core 模块和 GUI 模块，如果项目中用不到它们，可以使用<code>QT -=</code>删除。例如，删除项目中包含的 GUI 模块，只需在 pro 文件中添加一条配置信息：
+<p class="info-box">
+QT -= gui</p>
+<br />
+除了 Core 和 GUI 模块外，Qt 还有 SQL（包含操作数据库相关的类）、Widgets（包含构建界面的所有控件类）、Multimedia（包含提供音频、视频等功能的类）等模块，Qt 项目不会自动包含这些模块。例如，项目中用到 SQL 模块中的一些类时，需要在 pro 文件中添加如下配置信息：
+<p class="info-box">
+QT += sql</p>
+<br />
+那么，当程序中用到某个类时，如何知道它属于哪个模块呢？很简单，先将该类所在的头文件中引入到程序中，然后鼠标选中头文件并按<code>Fn+F1</code>组合键，打开该头文件的使用手册后就可以看到它所属的模块。以程序中使用 QWidget 窗口类为例，先在程序中添加如下语句：
+<pre class="cpp" shownum="false">
+#include &lt;QWidget&gt; </pre>
+紧接着，鼠标选中&ldquo;QWidget&rdquo;并按<code>Fn+F1</code>组合键，打开下图所示的 QWdiget 类使用手册，可以看到该类所属的模块为 widgets。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211028/1A9112O8-1.gif" /><br />
+图 2 查看类所属的模块</div>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="509.html" title="C语言求最小公倍数（详解版）" target="_blank">C语言求最小公倍数（详解版）</a></li>
+<li><a href="762.html" title="Linux chgrp命令：修改文件和目录的所属组" target="_blank">Linux chgrp命令：修改文件和目录的所属组</a></li>
+<li><a href="vip_5945.html" title="python不是内部或外部命令的解决方法" target="_blank">python不是内部或外部命令的解决方法</a></li>
+<li><a href="7952.html" title="Django Form表单实现自定义字段" target="_blank">Django Form表单实现自定义字段</a></li>
+<li><a href="9831.html" title="TCP/IP协议介绍（超级详细）" target="_blank">TCP/IP协议介绍（超级详细）</a></li>
+<li><a href="flj4xw6.html" title="C++函数重载详解" target="_blank">C++函数重载详解</a></li>
+<li><a href="ftjyb6e.html" title="Vue子组件给父组件传值详解" target="_blank">Vue子组件给父组件传值详解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9428;
+window.arcId = "f42d3PeR+behDB79zNEGFvIKpr9jj4nSydEazgg/hoyec3XVdO3BQ3Jug7k";
+window.typeidChain = "294|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

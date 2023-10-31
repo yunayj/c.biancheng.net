@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>快速排序算法，C语言快速排序算法详解</title>
+<meta name="description" content="本节介绍一个非常优秀且最常用的排序算法， 快速排序算法 。这个算法极其重要，初学者一定要掌握。 快速排序尤其适用于对大数据的排序，它的高速和高效无愧于快速两个字。虽然" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>快速排序算法，C语言快速排序算法详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">本节介绍一个非常优秀且最常用的排序算法，<span style="color:#008000;">快速排序算法</span>。这个算法极其重要，初学者一定要掌握。<br />
+<br />
+快速排序尤其适用于对<a href='https://c.biancheng.net/big_data/' target='_blank'>大数据</a>的排序，它的高速和高效无愧于&ldquo;快速&rdquo;两个字。虽然说它是&ldquo;最常用&rdquo;的，可对于初学者而言，用它的人却非常少。因为虽然很快，但它也是逻辑最复杂、最难理解的算法，因为快速排序要用到递归和函数调用。<br />
+<br />
+快速排序所采用的思想是分治的思想。所谓分治，就是指以一个数为基准，将序列中的其他数往它两边&ldquo;扔&rdquo;。以从小到大排序为例，比它小的都&ldquo;扔&rdquo;到它的左边，比它大的都&ldquo;扔&rdquo;到它的右边，然后左右两边再分别重复这个操作，不停地分，直至分到每一个分区的基准数的左边或者右边都只剩一个数为止。这时排序也就完成了。<br />
+<br />
+所以快速排序的核心思想就是将小的往左&ldquo;扔&rdquo;，将大的往右&ldquo;扔&rdquo;，只要能实现这个，就与快速排序的思想吻合。从初学者的角度，&ldquo;小的往左扔大的往右扔&rdquo;首先能想到的往往是小的往前插，大的往后插。这确实是一个思路，但我们知道，数组是不擅长插入的。这种思路虽然能吻合快速排序的思想，但实现起来就不是&ldquo;快速&rdquo;排序，而是&ldquo;慢速&rdquo;排序了。所以这种方法是不可行的。于是就有了下面的&ldquo;舞动算法&rdquo;。<br />
+<br />
+&ldquo;舞动算法&rdquo;的思想是用交换取代插入，大大提高了排序的速度。下面首先详细地讲解一下数组快速排序的过程。<br />
+<br />
+假设序列中有 n 个数，将这 n 个数放到数组 A 中。&ldquo;舞动算法&rdquo;中一趟快速排序的算法是：
+<ol>
+<li>
+设置两个变量 i、j，排序开始的时候：i=0，j=n&ndash;1。</li>
+<li>
+以数组第一个元素为关键数据，赋给变量 key，即 key=A[0]。</li>
+<li>
+从 j 开始向前搜索，即由后开始向前搜索（j--），找到第一个小于 key 的值 A[j]，将 A[j] 和 A[i] 互换。</li>
+<li>
+然后再从 i 开始向后搜索，即由前开始向后搜索（++i），找到第一个大于 key 的 A[i]，将 A[i] 和 A[j] 互换。</li>
+<li>
+重复第 3、4 步，直到 i=j。此时就能确保序列中所有元素都与 key 比较过了，且 key 的左边全部是比 key 小的，key 的右边全部是比 key 大的。</li>
+</ol>
+<br />
+第一轮比较后序列就以 key 为中心分成了左右两部分，然后分别对左右两部分分别递归执行上面几个步骤，直到排序结束。<br />
+<br />
+下面列举一个简单的例子，比如对如下数组 a 中的元素使用快速排序实现从小到大排序：
+<p class="info-box">
+35&nbsp; 12&nbsp; 37&nbsp; -58&nbsp; 54&nbsp; 76&nbsp; 22</p>
+1) 首先分别定义 low 和 high 用于存储数组第一个元素的下标和最后一个元素的下标，即 low=0，high=6。<br />
+<br />
+2) 然后定义 key 用于存放基准数，理论上该基准数可以取序列中的任何一个数。此处就取数组的第一个元素，即把 a[low] 赋给 key。<br />
+<br />
+3) 然后 key 和 a[high] 比较，即 35 和 22 比较，35&gt;22，则它们互换位置：
+<p class="info-box">
+22&nbsp; 12&nbsp; 37&nbsp; -58&nbsp; 54&nbsp; 76&nbsp; 35</p>
+4) 然后 low++==1，key 和 a[low] 比较，即 35 和 12 比较，12&lt;35，则不用互换位置；继续 low++==2，然后 key 和 a[low] 比较，即 35 和 37 比较，37&gt;35，则它们互换位置：
+<p class="info-box">
+22&nbsp; 12&nbsp; 35&nbsp; -58&nbsp; 54&nbsp; 76&nbsp; 37</p>
+5) 然后 high--==5，key 和 a[high] 比较，即 35 和 76 比较，35&lt;76，则不用互换位置；继续 high--==4，然后 key 和 a[high] 比较，即 35 和 54 比较，35&lt;54，则不用互换位置；继续 high--==3，然后 key 和 a[high] 比较，即 35 和 -58 比较，35&gt;&ndash;58，则它们互换位置：
+<p class="info-box">
+22&nbsp; 12&nbsp; -58&nbsp; 35&nbsp; 54&nbsp; 76&nbsp; 37</p>
+6) 然后 low++==3，此时 low==high，第一轮比较结束。从最后得到的序列可以看出，35 左边的都比 35 小，35 右边的都比 35 大。这样就以 35 为中心，把原序列分成了左右两个部分。接下来只需要分别对左右两个部分分别重复上述操作就行了。<br />
+<br />
+对于人类而言，这个过程确实比前面的排序算法复杂。但对于计算机而言，这个过程却没那么复杂。下面来写一个程序:
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+void Swap(int *, int *);  //函数声明, 交换两个变量的值
+void QuickSort(int *, int, int);  //函数声明, 快速排序
+int main(void)
+{
+    int i;  //循环变量
+    int a[] = {900, 2, -58, 3, 34, 5, 76, 7, 32, 4, 43, 9, 1, 56, 8,-70, 635, -234, 532, 543, 2500};
+    QuickSort(a, 0, 20);  /*引用起来很简单, 0为第一个元素的下标, 20为最后一个元素的下标*/
+    printf(&quot;最终排序结果为:\n&quot;);
+    for (i=0; i&lt;21; ++i)
+    {
+        printf(&quot;%d &quot;, a[i]);
+    }
+    printf(&quot;\n&quot;);
+    return 0;
+}
+void Swap(int *p, int *q)
+{
+    int buf;
+    buf = *p;
+    *p = *q;
+    *q = buf;
+    return;
+}
+void QuickSort(int *a, int low, int high)
+{
+    int i = low;
+    int j = high;
+    int key = a[low];
+    if (low &gt;= high)  //如果low &gt;= high说明排序结束了
+    {
+        return ;
+    }
+    while (low &lt; high)  //该while循环结束一次表示比较了一轮
+    {
+        while (low &lt; high &amp;&amp; key &lt;= a[high])
+        {
+            --high;  //向前寻找
+        }
+        if (key &gt; a[high])
+        {
+            Swap(&amp;a[low], &amp;a[high]);
+            ++low;
+        }
+        while (low &lt; high &amp;&amp; key &gt;= a[low])
+        {
+            ++low;  //向后寻找
+        }
+        if (key &lt; a[low])
+        {
+            Swap(&amp;a[low], &amp;a[high]);
+            --high;
+        }
+    }
+    QuickSort(a, i, low-1);  //用同样的方式对分出来的左边的部分进行同上的做法
+    QuickSort(a, low+1, j);  //用同样的方式对分出来的右边的部分进行同上的做法
+}</pre>
+输出结果是：<br />
+最终排序结果为:<br />
+-234 -70 -58 1 2 3 4 5 7 8 9 32 34 43 56 76 532 543 635 900 2500<br />
+<br />
+这个程序就是按上面讲的过程写的。实际上还可以对这个程序进行优化。在快速排序算法中，每轮比较有且仅有一个 key 值，但是 key 值的位置是不断变化的，只有比较完一轮后 key 值的位置才固定。上面这个程序中每次执行 swap 时实际上交换的是 key 和 a[low] 或 key 和 a[high]，而 key 的位置每次都是不一样的。所以既然 key 的位置是&ldquo;动来动去&rdquo;的，所以就不必将它赋到数组中了，等最后一轮比较结束后，它的位置&ldquo;不动&rdquo;了，再将它赋到数组中。<br />
+<br />
+比如，数组 a 中元素为：3142。如果按从小到大排序，那么 key=3，按上面这个程序就是 3 和 2 互换。2 赋给 a[0] 是必需的，但 key 就没有必要赋给 a[3] 了。但你可以想象 key 是在 a[3] 这个位置，这个很重要。即此时序列变成 2142（key）。<br />
+<br />
+然后 key 和 1 比较，不用换；key 和 4 比较，将 4 赋给 a[3]，然后想象 key 在 4 的位置，即此时序列变成 214（key）4。此时 key 左边全是比 key 小的，key 的右边全是比 key 大的。这时 key 的位置就固定了，再将它赋到数组中，即 2134。<br />
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+void QuickSort(int *, int, int);  /*现在只需要定义一个函数, 不用交换还省了一个函数, 减少了代码量*/
+int main(void)
+{
+    int i;  //循环变量
+    int a[] = {900, 2, -58, 3, 34, 5, 76, 7, 32, 4, 43, 9, 1, 56, 8,-70, 635, -234, 532, 543, 2500};
+    QuickSort(a, 0, 20);  /*引用起来很简单, 0为第一个元素的下标, 20为最后一个元素的下标*/
+    printf(&quot;最终排序结果为:\n&quot;);
+    for (i=0; i&lt;21; ++i)
+    {
+        printf(&quot;%d &quot;, a[i]);
+    }
+    printf(&quot;\n&quot;);
+    return 0;
+}
+void QuickSort(int *a, int low, int high)
+{
+    int i = low;
+    int j = high;
+    int key = a[low];
+    if (low &gt;= high)  //如果low &gt;= high说明排序结束了
+    {
+        return ;
+    }
+    while (low &lt; high)  //该while循环结束一次表示比较了一轮
+    {
+        while (low &lt; high &amp;&amp; key &lt;= a[high])
+        {
+            --high;  //向前寻找
+        }
+        if (key &gt; a[high])
+        {
+            a[low] = a[high];  //直接赋值, 不用交换
+            ++low;
+        }
+        while (low &lt; high &amp;&amp; key &gt;= a[low])
+        {
+            ++low;  //向后寻找
+        }
+        if (key &lt; a[low])
+        {
+            a[high] = a[low];  //直接赋值, 不用交换
+            --high;
+        }
+    }
+    a[low] = key;  //查找完一轮后key值归位, 不用比较一次就互换一次。此时key值将序列分成左右两部分
+    QuickSort(a, i, low-1);  //用同样的方式对分出来的左边的部分进行同上的做法
+    QuickSort(a, low+1, j);  //用同样的方式对分出来的右边的部分进行同上的做法
+}</pre>
+输出结果是：<br />
+最终排序结果为:<br />
+-234 -70 -58 1 2 3 4 5 7 8 9 32 34 43 56 76 532 543 635 900 2500<br />
+<h2>
+总结</h2>
+快速排序的基本思想是通过一趟快速排序，将要排序的数据分割成独立的两部分，其中一部分的所有数据比另外一部分的所有数据都要小，然后再按此方法递归地对这两部分数据分别进行快速排序。如此一直进行下去，直到排序完成。<br />
+<br />
+快速排序实际上是冒泡排序的一种改进，是冒泡排序的升级版。这种改进就体现在根据分割序列的基准数，跨越式地进行交换。正是由于这种跨越式，使得元素每次移动的间距变大了，而不像冒泡排序那样一格一格地&ldquo;爬&rdquo;。快速排序是一次跨多格，所以总的移动次数就比冒泡排序少很多。<br />
+<br />
+但是快速排序也有一个问题，就是递归深度的问题。调用函数要消耗资源，递归需要系统堆栈，所以递归的空间消耗要比非递归的空间消耗大很多。而且如果递归太深的话会导致堆栈溢出，系统会&ldquo;撑&rdquo;不住。快速排序递归的深度取决于基准数的选择，比如下面这个序列：
+<p class="info-box">
+5&nbsp; 1&nbsp; 9&nbsp; 3&nbsp; 7&nbsp; 4&nbsp; 8&nbsp; 6&nbsp; 2</p>
+5 正好处于 1~9 的中间，选择 5 作基准数可以平衡两边的递归深度。可如果是：
+<p class="info-box">
+1&nbsp; 5&nbsp; 9&nbsp; 3&nbsp; 7&nbsp; 4&nbsp; 8&nbsp; 6&nbsp; 2</p>
+选择 1 作为基准数，那么递归深度就全部都加到右边了。如果右边有几万个数的话则系统直接就崩溃了。所以需要对递归深度进行优化。怎么优化呢？就是任意取三个数，一般是取序列的第一个数、中间数和最后一个数，然后选择这三个数中大小排在中间的那个数作为基准数，这样起码能确保获取的基准数不是两个极端。<br />
+<br />
+前面讲过，快速排序一般用于大数据排序，即数据的个数很多的时候（不是指数的值很大）。如果是小规模的排序，就用前面讲的几种简单排序方式就行了，不必使用快速排序。<br />
+<h2>
+四种排序算法的比较</h2>
+冒泡排序是最慢的排序算法。在实际运用中它是效率最低的算法。它通过一趟又一趟地比较数组中的每一个元素，使较大的数据下沉，较小的数据上升。<br />
+<br />
+插入排序通过将序列中的值插入一个已经排好序的序列中，直到该序列结束。插入排序是对冒泡排序的改进。它比冒泡排序快两倍。一般不用在数据的值大于 1000 的场合，或数据的个数超过 200 的序列。<br />
+<br />
+选择排序在实际应用中处于与冒泡排序基本相同的地位。它们只是排序算法发展的初级阶段，在实际中使用较少。但是它们最好理解。<br />
+<br />
+快速排序是大规模递归的算法，它比大部分排序算法都要快。一般用于数据个数比较多的情况。尽管可以在某些特殊的情况下写出比快速排序快的算法，但是就通常情况而言，没有比它更快的了。快速排序是递归的，对于内存非常有限的机器来说，它不是一个好的选择。
+<div style="text-align: center;">
+<br />
+<img alt="" src="../uploads/allimg/180828/2-1PRQ02142209.png" /><br />
+&nbsp;</div>
+稳定性：假定在待排序的序列中存在多个相同的值，若经过排序后，这些值的相对次序保持不变，即在原序列中 r<sub>i</sub>=r<sub>j</sub>，且 r<sub>i</sub> 在 r<sub>j</sub> 之前，而在排序后的序列中 r<sub>i</sub> 仍在 r<sub>j</sub> 之前，则称这种排序算法是稳定的，否则称为不稳定的。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="779.html" title="Linux find命令：在目录中查找文件（超详解）" target="_blank">Linux find命令：在目录中查找文件（超详解）</a></li>
+<li><a href="793.html" title="Linux关机和重启命令（超详解）" target="_blank">Linux关机和重启命令（超详解）</a></li>
+<li><a href="2294.html" title="C++多态和虚函数快速入门教程" target="_blank">C++多态和虚函数快速入门教程</a></li>
+<li><a href="7409.html" title="MySQL IS NULL：空值查询" target="_blank">MySQL IS NULL：空值查询</a></li>
+<li><a href="9438.html" title="程序员离职会给公司带来多大的伤害？答案超出你的预料" target="_blank">程序员离职会给公司带来多大的伤害？答案超出你的预料</a></li>
+<li><a href="e0rriws.html" title="Python反编译工具pyinstxtractor.py" target="_blank">Python反编译工具pyinstxtractor.py</a></li>
+<li><a href="htjypzl.html" title="GitHub Pull Request功能详解" target="_blank">GitHub Pull Request功能详解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 198;
+window.arcId = "23e1qXZ+jTZx0ThCGH8Agik2LPyLiB1uatDYiJ40TH+vaXp3cgnRGDnvJg";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

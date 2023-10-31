@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C语言数组指针和指针数组</title>
+<meta name="description" content="在许多 C 程序中，指针常被用于引用数组，或者作为数组的元素。指向数组的指针常被简称为数组指针（array pointer），而具有指针类型元素的数组则被称为指针数组（pointer array）。 数" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C语言数组指针和指针数组</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在许多 C 程序中，指针常被用于引用数组，或者作为数组的元素。<span style="color:#b22222;">指向数组的指针常被简称为数组指针（array pointer），而具有指针类型元素的数组则被称为指针数组（pointer array）。</span>
+<h2>
+	数组指针</h2>
+为了便于举例，下面的描述均以一个 int 数组为例。同样的原理可以应用于其他类型数组，包括多维数组。<br />
+<br />
+<span style="color:#b22222;">要声明指向数组类型的指针，必须使用括号</span>，如下所示：
+<pre class="cpp">
+int (* arrPtr)[10] = NULL;   // 一个指针，它指向一个有10个int元素的数组</pre>
+<br />
+<span style="color:#b22222;">如果没有括号，则声明 int*arrPtr[l0]；表示 arrPtr 是一个具有 10 个 int 类型指针的数组。</span><br />
+<br />
+在该例中，指向有 10 个 int 元素的数组的指针会被初始化为 NULL。然而，如果把合适数组的地址分配给它，那么表达式 *arrPtr 会获得数组，并且（*arrPtr）[i] 会获得索引值为 i 的数组元素。根据下标运算符的规则，表达式（*arrPtr）[i] 等同于 *（（*arrPtr）+i）。因此，**arrPtr 获得数组的第一个元素，其索引值为 0。<br />
+<br />
+为了展示数组指针 arrPtr 的几个运算，下例使用它来定位一个二维数组的某些元素，也就是矩阵内的某些行：
+<pre class="cpp">
+int matrix[3][10];            // 3行，10列的数组
+                                    // 数组名称是一个指向第一个元素的指针，也就是第一行的指针
+arrPtr = matrix;            // 使得arrPtr指向矩阵的第一行
+(*arrPtr)[0] = 5;       // 将5赋值给第一行的第一个元素
+arrPtr[2][9] = 6;           // 将6赋值给最后一行的最后一个元素
+++arrPtr;                   // 将指针移动到下一行
+(*arrPtr)[0] = 7;           // 将7赋值给第二行的第一个元素</pre>
+<br />
+在初始化赋值后，arrPtr 指向矩阵的第一个行，正如矩阵名称 matrix 一样。在这种情况下，使用 arrPtr 获取元素的方式与使用 matrix 完全一样。例如，赋值运算（*arrPtr）[0]=5 等效于 arrPtr[0][0]=5 和 matrix[0][0]=5。<br />
+<br />
+然而，与数组名称 matrix 不同的是，指针名称 arrPtr 并不代表一个常量地址，如运算 ++arrPtr 所示，它进行了自增运算。这个自增运算会造成存储在数组指针的地址增加一个数组空间大小，在本例中，即增加矩阵一行的空间大小，也就是 10 乘以 int 元素在内存中所占字节数量。<br />
+<br />
+<span style="color:#b22222;">如果想把一个多维数组传入函数，则必须声明对应的函数参数为数组指针。</span>最后要注意的是，如果 a 是一个具有 10 个 int 类型元素的数组，那么无法使用下面的方式对前面例子中的指针 arrPtr 赋值：
+<pre class="cpp">
+arrPtr = a;                  // 错误：指针类型不匹配</pre>
+<br />
+错误的原因是，数组名字，例如上文的 a，会被隐式地转换为指针，指向数组第一个元素，而不是指向整个数组。指向 int 的指针没有被隐式地转换为指向 int 数组的指针。本例中的赋值操作需要显式的类型转换，在类型转换运算符中明确指定目标类型是
+<pre class="cpp">
+int (*) [10]：
+arrPtr = (int (*)[10])a;        // 合法</pre>
+<br />
+在前文 arrPtr 的声明语句（int（*arrPtr）[10]=NULL；）中，删除其中标识符 arrPtr，就可得到 int（*）[10]，即对应的数组指针类型。然而，为了提高可读性和灵活性，可以利用 typedef 为所用的类型定义一个简单的名字：
+<pre class="cpp">
+typedef int ARRAY_t[10];    // 定义一个&ldquo;具有10个元素数组&rdquo;类型名称
+ARRAY_t  a,                     // 具有该类型的数组
+         *arrPtr;               // 一个指向该数组类型的指针
+arrPtr = (ARRAY_t *)a;  // 使得arrPtr指向a</pre>
+<h2>
+	指针数组</h2>
+<span style="color:#b22222;">指针数组（也就是元素为指针类型的数组）常常作为二维数组的一种便捷替代方式。一般情况下，这种数组中的指针会指向动态分配的内存区域。</span><br />
+<br />
+例如，如果需要处理字符串，可以将它们存储在一个二维数组中，该数组行空间大小必须足以存储下可能出现的最长字符串：
+<pre class="cpp">
+#define ARRAY_LEN 100
+#define STRLEN_MAX 256
+char myStrings[ARRAY_LEN][STRLEN_MAX] =
+{ // 墨菲定律的几条推论：
+&ldquo;会出错的事，总会出错。&rdquo;
+&ldquo;世上没有绝对正确的事情。&rdquo;
+&ldquo;每个解决办法都会衍生出新的问题。&rdquo;
+};</pre>
+<br />
+然而，<span style="color:#b22222;">这个方式造成内存浪费</span>，25600 字节中只有一小部分被实际使用到。一方面，短字符串会让大部分的行是空的；另一个方面，有些行根本没有用到，但却得为它预留内存。<br />
+<br />
+一个简单的解决方案是，使用指针数组，让指针指向对象（在此处的对象就是字符串），然后只给实际存在的对象分配内存（未用到的数组元素则是空指针）。
+<pre class="cpp">
+#define ARRAY_LEN 100
+char *myStrPtr[ARRAY_LEN] =        // char指针的数组
+{ // 墨菲定律的几条推论：
+&ldquo;会出错的事，总会出错。&rdquo;
+&ldquo;世上没有绝对正确的事情。&rdquo;
+&ldquo;每个解决办法都会衍生出新的问题。&rdquo;
+};</pre>
+<br />
+图 1 展示了对象在内存中的存储情况：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/180907/3-1PZG60009101_2.jpg" style="width: 422px; height: 177px;" /><br />
+	图 1</div>
+<br />
+<span style="color:#b22222;">尚未使用的指针可以在运行时指向另一个字符串。所需的存储空间可以利用这种常见方法来动态地保留。当不再需要该内存时，可以释放。</span><br />
+<br />
+例 1 中的程序是一个简单版本的过滤器工具 sort。它从标准输入流中读取文字，根据字母顺序对行排序，然后将结果在标准输出中显示出来。这个程序没有移动任何字符串，它实际排序的是一个指针数组。<br />
+<br />
+【例1】对文字各行进行排序的简单程序
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+char *getLine(void);                                 // 读取文本中的一行
+int str_compare(const void *, const void *);
+
+#define NLINES_MAX 1000                                      // 定义文本行数的最大值
+char *linePtr[NLINES_MAX];                           // char指针的数组
+
+int main()
+{
+  // 读入行
+  int n = 0;                                         // 读入行的数量
+  for ( ; n &lt; NLINES_MAX &amp;&amp; (linePtr[n] = getLine()) != NULL; ++n )
+    ;
+  if ( !feof(stdin) )                                // 处理错误
+  {
+    if ( n == NLINES_MAX )
+      fputs( &quot;sorttext: too many lines.\n&quot;, stderr );
+    else
+      fputs( &quot;sorttext: error reading from stdin.\n&quot;, stderr );
+  }
+  else                                                       // 排序和输出
+  {
+    qsort( linePtr, n, sizeof(char*), str_compare ); // 排序
+    for ( char **p = linePtr; p &lt; linePtr+n; ++p )   // 输出
+          puts(*p);
+  }
+  return 0;
+}
+
+// 从stdin中的文本读取一行；忽略尾部的换行符
+// 返回值： 一个指向所读字符串的指针，或者为NULL，当读到文字结尾时或发生错误时
+#define LEN_MAX 512                                  // 定义一行字符数的最大值
+  
+char *getLine()
+{
+  char buffer[LEN_MAX], *linePtr = NULL;
+  if ( fgets( buffer, LEN_MAX, stdin ) != NULL )
+  {
+    size_t len = strlen( buffer );
+
+    if ( buffer[len-1] == &#39;\n&#39; )                     // 去掉尾部的换行符
+      buffer[len-1] = &#39;\0&#39;;
+    else
+      ++len;
+
+    if ( (linePtr = malloc( len )) != NULL )         // 为行获得内存空间
+      strcpy( linePtr, buffer );                     // 将行复制到已分配区域
+  }
+  return linePtr;
+}
+
+// 比较函数，供qsort()使用
+// 参数：两个指针，指向数组内待排序的两个元素，这里，两个指针都是char **类型
+int str_compare( const void *p1, const void *p2 )
+{
+  return strcmp( *(char **)p1, *(char **)p2 );
+}</pre>
+<br />
+在例 1 中，常量 NLINES_MAX 限制了一行文字中字符数量的最大值。然而，我们可以通过动态地创建指向文本行指针的数组，达到消除该限制的目的。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="915_2.html" title="Java统计商品信息" target="_blank">Java统计商品信息</a></li>
+<li><a href="3159_2.html" title="Docker应用容器化（将应用程序部署到容器中）" target="_blank">Docker应用容器化（将应用程序部署到容器中）</a></li>
+<li><a href="vip_3403_2.html" title="[数据结构实践项目]移动迷宫小游戏(初级版)" target="_blank">[数据结构实践项目]移动迷宫小游戏(初级版)</a></li>
+<li><a href="../redis2/hkeys_2.html" title="Redis HKEYS命令" target="_blank">Redis HKEYS命令</a></li>
+<li><a href="counting-sort_2.html" title="计数排序算法" target="_blank">计数排序算法</a></li>
+<li><a href="../matplotlib/data-visual_2.html" title="数据可视化是什么" target="_blank">数据可视化是什么</a></li>
+<li><a href="2l377uh_2.html" title="大数据凉了，不建议学了" target="_blank">大数据凉了，不建议学了</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 368;
+window.arcId = "49699Kqsa9J5TYddGGvU1PiXHVMqisS7+vuWAy7XiUSHcjcCE5Is4REDhA";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C++函数指针（指向函数的指针）</title>
+<meta name="description" content="在 C++ 中，函数也是有地址的。编译之后的函数，其实是一组指令的集合，这样一组指令在程序运行时存在于内存中，其起始地址就是该函数的地址，也称做函数的入口地址。 编写 C++" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C++函数指针（指向函数的指针）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在 C++ 中，函数也是有地址的。编译之后的函数，其实是一组指令的集合，这样一组指令在程序运行时存在于内存中，其起始地址就是该函数的地址，也称做函数的入口地址。<br />
+<br />
+编写 C++ 程序时，可以用函数名来表示函数的地址，也可以在函数名之前加上取地址符号&ldquo;&amp;&rdquo;表示函数的地址。<br />
+<br />
+举个简单的例子：
+<pre class="cpp">
+int add(int a, int b) {
+    return a + b;
+}</pre>
+add() 函数的地址可以用函数名<code>add</code>或者<code>&amp;add</code>表示。<br />
+<br />
+我们知道，指针可以用于存储变量的地址，它还可以用于存储函数的地址，这样的指针就称为函数指针。<br />
+<blockquote>
+	<p>
+		存储函数入口地址的指针，也可以说成是指向函数的指针，它们是等价的。</p>
+</blockquote>
+函数指针也是一个变量，可以指向不同的函数。同时通过函数指针可以调用其指向的函数，从而使得函数调用更加灵活。<br />
+<br />
+函数指针在 C++ 编程中有广泛的应用，比如回调函数、策略模式和表驱动方法。<br />
+<h2>
+	函数指针的定义</h2>
+定义一个函数指针，遵循以下格式：
+<pre class="info-box">
+返回值类型 (*函数指针名)(参数列表);</pre>
+例如，定义一个指向返回值类型为 int、参数列表为 (int, int) 的函数指针：
+<pre class="info-box">
+int (*functionPtr)(int, int);</pre>
+其中，functionPtr 就是函数指针的名称。注意，函数指针名两侧的括号不能省略，否则就变成了一个返回 int* 类型的函数声明。<br />
+<br />
+可以在定义函数指针的同时为它赋初值，也可以在定义后再另行赋值。例如，令 functionPtr 指向上面的 add() 函数：
+<pre class="cpp" shownum="false">
+functionPtr = &amp;add</pre>
+或者更简洁地写成下面这种方式：
+<pre class="cpp" shownum="false">
+functionPtr = &amp;add</pre>
+<h2>
+	函数指针的使用</h2>
+使用函数指针调用函数同函数调用一样，只要在函数指针后面加上实参列表即可。<br />
+<br />
+以下的 C++ 程序演示了如何使用函数指针。<br />
+<pre class="cpp">
+#include &lt;iostream&gt;
+
+// 两个简单的函数
+int add(int a, int b) {
+    return a + b;
+}
+
+int multiply(int a, int b) {
+    return a * b;
+}
+
+int main() {
+    // 声明一个返回类型为int，接受两个int参数的函数指针
+    int (*functionPtr)(int, int);
+
+    // 初始化函数指针
+    functionPtr = add;
+
+    // 使用函数指针调用函数
+    int sum = functionPtr(2, 3);  // 输出应为5
+    std::cout &lt;&lt; &quot;Sum: &quot; &lt;&lt; sum &lt;&lt; std::endl;
+
+    // 改变函数指针指向
+    functionPtr = multiply;
+
+    // 再次使用函数指针调用函数
+    int product = functionPtr(2, 3);  // 输出应为6
+    std::cout &lt;&lt; &quot;Product: &quot; &lt;&lt; product &lt;&lt; std::endl;
+
+    return 0;
+}</pre>
+运行结果为：
+<p class="info-box">
+	Sum: 5<br />
+	Product: 6</p>
+<h2>
+	函数指针作为参数</h2>
+函数指针也可以作为其它函数的参数，例如：
+<pre class="cpp">
+#include &lt;iostream&gt;
+
+// 定义两个简单的函数
+int add(int a, int b) {
+    return a + b;
+}
+
+int multiply(int a, int b) {
+    return a * b;
+}
+
+// 定义一个函数，它接受一个函数指针作为参数
+void execute(int (*funcPtr)(int, int)) {
+    int result = funcPtr(2, 3);
+    std::cout &lt;&lt; &quot;Result: &quot; &lt;&lt; result &lt;&lt; std::endl;
+}
+
+int main() {
+    // 使用add函数作为参数调用execute
+    std::cout &lt;&lt; &quot;Executing &#39;add&#39; function:&quot; &lt;&lt; std::endl;
+    execute(add);
+
+    // 使用multiply函数作为参数调用execute
+    std::cout &lt;&lt; &quot;Executing &#39;multiply&#39; function:&quot; &lt;&lt; std::endl;
+    execute(multiply);
+
+    return 0;
+}</pre>
+输出结果为：
+<p class="info-box">
+	Executing &#39;add&#39; function:<br />
+	Result: 5<br />
+	Executing &#39;multiply&#39; function:<br />
+	Result: 6</p>
+在 main() 函数中，我们两次调用 execute() 函数，第一次传入 add() 函数，第二次传入 multiply() 函数，这样 execute() 函数就能动态地执行不同的操作。
+<h2>
+	函数指针作为返回值</h2>
+函数指针也可以作为其它函数的返回值。例如：<br />
+<pre class="cpp">
+#include &lt;iostream&gt;
+
+// 两个简单的函数
+int add(int a, int b) {
+    return a + b;
+}
+
+int multiply(int a, int b) {
+    return a * b;
+}
+
+// 一个函数，根据输入参数返回对应的函数指针
+int (*selectFunction(char op))(int, int) {
+    if (op == &#39;+&#39;) {
+        return add;
+    }
+    if (op == &#39;*&#39;) {
+        return multiply;
+    }
+    // 返回nullptr表示无效的操作符
+    return nullptr;
+}
+
+int main() {
+    // 根据输入参数获取函数指针
+    int (*funcPtr)(int, int) = selectFunction(&#39;+&#39;);
+   
+    // 使用函数指针
+    if (funcPtr != nullptr) {
+        int result = funcPtr(3, 4);  // 输出应为 7
+        std::cout &lt;&lt; &quot;Result: &quot; &lt;&lt; result &lt;&lt; std::endl;
+    } else {
+        std::cout &lt;&lt; &quot;Invalid operator.&quot; &lt;&lt; std::endl;
+    }
+
+    // 再次获取函数指针，这次使用乘法
+    funcPtr = selectFunction(&#39;*&#39;);
+   
+    // 再次使用函数指针
+    if (funcPtr != nullptr) {
+        int result = funcPtr(3, 4);  // 输出应为 12
+        std::cout &lt;&lt; &quot;Result: &quot; &lt;&lt; result &lt;&lt; std::endl;
+    } else {
+        std::cout &lt;&lt; &quot;Invalid operator.&quot; &lt;&lt; std::endl;
+    }
+
+    return 0;
+}</pre>
+执行结果为：
+<p class="info-box">
+	Result: 7<br />
+	Result: 12</p>
+在这个例子中，有两个简单的函数 add() 和 multiply()，还有一个名为 selectFunction() 的函数，它接受一个字符（操作符）作为参数，并返回一个相应的函数指针。<br />
+<br />
+selectFunction() 的返回类型稍微有些复杂，因为它自身返回一个函数指针。这里，<code>int (*selectFunction(char op))(int, int)</code>的意义是：selectFunction 是接受一个 char 参数、返回值类型为 <code>int (*)(int, int)</code>的函数。<br />
+<br />
+main() 函数中调用 selectFunction() 返回的函数指针来计算结果，实现了动态地根据某些条件（这里是一个字符操作符）来选择要执行的函数，这是使用函数指针作为返回值的一个常见应用场景。<br />
+<h2>
+	总结</h2>
+函数指针是 C++ 编程中一个非常有用的特性，尤其在需要动态选择函数或实现回调时，正确使用函数指针可以让你的代码更加模块化和可维护。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_1797_2.html" title="进入缓冲区（缓存）的世界，破解一切与输入输出有关的疑难杂症" target="_blank">进入缓冲区（缓存）的世界，破解一切与输入输出有关的疑难杂症</a></li>
+<li><a href="vip_2327_2.html" title="C++类模板与继承详解" target="_blank">C++类模板与继承详解</a></li>
+<li><a href="7151_2.html" title="C++ decltype类型推导完全攻略" target="_blank">C++ decltype类型推导完全攻略</a></li>
+<li><a href="vip_8517_2.html" title="GDB调试多进程程序" target="_blank">GDB调试多进程程序</a></li>
+<li><a href="../maven2/install-configure_2.html" title="Maven安装与配置（图解）" target="_blank">Maven安装与配置（图解）</a></li>
+<li><a href="../dll/vip_8707_2.html" title="Linux下动态链接库的创建和使用" target="_blank">Linux下动态链接库的创建和使用</a></li>
+<li><a href="0lwracx_2.html" title="Go语言变量的声明和初始化" target="_blank">Go语言变量的声明和初始化</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10331;
+window.arcId = "8767zUwCq6ToobbTXZWF0hVlmoyjCi3oZKjSfUuOv3QyKsN5KT7sEaHDfqIG";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

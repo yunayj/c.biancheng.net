@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++ sort（STL sort）排序算法详解</title>
+<meta name="description" content="在很多应用中，排序都是至关重要的，而且很多 STL 算法也只适用于有序对象序列。定义在 algorithm 头文件中的函数模板 sortIter() 默认会将元素段排成升序，这也就意味着排序的对象的类" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++ sort（STL sort）排序算法详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在很多应用中，排序都是至关重要的，而且很多 <a href='../stl/stl.html' target='_blank'>STL</a> 算法也只适用于有序对象序列。定义在 algorithm 头文件中的函数模板 sort&lt;Iter&gt;() 默认会将元素段排成升序，这也就意味着排序的对象的类型需要支持 <code>&lt;</code> 运算符。&nbsp;<br />
+<br />
+对象也必须是可交换的，这说明可以用定义在 utility 头文件中的函数模板 swap() 来对两个对象进行交换。这进一步表明这种对象的类型需要实现移动构造函数和移动赋值运算符。<br />
+<br />
+函数模板 sort&lt;Iter&gt;() 的类型参数 Iter 是元素段元素对应的迭代器类型，而且它们必须支持随机访问迭代器。这表明 sort() 算法只能对提供随机访问迭代器的容器中的元素进行排序，也说明 sort() 只能接受 array、vector、deque 或标准数组中的元素。可以回顾前面章节，list 和 forward_list 容器都有成员函数 sort(); 这些用来排序的特殊成员函数是必要的，因为 list 只提供双向迭代器，且 forward_list 只提供正向迭代器。<br />
+<br />
+可以从函数调用的参数中推导出 sort() 的模板类型参数，它们是定义被排序对象范围的迭代器。当然，迭代器类型隐式定义了这个元素段中对象的类型。下面是一个使用 sort() 算法的示例：
+<pre class="cpp">
+std::vector&lt;int&gt; numbers {99, 77, 33, 66, 22, 11, 44, 88};
+std::sort(std::begin(numbers), std::end(numbers));
+std::copy(std::begin(numbers), std::end(numbers),std:: ostream_iterator&lt;int&gt; {std::cout,&quot; &quot;}) ;
+// Output: 11 22 33 44 66 77 88 99</pre>
+sort() 调用将 number 容器的全部元素排成升序，然后用 copy() 算法输出结果。可以不必对容器的全部内容进行排序。下面这条语句对 numbers 中除了第一个和最后一个元素之外的元素进行了排序：<br />
+<pre class="cpp">
+std::sort(++std::begin(numbers),--std::end(numbers));</pre>
+为了将元素排成降序，需要提供一个用来比较元素的函数对象，作为 sort() 的第三个参数：<br />
+<pre class="cpp">
+std::sort(std::begin(numbers), std::end(numbers), std::greater&lt;&gt;());</pre>
+这个比较函数必须返回布尔值，而且有两个参数，它们要么是迭代器解引用后得到的类型，要么是迭代器解引用后可以隐式转换成的类型。参数可以是不同类型的。只要比较函数满足这些条件，它就可以是你喜欢的任何样子，也包括 lambda 表达式。例如：<br />
+<pre class="cpp">
+std::deque&lt;string&gt; words { &quot;one&quot;, &quot;two&quot;, &quot;nine&quot;, &quot;nine&quot;, &quot;one&quot;, &quot;three&quot;, &quot;four&quot;, &quot;five&quot;, &quot;six&quot; };
+std::sort(std::begin(words), std::end(words),[](const string&amp; s1, const string&amp; s2) { return s1.back()&gt; s2.back();});
+std::copy(std::begin(words), std::end(words),
+std::ostream_iterator&lt;string&gt; {std::cout,&quot; &quot;}); // six four two one nine nine one three five</pre>
+这段代码对 deque 容器 words 中的 string 元素进行了排序，并且输出了排序后的结果。这里的比较函数是一个 lambda 表达式，它们用每个单词的最后一个字母来比较排序的顺序。结果元素以它们最后一个字母的降序来排序。<br />
+<br />
+下面在一个简单的示例中介绍 sort() 的用法。这里会先从键盘读取 Name 对象，然后将它们按升序排列，再输出结果。Name 类定义在 Name.h 头文件中，它包含下面这些代码：
+<pre class="cpp">
+#ifndef NAME_H
+#define NAME_H
+#include &lt;string&gt;                                // For string class
+
+class Name
+{
+private:
+    std::string first {};
+    std::string second {};
+
+public:
+    Name(const std::string&amp; name1, const std::string&amp; name2) : first(name1), second(name2){}
+    Name()=default;
+    std::string get_first() const { return first; }
+    std::string get_second() const { return second; }
+
+    friend std::istream&amp; operator&gt;&gt;(std::istream&amp; in, Name&amp; name);
+    friend std::ostream&amp; operator&lt;&lt;(std::ostream&amp; out, const Name&amp; name);
+};
+
+// Stream input for Name objects
+inline std::istream&amp; operator&gt;&gt;(std::istream&amp; in, Name&amp; name)
+{
+    return in &gt;&gt; name.first &gt;&gt; name.second;
+}
+
+// Stream output for Name objects
+inline std::ostream&amp; operator&lt;&lt;(std::ostream&amp; out, const Name&amp; name)
+{
+    return out &lt;&lt; name.first &lt;&lt; &quot; &quot; &lt;&lt; name.second;
+}
+#endif</pre>
+这个流插入和提取运算符被定义为 Name 对象的友元函数。可以将 operator&lt;() 定义为类的成员函数，但为了展示如何为 sort() 算法指定比较函数参数，这里没有定义它。下面是程序代码：<br />
+<pre class="cpp">
+// Sorting class objects
+#include &lt;iostream&gt;                              // For s<a href='https://c.biancheng.net/ref/tan.html' target='_blank'>tan</a>dard streams
+#include &lt;string&gt;                                // For string class
+#include &lt;vector&gt;                                // For vector container
+#include &lt;iterator&gt;                              // For stream and back insert iterators
+#include &lt;algorithm&gt;                             // For sort() algorithm
+#include &quot;Name.h&quot;
+
+int main()
+{
+    std::vector&lt;Name&gt; names;
+    std::cout &lt;&lt; &quot;Enter names as first name followed by second name. Enter Ctrl+Z to end:&quot;;
+    std::copy(std::istream_iterator&lt;Name&gt;(std::cin), std::istream_iterator&lt;Name&gt;(),std::back_insert_iterator&lt;std::vector&lt;Name&gt;&gt;(names));
+
+    std::cout &lt;&lt; names.size() &lt;&lt; &quot; names read. Sorting in ascending sequence...\n&quot;;
+    std::sort(std::begin(names), std::end(names), [](const Name&amp; name1, const Name&amp; name2) {return name1.get_second() &lt; name2.get_second(); });
+
+    std::cout &lt;&lt; &quot;\nThe names in ascending sequence are:\n&quot;;
+    std::copy(std::begin(names), std::end(names), std::ostream_iterator&lt;Name&gt;(std::cout, &quot;\n&quot;));
+}</pre>
+main() 中的一切几乎都是使用 STL 模板完成的。names 容器用来保存从 cin 读入的姓名。输入由 copy() 算法执行，它使用一个 istream_iterator&lt;Name&gt; 实例读入 Name 对象。 istream_iterator&lt;Name&gt; 默认的构造函数会创建流的结束迭代器。copy() 函数用 back_insert_iterator&lt;Name&gt;() 创建的 back_inserter&lt;Name&gt; 迭代器将输入的每个对象复制到 names 中。为 Name 类重载的流运算符允许使用流迭代器来输入和输出 Name 对象。<br />
+<br />
+Name 对象的比较函数是用 lambda 表达式定义的，它是 sort() 算法的第三个参数。如果想将 operator&lt;() 定义为 Name 类的成员函数，可以省略这个参数。然后用 copy() 算法将排序后的 names 写入标准输出流，它会将前两个参数指定范围内的元素复制到作为第三个参数的 ostream_iterator&lt;Name&gt; 对象中。<br />
+<br />
+下面是示例输出：
+<p class="info-box">
+Enter names as first name followed by second name. Enter Ctrl+Z to end:<br />
+Jim Jones<br />
+Bill Jones<br />
+Jane Smith<br />
+John Doe<br />
+Janet Jones<br />
+Willy Schaferknaker<br />
+^Z<br />
+6 names read. Sorting in ascending sequence...<br />
+<br />
+The names in ascending sequence are:<br />
+John Doe<br />
+Jim Jones<br />
+Bill Jones<br />
+Janet Jones<br />
+Willy Schaferknaker<br />
+Jane Smith</p>
+对 names 的排序只考虑了姓。当姓相同时，可以将 lambda 表达式扩展为可以比较名。你可能会好奇在这个示例中为什么不用 pair&lt;string,string&gt; 来表示姓名，这比定义一个新的类要简单多了。显然我们可以这么做，但却没有定义类这么清楚明了。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="466.html" title="Code::Blocks汉化教程（附带汉化包）" target="_blank">Code::Blocks汉化教程（附带汉化包）</a></li>
+<li><a href="594.html" title="C++ mismatch(STL mismatch)算法详解" target="_blank">C++ mismatch(STL mismatch)算法详解</a></li>
+<li><a href="vip_5100.html" title="Linux中的哪些数据需要备份？" target="_blank">Linux中的哪些数据需要备份？</a></li>
+<li><a href="vip_5950.html" title="Visual Studio运行Python程序（超级详细）" target="_blank">Visual Studio运行Python程序（超级详细）</a></li>
+<li><a href="6187.html" title="PHP $_FILES详解" target="_blank">PHP $_FILES详解</a></li>
+<li><a href="9416.html" title="Qt QPushButton按钮用法详解" target="_blank">Qt QPushButton按钮用法详解</a></li>
+<li><a href="5b3jqya.html" title="Python爬虫入门教程（非常详细）" target="_blank">Python爬虫入门教程（非常详细）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 561;
+window.arcId = "55f6oaghfYG0csSdXUoH7cymcc920mLYJbBDvl4coNFJnvdnmoSAaStA7A";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Go语言切片的创建和使用（非常详细）</title>
+<meta name="description" content="Go语言提供了另一种数据类型切片（Slice），由于切片的数据结构中有指向数组的指针，因此它是一种引用类型。Go语言中切片的内部结构包含地址、大小和容量，切片一般用于快速操作" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Go语言切片的创建和使用（非常详细）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">Go语言提供了另一种数据类型&mdash;&mdash;切片（Slice），由于切片的数据结构中有指向数组的指针，因此它是一种引用类型。Go语言中切片的内部结构包含地址、大小和容量，切片一般用于快速操作数据集合。<br />
+<br />
+切片是围绕动态数组的概念构建的，可以按需自动增长和缩小。<br />
+<br />
+切片的动态增长是通过内置函数 append() 来实现的，这个函数可以快速且高效地增长切片，也可以通过对切片再次切割，缩小一个切片的大小。因为切片的底层内存也是在连续内存块中分配的，所以，切片还能获得索引、迭代及为垃圾回收优化的好处。
+<h2>
+1. 创建切片</h2>
+在Go语言中，创建切片的方法有多种，而能否确定切片的容量是创建切片的关键，它决定了该使用哪种方式创建切片。
+<h4>
+1) 从数组或切片生成新的切片</h4>
+切片默认指向一段连续内存区域，可以是数组，也可以是切片本身。<br />
+<br />
+从连续内存区域生成切片是常见的操作，格式如下：
+<p class="info-box">
+slice [开始位置 : 结束位置]</p>
+对格式的说明：
+<ul>
+<li>
+slice 表示目标切片对象。</li>
+<li>
+开始位置表示对应目标切片对象的索引。</li>
+<li>
+结束位置表示对应目标切片的结束索引。</li>
+</ul>
+<br />
+从数组生成切片，例如：
+<pre class="go" showmenu="false" shownum="false">
+var a = [3]int{1, 2, 3}
+fmt.Println(a, a[1:2])</pre>
+其中，a 是一个含有 3 个整型元素的数组，被初始化为数值 1～3，使用 a[1:2] 可以生成一个新的切片，运行结果如下：
+<p class="info-box">
+[1 2 3]&nbsp; [2]</p>
+其中，[2] 就是 a[1:2] 切片操作的结果。<br />
+<br />
+从数组或切片生成新的切片的特性如下：
+<ul>
+<li>
+取出的元素数量为结束位置-开始位置。</li>
+<li>
+取出元素不包含结束位置对应的索引，切片最后一个元素使用 slice[len(slice)] 获取。</li>
+<li>
+当默认开始位置时，表示从连续区域开头到结束位置。</li>
+<li>
+当默认结束位置时，表示从开始位置到整个连续区域末尾。</li>
+<li>
+两者同时默认时，与切片本身等效。</li>
+<li>
+两者同时为 0 时，等效于空切片，一般用于切片复位。</li>
+<li>
+根据索引位置取切片 slice 元素值时，取值范围是（0～len(slice)-1），超界会报运行时错误，生成切片时，结束位置可以填写 len(slice) 但不会报错。</li>
+</ul>
+<h4>
+2) 直接声明新的切片</h4>
+除了可以从原有的数组或者切片中生成切片外，也可以声明一个新的切片，每种类型都可以拥有其切片类型，表示多个相同类型元素的连续集合，因此，切片类型也可以被声明。<br />
+<br />
+Go语言切片的声明的语法格式如下：
+<p class="info-box">
+var name []Type</p>
+对格式的说明：
+<ul>
+<li>
+name 表示切片类型的变量名称。</li>
+<li>
+Type 表示切片类型对应的元素类型。</li>
+<li>
+切片不需要说明长度。</li>
+</ul>
+<br />
+切片声明的使用过程如下：
+<pre class="go">
+package main
+import &quot;fmt&quot;
+func main() {
+    //声明字符串切片
+    var strList []string
+    //声明整型切片
+    var numList []int
+    //声明一个空切片
+    var numListEmpty = []int{}
+    //输出3个切片
+    fmt.Println(strList, numList, numListEmpty)
+    //输出3个切片大小
+    fmt.Println(len(strList), len(numList), len(numListEmpty))
+    //切片判定空的结果
+    fmt.Println(strList == nil)
+    fmt.Println(numList == nil)
+    fmt.Println(numListEmpty == nil)
+}</pre>
+运行结果如图1所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="Go语言直接生成新切片" src="../uploads/allimg/230809/1-230P91S126215.png" /><br />
+图1：直接生成新切片</div>
+<br />
+在以上代码中：
+<ul>
+<li>
+第5行，声明一个字符串切片，切片中拥有多个字符串。</li>
+<li>
+第7行，声明一个整型切片，切片中拥有多个整型数值。</li>
+<li>
+第9行，将 numListEmpty 声明为一个整型切片，本来会在<code>{}</code>中填充切片的初始化元素，这里没有填充，所以切片是空的，但是此时的 numListEmpty 已经被分配了内存，只是还没有元素。</li>
+<li>
+第11行，切片均没有任何元素，3 个切片输出元素内容均为空。</li>
+<li>
+第13行，没有对切片进行任何操作，strList 和 numList 没有指向任何数组或者其他切片。</li>
+<li>
+第15行和第16行，声明但未使用的切片的默认值是&nbsp;nil，strList 和 numList 也是 nil，所以和 nil 比较的结果是 true。</li>
+<li>
+第17行，numListEmpty 已经被分配到了内存，但没有元素，因此和 nil 比较时是 false。</li>
+</ul>
+<h4>
+3) 使用make()函数构造切片</h4>
+如果需要动态地创建一个切片，可以使用 make() 内建函数，语法格式如下：<br />
+<p class="info-box">
+make( []Type, size, cap )</p>
+对格式的说明：
+<ul>
+<li>
+Type 是指切片的元素类型。</li>
+<li>
+size 指的是为这个类型分配多少个元素。</li>
+<li>
+cap 为预分配的元素数量，该值设定后不影响 size，只是能提前分配空间，降低多次分配空间造成的性能问题。</li>
+</ul>
+<br />
+请看下面的Go语言示例：
+<pre class="go">
+package main
+import &quot;fmt&quot;
+func main() {
+    a := make([]int, 2)
+    b := make([]int, 2, 10)
+    fmt.Println(a, b)
+    fmt.Println(len(a), len(b))
+}</pre>
+运行结果如图2所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="使用 make() 函数构造切片" src="../uploads/allimg/230809/1-230P91S156315.png" /><br />
+图2：使用 make() 函数构造切片</div>
+<br />
+其中，a 和 b 均是预分配两个元素的切片，只是 b 的内部存储空间已经分配了 10 个，但实际使用了两个元素。容量不会影响当前的元素个数，因此 a 和 b 取 len 都是 2。<br />
+<br />
+当使用 make() 函数时，需要传入一个参数，用于指定切片的长度，例如：
+<pre class="go" showmenu="false" shownum="false">
+//创建一个字符串切片
+//其长度和容量都是5个元素
+slice := make([]string,5)</pre>
+如果只指定长度，那么切片的容量和长度相等。也可以分别指定长度和容量，例如：
+<pre class="go" showmenu="false" shownum="false">
+//创建一个整型切片
+//其长度为3个元素,容量为5个元素
+slice := make([]int,3,5)</pre>
+分别指定长度和容量时，创建出来的切片的底层数组长度就是创建时指定的容量，但是初始化后并不能访问所有的数组元素。在以上代码中，切片可以访问 3 个元素，而底层数组拥有 5 个元素，因此剩余的 2 个元素可以在后期操作中合并到切片，然后才可以通过切片访问这些元素。<br />
+<br />
+切片创建新的切片，新切片会和原有切片共享底层数组，也能通过后期操作来访问多余容量的元素。不过不允许创建容量小于底层数组长度的切片，例如：
+<pre class="go" showmenu="false" shownum="false">
+//创建一个整型切片
+//其长度大于容量
+slice := make([]int,5,3)</pre>
+这时编译器会出现如下错误：
+<p class="info-box">
+Compiler Error:<br />
+len larger than cap in make([]int)</p>
+<h4>
+4) 使用切片字面量创建切片</h4>
+使用切片字面量创建切片和创建数组类似，只是不需要指定<code>[]</code>运算符中的值，初始的长度和容量会根据初始化时提供的元素的个数来确定，例如：
+<pre class="go" showmenu="false" shownum="false">
+//创建字符串切片
+//其长度和容量都是5个元素
+slice := []string{ &quot; red &quot;, &quot;blue &quot;, &quot;green &quot;, &quot;yellow &quot;, &quot;pink &quot;}
+//创建一个整型切片
+//其长度和容量都是3个元素
+slice := []int{10,20,30}</pre>
+当使用切片字面量时，可以设置初始长度和容量，即在初始化时给出所需的长度和容量作为索引（下标）。<br />
+<br />
+例如，创建长度和容量都是 100 个元素的切片：
+<pre class="go" showmenu="false" shownum="false">
+//创建字符串切片
+//使用空字符串初始化第100个元素
+slice := []string{ 99:&quot;&quot;}</pre>
+如果在<code>[]</code>运算符中指定了一个值，那么创建的就是数组而不是切片；只有不指定值的时候才会创建切片，例如：
+<pre class="go" showmenu="false" shownum="false">
+//创建含有3个元素的整型数组
+array := [3]int{10,20,30}
+//创建长度和容量都是3的整型切片
+slice := []int{10,20,30}</pre>
+<h4>
+5) 创建空（nil）切片</h4>
+有时程序可能需要声明一个值为空的切片（或 nil 切片），在声明的时候不做任何初始化，就可以创建一个 nil 切片，例如：
+<pre class="go" showmenu="false" shownum="false">
+//创建nil整型切片
+var slice []int</pre>
+一个切片在未初始化之前默认为 nil，长度为 0。<br />
+<br />
+在Go语言中，nil 切片是很常见的创建切片的方法。nil 切片多用于标准库和内置函数，在需要描述一个目前暂时不存在的切片时，nil 切片十分好用。<br />
+<br />
+例如，函数要求返回一个切片但发生异常时，利用初始化，通过声明一个切片可以创建一个 nil 切片：
+<pre class="go" showmenu="false" shownum="false">
+//使用make创建空的整型切片
+slice := make([]int, 0)
+//使用切片字面量创建空的整型切片
+slice := [ ]int{}</pre>
+nil 切片在底层数组中包含 0 个元素，也没有分配任何存储空间。<br />
+<br />
+nil 切片还可以用来表示空集合，例如，数据库查询返回 0 个查询结果。nil 切片和普通切片一样，调用内置函数 append()、len() 和 cap() 的效果都是相同的。
+<h2>
+2. 使用append()函数添加元素</h2>
+Go语言的内建函数 append() 可以为切片动态添加元素。每个切片会指向一片内存空间，这片空间能容纳一定数量的元素。当空间不能容纳足够多的元素时，切片就会进行&ldquo;扩容&rdquo;。扩容操作往往发生在 append() 函数调用时。<br />
+<br />
+切片在扩容时，容量的扩展规律是按容量的2倍数进行扩充的，例如：
+<pre class="go">
+package main
+import &quot;fmt&quot;
+func main() {
+    var numbers []int
+    for i := 0; i &lt; 10; i++ {
+       numbers = append(numbers, i)
+       fmt.Printf(&quot;len: %d  cap: %d pointer: %p\n&quot;, len(numbers), cap(numbers), numbers)
+    }
+}</pre>
+运行结果如图3所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="Go语言切片的扩容" src="../uploads/allimg/230809/1-230P91S23NU.png" /><br />
+图3：切片的扩容</div>
+<br />
+在以上代码中：
+<ul>
+<li>
+第4行，声明一个整型切片。</li>
+<li>
+第6行，循环向 numbers 切片中添加 10 个数。</li>
+<li>
+第7行，打印输出切片的长度、容量和指针变化，使用函数 len() 查看切片拥有的元素个数，使用函数 cap() 查看切片的容量情况。</li>
+</ul>
+<br />
+从以上代码中可以得出结论：切片的长度 len 并不等于切片的容量 cap。<br />
+<br />
+append() 函数除了可以添加一个元素外，还可以同时添加多个元素，例如：
+<pre class="go">
+package main
+import &quot;fmt&quot;
+func main() {
+   var student []string
+   //添加一个元素
+   student = append(student, &quot;a&quot;)
+   //添加多个元素
+   student = append(student, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;)
+   //添加切片
+   team := []string{&quot;e&quot;, &quot;f&quot;, &quot;g&quot;}
+   student = append(student, team&hellip;)
+   fmt.Println(student)
+}</pre>
+运行结果如图4所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="使用 append() 函数添加元素" src="../uploads/allimg/230809/1-230P91S301S4.png" /><br />
+图4：使用 append() 函数添加元素</div>
+<br />
+在以上代码中：
+<ul>
+<li>
+第4行，声明一个字符串切片。</li>
+<li>
+第6行，往切片中添加一个元素。</li>
+<li>
+第8行，使用 append() 函数向切片中添加多个元素。</li>
+<li>
+第10行，声明另一个字符串切片。</li>
+<li>
+第11行，在 team 后面加上<code>&hellip;</code>，表示将 team 整个添加到 student 的后面。</li>
+</ul>
+<h2>
+3. 切片的复制</h2>
+Go语言的内置函数 copy() 可以将一个数组切片复制到另一个数组切片中，如果加入的两个数组切片大小不同，那么就会按照较小的数组切片的元素的个数进行复制。<br />
+<br />
+copy() 函数的语法格式如下：
+<p class="info-box">
+copy( destSlice, srcSlice []Type) int</p>
+对格式的说明：
+<ul>
+<li>
+srcSlice 为数据来源切片。</li>
+<li>
+destSlice 为复制的目标（也就是将 srcSlice 复制到 destSlice），目标切片必须分配过空间且足够承载复制的元素个数，并且来源和目标的类型必须一致，copy() 函数的返回值表示实际发生复制的元素个数。</li>
+</ul>
+<br />
+例如，使用 copy() 函数将一个切片复制到另一个切片。
+<pre class="go" showmenu="false" shownum="false">
+slice1 := []int{1, 2, 3, 4, 5}
+slice2 := []int{5, 4, 3}
+copy(slice2, slice1)  //只复制slice1的前3个元素到slice2中
+copy(slice1, slice2)  //只复制slice2的3个元素到slice1的前3个位置</pre>
+切片复制操作后对切片元素的影响，例如：
+<pre class="go">
+package main
+import &quot;fmt&quot;
+func main() {
+   //设置元素数量为1000
+   const elementCount = 1000
+   //预分配足够多的元素切片
+   srcData := make([]int, elementCount)
+   //将切片赋值
+   for i := 0; i &lt; elementCount; i++ {
+       srcData[i] = i
+   }
+   //引用切片数据
+   refData := srcData
+   //预分配足够多的元素切片
+   copyData := make([]int, elementCount)
+   //将数据复制到新的切片空间中
+   copy(copyData, srcData)
+   //修改原始数据的第一个元素
+   srcData[0] = 999
+   //打印引用切片的第一个元素
+   fmt.Println(refData[0])
+   //打印复制切片的第一个和最后一个元素
+   fmt.Println(copyData[0], copyData[elementCount-1])
+   //复制原始数据从4到6(不包含)
+   copy(copyData, srcData[4:6])
+   for i := 0; i &lt; 5; i++ {
+       fmt.Printf(&quot;%d &quot;, copyData[i])
+   }
+}</pre>
+运行结果如下：<br />
+999<br />
+0 999<br />
+4 5 2 3 4<br />
+<br />
+在以上代码中：
+<ul>
+<li>
+第 5 行，定义元素总量为 1000。</li>
+<li>
+第 7 行，预分配拥有 1000 个元素的整型切片，这个切片将作为原始数据。</li>
+<li>
+第 9～11 行，将 srcData 填充 0～999 的整型值。</li>
+<li>
+第 13 行，将 refData 引用 srcData，切片不会因为等号操作进行元素的复制。</li>
+<li>
+第 15 行，预分配与 srcData 等大（大小相等）、同类型的切片 copyData。</li>
+<li>
+第 17 行，使用 copy() 函数将原始数据复制到 copyData 切片空间中。</li>
+<li>
+第 19 行，修改原始数据的第一个元素为 999。</li>
+<li>
+第 21 行，引用数据的第一个元素将会发生变化。</li>
+<li>
+第 23 行，打印复制数据的首位数据，由于数据是复制的，因此不会发生变化。</li>
+<li>
+第 25 行，将 srcData 的局部数据复制到 copyData 中。</li>
+<li>
+第 26～28 行，打印复制局部数据后的 copyData 元素。</li>
+</ul>
+<h2>
+4. 切片的删除</h2>
+Go语言并没有对删除切片元素提供专用的语法或者接口，需要使用切片本身的特性来删除元素，根据要删除元素的位置可以分为以下三种情况：
+<ul>
+<li>
+从开头位置删除。</li>
+<li>
+从中间位置删除。</li>
+<li>
+从尾部删除。</li>
+</ul>
+<br />
+其中，从尾部删除切片元素的速度最快。
+<h4>
+1) 从开头位置删除</h4>
+删除开头的元素可以直接移动数据指针，例如：
+<pre class="go" showmenu="false" shownum="false">
+a = []int{1, 2, 3}
+a = a[1:] //删除开头1个元素
+a = a[N:] //删除开头N个元素</pre>
+删除开头的元素也可以不移动数据指针，但是需要将后面的数据向开头移动，可以使用 append() 函数原地完成（所谓原地完成，是指在原有的切片数据对应的内存区间内完成，不会导致内存空间结构的变化），例如：
+<pre class="go" showmenu="false" shownum="false">
+a = []int{1, 2, 3}
+a = append(a[:0], a[1:]&hellip;)  //删除开头1个元素
+a = append(a[:0], a[N:]&hellip;)  //删除开头N个元素</pre>
+另外，还可以使用 copy() 函数来删除开头的元素，例如：
+<pre class="go" showmenu="false" shownum="false">
+a = []int{1, 2, 3}
+a = a[:copy(a, a[1:])]  //删除开头1个元素
+a = a[:copy(a, a[N:])]  //删除开头N个元素</pre>
+<h4>
+2) 从中间位置删除</h4>
+对于删除中间的元素，需要对剩余的元素进行一次整体的移动，同样可以用 append() 函数或 copy() 函数原地完成，例如：
+<pre class="go" showmenu="false" shownum="false">
+a = []int{1, 2, 3,&hellip;}
+a = append(a[:i], a[i+1:]&hellip;)  //删除中间1个元素
+a = append(a[:i], a[i+N:]&hellip;)  //删除中间N个元素
+a = a[:i+copy(a[i:], a[i+1:])]  //删除中间1个元素
+a = a[:i+copy(a[i:], a[i+N:])]  //删除中间N个元素</pre>
+<h4>
+3) 从尾部删除</h4>
+<pre class="go" showmenu="false" shownum="false">
+a = []int{1, 2, 3}
+a = a[:len(a)-1]    //删除尾部1个元素
+a = a[:len(a)-N]  //删除尾部N个元素</pre>
+删除开头的元素和删除尾部的元素都可以认为是删除中间元素操作的特殊情况。<br />
+<br />
+例如，删除切片指定位置的元素，Go语言代码如下：
+<pre class="go">
+package main
+import &quot;fmt&quot;
+func main() {
+    seq := []string{&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;, &quot;e&quot;}
+    //指定删除位置
+    index := 2
+    //查看删除位置之前的元素和之后的元素
+    fmt.Println(seq[:index], seq[index+1:])
+    //将删除点前后的元素连接起来
+    seq = append(seq[:index], seq[index+1:]&hellip;)
+    fmt.Println(seq)
+}</pre>
+运行结果如图5所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="Go删除任意位置的元素" src="../uploads/allimg/230809/1-230P91S335301.png" /><br />
+图5：删除任意位置的元素</div>
+<br />
+在以上代码中：
+<ul>
+<li>
+第4行，声明一个整型切片，保存含有从 a 到 e 的字符串。</li>
+<li>
+第6行，使用 index 变量保存需要删除的元素位置。</li>
+<li>
+第8行，seq[:index] 表示的就是被删除元素的前半部分，值为 [1 2]，seq[index+1:] 表示的是被删除元素的后半部分，值为 [4 5]。</li>
+<li>
+第10行，使用 append() 函数将两个切片连接起来。</li>
+<li>
+第11行，输出连接好的新切片，此时，索引为 2 的元素已经被删除。</li>
+</ul>
+<br />
+注意：Go语言中删除切片元素的本质是，以被删除元素为分界点，将前后两个部分的内存重新连接起来。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="93.html" title="Go语言goroutine（轻量级线程）" target="_blank">Go语言goroutine（轻量级线程）</a></li>
+<li><a href="242.html" title="C++重载&lt;&lt;和&gt;&gt;（C++重载输出运算符和输入运算符）" target="_blank">C++重载&lt;&lt;和&gt;&gt;（C++重载输出运算符和输入运算符）</a></li>
+<li><a href="257.html" title="关系运算符及其优先级，C语言关系运算符及其优先级详解" target="_blank">关系运算符及其优先级，C语言关系运算符及其优先级详解</a></li>
+<li><a href="315.html" title="C++函数模板（模板函数）详解" target="_blank">C++函数模板（模板函数）详解</a></li>
+<li><a href="6216.html" title="Goland常用快捷键" target="_blank">Goland常用快捷键</a></li>
+<li><a href="9375.html" title="JS解析JSON" target="_blank">JS解析JSON</a></li>
+<li><a href="qljvn5u.html" title="C++变量的使用（超级详细）" target="_blank">C++变量的使用（超级详细）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10193;
+window.arcId = "61e0fLMzIk2AltfAcISZxTIfsZtssNK88dpKBeXebNL+Qt68SNqDF7ToS/PQ";
+window.typeidChain = "6|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>归并排序算法</title>
+<meta name="description" content="归并排序算法是在分治算法基础上设计得到的排序算法，本文不仅会给出归并排序算法对应的伪代码，还会给出实现归并排序算法的C/C++、Java、Python程序。" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>归并排序算法</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">归并排序算法是在<a href="../algorithm/divide-and-conquer.html" target="_blank">分治算法</a>基础上设计出来的一种排序算法，它可以对指定序列完成升序（由小到大）或降序（由大到小）排序，对应的时间复杂度为<code>O(nlogn)</code>。<br />
+<br />
+归并排序算法实现排序的思路是：
+<ol>
+<li>
+将整个待排序序列划分成多个不可再分的子序列，每个子序列中仅有 1 个元素；</li>
+<li>
+所有的子序列进行两两合并，合并过程中完成排序操作，最终合并得到的新序列就是有序序列。</li>
+</ol>
+<br />
+举个简单的例子，使用归并排序算法对 {7, 5, 2, 4, 1, 6, 3, 0} 实现升序排序的过程是：<br />
+1) 将&nbsp;{7, 5, 2, 4, 1, 6, 3, 0} 分割成多个子序列，每个子序列中仅包含 1 个元素，分割过程如下所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210820/2-210R0130436319.gif" /><br />
+图 1 归并排序算法分割序列的过程</div>
+<br />
+整个序列不断地被一分为二，最终被分割成&nbsp;{7}、{5}、{2}、{4}、{1}、{6}、{3}、{0} 这几个序列。<br />
+<br />
+2) 将&nbsp;{7}、{5}、{2}、{4}、{1}、{6}、{3}、{0} 以&ldquo;两两合并&rdquo;的方式重新整合为一个有序序列，合并的过程如下图所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210820/2-210R01304522Z.gif" /><br />
+图 2 归并排序算法整合所有子序列的过程</div>
+<h2>
+归并排序算法的具体实现</h2>
+对比图 1 和图 2 很容易联想到，归并排序算法可以借助递归的思想实现，对应的伪代码如下：
+<pre class="info-box">
+输入 arr[n]                                // 输入要排序的序列
+merge_sort(arr[n] , p , q):                // [p , q] 表示对第 p ~ q 区域内的元素进行归并排序
+    if p &lt; q :                             // 对 [p , q] 区域不断采用对半分割的方式，最终将整个区域划分为多个仅包含 1 个元素（p==q）的序列
+        mid = &lfloor;(p+q)/2&rfloor;
+        merge_sort(arr , p , mid)
+        merge_sort(arr , mid+1 , q)
+        merge(arr , p , mid , q)          // 调用实现归并过程的代码模块</pre>
+merge_sort() 用于将整个序列分割成多个子序列，merge() 用来合并这些子序列，合并的实现方式为：
+<ol>
+<li>
+从 [p, mid] 和 [mid+1, q] 两个区域的元素分别拷贝到 leftarr 和 rightarr 区域。</li>
+<li>
+从 leftarr 和 rightarr 区域中各个取出第一个元素，比较它们的大小；</li>
+<li>
+将较小的元素拷贝到 [p, q] 区域，然后从较小元素所在的区域内取出下一个元素，继续进行比较；</li>
+<li>
+重复执行第 3 步，直至 leftarr 和 rightarr 内的元素全部拷贝到 [p, q] 为止。如果 leftarr 或者 rightarr 有一方为空，则直接将另一方的所有元素依次拷贝到 [p, q] 区域。</li>
+</ol>
+<br />
+对应的伪代码如下：
+<pre class="info-box">
+merge(arr[n] , p , mid , q):                          // 该算法表示将 [p , mid] 和 [mid+1 , q] 做归并操作
+    leftnum &lt;- mid - p + 1                            // 统计 [p , mid] 区域内的元素个数
+    rightnum &lt;- q - mid                               // 统计 [mid+1 , q] 区域内的元素个数
+    leftarr[leftnum] &lt;- arr[p ... mid]                // 分别将两个区域内的元素各自拷贝到另外两个数组中
+    rightarr[rightnum] &lt;- arr[mid+1 ... q]
+    i &lt;- 1 , j &lt;- 1
+    for k &lt;- p to q :             // 从 leftarr 和 rightarr 数组中第 1 个元素开始，比较它们的大小，将较小的元素拷贝到 arr 数组的 [p , q] 区域
+        if leftarr[i] &le; rightarr[j] :
+            arr[k] = leftarr[i]
+            i &lt;- i+1
+        else :
+            arr[k] = right[j]
+            j &lt;- j+1</pre>
+<br />
+结合伪代码，如下是用归并排序算法对 {7, 5, 2, 4, 1, 6, 3, 0} 进行升序排序的 C 语言程序：
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+//实现分割操作的函数
+void merge_sort(int* arr, int p, int q);
+//实现归并操作的函数
+void merge(int* arr, int p, int mid, int q);
+
+int main() {
+    int i = 0;
+    int arr[8] = { 7,5,2,4,1,6,3,0 };
+    //对 arr 数组中第 1 至 8 个元素进行归并排序
+    merge_sort(arr, 1, 8);
+    while (i &lt; 8)
+    {
+        printf(&quot;%d &quot;, arr[i]);
+        i++;
+    }
+    return 0;
+}
+//实现分割操作的函数，[p,q] 用于指定归并排序的区域范围，
+void merge_sort(int* arr, int p, int q) {
+    int mid;
+    if (arr == NULL || p &gt; q || p == q) {
+        return ;
+    }
+    mid = (p + q) / 2;
+    //将 [p,q] 分为[p,mid] 和 [mid+1,q] 区域
+    merge_sort(arr, p, mid);
+    merge_sort(arr, mid + 1, q);
+    //对分好的 [p,mid] 和 [mid,q] 进行归并操作
+    merge(arr, p, mid, q);
+}
+//实现归并操作的函数，归并的 2 个区域分别为 [p,mid] 和 [mid+1,q]
+void merge(int* arr, int p, int mid, int q) {
+    int i,j,k;
+    int leftarr[100], rightarr[100];
+    int numL = mid - p + 1;
+    int numR = q - mid;
+    //将 arr 数组中 [p,mid] 区域内的元素逐一拷贝到 leftarr 数组中
+    for (i = 0; i &lt; numL; i++) {
+        leftarr[i] = arr[p - 1 + i];
+    }
+    //将 arr 数组中 [mid+1,q] 区域内的元素逐一拷贝到 rightarr 数组中
+    leftarr[i] = 2147483647;
+    for (i = 0; i &lt; numR; i++) {
+        rightarr[i] = arr[mid + i];
+    }
+    rightarr[i] = 2147483647;
+    i = 0;
+    j = 0;
+    //逐一比较 leftarr 和 rightarr 中的元素，每次将较小的元素拷贝到 arr 数组中的 [p,q] 区域内
+    for (k = p; k &lt;= q; k++) {
+        if (leftarr[i] &lt;= rightarr[j]) {
+            arr[k - 1] = leftarr[i];
+            i++;
+        }
+        else {
+            arr[k - 1] = rightarr[j];
+            j++;
+        }
+    }
+}</pre>
+<br />
+如下是用归并排序算法对 {7, 5, 2, 4, 1, 6, 3, 0} 进行升序排序的 Java 程序：
+<pre class="java">
+public class Demo {
+    //实现归并排序算法的分割操作
+    public static void merge_sort(int[] arr, int p, int q) {
+        // 如果数组不存在或者 [p.q] 区域不合理
+        if (arr == null || p &gt;= q) {
+            return;
+        }
+        //对[p,q]区域进行分割
+        int mid = (p + q) / 2;
+        merge_sort(arr, p, mid);
+        merge_sort(arr, mid + 1, q);
+        //对分割的 [p,mid] 和 [mid+1,q] 区域进行归并
+        merge(arr, p, mid, q);
+    }
+    //实现归并排序算法的归并操作
+    public static void merge(int[] arr, int p, int mid, int q) {
+        int numL = mid - p + 1;
+        int numR = q - mid;
+        //创建 2 个数组，分别存储 [p,mid] 和 [mid+1,q]区域内的元素
+        int[] leftarr = new int[numL + 1];
+        int[] rightarr = new int[numR + 1];
+        int i;
+        for (i = 0; i &lt; numL; i++) {
+            leftarr[i] = arr[p - 1 + i];
+        }
+        //将 leftarr 数组中最后一个元素设置为足够大的数。
+        leftarr[i] = 2147483647;
+        for (i = 0; i &lt; numR; i++) {
+            rightarr[i] = arr[mid + i];
+        }
+        //将 rightarr 数组中最后一个元素设置为足够大的数。
+        rightarr[i] = 2147483647;
+        int j = 0;
+        i = 0;
+        //对 leftarr 和 rightarr 数组中存储的 2 个区域的元素做归并操作
+        for (int k = p; k &lt;= q; k++) {
+            if (leftarr[i] &lt;= rightarr[j]) {
+                arr[k - 1] = leftarr[i];
+                i++;
+            } else {
+                arr[k - 1] = rightarr[j];
+                j++;
+            }
+        }
+    }
+    public static void main(String[] args) {
+        int[] arr = new int[] { 7, 5, 2, 4, 1, 6, 3, 0 };
+        //对 arr 数组中第 1 至 8 个元素进行归并排序
+        merge_sort(arr, 1, 8);
+        for (int i : arr) {
+            System.out.print(i + &quot; &quot;);
+        }
+    }
+}</pre>
+<br />
+如下是用归并排序算法对 {7, 5, 2, 4, 1, 6, 3, 0} 进行升序排序的 Python 程序：
+<pre class="python">
+#实现归并排序算法中的分割操作，[p,q]为指定分割区域
+def merge_sort(arr,p,q):
+    #列表中没有数据，或者 [p,q]区域不存在
+    if len(arr) == 1 or p &gt;= q:
+        return
+    #对 [p,q] 区域进行分割
+    mid = int( (p + q) / 2 )
+    merge_sort(arr,p,mid)
+    merge_sort(arr,mid+1,q)
+    #归并 [p,mid] 和 [mid+1,q] 区域
+    merge(arr,p,mid,q)
+#实现归并排序算法中的归并操作，归并区域为 [p.mid] 和 [mid+1,q]
+def merge(arr,p,mid,q):
+    numL = mid - p + 1;
+    numR = q - mid;
+    #分别将 [p,mid] 和 [mid+1,q] 区域内的元素拷贝到 leftarr 和 rightarr 列表中
+    leftarr = arr[p-1:p+numL-1]
+    rightarr = arr[mid:mid+numR]
+    # 2 个列表末尾添加一个足够大的数
+    leftarr.append(float(&#39;inf&#39;))
+    rightarr.append(float(&#39;inf&#39;))
+    i=0
+    j=0
+    k=p
+    #逐个比较 leftarr 和 rightarr 列表中的元素，每次将较小的元素添加到 arr 列表中的 [p,q] 区域内
+    while k &lt;= q:
+        if leftarr[i] &lt;= rightarr[j]:
+            arr[k-1] = leftarr[i]
+            i = i + 1
+        else:
+            arr[k-1] = rightarr[j]
+            j = j + 1
+        k = k + 1
+
+arr = [7, 5, 2, 4, 1, 6, 3, 0]
+#对 arr 数组中第 1 至 8 个元素做归并排序操作
+merge_sort(arr, 1, 8)
+print(arr)</pre>
+<br />
+以上程序的输出结果均为：
+<p class="info-box">
+0 1 2 3 4 5 6 7</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="4611.html" title="Python sys.exc_info()方法：获取异常信息" target="_blank">Python sys.exc_info()方法：获取异常信息</a></li>
+<li><a href="7041.html" title="Python复数类型（complex）详解" target="_blank">Python复数类型（complex）详解</a></li>
+<li><a href="../mongodb2/capped-collection.html" title="MongoDB固定集合（Capped Collections）" target="_blank">MongoDB固定集合（Capped Collections）</a></li>
+<li><a href="xni6c5.html" title="JS if else用法详解" target="_blank">JS if else用法详解</a></li>
+<li><a href="50w00l4.html" title="Go switch case语句的用法" target="_blank">Go switch case语句的用法</a></li>
+<li><a href="../c/isalnum.html" title="C语言isalnum()：判断一个字符是否为字母或者数字" target="_blank">C语言isalnum()：判断一个字符是否为字母或者数字</a></li>
+<li><a href="6032l8j.html" title="《嵌入式C语言实战教程》PDF下载（高清完整版）" target="_blank">《嵌入式C语言实战教程》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9112;
+window.arcId = "29134Y2XYyEsVkI5GJr0Jv7FkT+h9tq+96NeW3e4Q6bS6wSU/N0y0H0vt7E";
+window.typeidChain = "457|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

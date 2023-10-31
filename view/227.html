@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>二维数组指针表示，C语言指针引用二维数组详解</title>
+<meta name="description" content="指针变量可以指向一维数组中的元素，当然也就可以指向二维数组中的元素。但是在概念和使用方法上，二维数组的指针比一维数组的指针要复杂一些。要理解指针和二维数组的关系首" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>二维数组指针表示，C语言指针引用二维数组详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">指针变量可以指向一维数组中的元素，当然也就可以指向二维数组中的元素。但是在概念和使用方法上，二维数组的指针比一维数组的指针要复杂一些。要理解指针和二维数组的关系首先要记住一句话：二维数组就是一维数组，这句话该怎么理解呢？<br />
+<br />
+假如有一个二维数组：
+<pre class="cpp">
+int a[3][4] = {{1, 3, 5, 7}, {9, 11, 13, 15}, {17, 19, 21, 23}};</pre>
+其中，a 是二维数组名。a 数组包含 3 行，即 3 个行元素：a[0]，a[1]，a[2]。每个行元素都可以看成含有 4 个元素的一维数组。而且 C 语言规定，a[0]、a[1]、a[2]分别是这三个一维数组的数组名。如下所示：
+<div style="text-align: center;">
+<br />
+<img alt="" src="../uploads/allimg/180829/2-1PR91232302D.jpg" style="width: 442px; height: 150px;" /></div>
+<br />
+a[0]、a[1]、a[2] 既然是一维数组名，一维数组的数组名表示的就是数组第一个元素的地址，所以 a[0] 表示的就是元素 a[0][0] 的地址，即 a[0]==&amp;a[0][0]；a[1] 表示的就是元素 a[1][0] 的地址，即 a[1]==&amp;a[1][0]；a[2] 表示的就是元素 a[2][0] 的地址，即 a[2]==&amp;a[2][0]。<br />
+<br />
+所以二维数组a[M][N]中，a[i]表示的就是元素a[i][0]的地址，即<strong>（式一）</strong>：
+<p class="info-box">
+a[i] == &amp;a[i][0]&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+我们知道，在一维数组 b 中，数组名 b 代表数组的首地址，即数组第一个元素的地址，b+1 代表数组第二个元素的地址，&hellip;，b+n 代表数组第 n+1 个元素的地址。所以既然 a[0]、a[1]、a[2]、&hellip;、a[M&ndash;1] 分别表示二维数组 a[M][N] 第 0 行、第 1 行、第 2 行、&hellip;、第 M&ndash;1 行各一维数组的首地址，那么同样的道理，a[0]+1 就表示元素 a[0][1] 的地址，a[0]+2 就表示元素 a[0][2] 的地址，a[1]+1 就表示元素 a[1][1] 的地址，a[1]+2 就表示元素 a[1][2] 的地址&hellip;&hellip;a[i]+j 就表示 a[i][j] 的地址，即<strong>（式二）</strong>：
+<p class="info-box">
+a[i]+j == &amp;a[i][j]</p>
+将式一代入式二得<strong>（式三）</strong>：
+<p class="info-box">
+&amp;a[i][0]+j == &amp;a[i][j]</p>
+在一维数组中 a[i] 和 *(a+i)&nbsp; 等价，即<strong>（式四）</strong>:
+<p class="info-box">
+a[i] == *(a+i)(13-4)</p>
+这个关系在二维数组中同样适用，二维数组 a[M][N] 就是有 M 个元素 a[0]、a[1]、&hellip;、a[M&ndash;1] 的一维数组。将式四代入式二得<strong>（式五）</strong>：
+<p class="info-box">
+*(a+i)+j == &amp;a[i][j]</p>
+由式二和式五可知，a[i]+j 和 *(a+i)+j 等价，都表示元素 a[i][j] 的地址。<br />
+<br />
+上面几个公式很&ldquo;绕&rdquo;，理清楚了也很简单，关键是把式二和式五记住。<br />
+<h2>
+二维数组的首地址和数组名</h2>
+下面来探讨一个问题：&ldquo;二维数组 a[M][N] 的数组名 a 表示的是谁的地址？&rdquo;在一维数组中，数组名表示的是数组第一个元素的地址，那么二维数组呢？ a 表示的是元素 a[0][0] 的地址吗？不是！我们说过，二维数组就是一维数组，二维数组 a[3][4] 就是有三个元素 a[0]、a[1]、a[2] 的一维数组，所以数组 a 的第一个元素不是 a[0][0]，而是 a[0]，所以数组名 a 表示的不是元素 a[0][0] 的地址，而是 a[0] 的地址，即：
+<p class="info-box">
+a == &amp;a[0]</p>
+而 a[0] 又是 a[0][0] 的地址，即：
+<p class="info-box">
+a[0] == &amp;a[0][0]</p>
+所以二维数组名 a 和元素 a[0][0] 的关系是：
+<p class="info-box">
+a == &amp;(&amp;a[0][0])</p>
+即二维数组名 a 是地址的地址，必须两次取值才可以取出数组中存储的数据。对于二维数组 a[M][N]，数组名 a 的类型为 int(*)[N]，所以如果定义了一个指针变量 p：
+<p class="info-box">
+int *p;</p>
+并希望这个指针变量指向二维数组 a，那么不能把 a 赋给 p，因为它们的类型不一样。要么把 &amp;a[0][0] 赋给 p，要么把 a[0] 赋给 p，要么把 *a 赋给 p。前两个好理解，可为什么可以把 *a 赋给 p？因为 a==&amp;(&amp;a[0][0])，所以 *a==*(&amp;(&amp;a[0][0]))==&amp;a[0][0]。<br />
+<br />
+除此之外你也可以把指针变量 p 定义成 int(*)[N] 型，这时就可以把 a 赋给 p，而且用这种方法的人还比较多，但我不喜欢，因为我觉得这样定义看起来很别扭。<br />
+<br />
+如果将二维数组名 a 赋给指针变量 p，则有<strong>（式六）</strong>：
+<p class="info-box">
+p == a</p>
+那么此时如何用 p 指向元素 a[i][j]？答案是以&ldquo;行&rdquo;为单位进行访问。数组名 a 代表第一个元素 a[0] 的地址，则 a+1 就代表元素 a[1] 的地址，即a+1==&amp;a[1]；a+2 就代表 a[2] 的地址，即 a+2==&amp;a[2]&hellip;&hellip;a+i 就代表 a[i] 的地址，即<strong>（式七）</strong>：
+<p class="info-box">
+a+i == &amp;a[i]</p>
+将式六代入式七得：
+<p class="info-box">
+p+i == &amp;a[i]</p>
+等式两边作&ldquo;*&rdquo;运算得：
+<p class="info-box">
+*(p+i) == a[i]</p>
+等式两边同时加上j行<strong>（式八）</strong>：
+<p class="info-box">
+*(p+i) + j == &amp;a[i][j]</p>
+式八就是把二维数组名 a 赋给指针变量 p 时，p 访问二维数组元素的公式。使用时，必须先把 p 定义成 int(*)[N] 型，然后才能把二维数组名 a 赋给 p。那么怎么把 p 定义成 int(*)[N] 型呢？关键是 p 放什么位置！形式如下：
+<pre class="cpp">
+int (*p)[N] = a;    /*其中N是二维数组a[M][N]的列数, 是一个数字, 前面说过, 数组长度不能定义成变量*/</pre>
+下面编一个程序来用一下：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int a[3][4] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+    int i, j;
+    int (*p)[4] = a;  //记住这种定义格式
+    for (i=0; i&lt;3; ++i)
+    {
+        for (j=0; j&lt;4; ++j)
+        {
+            printf(&quot;%-2d\x20&quot;, *(*(p+i)+j));  /*%-2d中, &#39;-&#39;表示左对齐, 如果不写&#39;-&#39;则默认表示右对齐；2表示这个元素输出时占两个空格的空间*/
+        }
+        printf(&quot;\n&quot;);
+    }
+    return 0;
+}</pre>
+输出结果是：<br />
+1&nbsp; 2&nbsp; 3&nbsp; 4<br />
+5&nbsp; 6&nbsp; 7&nbsp; 8<br />
+9&nbsp; 10 11 12<br />
+<br />
+如果把 &amp;a[0][0] 赋给指针变量 p 的话，那么如何用 p 指向元素 a[i][j] 呢？在前面讲过，对于内存而言，并不存在多维数组，因为内存是一维的，内存里面不分行也不分列，元素都是按顺序一个一个往后排的，所以二维数组中的每一个元素在内存中的地址都是连续的，写一个程序来验证一下：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int a[3][4] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+    int i, j;
+    for (i=0; i&lt;3; ++i)
+    {
+        for (j=0; j&lt;4; ++j)
+        {
+            printf(&quot;%#X\x20&quot;, &amp;a[i][j]);
+        }
+        printf(&quot;\n&quot;);
+    }
+    return 0;
+}</pre>
+输出结果是：<br />
+0X18FF18 0X18FF1C 0X18FF20 0X18FF24<br />
+0X18FF28 0X18FF2C 0X18FF30 0X18FF34<br />
+0X18FF38 0X18FF3C 0X18FF40 0X18FF44<br />
+<br />
+我们看到地址都是连续的。所以对于数组 a[3][4]，如果把 &amp;a[0][0] 赋给指针变量 p 的话，那么：
+<pre class="cpp">
+p == &amp;a[0][0];     p + 1 == &amp;a[0][1];   p + 2 == &amp;a[0][2];    p + 3 == &amp;a[0][3];  
+p + 4 == &amp;a[1][0]; p + 5 == &amp;a[1][1];   p + 6 == &amp;a[1][2];    p + 7 == &amp;a[1][3];  
+p + 8 == &amp;a[2][0];  p + 9 == &amp;a[2][1];   p + 10 == &amp;a[2][2];    p + 10 == &amp;a[2][3];  </pre>
+如果仔细观察就会发现有如下规律：
+<p class="info-box">
+p+i*4+j == &amp;a[i][j]</p>
+其中 4 是二维数组的列数。<br />
+<br />
+所以对于二维数组 a[M][N]，如果将 &amp;a[0][0] 赋给指针变量 p 的话，那么 p 访问二维数组元素 a[i][j] 的公式就是：
+<p class="info-box">
+p + i*N +j == &amp;a[i][j]</p>
+下面把验证式八的程序修改一下，验证一下上式：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int a[3][4] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+    int i, j;
+    int *p = &amp;a[0][0];  //把a[0][0]的地址赋给指针变量p
+    for (i=0; i&lt;3; ++i)
+    {
+        for (j=0; j&lt;4; ++j)
+        {
+            printf(&quot;%-2d\x20&quot;, *(p+i*4+j));
+        }
+        printf(&quot;\n&quot;);
+    }
+    return 0;
+}</pre>
+输出结果是：<br />
+1&nbsp; 2&nbsp; 3&nbsp; 4<br />
+5&nbsp; 6&nbsp; 7&nbsp; 8<br />
+9&nbsp; 10 11 12<br />
+<br />
+结果是一样的。两种方法相比，第二种方法更容易接受，因为把 &amp;a[0][0] 赋给指针变量 p 理解起来更容易，而且 p 定义成 int* 型从心理上或从感觉上都更容易接受。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="240.html" title="C++实现可变长度的动态数组" target="_blank">C++实现可变长度的动态数组</a></li>
+<li><a href="4512.html" title="什么是面向对象，Python面向对象（一切皆对象）" target="_blank">什么是面向对象，Python面向对象（一切皆对象）</a></li>
+<li><a href="vip_7675.html" title="C++多文件编程是什么" target="_blank">C++多文件编程是什么</a></li>
+<li><a href="9362.html" title="JS attributes对象（元素属性对象）" target="_blank">JS attributes对象（元素属性对象）</a></li>
+<li><a href="../c/memset.html" title="C语言memset()函数：初始化内存" target="_blank">C语言memset()函数：初始化内存</a></li>
+<li><a href="bbrxj43.html" title="C++循环嵌套详解" target="_blank">C++循环嵌套详解</a></li>
+<li><a href="ctru3e9.html" title="CSS :focus伪类选择器用法详解" target="_blank">CSS :focus伪类选择器用法详解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 227;
+window.arcId = "7118xhRwhP9Cyg3J7iACu38CxoFCkCOlUxyp0SuABdCz6v6tqWb7gXsWUQ";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Python求最大公约数详解</title>
+<meta name="description" content="求任意两个正整数的最大公约数（Greatest Common Divisor，GCD）。 问题分析 如果有一个自然数 a 能被自然数 b 整除，则称 a 为 b 的倍数，b 为 a 的约数。几个自然数公有的约数，叫作这几个" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Python求最大公约数详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">求任意两个正整数的最大公约数（Greatest Common Divisor，GCD）。<br />
+<h2>
+问题分析</h2>
+如果有一个自然数 a 能被自然数 b 整除，则称 a 为 b 的倍数，b 为 a 的约数。几个自然数公有的约数，叫作这几个自然数的公约数。公约数中最大的一个公约数，称为这几个自然数的最大公约数。<br />
+<br />
+根据约数的定义可知，某个数的所有约数必不大于这个数本身，几个自然数的最大公约数必不大于其中任何一个数。要求任意两个正整数的最大公约数即求出一个不大于这两个数中的任何一个，但又能同时整除两个整数的最大自然数。<br />
+<h2>
+算法设计</h2>
+比较简单的思路有两种，第一种，采用穷举法按从小到大（初值为 1，最大值为两个整数当中较小的数）的顺序将所有满足条件的公约数列出，输出其中最大的一个；第二种，按照从大（两整数中较小的数）到小（最小的整数1）的顺序求出第一个能同时整除两个整数的自然数，即为所求。<br />
+<br />
+无论按照从小到大还是从大到小的顺序寻找最大公约数，最关键的是找出两数中较小的数。对于输入的两个正整数 m 和 n，相同的数据可能因为输入顺序不同导致变量 m、n 中存储数据的大小不同，如 m=8、n=4 与 m=4、n=8，但无论变量中值的大小顺序怎么样最后的结果应该是相同的。<br />
+<br />
+为了避免相同数据因输入顺序不同而出现不同的结果，也为了使程序具有一般性，对于每次输入的值先进行大小排序，规定变量 m 中存储大数、变量 n 中存储小数。<br />
+<br />
+两个数的最大公约数有可能是其中较小的数，故在按从大到小的顺序寻找最大公约数时，循环变量 i 的初值从较小的数 n 开始依次递减，去寻找第一个能同时整除两个整数的自然数，并将其输出。需要注意的是，虽然判定条件是 i&gt;0，但在找到第一个满足条件的 i 值后，循环没必要继续进行，如 25 和 15，最大公约数是 5，对于后面的 4、3、2、1 便没必要再去执行。<br />
+<h2>
+确定程序框架</h2>
+程序的流程图如下图所示：
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/221111/2-221111112514957.gif" /></div>
+<h2>
+完整的程序</h2>
+第一种思路，按照从到小的顺序寻找满足条件的自然数：
+<pre class="python">
+if __name__ == &quot;__main__&quot;:
+    print(&quot;请输入两个整数&quot;)
+    m = int(input(&quot;m = &quot;))
+    n = int(input(&quot;n = &quot;))
+    if m &lt; n: # 比较大小，使得m中存储大数，n中存储小数
+        # 交换m和n的值
+        temp = m
+        m = n
+        n = temp
+
+    i = n # 按照从大到小的顺序寻找满足条件的自然数
+    while i &gt; 0:
+        if m % i == 0 and n % i == 0:
+            # 输出满足条件的自然数并结束循环
+            print(&quot;%d 和 %d 的最大公约数是： %d&quot; %(m, n, i))
+            break
+        i -= 1</pre>
+运行结果为：
+<p class="info-box">
+请输入两个整数<br />
+m = 1997<br />
+n = 615<br />
+1997 和 615 的最大公约数是： 1</p>
+<br />
+第二种思路，按照从小到大的顺序穷举两数公约数的程序代码如下：<br />
+<pre class="python">
+if __name__ == &quot;__main__&quot;:
+    print(&quot;请输入两个整数&quot;)
+    m = int(input(&quot;m = &quot;))
+    n = int(input(&quot;n = &quot;))
+    # 比较两个数的大小，进行交换
+    if m &lt; n:
+        temp = n
+        n = m
+        m = temp
+
+    for i in range(1, n):
+        if m % i == 0 and n % i == 0:
+            k = i # 将当前情况下的最大公约数存储在k中
+    print(&quot;%d 和 %d 的最大公约数是：%d&quot; %(m, n, k))</pre>
+运行结果为：
+<p class="info-box">
+请输入两个整数<br />
+m = 1997<br />
+n = 615<br />
+1997 和 615 的最大公约数是： 1</p>
+<h2>
+辗转相除法求最大公约数</h2>
+除了以上两种方法外，早在公元前 300 年左右，欧几里得就在他的著作《几何原本》中给出了求最大公约数高效的解法&mdash;&mdash;辗转相除法。<br />
+<br />
+辗转相除法用到的原理很简单，假设用 f(x,y) 表示 x 和 y 的最大公约数，取 k=x/y，b=x%y，则 x=ky+b，如果一个数能够同时整除 x 和 y，则必能同时整除 b 和 y；而能够同时整除 b 和 y 的数也必能同时整除 x 和 y，即 x 和 y 的公约数与 b 和 y 的公约数是相同的，其最大公约数也是相同的，则有 f(x,y)=f(y,x%y)（y&gt;0），如此便可把原问题转换为求两个更小数的最大公约数，直到其中一个数为 0，剩下的另外一个数就是两者最大的公约数。<br />
+<br />
+例如，12 和 30 的公约数有：1、2、3、6，其中 6 就是 12 和 30 的最大公约数。<br />
+<br />
+欧几里德算法，其思想可概括如下：
+<ul>
+<li>
+用较大的数 m 除以较小的数 n，得到的余数存储到变量 b 中，b=m%n。</li>
+<li>
+上一步中较小的除数 n 和得出的余数 b 构成新的一对数，并分别赋值给 m 和 n，继续做上面的除法。</li>
+<li>
+若余数为 0，其中较小的数（即除数）就是最大公约数。否则重复步骤 1 和步骤 2。</li>
+</ul>
+<br />
+以求 288 和 123 的最大公约数为例，操作如下：
+<p class="info-box">
+288&divide;123=2余42<br />
+123&divide;42=2余39<br />
+42&divide;39=1余3<br />
+39&divide;3=13</p>
+所以 3 就是 288 和 123 的最大公约数。<br />
+<br />
+在进行辗转相除之前同样要确定两数中的大数和小数，将其分别存放在不同变量中。<br />
+<br />
+相应程序段如下：<br />
+<pre class="python">
+if __name__ == &quot;__main__&quot;:
+    print(&quot;请输入两个整数&quot;)
+    m = int(input(&quot;m = &quot;)) # m存储较大数
+    n = int(input(&quot;n = &quot;)) # n存储较小数
+    print(&quot;%d 和 %d 的最大公约数是： &quot; % (m, n), end=&quot;&quot;)
+    # 比较两个数的大小，进行交换，使得m是最大数，n是最小数
+    if m &lt; n:
+        temp = n
+        n = m
+        m = temp
+    b = m % n # b存储m 和 n取模得到的余数
+    while b != 0:
+        m = n # 原来的小数作为下次运算时的大数
+        n = b # 将上一次的余数作为下次相除时的小数
+        b = m % n
+    print(&quot;%d&quot; %n)</pre>
+运行结果为：
+<p class="info-box">
+请输入两个整数<br />
+m = 1997<br />
+n = 615<br />
+1997 和 615 的最大公约数是： 1</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="215.html" title="C++类的定义和使用" target="_blank">C++类的定义和使用</a></li>
+<li><a href="3886.html" title="图解Qt安装（Linux平台）" target="_blank">图解Qt安装（Linux平台）</a></li>
+<li><a href="4301.html" title="Python format()格式化输出方法详解" target="_blank">Python format()格式化输出方法详解</a></li>
+<li><a href="4709.html" title="Python文件基本操作（入门必读）" target="_blank">Python文件基本操作（入门必读）</a></li>
+<li><a href="7561.html" title="Django if标签详解" target="_blank">Django if标签详解</a></li>
+<li><a href="../csharp/indexer.html" title="C#索引器（Indexer）" target="_blank">C#索引器（Indexer）</a></li>
+<li><a href="../c/isascii.html" title="C语言isascii()：判断一个字符是否为ASCII码字符" target="_blank">C语言isascii()：判断一个字符是否为ASCII码字符</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9818;
+window.arcId = "4d06Wly0mbzjaQb4O9clF1V1NKPWKKamgMV21JLUus+oF7M6F/9mC7JNJEw";
+window.typeidChain = "145|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

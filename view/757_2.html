@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Linux读写执行权限（-r、-w、-x）的真正含义</title>
+<meta name="description" content="我们已经知道了权限的赋予方式，但是这些读、写、执行权限到底是什么含义呢？有些人可能会说：你也太小瞧我们了，读、写、执行的含义这么明显，我们还能不知道吗？其实，这些" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Linux读写执行权限（-r、-w、-x）的真正含义</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">通过前面的学习，我们知道了给文件设定权限的重要性，也知道了如何给文件设定权限。那么，读（r）、写（w）、执行（x）权限到底指的是什么呢？<br />
+<br />
+首先要告诉大家的是，这些权限的含义并没有表面上那么简单，甚至同一权限对文件和目录的含义也不相同。<br />
+<h2>
+	rwx 权限对文件的作用</h2>
+文件，是系统中用来存储数据的，包括普通的文本文件、数据库文件、二进制可执行文件，等等。不同的权限对文件的含义如表 1 所示。<br />
+<br />
+<table>
+	<caption>
+		表 1 rwx 权限对文件的作用</caption>
+	<tbody>
+		<tr>
+			<th>
+				rwx 权限</th>
+			<th>
+				对文件的作用</th>
+		</tr>
+		<tr>
+			<td>
+				读权限（r）</td>
+			<td>
+				表示可读取此文件中的实际内容，例如，可以对文件执行 cat、more、less、head、tail 等文件查看命令。</td>
+		</tr>
+		<tr>
+			<td>
+				写权限（w）</td>
+			<td>
+				表示可以编辑、新增或者修改文件中的内容，例如，可以对文件执行 vim、echo 等修改文件数据的命令。注意，无权限不赋予用户删除文件的权利，除非用户对文件的上级目录拥有写权限才可以。</td>
+		</tr>
+		<tr>
+			<td>
+				执行权限（x）</td>
+			<td>
+				表示该文件具有被系统执行的权限。Window系统中查看一个文件是否为可执行文件，是通过扩展名（.exe、.bat 等），但在 Linux 系统中，文件是否能被执行，是通过看此文件是否具有 x 权限来决定的。也就是说，只要文件拥有 x 权限，则此文件就是可执行文件。但是，文件到底能够正确运行，还要看文件中的代码是否正确。</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+对于文件来说，执行权限是最高权限。给用户或群组设定权限时，是否赋予执行权限需要慎重考虑，否则会对系统安装造成严重影响。
+<h2>
+	rwx 权限对目录的作用</h2>
+目录，主要用来记录文件名列表，不同的权限对目录的作用如表 2 所示。<br />
+<br />
+<table>
+	<caption>
+		表 2 rwx 权限对目录的作用</caption>
+	<tbody>
+		<tr>
+			<th>
+				rwx 权限</th>
+			<th>
+				对目录的作用</th>
+		</tr>
+		<tr>
+			<td>
+				读权限（r）</td>
+			<td>
+				表示具有读取目录结构列表的权限，也就是说，可以看到目录中有哪些文件和子目录。一旦对目录拥有 r 权限，就可以在此目录下执行 ls 命令，查看目录中的内容。</td>
+		</tr>
+		<tr>
+			<td>
+				写权限（w）</td>
+			<td>
+				对于目录来说，w 权限是最高权限。对目录拥有 w 权限，表示可以对目录做以下操作：
+				<ul>
+					<li>
+						在此目录中建立新的文件或子目录；</li>
+					<li>
+						删除已存在的文件和目录（无论子文件或子目录的权限是怎样的）；</li>
+					<li>
+						对已存在的文件或目录做更名操作；</li>
+					<li>
+						移动此目录下的文件和目录的位置。</li>
+				</ul>
+				一旦对目录拥有 w 权限，就可以在目录下执行 touch、rm、cp、mv 等命令。</td>
+		</tr>
+		<tr>
+			<td>
+				执行权限（x）</td>
+			<td>
+				目录是不能直接运行的，对目录赋予 x 权限，代表用户可以进入目录，也就是说，赋予 x 权限的用户或群组可以使用 cd 命令。</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+对目录来说，如果只赋予 r 权限，则此目录是无法使用的。很简单，只有 r 权限的目录，用户只能查看目录结构，根本无法进入目录（需要用 x 权限），更不用说使用了。<br />
+<br />
+因此，对于目录来说，常用来设定目录的权限其实只有 0（---）、5（r-x）、7（rwx）这 3 种。<br />
+<br />
+【例 1】<br />
+某目录的权限如下所示：
+<p class="info-box">
+	drwxr--r--.&nbsp; 3&nbsp; root&nbsp; root&nbsp; 4096&nbsp; Jun 25 08:35&nbsp;&nbsp; .ssh</p>
+系统有个账号名称为 vbird，此账户并不包含在 root 群组中，请问 vbird 对这个目录有何权限？是否可切换到此目录中？<br />
+<p class="info-box">
+	答案：vbird 对此目录仅具有 r 的权限，因此 vbird 可以查询此目录下的文件名列表。因为 vbird 不具有 x 的权限，因此 vbird 并不能切换到此目录内。</p>
+<br />
+【例 2】<br />
+假设有个账号名称为dmtsai，他的家目录在/home/dmtsai/，dmtsai对此目录具有[rwx]的权限。若在此目录下有个名为 the_root.data 的文件，该文件的权限如下：
+<p class="info-box">
+	-rwx------. 1 root&nbsp; root&nbsp; 4365 Sep 19 23:20&nbsp; the_root.data</p>
+请问 dmtsai 对此文件的权限为何？可否删除此文件？
+<p class="info-box">
+	答案：由于 dmtsai 对此文件来说是其他人的身份，因此这个文件他无法读、无法编辑也无法执行，也就是说，他无法变动这个文件的内容就是了。但是由于这个文件在他的家目录下，他在此目录下具有 rwx 的完整权限，因此对于 the_root.data 这个文件来说，是能够删除的。</p>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="874_2.html" title="Linux chattr命令详解：修改文件系统的权限属性" target="_blank">Linux chattr命令详解：修改文件系统的权限属性</a></li>
+<li><a href="5569_2.html" title="Go语言数据I/O对象及操作" target="_blank">Go语言数据I/O对象及操作</a></li>
+<li><a href="7226_2.html" title="MySQL函数简介" target="_blank">MySQL函数简介</a></li>
+<li><a href="8174_2.html" title="gdb run（r）命令：启动程序" target="_blank">gdb run（r）命令：启动程序</a></li>
+<li><a href="../python_spider/selenium-using_2.html" title="Python Selenium基本用法" target="_blank">Python Selenium基本用法</a></li>
+<li><a href="../jstl/fn-startswith-endswith_2.html" title="fn:startsWith()和fn:endsWith()函数" target="_blank">fn:startsWith()和fn:endsWith()函数</a></li>
+<li><a href="ni6mjq_2.html" title="C语言是什么（非常详细）" target="_blank">C语言是什么（非常详细）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 757;
+window.arcId = "a91cVOpfZgspYUu0WTJ9kDqKY1xeNxdNnpCImFLZTCaVmBl7XSOm7tBRVg";
+window.typeidChain = "210|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

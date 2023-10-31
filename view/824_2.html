@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Linux yum源搭建及配置（新手必看）</title>
+<meta name="description" content="RPM 包的安装虽然很方便和快捷，但是依赖性实在是很麻烦，尤其是库文件依赖，还要去 rpmfind 网站査找库文件到底属于哪个 RPM 包，从而导致 RPM 包的安装非常烦琐。那么，有没有可以自" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Linux yum源搭建及配置（新手必看）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">RPM 包的安装虽然很方便和快捷，但是依赖性实在是很麻烦，尤其是库文件依赖，还要去 rpmfind 网站査找库文件到底属于哪个 RPM 包，从而导致 RPM 包的安装非常烦琐。那么，有没有可以自动解决依赖性、自动安装的方法呢？<br />
+<br />
+答案是肯定的，yum 在线管理就可以自动处理 RPM 包的依赖性问题，从而大大简化 RPM 包的安装过程。但需要注意的是，首先，yum 安装的还是 RPM 包，其次，yum 安装是需要有可用的 yum 服务器存在的，当然这个 yum 服务器可以在网上，也可以使用光盘在本地搭建。<br />
+<br />
+yum 可以方便地进行 RPM 包的安装、升级、査询和卸载，而且可以自动解决依赖性问题，非常方便和快捷。但是，一定要注意 yum 的卸载功能。yum 在卸载软件的同时会卸载这个软件的依赖包，但是如果卸载的依赖包是系统的必备软件包，就有可能导致系统崩溃。除非你确实知道 yum 在自动卸载时会卸载哪些软件包，否则最好不要执行 yum 卸载。<br />
+<h2>
+	yum源搭建</h2>
+<span style="color:#b22222;">yum 源既可以使用网络 yum 源，也可以使用本地光盘作为 yum 源。</span>要使用网络 yum 源，你的主机必须是正常联网的。<br />
+<br />
+当然，要使用 yum 进行 RPM 包安装，那么必须安装 yum 软件。查看命令如下：
+<p class="info-box">
+	[root@localhost ~]# rpm -qa | grep yum<br />
+	yum-metadata-parser-1.1.2-16.el6.i686<br />
+	yum-3.2.29-30.el6.centos.noarch<br />
+	yum-utils-1.1.30-14.el6.noarch<br />
+	yum-plugin-fastestmirror-1.1.30-14.el6.noarch<br />
+	yum-plugin-security-1.1.30-14.el6.noarch</p>
+如果没有安装，则需要手工使用 RPM 包方式安装。<br />
+<h4>
+	网络yum源服务器搭建</h4>
+在主机网络正常的情况下，CentOS 的 yum 是可以直接使用的，不过我们需要了解一下 yum 源配置文件的内容。<br />
+<br />
+yum 源配置文件保存在 /etc/yum.repos.d/ 目录中，文件的扩展名一定是&quot;*.repo&quot;。也就是说，yum 源配置 文件只要扩展名是&quot;*.repo&quot;就会生效。<br />
+<p class="info-box">
+	[root@localhost ~]# ls /etc/yum.repos.d/<br />
+	CentOS-Base.repo<br />
+	CentOS-Media.repo<br />
+	CentOS-Debuginfo.repo.bak、<br />
+	CentOS-Vault.repo</p>
+这个目录中有 4 个 yum 源配置文件，默认情况下 CentOS-Base.repo 文件生效。我们打开这个文件看看，命令如下：<br />
+<p class="info-box">
+	[root@localhost yum.repos.d]# vim /etc/yum.repos.d/ CentOS-Base.repo<br />
+	[base]<br />
+	name=CentOS-$releasever - Base<br />
+	mirrorlist=http://mirrorlist.centos.org/? release= $releasever&amp;arch=$basearch&amp;repo=os<br />
+	baseurl=http://mirror.centos.org/centos/$releasever/os/$basearch/<br />
+	gpgcheck=1<br />
+	gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6<br />
+	&hellip;省略部分输出&hellip;</p>
+在 CentOS-Base.repo 文件中有 5 个 yum 源容器，这里只列出了 base 容器，其他容器和 base 容器类似。<br />
+<br />
+我们解释一下 base 这个容器：
+<ul>
+	<li>
+		[base]：容器名称，一定要放在[]中。</li>
+	<li>
+		name：容器说明，可以自己随便写。</li>
+	<li>
+		mirrorlist：镜像站点，这个可以注释掉。</li>
+	<li>
+		baseurl：我们的 yum 源服务器的地址。默认是 CentOS 官方的 yum 源服务器，是可以使用的。如果你觉得慢，则可以改成你喜欢的 yum 源地址。</li>
+	<li>
+		enabled：此容器是否生效，如果不写或写成 enabled 则表示此容器生效，写成 enable=0 则表示此容器不生效。</li>
+	<li>
+		gpgcheck：如果为 1 则表示 RPM 的数字证书生效；如果为 0 则表示 RPM 的数字证书不生效。</li>
+	<li>
+		gpgkey：数字证书的公钥文件保存位置。不用修改。</li>
+</ul>
+<br />
+yum 源配置文件默认不需要进行任何修改就可以使用，只要网络可用就行。<br />
+<h4>
+	以本地光盘作为 yum 源服务器</h4>
+如果 Linux 主机不能联网，yum 就不能使用吗？ yum 已经考虑到这个问题，所以在 /etc/yum.repos.d/ 目录下 还有一个 CentOS-Media.repo 文件，这个文件就是以本地光盘作为 yum 源服务器的模板文件，只需要进行简单的修改即可。<br />
+<br />
+1) 放入 CentOS 安装光盘，并挂载光盘到指定位置。命令如下：
+<p class="info-box">
+	[root@localhost ~]# mkdir /mnt/cdrom<br />
+	#创建cdrom目录，作为光盘的挂载点<br />
+	[root@localhost ~]# mount /dev/cdrom /mnt/cdrom/<br />
+	mount: block device/dev/srO is write-protected, mounting read-only<br />
+	#挂载光盘到/mnt/cdrom目录下</p>
+<br />
+2) 修改其他几个 yum 源配置文件的扩展名，让它们失效，因为只有扩展名是&quot;*.repo&quot;的文件才能作为 yum 源配置文件。当然也可以删除其他几个 yum 源配置文件，但是如果删除了，当你又想用网络作为 yum 源时，就没有了参考文件，所以最好还是修改扩展名。 命令如下：<br />
+<p class="info-box">
+	[root@localhost ~]# cd /etc/yum.repos.d/<br />
+	[root@localhost yum.repos.d]# mv CentOS-Base, repo CentOS-Base.repo.bak<br />
+	[root@localhost yum.repos.d]#mv CentOS-Debuginfo.repo CentOS-Debuginfo.repo.bak<br />
+	[root@localhost yum.repos.d]# mv CentOS-Vault.repo CentOS-Vault.repo.bak</p>
+<br />
+3) 修改光盘 yum 源配置文件 CentOS-Media.repo，参照以下方修改：
+<p class="info-box">
+	[root@localhost yum.repos.d]# vim CentOS-Media.repo<br />
+	[c6-media]<br />
+	name=CentOS-$releasever - Media<br />
+	baseurl=file:///mnt/cdrom<br />
+	#地址为你自己的光盘挂载地址<br />
+	#file:///media/cdrom/<br />
+	#file:///media/cdrecorder/<br />
+	#注释这两个的不存在地址<br />
+	gpgcheck=1<br />
+	enabled=1<br />
+	#把enabled=0改为enabled=1, 让这个yum源配置文件生效<br />
+	gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6</p>
+配置完成，现在可以感受一下yum的便捷了。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1070_2.html" title="Linux killall命令：终止特定的一类进程" target="_blank">Linux killall命令：终止特定的一类进程</a></li>
+<li><a href="1088_2.html" title="Linux lsof命令：列出进程调用或打开的文件信息" target="_blank">Linux lsof命令：列出进程调用或打开的文件信息</a></li>
+<li><a href="7003_2.html" title="Java @SafeVarargs注解" target="_blank">Java @SafeVarargs注解</a></li>
+<li><a href="7279_2.html" title="C++ STL插入迭代器适配器（insert_iterator）" target="_blank">C++ STL插入迭代器适配器（insert_iterator）</a></li>
+<li><a href="8191_2.html" title="GDB watch命令：监控变量值的变化" target="_blank">GDB watch命令：监控变量值的变化</a></li>
+<li><a href="../mongodb2/objectid_2.html" title="MongoDB ObjectId" target="_blank">MongoDB ObjectId</a></li>
+<li><a href="../redis2/zrangebyscore_2.html" title="Redis ZRANGEBYSCORE命令" target="_blank">Redis ZRANGEBYSCORE命令</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 824;
+window.arcId = "f085xW61FSuAM65Vq2/VmIMr1kliY+pn2z5QOoMW1dzBpi0II9fpSzbtwg";
+window.typeidChain = "210|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

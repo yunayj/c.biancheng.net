@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>GDB条件断点（condition命令）详解</title>
+<meta name="description" content="前面章节给大家介绍了 GDB 调试器中普通断点、观察断点以及捕捉断点的功能和用法。其中值得一提的是，对于普通断点的建立，可以使用如下格式的 break 命令： (gdb) break ... if cond ..." />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+	<div id="sidebar" class="toggle-target">
+	<div id="contents">
+		<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../gdb/gdb_2.html">GDB</a></dt>
+		<dd>
+        	<span class="channel-num">1</span>
+        	<a href="8123_2.html">GDB是什么？</a>
+        </dd>
+<dd>
+        	<span class="channel-num">2</span>
+        	<a href="8130_2.html">GDB下载和安装教程</a>
+        </dd>
+<dd>
+        	<span class="channel-num">3</span>
+        	<a href="vip_8511_2.html">如何在Windows平台上安装GDB调试器？</a><span class="iconfont iconfont-vip2"></span>
+        </dd>
+<dd>
+        	<span class="channel-num">4</span>
+        	<a href="vip_8512_2.html">Sublime Text配置GDB调试环境</a><span class="iconfont iconfont-vip2"></span>
+        </dd>
+<dd>
+        	<span class="channel-num">5</span>
+        	<a href="8153_2.html">GDB调试C/C++程序的整个过程</a>
+        </dd>
+<dd>
+        	<span class="channel-num">6</span>
+        	<a href="vip_8520_2.html">调用GDB调试器的4种方式</a><span class="iconfont iconfont-vip2"></span>
+        </dd>
+<dd>
+        	<span class="channel-num">7</span>
+        	<a href="8174_2.html">gdb run（r）命令：启动程序</a>
+        </dd>
+<dd>
+        	<span class="channel-num">8</span>
+        	<a href="8189_2.html">GDB break（b）：设置断点</a>
+        </dd>
+<dd>
+        	<span class="channel-num">9</span>
+        	<a href="8191_2.html">如何实时监控变量值的变化情况？</a>
+        </dd>
+<dd>
+        	<span class="channel-num">10</span>
+        	<a href="8199_2.html">GDB catch命令：建立捕捉断点</a>
+        </dd>
+<dd>
+        	<span class="channel-num">11</span>
+        	<a href="8255_2.html">GDB条件断点（condition命令）详解</a>
+        </dd>
+<dd>
+        	<span class="channel-num">12</span>
+        	<a href="8232_2.html">GDB单步调试程序</a>
+        </dd>
+<dd>
+        	<span class="channel-num">13</span>
+        	<a href="vip_8519_2.html">如何使用GDB进行断点调试？</a><span class="iconfont iconfont-vip2"></span>
+        </dd>
+<dd>
+        	<span class="channel-num">14</span>
+        	<a href="8238_2.html">GDB print和display命令：查看变量的值</a>
+        </dd>
+<dd>
+        	<span class="channel-num">15</span>
+        	<a href="vip_8513_2.html">GDB print命令更高级的用法！</a><span class="iconfont iconfont-vip2"></span>
+        </dd>
+<dd>
+        	<span class="channel-num">16</span>
+        	<a href="8219_2.html">GDB禁用和删除断点</a>
+        </dd>
+<dd>
+        	<span class="channel-num">17</span>
+        	<a href="vip_8514_2.html">如何用GDB调试多线程程序？</a><span class="iconfont iconfont-vip2"></span>
+        </dd>
+<dd>
+        	<span class="channel-num">18</span>
+        	<a href="vip_8515_2.html">GDB non-stop模式详解</a><span class="iconfont iconfont-vip2"></span>
+        </dd>
+<dd>
+        	<span class="channel-num">19</span>
+        	<a href="vip_8516_2.html">GDB如何在后台执行调试命令？</a><span class="iconfont iconfont-vip2"></span>
+        </dd>
+<dd>
+        	<span class="channel-num">20</span>
+        	<a href="vip_8517_2.html">GDB调试多进程程序</a><span class="iconfont iconfont-vip2"></span>
+        </dd>
+<dd>
+        	<span class="channel-num">21</span>
+        	<a href="vip_8518_2.html">GDB如何进行反向调试？</a><span class="iconfont iconfont-vip2"></span>
+        </dd>
+<dd>
+        	<span class="channel-num">22</span>
+        	<a href="8291_2.html">GDB handle命令：信号处理</a>
+        </dd>
+<dd>
+        	<span class="channel-num">23</span>
+        	<a href="8282_2.html">GDB frame和backtrace命令：查看栈信息</a>
+        </dd>
+<dd>
+        	<span class="channel-num">24</span>
+        	<a href="7466_2.html">GDB编辑和搜索源码</a>
+        </dd>
+<dd>
+        	<span class="channel-num">25</span>
+        	<a href="8293_2.html">GDB help命令：查看目标命令的具体用法</a>
+        </dd>
+
+	</div>
+</div>
+	<div id="article-wrap">
+		<div id="article">
+			<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../gdb/gdb_2.html">GDB</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+			<h1>GDB条件断点（condition命令）详解</h1>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+			<div id="arc-body">前面章节给大家介绍了 GDB 调试器中普通断点、观察断点以及捕捉断点的功能和用法。其中值得一提的是，对于普通断点的建立，可以使用如下格式的 break 命令：
+<p class="info-box">
+	(gdb) break ... if cond</p>
+... 参数用于指定生成断点的具体位置；cond 参数用于代指某个表达式。通过此方式建立的普通断点，只有当表达式 cond 成立（值为 True）时，才会发挥它的作用；反之，断点并不会使程序停止执行。<br />
+<br />
+类似上面这种，以某个表达式的是否成立作为条件，从而决定自身是否生效的断点，又称为<span style="color:#008000;">条件断点</span>。除了普通断点外，观察断点和捕捉断点也可以成为条件断点。<br />
+<br />
+需要说明的是，创建普通条件断点的方式，也同样适用于观察条件断点。通过执行如下命令，即可直接生成一个观察条件断点：
+<p class="info-box">
+	(gdb) watch expr if cond</p>
+参数 expr 表示要观察的变量或表达式；参数 cond 用于代指某个表达式。<br />
+<br />
+但是，以上创建条件断点的方法，不适用于捕捉断点。换句话说，捕捉条件断点无法直接生成，需要借助 condition 命令为现有捕捉断点增添一个 cond 表达式，才能使其变成条件断点。<br />
+<br />
+总的来说，借助 condition 命令，我们可以将现有的普通断点、观察断点以及捕捉断点变成条件断点；而普通条件断点和观察条件断点，可以分别通过 break if 命令和 watch if 命令直接生成。<br />
+<br />
+接下来，我将给大家详细地讲解 condition 命令的用法。
+<h2>
+	GDB condition命令</h2>
+严格来说，condition 命令的功能是：既可以为现有的普通断点、观察断点以及捕捉断点添加条件表达式，也可以对条件断点的条件表达式进行修改。<br />
+<br />
+condition 命令没有缩写形式，使用方法很简单，语法格式如下：
+<p class="info-box">
+	(gdb) condition bnum expression<br />
+	(gdb) condition bnum</p>
+参数 bnum 用于代指目标断点的编号；参数 expression 表示为断点添加或修改的条件表达式。<br />
+<br />
+以上 2 种语法格式中，第 1 种用于为 bnum 编号的断点添加或修改 expression 条件表达式；第 2 种用于删除 bnum 编号断点的条件表达式，使其变成普通的无条件断点。<br />
+<br />
+举个例子，这里以调试如下 C++ 程序为例：
+<pre class="cpp">
+#include &lt;iostream&gt;
+using namespace std;
+int main(){
+    int num = 1;
+    while(num&lt;20){
+        try{
+            throw num;
+        }catch(int &amp;e){
+            num++;
+        }
+    }
+    cout &lt;&lt; num &lt;&lt; endl;
+    return 0;
+}</pre>
+程序存储位置为<code>~/demo/main.cpp</code>，并已经生成了可供 GDB 调试器使用的执行文件：
+<p class="info-box">
+	[root@bogon demo]# ls<br />
+	main.cpp&nbsp; main.exe<br />
+	[root@bogon demo]# gdb main.exe -q<br />
+	Reading symbols from ~/demo/main.exe...done.<br />
+	(gdb) l<br />
+	1 #include &lt;iostream&gt;<br />
+	2 using namespace std;<br />
+	3 int main(){<br />
+	4&nbsp;&nbsp;&nbsp;&nbsp; int num = 1;<br />
+	5&nbsp;&nbsp;&nbsp;&nbsp; while(num&lt;20){<br />
+	6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try{<br />
+	7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw num;<br />
+	8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }catch(int &amp;e){<br />
+	9&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; num++;<br />
+	10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />
+	(gdb)<br />
+	11&nbsp;&nbsp;&nbsp;&nbsp; }<br />
+	12&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt; num &lt;&lt; endl;<br />
+	13&nbsp;&nbsp;&nbsp;&nbsp; return 0;<br />
+	14 }<br />
+	(gdb)</p>
+<br />
+接下来，为读者演示 condition 命令的功能和用法：
+<p class="info-box">
+	(gdb) b 9&nbsp; &nbsp; &nbsp;&lt;--添加普通断点<br />
+	Breakpoint 1 at 0x12d0: file main.cpp, line 9.<br />
+	(gdb) r<br />
+	Starting program: /home/test/demo/main.exe<br />
+	<br />
+	Breakpoint 1, main () at main.cpp:9<br />
+	9&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; num++;<br />
+	(gdb) rwatch num&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;-- 添加观察断点<br />
+	Hardware read watchpoint 2: num<br />
+	(gdb) catch throw int&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;-- 添加捕捉断点<br />
+	Catchpoint 3 (throw)<br />
+	(gdb) info break<br />
+	Num&nbsp;&nbsp;&nbsp;&nbsp; Type&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Disp Enb Address&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; What<br />
+	1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; breakpoint&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keep y&nbsp; &nbsp; &nbsp;0x00005555555552d0&nbsp; in main() at main.cpp:9&nbsp; &nbsp; breakpoint already hit 1 time<br />
+	2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; read watchpoint keep y&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;num<br />
+	3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catchpoint&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keep y&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;exception throw&nbsp; &nbsp; &nbsp; matching: int<br />
+	(gdb) condition 1 num==3&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;-- 为普通断点添加条件表达式<br />
+	(gdb) condition 2 num==5&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;-- 为观察断点添加条件表达式<br />
+	(gdb) condition 3 num==7&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;-- 为捕捉断点添加条件表达式<br />
+	(gdb) c<br />
+	Continuing.<br />
+	<br />
+	Breakpoint 1, main () at main.cpp:9&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;-- 普通条件断点触发<br />
+	9&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; num++;<br />
+	(gdb) p num<br />
+	$1 = 3<br />
+	(gdb) c<br />
+	Continuing.<br />
+	<br />
+	Hardware read watchpoint 2: num&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;-- 观察条件断点触发<br />
+	<br />
+	Value = 5<br />
+	0x000055555555526f in main () at main.cpp:7<br />
+	7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw num;<br />
+	(gdb) c<br />
+	Continuing.<br />
+	<br />
+	Catchpoint 3 (exception thrown), 0x00007ffff7e81762 in __cxa_throw ()&nbsp; &nbsp; &nbsp; &nbsp;&lt;-- 捕捉条件断点触发<br />
+	&nbsp;&nbsp; from /lib/x86_64-linux-gnu/libstdc++.so.6<br />
+	(gdb) up<br />
+	#1&nbsp; 0x0000555555555285 in main () at main.cpp:7<br />
+	7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw num;<br />
+	(gdb) p num<br />
+	$2 = 7<br />
+	(gdb)</p>
+可以看到，通过借助 condition 命令为不同类型断点设置条件表达式，只有当条件表达式成立（值为 True）时，相应的断点才会触发从而使程序暂停运行。<br />
+<h4>
+	GDB ignore命令</h4>
+ignore 命令也可以使一个断点成为条件断点，但这里的&ldquo;条件&rdquo;并非自定义的表达式，而仅为一个整数，它用来表示该断点失效的次数。也就会说，ignore 命令可以使目标断点暂时失去作用，当断点失效的次数超过指定次数时，断点的功能会自动恢复。<br />
+<br />
+ignore 命令也没有缩写形式，其语法格式如下：
+<p class="info-box">
+	ignore bnum count</p>
+参数 bnum 为某个断点的编号；参数 count 用于指定该断点失效的次数。<br />
+<br />
+仍以 main.exe 为例：
+<p class="info-box">
+	(gdb) b 9<br />
+	Breakpoint 1 at 0x400a33: file main.cpp, line 9.<br />
+	(gdb) r<br />
+	Starting program: ~/demo/main.exe<br />
+	<br />
+	Breakpoint 1, main () at main.cpp:9<br />
+	9&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; num++;<br />
+	(gdb) p num<br />
+	$1 = 1<br />
+	<span style="color:#008000;">(gdb) ignore 1 3</span><br />
+	Will ignore next 3 crossings of breakpoint 1.<br />
+	(gdb) c<br />
+	Continuing.<br />
+	<br />
+	Breakpoint 1, main () at main.cpp:9<br />
+	9&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; num++;<br />
+	(gdb) p num<br />
+	$2 = 5<br />
+	(gdb)</p>
+可以看到，执行 ignore 命令之前，num 变量的值为 1。借助 ignore 命令使编号为 1（作用于第 9 行）的断点失效 3 次后，继续执行程序，最终程序仍暂停至第 9 行，此时 num 的值变为 5。这这恰恰证明了 num 从 1 递增至 5 的过程中，编号为 1 的断点失效了 3 次。<br />
+</div>
+			<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2186_2.html" title="Python逻辑运算符及其用法" target="_blank">Python逻辑运算符及其用法</a></li>
+<li><a href="vip_2282_2.html" title="C++虚继承下的内存模型" target="_blank">C++虚继承下的内存模型</a></li>
+<li><a href="4798_2.html" title="Java ResultSet.getString()方法：获取String类型的数据" target="_blank">Java ResultSet.getString()方法：获取String类型的数据</a></li>
+<li><a href="5700_2.html" title="JS函数调用（4种方法）" target="_blank">JS函数调用（4种方法）</a></li>
+<li><a href="7580_2.html" title="Django模板过滤器用法详解" target="_blank">Django模板过滤器用法详解</a></li>
+<li><a href="../pygame/time_2.html" title="Pygame Time时间控制详解" target="_blank">Pygame Time时间控制详解</a></li>
+<li><a href="bbjf9ap_2.html" title="MATLAB复数及其运算" target="_blank">MATLAB复数及其运算</a></li>
+</ul>
+</div>
+		</div>
+		
+	</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8255;
+window.arcId = "b0fbvuRrCWMGOqX9xea2bQTF/BGdnr6JEcpXtigzkIKKKmU6ZotPkxNHsRo";
+window.typeidChain = "154";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/view/8199.html";
+window.nextPageURL = "/view/8232.html";
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

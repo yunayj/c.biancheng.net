@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>extern关键字，C语言extern关键字用法详解</title>
+<meta name="description" content="我们知道，程序的编译单位是源程序文件，一个源文件可以包含一个或若干个函数。在函数内定义的变量是局部变量，而在函数之外定义的变量则称为外部变量，外部变量也就是我们所" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>extern关键字，C语言extern关键字用法详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">我们知道，程序的编译单位是源程序文件，一个源文件可以包含一个或若干个函数。在函数内定义的变量是局部变量，而在函数之外定义的变量则称为外部变量，外部变量也就是我们所讲的全局变量。它的存储方式为静态存储，其生存周期为整个程序的生存周期。全局变量可以为本文件中的其他函数所共用，它的有效范围为从定义变量的位置开始到本源文件结束。<br />
+<br />
+然而，如果全局变量不在文件的开头定义，有效的作用范围将只限于其定义处到文件结束。如果在定义点之前的函数想引用该全局变量，则应该在引用之前用关键字 extern 对该变量作&ldquo;外部变量声明&rdquo;，表示该变量是一个已经定义的外部变量。有了此声明，就可以从&ldquo;声明&rdquo;处起，合法地使用该外部变量。<br />
+<br />
+来看一个简单的例子：
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+int max(int x,int y);
+int main(void)
+{
+    int result;
+    /*外部变量声明*/
+    extern int g_X;
+    extern int g_Y;
+    result = max(g_X,g_Y);
+    printf(&quot;the max value is %d\n&quot;,result);
+    return 0;
+}
+/*定义两个全局变量*/
+int g_X = 10;
+int g_Y = 20;
+int max(int x, int y)
+{
+    return (x&gt;y ? x : y);
+}</pre>
+代码中，全局变量 g_X 与 g_Y 是在 main 函数之后声明的，因此它的作用范围不在 main 函数中。如果我们需要在 main 函数中调用它们，就必须使用 extern 来对变量 g_X 与 g_Y 作&ldquo;外部变量声明&rdquo;，以扩展全局变量的作用域。也就是说，如果在变量定义之前要使用该变量，则应在使用之前加 extern 声明变量，使作用域扩展到从声明开始到本文件结束。<br />
+<br />
+如果整个工程由多个源文件组成，在一个源文件中想引用另外一个源文件中已经定义的外部变量，同样只需在引用变量的文件中用 extern 关键字加以声明即可。下面就来看一个多文件的示例:<br />
+<pre class="cpp">
+/****max.c****/
+#include &lt;stdio.h&gt;
+/*外部变量声明*/
+extern int g_X ;
+extern int g_Y ;
+int max()
+{
+    return (g_X &gt; g_Y ? g_X : g_Y);
+}
+
+/***main.c****/
+#include &lt;stdio.h&gt;
+/*定义两个全局变量*/
+int g_X=10;
+int g_Y=20;
+int max();
+int main(void)
+{
+    int result;
+    result = max();
+    printf(&quot;the max value is %d\n&quot;,result);
+    return 0;
+}</pre>
+运行结果为：<br />
+the max value is 20<br />
+<br />
+对于多个文件的工程，都可以采用上面这种方法来操作。对于模块化的程序文件，可在其文件中预先留好外部变量的接口，也就是只采用 extern 声明变量，而不定义变量，max.c 文件中的 g_X 与 g_Y 就是如此操作的。<br />
+<br />
+通常，这些外部变量的接口都是在模块程序的头文件中声明的，当需要使用该模块时，只需要在使用时具体定义一下这些外部变量即可。main.c 里的 g_X 与 g_Y 则是相关示例。<br />
+<br />
+不过，需要特别注意的是，由于用 extern 引用外部变量，可以在引用的模块内修改其变量的值，因此，如果有多个文件同时要对应用的变量进行操作，而且可能会修改该变量，那就会影响其他模块的使用。因此，我们要慎重使用。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="339.html" title="C语言内联函数" target="_blank">C语言内联函数</a></li>
+<li><a href="2187.html" title="Python三目运算符（三元运算符）用法详解" target="_blank">Python三目运算符（三元运算符）用法详解</a></li>
+<li><a href="../mysql/ceil_celing.html" title="MySQL CEIL和CELING函数：向上取整" target="_blank">MySQL CEIL和CELING函数：向上取整</a></li>
+<li><a href="../c/isdigit.html" title="C语言isdigit()函数：判断一个字符是否为数字" target="_blank">C语言isdigit()函数：判断一个字符是否为数字</a></li>
+<li><a href="vip_6064.html" title="Python函数式编程（map()、filter()和reduce()）详解" target="_blank">Python函数式编程（map()、filter()和reduce()）详解</a></li>
+<li><a href="7562.html" title="Django for标签详解" target="_blank">Django for标签详解</a></li>
+<li><a href="nl3cvlo.html" title="C# LastIndexOf()：查找字符串最后一次出现的位置" target="_blank">C# LastIndexOf()：查找字符串最后一次出现的位置</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 404;
+window.arcId = "000edePz/mj3mIFBUz6+BUwofHzG9mV1GpR/y/41ktctnUvaoBbcU8k4dQ";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Go语言strconv包：字符串和数值类型的相互转换</title>
+<meta name="description" content="除了字符串、文字符号和字节之间的转换，我们常常也需要相互转换数值及其字符串表示形式。这由 strconv 包的函数完成。 要将整数转换成字符串，一种选择是使用 fmt.Sprintf ，另一种做" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Go语言strconv包：字符串和数值类型的相互转换</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在实际开发中我们往往需要对一些常用的数据类型进行转换，如 string、int、int64、float 等数据类型之间的转换，Go语言中的 strconv 包为我们提供了字符串和基本数据类型之间的转换功能。<br />
+<br />
+strconv 包中常用的函数包括 Atoi()、Itia()、parse 系列函数、format 系列函数、append 系列函数等，下面就来分别介绍一下。<br />
+<h2>
+string 与 int 类型之间的转换</h2>
+字符串和整型之间的转换是我们平时编程中使用的最多的，下面就来介绍一下具体的操作。<br />
+<h4>
+Itoa()：整型转字符串</h4>
+Itoa() 函数用于将 int 类型数据转换为对应的字符串类型，函数签名如下。
+<p class="info-box">
+func Itoa(i int) string</p>
+示例代码如下：<br />
+<pre class="go">
+func main() {
+    num := 100
+    str := strconv.Itoa(num)
+    fmt.Printf(&quot;type:%T value:%#v\n&quot;, str, str)
+}</pre>
+运行结果如下所示：
+<p class="info-box">
+type:string value:&quot;100&quot;</p>
+<h4>
+Atoi()：字符串转整型</h4>
+Atoi() 函数用于将字符串类型的整数转换为 int 类型，函数签名如下。
+<p class="info-box">
+func Atoi(s string) (i int, err error)</p>
+通过函数签名可以看出 Atoi() 函数有两个返回值，i 为转换成功的整型，err 在转换成功是为空转换失败时为相应的错误信息。<br />
+<br />
+示例代码如下：<br />
+<pre class="go">
+func main() {
+    str1 := &quot;110&quot;
+    str2 := &quot;s100&quot;
+    num1, err := strconv.Atoi(str1)
+    if err != nil {
+        fmt.Printf(&quot;%v 转换失败！&quot;, str1)
+    } else {
+        fmt.Printf(&quot;type:%T value:%#v\n&quot;, num1, num1)
+    }
+    num2, err := strconv.Atoi(str2)
+    if err != nil {
+        fmt.Printf(&quot;%v 转换失败！&quot;, str2)
+    } else {
+        fmt.Printf(&quot;type:%T value:%#v\n&quot;, num2, num2)
+    }
+}</pre>
+运行结果如下所示：
+<p class="info-box">
+type:int value:110<br />
+s100 转换失败！</p>
+<h2>
+Parse 系列函数</h2>
+Parse 系列函数用于将字符串转换为指定类型的值，其中包括 ParseBool()、ParseFloat()、ParseInt()、ParseUint()。<br />
+<h4>
+ParseBool()</h4>
+ParseBool() 函数用于将字符串转换为 bool 类型的值，它只能接受 1、0、t、f、T、F、true、false、True、False、TRUE、FALSE，其它的值均返回错误，函数签名如下。
+<p class="info-box">
+func ParseBool(str string) (value bool, err error)</p>
+示例代码如下：
+<pre class="go">
+func main() {
+    str1 := &quot;110&quot;
+    boo1, err := strconv.ParseBool(str1)
+    if err != nil {
+        fmt.Printf(&quot;str1: %v\n&quot;, err)
+    } else {
+        fmt.Println(boo1)
+    }
+    str2 := &quot;t&quot;
+    boo2, err := strconv.ParseBool(str2)
+    if err != nil {
+        fmt.Printf(&quot;str2: %v\n&quot;, err)
+    } else {
+        fmt.Println(boo2)
+    }
+}</pre>
+运行结果如下：
+<p class="info-box">
+str1: strconv.ParseBool: parsing &quot;110&quot;: invalid syntax<br />
+true</p>
+<h4>
+ParseInt()</h4>
+ParseInt() 函数用于返回字符串表示的整数值（可以包含正负号），函数签名如下：<br />
+<p class="info-box">
+func ParseInt(s string, base int, bitSize int) (i int64, err error)</p>
+参数说明：
+<ul>
+<li>
+base 指定进制，取值范围是 2 到 36。如果 base 为 0，则会从字符串前置判断，&ldquo;0x&rdquo;是 16 进制，&ldquo;0&rdquo;是 8 进制，否则是 10 进制。</li>
+<li>
+bitSize 指定结果必须能无溢出赋值的整数类型，0、8、16、32、64 分别代表 int、int8、int16、int32、int64。</li>
+<li>
+返回的 err 是 *NumErr 类型的，如果语法有误，err.Error = ErrSyntax，如果结果超出类型范围 err.Error = ErrRange。</li>
+</ul>
+<br />
+示例代码如下：<br />
+<pre class="go">
+func main() {
+    str := &quot;-11&quot;
+    num, err := strconv.ParseInt(str, 10, 0)
+    if err != nil {
+        fmt.Println(err)
+    } else {
+        fmt.Println(num)
+    }
+}</pre>
+运行结果如下：
+<p class="info-box">
+-11</p>
+<h4>
+ParseUnit()</h4>
+ParseUint() 函数的功能类似于 ParseInt() 函数，但 ParseUint() 函数不接受正负号，用于无符号整型，函数签名如下：
+<p class="info-box">
+func ParseUint(s string, base int, bitSize int) (n uint64, err error)</p>
+示例代码如下：
+<pre class="go">
+func main() {
+    str := &quot;11&quot;
+    num, err := strconv.ParseUint(str, 10, 0)
+    if err != nil {
+        fmt.Println(err)
+    } else {
+        fmt.Println(num)
+    }
+}</pre>
+运行结果如下：
+<p class="info-box">
+11</p>
+<h4>
+ParseFloat()</h4>
+ParseFloat() 函数用于将一个表示浮点数的字符串转换为 float 类型，函数签名如下。
+<p class="info-box">
+func ParseFloat(s string, bitSize int) (f float64, err error)</p>
+参数说明：
+<ul>
+<li>
+如果 s 合乎语法规则，函数会返回最为接近 s 表示值的一个浮点数（使用 IEEE754 规范舍入）。</li>
+<li>
+bitSize 指定了返回值的类型，32 表示 float32，64 表示 float64；</li>
+<li>
+返回值 err 是 *NumErr 类型的，如果语法有误 err.Error=ErrSyntax，如果返回值超出表示范围，返回值 f 为 &plusmn;Inf，err.Error= ErrRange。</li>
+</ul>
+<br />
+示例代码如下：
+<pre class="go">
+func main() {
+    str := &quot;3.1415926&quot;
+    num, err := strconv.ParseFloat(str, 64)
+    if err != nil {
+        fmt.Println(err)
+    } else {
+        fmt.Println(num)
+    }
+}</pre>
+运行结果如下：
+<p class="info-box">
+3.1415926</p>
+Parse 系列函数都有两个返回值，第一个返回值是转换后的值，第二个返回值为转化失败的错误信息。
+<h2>
+Format 系列函数</h2>
+Format 系列函数实现了将给定类型数据格式化为字符串类型的功能，其中包括 FormatBool()、FormatInt()、FormatUint()、FormatFloat()。<br />
+<h4>
+FormatBool()</h4>
+FormatBool() 函数可以一个 bool 类型的值转换为对应的字符串类型，函数签名如下。
+<p class="info-box">
+func FormatBool(b bool) string</p>
+示例代码如下：
+<pre class="go">
+func main() {
+    num := true
+    str := strconv.FormatBool(num)
+    fmt.Printf(&quot;type:%T,value:%v\n &quot;, str, str)
+}</pre>
+运行结果如下：
+<p class="info-box">
+type:string,value:true</p>
+<h4>
+FormatInt()</h4>
+FormatInt() 函数用于将整型数据转换成指定进制并以字符串的形式返回，函数签名如下：
+<p class="info-box">
+func FormatInt(i int64, base int) string</p>
+其中，参数 i 必须是 int64 类型，参数 base 必须在 2 到 36 之间，返回结果中会使用小写字母&ldquo;a&rdquo;到&ldquo;z&rdquo;表示大于 10 的数字。<br />
+<br />
+示例代码如下：
+<pre class="go">
+func main() {
+    var num int64 = 100
+    str := strconv.FormatInt(num, 16)
+    fmt.Printf(&quot;type:%T,value:%v\n &quot;, str, str)
+}</pre>
+运行结果如下：
+<p class="info-box">
+type:string,value:64</p>
+<h4>
+FormatUint()</h4>
+FormatUint() 函数与 FormatInt() 函数的功能类似，但是参数 i 必须是无符号的 uint64 类型，函数签名如下。
+<p class="info-box">
+func FormatUint(i uint64, base int) string</p>
+示例代码如下：
+<pre class="go">
+func main() {
+    var num uint64 = 110
+    str := strconv.FormatUint(num, 16)
+    fmt.Printf(&quot;type:%T,value:%v\n &quot;, str, str)
+}</pre>
+运行结果如下：
+<p class="info-box">
+type:string,value:6e</p>
+<h4>
+FormatFloat()</h4>
+FormatFloat() 函数用于将浮点数转换为字符串类型，函数签名如下：
+<p class="info-box">
+func FormatFloat(f float64, fmt byte, prec, bitSize int) string</p>
+参数说明：
+<ul>
+<li>
+bitSize 表示参数 f 的来源类型（32 表示 float32、64 表示 float64），会据此进行舍入。</li>
+<li>
+fmt 表示格式，可以设置为&ldquo;f&rdquo;表示 -ddd.dddd、&ldquo;b&rdquo;表示 -ddddp&plusmn;ddd，指数为二进制、&ldquo;e&rdquo;表示 -d.dddde&plusmn;dd 十进制指数、&ldquo;E&rdquo;表示 -d.ddddE&plusmn;dd 十进制指数、&ldquo;g&rdquo;表示指数很大时用&ldquo;e&rdquo;格式，否则&ldquo;f&rdquo;格式、&ldquo;G&rdquo;表示指数很大时用&ldquo;E&rdquo;格式，否则&ldquo;f&rdquo;格式。</li>
+<li>
+prec 控制精度（排除指数部分）：当参数 fmt 为&ldquo;f&rdquo;、&ldquo;e&rdquo;、&ldquo;E&rdquo;时，它表示小数点后的数字个数；当参数 fmt 为&ldquo;g&rdquo;、&ldquo;G&rdquo;时，它控制总的数字个数。如果 prec 为 -1，则代表使用最少数量的、但又必需的数字来表示 f。</li>
+</ul>
+<br />
+示例代码如下：
+<pre class="go">
+func main() {
+    var num float64 = 3.1415926
+    str := strconv.FormatFloat(num, &#39;E&#39;, -1, 64)
+    fmt.Printf(&quot;type:%T,value:%v\n &quot;, str, str)
+}</pre>
+运行结果如下：
+<p class="info-box">
+type:string,value:3.1415926E+00</p>
+<h2>
+Append 系列函数</h2>
+Append 系列函数用于将指定类型转换成字符串后追加到一个切片中，其中包含 AppendBool()、AppendFloat()、AppendInt()、AppendUint()。<br />
+<br />
+Append 系列函数和 Format 系列函数的使用方法类似，只不过是将转换后的结果追加到一个切片中。<br />
+<br />
+示例代码如下：
+<pre class="go">
+package main
+import (
+    &quot;fmt&quot;
+    &quot;strconv&quot;
+)
+func main() {
+    // 声明一个slice
+    b10 := []byte(&quot;int (base 10):&quot;)
+  
+    // 将转换为10进制的string，追加到slice中
+    b10 = strconv.AppendInt(b10, -42, 10)
+    fmt.Println(string(b10))
+    b16 := []byte(&quot;int (base 16):&quot;)
+    b16 = strconv.AppendInt(b16, -42, 16)
+    fmt.Println(string(b16))
+}</pre>
+运行结果如下：
+<p class="info-box">
+int (base 10):-42<br />
+int (base 16):-2a</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1398.html" title="C++类对象的创建和使用（详解版）" target="_blank">C++类对象的创建和使用（详解版）</a></li>
+<li><a href="vip_1794.html" title="C语言在屏幕的任意位置输出字符，开发小游戏的第一步" target="_blank">C语言在屏幕的任意位置输出字符，开发小游戏的第一步</a></li>
+<li><a href="4798.html" title="Java ResultSet.getString()方法：获取String类型的数据" target="_blank">Java ResultSet.getString()方法：获取String类型的数据</a></li>
+<li><a href="5732.html" title="Java直接量（字面量）" target="_blank">Java直接量（字面量）</a></li>
+<li><a href="../jsp2/first-jsp.html" title="第一个JSP程序" target="_blank">第一个JSP程序</a></li>
+<li><a href="../jstl/c-import.html" title="&lt;c:import&gt;标签" target="_blank">&lt;c:import&gt;标签</a></li>
+<li><a href="../c/cosh.html" title="C语言cosh()：求双曲余弦" target="_blank">C语言cosh()：求双曲余弦</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 5112;
+window.arcId = "5554fO5wMqZXmzXv/74yYIkYTjQVOtDzeLNCmxQz3YnDS6f+KMkkMqlIkAU";
+window.typeidChain = "6|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

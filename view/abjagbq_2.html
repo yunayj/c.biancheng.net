@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C++ list容器详解</title>
+<meta name="description" content="C++ 标准库中的 std::list 是一个双向链表容器，定义在 list 头文件中。 虽然 vector 容器解决了数组存在的一些问题，但本质来讲 vector 还是一种数组，其元素在内存上是连续排列的，插入和" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C++ list容器详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在 C++ 中，虽然 vector 容器解决了数组存在的一些问题，但本质来讲 vector 还是一种数组，其元素在内存上是连续排列的，插入和删除元素的效率比较低。为了弥补 vector 的不足，C++ 引入了 list 容器。<br />
+<br />
+list 是一个双向链表容器，定义在<code style="font-size: 14px;">&lt;list&gt;</code>头文件中。list 容器中的元素不是连续排放的，元素与元素之间是靠指针维系，即每一个元素都配备两个指针，分别指向它的下一个元素和前一个元素。<br />
+<br />
+list 容器最大的优点是插入、删除元素的效率高。因为链表的节点间不是紧邻排列的，而是通过指针关联起来的，这样在插入、删除元素时只要重新设定指针的指向即可，而不需要移动元素。<br />
+<br />
+list 容器的缺点是查找元素比较慢，因为元素间不是紧邻排列的，所以不能使用下标访问某个节点，即不能随机访问元素。<br />
+<h2>
+	list容器的构造</h2>
+list 容器本质是一个模板类，它提供了多种构造函数，以便适应不同的应用场景，包括：<br />
+<pre class="info-box">
+// 创建一个空的list容器
+explicit list (const allocator_type&amp; alloc = allocator_type());
+
+// 创建一个有 n 个元素的 list 容器，这些元素进行默认初始化
+explicit list (size_type n);
+
+// 创建一个有 n 个元素的 list 容器，并将这些元素初始化为 val
+list (size_type n, const value_type&amp; val, const allocator_type&amp; alloc = allocator_type());
+
+// 从两个迭代器 first 和 last 指定的范围中复制元素到新的 list 容器中
+template &lt;class InputIterator&gt; 
+list (InputIterator first, InputIterator last, const allocator_type&amp; alloc = allocator_type());
+
+// 拷贝构造函数，创建一个与 x 相同的新 list 容器
+list (const list&amp; x);
+list (const list&amp; x, const allocator_type&amp; alloc);
+
+// 移动构造函数，创建一个新的 list 容器，并从 x 中&ldquo;移动&rdquo;数据
+list (list&amp;&amp; x);
+list (list&amp;&amp; x, const allocator_type&amp; alloc);
+
+// 从一个初始化列表 il 中复制元素到新的 list 容器中
+list (initializer_list&lt;value_type&gt; il, const allocator_type&amp; alloc = allocator_type());</pre>
+下面是一个完整的 C++ 示例，演示了用各种构造函数来创建 list 容器。<br />
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;list&gt;
+
+int main() {
+    // 使用默认构造函数创建一个空的 list
+    std::list&lt;int&gt; list1;
+    std::cout &lt;&lt; &quot;list1: &quot;;
+    for (const auto&amp; elem : list1) {
+        std::cout &lt;&lt; elem &lt;&lt; &#39; &#39;;
+    }
+    std::cout &lt;&lt; &#39;\n&#39;;
+
+    // 创建一个含有 5 个元素的 list，每个元素进行默认初始化（对于 int 类型，这通常意味着初始化为 0）
+    std::list&lt;int&gt; list2(5);
+    std::cout &lt;&lt; &quot;list2: &quot;;
+    for (const auto&amp; elem : list2) {
+        std::cout &lt;&lt; elem &lt;&lt; &#39; &#39;;
+    }
+    std::cout &lt;&lt; &#39;\n&#39;;
+
+    // 创建一个含有 3 个元素的 list，每个元素都初始化为 7
+    std::list&lt;int&gt; list3(3, 7);
+    std::cout &lt;&lt; &quot;list3: &quot;;
+    for (const auto&amp; elem : list3) {
+        std::cout &lt;&lt; elem &lt;&lt; &#39; &#39;;
+    }
+    std::cout &lt;&lt; &#39;\n&#39;;
+
+    // 使用范围构造函数，从另一个 list（list3）复制元素
+    std::list&lt;int&gt; list4(list3.begin(), list3.end());
+    std::cout &lt;&lt; &quot;list4: &quot;;
+    for (const auto&amp; elem : list4) {
+        std::cout &lt;&lt; elem &lt;&lt; &#39; &#39;;
+    }
+    std::cout &lt;&lt; &#39;\n&#39;;
+
+    // 使用拷贝构造函数，从另一个 list（list4）复制元素
+    std::list&lt;int&gt; list5(list4);
+    std::cout &lt;&lt; &quot;list5: &quot;;
+    for (const auto&amp; elem : list5) {
+        std::cout &lt;&lt; elem &lt;&lt; &#39; &#39;;
+    }
+    std::cout &lt;&lt; &#39;\n&#39;;
+
+    // 使用移动构造函数，从另一个 list（list5）移动元素
+    std::list&lt;int&gt; list6(std::move(list5));
+    std::cout &lt;&lt; &quot;list6: &quot;;
+    for (const auto&amp; elem : list6) {
+        std::cout &lt;&lt; elem &lt;&lt; &#39; &#39;;
+    }
+    std::cout &lt;&lt; &#39;\n&#39;;
+
+    // 使用 initializer_list 初始化
+    std::list&lt;int&gt; list7 = {1, 2, 3, 4, 5};
+    std::cout &lt;&lt; &quot;list7: &quot;;
+    for (const auto&amp; elem : list7) {
+        std::cout &lt;&lt; elem &lt;&lt; &#39; &#39;;
+    }
+    std::cout &lt;&lt; &#39;\n&#39;;
+
+    return 0;
+}</pre>
+运行结果为：
+<p class="info-box">
+	list1:<br />
+	list2: 0 0 0 0 0<br />
+	list3: 7 7 7<br />
+	list4: 7 7 7<br />
+	list5: 7 7 7<br />
+	list6: 7 7 7<br />
+	list7: 1 2 3 4 5</p>
+<h2>
+	list容器的使用</h2>
+list 容器常做的操作就是插入和删除元素，可以借助 list 模板类中提供的成员函数实现。<br />
+<br />
+下表罗列出了 list 模板类提供的所有成员函数以及各自的功能。<br />
+<br />
+<table>
+	<caption>
+		表 1&nbsp;list 成员函数即功能</caption>
+	<tbody>
+		<tr>
+			<th>
+				成员函数</th>
+			<th>
+				功能</th>
+		</tr>
+		<tr>
+			<td>
+				begin()</td>
+			<td>
+				返回指向容器中第一个元素的双向迭代器。</td>
+		</tr>
+		<tr>
+			<td>
+				end()</td>
+			<td>
+				返回指向容器中最后一个元素所在位置的下一个位置的双向迭代器。</td>
+		</tr>
+		<tr>
+			<td>
+				rbegin()</td>
+			<td>
+				返回指向最后一个元素的反向双向迭代器。</td>
+		</tr>
+		<tr>
+			<td>
+				rend()</td>
+			<td>
+				返回指向第一个元素所在位置前一个位置的反向双向迭代器。</td>
+		</tr>
+		<tr>
+			<td>
+				cbegin()</td>
+			<td>
+				和 begin() 功能相同，只不过在其基础上，增加了 const 属性，不能用于修改元素。</td>
+		</tr>
+		<tr>
+			<td>
+				cend()</td>
+			<td>
+				和 end() 功能相同，只不过在其基础上，增加了 const 属性，不能用于修改元素。</td>
+		</tr>
+		<tr>
+			<td>
+				crbegin()&nbsp;</td>
+			<td>
+				和 rbegin() 功能相同，只不过在其基础上，增加了 const 属性，不能用于修改元素。</td>
+		</tr>
+		<tr>
+			<td>
+				crend()</td>
+			<td>
+				和 rend() 功能相同，只不过在其基础上，增加了 const 属性，不能用于修改元素。</td>
+		</tr>
+		<tr>
+			<td>
+				empty()</td>
+			<td>
+				判断容器中是否有元素，若无元素，则返回 true；反之，返回 false。</td>
+		</tr>
+		<tr>
+			<td>
+				size()</td>
+			<td>
+				返回当前容器实际包含的元素个数。</td>
+		</tr>
+		<tr>
+			<td>
+				max_size()</td>
+			<td>
+				返回容器所能包含元素个数的最大值。这通常是一个很大的值，一般是 2<sup>32</sup>-1，所以我们很少会用到这个函数。</td>
+		</tr>
+		<tr>
+			<td>
+				front()</td>
+			<td>
+				返回第一个元素的引用。</td>
+		</tr>
+		<tr>
+			<td>
+				back()</td>
+			<td>
+				返回最后一个元素的引用。</td>
+		</tr>
+		<tr>
+			<td>
+				assign()</td>
+			<td>
+				用新元素替换容器中原有内容。</td>
+		</tr>
+		<tr>
+			<td>
+				emplace_front()</td>
+			<td>
+				在容器头部生成一个元素。该函数和 push_front() 的功能相同，但效率更高。</td>
+		</tr>
+		<tr>
+			<td>
+				push_front()</td>
+			<td>
+				在容器头部插入一个元素。</td>
+		</tr>
+		<tr>
+			<td>
+				pop_front()</td>
+			<td>
+				删除容器头部的一个元素。</td>
+		</tr>
+		<tr>
+			<td>
+				emplace_back()</td>
+			<td>
+				在容器尾部直接生成一个元素。该函数和 push_back() 的功能相同，但效率更高。</td>
+		</tr>
+		<tr>
+			<td>
+				push_back()</td>
+			<td>
+				在容器尾部插入一个元素。</td>
+		</tr>
+		<tr>
+			<td>
+				pop_back()</td>
+			<td>
+				删除容器尾部的一个元素。</td>
+		</tr>
+		<tr>
+			<td>
+				emplace()</td>
+			<td>
+				在容器中的指定位置插入元素。该函数和 insert() 功能相同，但效率更高。</td>
+		</tr>
+		<tr>
+			<td>
+				insert()&nbsp;</td>
+			<td>
+				在容器中的指定位置插入元素。</td>
+		</tr>
+		<tr>
+			<td>
+				erase()</td>
+			<td>
+				删除容器中一个或某区域内的元素。</td>
+		</tr>
+		<tr>
+			<td>
+				swap()</td>
+			<td>
+				交换两个容器中的元素，必须保证这两个容器中存储的元素类型是相同的。</td>
+		</tr>
+		<tr>
+			<td>
+				resize()</td>
+			<td>
+				调整容器的大小。</td>
+		</tr>
+		<tr>
+			<td>
+				clear()</td>
+			<td>
+				删除容器存储的所有元素。</td>
+		</tr>
+		<tr>
+			<td>
+				splice()</td>
+			<td>
+				将一个 list 容器中的元素插入到另一个容器的指定位置。</td>
+		</tr>
+		<tr>
+			<td>
+				remove(val)</td>
+			<td>
+				删除容器中所有等于 val 的元素。</td>
+		</tr>
+		<tr>
+			<td>
+				remove_if()</td>
+			<td>
+				删除容器中满足条件的元素。</td>
+		</tr>
+		<tr>
+			<td>
+				unique()</td>
+			<td>
+				删除容器中相邻的重复元素，只保留一个。</td>
+		</tr>
+		<tr>
+			<td>
+				merge()</td>
+			<td>
+				合并两个事先已排好序的 list 容器，并且合并之后的 list 容器依然是有序的。</td>
+		</tr>
+		<tr>
+			<td>
+				sort()</td>
+			<td>
+				通过更改容器中元素的位置，将它们进行排序。</td>
+		</tr>
+		<tr>
+			<td>
+				reverse()</td>
+			<td>
+				反转容器中元素的顺序。</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+有关表示各个成员函数的语法格式，读者不需要死记硬背，需要时直接去查<a href="https://cplusplus.com/reference/list/list/" target="_blank"> C++ 标准库</a>即可，这里不再过多赘述。<br />
+<br />
+下面的 C++ 代码演示了表中部分成员函数的用法：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;list&gt;
+
+int main() {
+    // 构造一个 list 容器
+    std::list&lt;int&gt; myList = {1, 2, 3, 4, 5};
+
+    // 在列表的开头和末尾添加元素
+    myList.push_front(0);
+    myList.push_back(6);
+
+    // 显示列表元素
+    std::cout &lt;&lt; &quot;List elements: &quot;;
+    for(auto it = myList.begin(); it != myList.end(); ++it) {
+        std::cout &lt;&lt; *it &lt;&lt; &#39; &#39;;
+    }
+    std::cout &lt;&lt; std::endl;
+
+    // 删除第一个和最后一个元素
+    myList.pop_front();
+    myList.pop_back();
+
+    // 再次显示列表元素
+    std::cout &lt;&lt; &quot;List elements after pop: &quot;;
+    for(const auto&amp; elem : myList) {
+        std::cout &lt;&lt; elem &lt;&lt; &#39; &#39;;
+    }
+    std::cout &lt;&lt; std::endl;
+
+    return 0;
+}</pre>
+运行结果为：
+<p class="info-box">
+	List elements: 0 1 2 3 4 5 6<br />
+	List elements after pop: 1 2 3 4 5</p>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../linux/split_2.html" title="split命令_Linux split命令：切割（拆分）文件" target="_blank">split命令_Linux split命令：切割（拆分）文件</a></li>
+<li><a href="vip_3357_2.html" title="[数据结构实践项目]变态的停车场管理系统" target="_blank">[数据结构实践项目]变态的停车场管理系统</a></li>
+<li><a href="vip_3403_2.html" title="[数据结构实践项目]移动迷宫小游戏(初级版)" target="_blank">[数据结构实践项目]移动迷宫小游戏(初级版)</a></li>
+<li><a href="../spring_mvc/rest_2.html" title="Spring MVC REST风格" target="_blank">Spring MVC REST风格</a></li>
+<li><a href="../python_spider/case05_2.html" title="Python爬虫破解有道翻译" target="_blank">Python爬虫破解有道翻译</a></li>
+<li><a href="../csharp/polymorphism_2.html" title="C#多态" target="_blank">C#多态</a></li>
+<li><a href="ab3k4uc_2.html" title="2023年，大数据和AI工程师的待遇如何？好找工作吗？" target="_blank">2023年，大数据和AI工程师的待遇如何？好找工作吗？</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10361;
+window.arcId = "a2fdhzLtctn54cWIugAmCNpKvmECf6rZj/uwUOWU9HIWLbZ3X7+Xr2YOcduM";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

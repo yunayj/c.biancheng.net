@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Spring MVC异常处理</title>
+<meta name="description" content="在 Spring MVC 应用的开发中，不管是操作底层数据库，还是业务层或控制层，都会不可避免地遇到各种可预知的、不可预知的异常。我们需要捕捉处理异常，才能保证程序不被终止。 Spr" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="../view/niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Spring MVC异常处理</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在 Spring MVC 应用的开发中，不管是操作底层数据库，还是业务层或控制层，都会不可避免地遇到各种可预知的、不可预知的异常。我们需要捕捉处理异常，才能保证程序不被终止。<br />
+<br />
+Spring MVC 有以下 3 种处理异常的方式：
+<ol>
+<li>
+使用 Spring MVC 提供的简单异常处理器 SimpleMappingExceptionResolver。</li>
+<li>
+实现 Spring 的异常处理接口 HandlerExceptionResolver，自定义自己的异常处理器。</li>
+<li>
+使用 @ExceptionHandler 注解实现异常处理</li>
+</ol>
+<h2>
+1. @ExceptionHandler</h2>
+局部异常处理仅能处理指定 Controller 中的异常。<br />
+<br />
+<b>示例 1：</b>下面使用 @ExceptionHandler 注解实现。定义一个处理过程中可能会存在异常情况的 testExceptionHandle 方法。
+<pre class="java">
+@RequestMapping(&quot;/testExceptionHandle&quot;)
+public String testExceptionHandle(@RequestParam(&quot;i&quot;) Integer i) {
+    System.out.println(10 / i);
+    return &quot;success&quot;;
+}</pre>
+显然，当 i=0 时会产生算术运算异常。<br />
+<br />
+下面在同一个类中定义处理异常的方法。
+<pre class="java">
+@ExceptionHandler({ ArithmeticException.class })
+public String testArithmeticException(Exception e) {
+    System.out.println(&quot;打印错误信息 ===&gt; ArithmeticException:&quot; + e);
+    // 跳转到指定页面
+    return &quot;error&quot;;
+}</pre>
+注意：该注解不是加在产生异常的方法上，而是加在处理异常的方法上。<br />
+<br />
+异常页面 error.jsp 代码如下。
+<pre class="xml">
+&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=UTF-8&quot;
+pageEncoding=&quot;UTF-8&quot;%&gt;
+&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot;&gt;
+&lt;title&gt;错误页面&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    发生算术运算异常，请重新输出数据！
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+访问地址：http://localhost:8080/springmvcDemo2/testExceptionHandle?i=0，页面跳转到 error.jsp 页面，运行结果如图 1 所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="error.jsp页面" src="../uploads/allimg/210705/1533303H0-0.png" /><br />
+图 1：error.jsp页面</div>
+控制器输出结果如下。
+<p class="info-box">
+打印错误信息 ===&gt; ArithmeticException:java.lang.ArithmeticException: / by zero</p>
+@ExceptionHandler 注解定义的方法优先级问题：例如发生的是 NullPointerException，但是声明的异常有 RuntimeException 和 Exception，这时候会根据异常的最近继承关系找到继承深度最浅的那个@ExceptionHandler 注解方法，即标记了 RuntimeException 的方法。<br />
+<blockquote>
+<p>
+被 @ExceptionHandler 标记为异常处理方法，不能在方法中设置别的形参。但是可以使用 ModelAndView 向前台传递数据。</p>
+</blockquote>
+使用局部异常处理，仅能处理某个 Controller 中的异常，若需要对所有异常进行统一处理，可使用以下两种方法。<br />
+<h2>
+2. HandlerExceptionResolver</h2>
+Spring MVC 通过&nbsp;HandlerExceptionResolver 处理程序异常，包括处理器异常、数据绑定异常以及控制器执行时发生的异常。HandlerExceptionResolver 仅有一个接口方法，源码如下。
+<pre class="java">
+public interface HandlerExceptionResolver {
+    @Nullable
+    ModelAndView resolveException(
+            HttpServletRequest request, HttpServletResponse response, @Nullable Object handler, Exception ex);
+}</pre>
+发生异常时，Spring MVC 会调用&nbsp;resolveException() 方法，并转到 ModelAndView 对应的视图中，返回一个异常报告页面反馈给用户。<br />
+<br />
+<b>示例 2：</b>在 net.biancheng.exception 包中创建一个 HandlerExceptionResolver 接口的实现类 MyExceptionHandler，代码如下。
+<pre class="java">
+package net.biancheng.exception;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.web.servlet.ModelAndView;
+
+public class MyExceptionHandler implements HandlerExceptionResolver {
+    @Override
+    public ModelAndView resolveException(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2,
+            Exception arg3) {
+        Map&lt;String, Object&gt; model = new HashMap&lt;String, Object&gt;();
+        // 根据不同错误转向不同页面（统一处理），即异常与View的对应关系
+        if (arg3 instanceof ArithmeticException) {
+            return new ModelAndView(&quot;error&quot;, model);
+        }
+        return new ModelAndView(&quot;error-2&quot;, model);
+    }
+}</pre>
+在 springmvc-servlet.xml 文件中添加以下代码。
+<pre class="java">
+&lt;!--托管MyExceptionHandler--&gt;
+&lt;bean class=&quot;net.biancheng.exception.MyExceptionHandler&quot;/&gt;</pre>
+再次访问 http://localhost:8080/springmvcDemo2/testExceptionHandle?i=0，页面跳转到 error.jsp 页面，运行结果如上图 1 所示。<br />
+<h2>
+3. SimpleMappingExceptionResolver</h2>
+全局异常处理可使用&nbsp;SimpleMappingExceptionResolver 来实现。它将异常类名映射为视图名，即发生异常时使用对应的视图报告异常。<br />
+<br />
+<b>示例 3：</b>在 springmvc-servlet.xml 中配置全局异常，代码如下。
+<pre class="xml">
+&lt;bean class=&quot;org.springframework.web.servlet.handler.SimpleMappingExceptionResolver&quot;&gt;
+    &lt;!-- 定义默认的异常处理页面，当该异常类型注册时使用 --&gt;
+    &lt;property name=&quot;defaultErrorView&quot; value=&quot;error&quot;&gt;&lt;/property&gt;
+    &lt;!-- 定义异常处理页面用来获取异常信息的变量名，默认名为exception --&gt;
+    &lt;property name=&quot;exceptionAttribute&quot; value=&quot;ex&quot;&gt;&lt;/property&gt;
+    &lt;!-- 定义需要特殊处理的异常，用类名或完全路径名作为key，异常页名作为值 --&gt;
+    &lt;property name=&quot;exceptionMappings&quot;&gt;
+        &lt;props&gt;
+            &lt;prop key=&quot;ArithmeticException&quot;&gt;error&lt;/prop&gt;
+            &lt;!-- 在这里还可以继续扩展对不同异常类型的处理 --&gt;
+        &lt;/props&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;</pre>
+再次访问 http://localhost:8080/springmvcDemo2/testExceptionHandle?i=0，页面跳转到 error.jsp 页面，运行结果如上图 1 所示。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="../view/niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/6923.html" title="SEO网页描述（description）该怎么写？" target="_blank">SEO网页描述（description）该怎么写？</a></li>
+<li><a href="../view/7199.html" title="MySQL查看表结构命令" target="_blank">MySQL查看表结构命令</a></li>
+<li><a href="../view/8533.html" title="Python视频教程汇总，从入门到精通（共12套）" target="_blank">Python视频教程汇总，从入门到精通（共12套）</a></li>
+<li><a href="../maven2/Repository.html" title="Maven仓库（本地仓库+远程仓库）" target="_blank">Maven仓库（本地仓库+远程仓库）</a></li>
+<li><a href="../sql/syntax.html" title="SQL语法" target="_blank">SQL语法</a></li>
+<li><a href="../jstl/fn-substring.html" title="fn:substring()函数" target="_blank">fn:substring()函数</a></li>
+<li><a href="../view/if_else.html" title="C++ if else判断语句详解" target="_blank">C++ if else判断语句详解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8720;
+window.arcId = "0352HWw6yqa5jV/SLl9Q5Dfu4/bAILZM/vDYlbEdvVZ8HyQt98sU3DyIGik";
+window.typeidChain = "456|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="../view/8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="../view/8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="../view/8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="../view/9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="../view/8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C++11 unique_ptr智能指针详解</title>
+<meta name="description" content="在《 C++11 shared_ptr智能指针 》的基础上，本节继续讲解 C++11 标准中提供了另一种智能指针，即 unique_ptr 智能指针。" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C++11 unique_ptr智能指针详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">C++ 标准提供了 3 种智能指针，分别是 shared_ptr、unique_ptr 和 weak_ptr，本节我们给大家讲解 unique_ptr 智能指针的特性和用法。
+<blockquote>
+	<p>
+		关于 shared_ptr 智能指针，可以阅读《<a href="7898_2.html" target="_blank">C++11 shared_ptr智能指针</a>》一节；关于 weak_ptr 智能指针，可以阅读《<a href="vip_8673_2.html" target="_blank">C++11 weak_ptr智能指针</a>》一节。</p>
+</blockquote>
+作为智能指针的一种，unique_ptr 指针自然也具备&ldquo;在适当时机自动释放堆内存空间&rdquo;的能力。和 shared_ptr 指针最大的不同之处在于，unique_ptr 指针指向的堆内存无法同其它 unique_ptr 共享，也就是说，每个 unique_ptr 指针都独自拥有对其所指堆内存空间的所有权。
+<blockquote>
+	<p>
+		这也就意味着，每个 unique_ptr 指针指向的堆内存空间的引用计数，都只能为 1，一旦该 unique_ptr 指针放弃对所指堆内存空间的所有权，则该空间会被立即释放回收。</p>
+</blockquote>
+unique_ptr 智能指针是以模板类的形式提供的，unique_ptr&lt;T&gt;（T 为指针所指数据的类型）定义在<code>&lt;memory&gt;</code>头文件，并位于 std 命名空间中。因此，要想使用 unique_ptr 类型指针，程序中应首先包含如下 2 条语句：
+<pre class="cpp">
+#include &lt;memory&gt;
+using namespace std;</pre>
+<blockquote>
+	<p>
+		第 2 句并不是必须的，可以不添加，则后续在使用 unique_ptr 指针时，必须标注<code>std::</code>。</p>
+</blockquote>
+<h2>
+	unique_ptr智能指针的创建</h2>
+考虑到不同实际场景的需要，unique_ptr&lt;T&gt; 模板类提供了多个实用的构造函数，这里给读者列举了几种常用的构造 unique_ptr 智能指针的方式。<br />
+<br />
+1) 通过以下&nbsp; 2 种方式，可以创建出空的 unique_ptr 指针：
+<pre class="cpp">
+std::unique_ptr&lt;int&gt; p1();
+std::unique_ptr&lt;int&gt; p2(nullptr);</pre>
+<br />
+2) 创建 unique_ptr 指针的同时，也可以明确其指向。例如：
+<pre class="cpp">
+std::unique_ptr&lt;int&gt; p3(new int);</pre>
+由此就创建出了一个 p3 智能指针，其指向的是可容纳 1 个整数的堆存储空间。
+<blockquote>
+	<p>
+		和可以用 make_shared&lt;T&gt;() 模板函数初始化 shared_ptr 指针不同，C++11 标准中并没有为 unique_ptr 类型指针添加类似的模板函数。</p>
+</blockquote>
+<br />
+3) 基于 unique_ptr 类型指针不共享各自拥有的堆内存，因此 C++11 标准中的 unique_ptr 模板类没有提供拷贝构造函数，只提供了移动构造函数。例如：
+<pre class="cpp">
+std::unique_ptr&lt;int&gt; p4(new int);
+std::unique_ptr&lt;int&gt; p5(p4);//错误，堆内存不共享
+std::unique_ptr&lt;int&gt; p5(std::move(p4));//正确，调用移动构造函数</pre>
+值得一提的是，对于调用移动构造函数的 p4 和 p5 来说，p5 将获取 p4 所指堆空间的所有权，而 p4 将变成空指针（nullptr）。<br />
+<br />
+4) 默认情况下，unique_ptr 指针采用 std::default_delete&lt;T&gt; 方法释放堆内存。当然，我们也可以自定义符合实际场景的释放规则。值得一提的是，和 shared_ptr 指针不同，为 unique_ptr 自定义释放规则，只能采用函数对象的方式。例如：
+<pre class="cpp">
+//自定义的释放规则
+struct myDel
+{
+    void operator()(int *p) {
+        delete p;
+    }
+};
+std::unique_ptr&lt;int, myDel&gt; p6(new int);
+//std::unique_ptr&lt;int, myDel&gt; p6(new int, myDel());</pre>
+<h2>
+	unique_ptr&lt;T&gt;模板类提供的成员方法</h2>
+为了方便用户使用 unique_ptr 智能指针，unique_ptr&lt;T&gt; 模板类还提供有一些实用的成员方法，它们各自的功能如表 1 所示。<br />
+<br />
+<table>
+	<caption>
+		表 1 unique_ptr指针可调用的成员函数</caption>
+	<tbody>
+		<tr>
+			<th>
+				成员函数名</th>
+			<th>
+				功 能</th>
+		</tr>
+		<tr>
+			<td>
+				operator*()</td>
+			<td>
+				获取当前 unique_ptr 指针指向的数据。</td>
+		</tr>
+		<tr>
+			<td>
+				operator-&gt;()</td>
+			<td>
+				重载 -&gt; 号，当智能指针指向的数据类型为自定义的结构体时，通过 -&gt; 运算符可以获取其内部的指定成员。</td>
+		</tr>
+		<tr>
+			<td>
+				operator =()</td>
+			<td>
+				重载了 = 赋值号，从而可以将 nullptr 或者一个右值 unique_ptr 指针直接赋值给当前同类型的 unique_ptr 指针。</td>
+		</tr>
+		<tr>
+			<td>
+				operator []()</td>
+			<td>
+				重载了 [] 运算符，当 unique_ptr 指针指向一个数组时，可以直接通过 [] 获取指定下标位置处的数据。</td>
+		</tr>
+		<tr>
+			<td>
+				get()</td>
+			<td>
+				获取当前 unique_ptr 指针内部包含的普通指针。</td>
+		</tr>
+		<tr>
+			<td>
+				get_deleter()</td>
+			<td>
+				获取当前 unique_ptr 指针释放堆内存空间所用的规则。</td>
+		</tr>
+		<tr>
+			<td>
+				operator bool()</td>
+			<td>
+				unique_ptr 指针可直接作为 if 语句的判断条件，以判断该指针是否为空，如果为空，则为 false；反之为 true。</td>
+		</tr>
+		<tr>
+			<td>
+				release()</td>
+			<td>
+				释放当前 unique_ptr 指针对所指堆内存的所有权，但该存储空间并不会被销毁。</td>
+		</tr>
+		<tr>
+			<td>
+				reset(p)</td>
+			<td>
+				其中 p 表示一个普通指针，如果 p 为 nullptr，则当前 unique_ptr 也变成空指针；反之，则该函数会释放当前 unique_ptr 指针指向的堆内存（如果有），然后获取 p 所指堆内存的所有权（p 为 nullptr）。</td>
+		</tr>
+		<tr>
+			<td>
+				swap(x)</td>
+			<td>
+				交换当前 unique_ptr 指针和同类型的 x 指针。</td>
+		</tr>
+	</tbody>
+</table>
+<blockquote>
+	<p>
+		除此之外，C++11标准还支持同类型的 unique_ptr 指针之间，以及 unique_ptr 和 nullptr 之间，做 ==，!=，&lt;，&lt;=，&gt;，&gt;= 运算。</p>
+</blockquote>
+<br />
+下面程序给大家演示了 unique_ptr 智能指针的基本用法，以及该模板类提供了一些成员方法的用法：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+using namespace std;
+
+int main()
+{
+    std::unique_ptr&lt;int&gt; p5(new int);
+    *p5 = 10;
+    // p 接收 p5 释放的堆内存
+    int * p = p5.release();
+    cout &lt;&lt; *p &lt;&lt; endl;
+    //判断 p5 是否为空指针
+    if (p5) {
+        cout &lt;&lt; &quot;p5 is not nullptr&quot; &lt;&lt; endl;
+    }
+    else {
+        cout &lt;&lt; &quot;p5 is nullptr&quot; &lt;&lt; endl;
+    }
+
+    std::unique_ptr&lt;int&gt; p6;
+    //p6 获取 p 的所有权
+    p6.reset(p);
+    cout &lt;&lt; *p6 &lt;&lt; endl;;
+    return 0;
+}</pre>
+程序执行结果为：
+<p class="info-box">
+	10<br />
+	p5 is nullptr<br />
+	10</p>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="99_2.html" title="Go语言单向通道——通道中的单行道" target="_blank">Go语言单向通道——通道中的单行道</a></li>
+<li><a href="1067_2.html" title="Java Map集合详解" target="_blank">Java Map集合详解</a></li>
+<li><a href="3121_2.html" title="Windows安装Docker（图解教程）" target="_blank">Windows安装Docker（图解教程）</a></li>
+<li><a href="8219_2.html" title="GDB禁用和删除断点" target="_blank">GDB禁用和删除断点</a></li>
+<li><a href="../spring/spel_2.html" title="Spring SpEL表达式语言" target="_blank">Spring SpEL表达式语言</a></li>
+<li><a href="../csharp/csharp-vs-java_2.html" title="C#与Java之间的区别" target="_blank">C#与Java之间的区别</a></li>
+<li><a href="9776_2.html" title="Memcached数据简介" target="_blank">Memcached数据简介</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7909;
+window.arcId = "801ajckTXEk9CcmEYx6MiLe05QH2l7yo8whEQYMHcRvjtVfNpbT4sE3tUsw";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Docker应用容器化（将应用程序部署到容器中）</title>
+<meta name="description" content="Docker 的核心思想就是如何将应用整合到容器中，并且能在容器中实际运行。 将应用整合到容器中并且运行起来的这个过程，称为容器化（Containerizing），有时也叫作Docker化（Dockerizing）" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Docker应用容器化（将应用程序部署到容器中）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body"><a href='https://m.biancheng.net/docker/' target='_blank'>Docker</a> 的核心思想就是如何将应用整合到容器中，并且能在容器中实际运行。<br />
+<br />
+将应用整合到容器中并且运行起来的这个过程，称为&ldquo;容器化&rdquo;（Containerizing），有时也叫作&ldquo;Docker化&rdquo;（Dockerizing）。<br />
+<br />
+容器是为应用而生的，具体来说，容器能够简化应用的构建、部署和运行过程。<br />
+<br />
+完整的应用容器化过程主要分为以下几个步骤。<br />
+<ul>
+	<li>
+		编写应用代码。</li>
+	<li>
+		创建一个 Dockerfile，其中包括当前应用的描述、依赖以及该如何运行这个应用。</li>
+	<li>
+		对该 Dockerfile 执行 docker image build 命令。</li>
+	<li>
+		等待 Docker 将应用程序构建到 Docker 镜像中。</li>
+</ul>
+<br />
+一旦应用容器化完成（即应用被打包为一个 Docker 镜像），就能以镜像的形式交付并以容器的方式运行了。<br />
+<br />
+下图展示了上述步骤。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="容器化的基本过程" src="../uploads/allimg/190417/4-1Z41G51T3502_2.gif" /></div>
+<h2>
+	单体应用容器化</h2>
+接下来我们会逐步展示如何将一个简单的单节点 Node.js Web 应用容器化。<br />
+<br />
+如果是 Windows 操作系统的话，处理过程也是大同小异。<br />
+<br />
+应用容器化的过程大致分为如下几个步骤：<br />
+<ul>
+	<li>
+		获取应用代码。</li>
+	<li>
+		分析 Dockerfile。</li>
+	<li>
+		构建应用镜像。</li>
+	<li>
+		运行该应用。</li>
+	<li>
+		测试应用。</li>
+	<li>
+		容器应用化细节。</li>
+	<li>
+		生产环境中的多阶段构建。</li>
+	<li>
+		最佳实践。</li>
+</ul>
+<h4>
+	1) 获取应用代码</h4>
+应用代码可以从网盘获取（<a href="https://pan.baidu.com/s/150UgIJPvuQUf0yO3KBLegg" target="_blank">https://pan.baidu.com/s/150UgIJPvuQUf0yO3KBLegg</a> 提取码：pkx4）。<br />
+<p class="info-box">
+	$ cd psweb<br />
+	<br />
+	$ ls -l<br />
+	total 28<br />
+	-rw-r--r-- 1 root root 341 Sep 29 16:26 app.js<br />
+	-rw-r--r-- 1 root root 216 Sep 29 16:26 circle.yml<br />
+	-rw-r--r-- 1 root root 338 Sep 29 16:26 Dockerfile<br />
+	-rw-r--r-- 1 root root 421 Sep 29 16:26 package.json<br />
+	-rw-r--r-- 1 root root 370 Sep 29 16:26 README.md<br />
+	drwxr-xr-x 2 root root 4096 Sep 29 16:26 test<br />
+	drwxr-xr-x 2 root root 4096 Sep 29 16:26 views</p>
+该目录下包含了全部的应用源码，以及包含界面和单元测试的子目录。这个应用结构非常简单。<br />
+<br />
+应用代码准备就绪后，接下来分析一下 Dockerfile 的具体内容。<br />
+<h4>
+	2) 分析 Dockerfile</h4>
+在代码目录当中，有个名称为 Dockerfile 的文件。这个文件包含了对当前应用的描述，并且能指导 Docker 完成镜像的构建。<br />
+<br />
+在 Docker 当中，包含应用文件的目录通常被称为构建上下文（Build Context）。通常将 Dockerfile 放到构建上下文的根目录下。<br />
+<br />
+另外很重要的一点是，文件开头字母是大写 D，这里是一个单词。像&ldquo;dockerfile&rdquo;或者&ldquo;Docker file&rdquo;这种写法都是不允许的。<br />
+<br />
+接下来了解一下 Dockerfile 文件当中都包含哪些具体内容。<br />
+<p class="info-box">
+	$ cat Dockerfile<br />
+	<br />
+	FROM alpine<br />
+	LABEL maintainer=&quot;nigelpoulton@hotmail.com&quot;<br />
+	RUN apk add --update nodejs nodejs-npm<br />
+	COPY . /src<br />
+	WORKDIR /src<br />
+	RUN npm install<br />
+	EXPOSE 8080<br />
+	ENTRYPOINT [&quot;node&quot;, &quot;./app.js&quot;]</p>
+Dockerfile 主要包括两个用途：<br />
+<ul>
+	<li>
+		对当前应用的描述。</li>
+	<li>
+		指导 Docker 完成应用的容器化（创建一个包含当前应用的镜像）。</li>
+</ul>
+<br />
+不要因 Dockerfile 就是一个描述文件而对其有所轻视！Dockerfile 能实现开发和部署两个过程的无缝切换。<br />
+<br />
+同时 Dockerfile 还能帮助新手快速熟悉这个项目。Dockerfile 对当前的应用及其依赖有一个清晰准确的描述，并且非常容易阅读和理解。<br />
+<br />
+因此，要像重视你的代码一样重视这个文件，并且将它纳入到源控制系统当中。<br />
+<br />
+下面是这个文件中的一些关键步骤概述：以 alpine 镜像作为当前镜像基础，指定维护者（maintainer）为&ldquo;nigelpoultion@hotmail.com&rdquo;，安装 Node.js 和 NPM，将应用的代码复制到镜像当中，设置新的工作目录，安装依赖包，记录应用的网络端口，最后将 app.js 设置为默认运行的应用。<br />
+<br />
+具体分析一下每一步的作用。<br />
+<br />
+每个 Dockerfile 文件第一行都是 FROM 指令。<br />
+<br />
+FROM 指令指定的镜像，会作为当前镜像的一个基础镜像层，当前应用的剩余内容会作为新增镜像层添加到基础镜像层之上。<br />
+<br />
+本例中的应用基于 Linux 操作系统，所以在 FROM 指令当中所引用的也是一个 Linux 基础镜像；如果要容器化的应用是一个基于 Windows 操作系统的应用，就需要指定一个像 microsoft/aspnetcore-build 这样的 Windows 基础镜像了。<br />
+<br />
+截至目前，基础镜像的结构如下图所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="基础镜像的结构" src="../uploads/allimg/190417/4-1Z41G52144K0_2.gif" /></div>
+<br />
+接下来，Dockerfile 中通过标签（LABLE）方式指定了当前镜像的维护者为&ldquo;nigelpoulton@hotmail. com&rdquo;。<br />
+<br />
+每个标签其实是一个键值对（Key-Value），在一个镜像当中可以通过增加标签的方式来为镜像添加自定义元数据。<br />
+<br />
+备注维护者信息有助于为该镜像的潜在使用者提供沟通途径，这是一种值得提倡的做法。<br />
+<br />
+<code>RUN apk add --update nodejs nodejs-npm</code> 指令使用 alpine 的 apk 包管理器将 nodejs 和 nodejs-npm 安装到当前镜像之中。<br />
+<br />
+RUN 指令会在 FROM 指定的 alpine 基础镜像之上，新建一个镜像层来存储这些安装内容。当前镜像的结构如下图所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="当前镜像的结构" src="../uploads/allimg/190417/4-1Z41G52226331_2.gif" /></div>
+<br />
+COPY. / src 指令将应用相关文件从构建上下文复制到了当前镜像中，并且新建一个镜像层来存储。COPY 执行结束之后，当前镜像共包含 3 层，如下图所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="当前的3层镜像" src="../uploads/allimg/190417/4-1Z41G522511E_2.gif" /></div>
+<br />
+下一步，Dockerfile 通过 WORKDIR 指令，为 Dockerfile 中尚未执行的指令设置工作目录。<br />
+<br />
+该目录与镜像相关，并且会作为元数据记录到镜像配置中，但不会创建新的镜像层。<br />
+<br />
+然后，<code>RUN npm install</code> 指令会根据 package.json 中的配置信息，使用 npm 来安装当前应用的相关依赖包。<br />
+<br />
+npm 命令会在前文设置的工作目录中执行，并且在镜像中新建镜像层来保存相应的依赖文件。<br />
+<br />
+目前镜像一共包含 4 层，如下图所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="当前的4层镜像" src="../uploads/allimg/190417/4-1Z41G5233QU_2.gif" /></div>
+<br />
+因为当前应用需要通过 TCP 端口 8080 对外提供一个 Web 服务，所以在 Dockerfile 中通过 EXPOSE 8080 指令来完成相应端口的设置。<br />
+<br />
+这个配置信息会作为镜像的元数据被保存下来，并不会产生新的镜像层。<br />
+<br />
+最终，通过 ENTRYPOINT 指令来指定当前镜像的入口程序。ENTRYPOINT 指定的配置信息也是通过镜像元数据的形式保存下来，而不是新增镜像层。<br />
+<h4>
+	3) 容器化当前应用/构建具体的镜像</h4>
+到目前为止，应该已经了解基本的原理和流程，接下来是时候尝试构建自己的镜像了。<br />
+<br />
+下面的命令会构建并生成一个名为 web:latest 的镜像。命令最后的点（.）表示 Docker 在进行构建的时候，使用当前目录作为构建上下文。<br />
+<br />
+一定要在命令最后包含这个点，并且在执行命令前，要确认当前目录是 psweb（包含 Dockerfile 和应用代码的目录）。<br />
+<br />
+命令执行结束后，检查本地 Docker 镜像库是否包含了刚才构建的镜像。<br />
+<p class="info-box">
+	$ docker image ls<br />
+	REPO TAG IMAGE ID CREATED SIZE<br />
+	web latest fc69fdc4c18e 10 seconds ago 64.4MB</p>
+恭喜，应用容器化已经成功了！<br />
+<br />
+读者可以通过 <code>docker image inspect web:latest</code> 来确认刚刚构建的镜像配置是否正确。这个命令会列出 Dockerfile 中设置的所有配置项。<br />
+<h4>
+	4) 推送镜像到仓库</h4>
+在创建一个镜像之后，将其保存在一个镜像仓库服务是一个不错的方式。这样存储镜像会比较安全，并且可以被其他人访问使用。<br />
+<br />
+Docker Hub 就是这样的一个开放的公共镜像仓库服务，并且这也是<code> docker image push</code> 命令默认的推送地址。<br />
+<br />
+在推送镜像之前，需要先使用 Docker ID 登录 Docker Hub。除此之外，还需要为待推送的镜像打上合适的标签。<br />
+<br />
+接下来介绍一下如何登录 Docker Hub，并将镜像推送到其中。<br />
+<br />
+在后续的例子中，需要用自己的 Docker ID 替换示例中所使用的 ID。所以每当看到&ldquo;nigelpoulton&rdquo;时，记得替换为自己的 Docker ID。<br />
+<p class="info-box">
+	$ docker login<br />
+	Login with **your** Docker ID to push and pull images from Docker Hub...<br />
+	Username: nigelpoulton<br />
+	Password:<br />
+	Login Succeeded</p>
+推送 Docker 镜像之前，还需要为镜像打标签。这是因为 Docker 在镜像推送的过程中需要如下信息。<br />
+<ul>
+	<li>
+		Registry（镜像仓库服务）。</li>
+	<li>
+		Repository（镜像仓库）。</li>
+	<li>
+		Tag（镜像标签）。</li>
+</ul>
+<br />
+无须为 Registry 和 Tag 指定值。当没有为上述信息指定具体值的时候，Docker 会默认 Registry=docker.io、Tag=latest。<br />
+<br />
+但是 Docker 并没有给 Repository 提供默认值，而是从被推送镜像中的 REPOSITORY 属性值获取。<br />
+<br />
+这一点可能不好理解，下面会通过一个完整的例子来介绍如何向 Docker Hub 中推送一个镜像。<br />
+<br />
+在前面的例子中执行了 <code>docker image ls</code> 命令。在该命令对应的输出内容中可以看到，镜像仓库的名称是 web。<br />
+<br />
+这意味着执行 <code>docker image push</code> 命令，会尝试将镜像推送到 docker.io/web:latest 中。<br />
+<br />
+但是其实 nigelpoulton 这个用户并没有 web 这个镜像仓库的访问权限，所以只能尝试推送到 nigelpoulton 这个二级命名空间（Namespace）之下。<br />
+<br />
+因此需要使用 nigelpoulton 这个 ID，为当前镜像重新打一个标签。<br />
+<p class="info-box">
+	$ docker image tag web:latest nigelpoulton/web:latest</p>
+为镜像打标签命令的格式是docker image tag &lt;current-tag&gt; &lt;new-tag&gt;，其作用是为指定的镜像添加一个额外的标签，并且不需要覆盖已经存在的标签。<br />
+<br />
+再次执行 <code>docker image ls</code> 命令，可以看到这个镜像现在有了两个标签，其中一个包含 Docker ID nigelpoulton。<br />
+<p class="info-box">
+	$ docker image ls<br />
+	REPO TAG IMAGE ID CREATED SIZE<br />
+	web latest fc69fdc4c18e 10 secs ago 64.4MB<br />
+	nigelpoulton/web latest fc69fdc4c18e 10 secs ago 64.4MB</p>
+现在将该镜像推送到 Docker Hub。<br />
+<p class="info-box">
+	$ docker image push nigelpoulton/web:latest<br />
+	The push refers to repository [docker.io/nigelpoulton/web]<br />
+	2444b4ec39ad: Pushed<br />
+	ed8142d2affb: Pushed<br />
+	d77e2754766d: Pushed<br />
+	cd7100a72410: Mounted from library/alpine<br />
+	latest: digest: sha256:68c2dea730...f8cf7478 size: 1160</p>
+下图展示了 Docker 如何确定镜像所要推送的目的仓库。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="确定镜像所要推送的目的仓库" src="../uploads/allimg/190417/4-1Z41G526441H_2.gif" /></div>
+<br />
+因为权限问题，所以需要把上面例子中出现的 ID（nigelpoulton）替换为自己的 Docker ID，才能进行推送操作。<br />
+<br />
+在接下来的例子当中，将使用 web:latest 这个标签。<br />
+<h4>
+	5) 运行应用程序</h4>
+前文中容器化的这个应用程序其实很简单，从 app.js 这个文件内容中可以看出，这其实就是一个在 8080 端口提供 Web 服务的应用程序。<br />
+<br />
+下面的命令会基于 web:latest 这个镜像，启动一个名为 c1 的容器。该容器将内部的 8080 端口与 Docker 主机的 80 端口进行映射。<br />
+<br />
+这意味读者可以打开一个浏览器，在地址栏输入 Docker 主机的 DNS 名称或者 IP 地址，然后就能直接访问这个 Web 应用了。<br />
+<br />
+如果 Docker 主机已经运行了某个使用 80 端口的应用程序，读者可以在执行 <code>docker container run</code> 命令时指定一个不同的映射端口。例如，可以使用 -p 5000:8080 参数，将 Docker 内部应用程序的 8080 端口映射到主机的 5000 端口。<br />
+<p class="info-box">
+	$ docker container run -d --name c1 \<br />
+	-p 80:8080 \<br />
+	web:latest</p>
+-d 参数的作用是让应用程序以守护线程的方式在后台运行。<br />
+<br />
+-p 80:8080 参数的作用是将主机的80端口与容器内的8080端口进行映射。<br />
+<br />
+接下来验证一下程序是否真的成功运行，并且对外提供服务的端口是否正常工作。<br />
+<p class="info-box">
+	$ docker container ls<br />
+	<br />
+	ID IMAGE COMMAND STATUS PORTS<br />
+	49．. web:latest &quot;node ./app.js&quot; UP 6 secs 0.0.0.0:80-&gt;8080/tcp</p>
+为了方便阅读，只截取了命令输出内容的一部分。从上面的输出内容中可以看到，容器已经正常运行。需要注意的是，80端口已经成功映射到了 8080 之上，并且任意外部主机（0.0.0.0:80）均可以通过 80 端口访问该容器。<br />
+<h4>
+	6) APP测试</h4>
+打开浏览器，在地址栏输入 DNS 名称或者 IP 地址，就能访问到正在运行的应用程序了。可以看到下图所示的界面。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="正在运行的应用程序界面" src="../uploads/allimg/190417/4-1Z41G52R23Y_2.gif" /></div>
+<br />
+如果没有出现这样的界面，尝试执行下面的检查来确认原因所在。<br />
+<br />
+使用 <code>docker container ls</code>指令来确认容器已经启动并且正常运行。容器名称是c1，并且从输出内容中能看到 0.0.0.0:80-&gt;8080/tcp。<br />
+<br />
+确认防火墙或者其他网络安全设置没有阻止访问 Docker 主机的 80 端口。<br />
+<br />
+如此，应用程序已经容器化并成功运行了。<br />
+<h4>
+	7) 详述</h4>
+到现在为止，应当成功完成一个示例应用程序的容器化。下面是其中一些细节部分的回顾和总结。<br />
+<br />
+Dockerfile 中的注释行，都是以#开头的。<br />
+<br />
+除注释之外，每一行都是一条指令（Instruction）。指令的格式是指令参数如下。<br />
+<p class="info-box">
+	INSTRUCTION argument</p>
+指令是不区分大小写的，但是通常都采用大写的方式。这样 Dockerfile 的可读性会高一些。<br />
+<br />
+<code>Docker image build </code>命令会按行来解析 Dockerfile 中的指令并顺序执行。<br />
+<br />
+部分指令会在镜像中创建新的镜像层，其他指令只会增加或修改镜像的元数据信息。<br />
+<br />
+在上面的例子当中，新增镜像层的指令包括 FROM、RUN 以及 COPY，而新增元数据的指令包括 EXPOSE、WORKDIR、ENV以 及 ENTERPOINT。<br />
+<br />
+关于如何区分命令是否会新建镜像层，一个基本的原则是，如果指令的作用是向镜像中增添新的文件或者程序，那么这条指令就会新建镜像层；如果只是告诉 Docker 如何完成构建或者如何运行应用程序，那么就只会增加镜像的元数据。<br />
+<br />
+可以通过<code> docker image history</code> 来查看在构建镜像的过程中都执行了哪些指令。<br />
+<br />
+在上面的输出内容当中，有两点是需要注意的。<br />
+<br />
+首先，每行内容都对应了 Dockerfile 中的一条指令（顺序是自下而上）。CREATE BY 这一列中还展示了当前行具体对应 Dockerfile 中的哪条指令。<br />
+<br />
+其次，从这个输出内容中，可以观察到只有 4 条指令会新建镜像层（就是那些 SIZE 列对应的数值不为零的指令），分别对应 Dockerfile 中的 FROM、RUN 以及 COPY 指令。<br />
+<br />
+虽然其他指令看上去跟这些新建镜像层的指令并无区别，但实际上它们只在镜像中新增了元数据信息。这些指令之所以看起来没有区别，是因为 Docker 对之前构建镜像层方式的兼容。<br />
+<br />
+可以通过执行 <code>docker image inspect</code> 指令来确认确实只有 4 个层被创建了。<br />
+<p class="info-box">
+	$ docker image inspect web:latest<br />
+	&lt;Snip&gt;<br />
+	},<br />
+	&quot;RootFS&quot;: {<br />
+	&quot;Type&quot;: &quot;layers&quot;,<br />
+	&quot;Layers&quot;: [<br />
+	&nbsp; &nbsp; &quot;sha256:cd7100...1882bd56d263e02b6215&quot;,<br />
+	&nbsp; &nbsp; &quot;sha256:b3f88e...cae0e290980576e24885&quot;,<br />
+	&nbsp; &nbsp; &quot;sha256:3cfa21...cc819ef5e3246ec4fe16&quot;,<br />
+	&nbsp; &nbsp; &quot;sha256:4408b4...d52c731ba0b205392567&quot;<br />
+	]<br />
+	},</p>
+使用 FROM 指令引用官方基础镜像是一个很好的习惯，这是因为官方的镜像通常会遵循一些最佳实践，并且能帮助使用者规避一些已知的问题。<br />
+<br />
+除此之外，使用 FROM 的时候选择一个相对较小的镜像文件通常也能避免一些潜在的问题。<br />
+<br />
+通过 <code>docker image build</code> 命令具体的输出内容，可以了解镜像构建的过程。<br />
+<br />
+在下面的片段中，可以看到基本的构建过程是，运行临时容器 -&gt; 在该容器中运行 Dockerfile 中的指令 -&gt; 将指令运行结果保存为一个新的镜像层 -&gt; 删除临时容器。<br />
+<p class="info-box">
+	Step 3/8 : RUN apk add --update nodejs nodejs-npm<br />
+	---&gt; Running in e690ddca785f &lt;&lt; Run inside of temp container<br />
+	fetch http://dl-cdn...APKINDEX.tar.gz<br />
+	fetch http://dl-cdn...APKINDEX.tar.gz<br />
+	(1/10) Installing ca-certificates (20171114-r0)<br />
+	&lt;Snip&gt;<br />
+	OK: 61 MiB in 21 packages<br />
+	---&gt; c1d31d36b81f &lt;&lt; Create new layer<br />
+	Removing intermediate container &lt;&lt; Remove temp container<br />
+	Step 4/8 : COPY . /src</p>
+生产环境中的多阶段构建<br />
+<br />
+对于 Docker 镜像来说，过大的体积并不好！<br />
+<br />
+越大则越慢，这就意味着更难使用，而且可能更加脆弱，更容易遭受攻击。<br />
+<br />
+鉴于此，Docker 镜像应该尽量小。对于生产环境镜像来说，目标是将其缩小到仅包含运行应用所必需的内容即可。问题在于，生成较小的镜像并非易事。<br />
+<br />
+不同的 Dockerfile 写法就会对镜像的大小产生显著影响。<br />
+<br />
+常见的例子是，每一个 RUN 指令会新增一个镜像层。因此，通过使用 &amp;&amp; 连接多个命令以及使用反斜杠（\）换行的方法，将多个命令包含在一个 RUN 指令中，通常来说是一种值得提倡的方式。<br />
+<br />
+另一个问题是开发者通常不会在构建完成后进行清理。当使用 RUN 执行一个命令时，可能会拉取一些构建工具，这些工具会留在镜像中移交至生产环境。<br />
+<br />
+有多种方式来改善这一问题&mdash;&mdash;比如常见的是采用建造者模式（Builder Pattern）。但无论采用哪种方式，通常都需要额外的培训，并且会增加构建的复杂度。<br />
+<br />
+建造者模式需要至少两个 Dockerfile，一个用于开发环境，一个用于生产环境。<br />
+<br />
+首先需要编写 Dockerfile.dev，它基于一个大型基础镜像（Base Image），拉取所需的构建工具，并构建应用。<br />
+<br />
+接下来，需要基于 Dockerfile.dev 构建一个镜像，并用这个镜像创建一个容器。<br />
+<br />
+这时再编写 Dockerfile.prod，它基于一个较小的基础镜像开始构建，并从刚才创建的容器中将应用程序相关的部分复制过来。<br />
+<br />
+整个过程需要编写额外的脚本才能串联起来。<br />
+<br />
+这种方式是可行的，但是比较复杂。<br />
+<br />
+多阶段构建（Multi-Stage Build）是一种更好的方式！<br />
+<br />
+多阶段构建能够在不增加复杂性的情况下优化构建过程。<br />
+<br />
+下面介绍一下多阶段构建方式。<br />
+<br />
+多阶段构建方式使用一个 Dockerfile，其中包含多个 FROM 指令。每一个 FROM 指令都是一个新的构建阶段（Build Stage），并且可以方便地复制之前阶段的构件。<br />
+<br />
+示例源码可从百度网盘获取（<a href="https://pan.baidu.com/s/1M2paPY0f0lE5wm48HBk-Zw" target="_blank">https://pan.baidu.com/s/1M2paPY0f0lE5wm48HBk-Zw</a> 提取码: 2e7s ），Dockerfile 位于app目录。<br />
+<br />
+这是一个基于 Linux 系统的应用，因此只能运行在 Linux 容器环境上。<br />
+<br />
+Dockerfile 如下所示。<br />
+<p class="info-box">
+	FROM node:latest AS storefront<br />
+	WORKDIR /usr/src/atsea/app/react-app<br />
+	COPY react-app .<br />
+	RUN npm install<br />
+	RUN npm run build<br />
+	<br />
+	FROM maven:latest AS appserver<br />
+	WORKDIR /usr/src/atsea<br />
+	COPY pom.xml .<br />
+	RUN mvn -B -f pom.xml -s /usr/share/maven/ref/settings-docker.xml dependency<br />
+	\:resolve<br />
+	COPY . .<br />
+	RUN mvn -B -s /usr/share/maven/ref/settings-docker.xml package -DskipTests<br />
+	<br />
+	FROM java:8-jdk-alpine AS production<br />
+	RUN adduser -Dh /home/gordon gordon<br />
+	WORKDIR /static<br />
+	COPY --from=storefront /usr/src/atsea/app/react-app/build/ .<br />
+	WORKDIR /app<br />
+	COPY --from=appserver /usr/src/atsea/target/AtSea-0.0.1-SNAPSHOT.jar .<br />
+	ENTRYPOINT [&quot;java&quot;, &quot;-jar&quot;, &quot;/app/AtSea-0.0.1-SNAPSHOT.jar&quot;]<br />
+	CMD [&quot;--spring.profiles.active=postgres&quot;]</p>
+首先注意到，Dockerfile 中有 3 个 FROM 指令。每一个 FROM 指令构成一个单独的构建阶段。<br />
+<br />
+各个阶段在内部从 0 开始编号。不过，示例中针对每个阶段都定义了便于理解的名字。<br />
+<ul>
+	<li>
+		阶段 0 叫作 storefront。</li>
+	<li>
+		阶段 1 叫作 appserver。</li>
+	<li>
+		阶段 2 叫作 production。</li>
+</ul>
+<br />
+storefront 阶段拉取了大小超过 600MB 的 node:latest 镜像，然后设置了工作目录，复制一些应用代码进去，然后使用 2 个 RUN 指令来执行 npm 操作。<br />
+<br />
+这会生成 3 个镜像层并显著增加镜像大小。指令执行结束后会得到一个比原镜像大得多的镜像，其中包含许多构建工具和少量应用程序代码。<br />
+<br />
+appserver 阶段拉取了大小超过 700MB 的 maven:latest 镜像。然后通过 2 个 COPY 指令和 2 个 RUN 指令生成了 4 个镜像层。<br />
+<br />
+这个阶段同样会构建出一个非常大的包含许多构建工具和非常少量应用程序代码的镜像。<br />
+<br />
+production 阶段拉取 java:8-jdk-alpine 镜像，这个镜像大约 150MB，明显小于前两个构建阶段用到的 node 和 maven 镜像。<br />
+<br />
+这个阶段会创建一个用户，设置工作目录，从 storefront 阶段生成的镜像中复制一些应用代码过来。<br />
+<br />
+之后，设置一个不同的工作目录，然后从 appserver 阶段生成的镜像中复制应用相关的代码。最后，production 设置当前应用程序为容器启动时的主程序。<br />
+<br />
+重点在于 COPY --from 指令，它从之前的阶段构建的镜像中仅复制生产环境相关的应用代码，而不会复制生产环境不需要的构件。<br />
+<br />
+还有一点也很重要，多阶段构建这种方式仅用到了一个 Dockerfile，并且 <code>docker image build</code> 命令不需要增加额外参数。<br />
+<br />
+下面演示一下构建操作。克隆代码库并切换到 app 目录，并确保其中有 Dockerfile。<br />
+<p class="info-box">
+	$ cd atsea-sample-shop-app/app<br />
+	<br />
+	$ ls -l<br />
+	total 24<br />
+	-rw-r--r-- 1 root root 682 Oct 1 22:03 Dockerfile<br />
+	-rw-r--r-- 1 root root 4365 Oct 1 22:03 pom.xml<br />
+	drwxr-xr-x 4 root root 4096 Oct 1 22:03 react-app<br />
+	drwxr-xr-x 4 root root 4096 Oct 1 22:03 src</p>
+执行构建（这可能会花费几分钟）。<br />
+<p class="info-box">
+	$ docker image build -t multi:stage .<br />
+	<br />
+	Sending build context to Docker daemon 3.658MB<br />
+	Step 1/19 : FROM node:latest AS storefront<br />
+	latest: Pulling from library/node<br />
+	aa18ad1a0d33: Pull complete<br />
+	15a33158a136: Pull complete<br />
+	&lt;Snip&gt;<br />
+	Step 19/19 : CMD --spring.profiles.active=postgres<br />
+	---&gt; Running in b4df9850f7ed<br />
+	---&gt; 3dc0d5e6223e<br />
+	Removing intermediate container b4df9850f7ed<br />
+	Successfully built 3dc0d5e6223e<br />
+	Successfully tagged multi:stage</p>
+示例中 multi:stage 标签是自行定义的，可以根据自己的需要和规范来指定标签名称。不过并不要求一定必须为多阶段构建指定标签。<br />
+<br />
+执行 <code>docker image ls</code> 命令查看由构建命令拉取和生成的镜像。<br />
+<p class="info-box">
+	$ docker image ls<br />
+	<br />
+	REPO TAG IMAGE ID CREATED SIZE<br />
+	node latest 9ea1c3e33a0b 4 days ago 673MB<br />
+	&lt;none&gt; &lt;none&gt; 6598db3cefaf 3 mins ago 816MB<br />
+	maven latest cbf114925530 2 weeks ago 750MB<br />
+	&lt;none&gt; &lt;none&gt; d5b619b83d9e 1 min ago 891MB<br />
+	java 8-jdk-alpine 3fd9dd82815c 7 months ago 145MB<br />
+	multi stage 3dc0d5e6223e 1 min ago 210MB</p>
+输出内容的第一行显示了在 storefront 阶段拉取的 node:latest 镜像，下一行内容为该阶段生成的镜像（通过添加代码，执行 npm 安装和构建操作生成该镜像）。<br />
+<br />
+这两个都包含许多的构建工具，因此镜像体积非常大。<br />
+<br />
+第 3～4 行是在 appserver 阶段拉取和生成的镜像，它们也都因为包含许多构建工具而导致体积较大。<br />
+<br />
+最后一行是 Dockerfile 中的最后一个构建阶段（stage2/production）生成的 multi:stage 镜像。<br />
+<br />
+可见它明显比之前阶段拉取和生成的镜像要小。这是因为该镜像是基于相对精简的 java:8-jdk-alpine 镜像构建的，并且仅添加了用于生产环境的应用程序文件。<br />
+<br />
+最终，无须额外的脚本，仅对一个单独的 Dockerfile 执行 <code>docker image build</code> 命令，就创建了一个精简的生产环境镜像。<br />
+<br />
+多阶段构建是随 Docker 17.05 版本新增的一个特性，用于构建精简的生产环境镜像。<br />
+<h2>
+	最佳实践</h2>
+下面介绍一些最佳实践。<br />
+<h4>
+	1) 利用构建缓存</h4>
+Docker 的构建过程利用了缓存机制。观察缓存效果的一个方法，就是在一个干净的 Docker 主机上构建一个新的镜像，然后再重复同样的构建。<br />
+<br />
+第一次构建会拉取基础镜像，并构建镜像层，构建过程需要花费一定时间；第二次构建几乎能够立即完成。<br />
+<br />
+这就是因为第一次构建的内容（如镜像层）能够被缓存下来，并被后续的构建过程复用。<br />
+<br />
+<code>docker image build</code> 命令会从顶层开始解析 Dockerfile 中的指令并逐行执行。而对每一条指令，Docker 都会检查缓存中是否已经有与该指令对应的镜像层。<br />
+<br />
+如果有，即为缓存命中（Cache Hit），并且会使用这个镜像层；如果没有，则是缓存未命中（Cache Miss），Docker 会基于该指令构建新的镜像层。<br />
+<br />
+缓存命中能够显著加快构建过程。<br />
+<br />
+下面通过实例演示其效果。<br />
+<br />
+示例用的 Dockerfile 如下。<br />
+<p class="info-box">
+	FROM alpine<br />
+	RUN apk add --update nodejs nodejs-npm<br />
+	COPY . /src<br />
+	WORKDIR /src<br />
+	RUN npm install<br />
+	EXPOSE 8080<br />
+	ENTRYPOINT [&quot;node&quot;, &quot;./app.js&quot;]</p>
+第一条指令告诉 Docker 使用 alpine:latest 作为基础镜像。<br />
+<br />
+如果主机中已经存在这个镜像，那么构建时会直接跳到下一条指令；如果镜像不存在，则会从 Docker Hub（docker.io）拉取。<br />
+<br />
+下一条指令（RUN apk...）对镜像执行一条命令。<br />
+<br />
+此时，Docker 会检查构建缓存中是否存在基于同一基础镜像，并且执行了相同指令的镜像层。<br />
+<br />
+在此例中，Docker 会检查缓存中是否存在一个基于 alpine:latest 镜像且执行了 <code>RUN apk add --update nodejs nodejs-npm</code> 指令构建得到的镜像层。<br />
+<br />
+如果找到该镜像层，Docker 会跳过这条指令，并链接到这个已经存在的镜像层，然后继续构建；如果无法找到符合要求的镜像层，则设置缓存无效并构建该镜像层。<br />
+<br />
+此处&ldquo;设置缓存无效&rdquo;作用于本次构建的后续部分。也就是说 Dockerfile 中接下来的指令将全部执行而不会再尝试查找构建缓存。<br />
+<br />
+假设 Docker 已经在缓存中找到了该指令对应的镜像层（缓存命中），并且假设这个镜像层的 ID 是 AAA。<br />
+<br />
+下一条指令会复制一些代码到镜像中（COPY . /src）。因为上一条指令命中了缓存，Docker 会继续查找是否有一个缓存的镜像层也是基于 AAA 层并执行了 COPY . /src 命令。<br />
+<br />
+如果有，Docker 会链接到这个缓存的镜像层并继续执行后续指令；如果没有，则构建镜像层，并对后续的构建操作设置缓存无效。<br />
+<br />
+假设 Docker 已经有一个对应该指令的缓存镜像层（缓存命中），并且假设这个镜像层的 ID 是 BBB。<br />
+<br />
+那么 Docker 将继续执行 Dockerfile 中剩余的指令。<br />
+<br />
+理解以下几点很重要。<br />
+<br />
+首先，一旦有指令在缓存中未命中（没有该指令对应的镜像层），则后续的整个构建过程将不再使用缓存。<br />
+<br />
+在编写 Dockerfile 时须特别注意这一点，尽量将易于发生变化的指令置于 Dockerfile 文件的后方执行。<br />
+<br />
+这意味着缓存未命中的情况将直到构建的后期才会出现，从而构建过程能够尽量从缓存中获益。<br />
+<br />
+通过对 <code>docker image build</code> 命令加入 --nocache=true 参数可以强制忽略对缓存的使用。<br />
+<br />
+还有一点也很重要，那就是 COPY 和 ADD 指令会检查复制到镜像中的内容自上一次构建之后是否发生了变化。<br />
+<br />
+例如，有可能 Dockerfile 中的 COPY . /src 指令没有发生变化，但是被复制的目录中的内容已经发生变化了。<br />
+<br />
+为了应对这一问题，Docker 会计算每一个被复制文件的 Checksum 值，并与缓存镜像层中同一文件的 checksum 进行对比。如果不匹配，那么就认为缓存无效并构建新的镜像层。<br />
+<h4>
+	2) 合并镜像</h4>
+合并镜像并非一个最佳实践，因为这种方式利弊参半。<br />
+<br />
+总体来说，Docker 会遵循正常的方式构建镜像，但之后会增加一个额外的步骤，将所有的内容合并到一个镜像层中。<br />
+<br />
+当镜像中层数太多时，合并是一个不错的优化方式。例如，当创建一个新的基础镜像，以便基于它来构建其他镜像的时候，这个基础镜像就最好被合并为一层。<br />
+<br />
+缺点是，合并的镜像将无法共享镜像层。这会导致存储空间的低效利用，而且 push 和 pull 操作的镜像体积更大。<br />
+<br />
+执行 <code>docker image build </code>命令时，可以通过增加 --squash 参数来创建一个合并的镜像。<br />
+<br />
+下图阐释了合并镜像层带来的存储空间低效利用的问题。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="合并的与不合并的镜像" src="../uploads/allimg/190417/4-1Z41G53514454_2.gif" /></div>
+<br />
+两个镜像的内容是完全一样的，区别在于是否进行了合并。在使用 <code>docker image push</code> 命令发送镜像到 Docker Hub 时，合并的镜像需要发送全部字节，而不合并的镜像只需要发送不同的镜像层即可。<br />
+<h4>
+	3) 使用 no-install-recommends</h4>
+在构建 Linux 镜像时，若使用的是 APT 包管理器，则应该在执行 apt-get install 命令时增加 no-install-recommends 参数。<br />
+<br />
+这能够确保 APT 仅安装核心依赖（Depends 中定义）包，而不是推荐和建议的包。这样能够显著减少不必要包的下载数量。<br />
+<h4>
+	4) 不要安装 MSI 包（Windows）</h4>
+在构建 Windows 镜像时，尽量避免使用 MSI 包管理器。因其对空间的利用率不高，会大幅增加镜像的体积。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="620_2.html" title="C++（STL）generate和generate_n函数用法详解" target="_blank">C++（STL）generate和generate_n函数用法详解</a></li>
+<li><a href="1982_2.html" title="C语言带参数的宏定义" target="_blank">C语言带参数的宏定义</a></li>
+<li><a href="2690_2.html" title="Python PyInstaller安装和使用教程（详解版）" target="_blank">Python PyInstaller安装和使用教程（详解版）</a></li>
+<li><a href="4117_2.html" title="Go语言多维数组简述" target="_blank">Go语言多维数组简述</a></li>
+<li><a href="vip_6074_2.html" title="利用面向对象思想实现搜索引擎" target="_blank">利用面向对象思想实现搜索引擎</a></li>
+<li><a href="9368_2.html" title="JS定时器：setTimeout和setInterval" target="_blank">JS定时器：setTimeout和setInterval</a></li>
+<li><a href="9753_2.html" title="VS2022下载和安装教程（图解版）" target="_blank">VS2022下载和安装教程（图解版）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 3159;
+window.arcId = "7a4dr1eiiHayPmU3UYh9NqfAbI+VLoA4RUNXBi4AyJXlknXkgCL0Tavd8k8";
+window.typeidChain = "443|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="https://m.biancheng.net/templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

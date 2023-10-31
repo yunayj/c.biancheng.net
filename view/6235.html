@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>PHP clone关键字（克隆对象）</title>
+<meta name="description" content="在 PHP 中，可通过 clone 关键字克隆一个对象，克隆后的对象相当于在内存中重新开辟了一个空间，克隆得到的对象拥有和原来对象相同的属性和方法，修改克隆得到的对象不会影响原来" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>PHP clone关键字（克隆对象）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body"><a href='../php/php.html' target='_blank'>PHP</a> 中的对象模型是通过引用来调用对象的，但有时需要建立一个对象的副本，在改变原有对象时不希望影响到对象副本。如果使用<code>new</code>关键字重新创建对象，再为属性赋上相同的值，这样做会比较烦琐而且也容易出错。在 PHP 中可以根据现有的对象克隆出一个完全一样的对象，克隆以后，原本对象和副本对象是完全独立互不干扰的。<br />
+<br />
+在 PHP 中可以使用 clone 关键字克隆对象，语法格式如下：<br />
+<p class="info-box">
+克隆对象名称 = clone 原对象名称;</p>
+因为 clone 的方式实际上是对整个对象的内存区域进行了一次复制并用新的对象变量指向新的内存，因此赋值后的对象和原对象之间是相互独立的。<br />
+<br />
+对象克隆成功后，它们中的成员方法、属性以及值是完全相同的。如果要对克隆后副本的成员属性重新赋值，可以使用《<a href="https://c.biancheng.net/view/6230.html" target="_blank">PHP魔术方法</a>》中介绍的 __clone() 方法。<br />
+<br />
+【示例】下面通过一个简单的示例来演示一下 clone 关键字的使用。
+<pre class="php">
+&lt;?php
+    class Website{
+        public $name, $url;
+        public function __construct($name, $url){
+            $this -&gt; name = $name;
+            $this -&gt; url  = $url;
+        }
+        public function output(){
+            echo $this -&gt; name.&#39;，&#39;.$this -&gt; url.&#39;&lt;br&gt;&#39;;
+        }
+    }
+
+    $obj  = new Website(&#39;C语言中文网&#39;, &#39;http://c.biancheng.net/php/&#39;);
+    $obj2 = clone $obj;
+    $obj  -&gt; output();
+    $obj2 -&gt; output();
+    echo &#39;&lt;pre&gt;&#39;;
+    var_dump($obj);
+    var_dump($obj2);
+?&gt;</pre>
+运行结果如下：
+<p class="info-box">
+C语言中文网，http://c.biancheng.net/php/<br />
+C语言中文网，http://c.biancheng.net/php/<br />
+object(Website)#1 (2) {<br />
+&nbsp; [&quot;name&quot;]=&gt;<br />
+&nbsp; string(16) &quot;C语言中文网&quot;<br />
+&nbsp; [&quot;url&quot;]=&gt;<br />
+&nbsp; string(27) &quot;http://c.biancheng.net/php/&quot;<br />
+}<br />
+object(Website)#2 (2) {<br />
+&nbsp; [&quot;name&quot;]=&gt;<br />
+&nbsp; string(16) &quot;C语言中文网&quot;<br />
+&nbsp; [&quot;url&quot;]=&gt;<br />
+&nbsp; string(27) &quot;http://c.biancheng.net/php/&quot;<br />
+}</p>
+<p class="tip-box">
+注意：如果使用<code> = </code>将一个对象赋值给一个变量，那么这时得到的将是一个对象的引用，通过这个变量更改属性的值将会影响原来的对象。</p>
+<h2>
+__clone() 魔术方法</h2>
+__clone() 方法不能够直接被调用，只有当通过&nbsp;clone&nbsp;关键字克隆一个对象时才可以使用该对象调用 __clone() 方法。当创建对象的副本时，PHP 会检查 __clone() 方法是否存在。如果不存在，那么它就会调用默认的 __clone() 方法，复制对象的所有属性。如果 __clone() 方法已经定义过，那么 __clone() 方法就会负责设置新对象的属性。所以在 __clone() 方法中，只需要覆盖那些需要更改的属性就可以了。<br />
+<br />
+__clone() 方法不需要任何参数，下面通过一个示例来演示一下：
+<pre class="php">
+&lt;?php
+    class Website{
+        public $name, $url;
+        public function __construct($name, $url){
+            $this -&gt; name = $name;
+            $this -&gt; url  = $url;
+        }
+        public function output(){
+            echo $this -&gt; name.&#39;，&#39;.$this -&gt; url.&#39;&lt;br&gt;&#39;;
+        }
+        public function __clone(){
+            $this -&gt; name = &#39;PHP教程&#39;;
+            $this -&gt; url  = &#39;http://c.biancheng.net/&#39;;
+        }
+    }
+
+    $obj  = new Website(&#39;C语言中文网&#39;, &#39;http://c.biancheng.net/php/&#39;);
+    $obj2 = clone $obj;
+    $obj  -&gt; output();
+    $obj2 -&gt; output();
+?&gt;</pre>
+运行结果如下：
+<p class="info-box">
+C语言中文网，http://c.biancheng.net/php/<br />
+PHP教程，http://c.biancheng.net/</p>
+<p class="tip-box">
+提示：如果在类中设置一个空的，访问权限为 private（私有的）的 __clone() 方法的话，可以起到禁止克隆的作用。</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="448.html" title="C++ forward_list用法详解" target="_blank">C++ forward_list用法详解</a></li>
+<li><a href="778.html" title="Java关系运算符" target="_blank">Java关系运算符</a></li>
+<li><a href="2288.html" title="Python继承机制及其使用" target="_blank">Python继承机制及其使用</a></li>
+<li><a href="6269.html" title="Linux查看内存使用情况方法汇总" target="_blank">Linux查看内存使用情况方法汇总</a></li>
+<li><a href="6580.html" title="C++ STL版本有哪些？" target="_blank">C++ STL版本有哪些？</a></li>
+<li><a href="6803.html" title="C++ STL vector容器迭代器用法详解" target="_blank">C++ STL vector容器迭代器用法详解</a></li>
+<li><a href="6993.html" title="Java @Override注解" target="_blank">Java @Override注解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 6235;
+window.arcId = "2e9264AnTj0KSulArg0gT7p18LkBKOeKGxzUXXxHpB8bYlRgvJYqpckd1fw";
+window.typeidChain = "322|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

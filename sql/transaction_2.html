@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>SQL事务（非常详细）</title>
+<meta name="description" content="在数据库中，我们将一条 SQL 语句称为一次基本的操作。将若干条 SQL 语句打包在一起，共同执行一个完整的任务，这就是事务。 事务（Transaction）由一次或者多次基本操作构成，或者说" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="../view/niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+	<div id="sidebar" class="toggle-target">
+	<div id="contents">
+		<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="sql_2.html">SQL</a></dt>
+		<dd>
+        	<span class="channel-num">1</span>
+        	<a href="what-is-sql_2.html">SQL 是什么</a>
+        </dd>
+<dd>
+        	<span class="channel-num">2</span>
+        	<a href="rdbms_2.html">RDBMS</a>
+        </dd>
+<dd>
+        	<span class="channel-num">3</span>
+        	<a href="databases_2.html">常用关系型数据库</a>
+        </dd>
+<dd>
+        	<span class="channel-num">4</span>
+        	<a href="syntax_2.html">SQL 语法</a>
+        </dd>
+<dd>
+        	<span class="channel-num">5</span>
+        	<a href="data-types_2.html">SQL 数据类型</a>
+        </dd>
+<dd>
+        	<span class="channel-num">6</span>
+        	<a href="create-database_2.html">SQL CREATE DATABASE</a>
+        </dd>
+<dd>
+        	<span class="channel-num">7</span>
+        	<a href="drop-database_2.html">SQL DROP DATABASE</a>
+        </dd>
+<dd>
+        	<span class="channel-num">8</span>
+        	<a href="use_2.html">SQL USE</a>
+        </dd>
+<dd>
+        	<span class="channel-num">9</span>
+        	<a href="create-table_2.html">SQL CREATE TABLE</a>
+        </dd>
+<dd>
+        	<span class="channel-num">10</span>
+        	<a href="drop-table_2.html">SQL DROP TABLE</a>
+        </dd>
+<dd>
+        	<span class="channel-num">11</span>
+        	<a href="rename-table_2.html">SQL 重命名表</a>
+        </dd>
+<dd>
+        	<span class="channel-num">12</span>
+        	<a href="insert-into_2.html">SQL INSERT INTO</a>
+        </dd>
+<dd>
+        	<span class="channel-num">13</span>
+        	<a href="select_2.html">SQL SELECT</a>
+        </dd>
+<dd>
+        	<span class="channel-num">14</span>
+        	<a href="where_2.html">SQL WHERE</a>
+        </dd>
+<dd>
+        	<span class="channel-num">15</span>
+        	<a href="and-or_2.html">SQL AND和OR</a>
+        </dd>
+<dd>
+        	<span class="channel-num">16</span>
+        	<a href="update_2.html">SQL UPDATE</a>
+        </dd>
+<dd>
+        	<span class="channel-num">17</span>
+        	<a href="delete_2.html">SQL DELETE</a>
+        </dd>
+<dd>
+        	<span class="channel-num">18</span>
+        	<a href="like_2.html">SQL LIKE</a>
+        </dd>
+<dd>
+        	<span class="channel-num">19</span>
+        	<a href="top_2.html">SQL TOP</a>
+        </dd>
+<dd>
+        	<span class="channel-num">20</span>
+        	<a href="order-by_2.html">SQL ORDER BY</a>
+        </dd>
+<dd>
+        	<span class="channel-num">21</span>
+        	<a href="group-by_2.html">SQL GROUP BY</a>
+        </dd>
+<dd>
+        	<span class="channel-num">22</span>
+        	<a href="distinct_2.html">SQL DISTINCT</a>
+        </dd>
+<dd>
+        	<span class="channel-num">23</span>
+        	<a href="constraint_2.html">SQL 约束</a>
+        </dd>
+<dd>
+        	<span class="channel-num">24</span>
+        	<a href="null_2.html">SQL NULL</a>
+        </dd>
+<dd>
+        	<span class="channel-num">25</span>
+        	<a href="not-null_2.html">SQL NOT NULL</a>
+        </dd>
+<dd>
+        	<span class="channel-num">26</span>
+        	<a href="default_2.html">SQL DEFAULT</a>
+        </dd>
+<dd>
+        	<span class="channel-num">27</span>
+        	<a href="unique_2.html">SQL UNIQUE</a>
+        </dd>
+<dd>
+        	<span class="channel-num">28</span>
+        	<a href="primary-key_2.html">SQL 主键</a>
+        </dd>
+<dd>
+        	<span class="channel-num">29</span>
+        	<a href="foreign-key_2.html">SQL 外键</a>
+        </dd>
+<dd>
+        	<span class="channel-num">30</span>
+        	<a href="check_2.html">SQL CHECK</a>
+        </dd>
+<dd>
+        	<span class="channel-num">31</span>
+        	<a href="indexes_2.html">SQL 索引</a>
+        </dd>
+<dd>
+        	<span class="channel-num">32</span>
+        	<a href="join_2.html">SQL JOIN</a>
+        </dd>
+<dd>
+        	<span class="channel-num">33</span>
+        	<a href="inner-join_2.html">SQL INNER JOIN</a>
+        </dd>
+<dd>
+        	<span class="channel-num">34</span>
+        	<a href="left-join_2.html">SQL LEFT JOIN</a>
+        </dd>
+<dd>
+        	<span class="channel-num">35</span>
+        	<a href="right-join_2.html">SQL RIGHT JOIN</a>
+        </dd>
+<dd>
+        	<span class="channel-num">36</span>
+        	<a href="full-join_2.html">SQL FULL JOIN</a>
+        </dd>
+<dd>
+        	<span class="channel-num">37</span>
+        	<a href="self-join_2.html">SQL SELF JOIN</a>
+        </dd>
+<dd>
+        	<span class="channel-num">38</span>
+        	<a href="cross-join_2.html">SQL CROSS JOIN</a>
+        </dd>
+<dd>
+        	<span class="channel-num">39</span>
+        	<a href="union_2.html">SQL UNION</a>
+        </dd>
+<dd>
+        	<span class="channel-num">40</span>
+        	<a href="as_2.html">SQL AS</a>
+        </dd>
+<dd>
+        	<span class="channel-num">41</span>
+        	<a href="alter-table_2.html">SQL ALTER TABLE</a>
+        </dd>
+<dd>
+        	<span class="channel-num">42</span>
+        	<a href="truncate-table_2.html">SQL TRUNCATE TABLE</a>
+        </dd>
+<dd>
+        	<span class="channel-num">43</span>
+        	<a href="create-view_2.html">SQL 视图</a>
+        </dd>
+<dd>
+        	<span class="channel-num">44</span>
+        	<a href="having_2.html">SQL HAVING</a>
+        </dd>
+<dd>
+        	<span class="channel-num">45</span>
+        	<a href="transaction_2.html">SQL 事务</a>
+        </dd>
+<dd>
+        	<span class="channel-num">46</span>
+        	<a href="temp-table_2.html">SQL 临时表</a>
+        </dd>
+<dd>
+        	<span class="channel-num">47</span>
+        	<a href="clone-table_2.html">SQL 克隆表</a>
+        </dd>
+<dd>
+        	<span class="channel-num">48</span>
+        	<a href="sub-query_2.html">SQL子查询</a>
+        </dd>
+<dd>
+        	<span class="channel-num">49</span>
+        	<a href="auto_increment_2.html">SQL AUTO_INCREMENT</a>
+        </dd>
+<dd>
+        	<span class="channel-num">50</span>
+        	<a href="injection_2.html">SQL 注入</a>
+        </dd>
+
+	</div>
+</div>
+	<div id="article-wrap">
+		<div id="article">
+			<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="sql_2.html">SQL</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+			<h1>SQL事务（非常详细）</h1>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+			<div id="arc-body">在数据库中，我们将一条 SQL 语句称为一次基本的操作。将若干条 SQL 语句&ldquo;打包&rdquo;在一起，共同执行一个完整的任务，这就是事务。<br />
+<br />
+事务（&nbsp;Transaction）由一次或者多次基本操作构成，或者说，事务由一条或者多条 SQL 语句构成。<br />
+<br />
+事务有一个最显著的特征，就是它包含的所有 SQL 语句作为一个整体向数据库提交，只有所有的 SQL 语句都执行完成，整个事务才算成功，一旦某个 SQL 语句执行失败，整个事务就失败了。事务失败后需要回滚所有的 SQL 语句。<br />
+<br />
+事务中的所有 SQL 语句是一个整体，共同进退，不可分割，要么全部执行成功，要么全部执行失败。<br />
+<br />
+事务有很多实用的场景。例如对于电商网站，通常将用户订单存储在一张表中，将商品库存情况存储在另一张表中，当有用户下单时，需要执行两条 SQL 语句，一条负责更新订单表，一条负责更新库存表，这两条 SQL 语句必须同时执行成功。如果只有一条语句执行成功，另一条语句执行失败，将导致数据库出错，这种后果是无法接受的。<br />
+<br />
+为了避免出现意外，可以将以上两条语句放到一个事务中，其中一条语句执行失败时，数据库将回滚到原来的状态。对于买家来说，数据库回滚会导致下单失败，但这很容易处理，让买家再次下单即可。数据库的正确性永远是最重要的。<br />
+<br />
+其实我们平时使用数据库时，就已经在使用事务了，只不过这种事务只包含一条 SQL 语句，并且由数据库引擎自动封装和提交。这意味着，对于任何一条 SQL 语句，要么执行成功，要么执行失败，不能成功一部分，失败一部分。
+<h2>
+	事务的属性</h2>
+一般来说，事务具有四个标准属性，分别是原子性（<b>A</b>tomicity，或称不可分割性）、一致性（<b>C</b>onsistency）、隔离性（<b>I</b>solation，又称独立性）、持久性（<b>D</b>urability），简称&nbsp;<b>ACID</b>。具体说明如下：
+<h4>
+	1) 原子性</h4>
+一个事务中的所有 SQL 语句，要么全部执行成功，要么全部执行失败，不会结束在中间的某个环节。事务在执行过程中发生错误，会被回滚（Rollback）到事务开始前的状态，就像这个事务从来没有执行过一样。
+<h4>
+	2) 一致性</h4>
+在事务开始之前和事务结束以后，数据库的完整性没有被破坏。这表示写入的数据必须完全符合所有的预设规则，其中包含数据的精确度、串联性以及后续数据库可以自发性地完成预定的工作。
+<h4>
+	3) 隔离性</h4>
+数据库允许多个并发事务同时对其数据进行读写和修改的能力，隔离性可以防止多个事务并发执行时由于交叉执行而导致数据的不一致。事务隔离分为不同级别，包括读未提交（Read uncommitted）、读提交（read committed）、可重复读（repeatable read）和串行化（Serializable）。
+<h4>
+	4) 持久性</h4>
+事务处理结束后，对数据的修改就是永久的，即便系统故障也不会丢失。
+<h2>
+	事务执行流程</h2>
+各种数据库对事务的支持细节不尽相同，本教程以 MySQL 数据库为例进行讲解，MySQL 使用标准 SQL 来支持事务。<br />
+<br />
+与事务控制有关的 SQL 命令包括：
+<ul>
+	<li>
+		BEGIN 或者&nbsp;START TRANSACTION：开始事务；</li>
+	<li>
+		COMMIT：提交事务；</li>
+	<li>
+		ROLLBACK：回滚事务；</li>
+	<li>
+		SAVEPOINT：在事务内部设置回滚标记点；</li>
+	<li>
+		RELEASE SAVEPOINT：删除回滚标记点；</li>
+	<li>
+		ROLLBACK TO：将事务回滚到标记点（ROLLBACK 命令的一种变形写法）。</li>
+</ul>
+<br />
+一个事务要么提交（Commit），要么回滚（Rollback），提交意味着成功，回滚意味着失败。编写事务代码时，以 BEGIN 命令开头，后跟一条或者多条 SQL 语句，最后书写 COMMIT 或者 ROLLBACK 命令；COMMIT 和 ROLLBACK 对应事务的两种状态，只能出现一个。<br />
+<br />
+事务控制命令仅能与 DML 类别的 SQL 命令一起使用，包括 INSERT、UPDATE、DELETE 和 SELECT，在创建或者删除表时不能使用事务，因为这些操作在数据库中是自动提交的。
+<h4>
+	1) 开始事务</h4>
+开始事务有以下两种命令，选择其一即可：
+<p class="info-box">
+	BEGIN;</p>
+或者
+<p class="info-box">
+	START TRANSACTION;</p>
+该命令用来标记一个事务的起始点。
+<h4>
+	2) 提交事务</h4>
+提交事务使用如下命令：
+<p class="info-box">
+	COMMIT;</p>
+提交事务意味着真正执行事务包含的 SQL 语句，并把对数据库的修改写入到磁盘上的物理数据库中。COMMIT 意味着事务结束，并且执行成功。<br />
+<br />
+例如，有包含如下记录的 CUSTOMERS 表：
+<pre class="info-box">
++----+----------+-----+-----------+----------+
+| ID | NAME     | AGE | ADDRESS   | SALARY   |
++----+----------+-----+-----------+----------+
+|  1 | Ramesh   |  32 | Ahmedabad |  2000.00 |
+|  2 | Khilan   |  25 | Delhi     |  1500.00 |
+|  3 | kaushik  |  23 | Kota      |  2000.00 |
++----+----------+-----+-----------+----------+</pre>
+<br />
+打开一个 MySQL 命令行窗口（我们称它为 A 窗口），使用事务向表中插入两条数据：
+<pre class="info-box">
+mysql&gt; BEGIN;
+mysql&gt; INSERT INTO CUSTOMERS (NAME, AGE, ADDRESS, SALARY) VALUES (&#39;Chaitali&#39;, 25, &#39;Mumbai&#39;, 6500.00 );
+mysql&gt; INSERT INTO CUSTOMERS (NAME, AGE, ADDRESS, SALARY) VALUES (&#39;Hardik&#39;, 27, &#39;Bhopal&#39;, 8500.00 );</pre>
+<br />
+再打开另外一个 MYSQL 命令行窗口（我们称它为 B 窗口），使用 SELECT 命令查看&nbsp;CUSTOMERS 表的内容：
+<pre class="info-box">
+mysql&gt;  SELECT * FROM CUSTOMERS;
++----+---------+-----+-----------+--------+
+| id | name    | age | address   | salary |
++----+---------+-----+-----------+--------+
+|  1 | Ramesh  |  32 | Ahmedabad |   2000 |
+|  2 | Khilan  |  25 | Delhi     |   1500 |
+|  3 | Kaushik |  23 | Kota      |   2000 |
++----+---------+-----+-----------+--------+</pre>
+您看，A 窗口对表的修改并没有影响到 B 窗口，B 窗口只能查看到修改之前的内容，这说明 A 窗口的修改动作并没有立即更新到物理数据库，所以在其它会话窗口中无法看到。<br />
+<br />
+在 A 窗口中提交事务：
+<pre class="info-box">
+mysql&gt; COMMIT;</pre>
+<br />
+在 B 窗口中再次查看 CUSTOMERS 表的内容：
+<pre class="info-box">
+mysql&gt;  SELECT * FROM CUSTOMERS;
++----+----------+-----+-----------+--------+
+| id | name     | age | address   | salary |
++----+----------+-----+-----------+--------+
+|  1 | Ramesh   |  32 | Ahmedabad |   2000 |
+|  2 | Khilan   |  25 | Delhi     |   1500 |
+|  3 | Kaushik  |  23 | Kota      |   2000 |
+|  4 | Chaitali |  25 | Mumbai    |   6500 |
+|  5 | Hardik   |  27 | Bhopal    |   8500 |
++----+----------+-----+-----------+--------+</pre>
+您看，在 A 窗口提交事务以后，对表所做的修改才真正更新到物理数据库中，所以才能在其它会话窗口中查看到 A 窗口中插入的数据。
+<h4>
+	3) 回滚事务</h4>
+回滚意味着撤销尚未保存到物理数据库中的操作，具体语法格式如下：
+<pre class="info-box">
+ROLLBACK;</pre>
+事务执行过程中如果发生了某种故障，事务不能继续执行，就可以撤销事务，此时对数据库的修改并不会保存到物理数据库中。撤销意味着事务结束，并且执行失败。<br />
+<br />
+例如，有包含如下记录的 CUSTOMERS 表：
+<pre class="info-box">
++----+----------+-----+-----------+--------+
+| id | name     | age | address   | salary |
++----+----------+-----+-----------+--------+
+|  1 | Ramesh   |  32 | Ahmedabad |   2000 |
+|  2 | Khilan   |  25 | Delhi     |   1500 |
+|  3 | Kaushik  |  23 | Kota      |   2000 |
+|  4 | Chaitali |  25 | Mumbai    |   6500 |
+|  5 | Hardik   |  27 | Bhopal    |   8500 |
++----+----------+-----+-----------+--------+</pre>
+<br />
+使用事务删除最后两个用户，并回滚：
+<pre class="info-box">
+mysql&gt; BEGIN;
+mysql&gt; DELETE FROM CUSTOMERS WHERE ID=4;
+mysql&gt; DELETE FROM CUSTOMERS WHERE ID=5;
+mysql&gt; ROLLBACK;
+
+mysql&gt; SELECT * FROM CUSTOMERS;
++----+----------+-----+-----------+--------+
+| id | name     | age | address   | salary |
++----+----------+-----+-----------+--------+
+|  1 | Ramesh   |  32 | Ahmedabad |   2000 |
+|  2 | Khilan   |  25 | Delhi     |   1500 |
+|  3 | Kaushik  |  23 | Kota      |   2000 |
+|  4 | Chaitali |  25 | Mumbai    |   6500 |
+|  5 | Hardik   |  27 | Bhopal    |   8500 |
++----+----------+-----+-----------+--------+</pre>
+您看，回滚事务以后，物理数据库中的数据并没有发生改变，表中的内容和事务执行之前的内容一致。
+<h4>
+	4) 回滚标记点</h4>
+ROLLBACK 命令默认回滚整个事务，也即事务中的所有修改操作都无效。但是 SQL 允许回滚事务的一部分，此时需要在事务中设置一个标记点，在该标记点之后的 SQL 语句将被回滚，之前的 SQL 语句将被成功执行。<br />
+<br />
+设置标记点使用 SAVEPOINT 命令，具体语法如下：
+<p class="info-box">
+	SAVEPOINT point_name;</p>
+point_name 为标记点名字。<br />
+<br />
+回滚到标记点使用 ROLLBACK TO 命令，具体语法如下：
+<p class="info-box">
+	ROLLBACK TO point_name;</p>
+<br />
+例如，有包含如下记录的 CUSTOMERS 表：
+<pre class="info-box">
++----+----------+-----+-----------+--------+
+| id | name     | age | address   | salary |
++----+----------+-----+-----------+--------+
+|  1 | Ramesh   |  32 | Ahmedabad |   2000 |
+|  2 | Khilan   |  25 | Delhi     |   1500 |
+|  3 | Kaushik  |  23 | Kota      |   2000 |
+|  4 | Chaitali |  25 | Mumbai    |   6500 |
+|  5 | Hardik   |  27 | Bhopal    |   8500 |
++----+----------+-----+-----------+--------+</pre>
+<br />
+使用事务删除最后两个用户，并回滚到标记点：
+<pre class="info-box">
+mysql&gt; BEGIN;
+mysql&gt; DELETE FROM CUSTOMERS WHERE ID=4;
+mysql&gt; SAVEPOINT sp;
+mysql&gt; DELETE FROM CUSTOMERS WHERE ID=5;
+mysql&gt; ROLLBACK TO sp;
+
+mysql&gt; SELECT * FROM CUSTOMERS;
++----+---------+-----+-----------+--------+
+| id | name    | age | address   | salary |
++----+---------+-----+-----------+--------+
+|  1 | Ramesh  |  32 | Ahmedabad |   2000 |
+|  2 | Khilan  |  25 | Delhi     |   1500 |
+|  3 | Kaushik |  23 | Kota      |   2000 |
+|  5 | Hardik  |  27 | Bhopal    |   8500 |
++----+---------+-----+-----------+--------+</pre>
+您看，我们回滚到标记点 sp，只有 ID 为 4 的用户被删除，ID 为 5 的用户依然留在数据库中。<br />
+</div>
+			<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="../view/niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/30_2.html" title="Go语言从切片中删除元素" target="_blank">Go语言从切片中删除元素</a></li>
+<li><a href="../view/vip_3237_2.html" title="Linux bc命令：一款数学计算器" target="_blank">Linux bc命令：一款数学计算器</a></li>
+<li><a href="../view/5810_2.html" title="Python Eclipse+PyDec下载和安装教程（超级详细）" target="_blank">Python Eclipse+PyDec下载和安装教程（超级详细）</a></li>
+<li><a href="../maven2/eclipse-maven-command_2.html" title="Eclipse执行Maven命令" target="_blank">Eclipse执行Maven命令</a></li>
+<li><a href="../python_spider/regexp-syntax_2.html" title="正则表达式基本语法" target="_blank">正则表达式基本语法</a></li>
+<li><a href="../view/wnqg7p_2.html" title="DevOps到底是什么？" target="_blank">DevOps到底是什么？</a></li>
+<li><a href="../c/sinh_2.html" title="C语言sinh()：求双曲正弦" target="_blank">C语言sinh()：求双曲正弦</a></li>
+</ul>
+</div>
+		</div>
+		
+	</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9172;
+window.arcId = "e3315/4s4MebCxjgetjPASvCZ7nXhfZRswt843uwwWTy/GGG1/tFOAmAMJY";
+window.typeidChain = "425";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="../view/8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="../view/8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="../view/8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="../view/9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="../view/8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/sql/having.html";
+window.nextPageURL = "/sql/temp-table.html";
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

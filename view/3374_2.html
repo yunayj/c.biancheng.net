@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>矩阵（稀疏矩阵）的转置算法（C语言）详解</title>
+<meta name="description" content="矩阵（包括稀疏矩阵）的转置，即互换矩阵中所有元素的行标和列标，如图 1 所示： 图 1 矩阵转置示意图 但如果想通过程序实现矩阵的转置，互换行标和列标只是第一步。因为实现矩阵" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+	<div id="sidebar" class="toggle-target">
+	<div id="contents">
+		<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../data_structure/data_structure_2.html">数据结构</a></dt>
+		
+			<dd>
+				<span class="channel-num">1</span>
+				<a href='../data_structure/intro/intro_2.html'>数据结构入门</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">2</span>
+				<a href='../data_structure/linear_list/linear_list_2.html'>线性表</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">3</span>
+				<a href='../data_structure/stack_queue/stack_queue_2.html'>栈和队列</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">4</span>
+				<a href='../data_structure/string/string_2.html'>字符串</a>
+			</dd>
+		<dd class="this"> <span class="channel-num">5</span> <a href="../data_structure/array_list/array_list_2.html">数组和广义表</a> </dd><dl class="dl-sub"><dd>5.1 <a href="3367_2.html">什么是数组存储结构</a></dd><dd>5.2 <a href="3368_2.html">数组的顺序存储</a></dd><dd>5.3 <a href="3369_2.html">矩阵的压缩存储</a></dd><dd>5.4 <a href="3371_2.html">三元组顺序表</a></dd><dd>5.5 <a href="3372_2.html">行逻辑链接的顺序表</a></dd><dd>5.6 <a href="3373_2.html">十字链表法</a></dd><dd>5.7 <a href="3374_2.html">矩阵的转置算法</a></dd><dd>5.8 <a href="vip_3375_2.html">稀疏矩阵的快速转置</a><span class="iconfont iconfont-vip2"></span></dd><dd>5.9 <a href="vip_3376_2.html">行逻辑链接的顺序表实现矩阵乘法</a><span class="iconfont iconfont-vip2"></span></dd><dd>5.10 <a href="vip_3377_2.html">十字链表实现矩阵加法</a><span class="iconfont iconfont-vip2"></span></dd><dd>5.11 <a href="3379_2.html">什么是广义表</a></dd><dd>5.12 <a href="3380_2.html">广义表的存储结构</a></dd><dd>5.13 <a href="vip_3381_2.html">广义表的深度和长度</a><span class="iconfont iconfont-vip2"></span></dd><dd>5.14 <a href="3382_2.html">广义表的复制</a></dd></dl>
+			<dd>
+				<span class="channel-num">6</span>
+				<a href='../data_structure/tree/tree_2.html'>树存储结构</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">7</span>
+				<a href='../data_structure/graph/graph_2.html'>图存储结构</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">8</span>
+				<a href='../data_structure/memory/memory_2.html'>动态内存管理</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">9</span>
+				<a href='../data_structure/search/search_2.html'>查找表结构</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">10</span>
+				<a href='../data_structure/sort/sort_2.html'>排序算法</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">11</span>
+				<a href='../data_structure/out_sort/out_sort_2.html'>外部排序算法</a>
+			</dd>
+		
+	</div>
+</div>
+	<div id="article-wrap">
+		<div id="article">
+			<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../data_structure/data_structure_2.html">数据结构</a> &gt; <a href="../data_structure/array_list/array_list_2.html">数组和广义表</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+			<h1>矩阵（稀疏矩阵）的转置算法（C语言）详解</h1>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+			<div id="arc-body">矩阵（包括稀疏矩阵）的转置，即互换矩阵中所有元素的行标和列标，如图 1 所示：
+<div style="text-align: center;">
+	<br />
+	<img alt="" src="../uploads/allimg/190426/1P2415533-0_2.gif" /><br />
+	图 1 矩阵转置示意图</div>
+<br />
+但如果想通过程序实现矩阵的转置，互换行标和列标只是第一步。因为实现矩阵转置的前提是将矩阵存储起来，<a href='../data_structure/data_structure_2.html' target='_blank'>数据结构</a>中提供了 3 种存储矩阵的结构，分别是三元组<a href='3334_2.html' target='_blank'>顺序表</a>、行逻辑链接的顺序表和十字<a href='3336_2.html' target='_blank'>链表</a>。如果采用前两种结构，矩阵的转置过程会涉及三元组表也跟着改变的问题，如图 2 所示：
+<div style="text-align: center;">
+	<br />
+	<img alt="" src="../uploads/allimg/190426/1P24142c-1_2.gif" /><br />
+	图 2 三元组表的变化</div>
+<p class="info-box">
+	图 2a) 表示的是图 1 中转置之前矩阵的三元组表，2b) 表示的是图 1 中矩阵转置后对应的三元组表。</p>
+不仅如此，如果矩阵的行数和列数不等，也需要将它们互换。<br />
+<br />
+因此通过以上分析，矩阵转置的实现过程需完成以下 3 步：
+<ol>
+	<li>
+		将矩阵的行数和列数互换；</li>
+	<li>
+		将三元组表（存储矩阵）中的 i 列和 j 列互换，实现矩阵的转置；</li>
+	<li>
+		以 j 列为序，重新排列三元组表中存储各三元组的先后顺序；</li>
+</ol>
+<p class="info-box">
+	此 3 步中，前两步比较简单，关键在于最后一步的实现。本节先介绍较容易的一种。</p>
+<br />
+<span style="color: rgb(178, 34, 34);">矩阵转置的实现思路是：不断遍历存储矩阵的三元组表，每次都取出表中 j 列最小的那一个三元组，</span><span style="color: rgb(178, 34, 34);">互换行标和列标的值，</span><span style="color: rgb(178, 34, 34);">并按次序存储到一个新三元组表中，。</span><br />
+<br />
+例如，将图 2a) 三元组表存储的矩阵进行转置的过程为：
+<ol>
+	<li>
+		新建一个三元组表（用于存储转置矩阵），并将原矩阵的行数和列数互换赋值给新三元组；</li>
+	<li>
+		遍历三元组表，找到表中 j 列最小值 1 所在的三元组 (3,1,6)，然后将其行标和列标互换后添加到一个新的三元组表中，如图 3 所示：
+		<div style="text-align: center;">
+			<br />
+			<img alt="" src="../uploads/allimg/190426/1P24161c-2_2.gif" /><br />
+			图 3 矩阵转置的第一个过程<br />
+			&nbsp;</div>
+	</li>
+	<li>
+		继续遍历三元组表，找到表中 j 列次小值为 2 的三元组，分别为 (1,2,1)、(2,2,3) 和 (3,2,5)，根据找到它们的先后次序将各自的行标和列标互换后添加到新三元组表中，如图 4 所示：
+		<div style="text-align: center;">
+			<br />
+			<img alt="" src="../uploads/allimg/190426/1P2416144-3_2.gif" /><br />
+			图 4 矩阵转置的第二个过程</div>
+	</li>
+</ol>
+<br />
+对比图 4 和图 2b) 可以看到，矩阵被成功地转置。<br />
+<br />
+因此，矩阵转置的 C 语言实现代码为：
+<pre class="cpp">
+#include&lt;stdio.h&gt;
+#define number 10
+typedef struct {
+&nbsp;&nbsp;&nbsp; int i, j;
+&nbsp;&nbsp;&nbsp; int data;
+}triple;
+typedef struct {
+&nbsp;&nbsp;&nbsp; triple data[10];
+&nbsp;&nbsp;&nbsp; int n, m, num;
+}TSMatrix;
+
+TSMatrix transposeMatrix(TSMatrix M, TSMatrix T) {
+&nbsp;&nbsp;&nbsp; T.m = M.n;
+&nbsp;&nbsp;&nbsp; T.n = M.m;
+&nbsp;&nbsp;&nbsp; T.num = M.num;
+
+&nbsp;&nbsp;&nbsp; if (T.num) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int q = 0;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (int col = 1; col &lt;= M.m; col++) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (int p = 0; p &lt; M.num; p++) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (M.data[p].j == col) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; T.data[q].i = M.data[p].j;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; T.data[q].j = M.data[p].i;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; T.data[q].data = M.data[p].data;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; q++;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; return T;
+}
+
+int main() {
+&nbsp;&nbsp;&nbsp; TSMatrix M;
+&nbsp;&nbsp;&nbsp; M.m = 2;
+&nbsp;&nbsp;&nbsp; M.n = 3;
+&nbsp;&nbsp;&nbsp; M.num = 4;
+
+&nbsp;&nbsp;&nbsp; M.data[0].i = 1;
+&nbsp;&nbsp;&nbsp; M.data[0].j = 2;
+&nbsp;&nbsp;&nbsp; M.data[0].data = 1;
+
+&nbsp;&nbsp;&nbsp; M.data[1].i = 2;
+&nbsp;&nbsp;&nbsp; M.data[1].j = 2;
+&nbsp;&nbsp;&nbsp; M.data[1].data = 3;
+
+&nbsp;&nbsp;&nbsp; M.data[2].i = 3;
+&nbsp;&nbsp;&nbsp; M.data[2].j = 1;
+&nbsp;&nbsp;&nbsp; M.data[2].data = 6;
+
+&nbsp;&nbsp;&nbsp; M.data[3].i = 3;
+&nbsp;&nbsp;&nbsp; M.data[3].j = 2;
+&nbsp;&nbsp;&nbsp; M.data[3].data = 5;
+
+&nbsp;&nbsp;&nbsp; TSMatrix T;
+&nbsp;&nbsp;&nbsp; for (int k = 0; k &lt; number; k++) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; T.data[k].i = 0;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; T.data[k].j = 0;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; T.data[k].data = 0;
+&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; T = transposeMatrix(M, T);
+&nbsp;&nbsp;&nbsp; for (int i = 0; i &lt; T.num; i++) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; printf(&quot;(%d,%d,%d)\n&quot;, T.data[i].i, T.data[i].j, T.data[i].data);
+&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; return 0;
+}</pre>
+程序运行结果为：
+<p class="info-box">
+	(1,3,6)<br />
+	(2,1,1)<br />
+	(2,2,3)<br />
+	(2,3,5)</p>
+由于此算法中嵌套使用了两个 for 循环，<a href='3332_2.html' target='_blank'>时间复杂度</a>为&nbsp;<code>O(n<sup>2</sup>)</code>。</div>
+			<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="30_2.html" title="Go语言从切片中删除元素" target="_blank">Go语言从切片中删除元素</a></li>
+<li><a href="../linux/sleep_2.html" title="sleep命令_Linux sleep命令：让程序暂停或休眠一段时间" target="_blank">sleep命令_Linux sleep命令：让程序暂停或休眠一段时间</a></li>
+<li><a href="vip_2084_2.html" title="即时窗口的使用" target="_blank">即时窗口的使用</a></li>
+<li><a href="3751_2.html" title="Linux edquota命令：修改用户（群组）的磁盘配额" target="_blank">Linux edquota命令：修改用户（群组）的磁盘配额</a></li>
+<li><a href="7500_2.html" title="C++ find_end()函数详解" target="_blank">C++ find_end()函数详解</a></li>
+<li><a href="../maven2/life-cycle_2.html" title="Maven生命周期（clean+site+default）" target="_blank">Maven生命周期（clean+site+default）</a></li>
+<li><a href="3l3gkh8_2.html" title="《Web前端开发项目实践教程》PDF下载（高清完整版）" target="_blank">《Web前端开发项目实践教程》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+		</div>
+		
+	</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 3374;
+window.arcId = "fcbfi6UWnOHXl2J+VgrkDuDftwg5y2jHLrv45LsgGyyXVD5qQLPC7GpBJso";
+window.typeidChain = "233|228";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/view/3373.html";
+window.nextPageURL = "/view/vip_3375.html";
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

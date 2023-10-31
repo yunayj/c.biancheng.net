@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C# Command：操作数据库</title>
+<meta name="description" content="在上一节《 C# Connection 》中我们讲解了 C# 语言连接数据库的方法，在与数据库建立连接之后即可开始操作数据库中的对象。 操作数据库需则要用到 Command 类中提供的属性和方法。下面来" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C# Command：操作数据库</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在上一节《<a href="3010_2.html" target="_blank">C# Connection</a>》中我们讲解了 <a href='../csharp/csharp_2.html' target='_blank'>C#</a> 语言连接数据库的方法，在与数据库建立连接之后即可开始操作数据库中的对象。<br />
+<br />
+操作数据库需则要用到 Command 类中提供的属性和方法。下面来介绍一下如何使用 Command 类来操作数据表中的数据。<br />
+<h2>
+	Command 类概述</h2>
+在 System.Data.SqlClient 命名空间下，对应的 Command 类为 SqlCommand，在创建 SqlCommand 实例前必须已经创建了与数据库的连接。<br />
+<br />
+SqlCommand 类中常用的构造方法如下表所示。<br />
+<br />
+<table>
+	<tbody>
+		<tr>
+			<th>
+				构造方法</th>
+			<th>
+				说明</th>
+		</tr>
+		<tr>
+			<td>
+				SqlCommand()</td>
+			<td>
+				无参构造方法</td>
+		</tr>
+		<tr>
+			<td>
+				SqlCommand(string commandText,SqlConnection conn)</td>
+			<td>
+				带参的构造方法，第 1 个参数是要执行的 SQL 语句，第 2 个参数是数据库的连接对象</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+对数据库中对象的操作不仅包括对数据表的操作，还包括对数据库、视图、存储过程等数据库对象的操作，接下来主要介绍的是对数据表和存储过程的操作。<br />
+<br />
+在对不同数据库对象进行操作时，SqlCommand 类提供了不同的属性和方法，常用的属性和方法如下表所示。<br />
+<br />
+<table>
+	<tbody>
+		<tr>
+			<th>
+				属性或方法</th>
+			<th>
+				说明</th>
+		</tr>
+		<tr>
+			<td>
+				CommandText</td>
+			<td>
+				属性，Command 对象中要执行的 SQL 语句</td>
+		</tr>
+		<tr>
+			<td>
+				Connection</td>
+			<td>
+				属性，获取或设置数据库的连接对象</td>
+		</tr>
+		<tr>
+			<td>
+				CommandType</td>
+			<td>
+				属性，获取或设置命令类型</td>
+		</tr>
+		<tr>
+			<td>
+				Parameters</td>
+			<td>
+				属性，设置 Command 对象中 SQL 语句的参数</td>
+		</tr>
+		<tr>
+			<td>
+				ExecuteReader()</td>
+			<td>
+				方法，获取执行查询语句的结果</td>
+		</tr>
+		<tr>
+			<td>
+				ExecuteScalar()</td>
+			<td>
+				方法，返回查询结果中第 1 行第 1 列的值</td>
+		</tr>
+		<tr>
+			<td>
+				ExecuteNonQuery()</td>
+			<td>
+				方法，执行对数据表的增加、删除、修改操作</td>
+		</tr>
+	</tbody>
+</table>
+<h2>
+	使用 Command 类操作数据库</h2>
+Command 类中提供了 3 种命令类型，分别是 Text、TableDirect 以及 StoredProcedure，默认情况下是 Text。<br />
+<br />
+所谓 Text 类型是指使用 SQL 语句的形式，包括增加、删除、修改以及查询的SQL语句。<br />
+<br />
+StoredProcedure 用于执行存储过程；TableDirect 仅在 OLE DB 驱动程序中有效。<br />
+<br />
+在使用 Command 类操作数据库时需要通过以下步骤完成。<br />
+<h3>
+	1) 创建 SqlCommand 类的实例</h3>
+创建 SqlCommand 类的实例分两种情况，一种是命令类型为 Text 的，一种是命令类型为 StoredProcedure 的。<br />
+<h4>
+	命令类型为 Text</h4>
+<p class="info-box">
+	SqlCommand SqlCommand 类的实例名 = new SqlCommand( SQL 语句 , 数据库连接类的实例 );</p>
+其中：
+<ul>
+	<li>
+		SQL 语句：指该 SqlCommand 类的实例要执行的 SQL 语句。</li>
+	<li>
+		数据库连接类的实例：指使用 SqlConnection 类创建的实例，通常数据库连接类的实例处于打开的状态。</li>
+</ul>
+<h4>
+	命令类型为 StoredProcedure</h4>
+<p class="info-box">
+	SqlCommand SqlCommand 类的实例名 = new SqlCommand( 存储过程名称 , 数据库连接类的实例 );</p>
+需要注意的是，存储过程必须是当前数据库实例中的存储过程，并且在调用带参数的存储过程时，还需要在 SqlCommand 类的实例中添加对应的存储过程参数。<br />
+<br />
+为存储过程添加参数，需要使用 SqlCommand 类实例的 Parameters 属性来设置，具体的代码如下。<br />
+<p class="info-box">
+	SqlCommand 类实例 .Parameters.Add( 参数名 , 参数值 );</p>
+在这里，参数名与存储过程中定义的参数名要一致。<br />
+<h3>
+	2) 执行对数据表的操作</h3>
+在执行对数据表的操作时通常分为两种情况，一种是执行非查询 SQL 语句的操作，即增加、修改、删除的操作，一种是执行查询 SQL 语句的操作。<br />
+<h4>
+	执行非查询 SQL 语句的操作</h4>
+在执行非查询 SQL 语句时并不需要返回表中的数据，直接使用 SqlCommand 类的 ExecuteNonQuery 方法即可，该方法的返回值是一个整数，用于返回 SqlCommand 类在执行 SQL 语句后，对表中数据影响的行数。<br />
+<br />
+当该方法的返回值为 -1 时，代表 SQL 语句执行失败，当该方法的返回值为 0 时，代表 SQL 语句对当前数据表中的数据没有影响。<br />
+<br />
+例如 要删除学号为 1100 的学生的信息，而表中不存在该学号的学生的信息，SQL语句可以正常执行，但对表中的影响行数是 0。<br />
+<br />
+具体的代码如下。<br />
+<p class="info-box">
+	SqlCommand 类的实例 .ExecuteNonQuery();</p>
+需要注意的是，如果执行的 SQL 语句在数据库中执行错误，则会产生异常，因此该部分需要进行异常处理。<br />
+<h4>
+	执行查询语句的操作</h4>
+在执行查询语句时通常需要返回查询结果，SqlCommand 类中提供的 ExecuteReader 方法在执行查询 SQL 语句后，会返回一个 SqlDataReader 类型的值，通过遍历 SqlDataReader 类中的结果即可得到返回值。<br />
+<br />
+具体的代码如下。<br />
+<p class="info-box">
+	SqlDataReader dr = SqlCommand 类的实例 .ExecuteReader();</p>
+此外，如果在执行查询语句后并不需要返回所有的查询结果，而仅需要返回一个值，例如查询表中的记录行数，这时可以使用 ExecuteScalar 方法。具体的代码如下。<br />
+<p class="info-box">
+	int returnvalue = SqlCommand 类的实例 .ExecuteScalar();</p>
+下面通过实例来演示 SqlCommand 类的使用。<br />
+<br />
+【实例 1】制作一个用户注册界面，使用 SqlCommand 类向用户信息表中添加一条记录。<br />
+<br />
+根据题目要求，先在 SQL Server 2014 中创建用户信息表 userinfo，SQL 语句如下。<br />
+<pre class="cpp">
+create table userinfo
+(
+    id int identity(1,1) primary key,
+    name varchar(20),
+    password varchar(20)
+)</pre>
+为了方便，将表中的 id 设置为主键，并设置为标识列，以保证值的唯一性。<br />
+<br />
+使用 SqlCommand 类向表中添加数据的语句如下。
+<pre class="cpp">
+//&ldquo;注册&rdquo;按钮的单击事件
+private void button1_Click(object sender, EventArgs e)
+{
+    //编写数据库连接串
+    string connStr = &quot;Data Source=.;Initial Catalog=test;User ID=sa;Password=root&quot;;
+    //创建 SqlConnection的实例
+    SqlConnection conn = null;
+    try
+    {
+        conn = new SqlConnection(connStr);
+        //打开数据库连接
+        conn.Open();
+        string sql = &quot;insert into userinfo(name,password) values(&#39;{0}&#39;,&#39;{1}&#39;)&quot;;
+        //填充SQL语句
+        sql = string.Format(sql, textBox1.Text, textBox2.Text);
+        //创建SqlCommand对象
+        SqlCommand cmd = new SqlCommand(sql, conn);
+        //执行SQL语句
+        int returnvalue = cmd.ExecuteNonQuery();
+        //判断SQL语句是否执行成功
+        if(returnvalue != -1)
+        {
+            MessageBox.Show(&quot;注册成功！&quot;);
+        }
+    }
+    catch(Exception ex)
+    {
+        MessageBox.Show(&quot;注册失败！&quot;+ex.Message);
+    }
+    finally
+    {
+        if (conn != null)
+        {
+            //关闭数据库连接
+            conn.Close();
+        }
+    }
+}</pre>
+运行窗体，效果如下图所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="用户注册" src="../uploads/allimg/190404/4-1Z404164350H2_2.gif" /></div>
+<br />
+从上面的运行效果可以看出，通过 SqlCommand 对象已经将用户信息添加到数据表 userinfo 中。<br />
+<br />
+【实例 2】制作一个登录界面，使用 SqlCommand 类判断用户是否登录成功。<br />
+<br />
+根据题目要求，登录功能通过查询语句来实现，即将界面上输入的用户名和密码与数据表中存储的用户信息相比较，如果有与之匹配的用户信息则弹出消息框提示登录成功， 否则提示登录失败。<br />
+<br />
+实现登录功能的界面如下图所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="登录界面" src="../uploads/allimg/190404/4-1Z404164514260_2.gif" /></div>
+<br />
+在登录界面中的&ldquo;登录&rdquo;按钮的单击事件中实现用户登录功能，并在&ldquo;取消&rdquo;按钮的单击事件中实现关闭登录窗体的功能。<br />
+<br />
+实现的代码如下。
+<pre class="cpp">
+//&quot;登录&quot;按钮的单击事件
+private void button1_Click(object sender, EventArgs e)
+{
+    //编写数据库连接串
+    string connStr = &quot;Data Source=.;Initial Catalog=test;User ID=sa;Password=root&quot;;
+    //创建SQLConnection的实例
+    SqlConnection conn = null;
+    try
+    {
+        conn = new SqlConnection(connStr);
+        //打开数据库连接
+        conn.Open();
+        string sql = &quot;Select count(*) from userinfo where name=&#39;{0}&#39; and password=&#39;{1}&#39;&quot;;
+        //填充SQL语句
+        sql = string.Format(sql, textBox1.Text, textBox2.Text);
+        //创建SqlCommand对象
+        SqlCommand cmd = new SqlCommand(sql, conn);
+        //执行SQL语句
+        int returnvalue = (int)cmd.ExecuteScalar();
+        //判断SQL语句是否执行成功
+        if (returnvalue != 0)
+        {
+            MessageBox.Show(&quot;登录成功！&quot;);
+        }
+        else
+        {
+            MessageBox.Show(&quot;登录失败！&quot;);
+        }
+    }
+    catch (Exception ex)
+    {
+        MessageBox.Show(&quot;注册失败！&quot; + ex.Message);
+    }
+    finally
+    {
+        if (conn != null)
+        {
+            //关闭数据库连接
+            conn.Close();
+        }
+    }
+}
+//&ldquo;取消&rdquo;按钮的单击事件
+private void button2_Click(object sender, EventArgs e)
+{
+    this.Close();
+}</pre>
+运行该窗体，效果如下图所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="登录成功效果" src="../uploads/allimg/190404/4-1Z404164551150_2.gif" /></div>
+<br />
+从上面的运行效果可以看出，通过使用 SqlCommand 类中的 ExecuteScalar 方法即可判断是否存在界面中输入的用户名和密码。<br />
+<br />
+【实例 3】改进用户注册功能，使用户在注册时用户名唯一。<br />
+<br />
+在上一实例的登录功能中有可能出现不同的人注册时的用户名和密码相同的情况，因此很难判断究竟是哪个用户登录。<br />
+<br />
+在很多软件中，用户注册功能都会判断用户名是否唯一，或者直接使用邮箱或手机号作为登录名。<br />
+<br />
+下面在实例 1 的注册功能中添加判断用户名是否唯一的功能，实现的代码如下。
+<pre class="cpp">
+//&ldquo;注册&rdquo;按钮的单击事件
+private void button1_Click(object sender, EventArgs e)
+{
+    //编写数据库连接串
+    string connStr = &quot;Data Source=.;Initial Catalog=test;User ID=sa;Password=root&quot;;
+    //创建 SqlConnection的实例
+    SqlConnection conn = null;
+    try
+    {
+        conn = new SqlConnection(connStr);
+        //打开数据库连接
+        conn.Open();
+        //判断用户名是否重复
+        string checkNameSql = &quot;select count(*) from userinfo where name=&#39;{0}&#39;&quot;;
+        checkNameSql = string.Format(checkNameSql, textBox1.Text);
+        //创建SqlCommand对象
+        SqlCommand cmdCheckName = new SqlCommand(checkNameSql, conn);
+        //执行SQL语句
+        int isRepeatName = (int)cmdCheckName.ExecuteScalar();
+        if (isRepeatName != 0)
+        {
+            //用户名重复，则不执行注册操作
+            MessageBox.Show(&quot;用户名已存在！&quot;);
+            return;
+        }
+        string sql = &quot;insert into userinfo(name,password) values(&#39;{0}&#39;,&#39;{1}&#39;)&quot;;
+        //填充SQL语句
+        sql = string.Format(sql, textBox1.Text, textBox2.Text);
+        //创建SqlCommand对象
+        SqlCommand cmd = new SqlCommand(sql, conn);
+        //执行SQL语句
+        int returnvalue = cmd.ExecuteNonQuery();
+        //判断SQL语句是否执行成功
+        if(returnvalue != -1)
+        {
+            MessageBox.Show(&quot;注册成功！&quot;);
+        }
+    }
+    catch(Exception ex)
+    {
+        MessageBox.Show(&quot;注册失败！&quot;+ex.Message);
+    }
+    finally
+    {
+        if (conn != null)
+        {
+            //关闭数据库连接
+            conn.Close();
+        }
+    }
+}</pre>
+运行该窗体，输入已经存在的用户名&ldquo;张三&rdquo;，执行效果如下图。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="注册同名用户时的效果" src="../uploads/allimg/190404/4-1Z404164635296_2.gif" /></div>
+<br />
+从上面的运行效果可以看出，由于&ldquo;张三&rdquo;用户在表中已经存在，所以在注册时会弹出&ldquo;用户名已存在！&rdquo;的提示。<br />
+<br />
+【实例 4】创建一个存储过程实现用户注册功能，并使用 SqlCommand 类调用存储过程。<br />
+<br />
+用户注册功能的存储过程比较简单，只需要写一个带参数的存储过程将用户名和密码传递给存储过程，并使用 insert 语句将用户名和密码添加到用户信息表中。<br />
+<br />
+在存储过程中暂不考虑判断用户名是否重复。创建存储过程的语句如下。
+<pre class="cpp">
+create procedure AddUser(@name varchar(20), @password varchar(20))
+as
+begin
+insert into userinfo (name, password) values (@name, @password);
+end</pre>
+注册页面与实例 1 一样，在&ldquo;注册&rdquo;按钮的单击事件中调用 AddUser 存储过程，代码如下。
+<pre class="cpp">
+//编写数据库连接串
+string connStr = &quot;Data Source=.;Initial Catalog=test;User ID=sa;Password=root&quot;;
+//创建 SqlConnection的实例
+SqlConnection conn = null;
+try
+{
+    conn = new SqlConnection(connStr);
+    //打开数据库连接
+    conn.Open();
+    //创建SqlCommand对象
+    SqlCommand cmd = new SqlCommand(&quot;AddUser&quot;, conn);
+    //设置SQLCommand对象的命令类型（CommandType）是存储过程
+    cmd.CommandType = CommandType.StoredProcedure;
+    //设置存储过程需要的参数
+    cmd.Parameters.AddWithValue(&quot;name&quot;, textBox1.Text);
+    cmd.Parameters.AddWithValue(&quot;password&quot;, textBox2.Text);
+    //执行存储过程
+    int returnvalue = cmd.ExecuteNonQuery();
+    Console.WriteLine(returnvalue);
+    //判断SQL语句是否执行成功
+    if(returnvalue != -1)
+    {
+        MessageBox.Show(&quot;注册成功！&quot;);
+    }
+}
+catch(Exception ex)
+{
+    MessageBox.Show(&quot;注册失败！&quot;+ex.Message);
+}
+finally
+{
+    if (conn != null)
+    {
+        //关闭数据库连接
+        conn.Close();
+    }
+}</pre>
+运行该窗体，效果与实例 1 一致。从上面的代码可以看出，调用存储过程并不复杂，只需要在 SqlCommand 对象中将 CommandType 属性的值改成 StoredProcedure，并添加存储过程中所需要的参数即可。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2201_2.html" title="C++ inline内联函数详解" target="_blank">C++ inline内联函数详解</a></li>
+<li><a href="4117_2.html" title="Go语言多维数组简述" target="_blank">Go语言多维数组简述</a></li>
+<li><a href="../servlet2/filterconfig_2.html" title="FilterConfig接口（Servlet）" target="_blank">FilterConfig接口（Servlet）</a></li>
+<li><a href="../pandas/plot_2.html" title="Python Pandas绘图教程（详解版）" target="_blank">Python Pandas绘图教程（详解版）</a></li>
+<li><a href="9762_2.html" title="C语言有哪些冷知识？" target="_blank">C语言有哪些冷知识？</a></li>
+<li><a href="9773_2.html" title="NoSQL（非关系型数据库）是什么？" target="_blank">NoSQL（非关系型数据库）是什么？</a></li>
+<li><a href="btjbges_2.html" title="JS with语句及其替代方案" target="_blank">JS with语句及其替代方案</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 3017;
+window.arcId = "9472VArSj7zmWRKKtqNzLGULDtKEH4apMn5KbUUyUOdlVsSRA7TMX7L2aLQ";
+window.typeidChain = "211|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

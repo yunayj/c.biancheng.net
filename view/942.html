@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Linux Shell重定向（输入输出重定向）精讲</title>
+<meta name="description" content="输入輸出重定向从字面上看就是改变输入与输出的方向的意思，但是标准的输入与输出方向是什么呢？ 我们先来解释输入设备和输出设备各有哪些。现在计算机的输入设备非常多，常见" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<h4><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../shell/shell.html">Shell</a></h4>
+<dl id="contents">
+<dt><a href="../shell/base/base.html">Shell基础（开胃菜）</a></dt>
+<dd>1.<a href="706.html">Shell是什么</a>
+</dd>
+<dd>2.<a href="731.html">Shell是运维人员必须掌握的技能</a>
+</dd>
+<dd>3.<a href="vip_4555.html">常用的Shell有哪些？</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>4.<a href="733.html">进入Shell的两种方式</a>
+</dd>
+<dd>5.<a href="3163.html">Shell命令的基本格式</a>
+</dd>
+<dd>6.<a href="vip_3229.html">Shell命令的本质到底是什么？如何自己实现一个命令？</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>7.<a href="vip_3230.html">Shell命令的选项和参数在本质上是什么</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>8.<a href="3175.html">Shell命令提示符</a>
+</dd>
+<dd>9.<a href="vip_3279.html">修改命令提示符</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>10.<a href="735.html">第一个Shell脚本</a>
+</dd>
+<dd>11.<a href="739.html">执行Shell脚本</a>
+</dd>
+<dd>12.<a href="vip_3231.html">Shell四种运行方式（启动方式）</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>13.<a href="vip_3232.html">Shell配置文件（配置脚本）的加载</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>14.<a href="vip_3233.html">如何编写自己的Shell配置文件？</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dt><a href="../shell/program/program.html">Shell编程</a></dt>
+<dd>1.<a href="743.html">Shell变量</a>
+</dd>
+<dd>2.<a href="vip_4558.html">Shell变量的作用域（精讲）</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>3.<a href="1164.html">Shell命令替换</a>
+</dd>
+<dd>4.<a href="789.html">Shell位置参数</a>
+</dd>
+<dd>5.<a href="806.html">Shell特殊变量</a>
+</dd>
+<dd>6.<a href="vip_4559.html">Shell $*和$@之间的区别</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>7.<a href="808.html">Shell $?</a>
+</dd>
+<dd>8.<a href="821.html">Shell字符串详解</a>
+</dd>
+<dd>9.<a href="1114.html">Shell字符串拼接</a>
+</dd>
+<dd>10.<a href="1120.html">Shell字符串截取</a>
+</dd>
+<dd>11.<a href="810.html">Shell数组</a>
+</dd>
+<dd>12.<a href="812.html">Shell获取数组长度</a>
+</dd>
+<dd>13.<a href="818.html">Shell数组拼接</a>
+</dd>
+<dd>14.<a href="819.html">Shell删除数组元素</a>
+</dd>
+<dd>15.<a href="vip_3234.html">Shell关联数组</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>16.<a href="1136.html">Shell内建命令</a>
+</dd>
+<dd>17.<a href="1138.html">Shell alias命令</a>
+</dd>
+<dd>18.<a href="1142.html">Shell echo命令</a>
+</dd>
+<dd>19.<a href="2991.html">Shell read命令</a>
+</dd>
+<dd>20.<a href="1145.html">Shell exit命令</a>
+</dd>
+<dd>21.<a href="2709.html">Shell declare和typeset命令</a>
+</dd>
+<dd>22.<a href="1169.html">Shell数学计算</a>
+</dd>
+<dd>23.<a href="2480.html">Shell (())</a>
+</dd>
+<dd>24.<a href="2504.html">Shell let命令</a>
+</dd>
+<dd>25.<a href="vip_3235.html">Shell $[]</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>26.<a href="vip_3236.html">Shell expr命令</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>27.<a href="vip_3237.html">Linux bc命令</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>28.<a href="vip_3238.html">Shell declare -i</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>29.<a href="1262.html">Shell if else</a>
+</dd>
+<dd>30.<a href="2735.html">Shell退出状态</a>
+</dd>
+<dd>31.<a href="2742.html">Shell test命令</a>
+</dd>
+<dd>32.<a href="2751.html">Shell [[]]</a>
+</dd>
+<dd>33.<a href="2767.html">Shell case in</a>
+</dd>
+<dd>34.<a href="1006.html">Shell while</a>
+</dd>
+<dd>35.<a href="1007.html">Shell until</a>
+</dd>
+<dd>36.<a href="2804.html">Shell for</a>
+</dd>
+<dd>37.<a href="2829.html">Shell select in</a>
+</dd>
+<dd>38.<a href="1011.html">Shell break和continue</a>
+</dd>
+<dd>39.<a href="1009.html">Shell函数</a>
+</dd>
+<dd>40.<a href="2860.html">Shell函数参数</a>
+</dd>
+<dd>41.<a href="vip_3239.html">Shell函数返回值精讲</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dt><a href="../shell/advanced/advanced.html">Shell高级</a></dt>
+<dd>1.<a href="942.html">Shell重定向</a>
+</dd>
+<dd>2.<a href="vip_3240.html">Linux中的文件描述符到底是什么？</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>3.<a href="vip_3241.html">结合文件描述符谈重定向，彻底理解重定向的本质！</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>4.<a href="vip_3242.html">使用exec命令操作文件描述符</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>5.<a href="vip_3243.html">Shell代码块重定向</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>6.<a href="vip_3244.html">Shell Here Document</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>7.<a href="vip_3245.html">Shell Here String</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>8.<a href="vip_3246.html">Shell组命令</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>9.<a href="vip_3247.html">Shell进程替换</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>10.<a href="3131.html">Linux管道</a>
+</dd>
+<dd>11.<a href="3472.html">Shell过滤器</a>
+</dd>
+<dd>12.<a href="vip_3248.html">子Shell和子进程到底有什么区别？</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>13.<a href="vip_3249.html">如何检测子Shell和子进程？</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>14.<a href="vip_3520.html">Linux中的信号是什么</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>15.<a href="vip_3522.html">Bash Shell中的信号</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>16.<a href="vip_3521.html">Linux进程简明教程</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>17.<a href="vip_3495.html">使用什么命令查看进程</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>18.<a href="vip_3497.html">Shell向进程发送信号</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>19.<a href="vip_3499.html">使用trap命令获取信号</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>20.<a href="vip_3506.html">trap命令捕获信号实例演示</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>21.<a href="vip_3507.html">移除（重置）信号捕获</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>22.<a href="vip_3508.html">关于进程、信号和捕获的总结</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>23.<a href="vip_3250.html">Shell模块化（把代码分散到多个脚本文件中）</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dt><a href="../shell/shortcut/shortcut.html">Bash Shell快捷键</a></dt>
+<dd>1.<a href="vip_3509.html">Bash Shell快捷键大全</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>2.<a href="vip_3510.html">Bash Shell命令自动补全功能</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+<dd>3.<a href="vip_3512.html">Bash Shell历史命令</a><span class="iconfont iconfont-vip2"></span>
+</dd>
+</dl>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../shell/shell.html">Shell</a> &gt; <a href="../shell/advanced/advanced.html">Shell高级</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Linux Shell重定向（输入输出重定向）精讲</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">Linux Shell 重定向分为两种，一种输入重定向，一种是输出重定向；从字面上理解，输入输出重定向就是「改变输入与输出的方向」的意思。<br />
+<br />
+那么，什么是输入输出方向呢？标准的输入输出方向又是什么呢？<br />
+<br />
+一般情况下，我们都是从键盘读取用户输入的数据，然后再把数据拿到程序（C语言程序、Shell 脚本程序等）中使用；这就是标准的输入方向，也就是从键盘到程序。<br />
+<br />
+反过来说，程序中也会产生数据，这些数据一般都是直接呈现到显示器上，这就是标准的输出方向，也就是从程序到显示器。<br />
+<br />
+我们可以把观点提炼一下，其实输入输出方向就是数据的流动方向：
+<ul>
+<li>
+输入方向就是数据从哪里流向程序。数据默认从键盘流向程序，如果改变了它的方向，数据就从其它地方流入，这就是输入重定向。</li>
+<li>
+输出方向就是数据从程序流向哪里。数据默认从程序流向显示器，如果改变了它的方向，数据就流向其它地方，这就是输出重定向。</li>
+</ul>
+<h2>
+硬件设备和文件描述符</h2>
+计算机的硬件设备有很多，常见的输入设备有键盘、鼠标、麦克风、手写板等，输出设备有显示器、投影仪、打印机等。不过，在 Linux 中，标准输入设备指的是键盘，标准输出设备指的是显示器。<br />
+<br />
+Linux 中一切皆文件，包括标准输入设备（键盘）和标准输出设备（显示器）在内的所有计算机硬件都是文件。<br />
+<br />
+为了表示和区分已经打开的文件，Linux 会给每个文件分配一个 ID，这个 ID 就是一个整数，被称为<span style="color:#006400;">文件描述符（File Descriptor）</span>。<br />
+<br />
+<table>
+<caption>
+表1：与输入输出有关的文件描述符</caption>
+<tbody>
+<tr>
+<th>
+文件描述符</th>
+<th>
+文件名</th>
+<th>
+类型</th>
+<th>
+硬件</th>
+</tr>
+<tr>
+<td>
+0</td>
+<td>
+stdin</td>
+<td>
+标准输入文件</td>
+<td>
+键盘</td>
+</tr>
+<tr>
+<td>
+1</td>
+<td>
+stdout</td>
+<td>
+标准输出文件</td>
+<td>
+显示器</td>
+</tr>
+<tr>
+<td>
+2</td>
+<td>
+stderr</td>
+<td>
+标准错误输出文件</td>
+<td>
+显示器</td>
+</tr>
+</tbody>
+</table>
+<br />
+Linux 程序在执行任何形式的 I/O 操作时，都是在读取或者写入一个文件描述符。一个文件描述符只是一个和打开的文件相关联的整数，它的背后可能是一个硬盘上的普通文件、FIFO、管道、终端、键盘、显示器，甚至是一个网络连接。<br />
+<br />
+stdin、stdout、stderr 默认都是打开的，在重定向的过程中，0、1、2 这三个文件描述符可以直接使用。
+<h2>
+Linux Shell 输出重定向</h2>
+输出重定向是指命令的结果不再输出到显示器上，而是输出到其它地方，一般是文件中。这样做的最大好处就是把命令的结果保存起来，当我们需要的时候可以随时查询。Bash 支持的输出重定向符号如下表所示。<br />
+<br />
+<table>
+<caption>
+表2：Bash 支持的输出重定向符号</caption>
+<tbody>
+<tr>
+<th width="140">
+类&nbsp;型</th>
+<th width="210">
+符&nbsp;号</th>
+<th>
+作&nbsp;用</th>
+</tr>
+<tr>
+<td rowspan="2">
+标准输出重定向</td>
+<td>
+command&nbsp;&gt;file</td>
+<td>
+以覆盖的方式，把 command 的正确输出结果输出到 file&nbsp;文件中。</td>
+</tr>
+<tr>
+<td>
+command &gt;&gt;file</td>
+<td>
+以追加的方式，把 command 的正确输出结果输出到 file&nbsp;文件中。</td>
+</tr>
+<tr>
+<td rowspan="2">
+标准错误输出重定向</td>
+<td>
+command 2&gt;file</td>
+<td>
+以覆盖的方式，把 command 的错误信息输出到 file&nbsp;文件中。</td>
+</tr>
+<tr>
+<td>
+command 2&gt;&gt;file</td>
+<td>
+以追加的方式，把 command&nbsp;的错误信息输出到 file&nbsp;文件中。</td>
+</tr>
+<tr>
+<td colspan="1" rowspan="6">
+正确输出和错误信息同时保存</td>
+<td>
+command &gt;file&nbsp;2&gt;&amp;1</td>
+<td>
+以覆盖的方式，把正确输出和错误信息同时保存到同一个文件（file）中。</td>
+</tr>
+<tr>
+<td>
+command &gt;&gt;file&nbsp;2&gt;&amp;1</td>
+<td>
+以追加的方式，把正确输出和错误信息同时保存到同一个文件（file）中。</td>
+</tr>
+<tr>
+<td>
+command &gt;file1 2&gt;file2</td>
+<td>
+以覆盖的方式，把正确的输出结果输出到 file1 文件中，把错误信息输出到 file2 文件中。</td>
+</tr>
+<tr>
+<td>
+command &gt;&gt;file1&nbsp; 2&gt;&gt;file2</td>
+<td>
+以追加的方式，把正确的输出结果输出到 file1 文件中，把错误信息输出到 file2 文件中。</td>
+</tr>
+<tr>
+<td>
+command &gt;file 2&gt;file</td>
+<td colspan="1" rowspan="2">
+【<span style="color:#b22222;"><b>不推荐</b></span>】这两种写法会导致 file 被打开两次，引起资源竞争，所以 stdout 和 stderr 会互相覆盖，我们将在《<a href="vip_3241.html" target="_blank">结合Linux文件描述符谈重定向，彻底理解重定向的本质</a>》一节中深入剖析。</td>
+</tr>
+<tr>
+<td>
+command &gt;&gt;file 2&gt;&gt;file</td>
+</tr>
+</tbody>
+</table>
+<br />
+在输出重定向中，<code>&gt;</code>代表的是覆盖，<code>&gt;&gt;</code>代表的是追加。
+<h4>
+注意</h4>
+输出重定向的完整写法其实是<code>fd&gt;file</code>或者<code>fd&gt;&gt;file</code>，其中 fd 表示文件描述符，如果不写，默认为 1，也就是标准输出文件。<br />
+<br />
+当文件描述符为 1 时，一般都省略不写，如上表所示；当然，如果你愿意，也可以将<code>command &gt;file</code>写作<code>command 1&gt;file</code>，但这样做是多此一举。<br />
+<br />
+当文件描述符为大于 1 的值时，比如 2，就必须写上。<br />
+<br />
+需要重点说明的是，<code>fd</code>和<code>&gt;</code>之间不能有空格，否则 Shell 会解析失败；<code>&gt;</code>和<code>file</code>之间的空格可有可无。为了保持一致，我习惯在<code>&gt;</code>两边都不加空格。<br />
+<br />
+下面的语句是一个反面教材：<br />
+<p class="info-box">
+echo &quot;c.biancheng.net&quot; 1 &gt;log.txt</p>
+注意<code>1</code>和<code>&gt;</code>之间的空格。echo 命令的输出结果是<code>c.biancheng.net</code>，我们的初衷是将输出结果重定向到 log.txt，但是当你打开 log.txt 文件后，发现文件的内容为<code>c.biancheng.net 1</code>，这就是多余的空格导致的解析错误。也就是说，Shell 将该条语句理解成了下面的形式：
+<p class="info-box">
+echo &quot;c.biancheng.net&quot; 1 1&gt;log.txt</p>
+<h4>
+输出重定向举例</h4>
+【实例1】将 echo 命令的输出结果以追加的方式写入到 demo.txt 文件中。
+<pre class="sh">
+#!/bin/bash
+
+for str in &quot;C语言中文网&quot; &quot;http://c.biancheng.net/&quot; &quot;成立7年了&quot; &quot;日IP数万&quot;
+do
+    echo $str &gt;&gt;demo.txt  #将输入结果以追加的方式重定向到文件
+done</pre>
+运行以上脚本，使用<code>cat demo.txt</code>查看文件内容，显示如下：<br />
+C语言中文网<br />
+http://c.biancheng.net/<br />
+成立7年了<br />
+日IP数万<br />
+<br />
+【实例2】将<code>ls -l</code>命令的输出结果重定向到文件中。
+<pre class="info-box">
+[c.biancheng.net]$ ls -l  #先预览一下输出结果
+总用量 16
+drwxr-xr-x. 2 root     root      21 7月   1 2016 abc
+-rw-r--r--. 1 mozhiyan mozhiyan 399 3月  11 17:12 demo.sh
+-rw-rw-r--. 1 mozhiyan mozhiyan  67 3月  22 17:16 demo.txt
+-rw-rw-r--. 1 mozhiyan mozhiyan 278 3月  16 17:17 main.c
+-rwxr-xr-x. 1 mozhiyan mozhiyan 187 3月  22 17:16 test.sh
+[c.biancheng.net]$ ls -l &gt;demo.txt  #重定向
+[c.biancheng.net]$ cat demo.txt  #查看文件内容
+总用量 12
+drwxr-xr-x. 2 root     root      21 7月   1 2016 abc
+-rw-r--r--. 1 mozhiyan mozhiyan 399 3月  11 17:12 demo.sh
+-rw-rw-r--. 1 mozhiyan mozhiyan   0 3月  22 17:21 demo.txt
+-rw-rw-r--. 1 mozhiyan mozhiyan 278 3月  16 17:17 main.c
+-rwxr-xr-x. 1 mozhiyan mozhiyan 187 3月  22 17:16 test.sh</pre>
+<h4>
+错误输出重定向举例</h4>
+命令正确执行是没有错误信息的，我们必须刻意地让命令执行出错，如下所示：
+<pre class="info-box">
+[c.biancheng.net]$ ls java  #先预览一下错误信息
+ls: 无法访问java: 没有那个文件或目录
+[c.biancheng.net]$ ls java 2&gt;err.log  #重定向
+[c.biancheng.net]$ cat err.log  #查看文件
+ls: 无法访问java: 没有那个文件或目录</pre>
+<h4>
+正确输出和错误信息同时保存</h4>
+【实例1】把正确结果和错误信息都保存到一个文件中，例如：
+<pre class="info-box">
+[c.biancheng.net]$ ls -l &gt;out.log 2&gt;&amp;1
+[c.biancheng.net]$ ls java &gt;&gt;out.log 2&gt;&amp;1
+[c.biancheng.net]$ cat out.log
+总用量 12
+drwxr-xr-x. 2 root     root      21 7月   1 2016 abc
+-rw-r--r--. 1 mozhiyan mozhiyan 399 3月  11 17:12 demo.sh
+-rw-rw-r--. 1 mozhiyan mozhiyan 278 3月  16 17:17 main.c
+-rw-rw-r--. 1 mozhiyan mozhiyan   0 3月  22 17:39 out.log
+-rwxr-xr-x. 1 mozhiyan mozhiyan 187 3月  22 17:16 test.sh
+ls: 无法访问java: 没有那个文件或目录</pre>
+out.log 的最后一行是错误信息，其它行都是正确的输出结果。<br />
+<br />
+【实例2】上面的实例将正确结果和错误信息都写入同一个文件中，这样会导致视觉上的混乱，不利于以后的检索，所以我建议把正确结果和错误信息分开保存到不同的文件中，也即写成下面的形式：
+<p class="info-box">
+ls -l &gt;&gt;out.log 2&gt;&gt;err.log</p>
+这样一来，正确的输出结果会写入到 out.log，而错误的信息则会写入到 err.log。
+<h4>
+/dev/null 文件</h4>
+如果你既不想把命令的输出结果保存到文件，也不想把命令的输出结果显示到屏幕上，干扰命令的执行，那么可以把命令的所有结果重定向到 /dev/null 文件中。如下所示：
+<p class="info-box">
+ls -l &amp;&gt;/dev/null</p>
+大家可以把 /dev/null 当成 Linux 系统的垃圾箱，任何放入垃圾箱的数据都会被丢弃，不能恢复。
+<h2>
+Linux Shell 输入重定向</h2>
+输入重定向就是改变输入的方向，不再使用键盘作为命令输入的来源，而是使用文件作为命令的输入。<br />
+<br />
+<table>
+<caption>
+表3：Bash 支持的输出重定向符号</caption>
+<tbody>
+<tr>
+<th>
+符号</th>
+<th>
+说明</th>
+</tr>
+<tr>
+<td>
+command &lt;file</td>
+<td>
+将&nbsp;file 文件中的内容作为 command 的输入。</td>
+</tr>
+<tr>
+<td>
+command &lt;&lt;END</td>
+<td>
+从标准输入（键盘）中读取数据，直到遇见分界符 END 才停止（分界符可以是任意的字符串，用户自己定义）。</td>
+</tr>
+<tr>
+<td>
+command &lt;file1 &gt;file2</td>
+<td>
+将 file1 作为 command 的输入，并将 command 的处理结果输出到 file2。</td>
+</tr>
+</tbody>
+</table>
+<br />
+和输出重定向类似，输入重定向的完整写法是<code>fd&lt;file</code>，其中 fd 表示文件描述符，如果不写，默认为 0，也就是标准输入文件。<br />
+<h4>
+输入重定向举例</h4>
+【示例1】统计文档中有多少行文字。<br />
+<br />
+Linux wc 命令可以用来对文本进行统计，包括单词个数、行数、字节数，它的用法如下：
+<p class="info-box">
+wc&nbsp; [选项]&nbsp; [文件名]</p>
+其中，<code>-c</code>选项统计字节数，<code>-w</code>选项统计单词数，<code>-l</code>选项统计行数。<br />
+<br />
+统计 readme.txt 文件中有多少行文本：
+<pre class="info-box">
+[c.biancheng.net]$ cat readme.txt  #预览一下文件内容
+C语言中文网
+http://c.biancheng.net/
+成立7年了
+日IP数万
+[c.biancheng.net]$ wc -l &lt;readme.txt  #输入重定向
+4</pre>
+<br />
+【实例2】逐行读取文件内容。
+<pre class="info-box">
+#!/bin/bash
+
+while read str; do
+    echo $str
+done &lt;readme.txt</pre>
+运行结果：<br />
+C语言中文网<br />
+http://c.biancheng.net/<br />
+成立7年了<br />
+日IP数万<br />
+<br />
+这种写法叫做代码块重定向，也就是把一组命令同时重定向到一个文件，我们将在《<a href="vip_3243.html" target="_blank">Shell代码块重定向</a>》一节中详细讲解。<br />
+<br />
+【实例3】统计用户在终端输入的文本的行数。<br />
+<br />
+此处我们使用输入重定向符号<code>&lt;&lt;</code>，这个符号的作用是使用特定的分界符作为命令输入的结束标志，而不使用 Ctrl+D 键。
+<pre class="info-box">
+[c.biancheng.net]$ wc -l &lt;&lt;END
+&gt; 123
+&gt; 789
+&gt; abc
+&gt; xyz
+&gt; END
+4</pre>
+wc 命令会一直等待用输入，直到遇见分界符 END 才结束读取。<br />
+<br />
+<code>&lt;&lt;</code>之后的分界符可以自由定义，只要再碰到相同的分界符，两个分界符之间的内容将作为命令的输入（不包括分界符本身）。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="190_2.html" title="C++语言的历史" target="_blank">C++语言的历史</a></li>
+<li><a href="1116.html" title="Linux libxml2安装过程（详解版）" target="_blank">Linux libxml2安装过程（详解版）</a></li>
+<li><a href="2294.html" title="C++多态和虚函数快速入门教程" target="_blank">C++多态和虚函数快速入门教程</a></li>
+<li><a href="5611.html" title="使用记事本编写运行Java程序" target="_blank">使用记事本编写运行Java程序</a></li>
+<li><a href="../spring_boot/thymeleaf-import.html" title="Spring Boot整合Thymeleaf" target="_blank">Spring Boot整合Thymeleaf</a></li>
+<li><a href="../sql/syntax.html" title="SQL语法" target="_blank">SQL语法</a></li>
+<li><a href="wniunc.html" title="强化学习是什么意思？" target="_blank">强化学习是什么意思？</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 942;
+window.arcId = "032bHSf5GxbxwpY+SATF6cniSDtq+7tyf0J9LcESyFdnmGrcC34IE6Chcw";
+window.typeidChain = "300|78";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/shell/advanced/";
+window.nextPageURL = "/view/vip_3240.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

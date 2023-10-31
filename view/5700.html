@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>JS函数调用（4种方法）</title>
+<meta name="description" content="在默认状态下，函数式不会被执行的。使用小括号()可以激活并执行函数。在小括号中可以包含零个或多个参数，参数之间通过逗号进行分隔。 示例1 在下面示例中，使用小括号调用函数" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>JS函数调用（4种方法）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body"><a href='../js/js.html' target='_blank'>JavaScript</a> 提供了 4 种函数调用：一般形式的函数调用、作为对象的方法调用、使用 call 和 apply 动态调用、使用 new 间接调用。
+<h2>
+一般形式的函数调用</h2>
+在默认状态下，函数是不会被执行的。使用小括号<code>()</code>可以激活并执行函数。在小括号中可以包含零个或多个参数，参数之间通过逗号进行分隔。
+<h4>
+示例1</h4>
+在下面示例中，使用小括号调用函数，然后直接把返回值传入函数，进行第二次运算，这样可以节省两个临时变量。
+<pre class="javascript">
+function f(x,y) {  //定义函数
+    return x * y;  //返回值
+}
+console.log(f(f(5,6), f(7,8)));  //返回1680。重复调用函数</pre>
+<h4>
+示例2</h4>
+如果函数返回值为一个函数，则在函数调用时可以使用多个小括号反复调用。
+<pre class="javascript">
+function f(x,y) {  //定义函数
+    return function () {  //返回函数类型的数据
+        return x * y;
+    }
+}
+console.log(f(7,8) ());  //返回56，反复调用函数</pre>
+<h4>
+示例3</h4>
+设计递归调用函数，即在函数内调用自身，这样可以反复调用，但最终返回的都是函数自身。
+<pre class="javascript">
+function f() {  //定义函数
+    return f;  //返回函数自身
+}
+console.log(f() () () () () () () () () () () ());  //返回函数自身</pre>
+当然，上述设计方法在实际开发中没有任何应用价值，不建议使用。
+<h2>
+作为对象的方法调用</h2>
+当一个函数被设置为对象的属性值时，称之为方法。使用点语法可以调用一个方法。
+<h4>
+示例</h4>
+下面示例创建一个 obj 对象，它有一个 value 属性和一个 increment 属性。increment 方法接收一个可选参数，如果该参数不是数字，那么默认使用数字 1。
+<pre class="javascript">
+var obj = {
+    value : 0,
+    increment : function (inc) {   
+        this.value += typeof inc === &#39;number&#39; ? inc :1;
+    }
+}
+obj.increment();
+console.log(obj.value);  //1
+obj.increment(2);
+console.log(obj.value);  //2</pre>
+使用点语法可以调用对象 obj 的方法 increment，然后通过 increment 方法改写 value 属性的值。在 increment 方法中可以使用 this 访问 obj 对象，然后使用 obj.value 方式读写 value 属性值。
+<h2>
+使用 call 和 apply 动态调用</h2>
+call 和 apply 是 Function 的原型方法，它们能够将特定函数当做一个方法绑定到指定对象上，并进行调用。具体用法如下：
+<p class="info-box">
+function.call(thisobj, args...)<br />
+function.apply(thisobj, [args])</p>
+function 表示要调用的函数；参数 thisobj 表示绑定对象，即 this 指代的对象；参数 args 表示要传递给被调用函数的参数。call 方法可以接收多个参数列表，而 apply 只能接收一个数组或者伪类数组，数组元素将作为参数列表传递给被调用的函数。
+<h4>
+示例1</h4>
+下面示例使用 call 动态调用函数 f，并传入参数值 3 和 4，返回运算值。
+<pre class="javascript">
+function f(x,y) {  //定义求和函数
+    return x + y;
+}
+console.log(f.call (null, 3, 4));  //返回7</pre>
+在上面示例中，f 是一个简单的求和函数，通过 call 方法把函数 f 绑定到空对象 null 身上，以实现动态调用函数 f，同时把参数 3 和 4 传递给函数 f，返回值为 7。实际上，f.call(null,3,4) 等价于 null.m(3,4)。
+<h4>
+示例2</h4>
+上面示例使用 call 调用，实际上也可以使用 apply 方法来调用函数 f。
+<pre class="javascript">
+function f(x,y) {  //定义求和函数
+    return x + y;
+}
+console.log(f.apply(null, [3,4]));  //返回7</pre>
+如果把一个数组或伪类数组的所有元素作为参数进行传递，使用 apply 方法就非常便利。
+<h4>
+示例3</h4>
+下面使用 apply 方法设计一个求最大值得函数。
+<pre class="javascript">
+function max() {  //求最大值函数
+    var m = Number.NEGATIVE_INFINITY;  //声明一个负无穷大的数值
+    for (var i = 0; i &lt; arguments.length; i ++) {  //遍历所有实参
+        if (arguments[i] &gt; m)  //如果实参值大于变量m
+        m = arguments[i];  //则把该实参值赋值给m
+    }
+    return m;  //返回最大值
+}
+var a = [23,45,2,46,62,45,56,63];  //声明并初始化数组
+var m = max.apply(Object, a);  //动态调用max，绑定为Object的方法
+console.log(m);  //返回63</pre>
+在上面示例中，设计定义一个函数 max()，用来计算所有参数中的最大值参数。首先通过 apply 方法动态调用 max() 函数，然后把它绑定为 Object 对象的一个方法，并把包含多个值的数组传递给它，最后返回经过 max() 计算后的最大数组元素。<br />
+<br />
+如果使用 call 方法，就需要把数组所有元素全部读取出来，再逐一传递给 call 方法，显然这种做法不是很方便。
+<h4>
+示例4</h4>
+也可以动态调用 Math 的 max() 方法来计算数组的最大值元素。
+<pre class="javascript">
+var a = [23,45,2,46,62,45,56,63];  //定义并初始化数组
+var m = Math.max.apply(Object, a);  //调用系统函数max
+console.log(m);  //返回63</pre>
+<h4>
+示例5</h4>
+使用 call 和 apply 方法可以把一个函数转换为指定对象的方法，并在这个对象上调用该方法。当函数动态调用之后，这个对象的临时方法也就不存在了。
+<pre class="javascript">
+function f() {
+    return &quot;函数f&quot;;
+}
+var obj = {};
+f.call(obj);  //把函数f绑定为obj对象的方法
+console.log(obj.f());  //再次调用该方法，则返回编译错误</pre>
+<br />
+call 和 apply 方法的主要功能如下：
+<ul>
+<li>
+调用函数。</li>
+<li>
+修改函数体内的 this 指代对象。</li>
+<li>
+为对象绑定方法。</li>
+<li>
+跨越限制调用不同类型的方法。</li>
+</ul>
+<br />
+本小节主要介绍了如何使用 call 和 apply 方法调用函数，由于涉及类型、对象和 this 知识，后续我们还会继续深入讲解。
+<h2>
+new 命令间接调用</h2>
+使用 new 命令可以实例化对象，这是它的主要功能，但是在创建对象的过程中会激活并运行函数。因此，使用 new 命令可以间接调用函数。
+<h4>
+示例</h4>
+下面示例简单演示了如何用 new 命令，把传入的参数值显示在控制台。
+<pre class="javascript">
+function (x,y) {  //定义函数
+    console.log(&quot;x =&quot; + x + &quot;, y =&quot; + y);
+}
+new f(3,4);</pre>
+使用 new 命令调用函数时，返回的是对象，而不是 return 的返回值。如果不需要返回值，或者 return 的返回值是对象，则可以选用 new 间接调用函数。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1130.html" title="Linux memcache安装和配置（自启动）过程详解" target="_blank">Linux memcache安装和配置（自启动）过程详解</a></li>
+<li><a href="1328.html" title="C++ pow（指数函数）：求x的y次幂的值" target="_blank">C++ pow（指数函数）：求x的y次幂的值</a></li>
+<li><a href="../mysql/subtime.html" title="MySQL SUBTIME函数：时间减法运算" target="_blank">MySQL SUBTIME函数：时间减法运算</a></li>
+<li><a href="3858.html" title="图解Qt安装（Windows平台）" target="_blank">图解Qt安装（Windows平台）</a></li>
+<li><a href="4727.html" title="Java List.addAll()方法：添加所有元素到列表中" target="_blank">Java List.addAll()方法：添加所有元素到列表中</a></li>
+<li><a href="6036.html" title="第一个Go语言程序" target="_blank">第一个Go语言程序</a></li>
+<li><a href="../matplotlib/data-visual.html" title="数据可视化是什么" target="_blank">数据可视化是什么</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 5700;
+window.arcId = "f915fCfGKe8B46GKGBfIG4KiZWqjd0vGBQ+wfGYu5vu58mgWV44n+nGiXgY";
+window.typeidChain = "309|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

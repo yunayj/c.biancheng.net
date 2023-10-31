@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Python urllib库详解</title>
+<meta name="description" content="在 Python 程序中，urllib 库可以处理客户端的请求和服务器端的响应，还可以解析 URL 地址，常用的模块为 request 和 parse。 request模块 request 模块使用 socket 读取网络数据的接口，支持 HTT" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Python urllib库详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在 Python 程序中，urllib 库可以处理客户端的请求和服务器端的响应，还可以解析 URL 地址，常用的模块为 request 和 parse。<br />
+<h2>
+urllib request模块</h2>
+request 模块使用 socket 读取网络数据的接口，支持 HTTP、FTP 及 gopher 等连接。<br />
+<br />
+要读取一个网页文件，可以使用 urlopen() 方法。其语法如下：
+<pre class="info-box">
+urllib.request.urlopen(url [, data])</pre>
+其中，参数 url 是一个 URL 字符串，参数 data 用来指定一个 GET 请求。<br />
+<br />
+urlopen() 方法返回一个 stream 对象，可以使用 file 对象的方法来操作此 stream 对象。<br />
+<br />
+下面的示例读取 http://www.baidu.com 的网页。
+<pre class="python">
+import urllib
+from urllib import request
+htmlpage = urllib.request.urlopen(&quot;http://www.baidu.com&quot;)
+htmlpage.read()</pre>
+urlopen() 方法返回的 stream 对象有两个属性，即 url 与 headers。url 属性是设置的 URL 字符串值；headers 属性是一个字典集，包含网页的表头。<br />
+<br />
+下面的示例显示刚才打开的 htmlpage 对象的 url 属性。
+<pre class="info-box">
+htmlpage.url
+&#39;http://www.baidu.com&#39;</pre>
+下面的示例显示刚才打开的 htmlpage 对象的 headers 属性。
+<pre class="info-box">
+for key, value in htmlpage.headers.items():
+    print (key, &quot; = &quot;, value)
+Server  =  Apache-Coyote/1.1
+Cache-Control  =
+Content-Type  =  text/html;charset=UTF-8
+Content-Encoding  =  gzip
+Content-Length  =  1284
+Set-Cookie  =  ucloud=1;domain=.baidu.com;path=/;max-age=300
+Pragma  =  no-cache</pre>
+<br />
+urllib 模块的方法如下：<br />
+1) urlretrieve(url [, filename [, reporthook [, data]]])：将一个网络对象 url 复制到本机文件 filename上。其中，参数 reporthook 是一个 hook 函数，在网络连接完成时会调用此 hook 函数一次，每读取一个区块也会调用此 hook 函数一次，参数 data 必须是 application/x-www-form-urlencoded 格式。例如：<br />
+<pre class="info-box">
+import urllib.request
+urllib.request.urlretrieve(&quot;http://www.python.org&quot;, &quot;copy.html&quot;)
+(&#39;copy.html&#39;, &lt;http.client.HTTPMessage object at 0x02DE28B0&gt;)</pre>
+<br />
+2) urlcleanup()：清除 urlretrieve() 方法所使用的高速缓存。<br />
+<br />
+3) quote(string [, safe])：将字符串 string 中的特殊字符用 %xx 码取代。参数 safe 设置要引用的额外字符。例如：<br />
+<pre class="info-box">
+import urllib.request
+urllib.request.quote(&quot;This &amp; that are all books\n&quot;)
+&#39;This%20%26%20that%20are%20all%20books%0A&#39;</pre>
+<br />
+4) quote_plus(string [, safe])：与 quote() 方法相同，但是空白将以加号（+）取代。<br />
+<br />
+5) unquote(string)：返回原始字符串。例如：
+<pre class="info-box">
+import urllib.request
+urllib.request.unquote(&quot;This%20%26%20that%20are%20all%20books%0A&quot;)
+&#39;This &amp; that are all books\n&#39;</pre>
+<br />
+下面的示例将读取 http://www.python.org 主页的内容。
+<pre class="python">
+import urllib.request
+response = urllib.request.urlopen(&quot;http://www.python.org&quot;)
+html = response.read()</pre>
+也可以使用以下代码实现上述功能：
+<pre class="python">
+import urllib.request
+req = urllib.request.Request(&quot;http://www.python.org&quot;)
+response = urllib.request.urlopen(req)
+the_page = response.read()</pre>
+<br />
+下面的示例将 http://www.python.org 网页存储到本机的 13.2.html 文件中。
+<pre class="python">
+import urllib.request
+#打开网页文件
+htmlhandler = urllib.request.urlopen(&quot;http://www.python.org&quot;)
+#在本机上创建一个新文件
+file = open(&quot;13.2.html&quot;, &quot;wb&quot;)
+#将网页文件存储到本机文件上，每次读取512字节
+while 1:
+    data = htmlhandler.read(512)
+    if not data:
+        break
+    file.write(data)
+#关闭本机文件
+file.close()
+#关闭网页文件
+htmlhandler.close()</pre>
+保存并运行程序，即可将 http://www.python.org 网页存储到本机的 13.2.html 文件中。<br />
+<h2>
+urllib parse模块</h2>
+parse 模块解析 URL 字符串并返回一个元组：(addressing scheme, netword location, path,parameters, query, fragment identifier)。parse 模块可以将 URL 分解成数个部分，并能组合回来，还可以将相对地址转换为绝对地址。<br />
+<br />
+parse 模块的方法如下：<br />
+1) urlparse(urlstring [, default_scheme [, allow_fragments]])：将一个 URL 字符串分解成 6 个元素，即 addressing scheme、netword location、path、parameters、query、fragment identifier。若设置参数 default_scheme，则指定 addressing scheme；若设置参数 allow_fragments 为 0，则不允许 fragment identifier。例如：
+<pre class="info-box">
+import urllib.parse
+url = &quot;http://home.netscape.com/assist/extensions.html#topic1?x= 7&amp;y= 2&quot;
+urllib.parse.urlparse(url)
+(&#39;http&#39;, &#39;home.netscape.com&#39;, &#39;/assist/extensions.html&#39;, &#39;&#39;, &#39;&#39;, &#39;topic1?x= 7&amp;y=2&#39;)
+ParseResult(scheme=&#39;http&#39;, netloc=&#39;home.netscape.com&#39;,
+path=&#39;/assist/extensions.html&#39;, params=&#39;&#39;, query=&#39;&#39;, fragment=&#39;topic1?x= 7&amp;y= 2&#39;)</pre>
+<br />
+2) urlunparse(tuple)：使用 tuple 创建一个 URL 字符串。例如：
+<pre class="info-box">
+import urllib.parse
+t = (&quot;http&quot;, &quot;www.python.org&quot;, &quot;/News.html&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;)
+urllib.parse.urlunparse(t)
+&#39;http://www.python.org/News.html&#39;</pre>
+<br />
+3) urljoin(base, url [, allow_fragments])：使用 base 与 url 创建一个绝对 URL 地址。例如：
+<pre class="info-box">
+import urllib.parse
+urllib.parse.urljoin(&quot;http://www.python.org&quot;, &quot;/News.html&quot;)
+&#39;http://www.python.org/News.html&#39;</pre>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="739.html" title="执行Shell脚本（多种方法）" target="_blank">执行Shell脚本（多种方法）</a></li>
+<li><a href="2133.html" title="TCP/IP协议族" target="_blank">TCP/IP协议族</a></li>
+<li><a href="2285.html" title="将派生类指针赋值给基类指针时到底发生了什么？" target="_blank">将派生类指针赋值给基类指针时到底发生了什么？</a></li>
+<li><a href="7199.html" title="MySQL查看表结构命令" target="_blank">MySQL查看表结构命令</a></li>
+<li><a href="7287.html" title="PHP函数参数传递的四种方式" target="_blank">PHP函数参数传递的四种方式</a></li>
+<li><a href="9489.html" title="创业7年，我最遗憾的事情是什么？" target="_blank">创业7年，我最遗憾的事情是什么？</a></li>
+<li><a href="sb3ra10.html" title="MySQL主键（PRIMARY KEY）的使用" target="_blank">MySQL主键（PRIMARY KEY）的使用</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10404;
+window.arcId = "d89f3zaX7wdBmQTn5/gGzPOm3CKTOsucvB7JNmUNgj+PjOxk1hLNP8Gp0aZr";
+window.typeidChain = "145|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

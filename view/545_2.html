@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C++ multiset用法详解（附带完整示例）</title>
+<meta name="description" content="multisetT 容器就像 setT 容器，但它可以保存重复的元素。这意味我们总可以插入元素，当然必须是可接受的元素类型。默认用 lessT 来比较元素，但也可以指定不同的比较函数。在元素等价" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C++ multiset用法详解（附带完整示例）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">multiset&lt;T&gt; 容器就像 set&lt;T&gt; 容器，但它可以保存重复的元素。这意味我们总可以插入元素，当然必须是可接受的元素类型。默认用 less&lt;T&gt; 来比较元素，但也可以指定不同的比较函数。在元素等价时，它必须返回 false。例如：<br />
+<pre class="cpp">
+std::multiset&lt;string, std::greater&lt;string&gt;&gt; words{{&quot;dog&quot;, &quot;cat&quot;, &quot;mouse&quot;}, std::greater&lt;string&gt;()};</pre>
+这条语句定义了一个以 string 为元素的 multiset，它以 greater&lt;string&gt; 为构造函数的第二个参数。构造函数的第一个参数是一个初始化列表，它为这个容器指定了三个初始元素。和 set 一样，如果它的两个元素相等，那么它们就是匹配的。在一个有比较运算符 comp 的 multiset 中，如果表达式 !(a comp b) &amp;&amp; !(b comp a) 为 true，那么元素 a 和 b 就是相等的。<br />
+<ul>
+	<li>
+		multiset 容器和 set 容器有相同的成员函数，但是因为 multiset 可以保存重复元素，有些函数的表现会有些不同。和 set 容器中的成员函数表现不同的是：</li>
+	<li>
+		insert() 总是可以成功执行。当插入单个元素时，返回的迭代器指向插入的元素。当插入一段元素时，返回的迭代器指向插入的最后一个元素。</li>
+	<li>
+		emplace() 和 emplace_hint() 总是成功。它们都指向创建的新元素。</li>
+	<li>
+		find() 会返回和参数匹配的第一个元素的迭代器，如果都不匹配，则返回容器的结束迭代器。</li>
+	<li>
+		equal_range() 返回一个包含迭代器的 pair 对象，它定义了一个和参数匹配的元素段。如果没有元素匹配的话，pair 的第一个成员是容器的结束迭代器；在这种情况下，第二个成员是比参数大的第一个元素，如果都没有的话，它也是容器的结束迭代器。</li>
+	<li>
+		lower_bound() 返回和参数匹配的第一个元素的迭代器，如果没有匹配的元素，会返回容器的结束迭代器。返回的迭代器和 range() 返回的 pair 的第一个成员相同。</li>
+	<li>
+		upper_bound() 返回的迭代器和 equal_range() 返回的 pair 的第二个成员相同。</li>
+	<li>
+		count() 返回和参数匹配的元素的个数。</li>
+</ul>
+<br />
+用 multiset 容器代替 map，实现分析单词出现次数的程序：
+<pre class="cpp">
+// Determining word frequency
+#include &lt;iostream&gt;                               // For s<a href='https://m.biancheng.net/ref/tan.html' target='_blank'>tan</a>dard streams
+#include &lt;iomanip&gt;                                // For stream manipulators
+#include &lt;string&gt;                                 // For string class
+#include &lt;sstream&gt;                                // For istringstream
+#include &lt;algorithm&gt;                              // For replace_if() &amp; for_each()
+#include &lt;set&gt;                                    // For map container
+#include &lt;iterator&gt;                               // For advance()
+#include &lt;cctype&gt;                                 // For <a href='https://m.biancheng.net/ref/isalpha.html' target='_blank'>isalpha</a>()
+
+u<a href='https://m.biancheng.net/ref/sin.html' target='_blank'>sin</a>g std::string;
+
+int main()
+{
+    std::cout &lt;&lt; &quot;Enter some text and enter * to end:\n&quot;;
+    string text_in {};
+    std::getline(std::cin, text_in, &#39;*&#39;);
+
+    // Replace non-alphabetic characters by a space
+    std::replace_if(std::begin(text_in), std::end(text_in), [](const char&amp; ch){ return !isalpha(ch); }, &#39; &#39;);
+
+    std::istringstream text(text_in);             // Text input string as a stream
+    std::istream_iterator&lt;string&gt; begin(text);    // Stream iterator
+    std::istream_iterator&lt;string&gt; end;            // End stream iterator
+
+    std::multiset&lt;string&gt; words;                  // Container to store words
+    size_t max_len {};                            // Maximum word length
+
+    // Get the words, store in the container, and find maximum length
+    std::for_each(begin, end, [&amp;max_len, &amp;words](const string&amp; word){
+                words.emplace(word);
+                max_len = std::max(max_len, word.length());
+    });
+
+    size_t per_line {4},                           // Outputs per line
+         count {};                               // No. of words output
+ 
+    for(auto iter = std::begin(words); iter != std::end(words); iter = words.upper_bound(*iter))
+    {
+        std::cout &lt;&lt; std::left &lt;&lt; std::setw(max_len + 1) &lt;&lt; *iter&lt;&lt; std::setw(3) &lt;&lt; std::right &lt;&lt; words.count(*iter) &lt;&lt; &quot;  &quot;;
+        if(++count % per_line == 0)
+            std::cout &lt;&lt; std::endl;
+    }
+    std::cout &lt;&lt; std::endl;
+}</pre>
+在输入过程中移除了输入中的非字母字符。单词是由 foreach 从 istringstream 对象的文本中提取的，然后把它们传给了一个 lambda 表达式，这个表达式是 for_each() 的最后一个参数，用来创建 multiset 容器中的元素。<br />
+<br />
+从 text 中获取的每个单词都被单独保存，因为一般来说，容器中会出现重复的元素。<a href='172_2.html' target='_blank'>for 循环</a>遍历 multiset 容器 words 中的迭代器，从指向第一个元素的开始迭代器开始。容器中的元素是有序的，因而相等的元素位置是连续的。通过调用容器的成员函数 count()，可以获取和它的参数 iter 所指向元素相等的元素的个数。<br />
+<br />
+每次循环迭代结束后，iter 被设为 upper_bound() 返回的值，它指向一个不同于当前元素的元素。如果不存在这样的元素，upper_bound() 会返回容器的结束迭代器，循环就此结束。<br />
+<br />
+因为 multiset 中的元素是有序的，所以可以在循环中用相等的单词数量来增加迭代器，例如：
+<pre class="cpp">
+size_t word_count {};   // Number of identical words
+for(auto iter = std::begin(words); iter != std::end(words);)
+{
+    word_count = words.count(*iter);
+    std::cout &lt;&lt; std::left &lt;&lt; std::setw(max_len + 1) &lt;&lt; *iter &lt;&lt; std::setw(3) &lt;&lt; std::right &lt;&lt; word_count &lt;&lt; &quot; &quot;;
+    if(++count % per_line == 0)
+        std::cout &lt;&lt; std::endl;
+    std::advance(iter, word_count);</pre>
+这种方式比之前的循环更好。但这个版本的循环结束不是那么明显。下面是示例输出：
+<p class="info-box">
+	Enter some text and enter * to end:<br />
+	He was saying godnight to his horse.<br />
+	He was saying goodnight to his horse,<br />
+	And as he was saying goodnight to his horse,he was saying goodnight to his horse.<br />
+	&quot;Goodnight horse,goodnight horse&quot;,he was saying goodnight to his horse.*<br />
+	And&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1&nbsp; Goodnight&nbsp;&nbsp; 1&nbsp; He&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2&nbsp; as&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1<br />
+	godnight&nbsp;&nbsp;&nbsp; 1&nbsp; goodnight&nbsp;&nbsp; 5&nbsp; he&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3&nbsp; his&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5<br />
+	horse&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 7&nbsp; saying&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5&nbsp; to&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5&nbsp; was&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5</p>
+<h2>
+	保存派生类对象的<a href='../c/80/80_2.html' target='_blank'>指针</a></h2>
+我们可能想在 set 或 multiset 容器中保存派生类对象的指针，可以通过将元素类型指定为基类对象类型的指针来做到这一点。这里主要担心的是比较函数，它必须可以比较指向不同类型的派生类对象的基类指针。通常我们会自己定义函数来做这件事，这没有任何难度。但如何去比较，取决于我们是否对元素顺序有任何要求。如果不在乎元素的排序方式，可以使用 owner_less&lt;T&gt; 实例。但需要记住，检索元素要用指向相同对象的指针，而不是使用相等的对象。让我们思考一个示例。使用一个 multiset 容器，即使我们没有重复元素要保存，但会有一些不同类型的元素。<br />
+<br />
+假设我们想在容器中保存每个人所拥有的宠物，这里宠物的类型是由一个派生于基类 Pet 的类定义的。这个类被定义在头文件 Pet_Classes.h 中，代码如下：
+<pre class="cpp">
+using std::string;
+
+class Pet
+{
+protected:
+    string name {};
+
+public:
+    virtual ~Pet(){}                               // Virtual destructor for base class
+    const string&amp; get_name() const { return name;  }
+
+    virtual bool operator&lt;(const Pet&amp; pet) const
+    {
+        auto result = std::strcmp(typeid(*this).name(), typeid(pet).name());
+        return (result &lt; 0) || ((result == 0) &amp;&amp; (name &lt; pet.name));
+    }
+    friend std::ostream&amp; operator&lt;&lt;(std::ostream&amp; out, const Pet&amp; pet);
+};</pre>
+需要注意 Pet 类的成员函数 operator&lt;() 的定义。为了获得派生类的多态行为，它被指定为虚函数。这里使用了运算符 typeid，它会创建一个 type_info 对象，这个对象封装了操作数的类型。<br />
+<br />
+使用 typeid 需要包含 typeinfo 头文件。调用 type_info 对象的成员函数 name() 会返回一个 C 风格的字符串，这是类型名实现定义的一种表示。在此系统上，类型名加上了前缀 &quot;class&quot;，因此对于 My_Type 类型的对象，name() 返回的是 &quot;class My_Type&quot;，在你的系统上可能会有所不同。<br />
+<br />
+用定义在 cstring 头文件中的 strcmp() 来比较类型名字符串。如果第一个参数小于第二个参数，这个函数会返回一个负数；如果两个参数相等，返回 0，否则返回一个正数。operator&lt;() 函数会返回两个表达式或运算后的结果。如果第一个表达式为 true，这个函数总是返回 true。当前对象的类型名小于参数对象的类型名时，会出现这种情况，因而对象主要依靠类型来排序。当第一个表达式是 false 时，这个表达式的结果取决于第二个表达式的结果。当类型名字符串相等，且比较运算的左操作数 name 小于右操作数的成员 name 时，第二个表达式才为 true。<br />
+<br />
+返回表达式中对相同类型名的比较非常重要。set 或 map 容器指定的比较运算必须是严格弱序的。在其他的条件中，这要求如果 a&lt;b 为 true，那么 b&lt;a 必须为 false。不比较两个类型名是否相等。这个返回值的表达式无法满足这个条件。<br />
+<br />
+当对保存派生类对象的容器进行排序时，这就可能会导致程序崩溃。你很容易明白这是如何产生的。假设将一个 name 为&quot;Tiddles&rdquo;的 Cat 对象 cat 和一个 name 为&quot;Rover&quot;的 Dog 对象 dog 比较，因为类型名，表达式 cat &lt; dog 为 true；而表达式 dog &lt; cat 也为 true，因为宠物名。这两个对象同时小于彼此可能会产生一些问题。<br />
+<br />
+当然可以不使用 strcmp()，可以将 type_info 的成员函数 name() 返回的 null 结尾的字符串转换为 string 文件类型，然后就可以用 &lt; 运算符比较它们。<br />
+<br />
+Pet_Classes.h 头文件中为输出流定义的插入运算如下：
+<pre class="cpp">
+inline std::ostream&amp; operator&lt;&lt;(std::ostream&amp; out, const Pet&amp; pet)
+{
+    return out &lt;&lt; &quot;A &quot; &lt;&lt;string {typeid(pet).name()}.erase(0,6) &lt;&lt; &quot; called &quot; &lt;&lt; pet.name;
+}</pre>
+这段代码输出了类型名和宠物名。类型名字符串的表达式首先将 C 风格的字符串转换为 string 类型，然后从 string 移除前 6 个字符 &quot;class&rdquo;。如果你的系统使用的是不同的类型名，需要对代码做一些修改。<br />
+<br />
+为简单起见，定义三个派生于 Pet 的类：Cat、Dog 和 Mouse。除了类型不同外，它们的定义在本质上是相同的。Dog 类的定义如下：<br />
+<pre class="cpp">
+class Dog : public Pet
+{
+public:
+    Dog() = default;
+    Dog(const string&amp; dog_name)
+    {
+        name = dog_name;
+    }
+};</pre>
+在这个构造函数中，初始化了继承的成员变量。所有派生类的定义都在 Pet 头文件中。<br />
+<h2>
+	定义容器</h2>
+用 multiset 容器保存 shared_ptr&lt;Pet&gt; 对象，可以用两个 using 指令来为它们指定类型别名：
+<pre class="cpp">
+using Pet_ptr = std::shared_ptr&lt;Pet&gt;; // A smart pointer to a pet
+using Pets = std::multiset&lt;Pet_ptr&gt;; //A set of smart pointers to pets</pre>
+Pet_ptr 别名简化了 multiset 容器的定义，Pets 别名简化了 map 容器的定义。这里会用 map 容器来保存 multiset 容器，并以人名作为 map 的键。Pets 容器可以保存 Pet 对象的指针，也能保存 Cat、Dog、Mouse 对象的指针。<br />
+<br />
+需要为 Pet_ptr 对象的 multiset 容器定义一个小于运算符：<br />
+<pre class="cpp">
+inline bool operator&lt; (const Pet_ptr&amp; p1, const Pet_ptr&amp; p2)
+{
+    return *p1 &lt; *p2;
+}</pre>
+这里解引用传入的指针参数，然后将解引用得到的对象传入 Pet 派生类的虚函数 operator&lt;()。在这个示例中，multiset 容器默认的函数对象 less&lt;Pet_ptr&gt; 会调用上面这个函数。<br />
+<br />
+这里有两个更有用的 using 用法：<br />
+<pre class="cpp">
+using std::string;
+using Name = string;</pre>
+Name 的别名可以使 map 容器的键类型更加清楚明白。在 main() 中按如下方式定义 map:<br />
+<pre class="cpp">
+std::map&lt;Name, Pets&gt; peoples_pets;</pre>
+容器中的元素是 pair&lt;Name, Pets&gt; 对象，它的完整形式是 pair&lt;string, multiset&lt;shared_ptr &lt;Pet&gt;&gt;，后面这种表示形式不是那么直观。<br />
+<h2>
+	定义示例的main()函数</h2>
+用辅助函数从标准输入流读取人名和他们的宠物:<br />
+<pre class="cpp">
+// Read in all the pets for a person
+Pets get_pets(const Name&amp; person)
+{
+    Pets pets;
+    std::cout &lt;&lt; &quot;Enter &quot; &lt;&lt; person &lt;&lt; &quot;&#39;s pets:\n&quot;;
+    char ch {};
+    Name name {};
+    while(true)
+    {
+        std::cin &gt;&gt; ch;
+        if(<a href='https://m.biancheng.net/ref/toupper.html' target='_blank'>toupper</a>(ch) == &#39;Q&#39;) break;
+        std::cin &gt;&gt; name;
+        switch(std::toupper(ch))
+        {
+            case &#39;C&#39;:
+                pets.insert(std::make_shared&lt;Cat&gt;(name));
+                break;
+            case &#39;D&#39;:
+                pets.insert(std::make_shared&lt;Dog&gt;(name));
+                break;
+            case &#39;M&#39;:
+                pets.insert(std::make_shared&lt;Mouse&gt;(name));
+                break;
+            default:
+                std::cout &lt;&lt; &quot;Invalid pet ID - try again.\n&quot;;
+        }
+    }
+    return pets;
+}</pre>
+代码虽然看起来很多，但都很简单。首先会创建一个 Pets 类型的局部 multiset 容器。将人名作为参数传入函数，作为输入提示，然后在一个死循环中读入他的宠物。用首字母来定义宠物的类型&mdash;&mdash;&#39;C&#39; 是猫，&#39;D&#39; 是狗，以此类推。在 main() 中会为这种表示方式创建一个提示。类型字符后面是宠物的名字，输入 &#39;Q&#39; 会结束当前输入。swich 语句会创建适当类型的 shared_ptr&lt;T&gt; 对象，然后把它保存到 pets 容器中。当输入结束时，会以移动运算的方式返回局部对象 pets。<br />
+<br />
+程序会输出 Pets 容器中的宠物，因此这里需要实现一个流插入运算符：<br />
+<pre class="cpp">
+// Stream insertion operator for pointers to pets
+inline std::ostream&amp; operator&lt;&lt;(std::ostream&amp; out, const Pet_ptr&amp; pet_ptr)
+{
+  return out &lt;&lt; &quot; &quot; &lt;&lt; *pet_ptr;
+}</pre>
+解引用智能指针，然后用插入运算符将对象写入流 out。因此这里会调用 Pet 类的友元函数 operator&lt;&lt;()。为了输出 map 容器中的元素，在另一个函数的定义中使用它:<br />
+<pre class="cpp">
+// REad all the pets for a given person
+void list_pets(const std::pair&lt;Name, Pets&gt;&amp; pr)
+{
+    std::cout &lt;&lt; &quot;\n&quot; &lt;&lt; pr.first &lt;&lt; &quot;:\n&quot;;
+    std::copy(std::begin(pr.second), std::end(pr.second), std::ostream_iterator&lt;Pet_ptr&gt;(std::cout, &quot;\n&quot;));
+}</pre>
+元素是 pair 对象，它的第一个成员是人名，第二个成员是一个 multiset 容器，里面包含了指向宠物的指针。在将 pair 的第一个成员输出到标准输出流后，用 copy() 算法输出第二个成员的元素。copy() 的前两个参数都是迭代器，它们定义了拷贝元素的范围。第三个参数指定了拷贝操作的目的地，是一个 ostream_iterator&lt;Pet_ptr&gt; 对象。然后调用 operator&lt;&lt;() 函数，将 Pet_ptr 作为它的第二个参数，这个函数然后会调用 Pet 类的友元函数 operator&lt;&lt;0。<br />
+<br />
+main() 函数的完整代码为：<br />
+<pre class="cpp">
+// Storing pointers to derived class objects in a multiset container
+#include &lt;iostream&gt;                              // For standard streams
+#include &lt;string&gt;                                // For string class
+#include &lt;algorithm&gt;                             // For copy() algorithm
+#include &lt;iterator&gt;                              // For ostream_iterator
+#include &lt;map&gt;                                   // For map container
+#include &lt;set&gt;                                   // For multiset container
+#include &lt;memory&gt;                                // For smart pointers
+#include &lt;cctype&gt;                                // For toupper()
+#include &quot;Pet_Classes.h&quot;
+
+using std::string;
+using Name = string;
+using Pet_ptr = std::shared_ptr&lt;Pet&gt;;            // A smart pointer to a pet
+using Pets = std::multiset &lt;Pet_ptr&gt;;            // A set of smart pointers to pets
+
+// Compare shared pointers to pets
+inline bool operator&lt;(const Pet_ptr&amp; p1, const Pet_ptr&amp; p2)
+{
+  return *p1 &lt; *p2;
+}
+
+// Stream insertion operator for pointers to pets
+inline std::ostream&amp; operator&lt;&lt;(std::ostream&amp; out, const Pet_ptr&amp; pet_ptr)
+{
+  return out &lt;&lt; &quot; &quot; &lt;&lt; *pet_ptr;
+}
+
+// Read in all the pets for a person
+Pets get_pets(const Name&amp; person)
+{
+    Pets pets;
+    std::cout &lt;&lt; &quot;Enter &quot; &lt;&lt; person &lt;&lt; &quot;&#39;s pets:\n&quot;;
+    char ch {};
+    Name name {};
+    while(true)
+    {
+        std::cin &gt;&gt; ch;
+        if(toupper(ch) == &#39;Q&#39;) break;
+        std::cin &gt;&gt; name;
+        switch(std::toupper(ch))
+        {
+            case &#39;C&#39;:
+                pets.insert(std::make_shared&lt;Cat&gt;(name));
+                break;
+            case &#39;D&#39;:
+                pets.insert(std::make_shared&lt;Dog&gt;(name));
+                break;
+            case &#39;M&#39;:
+                pets.insert(std::make_shared&lt;Mouse&gt;(name));
+                break;
+            default:
+                std::cout &lt;&lt; &quot;Invalid pet ID - try again.\n&quot;;
+        }
+    }
+    return pets;
+}
+
+// REad all the pets for a given person
+void list_pets(const std::pair&lt;Name, Pets&gt;&amp; pr)
+{
+    std::cout &lt;&lt; &quot;\n&quot; &lt;&lt; pr.first &lt;&lt; &quot;:\n&quot;;
+    std::copy(std::begin(pr.second), std::end(pr.second), std::ostream_iterator&lt;Pet_ptr&gt;(std::cout, &quot;\n&quot;));
+}
+
+int main()
+{
+    std::map&lt;Name, Pets&gt; peoples_pets;             // The people and their pets
+    char answer {&#39;Y&#39;};
+    string name {};
+    std::cout &lt;&lt; &quot;You&#39;ll enter a person&#39;s name followed by their pets.\n&quot;&lt;&lt; &quot;Pets can be identified by C for cat, D for dog, or M for mouse.\n&quot;&lt;&lt; &quot;Enter the character to identify each pet type followed by the pet&#39;s name.\n&quot;&lt;&lt; &quot;Enter Q to end pet input for a person.\n&quot;;
+    while(std::toupper(answer) == &#39;Y&#39;)
+    {
+        std::cout &lt;&lt; &quot;Enter a name: &quot;;
+        std::cin &gt;&gt; name;
+        peoples_pets.emplace(name, get_pets(name));
+        std::cout &lt;&lt; &quot;Another person(Y or N)? &quot;;
+        std::cin &gt;&gt; answer;
+    }
+
+    // Output the pets for everyone
+    std::cout &lt;&lt; &quot;\nThe people and their pets are:\n&quot;;
+    for(const auto&amp; pr : peoples_pets)
+        list_pets(pr);
+}</pre>
+在 main() 中定义了人名和宠物的 map 容器后，会有一个提示来说明输入过程。<a href='180_2.html' target='_blank'>while 循环</a>控制所有输入。通过调用 people_pets 容器的成员函数 emplace() 来向它添加元素，这个函数会在合适的位置创建元素。name 是它的第一个参数，第二个参数是 get_pets() 返回的 multiset 容器。当输入结束时，通过迭代访问 map 元素的方式，输出人名及其宠物。用&nbsp; map 容器的当前 pair 元素作为辅助函数 list_pets() 的参数，输出每个人的相关信息。<br />
+<br />
+由于运行结果篇幅过长，文章中不再列举，读者可自行运行此完整代码查看运行结果。通过运行代码，宠物是以宠物类型名的字母升序输出的，这和我们期望的一样。输出表明我们成功在容器中保存了指向派生类的基类类型的智能指针。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="391_2.html" title="C++ map，STL map详解" target="_blank">C++ map，STL map详解</a></li>
+<li><a href="666_2.html" title="GCC -c选项：只编译不链接，仅生成目标文件" target="_blank">GCC -c选项：只编译不链接，仅生成目标文件</a></li>
+<li><a href="2229_2.html" title="Python（for和while）循环嵌套及用法" target="_blank">Python（for和while）循环嵌套及用法</a></li>
+<li><a href="5946_2.html" title="Python IDE有哪些，哪款适合初学者？" target="_blank">Python IDE有哪些，哪款适合初学者？</a></li>
+<li><a href="8l3rup4_2.html" title="HTTP协议到底是什么？" target="_blank">HTTP协议到底是什么？</a></li>
+<li><a href="4br7qfu_2.html" title="《Web前端开发精品课 JavaScript基础教程》PDF下载（高清完整版）" target="_blank">《Web前端开发精品课 JavaScript基础教程》PDF下载（高清完整版）</a></li>
+<li><a href="mtw83ix_2.html" title="《JavaScript &amp; jQuery 交互式Web前端开发》PDF下载（高清完整版）" target="_blank">《JavaScript &amp; jQuery 交互式Web前端开发》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 545;
+window.arcId = "d588GCW93QOggrpZ3PFFm+Wjb9g/+IUScixKCv4GNiqlP0fjsGg6oJDBRA";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Redis分布式锁应用（实现+原理）</title>
+<meta name="description" content="Redis分布式锁的实现，在分布式系统中，当不同进程或线程一起访问共享资源时，会造成资源争抢，如果不加以控制的话，就会引发程序错乱。本节通俗易懂地讲解 Redis分布式锁的原理以及应用" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="../view/niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+	<div id="sidebar" class="toggle-target">
+	<div id="contents">
+		<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="redis_2.html">Redis</a></dt>
+		<dd>
+        	<span class="channel-num">1</span>
+        	<a href="what-is-redis_2.html">Redis是什么</a>
+        </dd>
+<dd>
+        	<span class="channel-num">2</span>
+        	<a href="windows-installer_2.html">Windows下载安装Redis</a>
+        </dd>
+<dd>
+        	<span class="channel-num">3</span>
+        	<a href="linux-installer_2.html">Ubuntu下载安装Redis</a>
+        </dd>
+<dd>
+        	<span class="channel-num">4</span>
+        	<a href="config_2.html">Redis配置文件</a>
+        </dd>
+<dd>
+        	<span class="channel-num">5</span>
+        	<a href="data-types_2.html">Redis数据类型</a>
+        </dd>
+<dd>
+        	<span class="channel-num">6</span>
+        	<a href="commands_2.html">Redis命令行模式</a>
+        </dd>
+<dd>
+        	<span class="channel-num">7</span>
+        	<a href="keys_2.html">Redis key键</a>
+        </dd>
+<dd>
+        	<span class="channel-num">8</span>
+        	<a href="strings_2.html">Redis string字符串</a>
+        </dd>
+<dd>
+        	<span class="channel-num">9</span>
+        	<a href="bitmap_2.html">Redis bitmap位图</a>
+        </dd>
+<dd>
+        	<span class="channel-num">10</span>
+        	<a href="incrby_2.html">Redis数值操作命令</a>
+        </dd>
+<dd>
+        	<span class="channel-num">11</span>
+        	<a href="lists_2.html">Redis list列表</a>
+        </dd>
+<dd>
+        	<span class="channel-num">12</span>
+        	<a href="hashes_2.html">Redis hash哈希散列</a>
+        </dd>
+<dd>
+        	<span class="channel-num">13</span>
+        	<a href="sets_2.html">Redis set集合</a>
+        </dd>
+<dd>
+        	<span class="channel-num">14</span>
+        	<a href="sorted-set_2.html">Redis zset有序集合</a>
+        </dd>
+<dd>
+        	<span class="channel-num">15</span>
+        	<a href="connection_2.html">Redis连接命令</a>
+        </dd>
+<dd>
+        	<span class="channel-num">16</span>
+        	<a href="security_2.html">Redis安全策略</a>
+        </dd>
+<dd>
+        	<span class="channel-num">17</span>
+        	<a href="client_2.html">Redis客户端命令</a>
+        </dd>
+<dd>
+        	<span class="channel-num">18</span>
+        	<a href="server_2.html">Redis服务器命令</a>
+        </dd>
+<dd>
+        	<span class="channel-num">19</span>
+        	<a href="hyperloglog_2.html">Redis基数统计</a>
+        </dd>
+<dd>
+        	<span class="channel-num">20</span>
+        	<a href="pubsub_2.html">Redis发布订阅</a>
+        </dd>
+<dd>
+        	<span class="channel-num">21</span>
+        	<a href="streams_2.html">Redis消息队列</a>
+        </dd>
+<dd>
+        	<span class="channel-num">22</span>
+        	<a href="bloom-filter_2.html">Redis布隆过滤器</a>
+        </dd>
+<dd>
+        	<span class="channel-num">23</span>
+        	<a href="geo_2.html">Redis地理位置</a>
+        </dd>
+<dd>
+        	<span class="channel-num">24</span>
+        	<a href="transaction_2.html">Redis事务</a>
+        </dd>
+<dd>
+        	<span class="channel-num">25</span>
+        	<a href="lua-scripts_2.html">Redis Lua脚本</a>
+        </dd>
+<dd>
+        	<span class="channel-num">26</span>
+        	<a href="benchmarks_2.html">Redis性能测试</a>
+        </dd>
+<dd>
+        	<span class="channel-num">27</span>
+        	<a href="partition_2.html">Redis分区技术</a>
+        </dd>
+<dd>
+        	<span class="channel-num">28</span>
+        	<a href="pipeline_2.html">Redis管道技术</a>
+        </dd>
+<dd>
+        	<span class="channel-num">29</span>
+        	<a href="backup_2.html">Redis数据备份和还原</a>
+        </dd>
+<dd>
+        	<span class="channel-num">30</span>
+        	<a href="rdb_2.html">Redis RDB持久化</a>
+        </dd>
+<dd>
+        	<span class="channel-num">31</span>
+        	<a href="aof_2.html">Redis AOF持久化</a>
+        </dd>
+<dd>
+        	<span class="channel-num">32</span>
+        	<a href="slaveof_2.html">Redis主从模式</a>
+        </dd>
+<dd>
+        	<span class="channel-num">33</span>
+        	<a href="sentinel-model_2.html">Redis哨兵模式</a>
+        </dd>
+<dd>
+        	<span class="channel-num">34</span>
+        	<a href="distributed-lock_2.html">Redis分布式锁</a>
+        </dd>
+<dd>
+        	<span class="channel-num">35</span>
+        	<a href="cache_2.html">Redis缓存问题</a>
+        </dd>
+<dd>
+        	<span class="channel-num">36</span>
+        	<a href="java_2.html">Java使用Redis</a>
+        </dd>
+<dd>
+        	<span class="channel-num">37</span>
+        	<a href="php_2.html">PHP使用Redis</a>
+        </dd>
+<dd>
+        	<span class="channel-num">38</span>
+        	<a href="python_2.html">Python使用Redis</a>
+        </dd>
+<dd>
+        	<span class="channel-num">39</span>
+        	<a href="config-summary_2.html">Redis配置项汇总</a>
+        </dd>
+
+	</div>
+</div>
+	<div id="article-wrap">
+		<div id="article">
+			<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="redis_2.html">Redis</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+			<h1>Redis分布式锁应用（实现+原理）</h1>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+			<div id="arc-body">在分布式系统中，当不同进程或线程一起访问共享资源时，会造成资源争抢，如果不加以控制的话，就会引发程序错乱。此时使用分布式锁能够非常有效的解决这个问题，它采用了一种互斥机制来防止线程或进程间相互干扰，从而保证了数据的一致性。<br />
+<p class="tip-box">
+	提示：如果对分布式系统这一概念不清楚，可参考百度百科《<a href="https://baike.baidu.com/item/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/4905336?fr=aladdin" target="_blank">分布式系统</a>》，简而言之，它是一种架构、一种模式。</p>
+<h2>
+	Redis分布式锁介绍</h2>
+分布式锁并非是 Redis 独有，比如 MySQL 关系型数据库，以及 Zookeeper 分布式服务应用，它们都实现分布式锁，只不过 Redis 是基于缓存实现的。<br />
+<br />
+Redis 分布式锁有很对应用场景，举个简单的例子，比如春运时，您需要在 12306 上抢购回家火车票，但 Redis 数据库中只剩一张票了，此时有多个用户来预订购买，那么这张票会被谁抢走呢？Redis 服务器又是如何处理这种情景的呢？在这个过程中就需要使用分布式锁。<br />
+<br />
+Redis 分布式锁主要有以下特点：
+<ul>
+	<li>
+		第一：互斥性是分布式锁的重要特点，在任意时刻，只有一个线程能够持有锁；</li>
+	<li>
+		第二：锁的超时时间，一个线程在持锁期间挂掉了而没主动释放锁，此时通过超时时间来保证该线程在超时后可以释放锁，这样其他线程才可以继续获取锁；</li>
+	<li>
+		第三：加锁和解锁必须是由同一个线程来设置；</li>
+	<li>
+		第四：Redis 是缓存型数据库，拥有很高的性能，因此加锁和释放锁开销较小，并且能够很轻易地实现分布式锁。</li>
+</ul>
+<p class="tip-box">
+	注意：一个线程代表一个客户端。</p>
+<h2>
+	Redis分布式锁命令</h2>
+分布式锁的本质其实就是要在 Redis 里面占一个&ldquo;坑&rdquo;，当别的进程也要来占时，发现已经有人蹲了，就只好放弃或者稍做等待。这个&ldquo;坑&rdquo;同一时刻只允许被一个客户端占据，也就是本着&ldquo;先来先占&rdquo;的原则。
+<h4>
+	1) 常用命令</h4>
+Redis 分布式锁常用命令如下所示：
+<ul>
+	<li>
+		SETNX key val：仅当key不存在时，设置一个 key 为 value 的字符串，返回1；若 key 存在，设置失败，返回 0；</li>
+	<li>
+		Expire key timeout：为 key 设置一个超时时间，以 second 秒为单位，超过这个时间锁会自动释放，避免死锁；</li>
+	<li>
+		DEL key：删除 key。</li>
+</ul>
+<br />
+上述 SETNX 命令相当于占&ldquo;坑&rdquo;操作，EXPIRE 是为避免出现意外用来设置锁的过期时间，也就是说到了指定的过期时间，该客户端必须让出锁，让其他客户端去持有。<br />
+<br />
+但还有一种情况，如果在 SETNX 和 EXPIRE 之间服务器进程突然挂掉，也就是还未设置过期时间，这样就会导致 EXPIRE 执行不了，因此还是会造成&ldquo;死锁&rdquo;的问题。为了避免这个问题，Redis 作者在 2.6.12 版本后，对 SET 命令参数做了扩展，使它可以同时执行 SETNX 和 EXPIRE 命令，从而解决了死锁的问题。<br />
+<br />
+直接使用 SET 命令实现，语法格式如下：
+<pre class="info-box">
+SET key value [expiration EX seconds|PX milliseconds] [NX|XX]  </pre>
+<ul>
+	<li>
+		EX second：设置键的过期时间为 second 秒。 SET key value EX second 效果等同于 SETEX key second value 。</li>
+	<li>
+		PX millisecond：设置键的过期时间为毫秒。SET key value PX millisecond 效果等同于 PSETEX key millisecondvalue 。</li>
+	<li>
+		NX：只在键不存在时，才对键进行设置操作。 SET key value NX 效果等同于 SETNX key value 。</li>
+	<li>
+		XX：只在键已经存在时，才对键进行设置操作。</li>
+</ul>
+<h4>
+	2) 命令应用</h4>
+下面进行简单的命令演示：
+<pre class="info-box">
+127.0.0.1:6379&gt; SETNX WEBNAME www.biancheng.net
+(integer) 1
+127.0.0.1:6379&gt; EXPIRE WEBNAME 60
+(integer) 1
+127.0.0.1:6379&gt; GET WEBNAME
+&quot;www.biancheng.net&quot;
+127.0.0.1:6379&gt; TTL WEBNAME
+(integer) 33
+127.0.0.1:6379&gt; SET name www.biancheng.net EX 60 NX
+OK</pre>
+</div>
+			<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="../view/niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/37_3.html" title="Go语言遍历字符串——获取每一个字符串元素" target="_blank">Go语言遍历字符串——获取每一个字符串元素</a></li>
+<li><a href="../view/1149_2.html" title="SELinux安全上下文查看方法（超详细）" target="_blank">SELinux安全上下文查看方法（超详细）</a></li>
+<li><a href="../view/5408_2.html" title="Go语言聊天服务器" target="_blank">Go语言聊天服务器</a></li>
+<li><a href="../view/vip_5917_2.html" title="C语言学生信息管理系统源码下载和思路解析（文件版）" target="_blank">C语言学生信息管理系统源码下载和思路解析（文件版）</a></li>
+<li><a href="../view/vip_9651_2.html" title="Qt控件和事件" target="_blank">Qt控件和事件</a></li>
+<li><a href="../view/40rtyk8_2.html" title="Python命令行参数的解析（非常详细）" target="_blank">Python命令行参数的解析（非常详细）</a></li>
+<li><a href="../view/obw5r3t_2.html" title="Python flush()：刷新缓冲区" target="_blank">Python flush()：刷新缓冲区</a></li>
+</ul>
+</div>
+		</div>
+		
+	</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9321;
+window.arcId = "5bbeAsmbXPAaaFD7LXx3WHfw8kOHvT4STjOVdTFj2w0EyokK/8uJ1ASV4g4";
+window.typeidChain = "413";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="../view/8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="../view/8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="../view/8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="../view/9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="../view/8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/redis/sentinel-model.html";
+window.nextPageURL = "/redis/cache.html";
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

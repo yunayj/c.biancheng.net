@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C# DataSet和DataTable：将查询结果保存到DataSet或DataTable中</title>
+<meta name="description" content="在执行对表中数据的查询时还能将数据保存到 DataSet 中，但需要借助 DataAdapter 类来实现。 在实际应用中，DataAdapter 与 DataSet 是在查询操作中使用最多的类。 此外，还可以通过 DataSet 实" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C# DataSet和DataTable：将查询结果保存到DataSet或DataTable中</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在执行对表中数据的查询时还能将数据保存到 DataSet 中，但需要借助 DataAdapter 类来实现。<br />
+<br />
+在实际应用中，DataAdapter 与 DataSet 是在查询操作中使用最多的类。<br />
+<br />
+此外，还可以通过 DataSet 实现对表中数据的增加、修改、删除操作。<br />
+<h2>
+DataAdapter 与 DataSet 类简介</h2>
+DataAdapter 类用于将数据表中的数据查询出来并添加到 DataSet 中，DataAdapter 在 System.Data.SqlClient 命名空间下对应的类名是 SqlDataAdapter。<br />
+<br />
+SqlDataAdapter 类的主要构造方法如下表所示。<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+构造方法</th>
+<th>
+说明</th>
+</tr>
+<tr>
+<td>
+SqlDataAdapter(SqlCommand cmd)</td>
+<td>
+带参数的构造方法，传递 SqlCommand 类的对象作为参数</td>
+</tr>
+<tr>
+<td>
+SqlDataAdapter(string sql, SqlConnection conn)</td>
+<td>
+带参数的构造方法，sql 参数是指定对数据表执行的 SQL 语句，conn 是数据库的连接对象</td>
+</tr>
+<tr>
+<td>
+SqlDataAdapter()</td>
+<td>
+不带参数的构造方法</td>
+</tr>
+</tbody>
+</table>
+<br />
+从 SqlDataAdapter 类的构造方法可以看出，SqlDataAdapter 类需要与 SqlCommand 类和 SqlConnection 类一起使用。<br />
+<br />
+SqlDataAdapter 类常用的属性和方法如下表所示。<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+属性或方法</th>
+<th>
+说明</th>
+</tr>
+<tr>
+<td>
+SelectCommand</td>
+<td>
+属性，设置 SqlDataAdapter 中要执行的查询语句</td>
+</tr>
+<tr>
+<td>
+InsertCommand</td>
+<td>
+属性，设置 SqlDataAdapter 中要执行的添加语句</td>
+</tr>
+<tr>
+<td>
+UpdateCommand</td>
+<td>
+属性，设置 SqlDataAdapter 中要执行的修改语句</td>
+</tr>
+<tr>
+<td>
+DeleteCommand</td>
+<td>
+属性，设置 SqlDataAdapter 中要执行的删除语句</td>
+</tr>
+<tr>
+<td>
+Fill(DataSet ds)</td>
+<td>
+方法，将 SqlDataAdapter 类中查询出的结果填充到 DataSet 对象中</td>
+</tr>
+<tr>
+<td>
+Fill(DataTable dt)</td>
+<td>
+方法，将 SqlDataAdapter 类中查询出的结果填充到 DataTable 对象 中，DataTable是数据表对象，在一个DataSet对象中由多个 DataTable对象构成</td>
+</tr>
+<tr>
+<td>
+Update(DataSet ds)</td>
+<td>
+方法，更新 DataSet 对象中的数据</td>
+</tr>
+<tr>
+<td>
+Update(DataTable dt)</td>
+<td>
+方法，更新 DataTable 对象中的数据</td>
+</tr>
+</tbody>
+</table>
+<br />
+DataSet 类是一种与数据库结构类似的数据集，每个 DataSet 都是由若干个数据表构成的，DataTable 即数据表，每个 DataTable 也都是由行和列构成的，行使用 DataRow 类表示、列使用 DataColumn 类表示。<br />
+<br />
+此外，用户还可以通过 DataRelation 类设置数据表之间的关系。<br />
+<br />
+下面介绍 DataSet 类以及 DataTable 类的使用。<br />
+<h4>
+1) DataSet 类</h4>
+DataSet 类中的构造方法如下表所示。<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+构造方法</th>
+<th>
+说明</th>
+</tr>
+<tr>
+<td>
+DataSet()</td>
+<td>
+无参构造方法</td>
+</tr>
+<tr>
+<td>
+DataSet(string DataSetName)</td>
+<td>
+带参数的构造方法，DataSetName 参数用于指定数据集名称</td>
+</tr>
+</tbody>
+</table>
+<br />
+DataSet 类中常用的属性和方法如下表所示。<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+属性或方法</th>
+<th>
+说明</th>
+</tr>
+<tr>
+<td>
+Tables</td>
+<td>
+属性，获取 DataSet 中所有数据表的集合，Tables[0] 代表集合中的第一个数据表</td>
+</tr>
+<tr>
+<td>
+CaseSensitive</td>
+<td>
+属性，获取或设置 DataSet 中的字符串是否区分大小写</td>
+</tr>
+<tr>
+<td>
+Relations</td>
+<td>
+属性，获取 DataSet 中包含的关系集合</td>
+</tr>
+<tr>
+<td>
+Clear()</td>
+<td>
+方法，清空 DataSet 中的数据</td>
+</tr>
+<tr>
+<td>
+Copy()</td>
+<td>
+方法，复制 DataSet 中的数据</td>
+</tr>
+<tr>
+<td>
+AcceptChanges()</td>
+<td>
+方法，更新 DataSet 中的数据</td>
+</tr>
+<tr>
+<td>
+HasChanges()</td>
+<td>
+方法，获取 DataSet 中是否有数据发生变化</td>
+</tr>
+<tr>
+<td>
+RejectChanges()</td>
+<td>
+方法，撤销对 DataSet 中数据的更改</td>
+</tr>
+</tbody>
+</table>
+<h4>
+2) DataTable</h4>
+DataTable 作为 DataSet 中的重要对象，其与数据表的定义是类似的，都是由行和列构成，并有唯一的表名。<br />
+<br />
+从 SqlDataAdapter 类的填充方法 (Fill) 中可以看出允许将数据直接填充到 DataTable 中，这样既能节省存储空间也能简化查找数据表中的数据。<br />
+<br />
+DataTable 中常用的构造方法如下表所示。<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+构造方法</th>
+<th>
+说明</th>
+</tr>
+<tr>
+<td>
+DataTable()&nbsp;</td>
+<td>
+无参构造方法</td>
+</tr>
+<tr>
+<td>
+DataTable(string TableName)</td>
+<td>
+带参数的构造方法， TableName 参数用于指定数据表的名称</td>
+</tr>
+</tbody>
+</table>
+<br />
+DataTable 与 DataSet 有很多相似的属性和方法，在下表中列出了一些与 DataSet 类不同的属性。<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+属性</th>
+<th>
+说明</th>
+</tr>
+<tr>
+<td>
+TableName</td>
+<td>
+属性，获取或设置 DataTable 的名称</td>
+</tr>
+<tr>
+<td>
+Columns</td>
+<td>
+属性，获取 DataTable 中列的集合</td>
+</tr>
+<tr>
+<td>
+Rows</td>
+<td>
+属性，获取 DataTable 中行的集合</td>
+</tr>
+<tr>
+<td>
+DataSet</td>
+<td>
+属性，获取 DataTable 所在的 DataSet</td>
+</tr>
+<tr>
+<td>
+Constraints</td>
+<td>
+属性，获取 DataTable 中的所有约束</td>
+</tr>
+</tbody>
+</table>
+<h2>
+使用 DataSet 和 DataTable 类存放查询结果</h2>
+在实际应用中，将查询结果存储到 DataSet 类或 DataTable 类中均可，在操作查询结果时也非常类似。<br />
+<br />
+下面分别通过实例来演示 DataSet 和 DataTable 的使用。<br />
+<br />
+【实例】创建 Windows 应用程序，查询用户信息表（userinfo）中的所有用户名，并将用户名显示在列表控件（ListBox）中。<br />
+<br />
+根据题目要求，设置用户信息查询界面如下图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="用户名查询界面设计" src="../uploads/allimg/190408/4-1Z40Q03122305.gif" /></div>
+<br />
+单击&ldquo;查询全部用户名&rdquo;按钮，将所有用户名显示到 ListBox 控件中，首先使用 DataSet 对象存储查询结果，代码如下。
+<pre class="cpp">
+//&ldquo;查询全部用户&rdquo;按钮的单击事件
+private void button1_Click(object sender, EventArgs e)
+{
+    //编写数据库连接串
+    string connStr = &quot;Data Source=.; Initial Catalog=test;User ID=sa;Password=root&quot;;
+    //创建 SQLConnection 的实例
+    SqlConnection conn = null;
+    try
+    {
+        conn = new SqlConnection(connStr);
+        //打开数据库连接
+        conn.Open();
+        string sql = &quot;select name from userinfo&quot;;
+        //创建 SQLDataAdapter 类的对象
+        SqlDataAdapter sda = new SqlDataAdapter(sql, conn);
+        //创建DataSet类的对象
+        DataSet ds = new DataSet();
+        //使用SQLDataAdapter对象sda将查询结果填充到Dataset对象ds中
+        sda.Fill(ds);
+        //设置ListBox控件的数据源（DataSource）属性
+        listBox1.DataSource = ds.Tables[0];
+        //在listBox控件中显示name列的值
+        listBox1.DisplayMember = ds.Tables[0].Columns[0].ToString();
+    }
+    catch(Exception ex)
+    {
+        MessageBox.Show(&quot;查询失败！&quot; + ex.Message);
+    }
+    finally
+    {
+        if (conn != null)
+        {
+            //关闭数据库连接
+            conn.Close();
+        }
+    }
+}</pre>
+运行该窗体，效果如下图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="查询全部用户名的效果" src="../uploads/allimg/190408/4-1Z40Q03212a7.gif" /></div>
+<br />
+从上面的运行效果可以看出，已经将用户信息表 (userinfo) 中的所有用户名显示在列表控件 (ListBox) 中。<br />
+<br />
+需要注意的是，ListBox 控件中的 DataSource 属性用于设置控件中内容的数据源，并需要通过 DisplayMember 属性来指定显示在 ListBox 控件中的内容。<br />
+<br />
+在本实例中将 DataSet 对象换成 DataTable 对象，更改部分代码如下。<br />
+<pre class="cpp">
+//创建 SqlDataAdapter 类的对象
+SqlDataAdapter sda = new SqlDataAdapter(sql, conn);
+//创建 DataTable 类的对象
+DataTable dt = new DataTable();
+//使用 SqlDataAdapter 对象 sda 将查询结果填充到 DataSet 对象 dt 中
+sda.Fill(dt);
+//设置 ListBox 控件的数据源(DataSource)属性
+listBox1.DataSource = dt;
+//在 ListBox 控件中显示 name 列的值
+listBox1.DisplayMember = dt.Columns[0].ToStiring();</pre>
+更改后再次运行窗体，效果与上图&mdash;样。<br />
+<br />
+对于 Windows 应用程序中的控件，除了可以使用代码为其 DataSource 属性设置数据源外，也可以用 Windows 应用程序中所带的自动绑定功能实现。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="193.html" title="C++输入输出" target="_blank">C++输入输出</a></li>
+<li><a href="337.html" title="字符数组和字符串的区别，C语言字符数组和字符串区别详解" target="_blank">字符数组和字符串的区别，C语言字符数组和字符串区别详解</a></li>
+<li><a href="1100.html" title="Java枚举（enum）详解：Java声明枚举类型、枚举（enum）类、EnumMap 与 EnumSet" target="_blank">Java枚举（enum）详解：Java声明枚举类型、枚举（enum）类、EnumMap 与 EnumSet</a></li>
+<li><a href="2554.html" title="MySQL AS：设置别名" target="_blank">MySQL AS：设置别名</a></li>
+<li><a href="vip_6003.html" title="深入底层了解Python字典和集合，一眼看穿他们的本质！" target="_blank">深入底层了解Python字典和集合，一眼看穿他们的本质！</a></li>
+<li><a href="vip_7719.html" title="C++ map容器operator[]和insert()效率对比（深度剖析）" target="_blank">C++ map容器operator[]和insert()效率对比（深度剖析）</a></li>
+<li><a href="wlw44m1.html" title="C++ throw抛出异常用法详解" target="_blank">C++ throw抛出异常用法详解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 3026;
+window.arcId = "8d42HqgEnkyMq9b7Ulx8bF5aqLeEU52lW7t3O5isFmfL7E/L5LpRgF9yNgU";
+window.typeidChain = "211|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

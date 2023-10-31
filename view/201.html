@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++函数重载详解</title>
+<meta name="description" content="C++ 不允许变量重名，但是允许多个函数取相同的名字，只要参数表不同即可，这叫作函数的重载（读虫载，不读众载，其英文是 overload）。重载就是装载多种东西的意思，即同一个事物" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++函数重载详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body"><a href='../cplus/cplus.html' target='_blank'>C++</a> 不允许变量重名，但是允许多个函数取相同的名字，只要参数表不同即可，这叫作函数的重载（读&ldquo;虫载&rdquo;，不读&ldquo;众载&rdquo;，其英文是 overload）。重载就是装载多种东西的意思，即同一个事物能完成不同功能。<br />
+<br />
+函数的重载使得 C++ 程序员对完成类似功能的不同函数可以统一命名，减少了命名所花的心思。例如，可能会需要一个求两个整数的最大值的函数，也可能还要写一个求三个实数的最大值的函数，这两个函数的功能都是求最大值，那么就都命名为 Max 即可，不需要一个命名为 MaxOfTwoIntegers，另一个命名为 MaxOfThreeFloats。<br />
+<br />
+在调用同名函数时，编译器怎么知道到底调用的是哪个函数呢？编译器是根据函数调用语句中实参的个数和类型来判断应该调用哪个函数的。因为重载函数的参数表不同，而调用函数的语句给出的实参必须和参数表中的形参个数和类型都匹配，因此编译器才能够判断出到底应该调用哪个函数。例如下面的程序：
+<pre class="cpp">
+#include &lt;iostream&gt;
+u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+void Max(int a, int b)
+{
+    cout &lt;&lt; &quot;Max 1&quot; &lt;&lt; endl;
+}
+void Max(double a, double b)
+{
+    cout &lt;&lt; &quot;Max 2&quot; &lt;&lt; endl;
+}
+void Max(double a, double b, double c)
+{
+    cout &lt;&lt; &quot;Max 3&quot; &lt;&lt; endl;
+}
+int main()
+{
+    Max(3, 4);  //调用 int Max(int, int)
+    Max(2.4, 6.0);  //调用 double Max(doubleA double)
+    Max(1.2, 3.4, 5);  //调用 double Max(double, double, double)
+    Max(1, 2, 3);  //调用 double Max(double, double, double)
+    Max(3, 1.5);  //编译出错：二义性
+    return 0;
+}</pre>
+以上程序如果去掉第 21 行编译出错的语句，输出结果是：<br />
+Max 1<br />
+Max 2<br />
+Max 3<br />
+Max 3<br />
+<br />
+显然，编译器根据调用 Max 函数的语句所给的实参的个数和类型，可以找到完全匹配的函数。例如第 17 行，实参是两个整型数，那么调用的当然就应该是原型为 void Max(int, int) 的那个 Max 函数。<br />
+<br />
+第 21 行编译会出错，因为两个实参一个是整型，一个是实数型。如果将整型自动转换成 实数型，那么看来应该调用 void Max(double, double) 这个函数；可是如果将实数型去尾自动转换为整型，那么调用 void Max(int, int) 似乎也说得过去。<br />
+<br />
+C++ 设计者认为，此时编译器应该因不知如何选择而报告二义性的错误，而不是规定优先选择其中某一种。因为如果硬性规定的话，程序员很可能记不清到底编译器是怎么规定的，从而可能导致程序员心里认为应该调用这个 Max 函数，实际上编译器的处理是调用另一个 Max 函数，结果程序员因编译器不会报错而无法察觉这个问题。好的工具总是应该让使用者少犯错误，或者犯了错误也能马上发现。<br />
+<br />
+如果去掉 void Max(int, int) 函数或者 void Max(double, double) 函数中的任何一个，则第 21 行就不会导致编译时的二义性错误了，因为此时实参该如何自动转换才能和 Max 函数匹配是确定的。<br />
+<br />
+在两个函数同名而参数个数不同，但是其中参数多的那个函数的参数又可以取默认值的情况下，也可能会引发二义性。例如下面两个函数：
+<pre class="cpp">
+int Sum(int a, int b, int c = 0);
+int Sum(int a, int b);</pre>
+则函数调用语句：
+<pre class="cpp">
+Sum (1, 2);</pre>
+就会在编译时导致二义性错误。因为编译器不知道是应该以 (1, 2, 0) 作为参数调用第一个 Sum 函数，还是以 (1, 2) 作为参数调用第二个 Sum 函数。同样，将编译器设计成在这种情况下优先选择某一种也是不合理的。<br />
+<br />
+需要强调一点，同名函数只有参数表不同才能算重载。两个同名函数的参数表相同而返回值类型不同不是重载，而是重复定义，是不允许的。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="554.html" title="C语言判断三角形的类型" target="_blank">C语言判断三角形的类型</a></li>
+<li><a href="4277.html" title="Python join()方法：合并字符串" target="_blank">Python join()方法：合并字符串</a></li>
+<li><a href="vip_7663.html" title="Linux如何查看内存的使用情况？" target="_blank">Linux如何查看内存的使用情况？</a></li>
+<li><a href="vip_7679.html" title="C++多文件项目如何用g++命令执行？" target="_blank">C++多文件项目如何用g++命令执行？</a></li>
+<li><a href="../numpy/ndarray.html" title="NumPy ndarray对象" target="_blank">NumPy ndarray对象</a></li>
+<li><a href="../redis/lua-scripts.html" title="Redis Lua脚本" target="_blank">Redis Lua脚本</a></li>
+<li><a href="htjkjm4.html" title="C++二维数组的定义和使用（入门必读）" target="_blank">C++二维数组的定义和使用（入门必读）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 201;
+window.arcId = "df51NY2KTb0j0qP76nCcpq4niQ36eHO8NIjhH0YzalettKqEpfgmRzYv3g";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

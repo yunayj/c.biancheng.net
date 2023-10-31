@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>卷积神经网络(CNN,ConvNet)及其原理详解</title>
+<meta name="description" content="卷积神经网络 （ CNN ，有时被称为 ConvNet ）是很吸引人的。在短时间内，它们变成了一种颠覆性的技术，打破了从文本、视频到语音等多个领域所有最先进的算法，远远超出了其最初在" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>卷积神经网络(CNN,ConvNet)及其原理详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body"><span style="color:#008000;">卷积神经网络</span>（<span style="color:#008000;">CNN</span>，有时被称为 <span style="color:#008000;">ConvNet</span>）是很吸引人的。在短时间内，它们变成了一种颠覆性的技术，打破了从文本、视频到语音等多个领域所有最先进的算法，远远超出了其最初在图像处理的应用范围。<br />
+<br />
+CNN 由许多神经网络层组成。卷积和池化这两种不同类型的层通常是交替的。网络中每个滤波器的深度从左到右增加。最后通常由一个或多个全连接的层组成：
+<div style="text-align: center;">
+	<br />
+	<img alt="卷积神经网络的一个例子" src="../uploads/allimg/190109/2-1Z10913095L37_2.gif" /><br />
+	图 1 卷积神经网络的一个例子</div>
+<br />
+<span style="color:#b22222;">Convnets 背后有三个关键动机：局部感受野、共享权重和池化。</span>让我们一起看一下。<br />
+<h2>
+	局部感受野</h2>
+如果想保留图像中的空间信息，那么用像素矩阵表示每个图像是很方便的。然后，编码局部结构的简单方法是将相邻输入神经元的子矩阵连接成属于下一层的单隐藏层神经元。这个单隐藏层神经元代表一个局部感受野。请注意，此操作名为&ldquo;卷积&rdquo;，此类网络也因此而得名。<br />
+<br />
+当然，可以通过重叠的子矩阵来编码更多的信息。例如，假设每个子矩阵的大小是 5&times;5，并且将这些子矩阵应用到 28&times;28 像素的 MNIST 图像。然后，就能够在下一隐藏层中生成 23&times;23 的局部感受野。事实上，在触及图像的边界之前，只需要滑动子矩阵 23 个位置。<br />
+<br />
+定义从一层到另一层的特征图。当然，可以有多个独立从每个隐藏层学习的特征映射。例如，可以从 28&times;28 输入神经元开始处理 MNIST 图像，然后（还是以 5&times;5 的步幅）在下一个隐藏层中得到每个大小为 23&times;23 的神经元的 k 个特征图。<br />
+<h2>
+	共享权重和偏置</h2>
+假设想要从原始像素表示中获得移除与输入图像中位置信息无关的相同特征的能力。一个简单的直觉就是对隐藏层中的所有神经元使用相同的权重和偏置。通过这种方式，每层将从图像中学习到独立于位置信息的潜在特征。<br />
+<br />
+理解卷积的一个简单方法是考虑作用于矩阵的滑动窗函数。在下面的例子中，给定输入矩阵 I 和核 K，得到卷积输出。将 3&times;3 核 K（有时称为滤波器或特征检测器）与输入矩阵逐元素地相乘以得到输出卷积矩阵中的一个元素。所有其他元素都是通过在 I 上滑动窗口获得的：
+<div style="text-align: center;">
+	&nbsp;</div>
+<div style="text-align: center;">
+	<br />
+	<img alt="卷积运算的一个例子：用粗体表示参与计算的单元" src="../uploads/allimg/190109/2-1Z109131149432_2.gif" /></div>
+<div style="text-align: center;">
+	图 2 卷积运算的一个例子：用粗体表示参与计算的单元</div>
+<br />
+在这个例子中，一触及 I 的边界就停止滑动窗口（所以输出是 3&times;3）。或者，可以选择用零填充输入（以便输出为 5&times;5），这是有关填充的选择。<br />
+<br />
+另一个选择是关于滑窗所采用的滑动方式的步幅。步幅可以是 1 或大于 1。大步幅意味着核的应用更少以及更小的输出尺寸，而小步幅产生更多的输出并保留更多的信息。<br />
+<p class="info-box">
+	滤波器的大小、步幅和填充类型是超参数，可以在训练网络时进行微调。</p>
+<h4>
+	<a href='https://m.biancheng.net/tensorflow/' target='_blank'>TensorFlow</a>中的ConvNet</h4>
+在 TensorFlow 中，如果想添加一个卷积层，可以这样写：<br />
+<br />
+<img alt="" src="../uploads/allimg/190109/2-1Z109131344225_2.gif" /><br />
+<br />
+参数说明如下：
+<ul>
+	<li>
+		input：张量，必须是 half、float32、float64 三种类型之一。</li>
+	<li>
+		filter：张量必须具有与输入相同的类型。</li>
+	<li>
+		strides：整数列表。长度是 4 的一维向量。输入的每一维度的滑动窗口步幅。必须与指定格式维度的顺序相同。</li>
+	<li>
+		padding：可选字符串为 SAME、VALID。要使用的填充算法的类型。</li>
+	<li>
+		use_cudnn_on_gpu：一个可选的布尔值，默认为 True。</li>
+	<li>
+		data_format：可选字符串为 NHWC、NCHW，默认为 NHWC。指定输入和输出数据的数据格式。使用默认格式 NHWC，数据按照以下顺序存储：[batch，in_height，in_width，in_channels]。或者，格式可以是 NCHW，数据存储顺序为：[batch，in_channels，in_height，in_width]。</li>
+	<li>
+		name：操作的名称（可选）。</li>
+</ul>
+<br />
+下图提供了一个卷积的例子：
+<div style="text-align: center;">
+	<img alt="卷积运算的例子" src="../uploads/allimg/190109/2-1Z109131421P1_2.gif" /></div>
+<div style="text-align: center;">
+	图 3 卷积运算的例子</div>
+<h2>
+	池化层</h2>
+假设我们要总结一个特征映射的输出。我们可以使用从单个特征映射产生的输出的空间邻接性，并将子矩阵的值聚合成单个输出值，从而合成地描述与该物理区域相关联的含义。<br />
+<h4>
+	最大池化</h4>
+一个简单而通用的选择是所谓的最大池化算子，它只是输出在区域中观察到的最大输入值。在 TensorFlow 中，如果想要定义一个大小为 2&times;2 的最大池化层，可以这样写：<br />
+<br />
+<img alt="" src="../uploads/allimg/190109/2-1Z1091315132Y_2.gif" /><br />
+<br />
+参数说明如下：
+<ul>
+	<li>
+		value：形状为 [batch，height，width，channels] 和类型是 tf.float32 的四维张量。</li>
+	<li>
+		ksize：长度 &gt;=4 的整数列表。输入张量的每个维度的窗口大小。</li>
+	<li>
+		strides：长度 &gt;=4 的整数列表。输入张量的每个维度的滑动窗口的步幅。</li>
+	<li>
+		padding：一个字符串，可以是 VALID 或 SAME。</li>
+	<li>
+		data_format：一个字符串，支持 NHWC 和 NCHW。</li>
+	<li>
+		name：操作的可选名称。</li>
+</ul>
+<br />
+下图给出了最大池化操作的示例：
+<div style="text-align: center;">
+	<br />
+	<img alt="池化操作的一个例子" src="../uploads/allimg/190109/2-1Z1091315512W_2.gif" /><br />
+	图 4 池化操作的一个例子</div>
+<h4>
+	平均池化</h4>
+另一个选择是平均池化，它简单地将一个区域聚合成在该区域观察到的输入值的平均值。<br />
+<br />
+TensorFlow 可以实现大量的池化层，并在线提供了一个完整的列表（<a href="https://www.tensorflow.org/api_guides/python/nn#Pooling" target="_blank">https://www.tensorflow.org/api_guides/python/nn#Pooling</a>）。简而言之，所有池化操作只不过是给定区域的汇总操作。<br />
+<h2>
+	ConvNet总结</h2>
+CNN 基本上是几层具有非线性激活函数的卷积，以及将池化层应用于卷积的结果。每层应用不同的滤波器（成百上千个）。理解的关键是滤波器不是预先设定好的，而是在训练阶段学习的，以使得恰当的损失函数被最小化。已经观察到，较低层会学习检测基本特征，而较高层检测更复杂的特征，例如形状或面部。<br />
+<br />
+请注意，由于有池化层，靠后的层中的神经元看到的更多的是原始图像，因此它们能够编辑前几层中学习的基本特征。<br />
+<br />
+到目前为止，描述了 ConvNet 的基本概念。CNN 在时间维度上对音频和文本数据进行一维卷积和池化操作，沿（高度&times;宽度）维度对图像进行二维处理，沿（高度&times;宽度&times;时间）维度对视频进行三维处理。对于图像，在输入上滑动滤波器会生成一个特征图，为每个空间位置提供滤波器的响应。<br />
+<br />
+换句话说，一个 ConvNet 由多个滤波器堆叠在一起，学习识别在图像中独立于位置信息的具体视觉特征。这些视觉特征在网络的前面几层很简单，然后随着网络的加深，组合成更加复杂的全局特征。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="248_2.html" title="C++运算符重载注意事项以及汇总" target="_blank">C++运算符重载注意事项以及汇总</a></li>
+<li><a href="3352_2.html" title="什么是队列（队列存储结构）" target="_blank">什么是队列（队列存储结构）</a></li>
+<li><a href="vip_3358_2.html" title="[数据结构实践项目]扑克牌游戏（包含C语言实现代码）" target="_blank">[数据结构实践项目]扑克牌游戏（包含C语言实现代码）</a></li>
+<li><a href="9641_2.html" title="推荐一套yyds的Java学习资料（非常经典）" target="_blank">推荐一套yyds的Java学习资料（非常经典）</a></li>
+<li><a href="../csharp/do-while_2.html" title="C# do while循环" target="_blank">C# do while循环</a></li>
+<li><a href="eb3j1zc_2.html" title="C# switch case语句详解" target="_blank">C# switch case语句详解</a></li>
+<li><a href="../c/iscntrl_2.html" title="C语言iscntrl()：判断一个字符是否为控制字符" target="_blank">C语言iscntrl()：判断一个字符是否为控制字符</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 1928;
+window.arcId = "737flxcfEq0bl+rkQlNqVdhytsMxz7kkO+QN7D4SAy/F9TrL79UUCVNUfCs";
+window.typeidChain = "454|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

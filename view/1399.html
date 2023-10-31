@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++类成员函数定义方法详解</title>
+<meta name="description" content="类成员函数定义与常规函数类似，除特殊情况外，它们有一个包含返回类型（可能为 void)、函数名和形参列表（可能为空）的函数头。执行函数动作的语句包含在一对大括号中，跟在函" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++类成员函数定义方法详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">类成员函数定义与常规函数类似，除特殊情况外，它们有一个包含返回类型（可能为 void)、函数名和形参列表（可能为空）的函数头。执行函数动作的语句包含在一对大括号中，跟在函数头后面。<br />
+<br />
+我们在<a href="1398.html" target="_blank">《类对象的创建和使用》</a>一节定义 Circle 类时，已经在类声明本身中定义了它的两个成员函数。当一个类函数定义在类声明中时，它被称为<span style="color:#008000;">内联函数</span>。<br />
+<br />
+内联函数提供了在类声明中包含函数信息的便捷方式，但只能在函数体非常短（通常是单行）时使用。当函数体更长时，则可以在函数的类声明中放置一个原型，而不是函数定义本身。然后，将函数定义放在类声明之外，要么跟在它后面，要么放在一个单独的文仵中。<br />
+<br />
+虽然 Circle 类中的两个函数足够短，可以写成内联函数，但是也可以将它们重写为常规函数，定义在类声明之外。在类声明中，函数将被以下原型所替代：<br />
+<p class="info-box">
+void setRadius(double);<br />
+double getArea();</p>
+按照类声明，我们将放置一个包含以下函数定义的函数实现部分：<br />
+<pre class="cpp">
+void Circle::setRadius(double r)
+{
+    radius = r;
+}
+double Circle::getArea()
+{
+    return 3.14 * pow(radius, 2);
+}</pre>
+可以看到，以上函数实现语句和普通函数看起来是一样的，区别在于，在函数返回类型之后函数名之前，放置了类名和双冒号（::）。:: 符号称为<span style="color:#008000;">作用域解析运算符</span>。它可以用来指示这些是类成员函数，并且告诉编译器它们属于哪个类。<br />
+<p class="info-box">
+注意，类名和作用域解析运算符是函数名的扩展名。当一个函数定义在类声明之外时，这些必须存在，并且必须紧靠在函数头中的函数名之前。</p>
+以下示例通过对比，清晰说明了当类函数定义在类声明之外时，该如何使用作用域解析运算符：<br />
+<p class="info-box">
+double getArea () //错误！类名称和作用域解析运算符丢失<br />
+Circle :: double getArea () //错误！类名称和作用域解析运算符错位<br />
+double Circle :: getArea () //正确</p>
+下面程序在类声明之外定义了成员函数：
+<pre class="cpp">
+// This program demonstrates a simple class with member functions defined outside the class declaration.
+#include &lt;iostream&gt;
+#include &lt;cmath&gt;
+u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+
+//Circle class declaration
+class Circle
+{
+&nbsp;&nbsp;&nbsp; private:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double radius; // This is a member variable.
+&nbsp;&nbsp;&nbsp; public:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void setRadius(double); // These are just prototypes
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double getArea(); // for the member functions.
+};
+
+void Circle::setRadius(double r)
+{
+&nbsp;&nbsp;&nbsp; radius = r;
+}
+
+double Circle::getArea()
+{
+&nbsp;&nbsp;&nbsp; return 3.14 * pow(radius, 2);
+}
+int main()
+{
+&nbsp;&nbsp;&nbsp; Circle circle1,circle2;
+&nbsp;&nbsp;&nbsp; circle1.setRadius(1); // This sets circle1&#39;s radius to 1.0
+&nbsp;&nbsp;&nbsp; circle2.setRadius(2.5); // This sets circle2&#39;s radius to 2.5
+&nbsp;&nbsp;&nbsp; cout &lt;&lt; &quot;The area of circle1 is &quot; &lt;&lt; circle1.getArea() &lt;&lt; endl;
+&nbsp;&nbsp;&nbsp; cout &lt;&lt; &quot;The area of circle2 is &quot; &lt;&lt; circle2.getArea() &lt;&lt; endl;
+&nbsp;&nbsp;&nbsp; return 0;
+}</pre>
+程序输出结果为：
+<p class="info-box">
+The area of circle1 is 3.14<br />
+The area of circle2 is 19.625</p>
+<h2>
+类成员函数的命名约定</h2>
+下面的程序提供了使用类和对象的另一个示例。它声明并实现了一个具有两个私有成员变量和 5 个公共成员函数的 Rec<a href='https://c.biancheng.net/ref/tan.html' target='_blank'>tan</a>gle 类：<br />
+<pre class="cpp">
+#include &lt;iostream&gt;
+using namespace std;
+
+// Rectangle class declaration
+class Rectangle
+{
+    private:
+        double length;
+        double width;
+    public:
+        void setLength(double);
+        void setWidth(double);
+        double getLength();
+        double getWidth();
+        double getArea();
+};
+
+//Member function implementation section
+void Rectangle::setLength(double len)
+{
+    if (len &gt;= 0.0)
+        length = len;
+    else
+    {
+        length = 1.0;
+        cout &lt;&lt; &quot;Invalid length. Using a default value of 1.0\n&quot;;
+    }
+}
+void Rectangle::setWidth(double w)
+{
+    if (w &gt;= 0.0)
+        width = w;
+    else
+    {
+        width = 1.0;
+        cout &lt;&lt; &quot;Invalid width. Using a default value of 1.0\n&quot;;
+    }
+}
+double Rectangle::getLength()
+{
+    return length;
+}
+double Rectangle::getWidth()
+{
+    return width;
+}
+double Rectangle::getArea()
+{
+    return length * width;
+}
+int main()
+{
+    Rectangle box;    // Declare a Rectangle object
+    double boxLength, boxWidth;
+    //Get box length and width
+    cout &lt;&lt; &quot;This program will calculate the area of a rectangle.\n&quot;;
+    cout &lt;&lt; &quot;What is the length?&quot;;
+    cin &gt;&gt; boxLength;
+    cout &lt;&lt; &quot;What is the width?&quot;;
+    cin &gt;&gt; boxWidth;
+    //Call member functions to set box dimensions
+    box.setLength(boxLength);
+    box.setWidth(boxWidth);
+    //Call member functions to get box information to display
+    cout &lt;&lt; &quot;\nHere is the rectangle&#39;s data:\n&quot;;
+    cout &lt;&lt; &quot;Length: &quot; &lt;&lt; box.getLength() &lt;&lt; endl;
+    cout &lt;&lt; &quot;Width : &quot; &lt;&lt; box.getWidth () &lt;&lt; endl;
+    cout &lt;&lt; &quot;Area : &quot; &lt;&lt; box.getArea () &lt;&lt; endl;
+    return 0;
+}</pre>
+程序运行结果：
+<p class="info-box">
+This program will calculate the area of a rectangle.<br />
+What is the length?10.1<br />
+What is the width?5<br />
+<br />
+Here is the rectangle&#39;s data:<br />
+Length: 10.1<br />
+Width : 5<br />
+Area : 50.5</p>
+此程序中的成员函数的名称全部以单词 set 或单词 get 开头。函数 setLength 和 setWidth 都是所谓的设置器函数或 set 函数，通常用一个单词 set 来命名一个设置器，后面加上它设置的值的成员变量的名称。顾名思义，setLength 函数设置的就是 length 成员变量的值，而 setWidth 函数设置的就是 width 成员变量的值。<br />
+<br />
+成员函数 getLength 和 getWidth 都是访问器函数或 get 函数。通常使用单词 get 命名一个访问器，后面跟着将被获取其值的成员变量的名称。函数 getLength 返回存储在 length 成员变量中的值，而 getWidth 则返回存储在 width 成员变量中的值。<br />
+<br />
+最后一个成员函数 getArea 也是一个访问器函数，但并不改变存储在类变量中的任何值，它用于返回计算的结果，而不仅仅是检索存储在类变量中的值。<br />
+<br />
+前面提到过，在设计类时，通常的做法是使所有成员变量为 private，并为访问这些变量提供公共的 set 和 get 函数，这样可以保护数据。类之外的函数只能通过调用公共成员函数来访问成员数据，并且这些函数可以被写入，以防止数据被破坏或修改，从而可能会对类的对象的行为产生不利影响。<br />
+<br />
+注意，程序中写入 set 函数一定要滤出无效数据，而不是允许将无效值存储在成员变量中，如果传递给它们的数据不可接受，则它们将使用默认值。<br />
+<h2>
+避免陈旧数据</h2>
+在 Rectangle 类中，getLength 和 getWidth 成员函数返回存储在 length 和 width 成员变量中的值，但 getArea 成员函数返回计算结果。<br />
+<br />
+有人可能会奇怪，为什么矩形的面积没有存储在成员变量中。该面积未被存储，是因为它可能会变得陈旧。当某个项目的值取决于其他数据，并且当其他数据被更改而该项目未及时更新时，就可以说该项目已经变得陈旧。如果矩形的面积存储在成员变量中，则只要 length 或 width 成员变量发生变化，那么它的值就会变得不正确。<br />
+<br />
+在设计类时，一般不要使用成员变量来存储可能变得过时的计算值，相反，应该提供使用最新数据计算值的成员函数，然后返回计算结果。<br />
+<h2>
+内联函数详解</h2>
+在设计一个类时，将需要确定哪些成员函数在类声明中作为内联函数来编写，哪些函数在类之外定义。编译器对内联函数的处理方式与常规函数完全不同，了解这种差异将有助于程序员决定使用这两种函数的时机。<br />
+<br />
+每次调用常规函数时，都会在幕后进行许多操作。一些特殊的项目，如函数执行完成时返回的地址和函数实参的值，都必须存储在名为栈（Stack）的内存部分中；另外，还需要创建局部变量并保留一个位置来保存函数的返回值。所有这些函数调用阶段的设置开销都会占用 CPU 时间，虽然所需的时间很小，但是如果一个函数被调用多次（例如在某个循环中），那么它是会被累加的。<br />
+<br />
+另一方面，内联函数根本不是传统意义上的内联，相反，在所谓内联扩展的过程中，编译器将使用函数本身的实际代码替换对函数的每次调用。这意味着，如果从程序中的多个地方调用该函数，则其代码的整个主体将被多次插入，从而增加程序的大小，这就是为什么只有寥寥几行代码的函数才能写成一个内联函数。<br />
+<br />
+实际上，如果函数太大而使得内联扩展不可行，那么编译器将忽略以这种方式处理函数的请求。但是，当一个成员函数很小的时候，把它写成一个内联函数确实可以提高性能，因为当没有进行实际的函数调用时，它的开销更少。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2289.html" title="Python父类方法重写（入门必读）" target="_blank">Python父类方法重写（入门必读）</a></li>
+<li><a href="2318.html" title="C++类模板5分钟入门教程" target="_blank">C++类模板5分钟入门教程</a></li>
+<li><a href="4136.html" title="编译型语言和解释型语言的区别" target="_blank">编译型语言和解释型语言的区别</a></li>
+<li><a href="../redis2/exists.html" title="Redis EXISTS命令" target="_blank">Redis EXISTS命令</a></li>
+<li><a href="6nijcz.html" title="C语言水仙花数" target="_blank">C语言水仙花数</a></li>
+<li><a href="ennd56.html" title="大白话聊栈溢出（stack overflow）" target="_blank">大白话聊栈溢出（stack overflow）</a></li>
+<li><a href="../c/strtok.html" title="C语言strtok()：分割字符串" target="_blank">C语言strtok()：分割字符串</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 1399;
+window.arcId = "62d49Iff1wTyLXjoKgN3Cm+nnWPaVEHfUFKBiBwfBqkDMzrCEsthbTmd/2Y";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

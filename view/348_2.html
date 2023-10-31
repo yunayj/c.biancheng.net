@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C++ vector，STL vector（可变长的动态数组）详解</title>
+<meta name="description" content="vecotr 是顺序容器的一种。vector 是可变长的动态数组，支持随机访问迭代器，所有 STL 算法都能对 vector 进行操作。要使用 vector，需要包含头文件 vector。 在 vector 容器中，根据下标随机访" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C++ vector，STL vector（可变长的动态数组）详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">vector 是顺序容器的一种。vector 是可变长的动态数组，支持随机访问迭代器，所有 <a href='../stl/stl_2.html' target='_blank'>STL</a> 算法都能对 vector 进行操作。要使用 vector，需要包含头文件 vector。<br />
+<br />
+在 vector 容器中，根据下标随机访问某个元素的时间是常数，在尾部添加一个元素的时间大多数情况下也是常数，总体来说速度很快。<br />
+<br />
+在中间插入或删除元素时，因为要移动多个元素，因此速度较慢，平均花费的时间和容器中的元素个数成正比。<br />
+<br />
+在 vector 容器中，用一个动态分配的数组来存放元素，因此根据下标访问某个元素的时间是固定的，与元素个数无关。<br />
+<br />
+vector 容器在实现时，动态分配的存储空间一般都大于存放元素所需的空间。例如，哪怕容器中只有一个元素，也会分配 32 个元素的存储空间。这样做的好处是，在尾部添加一个新元素时不必重新分配空间，直接将新元素写入适当位置即可。在这种情况下，添加新元素的时间也是常数。<br />
+<br />
+但是，如果不断添加新元素，多出来的空间就会用完，此时再添加新元素，就不得不重新分配内存空间，把原有内容复制过去后再添加新的元素。碰到这种情况，添加新元素所花的时间就不是常数，而是和数组中的元素个数成正比。<br />
+<br />
+至于在中间插入或删除元素，必然涉及元素的移动，因此时间不是固定的，而是和元素个数有关。<br />
+<br />
+vector 有很多成员函数，常用的如表 1 所示。<br />
+<br />
+<table>
+	<caption>
+		表1：vector中常用的成员函数</caption>
+	<tbody>
+		<tr>
+			<th>
+				成员函数</th>
+			<th>
+				作&nbsp;用</th>
+		</tr>
+		<tr>
+			<td>
+				vector()</td>
+			<td>
+				无参构造函数，将容器初始化为空</td>
+		</tr>
+		<tr>
+			<td>
+				vector(int n)</td>
+			<td>
+				将容器初始化为有 n 个元素</td>
+		</tr>
+		<tr>
+			<td>
+				vector(int n, const T &amp;&nbsp;val)</td>
+			<td>
+				假定元素的类型是 T，此构造函数将容器初始化为有 n 个元素，每 个元素的值都是 val</td>
+		</tr>
+		<tr>
+			<td>
+				vector(iterator first, iterator last)</td>
+			<td>
+				first 和 last 可以是其他容器的迭代器。一般来说，本构造函数初始化的结果就是将 vector 容器的内容变成与其他容器上的区间 [first, last) &mdash;致</td>
+		</tr>
+		<tr>
+			<td>
+				void clear()</td>
+			<td>
+				删除所有元素</td>
+		</tr>
+		<tr>
+			<td>
+				bool empty()</td>
+			<td>
+				判断容器是否为空</td>
+		</tr>
+		<tr>
+			<td>
+				void pop_back()</td>
+			<td>
+				删除容器末尾的元素</td>
+		</tr>
+		<tr>
+			<td>
+				void push_back( const T&nbsp;&amp;&nbsp;val)</td>
+			<td>
+				将 val 添加到容器末尾</td>
+		</tr>
+		<tr>
+			<td>
+				int size()</td>
+			<td>
+				返回容器中元素的个数</td>
+		</tr>
+		<tr>
+			<td>
+				T &amp;&nbsp;front()</td>
+			<td>
+				返回容器中第一个元素的引用</td>
+		</tr>
+		<tr>
+			<td>
+				T &amp;&nbsp;back()</td>
+			<td>
+				返回容器中最后一个元素的引用</td>
+		</tr>
+		<tr>
+			<td>
+				iterator insert(iterator i, const T &amp;&nbsp;val)</td>
+			<td>
+				将 val 插入迭代器 i 指向的位置，返回 i</td>
+		</tr>
+		<tr>
+			<td>
+				iterator insert( iterator i,&nbsp;iterator first,&nbsp;iterator last)</td>
+			<td>
+				将其他容器上的区间 [first,&nbsp;last) 中的元素插入迭代器 i 指向的位置</td>
+		</tr>
+		<tr>
+			<td>
+				iterator erase(iterator i)</td>
+			<td>
+				删除迭代器 i 指向的元素，返回值是被删元素后面的元素的迭代器</td>
+		</tr>
+		<tr>
+			<td>
+				iterator erase(iterator first, iterator last)</td>
+			<td>
+				删除容器中的区间 [first, last)</td>
+		</tr>
+		<tr>
+			<td>
+				void swap( vector &lt;T&gt;&nbsp;&amp;&nbsp;v)</td>
+			<td>
+				将容器自身的内容和另一个同类型的容器 v 互换</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+下面的程序演示了 vector 的基本用法。
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;  //使用vector需要包含此头文件
+u<a href='https://m.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+template &lt;class T&gt;
+void PrintVector(const vector &lt;T&gt; &amp; v)
+{  //用于输出vector容器的全部元素的函数模板
+    typename vector &lt;T&gt;::const_iterator i;
+    //typename 用来说明 vector &lt;T&gt;::const_iterator 是一个类型，在 Visual Studio 中不写也可以
+    for (i = v.begin(); i != v.end(); ++i)
+        cout &lt;&lt; *i &lt;&lt; &quot; &quot;;
+    cout &lt;&lt; endl;
+}
+int main()
+{
+    int a[5] = { 1, 2, 3, 4, 5 };
+    vector &lt;int&gt; v(a, a + 5);  //将数组a的内容放入v
+    cout &lt;&lt; &quot;1) &quot; &lt;&lt; v.end() - v.begin() &lt;&lt; endl;  //两个随机迭代器可以相减，输出：1)5
+    cout &lt;&lt; &quot;2)&quot;; PrintVector(v);  //输出：2)1 2 3 4 5
+    v.insert(v.begin() + 2, 13);  //在 begin()+2 位置插人 13
+    cout &lt;&lt; &quot;3)&quot;; PrintVector(v);  //输出：3)1 2 13 3 4 5
+    v.erase(v.begin() + 2);  //删除位于 begin()+2 位置的元素
+    cout &lt;&lt; &quot;4)&quot;; PrintVector(v);  //输出：4)1 2 3 4 5
+    vector&lt;int&gt; v2(4, 100);  //v2 有 4 个元素，都是 100
+    v2.insert(v2.begin(), v.begin() + 1, v.begin() + 3);  //将v的一段插入v2开头
+    cout &lt;&lt; &quot;5)v2:&quot;; PrintVector(v2);  //输出：5)v2:2 3 100 100 100 100
+    v.erase(v.begin() + 1, v.begin() + 3);  //删除 v 上的一个区间，即 [2,3)
+    cout &lt;&lt; &quot;6)&quot;; PrintVector(v);  //输出：6)1 4 5
+    return 0;
+}</pre>
+思考题：程序中的 PrintVector 模板演示了将容器的引用作为函数参数的用法。就完成输出整个容器内容这个功能来说，写成 PrintVector 模板这样是比较笨拙的，该模板的适用范围太窄。有没有更好的写法？<br />
+<br />
+vector 还可以嵌套以形成可变长的<a href='https://m.biancheng.net/c/array/' target='_blank'>二维数组</a>。例如：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+int main()
+{   
+    vector&lt;vector&lt;int&gt; &gt; v(3); //v有3个元素，每个元素都是vector&lt;int&gt; 容器
+    for(int i = 0;i &lt; v.size(); ++i)
+        for(int j = 0; j &lt; 4; ++j)
+            v[i].push_back(j);
+    for(int i = 0;i &lt; v.size(); ++i) {
+        for(int j = 0; j &lt; v[i].size(); ++j)
+            cout &lt;&lt; v[i][j] &lt;&lt; &quot; &quot;;
+        cout &lt;&lt; endl;
+    }
+    return 0;
+}</pre>
+程序的输出结果是：<br />
+0 1 2 3<br />
+0 1 2 3<br />
+0 1 2 3<br />
+<br />
+<code>vector&lt; vector&lt;int&gt; &gt; v(3);</code>定义了一个 vector 容器，该容器中的每个元素都是一个 vector &lt;int&gt; 容器。即可以认为，v 是一个二维数组，一共 3 行，每行都是一个可变长的一维数组。<br />
+<br />
+在 Dev <a href='../cplus/cplus_2.html' target='_blank'>C++</a> 中，上面写法中 int 后面的两个<code>&gt;</code>之间需要有空格，否则有的编译器会把它们当作<code>&gt;&gt;</code>运算符，编译会出错。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2031_2.html" title="C语言结构体详解，C语言struct用法详解" target="_blank">C语言结构体详解，C语言struct用法详解</a></li>
+<li><a href="vip_2102_2.html" title="函数调用惯例(Calling Convention)" target="_blank">函数调用惯例(Calling Convention)</a></li>
+<li><a href="3342_2.html" title="双向链表及创建（C语言）详解" target="_blank">双向链表及创建（C语言）详解</a></li>
+<li><a href="6587_2.html" title="Java Object类详解" target="_blank">Java Object类详解</a></li>
+<li><a href="../mybatis/one-to-many_2.html" title="MyBatis一对多关联查询" target="_blank">MyBatis一对多关联查询</a></li>
+<li><a href="../sql/like_2.html" title="SQL LIKE子句：模糊匹配" target="_blank">SQL LIKE子句：模糊匹配</a></li>
+<li><a href="../redis/benchmarks_2.html" title="Redis Benchmark性能测试" target="_blank">Redis Benchmark性能测试</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 348;
+window.arcId = "c055Kya/AtVPyYEs/GQsgwgoVOgBW0PwZf3zEhmgpXB6zOa5JvtqEt3y0Q";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

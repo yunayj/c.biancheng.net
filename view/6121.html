@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Linux rsync命令用法详解</title>
+<meta name="description" content="在 Linux 系统下，数据备份的工具很多，除了前面介绍了 tar、cpio、dd 命令之外，本节再介绍一个用来备份数据的命令，就是 rsync 。 从字面意思上，rsync 可以理解为 remote sync（远程同步）" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../linux_tutorial/linux_tutorial.html">Linux</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href='../linux_tutorial/10/10.html'>Linux简介</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href='../linux_tutorial/20/20.html'>Linux安装</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href='../linux_tutorial/file_content/file_content.html'>Linux文件和目录管理</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href='../linux_tutorial/bale_compress/bale_compress.html'>Linux打包（归档）和压缩</a>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href='../linux_tutorial/40/40.html'>Vim文本编辑器</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href='../linux_tutorial/text_processing/text_processing.html'>Linux文本处理（Linux三剑客）</a>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href='../linux_tutorial/50/50.html'>Linux软件安装</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href='../linux_tutorial/60/60.html'>Linux用户和用户组管理</a>
+</dd>
+<dd>
+<span class="channel-num">9</span>
+<a href='../linux_tutorial/70/70.html'>Linux权限管理</a>
+</dd>
+<dd>
+<span class="channel-num">10</span>
+<a href='../linux_tutorial/80/80.html'>Linux文件系统管理</a>
+</dd>
+<dd>
+<span class="channel-num">11</span>
+<a href='../linux_tutorial/90/90.html'>Linux高级文件系统管理</a>
+</dd>
+<dd>
+<span class="channel-num">12</span>
+<a href='../linux_tutorial/14/14.html'>Linux系统管理</a>
+</dd>
+<dd class="this"> <span class="channel-num">13</span> <a href="../linux_tutorial/17/17.html">Linux备份与恢复</a> </dd><dl class="dl-sub"><dd>13.1 <a href="3950.html">Linux备份的重要性</a></dd><dd>13.2 <a href="vip_5100.html">Linux中的哪些数据需要备份？</a><span class="iconfont iconfont-vip2"></span></dd><dd>13.3 <a href="vip_5101.html">Linux数据备份介质的选择</a><span class="iconfont iconfont-vip2"></span></dd><dd>13.4 <a href="1140.html">Linux备份策略</a></dd><dd>13.5 <a href="3968.html">Linux tar命令备份数据</a></dd><dd>13.6 <a href="1141.html">Linux dump</a></dd><dd>13.7 <a href="1143.html">Linux restore</a></dd><dd>13.8 <a href="1146.html">Linux dd</a></dd><dd>13.9 <a href="6121.html">Linux rsync命令：支持本地备份和远程备份</a></dd></dl>
+<dd>
+<span class="channel-num">14</span>
+<a href='../linux_tutorial/13/13.html'>Linux系统服务管理</a>
+</dd>
+<dd>
+<span class="channel-num">15</span>
+<a href='../linux_tutorial/15/15.html'>Linux系统日志管理</a>
+</dd>
+<dd>
+<span class="channel-num">16</span>
+<a href='../linux_tutorial/12/12.html'>Linux启动管理</a>
+</dd>
+<dd>
+<span class="channel-num">17</span>
+<a href='../linux_tutorial/16/16.html'>LAMP环境搭建和LNMP环境搭建</a>
+</dd>
+<dd>
+<span class="channel-num">18</span>
+<a href='../linux_tutorial/18/18.html'>SELinux管理</a>
+</dd>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../linux_tutorial/linux_tutorial.html">Linux</a> &gt; <a href="../linux_tutorial/17/17.html">Linux备份与恢复</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Linux rsync命令用法详解</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在 Linux 系统下，数据备份的工具很多，除了前面介绍了 tar、cpio、dd 命令之外，本节再介绍一个用来备份数据的命令，就是 <span style="color:#008000;">rsync</span>。<br />
+<br />
+从字面意思上，rsync 可以理解为 remote sync（远程同步），但它不仅可以远程同步数据（类似于 scp 命令），还可以本地同步数据（类似于 cp 命令）。不同于 cp 或 scp 的一点是，使用 rsync 命令备份数据时，不会直接覆盖以前的数据（如果数据已经存在），而是先判断已经存在的数据和新数据的差异，只有数据不同时才会把不相同的部分覆盖。<br />
+<blockquote>
+<p>
+在系统学习 rsync 命令之前，请确认你的 Linux 系统中已经安装有此命令，如果没有，可以直接使用 yum install -y rsync 命令安装。</p>
+</blockquote>
+讲解 rsync 用法之前，为了让大家对此命令有一个整体的认识，这里先举个例子：<br />
+<p class="info-box">
+[root@localhost ~]# rsync -av /etc/passwd /tmp/1.txt<br />
+sending incremental file list<br />
+<br />
+sent 34 bytes&nbsp; received 15 bytes&nbsp; 98.00 bytes/sec<br />
+total size is 1432&nbsp; speedup is 29.22</p>
+此例中，通过执行 rsync 命令，实现了将 /etc/passwd 文件本地同步到 /tmp/ 目录下，并改名为 1.txt。<br />
+<br />
+除此之外，rsync 命令还支持远程同步数据，也就是将本地的数据备份到远程机器上。比如说，我们知道远程机器的 IP 地址为 192.168.188.128，则使用 rsync 命令备份 passwd 文件的执行命令为：<br />
+<p class="info-box">
+[root@localhost ~]# rsync -av /etc/passwd 192.168.188.128:/tmp/1.txt<br />
+The authenticity of host &#39;192.168.188.128 (192.168.188.128)&#39; can&#39;t be established.<br />
+ECDSA key fingerprint is 26:e3:97:e7:bb:ae:17:33:ea:aa:Oc:5f:37:Oe:9e:fa.<br />
+Are you sure you want to continue connecting (yes/no)? yes<br />
+Warning: Permanently added &#39;192.l68.l88.l28&#39; (ECDSA) to the list of known hosts.<br />
+root@192.168.188.128&#39;s password: &lt;-- 输入密码<br />
+sending incremental file list<br />
+<br />
+sent 31 bytes received 12 bytes 7.82 bytes/sec<br />
+total size is 1432 speedup is 54.91</p>
+<blockquote>
+<p>
+注意，首次远程连接时，会提示是否要继续连接，输入 yes 即可。另外，当成功建立连接后，需要输入目标系统的 root 密码。</p>
+</blockquote>
+通过以上 2 个实例，读者应该能对&ldquo;rsync既支持本地备份数据，还支持远程备份数据&rdquo;有了直观的认识。那么，rsync 命令要怎样使用呢？<br />
+<br />
+rsync 命令的基本格式有多种，分别是：
+<p class="info-box">
+[root@localhost ~]# rsync [OPTION] SRC DEST<br />
+[root@localhost ~]# rsync [OPTION] SRC [USER@]HOST:DEST<br />
+[root@localhost ~]# rsync [OPTION] [USER@]HOST:SRC DEST<br />
+[root@localhost ~]# rsync [OPTION] [USER@]HOST::SRC DEST<br />
+[root@localhost ~]# rsync [OPTION] SRC [USER@]HOST::DEST</p>
+针对以上 5 种命令格式，rsync 有 5 种不同的工作模式：
+<ul>
+<li>
+第一种用于仅在本地备份数据；</li>
+<li>
+第二种用于将本地数据备份到远程机器上；</li>
+<li>
+第三种用于将远程机器上的数据备份到本地机器上；</li>
+<li>
+第四种和第三种是相对的，同样第五种和第二种是相对的，它们各自之间的区别在于登陆认证时使用的验证方式不同。</li>
+</ul>
+<br />
+要知道，使用 rsync 在远程传输数据（备份数据）前，是需要进行登陆认证的，这个过程需要借助 ssh 协议或者 rsync 协议才能完成。在 rsync 命令中，如果使用单个冒号（:），则默认使用 ssh 协议；反之，如果使用两个冒号（::），则使用 rsync 协议。
+<blockquote>
+<p>
+ssh 协议和 rsync 协议的区别在于，rsync 协议在使用时需要额外配置，增加了工作量，但优势是更加安全；反之，ssh 协议使用方便，无需进行配置，但有泄漏服务器密码的风险。</p>
+</blockquote>
+另外，以上几种格式中各个参数的含义如下：
+<ul>
+<li>
+SRC：用来表示要备份的目标数据所在的位置（路径）；</li>
+<li>
+DEST：用于表示将数据备份到什么位置；</li>
+<li>
+USER@：当做远程同步操作时，需指明系统登录的用户名，如果不显示指定，默认为以 root 身份登录系统并完成同步操作。</li>
+</ul>
+<br />
+rsync 命令提供使用的 OPTION 及功能如表 1 所示。<br />
+<br />
+<table>
+<caption>
+表 1 rsync 选项及功能</caption>
+<tbody>
+<tr>
+<th>
+OPTION选项</th>
+<th>
+功能</th>
+</tr>
+<tr>
+<td>
+-a</td>
+<td>
+这是归档模式，表示以递归方式传输文件，并保持所有属性，它等同于-r、-l、-p、-t、-g、-o、-D 选项。-a 选项后面可以跟一个 --no-OPTION，表示关闭 -r、-l、-p、-t、-g、-o、-D 中的某一个，比如-a --no-l 等同于 -r、-p、-t、-g、-o、-D 选项。</td>
+</tr>
+<tr>
+<td>
+-r</td>
+<td>
+表示以递归模式处理子目录，它主要是针对目录来说的，如果单独传一个文件不需要加 -r 选项，但是传输目录时必须加。</td>
+</tr>
+<tr>
+<td>
+-v</td>
+<td>
+表示打印一些信息，比如文件列表、文件数量等。</td>
+</tr>
+<tr>
+<td>
+-l</td>
+<td>
+表示保留软连接。</td>
+</tr>
+<tr>
+<td>
+-L</td>
+<td>
+表示像对待常规文件一样处理软连接。如果是 SRC 中有软连接文件，则加上该选项后，将会把软连接指向的目标文件复制到 DEST。</td>
+</tr>
+<tr>
+<td>
+-p</td>
+<td>
+表示保持文件权限。</td>
+</tr>
+<tr>
+<td>
+-o</td>
+<td>
+表示保持文件属主信息。</td>
+</tr>
+<tr>
+<td>
+-g</td>
+<td>
+表示保持文件属组信息。</td>
+</tr>
+<tr>
+<td>
+-D</td>
+<td>
+表示保持设备文件信息。</td>
+</tr>
+<tr>
+<td>
+-t</td>
+<td>
+表示保持文件时间信息。</td>
+</tr>
+<tr>
+<td>
+--delete</td>
+<td>
+表示删除 DEST 中 SRC 没有的文件。</td>
+</tr>
+<tr>
+<td>
+--exclude=PATTERN</td>
+<td>
+表示指定排除不需要传输的文件，等号后面跟文件名，可以是通配符模式（如 *.txt）。</td>
+</tr>
+<tr>
+<td>
+--progress</td>
+<td>
+表示在同步的过程中可以看到同步的过程状态，比如统计要同步的文件数量、 同步的文件传输速度等。</td>
+</tr>
+<tr>
+<td>
+-u</td>
+<td>
+表示把 DEST 中比 SRC 还新的文件排除掉，不会覆盖。</td>
+</tr>
+<tr>
+<td>
+-z</td>
+<td>
+加上该选项，将会在传输过程中压缩。</td>
+</tr>
+</tbody>
+</table>
+<br />
+以上也仅是列出了 async 命令常用的一些选项，对于初学者来说，记住最常用的几个即可，比如 -a、-v、-z、--delete 和 --exclude。<br />
+<blockquote>
+<p>
+如果想查看 async 提供的所有选项，可直接执行 async 命令。</p>
+</blockquote>
+为了更好的演示各个选项的功能，需要做一些准备工作，执行如下命令：
+<p class="info-box">
+#新建rsync目录<br />
+[root@localhost ~]# mkdir rsync<br />
+[root@localhost ~]# cd rsync<br />
+#在rsync目录中，创建test1目录<br />
+[root@localhost rsync]# mkdir test1<br />
+[root@localhost rsync]# cd test1<br />
+#在test1目录中，分别创建名为 1、2、3、/root.123.txt 文件<br />
+[root@localhost test1]# touch 1 2 3 /root/123.txt<br />
+[root@localhost test1]# ln -s /root/123.txt ./123.txt<br />
+[root@localhost test1]# ls -l<br />
+total 0<br />
+-rw-r--r--. 1 root root 0 0ct 23 07:34 1<br />
+lrwxrwxrwx. 1 root root 13 0ct 23 08:34 123.txt -&gt; /root/123.txt<br />
+-rw-r--r--. 1 root root 0 0ct 23 07:34 2<br />
+-rw-r--r--. 1 root root 0 0ct 23 07:34 3<br />
+[root@localhost test1]# cd ..<br />
+#回到rsync目录<br />
+[root@localhost rsync]#</p>
+在此基础上，下面挑选了几个常用的 OPTION 选项，给大家举例说明它们的用法。<br />
+<h2>
+rsync -a 选项</h2>
+首先来看看 -a 选项的用法，如下所示：
+<p class="info-box">
+[root@localhost rsync]# rsync -a test1 test2<br />
+[root@localhost rsync]# ls test2<br />
+test1<br />
+[root@localhost rsync]# ls test2/test1/<br />
+1&nbsp; 123.txt&nbsp; 2&nbsp; 3</p>
+这里有一个问题，我们本来是想把 test1 目录中的内容直接放到 test2 目录中，可结果 rsync 命令却新建了 test2 目录，然后把 test1 放到 test2 中。<br />
+<br />
+如果想要实现将 test1 目录中的内容直接备份到 test2 目录中，需修改上面的命令为：
+<p class="info-box">
+[root@localhost rsync]#rm -rf test2<br />
+[root@localhost rsync]# rsync -a test1/ test2/<br />
+[root@localhost rsync]# ls test2/<br />
+1&nbsp; 123.txt&nbsp; 2&nbsp; 3</p>
+可以看到，只需给 test1 和 test2 目录后添加 / 斜杠即可。<br />
+<br />
+前面讲过，使用 -a 选项，等同于同时使用 -r、-l、-p、-t、-g、-o、-D 选项，且 -a 还可以和 --no-OPTION 一并使用。下面再来看看 -l 选项的作用：
+<p class="info-box">
+[root@localhost rsync]# rm -rf test2<br />
+[root@localhost rsync]# rsync -av test1/ test2/<br />
+sending incremental file list<br />
+created directory test2<br />
+./<br />
+1<br />
+skipping non-regular file &quot;123.txt&quot;<br />
+2<br />
+3<br />
+<br />
+sent 200 bytes received 72 bytes 544.00 bytes/sec<br />
+total size is 13&nbsp; speedup is 0.05</p>
+这里使用 -v 选项，可以看到，拷贝过程中跳过了非普通文件 123.txt，其实 123.txt 是一个软链接文件，如果不使用 -l 选项，系统将不理会软链接文件。
+<h2>
+rsync --delete选项</h2>
+通过表 1 可以看到，--delete 选项用来--delete 删除 DEST 中 SRC 没有的文件。例如：
+<p class="info-box">
+#拷贝 test1 目录下的数据<br />
+[root@localhost rsync]# rsync -a test1/ test2<br />
+#删除 test1/123.txt 文件<br />
+[root@localhost rsync]# rm -f test1/123.txt<br />
+[root@localhost rsync]# ls test1/<br />
+1 2 3<br />
+[root@localhost rsync]# rsync -av test1/ test2/<br />
+sending incremental file list<br />
+./<br />
+<br />
+sent 55 bytes&nbsp; received 15 bytes 140.00 bytes/sec<br />
+total size is 0&nbsp; speedup is 0.00<br />
+[root@localhost rsync]# ls test2/<br />
+1 123.txt 2 3</p>
+可以看到，当对 test1 目录删除了 123.txt 文件之后，再次备份并没有对 test2 目录中的 123.txt 文件产生任何影响。<br />
+<br />
+下面使用 --delete 选项，再次执行拷贝命令，如下所示：
+<p class="info-box">
+[root@localhost rsync]# rsync -av --delete test1/ test2/<br />
+sending incremental file list<br />
+deleting 123.txt<br />
+<br />
+sent 52 bytes&nbsp; received 12 bytes 128.00 bytes/sec<br />
+total size is 0&nbsp; speedup is 0.00<br />
+[root@localhost rsync]# ls test2/<br />
+1 2 3</p>
+可以看到，使用 --delete 选项进行备份数据时，test1 目录一旦做了改变，那么 test2 也会做相应改变。<br />
+<br />
+不仅如此，如果在 DEST 中增加文件，而 SRC 中不包含这些文件，那么在使用 --delete 选项做同步备份操作时，DEST 新增的这些文件会被删除。例如：<br />
+<p class="info-box">
+[root@localhost rsync]# touch test2/4<br />
+[root@localhost rsync]# ls test1/<br />
+1 2 3<br />
+[root@localhost rsync]# ls test2/<br />
+1 2 3 4<br />
+[root@localhost rsync]# rsync -a --delete test1/ test2/<br />
+[root@localhost rsync]# ls test2/<br />
+1 2 3</p>
+<blockquote>
+<p>
+受到篇幅的限制，有关 rsync 命令其他选项的用法，本节不再给出具体实例，有兴趣的读者可自行编写代码进行测试。</p>
+</blockquote>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="927.html" title="Java冒泡排序法（非常重要）" target="_blank">Java冒泡排序法（非常重要）</a></li>
+<li><a href="1058.html" title="Linux源码包服务管理（启动与自启动）" target="_blank">Linux源码包服务管理（启动与自启动）</a></li>
+<li><a href="../maven2/dependency-management.html" title="dependencyManagement：管理Maven依赖" target="_blank">dependencyManagement：管理Maven依赖</a></li>
+<li><a href="../mongodb2/remove-document.html" title="MongoDB删除文档" target="_blank">MongoDB删除文档</a></li>
+<li><a href="../css3/comment.html" title="CSS注释（附带示例）" target="_blank">CSS注释（附带示例）</a></li>
+<li><a href="../python_spider/static-and-dynamic.html" title="静态网页和动态网页" target="_blank">静态网页和动态网页</a></li>
+<li><a href="qbrl9oq.html" title="JS删除对象中的某个属性" target="_blank">JS删除对象中的某个属性</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 6121;
+window.arcId = "6cfc6f1wKd/ZNU0stLPqYdUUGq5Vfqzo+mcv1l7KkVEJ6Ti9JvWP1+y2vDY";
+window.typeidChain = "110|77";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/view/1146.html";
+window.nextPageURL = "/linux_tutorial/13/";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

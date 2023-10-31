@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Django auth应用模块</title>
+<meta name="description" content="本节我们将继续介绍 Django 的功能模块，在设计开发任何一个站点都需要有用户的概念，从用户的注册、注销、登录、退出、，包括用户的浏览历史，订阅记录等等，都需要和用户关系系" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../django/django_2.html">Django</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Django auth应用模块</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在设计开发任何一个站点的时候都需要有&ldquo;用户&rdquo;的概念，从用户的注册、登陆、退出或者注销，到用户的浏览、订阅等，这些都需要用户管理系统来实现。如果没有时间积累和相关开发工作经验，设计一个优秀的用户系统是很困难的。那么 Django 又是如何解决这个问题的呢？<br />
+<h2>
+	1. Django的auth模块</h2>
+Django 作为功能完善的 Web 框架充分考虑到这一点，它提供的 auth 模块能够快速的实现用户模块的基本功能。<br />
+<br />
+新建项目后，Django 就把 auth 模块的所有功能提供给了开发者使用，开发者可以调用相应的接口，实现不同的功能需求。auth 模块定义了一张名叫 auth_user 的数据表，该表是 auth 模块的内建用户表，开发者调用 auth 模块的相应接口生成此表，auth_user 表的字段以及字段类型，如下所示。<br />
+<pre class="info-box">
++--------------+--------------+------+-----+---------+----------------+
+| Field        | Type         | Null | Key | Default | Extra          |
++--------------+--------------+------+-----+---------+----------------+
+| id           | int(11)      | NO   | PRI | NULL    | auto_increment |
+| password     | varchar(128) | NO   |     | NULL    |                |
+| last_login   | datetime(6)  | YES  |     | NULL    |                |
+| is_superuser | tinyint(1)   | NO   |     | NULL    |                |
+| username     | varchar(150) | NO   | UNI | NULL    |                |
+| first_name   | varchar(30)  | NO   |     | NULL    |                |
+| last_name    | varchar(150) | NO   |     | NULL    |                |
+| email        | varchar(254) | NO   |     | NULL    |                |
+| is_staff     | tinyint(1)   | NO   |     | NULL    |                |
+| is_active    | tinyint(1)   | NO   |     | NULL    |                |
+| date_joined  | datetime(6)  | NO   |     | NULL    |                |
++--------------+--------------+------+-----+---------+----------------+
+11 rows in set (0.02 sec)#auth_user表
+</pre>
+现在新建一张 auth_user 用户表，并为此表添加一个新用户 user。首先用如下方式引入 auth模块的 User 方法：<br />
+<p class="info-box">
+	from django.contrib.auth.models import User</p>
+然后通过下面方法创建新用户 user ，如下所示：
+<pre class="python">
+user=User.objects.create_user(username=&#39;c语言中文网&#39;,password=&#39;123456&#39;,email=&#39;664104694@qq.com&#39;)
+save()#调用该方法保存数据 </pre>
+同时也可以使用如下方法修改密码：
+<pre class="python">
+user.set_password(password=&#39;12345abc&#39;)#会对原密码进行修改</pre>
+根据具体的业务需求，还可以对表的字段进行增加、删除、更改。<br />
+<br />
+当涉及到用户概念的时候也会产生用户权限问题，比如，如何划分普通用户和超级管理员用户？针对权限问题，Django 也提供了解决问题的方案，auth 模块提供了标准的权限管理系统，它配合 Admin 后台可以快速建立网站管理系统。<br />
+<br />
+auth 模块提供了认证用户功能，可以用下面方式引入后使用：<br />
+<p class="info-box">
+	from&nbsp;django.contrib.auth import authenticate</p>
+然后使用关键字传参的方法来传递用户凭证，从而达到用户认证的目的：<br />
+<pre class="python">
+user = authenticate(username=&#39;c语言中文网&#39;,password=&#39;12345abc&#39;)
+</pre>
+<h2>
+	2. auth应用模块的其他作用</h2>
+auth 模块还实现一些其它的功能，比如：<br />
+<ul>
+	<li>
+		用户的登录（login）、退出（logout）功能，封装在 django.contrib.auth 里；</li>
+	<li>
+		用户权限系统封装在 django.contrib.auth.models.Permission 中 ，可以对用户的权限进行增加、修改、删除；</li>
+	<li>
+		用户组可以通过 from django.contrib.auth.models.Group 导入后来创建组或者删除组。</li>
+</ul>
+<br />
+列举一些简单应用方法：
+<pre class="python">
+user.user_permission.add(permission)#给某个用户权限的添加权限
+group = Group.objects.create(name=group_name)#添加新的用户组
+group.save() #保存新建好的用户组
+group.delete()#删除用户组
+</pre>
+<h2>
+	3. auth模块总结</h2>
+auth 模块提供的主要功能总结如下：
+<ul>
+	<li>
+		实现并维护了用户与用户组的增加、删除、更改功能；</li>
+	<li>
+		实现了用户权限与用户组权限的增加、删除、更改；</li>
+	<li>
+		实现了可以自定义用户权限与用户组权限功能。</li>
+</ul>
+除了以上功能外，Django auth 模块还提供了权限验证等功能以及一些常用的方法。<br />
+<br />
+auth 模块帮助开发人员提高了工作效率，因为每个 Web 站点的权限管理模块或者用户管理模块基本都是相同的逻辑，Django 的 auth 模块使开发者们不必在为一些重复性的逻辑进行构建。在实际开发工作中，用户模块与权限管理模块需要与实际相结合，开发者可以根据业务需求自定义或者重写相应方法，以达到和实际业务相契合的目的。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="303_3.html" title="C语言复合语句（语句块）" target="_blank">C语言复合语句（语句块）</a></li>
+<li><a href="433_2.html" title="C++11 Lambda表达式（匿名函数）详解" target="_blank">C++11 Lambda表达式（匿名函数）详解</a></li>
+<li><a href="500_2.html" title="C语言百钱买百鸡问题（详解版）" target="_blank">C语言百钱买百鸡问题（详解版）</a></li>
+<li><a href="1108_2.html" title="Linux日志分析工具（logwatch）安装及使用" target="_blank">Linux日志分析工具（logwatch）安装及使用</a></li>
+<li><a href="../mysql/rand_2.html" title="MySQL RAND函数：生成随机数" target="_blank">MySQL RAND函数：生成随机数</a></li>
+<li><a href="../css3/comment_2.html" title="CSS注释（附带示例）" target="_blank">CSS注释（附带示例）</a></li>
+<li><a href="ob311tw_2.html" title="Redis DECR命令的用法" target="_blank">Redis DECR命令的用法</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7308;
+window.arcId = "d70eMNod1YiSU9AIbxE3WoTvBlx8urRK6V093PK1hgx6hTNSXwX2GbZVWGw";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

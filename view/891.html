@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Linux fdisk命令详解：给硬盘分区</title>
+<meta name="description" content="我们在安装操作系统的过程中已经对系统硬盘进行了分区，但是如果我新添加了一块硬盘，想要正常使用，难道需要重新安装操作系统才可以分区吗？ 当然不是，在Linux中有专门的分区" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../linux_tutorial/linux_tutorial.html">Linux</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href='../linux_tutorial/10/10.html'>Linux简介</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href='../linux_tutorial/20/20.html'>Linux安装</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href='../linux_tutorial/file_content/file_content.html'>Linux文件和目录管理</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href='../linux_tutorial/bale_compress/bale_compress.html'>Linux打包（归档）和压缩</a>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href='../linux_tutorial/40/40.html'>Vim文本编辑器</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href='../linux_tutorial/text_processing/text_processing.html'>Linux文本处理（Linux三剑客）</a>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href='../linux_tutorial/50/50.html'>Linux软件安装</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href='../linux_tutorial/60/60.html'>Linux用户和用户组管理</a>
+</dd>
+<dd>
+<span class="channel-num">9</span>
+<a href='../linux_tutorial/70/70.html'>Linux权限管理</a>
+</dd>
+<dd class="this"> <span class="channel-num">10</span> <a href="../linux_tutorial/80/80.html">Linux文件系统管理</a> </dd><dl class="dl-sub"><dd>10.1 <a href="879.html">深度探究硬盘的内部结构</a></dd><dd>10.2 <a href="vip_7665.html">Linux常见的文件系统有哪些，CentOS采用哪种文件系统？</a><span class="iconfont iconfont-vip2"></span></dd><dd>10.3 <a href="vip_5079.html">Linux系统是如何识别硬盘设备和硬盘分区的？</a><span class="iconfont iconfont-vip2"></span></dd><dd>10.4 <a href="883.html">Linux查看文件系统硬盘使用情况（df命令）</a></dd><dd>10.5 <a href="884.html">Linux统计目录或文件所占磁盘空间大小（du命令）</a></dd><dd>10.6 <a href="885.html">Linux挂载文件系统（mount命令）</a></dd><dd>10.7 <a href="vip_5080.html">给Linux系统挂载光盘</a><span class="iconfont iconfont-vip2"></span></dd><dd>10.8 <a href="vip_5081.html">给Linux系统挂载U盘</a><span class="iconfont iconfont-vip2"></span></dd><dd>10.9 <a href="vip_5082.html">Linux开机自动挂载硬件设备（配置/etc/fstab文件）</a><span class="iconfont iconfont-vip2"></span></dd><dd>10.10 <a href="vip_5083.html">修改/etc/fstab文件出错导致Linux不能启动，该怎么办？</a><span class="iconfont iconfont-vip2"></span></dd><dd>10.11 <a href="886.html">Linux卸载文件系统（umount命令）</a></dd><dd>10.12 <a href="887.html">Linux检测和修复文件系统（fsck命令）</a></dd><dd>10.13 <a href="889.html">Linux查看文件系统详细信息（dumpe2fs命令）</a></dd><dd>10.14 <a href="891.html">Linux给硬盘分区（fdisk命令）</a></dd><dd>10.15 <a href="vip_5087.html">Linux fdisk创建分区（主分区、扩展分区和逻辑分区）</a><span class="iconfont iconfont-vip2"></span></dd><dd>10.16 <a href="905.html">Linux对大容量硬盘分区（parted命令）</a></dd><dd>10.17 <a href="898.html">linux格式化分区（mkfs命令）</a></dd><dd>10.18 <a href="3706.html">Linux格式化分区（mke2fs命令）</a></dd><dd>10.19 <a href="6105.html">Linux虚拟内存和物理内存</a></dd><dd>10.20 <a href="vip_7666.html">Linux如何建立交换分区（swap分区）？</a><span class="iconfont iconfont-vip2"></span></dd></dl>
+<dd>
+<span class="channel-num">11</span>
+<a href='../linux_tutorial/90/90.html'>Linux高级文件系统管理</a>
+</dd>
+<dd>
+<span class="channel-num">12</span>
+<a href='../linux_tutorial/14/14.html'>Linux系统管理</a>
+</dd>
+<dd>
+<span class="channel-num">13</span>
+<a href='../linux_tutorial/17/17.html'>Linux备份与恢复</a>
+</dd>
+<dd>
+<span class="channel-num">14</span>
+<a href='../linux_tutorial/13/13.html'>Linux系统服务管理</a>
+</dd>
+<dd>
+<span class="channel-num">15</span>
+<a href='../linux_tutorial/15/15.html'>Linux系统日志管理</a>
+</dd>
+<dd>
+<span class="channel-num">16</span>
+<a href='../linux_tutorial/12/12.html'>Linux启动管理</a>
+</dd>
+<dd>
+<span class="channel-num">17</span>
+<a href='../linux_tutorial/16/16.html'>LAMP环境搭建和LNMP环境搭建</a>
+</dd>
+<dd>
+<span class="channel-num">18</span>
+<a href='../linux_tutorial/18/18.html'>SELinux管理</a>
+</dd>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../linux_tutorial/linux_tutorial.html">Linux</a> &gt; <a href="../linux_tutorial/80/80.html">Linux文件系统管理</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Linux fdisk命令详解：给硬盘分区</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">我们在安装操作系统的过程中已经对系统硬盘进行了分区，但如果新添加了一块硬盘，想要正常使用，难道需要重新安装操作系统才可以分区吗？<br />
+<br />
+当然不是，在 Linux 中有专门的分区命令 fdisk 和 parted。其中 fdisk 命令较为常用，但不支持大于 2TB 的分区；如果需要支持大于 2TB 的分区，则需要使用 parted 命令，当然 parted 命令也能分配较小的分区。我们先来看看如何使用 fdisk 命令进行分区。<br />
+<br />
+fdisk 命令的格式如下：
+<p class="info-box">
+[root@localhost ~]# fdisk ~l<br />
+#列出系统分区<br />
+[root@localhost ~]# fdisk 设备文件名<br />
+#给硬盘分区</p>
+<br />
+注意，千万不要在当前的硬盘上尝试使用 fdisk，这会完整删除整个系统，一定要再找一块硬盘，或者使用虚拟机。这里给大家举个例子：<br />
+<p class="info-box">
+[root@localhost ~]# fdisk -l<br />
+#查询本机可以识别的硬盘和分区<br />
+Disk /dev/sda:32.2 GB, 32212254720 bytes<br />
+#硬盘文件名和硬盘大小<br />
+255 heads, 63 sectors/track, 3916 cylinders<br />
+#共255个磁头、63个扇区和3916个柱面<br />
+Units = cylinders of 16065 *512 = 8225280 bytes<br />
+#每个柱面的大小<br />
+Sector size (logical/physical): 512 bytes/512 bytes<br />
+#每个扇区的大小<br />
+I/O size (minimum/optimal): 512 bytes/512 bytes<br />
+Disk identifier: 0x0009e098<br />
+Device Boot Start End Blocks ld System<br />
+/dev/sda1 * 1 26 204800 83 Linux<br />
+Partition 1 does not end on cylinder boundary.<br />
+#分区1没有占满硬盘<br />
+/dev/sda2 26 281 2048000 82 Linux swap / Solaris<br />
+Partition 2 does not end on cylinder boundary<br />
+#分区2没有占满硬盘<br />
+/dev/sda3 281 3917 29203456 83 Linux<br />
+#设备文件名启动分区 起始柱面 终止柱面容量 ID 系统<br />
+Disk /dev/sdb: 21.5 GB, 21474836480 bytes #第二个硬盘识别，这个硬盘的大小<br />
+255 heads, 63 sectors/track, 2610 cylinders<br />
+Units = cylinders of 16065 * 512 = 8225280 bytes<br />
+Sector size (logical/physical): 512 bytes / 512 bytes<br />
+I/O size (minimum/optimal): 512 bytes/512 bytes Disk identifier: 0x00000000</p>
+使用 &quot;fdisk -l&quot; 查看分区信息，能够看到我们添加的两块硬盘（/dev/sda 和 /dev/sdb）的信息。我们解释一下这些信息，其上半部分态是硬盘的整体状态，/dev/sda 硬盘的总大小是 32.2 GB，共有 3916 个柱面，每个柱面由 255 个磁头读/写数据，每个磁头管理 63 个扇区。每个柱面的大小是 8225280 Bytes，每个扇区的大小是 512 Bytes。<br />
+<br />
+信息的下半部分是分区的信息，共 7 列，含义如下：
+<ul>
+<li>
+Device：分区的设备文件名。</li>
+<li>
+Boot：是否为启动引导分区，在这里 /dev/sda1 为启动引导分区。</li>
+<li>
+Start：起始柱面，代表分区从哪里开始。</li>
+<li>
+End：终止柱面，代表分区到哪里结束。</li>
+<li>
+Blocks：分区的大小，单位是 KB。</li>
+<li>
+id：分区内文件系统的 ID。在 fdisk 命令中，可以 使用 &quot;i&quot; 查看。</li>
+<li>
+System：分区内安装的系统是什么。</li>
+</ul>
+<br />
+如果这个分区并没有占满整块硬盘，就会提示 &quot;Partition 1 does not end on cyl inder boundary&quot;，表示第一个分区没有到硬盘的结束柱面。大家发现了吗？/dev/sda 已经分配完了分区，没有空闲空间了。而第二块硬盘 /dev/sdb 已经可以被识别了，但是没有可分区。<br />
+<br />
+我们以硬盘 /dev/sdb 为例来做练习，命令如下:<br />
+<p class="info-box">
+[root@localhost ~]# fdisk /dev/sdb<br />
+#给/dev/sdb分区<br />
+Device contains neither a valid DOS partition table, nor Sun, SGI or OSF disklabel<br />
+Building a new DOS disklabel with disk identifier 0xed7e8bc7.<br />
+Changes will remain in memory only, until you decide to write them.<br />
+After that, of course, the previous content won&#39;t be recoverable.<br />
+Warning: invalid flag 0x0000 of partition table 4 will be corrected by w(rite)<br />
+WARNING: DOS-compatible mode is deprecated.it&#39;s strongly recommended to switch off the mode (command &#39;c&#39;) and change display units to sectors (command &#39;u&#39;).<br />
+Command (m for help):m<br />
+#交互界面的等待输入指令的位置，输入 m 得到帮助<br />
+Command action<br />
+#可用指令<br />
+a toggle a bootable flag<br />
+b edit bsd disklabel<br />
+c toggle the dos compatibility flag<br />
+d delete a partition<br />
+I list known partition types m print this menu<br />
+n add a new partition<br />
+o create a new empty DOS partition table<br />
+p print the partition table<br />
+q quit without saving changes<br />
+s create a new empty Sun disklabel<br />
+t change a partition&#39;s system id<br />
+u change display/entry units<br />
+v verity the partition table<br />
+w write table to disk and exit<br />
+x extra functionality (experts only)</p>
+注意这里的分区命令是 &quot;fdisk /dev/sdb&quot;，这是因为硬盘并没有分区，使用 fdisk 命令的目的就是建立分区。<br />
+<br />
+在 fdisk 交互界面中输入 m 可以得到帮助，帮助里列出了 fdisk 可以识别的交互命令，我们来解释一下这些命令，如表 1 所示。<br />
+<br />
+<table>
+<caption>
+表 1 fdisk 交互</caption>
+<tbody>
+<tr>
+<th>
+命令</th>
+<th>
+说&nbsp;明</th>
+</tr>
+<tr>
+<td>
+a</td>
+<td>
+设置可引导标记</td>
+</tr>
+<tr>
+<td>
+b</td>
+<td>
+编辑 bsd 磁盘标签</td>
+</tr>
+<tr>
+<td>
+c</td>
+<td>
+设置 DOS 操作系统兼容标记</td>
+</tr>
+<tr>
+<td>
+d</td>
+<td>
+删除一个分区</td>
+</tr>
+<tr>
+<td>
+1</td>
+<td>
+显示已知的文件系统类型。82 为 Linux swap 分区，83 为 Linux 分区</td>
+</tr>
+<tr>
+<td>
+m</td>
+<td>
+显示帮助菜单</td>
+</tr>
+<tr>
+<td>
+n</td>
+<td>
+新建分区</td>
+</tr>
+<tr>
+<td>
+0</td>
+<td>
+建立空白 DOS 分区表</td>
+</tr>
+<tr>
+<td>
+P</td>
+<td>
+显示分区列表</td>
+</tr>
+<tr>
+<td>
+q</td>
+<td>
+不保存退出</td>
+</tr>
+<tr>
+<td>
+s</td>
+<td>
+新建空白 SUN 磁盘标签</td>
+</tr>
+<tr>
+<td>
+t</td>
+<td>
+改变一个分区的系统 ID</td>
+</tr>
+<tr>
+<td>
+u</td>
+<td>
+改变显示记录单位</td>
+</tr>
+<tr>
+<td>
+V</td>
+<td>
+验证分区表</td>
+</tr>
+<tr>
+<td>
+w</td>
+<td>
+保存退出</td>
+</tr>
+<tr>
+<td>
+X</td>
+<td>
+附加功能（仅专家）</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="21.html" title="Go语言指针详解，看这一篇文章就够了" target="_blank">Go语言指针详解，看这一篇文章就够了</a></li>
+<li><a href="3410.html" title="图的邻接多重表存储结构" target="_blank">图的邻接多重表存储结构</a></li>
+<li><a href="vip_7681.html" title="文本打开方式和二进制打开方式的区别是什么？" target="_blank">文本打开方式和二进制打开方式的区别是什么？</a></li>
+<li><a href="../mongodb2/relationship.html" title="MongoDB关系：文档之间的关联" target="_blank">MongoDB关系：文档之间的关联</a></li>
+<li><a href="pbwy3ic.html" title="Linux shutdown关机命令（入门必读）" target="_blank">Linux shutdown关机命令（入门必读）</a></li>
+<li><a href="7lw9rja.html" title="CSS :hover伪类选择器用法详解" target="_blank">CSS :hover伪类选择器用法详解</a></li>
+<li><a href="mljdaz4.html" title="《C语言程序设计》全国计算机等级考试二级教程PDF下载（高清完整版）" target="_blank">《C语言程序设计》全国计算机等级考试二级教程PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 891;
+window.arcId = "91747E21ddDDWILYGxxd8mtxqELEeO7n/q+nDzzI7/qm4EizeBldFMBiYA";
+window.typeidChain = "87|77";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/view/889.html";
+window.nextPageURL = "/view/vip_5087.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>JS闭包的理解（非常详细）</title>
+<meta name="description" content="从这一小节开始，将介绍与JavaScript有关的函数式编程（Functional Programming）的基本概念。函数式编程以函数为中心，每个操作都是一个函数，通过对函数的组合和复用来形成复杂的业务逻" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>JS闭包的理解（非常详细）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">这篇文章将介绍与 JavaScript 有关的函数式编程（Functional Programming）的基本概念。<br />
+<br />
+函数式编程以函数为中心，每个操作都是一个函数，通过对函数的组合和复用来形成复杂的业务逻辑。<br />
+<br />
+函数式编程的最终目的是只需调用一次函数，就可以完成所有业务逻辑，它属于声明式编程范式（Declarative Programming Paradigm），而我们之前看到的代码则大部分属于命令式编程范式（Imperative Programming Paradigm），即完成一个业务所关注的重点在于有哪些步骤。<br />
+<br />
+闭包（Closure）指的是一种语法形式和变量查找机制，在一系列嵌套的函数中，所有内部的函数都可以访问外部函数及全局作用域中定义的变量、对象和函数（以下简称内容）等。<br />
+<br />
+按这样的说法，JavaScript 中的函数全部都是闭包。因为在全局作用域中定义的函数，可以访问全局作用域的内容，在函数中定义的子函数则可以访问外层函数直到全局作用域中的所有内容。<br />
+<br />
+例如定义一个 sayHello() 函数，可接收一个人名 name 作为参数，打印出&ldquo;你好!&rdquo;，并带上人名，但是打印的代码放到 sayHello() 的子函数 message() 中，在 sayHello() 内部调用 message()，代码如下：
+<pre class="javascript">
+function sayHello(name){
+    function message(){
+        console.log(&quot;你好!&quot;+name);
+    }
+    message();
+}
+sayHello(&quot;李明&quot;);  //你好!李明</pre>
+上方示例会输出：<br />
+你好!李明<br />
+<br />
+从输出结果看，message() 函数成功地访问了 sayHello() 函数中的 name 参数的值，这样的结构就形成了一个闭包。<br />
+<br />
+在闭包中，内部的函数可以捕获（Capture）外部函数作用域中的内容，如变量、其他函数等，这样即便把内部函数作为返回值从外部函数中返回再进行调用，它还是可以继续使用外部函数作用域中的变量和函数。通过捕获机制可以避免在多次调用函数时，需要重复向函数传递参数的问题。<br />
+<br />
+假设有一个需求，可以对一个初始数值进行自定义步长的自增操作，如果使用普通函数定义，则需要多次传递初始值，代码如下：
+<pre class="javascript">
+function increment(initialValue,step){
+    return initialValue+step;
+}
+let result=increment(10,1);  //11
+result=increment(result,1);  //12
+result=increment(result,2);  //14</pre>
+示例中对 10 进行一次步长为 1 的自增，然后把结果 11 保存到 result 变量中，接着又对 result 进行步长为 1 的自增操作，此时仍然需要传递一次自增参数，得到结果 12 后，又把它保存到变量 result 中，再进行一次步长为 2 的自增，这一次仍然需要把 result 作为参数传递给 increment() 函数，这些调用反复使用 result 参数和步长值，有很多重复代码，但是如果把代码改成使用闭包的形式，则可以避免这种情况。<br />
+<br />
+例如把 increment() 函数的定义改成闭包的形式，代码如下：
+<pre class="javascript">
+function increment(initialValue){
+    let result=initialValue;
+    return function by(step){
+        result+=step;
+        return result;
+    };
+}</pre>
+这里的 increment() 函数接收一个 initialValue 参数，用于指定初始值，之后对它进行自增操作，然后在 increment() 函数内部定义一个 result 变量用于保存自增结果，并返回一个子函数 by()。<br />
+<br />
+by() 函数接收一个 step 参数，用于指定自增步长，它会把外部函数中 result 的值加上 step 的值之后返回。<br />
+<br />
+这时调用 increment() 函数并返回 by() 函数后，by() 函数会捕获 result 变量的值，使每次调用都能够记住 result 而不用再次传递了，所以只需传递步长参数，代码如下：
+<pre class="javascript">
+const incFiveBy=increment(5);
+console.log(incFiveBy(2));  //7
+console.log(incFiveBy(4));  //11</pre>
+这里，代码首先使用 increment() 函数设置了初始值 5，然后使用 incFiveBy() 保存返回值，即内部的 by() 函数，这时 by() 函数就已经捕获了 result 的值 5，并形成了一个闭包，之后调用 incFiveBy(2)，会对 5 进行加 2 操作，并把结果再次赋值给 result 并返回，此时 result 的值为 7，再次调用 incFiveBy(4) 进行加 4 操作就会基于 7 进行操作，结果返回 11。<br />
+<br />
+从结果可以看到，incFiveBy() 中的 result 值是共享的，可以把它称为状态（State），每次调用 incFiveBy() 的时候都会修改状态，这个是闭包的用途之一，在多次函数调用之间共享状态。<br />
+<br />
+不过，状态值只在同一个闭包内部共享，对于每次创建的新的闭包，它们之间的状态不会互相影响，是各自独立的。<br />
+<br />
+例如再对一个数字 10 进行自定义步长的自增操作，那么它不会影响之前对 5 的操作，代码如下：
+<pre class="javascript">
+const incTenBy=increment(10);
+console.log(incTenBy(3));  //13
+console.log(incTenBy(5));  //18
+console.log(incFiveBy(1)); //12</pre>
+为了达到调用一次函数就可以完成所有操作的目的，并且消除重复传递 step 步长参数，还可以对上方示例代码进行精简，把特定步长的自增再单独定义成函数，这时函数将不再接收参数，而是在函数内部直接把步长参数写死。<br />
+<br />
+例如，把对 5 进行自增 2 和自增 4 的操作定义成没有参数的函数，代码如下：
+<pre class="javascript">
+const incFiveBy=increment(5);
+const incFiveByTwo=()=&gt; incFiveBy(2);
+const incFiveByFour=()=&gt;incFiveBy(4);</pre>
+这样每次在调用 incFiveByTwo() 和 incFiveByFour() 时，都会对结果进行自增 2 和自增 4 的操作，代码如下：
+<pre class="javascript">
+console.log(incFiveByTwo());   //7
+console.log(incFiveByFour());  //11
+console.log(incFiveByFour());  //15</pre>
+闭包还有一个用处：定义私有的状态。由于在闭包的外部，无法访问内部作用域，因此可以对内部状态起到保护作用，调用者只能使用闭包暴露出来的函数或对象等对状态进行修改，除此之外就没有其他办法修改内部的状态了。<br />
+<br />
+例如，对于一组数据，允许访问当前元素，并且有向前和向后移动索引的操作，但不允许修改数据的值（可以想象为轮播图或音乐播放器），那么可以通过闭包的形式定义数据和操作数据的函数，然后通过一个对象把这些函数暴露给外界，用以移动索引，代码如下：
+<pre class="javascript">
+function data(){
+    let arr=[1,3,5,7,9];
+    let index=0;
+    return{
+        value(){
+            return arr[index];
+        },
+        next(){
+            index=++index%arr.length;
+        },
+        pre(){
+            index=(--index+arr.length)%arr.length;
+        },
+    };
+}</pre>
+这里使用对象形式返回了 3 个函数：
+<ul>
+	<li>
+		value() 函数用于获取当前索引的元素；</li>
+	<li>
+		next() 用于向前移动一位索引，超出数组长度后索引会回到 0 重新开始；</li>
+	<li>
+		pre() 则是向前移动一位，超出后会回到最后一位继续向前。</li>
+</ul>
+<br />
+调用 data() 函数的代码如下：
+<pre class="javascript">
+const myData=data();
+console.log(myData.value());  //1
+myData.next();                //index:1
+myData.next();                //index:2
+console.log(myData.value());  //5
+myData.pre();                 //index:1
+myData.pre();                 //index:0
+myData.pre();                 //index:4
+console.log(myData.value());  //9</pre>
+可以看到，除了使用 data() 函数暴露出来的 3 个函数访问数组之外，就再也无法在 data() 外部使用任何方式篡改 arr 数组和 index 索引的值了，另外在 data() 的外部作用域中，如果定义同名的 arr 或 index，也不会把 data() 内部的数组和值给覆盖掉。<br />
+<br />
+从上述例子可以看出，data() 函数的名字并不重要，可以使用匿名函数，但是 JavaScript 不能直接使用 function(){} 这样的语句定义匿名函数，而需要把它保存到变量中，并且仍然需要给变量起名字。<br />
+<br />
+要解决这个问题，可以在定义匿名函数的时候就立即调用它，然后使用一个变量保存它的返回结果，这种在定义的同时直接进行调用的函数称为立即执行函数表达式（Immediately Invoked Function Expression，IIFE），它的形式是使用 () 把匿名函数包裹起来，然后在后边使用另一对 () 调用它，代码如下：
+<pre class="javascript">
+const myData=(function(){
+    let arr=[1,3,5,7,9];
+    //...省略内部逻辑
+})();</pre>
+这样定义的函数会被立即执行，然后把结果保存到 myData 中，之后的调用和上例中一样。
+<p class="tip-box">
+	很多前端库会以这样的形式提供 API，其目的就是防止不同的库之间的作用域互相影响，从而导致某些库的数据被另一些库给覆盖。</p>
+使用闭包还能解决一个常见的、由全局作用域引发的问题，代码如下：
+<pre class="javascript">
+for(var i=0;i&lt;3;i++){
+    setTimeout(()=&gt;{
+        console.log(i);
+    });
+}</pre>
+setTimeout() 用于推迟一段代码的执行，它接收两个参数，第1个是回调函数，第2个是延迟时间，回调函数中的代码会在指定延迟时间之后执行，如果忽略了第2个参数，则会在 for 循环完成之后立即执行回调函数。<br />
+<br />
+代码中使用循环创建了3个要延迟执行的代码，均为打印 i 的值。<br />
+<br />
+代码的运行结果很容易就会被认为是 0 1 2，但实际上是 3 3 3。原因在于，使用 var 定义的变量的作用域是全局的，在 for 循环结束的时候 i 的值已经变成了3，那么后边打印 i 的值就全部都是3了。<br />
+<br />
+要解决这个问题可以使用立即执行函数创建一个闭包，通过把 i 当作参数传递给它来捕获 i 的值，从而可以打印出 0 1 2，代码如下：
+<pre class="javascript">
+for(var i=0;i&lt;3;i++){
+    (function(i){
+        setTimeout(()=&gt;{
+            console.log(i);
+        });
+    })(i);
+}</pre>
+或者另一个解决方法是直接使用 let 定义指示变量 i，这样它的作用域为块级，每次在 for 循环开始时会产生一个新的作用域，这样每个 setTimeout() 中 i 的值就不会受影响了。<br />
+<br />
+之前提到了任何一个 JavaScript 函数都会形成一个闭包，这是由 JavaScript 语言本身的特性决定的。<br />
+<br />
+JavaScript 的作用域为词法作用域，与之相关的有词法环境（Lexical Environment），它是 ECMAScript 规范中描述的一种特殊的对象类型，不能实际访问或者对其操作。<br />
+<br />
+词法环境会在代码执行到全局作用域、函数声明、块级作用域时创建，它包含两部分：环境记录（Environment Record）和外层词法环境的引用。<br />
+<br />
+环境记录包含了当前作用域中定义的变量、函数等的绑定关系。变量的定义是把变量值绑定到变量标识符的过程，这样环境记录中就保存了这种绑定关系。这里以伪代码的形式展示了词法环境的结构，代码如下：
+<pre class="info-box">
+{
+    variable1:value1,
+    variable2:value2,
+    function1:function(){},
+    ...,
+    outer:&lt;外部词法环境引用&gt;
+}</pre>
+在某个作用域的代码执行前，JavaScript 会把该作用域中变量的声明、函数的定义先行记录到词法环境中。<br />
+<br />
+这里需要注意的是，词法环境中首先记录的是变量的声明，仅仅包含标识符，它对应的变量值会被设置为 undefined，而函数的定义（包括函数体）则会被全部记录到词法环境中。在记录函数时，还会把当前词法环境保存到函数内部的 [[Environment]] 属性中。<br />
+<br />
+之后在运行代码时，如果遇到变量定义语句，则会对当前词法环境中的变量进行赋值；如果遇到新的作用域（如内部函数），则会用同样的过程创建一个新的词法环境，并把 outer 设置为上一层的词法环境。<br />
+<br />
+在内部的作用域中，如果要访问某个变量或函数，则会首先在本身的词法作用域中寻找，如果没有，则会到 outer 引用的外层词法作用域中寻找，直到全局词法环境中；如果找到了，则会返回相应的值，如果没找到就返回 undefined。全局词法环境对应的是全局作用域。<br />
+<br />
+因为本文介绍闭包，所以这里以它为例来介绍一下词法环境的创建过程，代码如下：
+<pre class="javascript">
+function sayHello(name){
+    return function message(){
+        console.log(&quot;你好!&quot;+name);
+    }
+}
+let greet=sayHello(&quot;李明&quot;);
+greet();  //&quot;你好!李明</pre>
+这个示例把之前的示例代码稍做了一些改动，让 sayHello() 直接返回 message() 函数，并在外边调用，可以看到 greet() 函数在外边调用时还能访问 name 的值。<br />
+<br />
+代码在执行前，会先创建全局词法环境，代码如下：
+<pre class="javascript">
+globalEnv
+{
+    greet:undefined,
+    sayHello:function(name){/*省略代码体*/}
+    outer:null
+}</pre>
+globalEnv 是为了方便描述所起的假想的名字，它代表全局词法环境对象，它会记录 greet 变量的声明和 sayHello() 函数的定义，对外层词法环境的引用为 null，因为它本身是全局词法环境，没有再高一层的词法环境了。同时，globalEnv 词法本身也保存到 sayHello() 的 [[Environment]] 属性中了。<br />
+<br />
+接下来代码执行 let greet=sayHello(&quot;李明&quot;)，调用 sayHello() 函数，此时在进入 sayHello() 函数时会创建一个新的词法环境，这里称它为 sayHelloEnv，代码如下：
+<pre class="javascript">
+sayHelloEnv
+{
+    name:&quot;李明&quot;,
+    message:function(){},
+    outer:globalEnv  //即sayHello中[[Environment]]属性的值
+}</pre>
+在 sayHelloEnv 这个词法环境中，记录了参数 name 和 message() 函数的定义，并把外层词法环境设置为 globalEnv，作为 sayHello() 函数中 [[Environment]] 属性的值，然后 sayHelloEnv 会作为 [[Environment]] 属性值保存到 message() 函数中。<br />
+<br />
+在 sayHello() 函数返回后，会把 globalEnv 中名为 greet 的标识符绑定为 sayHello(&quot;李明&quot;) 的返回值。接着调用 greet 保存的函数，此时进入 message() 函数体中，又会创建一个新的词法环境，这里称它为 messageEnv，代码如下：
+<pre class="javascript">
+messageEnv
+{
+    outer:sayHelloEnv
+}</pre>
+其中没有定义任何其他变量和函数，所以直接把它的 outer 设置为 sayHelloEnv 词法环境。<br />
+<br />
+在执行它里边的代码时，需要使用 name 的值，此时 messageEnv 本身并没有这个变量，所以它会到 outer 指向的 sayHelloEnv 中去寻找，结果发现了 name 变量，值为&ldquo;李明&rdquo;，那么它就可以正确地被打印出结果了。<br />
+<br />
+如果再有一个 greet2 变量，保存了 sayHello() 函数的调用结果并传递了不同的 name 属性值，则后边在调用 greet2() 时会打印出不同的 name 属性值，同时也不会影响 greet() 的返回结果，代码如下：
+<pre class="javascript">
+let greet2=sayHello(&quot;张三&quot;);
+greet2();  //＂你好!张三＂
+greet();   //＂你好!李明＂</pre>
+这是因为 greet() 和 greet2() 指向了不同的词法环境。在调用 sayHello(&quot;李明&quot;) 时会创建 sayHelloEnv 词法环境，而在调用 sayHello(&quot;张三&quot;) 时又会创建新的 sayHelloEnv2 词法环境，它们的 name 变量分别为&ldquo;李明&rdquo;和&ldquo;张三&rdquo;，且互不影响。<br />
+<br />
+可以看到，通过这个词法环境机制，每个函数都保存了外层词法环境的引用，这样内部的函数都可以通过一条链的引用（可称作环境链，Environment Chain，或作用域链，Scope Chain），访问直至全局词法环境中记录的所有内容。<br />
+<br />
+词法这个概念，简单来讲，就是代码的字面结构，直接可以根据大括号、函数等的位置，就能确定它们的作用域和词法环境，所以称它为静态的，而与它相对的，则是动态的，需要在程序运行时才能确定作用域的内容，这都与编程语言的实现机制有关。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="32_2.html" title="Go语言遍历map（访问map中的每一个键值对）" target="_blank">Go语言遍历map（访问map中的每一个键值对）</a></li>
+<li><a href="952_2.html" title="Java成员方法的声明和调用" target="_blank">Java成员方法的声明和调用</a></li>
+<li><a href="5607_2.html" title="Java程序的运行过程（执行流程）分析" target="_blank">Java程序的运行过程（执行流程）分析</a></li>
+<li><a href="6860_2.html" title="C++ STL deque容器（详解版）" target="_blank">C++ STL deque容器（详解版）</a></li>
+<li><a href="7460_2.html" title="C++ stable_sort()用法详解" target="_blank">C++ stable_sort()用法详解</a></li>
+<li><a href="../pandas/excel_2.html" title="Pandas Excel读写操作详解" target="_blank">Pandas Excel读写操作详解</a></li>
+<li><a href="vb3w3ug_2.html" title="Word插入数学公式（图解）" target="_blank">Word插入数学公式（图解）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10043;
+window.arcId = "860aJlmdL21sjtlI7fNJqEqrgLLB1i4Qz5ApKJTPhyjoa/4XNLa4r3sYpMmm";
+window.typeidChain = "309|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

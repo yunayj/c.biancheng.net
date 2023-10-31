@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Linux swap分区及作用详解</title>
+<meta name="description" content="我们在安装系统的时候已经建立了 swap 分区。swap 分区是 Linux 系统的交换分区，当内存不够用的时候，我们使用 swap 分区存放内存中暂时不用的数据。也就是说，当内存不够用时，我们" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Linux swap分区及作用详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">我们在安装系统的时候已经建立了 swap 分区。swap 分区通常被称为交换分区，这是一块特殊的硬盘空间，即当实际内存不够用的时候，操作系统会从内存中取出一部分暂时不用的数据，放在交换分区中，从而为当前运行的程序腾出足够的内存空间。<br />
+<br />
+也就是说，当内存不够用时，我们使用 swap 分区来临时顶替。这种&ldquo;拆东墙，补西墙&rdquo;的方式应用于几乎所有的操作系统中。<br />
+<br />
+使用 swap 交换分区，显著的优点是，通过操作系统的调度，应用程序实际可以使用的内存空间将远远超过系统的物理内存。由于硬盘空间的价格远比 RAM 要低，因此这种方式无疑是经济实惠的。当然，频繁地读写硬盘，会显著降低操作系统的运行速率，这也是使用 swap 交换分区最大的限制。<br />
+<p class="info-box">
+相比较而言，Windows 不会为 swap 单独划分一个分区，而是使用分页文件实现相同的功能，在概念上，Windows 称其为虚拟内存，从某种意义上将，这个叫法更容易理解。因此，初学者将 swap 交换分区理解为虚拟内存是没有任何问题的。</p>
+具体使用多大的 swap 分区，取决于物理内存大小和硬盘的容量。一般来讲，swap 分区容量应大于物理内存大小，建议是内存的两倍，但不超过 2GB。但是，有时服务器的访问量确实很大，有可能出现 swap 分区不够用的情况，所以我们需要学习 swap 分区的构建方法。<br />
+<br />
+建立新的 swap 分区，只需要执行以下几个步骤。
+<ol>
+<li>
+分区：不管是 fdisk 命令还是 parted 命令，都需要先区。</li>
+<li>
+格式化：格式化命令稍有不同，使用 mkswap 命令把分区格式化成 swap 分区。</li>
+<li>
+使用 swap 分区。</li>
+</ol>
+<br />
+下面我们来逐一实现。<br />
+<h2>
+建立swap分区第一步：分区</h2>
+命令如下：
+<p class="info-box">
+[root@localhost ~]# fdisk /dev/sdb<br />
+#以/dev/sdb分区为例<br />
+WARNING: DOS-compatible mode is deprecated.It&#39;s strongly recommended to switch off the mode (command &#39;c&#39;) and change display units to sectors (command &#39;u&#39;).<br />
+Command (m for help): n<br />
+#新建<br />
+Command action e extended p primary partition (1-4)<br />
+P<br />
+#主分区<br />
+Partition number (1-4): 1<br />
+#分区编号<br />
+First cylinder (1-2610, default 1):<br />
+#起始柱面<br />
+Using default value 1<br />
+Last cylinder, +cylinders or +size{K, M, G} (1-2610, default 2610): +500M<br />
+#大小<br />
+Command (m for help): p<br />
+#查看一下<br />
+Disk /dev/sdb: 21.5GB, 21474836480 bytes<br />
+255 heads, 63 sectors/track, 2610 cylinders<br />
+Units = cylinders of 16065 *512 = 8225280 bytes<br />
+Sector size (logical/physical): 512 bytes / 512 bytes<br />
+I/O size (minimum/optimal): 512 bytes 1512 bytes<br />
+Disk identifier: OxOOOOOebd<br />
+Device Boot Start End Blocks Id System<br />
+/dev/sdb1 1 65 522081 83 Linux<br />
+#刚分配的分区ID是83，是Linux分区，我们在这里要分配swap分区<br />
+Command (m for help): t<br />
+#修改分区的系统ID<br />
+Selected partition 1<br />
+#只有一个分区，所以不用选择分区了<br />
+Hex code (type L to list codes): 82<br />
+#改为swap分区的ID<br />
+Changed system type of partition 1 to 82 (Linux swap / Solaris)<br />
+Command (m for help): p<br />
+#再查看一下<br />
+Disk /dev/sdb: 21.5 GB, 21474836480 bytes<br />
+255 heads, 63 sectors/track, 2610 cylinders<br />
+Units = cylinders of 16065 *512 = 8225280 bytes Sector size (logical/physical): 512 bytes / 512 bytes I/O size (minimum/optimal): 512 bytes 1512 bytes Disk identifier: OxOOOOOebd<br />
+Device Boot Start End Blocks Id System<br />
+/dev/sdb1 1 65 522081 82 Linux swap / Solaris<br />
+#修改过来了<br />
+Command (m for help): w<br />
+#记得保存退出<br />
+The partition table has been altered!<br />
+Calling ioctl() to re-read partition table.<br />
+Syncing disks.</p>
+仍以 /dev/sdb 分区作为实验对象。不过，如果分区刚刚使用 parted 命令转变为 GPT 分区表，则记得转换回 MBR 分区表，fdisk 命令才能识别，否则干脆新添加一块硬盘做实验。<br />
+<h2>
+建立 swap 分区第二步：格式化</h2>
+因为要格式化成 swap 分区，所以格式化命令是 mkswap。命令如下：<br />
+<p class="info-box">
+[root@localhost ~]# mkswap /dev/sdb1<br />
+Setting up swapspace version 1, size = 522076 KiB<br />
+no label, UUID=c3351 dc3-f403-419a-9666-c24615e170fb</p>
+<h2>
+使用swap分区</h2>
+在使用 swap 分区之前，我们先来说说 free 命令。命令如下：<br />
+<p class="info-box">
+[root@localhost ~]#free<br />
+total used free shared buffers cached<br />
+Mem: 1030796 130792 900004 0 15292 55420<br />
+-/+ buffers/cache: 60080 970716<br />
+Swap: 2047992 0 2047992</p>
+free 命令主要是用来查看内存和 swap 分区的使用情况的，其中：
+<ul>
+<li>
+total：是指总数；</li>
+<li>
+used：是指已经使用的；</li>
+<li>
+free：是指空闲的；</li>
+<li>
+shared：是指共享的；</li>
+<li>
+buffers：是指缓冲内存数；</li>
+<li>
+cached：是指缓存内存数，单位是KB；</li>
+</ul>
+<br />
+我们需要解释一下 buffers（缓冲）和 cached（缓存）的区别。简单来讲，cached 是给读取数据时加速的，buffers 是给写入数据加速的。cached 是指把读取出来的数据保存在内存中，当再次读取时，不用读取硬盘而直接从内存中读取，加速了数据的读取过程；buffers 是指在写入数据时，先把分散的写入操作保存到内存中，当达到一定程度后再集中写入硬盘，减少了磁盘碎片和硬盘的反复寻道，加速了数据的写入过程。<br />
+<br />
+我们已经看到，在加载进新的 swap 分区之前，swap 分区的大小是 2000MB，接下来只要加入 swap 分区就可以了，使用命令 swapon。命令格式如下：<br />
+<p class="info-box">
+[root@localhost ~]# swapon 分区设备文件名</p>
+例如：<br />
+<p class="info-box">
+[root@localhost ~]# swapon /dev/sdb1<br />
+swap分区已加入，我们查看一下。<br />
+[root@localhost ~]#free<br />
+total used free shared buffers cached<br />
+Mem: 1030796 131264 899532 0 15520 55500<br />
+-/+ buffers/cache: 60244 970552<br />
+Swap: 2570064 0 2570064</p>
+swap 分区的大小变成了 2500MB，加载成功了。如果要取消新加入的 swap 分区，则也很简单，命令如下：<br />
+<p class="info-box">
+[root@localhost ~]# swapoff /dev/sdb1</p>
+如果想让 swap 分区开机之后自动挂载，就需要修改 /etc/fstab 文件，命令如下：<br />
+<p class="info-box">
+[root@localhost ~]#vi /etc/fstab<br />
+UUID=c2ca6f57-b15c-43ea-bca0-f239083d8bd2 / ext4 defaults 1 1<br />
+UUID=0b23d315-33a7-48a4-bd37-9248e5c443451 boot ext4 defaults 1 2<br />
+UUID=4021be19-2751-4dd2-98cc-383368c39edb swap swap defaults 0 0<br />
+tmpfs /dev/shm<br />
+tmpfs defaults 0 0<br />
+devpts /dev/pts<br />
+devpts gid=5, mode=620 0 0<br />
+sysfs /sys<br />
+sysfs defaults 0 0<br />
+proc /proc<br />
+proc defaults 0 0<br />
+/dev/sdb1 swap swap<br />
+defaults 0 0<br />
+#加入新swap分区的相关内容，这里直接使用分区的设备文件名，也可以使用UUID。</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="887.html" title="Linux fsck命令：检测和修复文件系统" target="_blank">Linux fsck命令：检测和修复文件系统</a></li>
+<li><a href="976.html" title="Java构造方法" target="_blank">Java构造方法</a></li>
+<li><a href="2428.html" title="MySQL BIT、BINARY、VARBINARY、BLOB（二进制类型）" target="_blank">MySQL BIT、BINARY、VARBINARY、BLOB（二进制类型）</a></li>
+<li><a href="../mybatis/cache.html" title="MyBatis缓存（一级缓存和二级缓存）" target="_blank">MyBatis缓存（一级缓存和二级缓存）</a></li>
+<li><a href="../matplotlib/math-express.html" title="Matplotlib数学表达式" target="_blank">Matplotlib数学表达式</a></li>
+<li><a href="../pillow/numpy-with-pillow.html" title="Pillow和ndarray数组" target="_blank">Pillow和ndarray数组</a></li>
+<li><a href="v0jj6as.html" title="CPU缓存（Cache）到底是什么？" target="_blank">CPU缓存（Cache）到底是什么？</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 907;
+window.arcId = "73c98P+wtQq8ThxI4o0lYJ5/TnPh8+RFzzmo9n6FfueUBHnuijvJREJYQg";
+window.typeidChain = "210|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

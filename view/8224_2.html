@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Django项目部署搭建uWSGI工作环境</title>
+<meta name="description" content="在本章节，将给大家讲解一下如何部署 Django 项目到生产环境的方。项目部署是指在软件开发完毕后，将开发机器上运行的开发版软件实际安装到服务器上进行长期运行，这是使用 Djan" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../django/django_2.html">Django</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Django项目部署搭建uWSGI工作环境</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在本章节，将给大家讲解一下如何部署 Django 项目到生产环境的方。项目部署是指在软件开发完毕后，将开发机器上运行的开发版软件实际安装到服务器上进行长期运行，这是使用 Django 框架进行开发的的最后一个环节，也是非常要种的一部分。本章节会介绍到 Django 项目部署的基本流程、Python Web 中 WSGI 协议的理解，然后完成搭建 WSGI 生产环境以及 Nginx 反向代理服务器的配置工作。<br />
+<h2>
+	1. 什么是WSGI协议</h2>
+在本教程开篇我们介绍过，Django 是 Python 语言编写的 Web 框架，而我们使用 Django 编写的项目称为 Web 应用，而一个 Web 项目的运行离不开 Web 服务器，所以就需要一种规范或者协议来定义 Web 应用如何与 Web 服务器之间实现交互以及请求的接受与响应的返回，这就引出了 WSGI 协议。所以，我们就能够了解到 WSGI 协议的主要工作职责是什么了。
+<h4>
+	1) 从定义层面理解WSGI协议</h4>
+WSGI（Web Server Gateway Interface）即 Web 服务器网关接口，它是属于一种规范协议，它定义了 Python Web 应用程序与 Web 服务器通信的接口。为了让大家更容易理解 WSGI 的作用，我们举一个通俗易懂的例子，比如，世界上有很多国家，各个国家之间货币都不通用，当你需要到韩国旅游的时候，就需要把我们的人民币按照国际汇率标椎兑换成韩元，这样我们才可以在韩国消费，而国际汇率标准就是一套完整的规范协议准则，也就相当于本节讲到的 WSGI 协议，需要各个国家遵守。
+<h4>
+	2) Python Web中WSGI协议</h4>
+通过上面例子，再理解 WSGI 协议在 Python Web 中的作用就变的非常简单。Python 语言有各种各样的 Web 应用框架，如果在没有统一标准的情况下，可能需要针对每一个框架去实现各自的 Web 服务器。可想而知，如果这样的话，会给我开发者带来繁重的工作量。<br />
+<br />
+WSGI 协议的出现恰恰解决了上述问题，它可以让 Web 服务器知道如何去调用 Python 应用程序；让 Python 应用程序知道客户端在请求什么，以及如何返回结果给 Web 服务器，WSGI 实现了 Web 服务器与应用程序之间的交互。<br />
+<h2>
+	2. Django内置WSGI服务器</h2>
+在 WSGI 协议中定义了两个角色：一个是 Web 服务器即 server，另一个是应用程序即 application，server 需要接受来自客户端的请求，然后根据协议定义调用应用程序（application），应用程序处理请求并返回结果给 server，最终响应给客户端。<br />
+<br />
+Django 框架同时实现了 WSGI 的 server 和 application。其中内置的<span style="color: rgb(255, 0, 0);">&nbsp;WSGI 服务器是基于 Python 的内置模块 wsgiref&nbsp;</span>实现的，主要是添加了一些异常处理和错误记录，但是没有考虑到运行效率，故不适合在生产环境中使用，它主要被使用在开发和测试过程中。在这里进行一下简单的讲解，不作为本节的重点，在和 manage.py 同级目录下新建一个 python_webtest.py 文件，编写如下代码：
+<pre class="python">
+from wsgiref.simple_server import make_server
+#定义服务器调用对象application
+def application(environ,start_response): 
+    &quot;&quot;&quot;
+    :param environ:  #包含所有客户端的请求信息即上下文请求，application从这个参数中获取客户端请求意图
+    :param start_response: 一个可调用对象，用于发送http请求状态
+    :return: [b&#39;Hello World!\n&#39;] #返回可迭代对象 且必须是字节流，Http是面向字节流协议
+     &quot;&quot;&quot;
+    status=&#39;200 OK&#39;
+    response_headers=[(&#39;Conteny-type&#39;,&#39;text/plain&#39;)] #响应头是一个列表
+    start_response(status,response_headers) #返回给server之前调用 start_response
+    return [b&quot;Hello World!\n&quot;]
+#创建WSGI服务器，指定调用application,这里的调用对象也可以是一个类或者实例
+httpeserver=make_server(&#39;127.0.0.1&#39;,8000,application)
+#处理请求后退出
+httpeserver.handle_request()</pre>
+然后在 CMD命令行执行下面的&nbsp; python python_webtest 命令，注意要在 python_webtest 对应的目录下，然后再使用 curl 命令发送请求进行测试，最终如下所示：
+<pre class="info-box">
+C:\Users\Administrator&gt;curl -i 127.0.0.1:8000
+HTTP/1.0 200 OK
+Date: Thu, 30 Jul 2020 08:41:45 GMT
+Server: WSGIServer/0.2 CPython/3.7.4
+Conteny-type: text/plain
+Content-Length: 13
+Hello World!</pre>
+<h2>
+	3. uWSGI生产环境的搭建与配置</h2>
+上面介绍了 Django 的内置 WSGI 服务器的实现，但是由于 Django 并不专注于实现服务器，所以内置的 WSGI 服务器无法满足生产环境的需求，所以我们在这里要介绍另外一种 WSGI 服务器，即 uWSGI。
+<h4>
+	1) uWSGI服务器简单介绍</h4>
+uWSGI 是当下最流行的一种 WSGI 服务器，同样遵守 WSGI 协议。它可以与各种 Python Web 框架实现兼容，而且配置过程与使用方式都非常简单。我们之前使用 runserver 命令启动项目，通常只是在开发和测试环境中使用。当开发结束后，完善的项目代码需要在一个高效稳定的环境中运行，这时候可以使用 uWSGI，它是 WSGI 服务器的一种，它可以让 Django、Flask 等开发的 Web 应用站点运行其中。
+<h4>
+	2) 安装与配置uWSGI服务器</h4>
+要使用 uWSGI，首先要对它进行安装，但是这里有一点需要注意，因为项目都是部署在 Linux 系统上，所以这些操作也要在<span style="color: rgb(255, 0, 0);">&nbsp;Linux 系统</span>上完成，笔者的 Linux 是 ubuntu 18.04，对于 Linux 操作系统安装不熟悉的同学，可参靠本网站《<a href="../linux_tutorial/20/20_2.html" target="_blank">Linux系统安装教程（超级详细）</a>》 ，所以我们需要将我们的项目部署在 Liunx 上。至于代码、包、模块等如何打包，将<span style="color:#ff0000;">在下一节对这个过程做详细介绍</span>，本节先学会配置 uWSGI 服务器。<br />
+<p class="info-box">
+	sudo pip3 install uwsgi</p>
+使用上述命令安装 uWSGI，安装完成后在 BookStore 项目的根目录下，新建 uwsgi.ini 配置文件（和 manage.py 文件同级目录），并在该文件中进行如下配置：
+<pre class="info-box">
+[uwsgi]
+# 套接字方式的 IP地址:端口号
+# socket=127.0.0.1:8000
+# Http通信方式的 IP地址:端口号
+http=127.0.0.1:8000
+#上述两种方式选择其一，在使用Nginx需要使用socket
+# 项目当前工作目录自行配置
+chdir=/home/.../.../my_projectname 这里需要换为项目文件夹的绝对路径
+# 项目中wsgi.py文件的目录，相对于当前工作目录
+wsgi-file=my_project/wsgi.py
+#是否启动主进程来管理其他进程
+master=true
+# 进程个数，根据电脑配置设置
+process=4
+# 每个进程的线程个数
+threads=2
+# 服务的pid记录文件
+pidfile=uwsgi.pid
+# 服务的日志文件位置
+daemonize=uwsgi.log</pre>
+然后修改 settings.py 文件将其设置为适合线上生产环境使用，如下所示：
+<p class="info-box">
+	DEBUG=False&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; #关闭调试模式<br />
+	ALLOWED_HOSTS = [&#39;*&#39;]&nbsp; &nbsp;#任何ip都可以访问</p>
+<h4>
+	3) 启动与测试uWSGI服务器</h4>
+配置完成后，我们就可以使用下面的命令启动 uWSGI 了：
+<pre class="info-box">
+启动 uwsgi 命令
+$ cd 项目文件夹
+$ sudo uwsgi --ini uwsgi.ini
+停止 uwsgi 命令
+$ cd 项目文件夹
+$ sudo uwsgi --stop uwsgi.pid</pre>
+说明：当 uWSGI 启动后，当前 Django 项目的程序已变成后台守护进程，在<span style="color:#ff0000;">关闭当前终端时此进程也不会停止</span>。执行完我启动命令后，可以看到在项目的主目录下又生成了两个文件分别是 uwsgi.pid 与 uwsgi.log，它们分别用来记录，uWsgi 的进程号码 pid 与 uWSGI 的相关运行日志。启动成功的标志如下所示：<br />
+<p class="info-box">
+	[uWSGI] getting INI configuration from uwsgi.ini</p>
+此时我们我们在<span style="color:#ff0000;">没有使用 runserver</span> 启动的情况下，可以访问 127.0.0.1:8000/admin 进行测试，你会看到，我们成功等了后台界面，如下所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/200731/9-200I11G201U2_2.png" /><br />
+	图1：测试 uWSGI 访问页面</div>
+<div style="text-align: center;">
+	&nbsp;</div>
+此时 uWSGI.log 会帮助我们记录 uWSGI 服务器的请求日志等等，有兴趣可以自己看一看日志内容。上述就是 uWSGI 服务器的完整部署与使用流程，不过如果这样使用的话， uWSGI 会直接暴露给客户端用户，所以它通常会和 Nginx 搭配在一起进行使用，在下一节《<a href="8256_4.html" target="_blank">Django项目部署Nginx安装与配置（完结）</a>》将给大家介绍。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="980_2.html" title="Java析构方法" target="_blank">Java析构方法</a></li>
+<li><a href="1021_2.html" title="Linux /etc/inittab：设置（修改）系统默认运行级别" target="_blank">Linux /etc/inittab：设置（修改）系统默认运行级别</a></li>
+<li><a href="7293_3.html" title="Django ORM模块精讲" target="_blank">Django ORM模块精讲</a></li>
+<li><a href="../mongodb2/data-type_2.html" title="MongoDB数据类型汇总" target="_blank">MongoDB数据类型汇总</a></li>
+<li><a href="jqq1ow_2.html" title="C语言strcpy函数：将一个字符串复制到另一个字符串中" target="_blank">C语言strcpy函数：将一个字符串复制到另一个字符串中</a></li>
+<li><a href="8bww1ck_2.html" title="HTML &lt;abbr&gt;标签：定义缩写词" target="_blank">HTML &lt;abbr&gt;标签：定义缩写词</a></li>
+<li><a href="../c/printf_2.html" title="C语言printf()：格式化输出数据" target="_blank">C语言printf()：格式化输出数据</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8224;
+window.arcId = "79b8B4ztqlc2TRe0xxhNwxojLEs3AeF79hqNacOPVdQhju4J1ltBzydsnaI";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Django HTML表单实现用户登录退出（含源码）</title>
+<meta name="description" content="在上一节中，我们实现了用户注册功能，在本节将继续介绍，如何使用 Django 实现用户的登录以及退出功能，希望大家通过这两节内容的学习，学会总结思路，把这个开发功能的过程反复" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../django/django_2.html">Django</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Django HTML表单实现用户登录退出（含源码）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在上一节中，我们实现了用户注册功能，在本节将继续介绍，如何使用 Django 实现用户的登录以及退出功能，希望大家通过这两节内容的学习，学会总结思路，把这个开发功能的过程反复练习，这样才能够更好的理解 Django 框架，而且在以后 Web 开发的道路上也会对自己大有裨益。<br />
+<h2>
+	1. HTML表单实现用户的登录</h2>
+通过前一节的学习，通过 HTML 表单并不难实现用户的登录功能，那么大家先思考一下，用户登录的逻辑打开是怎么样的呢？分析这个逻辑，大家也可以去体验一下其他网站的登录功能，从用户的注册到登录最后用户退出，这整个的流程都需要大家细细的品味，并发现其中的规律，并且学以致用。当自己不熟练的时候，学会去借鉴其他人的经验，往往是一个不错的选择。下面就让我们一起来实现一下用户的注册功吧。
+<h4>
+	1) HTML表单编写前端页面</h4>
+在 user\templates\user 目录下新建 login.html 文件。并在其中编写如下代码：
+<pre class="html">
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;登录页&lt;/title&gt;
+&nbsp;&nbsp;&nbsp; &lt;style&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #pwd input{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; margin-left:23px
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;form action=&quot;/user/login/&quot; method=&quot;post&quot;&gt;
+&lt;!--传统的html登录表单--&gt;
+    &lt;p&gt;
+        用户名： &lt;input type=&quot;text&quot; name=&quot;username&quot; value=&quot;{{ username }}&quot;&gt;
+        &lt;span&gt; {{ error }}&lt;/span&gt;
+    &lt;/p&gt;
+    &lt;p id=pwd&gt; 
+        密码: &lt;input type=&quot;text&quot; name=&quot;password&quot; value=&quot;{{ password }}&quot;&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+        记住用户名: &lt;input type=&quot;checkbox&quot; name=&quot;isSaved&quot;&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+        &lt;input type=&quot;submit&quot; value=&quot;登录&quot;&gt;
+    &lt;/p&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+<p>
+	上述代码理解起来非常的通俗易懂，但是不难发现我们在其中新增了一个记住用户名的小功能，大家想想这个功能又是如何实现的呢？没错它就是通过 Cookies 实现的。在前面的章节《<a href="http://view/7828.html?1591770155" target="_blank">Django中Cookie和Session介绍（一）</a>》中，我们给大家详细的讲述了 Cookies与 Session，在本节我们将用到它们，如果忘记的小伙伴请抓紧时复习哦。</p>
+<h4>
+	2) 编写视图层逻辑代码</h4>
+在 user\views.py 中编写视图层用户登录逻辑代码，如下所示：<br />
+<pre class="python">
+#用户的登录逻辑处理
+def login_view(request):
+    #处理GET请求
+    if request.method == &#39;GET&#39;:
+        #1, 首先检查session，判断用户是否第一次登录，如果不是，则直接重定向到首页
+        if &#39;username&#39; in request.session:  #request.session 类字典对象
+            return HttpResponseRedirect(&#39;/index/allbook&#39;)
+        #2, 然后检查cookie，是否保存了用户登录信息
+        if &#39;username&#39; in request.COOKIES:
+            #若存在则赋值回session，并重定向到首页
+            request.session[&#39;username&#39;] = request.COOKIES[&#39;username&#39;]
+            return HttpResponseRedirect(&#39;/index/allbook&#39;)
+        #不存在则重定向登录页，让用户登录
+        return render(request, &#39;user/login.html&#39;)
+    # 处理POST请求
+    elif request.method == &#39;POST&#39;:
+        username = request.POST.get(&#39;username&#39;)
+        password = request.POST.get(&#39;password&#39;)
+        m = hashlib.md5()
+        m.update(password.encode())
+        password_m = m.hexdigest()
+        #判断输入是否其中一项为空或者格式不正确
+        if not username or not password:
+            error = &#39;你输入的用户名或者密码错误 !&#39;
+            return render(request, &#39;user/login.html&#39;, locals())
+        #若输入没有问题则进入数据比对阶段，看看已经注册的用户中是否存在该用户
+        users = User.objects.filter(username=username, password=password_m)
+        # 由于使用了filter, 所以返回值user是一个数组，但是也要考虑其为空的状态，即没有查到该用户
+        if not users:
+            error = &#39;用户不存在或用户密码输入错误!!&#39;
+            return render(request, &#39;user/login.html&#39;, locals())
+        # 返回值是个数组，并且用户名具备唯一索引，当前用户是该数组中第一个元素
+        users = users[0]
+        request.session[&#39;username&#39;] = username
+        response = HttpResponseRedirect(&#39;/index/allbook&#39;)
+        #检查post 提交的所有键中是否存在 isSaved 键
+        if &#39;isSaved&#39; in request.POST.keys():
+            #若存在则说明用户选择了记住用户名功能，执行以下语句设置cookie的过期时间
+            response.set_cookie(&#39;username&#39;, username, 60*60*24*7)
+        return response</pre>
+完成视图层代码后，记得要配置路由映射关系，如下所示：
+<pre class="python">
+from django.urls import path
+from user import views
+urlpatterns=[
+    path(&#39;reg/&#39;,views.reg_view),
+    path(&#39;login/&#39;,views.login_view)
+]</pre>
+<h4>
+	3）登录页面展示效果</h4>
+输入数据库中已存在的用户名，但是将密码输入错误，则会有如下的显示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Django用户登录界面" src="../uploads/allimg/200611/9-200611092055344_2.png" /><br />
+	图1：用户登录界面</div>
+输入正确的密码则会跳转到 index\allbook 页面，如果登录成功后，下次在访问 127.0.0.1/user/login/ 的时候，将将直接跳转到 index\allbook 页面，这就是 session 与 cookie 的作用，那么可想而知如果要实现用户的退出功能就需要将它们两个删除。
+<h2>
+	2. 实现用户的退出功能</h2>
+用户的退出功能相对来说要简单的多，通过下面代码就可以实现：
+<pre class="python">
+def logout_view(request):
+    #实现退出功能
+    #删除session
+    if &#39;username&#39; in request.session:
+        del request.session[&#39;username&#39;]
+    resp = HttpResponseRedirect(&#39;/user/index&#39;)
+    #删除cookie
+    if &#39;username&#39; in request.COOKIES:
+        resp.delete_cookie(&#39;username&#39;)
+    return resp
+#编写视图函数映射关系
+urlpatterns = [
+    #http://127.0.0.1:8000/user/logout
+    path(&#39;logout/&#39;, views.logout_view)
+]</pre>
+大家可以自行编写一个简单的网站首页，我们知道退出功能的 button 都会显示在首页边角位置，所以只需要将退出功能的 url 关联到 &lt;a&gt; 标签的 href 属性即可实现点击退出的功能了。<br />
+<br />
+我们使用了两节的内容给大家讲述了 Django 如何实现最基本的注册登录以及退出功能，这两节代码较多，也设计到一些逻辑的理解，所以大家要勤加练习，多多复习，才能够熟练掌握。在下一节中，我们将简单介绍 Django 中的静态资源，比如文件的上传下载以及 CSV 文件的生成导出等。&nbsp;<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1002_2.html" title="Shell if条件判断语句用法详解" target="_blank">Shell if条件判断语句用法详解</a></li>
+<li><a href="3327_2.html" title="Linux挂载光盘（使用mount命令）" target="_blank">Linux挂载光盘（使用mount命令）</a></li>
+<li><a href="5955_2.html" title="JS键盘事件（非常详细）" target="_blank">JS键盘事件（非常详细）</a></li>
+<li><a href="7832_3.html" title="Django Form表单API详解" target="_blank">Django Form表单API详解</a></li>
+<li><a href="../sql/drop-database_2.html" title="SQL DROP DATABASE：删除数据库" target="_blank">SQL DROP DATABASE：删除数据库</a></li>
+<li><a href="vip_9654_2.html" title="Qt QPushButton按钮用法详解" target="_blank">Qt QPushButton按钮用法详解</a></li>
+<li><a href="qqnr88_2.html" title="C语言break关键字" target="_blank">C语言break关键字</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7831;
+window.arcId = "35a19Y3ha8oC9Uyk6DYfo3OErT3sWSv2jhMPETsATjpmJoWVs1g43J+TNWk";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

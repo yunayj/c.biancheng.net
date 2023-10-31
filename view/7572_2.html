@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C++输入输出重定向（3种方法）</title>
+<meta name="description" content="《 C++输入流和输出流 》一节提到，cout 和 cerr、clog 的一个区别是，cout 允许被重定向，而 cerr 和 clog 都不支持。值得一提的是，cin 也允许被重定向。 那么，什么是重定向呢？在默认情" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C++输入输出重定向（3种方法）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">《<a href="7559_2.html" target="_blank">C++输入流和输出流</a>》一节提到，cout 和 cerr、clog 的一个区别是，cout 允许被重定向，而 cerr 和 clog 都不支持。值得一提的是，cin 也允许被重定向。<br />
+<br />
+那么，什么是重定向呢？在默认情况下，cin 只能接收从键盘输入的数据，cout 也只能将数据输出到屏幕上。但通过重定向，cin 可以将指定文件作为输入源，即接收文件中早已准备好的数据，同样 cout 可以将原本要输出到屏幕上的数据转而写到指定文件中。<br />
+<br />
+C++ 中，实现重定向的常用方式有 3 种，本节将一一做详细讲解。
+<h2>
+	C++ freopen()函数实现重定向</h2>
+freopen() 定义在<code>&lt;stdio.h&gt;</code>头文件中，是 C 语言标准库中的函数，专门用于重定向输入流（包括 scanf()、gets() 等）和输出流（包括 printf()、puts() 等）。值得一提的是，该函数也可以对 C++ 中的 cin 和 cout 进行重定向。<br />
+<br />
+举个例子：
+<pre class="cpp">
+#include &lt;iostream&gt;    //cin、cout
+#include &lt;string&gt;      //string
+#include &lt;stdio.h&gt;     //freopen
+using namespace std;
+int main()  
+{
+    string name, url;
+    //将标准输入流重定向到 in.txt 文件
+    freopen(&quot;in.txt&quot;, &quot;r&quot;, stdin);
+    cin &gt;&gt; name &gt;&gt; url;
+
+    //将标准输出重定向到 out.txt文件
+    freopen(&quot;out.txt&quot;, &quot;w&quot;, stdout); 
+    cout &lt;&lt; name &lt;&lt; &quot;\n&quot; &lt;&lt; url;
+    return 0;
+}</pre>
+执行此程序之前，我们需要找到当前程序文件所在的目录，并手动创建一个 in.txt 文件，其包含的内容如下：
+<p class="info-box">
+	C++<br />
+	http://c.biancheng.net/cplus/</p>
+创建好 in.txt 文件之后，可以执行此程序，其执行结果为：
+<p class="info-box">
+	&nbsp;&nbsp;&nbsp; &lt;--控制台中，既不需要手动输入，也没有任何输出</p>
+与此同时，in.txt 文件所在目录下会自动生成一个 out.txt 文件，其包含的内容和 in.txt 文件相同：
+<p class="info-box">
+	C++<br />
+	http://c.biancheng.net/cplus/</p>
+显然，通过 2 次调用 freopen() 函数，分别对输入流和输出流重定向，使得 cin 不再接收由键盘输入的数据，而是直接从 in.txt 文件中获取数据；同样，cout 也不再将数据输出到屏幕上，而是写入到 out.txt 文件中。<br />
+<h2>
+	C++ rdbuf()函数实现重定向</h2>
+rdbuf() 函数定义在<code>&lt;ios&gt;</code>头文件中，专门用于实现 C++ 输入输出流的重定向。<br />
+<br />
+值得一提的是，ios 作为 istream 和 ostream 类的基类，rdbuf() 函数也被继承，因此 cin 和 cout 可以直接调用该函数实现重定向。<br />
+<br />
+rdbuf() 函数的语法格式有 2 种，分别为：
+<pre class="info-box">
+streambuf * rdbuf() const;
+streambuf * rdbuf(streambuf * sb);</pre>
+<blockquote>
+	<p>
+		streambuf 是 C++ 标准库中用于表示缓冲区的类，该类的指针对象用于代指某个具体的流缓冲区。</p>
+</blockquote>
+其中，第一种语法格式仅是返回一个指向当前流缓冲区的指针；第二种语法格式用于将 sb 指向的缓冲区设置为当前流的新缓冲区，并返回一个指向旧缓冲区的对象。<br />
+<br />
+举个例子：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;fstream&gt;
+using namespace std;
+int main()
+{
+    //打开 in.txt 文件，等待读取
+    ifstream fin(&quot;in.txt&quot;);
+    //打开 out.txt 文件，等待写入
+    ofstream fout(&quot;out.txt&quot;);
+    streambuf *oldcin;
+    streambuf *oldcout;
+    char a[100];
+    //用 rdbuf() 重新定向，返回旧输入流缓冲区指针
+    oldcin = cin.rdbuf(fin.rdbuf());
+    //从input.txt文件读入
+    cin &gt;&gt; a;
+    //用 rdbuf() 重新定向，返回旧输出流缓冲区指针
+    oldcout = cout.rdbuf(fout.rdbuf());
+    //写入 out.txt
+    cout &lt;&lt; a &lt;&lt; endl;
+
+    //还原标准输入输出流
+    cin.rdbuf(oldcin); // 恢复键盘输入
+    cout.rdbuf(oldcout); //恢复屏幕输出
+    //打开的文件，最终需要手动关闭
+    fin.close();
+    fout.close();
+    return 0;
+}</pre>
+<blockquote>
+	<p>
+		程序中涉及到的文件操作，后续章节会做详细讲解，读者只需领悟 rdbuf() 函数的用法即可。</p>
+</blockquote>
+仍以前面创建好的 in.txt 文件为例，执行此程序后，控制台不会输出任何数据，而是会在该项目的目录下生成一个 out.txt 文件，其中就存有该程序的执行结果：
+<p class="info-box">
+	C++<br />
+	http://c.biancheng.net/cplus/</p>
+<h2>
+	C++通过控制台实现重定向</h2>
+以上 2 种方法，都是从代码层面实现输入输出流的重定向。除此之外，我们还可以通过控制台实现输入输出的重定向。<br />
+<br />
+举个例子，假设有如下代码（文件名为 demo.cpp）：<br />
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+int main()
+{
+    string name, url;
+    cin &gt;&gt; name &gt;&gt; url;
+    cout &lt;&lt; name &lt;&lt; &#39;\n&#39; &lt;&lt; url;
+    return 0;
+}</pre>
+通过编译、链接后，会生成一个 demo.exe 可执行文件，该执行文件可以双击执行，也可以在控制台上执行。例如，打开控制台（Windows 系统下指的是 CMD命令行窗口，Linux 系统下指的是 Shell 终端），并输入如下指令：
+<p class="info-box">
+	C:\Users\mengma&gt;D:\demo.exe<br />
+	C++ http://c.biancheng.net/cplus/<br />
+	C++<br />
+	http://c.biancheng.net/cplus/</p>
+可以看到，demo.ext 成功被执行，但程序中的 cin 和 cout 并没有被重定向，因此这里仍需要我们手动输入测试数据。<br />
+<br />
+在此基础上，继续在控制台执行如下指令：
+<p class="info-box">
+	C:\Users\mengma&gt;D:\demo.exe &lt;in.txt &gt;out.txt</p>
+<blockquote>
+	<p>
+		需要注意的是，执行此命令前，需保证 C:\Users\mengma 目录下有 in.txt 文件。</p>
+</blockquote>
+执行后会发现，控制台没有任何输出。这是因为，我们使用了&quot;&lt;in.txt&quot;对程序中的 cin 输入流做了重定向，同时还用 &quot;&gt;out.txt&quot;对程序中的 cout 输出流做了重定向。<br />
+<br />
+如果此时读者进入 C:\Users\mengma 目录就会发现，当前目录生成了一个 out.txt 文件，其中就存储了 demo.ext 的执行结果。<br />
+<blockquote>
+	<p>
+		在控制台中使用 &gt; 或者 &lt; 实现重定向的方式，DOS、windows、Linux 以及 UNIX 都能自动识别。</p>
+</blockquote>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="341_2.html" title="C语言递归函数" target="_blank">C语言递归函数</a></li>
+<li><a href="2250_2.html" title="Python函数关键字参数及用法" target="_blank">Python函数关键字参数及用法</a></li>
+<li><a href="vip_3381_2.html" title="广义表的深度和长度（C语言）详解" target="_blank">广义表的深度和长度（C语言）详解</a></li>
+<li><a href="3417_2.html" title="AOE网求关键路径详解（包含C语言实现代码）" target="_blank">AOE网求关键路径详解（包含C语言实现代码）</a></li>
+<li><a href="../matplotlib/pylab-module_2.html" title="PyLab绘制曲线图" target="_blank">PyLab绘制曲线图</a></li>
+<li><a href="anqeh6_2.html" title="C语言malloc函数：动态内存分配" target="_blank">C语言malloc函数：动态内存分配</a></li>
+<li><a href="sb35se5_2.html" title="C# StartsWith()：判断字符串是否以指定内容开头" target="_blank">C# StartsWith()：判断字符串是否以指定内容开头</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7572;
+window.arcId = "9f4ftDYiZvnrCFUlMdLCnMLJXrzxlJ3d3MlzSRHcYR48UWEVZ1ZkCkSwwUY";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

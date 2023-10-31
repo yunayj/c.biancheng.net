@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C语言创建线程thread_create（）</title>
+<meta name="description" content="在头文件 threads.h 中，定义和声明了支持多线程的宏、类型和函数。所有直接与线程相关的标识符，均以前缀 thrd_ 作为开头。例如，thrd_t 是一个对象类型，它标识了一个线程。 函数 t" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C语言创建线程thread_create（）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body"><span style="color:#b22222;">在头文件 threads.h 中，定义和声明了支持多线程的宏、类型和函数。</span>所有直接与线程相关的标识符，均以前缀 thrd_ 作为开头。例如，thrd_t 是一个对象类型，它标识了一个线程。<br />
+<br />
+<span style="color:#b22222;">函数 thrd_create（）用于创建并开始执行一个新线程。</span>函数 thrd_create（）的其中一个参数为在新线程中需要被执行的函数 thrd_create（）的其中一个参数为在新线程中需要被执行的函数。thrd_create（）的完整原型是：
+<pre class="cpp">
+int thrd_create(thrd_t *thr, thrd_start_t func, void *arg);</pre>
+<br />
+<span style="color:#b22222;">参数 func 是一个指针，它指向在新线程需要被执行的函数，而 void 指针 arg 用于向该函数传递参数。</span>换句话说，新线程将执行函数调用 func（arg）。<br />
+<br />
+参数 func 的类型为 thrd_start_t，它被定义为 int（*）（void*）（这是一个函数指针，指向一个 void 指针作为其参数并返回一个 int 值的函数），因此，该线程执行的函数返回一个 int 类型的值。<br />
+<br />
+<span style="color:#b22222;">程序在后续过程中可以通过调用函数 thread_join（）获得这个 int 类型的返回值</span>（必要时，需等待该线程执行完）。<br />
+<br />
+如果一个线程启动成功，函数 thread_create（）将新线程写入一个对象进行标识，并通过参数 thr 指向该对象，然后返回宏值 thread_success。<br />
+<br />
+在大多数情况下，后续的其他操作均依赖于该线程的执行结果，并且只有当该线程完成后，才能执行其他操作。函数 thread_join（）用于确保一个线程已完成。它的原型是：
+<pre class="cpp">
+int thrd_join(thrd_t thr, int *result);</pre>
+<br />
+调用 thread_join（）的线程会被阻塞，直到通过 thr 标识的线程执行完成，这里&ldquo;阻塞&rdquo;（block）指的是：线程会在调用 thread_join（）的位置停留必要的时间。然后，thread_join（）将线程 thr 中执行函数的返回值写入指针 result 所引用的 int 变量中，假设 result 不是一个空指针。最后，thread_join（）释放属于线程 thr 的所有资源。<br />
+<br />
+如果程序逻辑上并不需要等待线程 thr 结束，则应该调用以下函数：<br />
+int thrd_detach(thrd_t thr);<br />
+<br />
+<span style="color:#b22222;">thrd_detach（）使得当线程 thr 执行完成后，自动释放线程占用的所有资源。</span>一旦一个线程执行了分离操作（调用 thrd_detach（）），将不用程序等待其结束，程序也不会获得该线程执行函数的返回值。<span style="color:#b22222;">对于每个创建的线程，调用 thread_join（）或 thread_detach（）不得超过一次。</span><br />
+<br />
+在例 1 中的程序展示了使用并行操作处理数组的一种方式。各个线程先自行处理数组的各部分，然后将它们的处理结果组合在一起。该程序仅需计算一个数字序列的总和。<br />
+<br />
+函数 sum（）首先根据创建线程的最大数量确定划分数组所得的各组元素的最大数量，然后调用递归辅助函数 parallel_sum（）。<br />
+<br />
+函数 parallel_sum（）将数组平均分为两半，将其中的一半交给一个新线程处理，同时调用自身来处理另一半数组。如该例所示，一个线程函数需要多个参数，这些参数通常采用结构进行封装。<br />
+<br />
+【例1】在几个并行线程中计算数组元素的和
+<pre class="cpp">
+#include &lt;stdbool.h&gt;
+#include &lt;threads.h&gt;
+
+#define MAX_THREADS 8           // 1、2、4、8&hellip;&hellip;所创建线程数量的最大值
+#define MIN_BLOCK_SIZE 100      // 一个数组块的最小值
+typedef struct                  // 函数parallel_sum()的参数
+{
+    float *start;       // 传递给parallel_sum()的数组块的起始地址
+    int len;            // 数组块长度
+    int block_size;     // 最小数组块的大小
+    double sum;                 // 求和结果
+} Sum_arg;
+
+int parallel_sum(void *arg);    // 线程函数的原型
+
+// ---------------------------------------------------------------
+// 计算数组元素的和，并写入*sumPtr
+// sum()调用函数parallel_sum()进行并行处理
+// 返回值：如果没有发生错误，则返回true；否则，返回false
+bool sum(float arr[], int len, double* sumPtr)
+{
+    int block_size = len / MAX_THREADS;
+    if (block_size &lt; MIN_BLOCK_SIZE) block_size = len;
+
+    Sum_arg args = { arr, len, block_size, 0.0 };
+    if (parallel_sum(&amp;args))
+    { *sumPtr = args.sum; return true; }
+    else
+       return false;
+}
+// ---------------------------------------------------------------
+// 递归辅助函数，用以将工作分解到几个线程中处理
+int parallel_sum(void *arg)
+{
+    Sum_arg *argp = (Sum_arg*)arg;              // 指向参数的指针
+
+    if (argp-&gt;len &lt;= argp-&gt;block_size)                 // 如果length &lt;= block_size，
+                                                        // 对所有元素求和
+    {                                                                  
+        for (int i = 0; i &lt; argp-&gt;len; ++i)
+            argp-&gt;sum += argp-&gt;start[i];
+        return 1;
+    }
+    else                                                // 如果length &gt; block_size，
+                                                        // 分解数组
+   {                                                                           
+        int mid = argp-&gt;len / 2;
+        Sum_arg arg2 = { argp-&gt;start+mid, argp-&gt;len-mid,
+                         argp-&gt;block_size, 0};       // 指定后一半数组
+        argp-&gt;len = mid;                     // 前一半数组的长度
+
+        thrd_t th;                              // 在新线程中处理前一半数组
+        int res = 0;
+        if (thrd_create(&amp;th, parallel_sum, arg) != thrd_success)
+            return 0;                           // 没能成功创建新线程
+
+        if (!parallel_sum(&amp;arg2))   // 在当前线程下，以递归方式处理后一半数组
+        {
+            thrd_detach(th); return 0;          // 递归调用失败
+        }
+        thrd_join(th, &amp;res);
+        if (!res)
+           return 0;            // 同级线程报告执行失败
+
+        argp-&gt;sum += arg2.sum;
+        return 1;  
+    }
+}</pre>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2022.html" title="C语言二维数组指针（指向二维数组的指针）详解" target="_blank">C语言二维数组指针（指向二维数组的指针）详解</a></li>
+<li><a href="2331.html" title="C++异常类型以及多级catch匹配" target="_blank">C++异常类型以及多级catch匹配</a></li>
+<li><a href="5601.html" title="Eclipse快捷键大全" target="_blank">Eclipse快捷键大全</a></li>
+<li><a href="7200.html" title="MySQL删除被其它表关联的主表" target="_blank">MySQL删除被其它表关联的主表</a></li>
+<li><a href="../mongodb2/shard.html" title="MongoDB分片" target="_blank">MongoDB分片</a></li>
+<li><a href="dqn55v.html" title="C语言强制类型转换" target="_blank">C语言强制类型转换</a></li>
+<li><a href="ob3aju8.html" title="C++ continue用法详解" target="_blank">C++ continue用法详解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 425;
+window.arcId = "eb2fHHt57cr21kBekbpmn7o6Aw3wkg0CLM4Rzg2LBJ/D1XNUmR2ygIhkCw";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

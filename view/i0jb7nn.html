@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>JS this到底指向什么？</title>
+<meta name="description" content="在 JavaScript 中，this 的取值与它所处的上下文（Context）有关，并且在普通和严格模式下也有所不同。 在全局作用域上下文中，this 指向的是全局对象，全局对象在浏览器中是 window 对象，" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>JS this到底指向什么？</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在 JavaScript 中，this 的取值与它所处的上下文（Context）有关，并且在普通和严格模式下也有所不同。<br />
+<br />
+在全局作用域上下文中，this 指向的是全局对象，全局对象在浏览器中是 window 对象，在 Node.js 中是当前模块，下方示例展示了全局作用域下的 this 的取值，代码如下：
+<pre class="javascript" showmenu="false" shownum="false">
+this===window;         //true,浏览器环境下
+this===module.exports  //true,Node.js环境下</pre>
+关于不同环境下的全局对象，也可以使用 globalThis 来统一获取，但要注意 Node.js 中的 globalThis 指向的是 global 对象，与上例中全局作用域的 this 指向的 module.exports 不同，在浏览器下 globalThis 指向的对象为 window，与全局作用域 this 所指向的对象相同。<br />
+<br />
+对于在函数上下文中的 this，它的值需要根据函数的调用方式决定。如果是普通的函数，且使用一般的方式进行调用（不使用 new 以构造函数进行调用），则函数体里的 this 指向的都是 globalThis，即 window（浏览器）或 global（Node.js），可以通过下方示例进行验证，代码如下：
+<pre class="javascript" showmenu="false" shownum="false">
+function func(){
+     console.log(this===globalThis);
+}
+func();//true</pre>
+而在严格模式下，普通函数中 this 的值为 undefined。<br />
+<br />
+如果以构造函数的方式调用函数，则 this 指向的是新创建的对象，代码如下：
+<pre class="javascript" showmenu="false" shownum="false">
+function Func(){
+     this.a=5;
+}
+const obj=new Func();
+obj.a;  //5,obj即为Func()中this的指向</pre>
+<br />
+在对象的方法中，如果方法是使用普通函数定义的，则 this 指向的是当前对象，代码如下：
+<pre class="javascript" showmenu="false" shownum="false">
+const obj={
+     a:1,
+     f(){
+          console.log(obj===this);
+          console.log(this.a);
+     },
+};
+obj.f();//true
+        //1</pre>
+要判断普通函数中 this 的指向有一个简单直观的方法，即看它调用时左侧的代码：
+<ul>
+<li>
+如果左侧没有任何代码，则 this 指向的是全局作用域中的对象，例如 f()。</li>
+<li>
+如果为对象，则指向的是这个对象，例如 obj.f()，f() 中的 this 指向的是 obj，又如 obj.inner.f()，f() 中的 this 指向的是 inner 对象。</li>
+<li>
+如果函数继承自 prototype，则这个规则也保持一致，哪个对象调用的这种方法，则它里边的 this 就指向哪个对象，对于 getter 和 setter 所定义的函数也是如此。</li>
+</ul>
+<br />
+如果对象方法是使用箭头函数定义的，则 this 的指向会有所不同。箭头函数中 this 的指向是根据定义时它所在的代码位置决定的，即词法上下文（LexicalContext），this 的取值为包裹箭头函数的作用域中 this 的值。<br />
+<br />
+在上方示例中，如果把 f() 函数改为箭头函数，则它里边的 this 的指向与全局作用域中的 this 的指向一样，即浏览器下为 window，Node.js 下为 module.exports，因为字面值的 obj 是在全局作用域中定义的（定义对象的大括号为对象字面值的语法，并未形成新的块级作用域），包裹 f() 函数的作用域就是全局作用域，代码如下：
+<pre class="javascript" showmenu="false" shownum="false">
+const obj={
+     f:()=&gt;{console.log(this)}
+}
+obj.f();  //Window</pre>
+<br />
+如果在构造函数中使用箭头函数，则箭头函数的 this 就是构造函数中的 this，即指向创建的对象，代码如下：
+<pre class="javascript" showmenu="false" shownum="false">
+function Func(){
+     const init=()=&gt;{
+          this.a=5;
+     };
+     init();
+}
+const obj=new Func();
+obj.a;  //5</pre>
+<br />
+一般在对象中使用普通函数作为对象的方法，这样可以保留 this 的指向，但是有些特殊情况使用箭头函数会更合适。<br />
+<br />
+先来看一个例子，这个例子并不是真实的事件处理方式，不过可以解释 this 在回调函数中的问题，代码如下：
+<pre class="javascript" showmenu="false" shownum="false">
+function Button(label){
+     this.label=label;
+     this.handleClick=function(){
+          console.log(this.label);
+     };
+}
+//模拟触发单击事件
+function emitClick(callback){
+     callback();
+}
+const btn=new Button(＂按钮＂);
+emitClick(btn.handleClick); //undefined</pre>
+代码中首先定义了 Button 构造函数，代表一个按钮组件，它有 label 属性和处理单击事件的方法 handleClick()，方法里边简单地打印出来了按钮的 label 属性值。<br />
+<br />
+emitClick() 函数简单地模拟了单击事件的触发，它接收一个回调函数，用于在单击事件触发后要执行的业务逻辑。<br />
+<br />
+接下来创建了按钮组件的实例，并触发了单击事件，把按钮中的 handleClick() 传递给了 emitClick，这样就会执行它里边的代码。<br />
+<br />
+看起来应该是打印出 label 属性的值：＂按钮＂，但是结果却是 undefined。这是因为 handleClick() 在传递给 emitClick() 的时候，this 的指向已经发生了变化。<br />
+<br />
+可以看到在 emitClick() 中调用 callback() 时，也就是 Button 中的 handleClick()，左边没有任何东西，那么此时 this 指向的是全局对象，它里边没有 label 属性，所以打印出了 undefined。<br />
+<br />
+要解决这个问题有3种方法，第1种解决方法是在 Button 构造函数中，把 this 的值保存到一个变量中，通常使用 self 作为变量名表示对象本身，然后在 handleClick() 中引用，代码如下：
+<pre class="javascript" showmenu="false" shownum="false">
+function Button(label){
+     this.label=label;
+     var self=this;
+     this.handleClick=function(){
+          console.log(self.label);
+     };
+}</pre>
+这时，Button 构造函数和 handleClick() 形成了一个闭包，handleClick() 可以捕获 self 变量的值，后边无论在哪里调用，都可以访问它所指向的对象中的属性了。<br />
+<br />
+第2种解决方法是使用箭头函数，代码如下：
+<pre class="javascript" showmenu="false" shownum="false">
+this.handleClick=()=&gt;{
+     console.log(this.label);
+};</pre>
+因为箭头函数中的 this 是根据箭头函数定义时的位置决定的，所以使用箭头函数定义 handleClick() 时，this 已经确定为构造函数 Button 的 this，所以最后成功地访问了 label 属性。<br />
+<br />
+第3种解决方法是使用函数对象中的 bind() 方法。使用 bind() 可以给函数绑定运行时的 this，并返回新的函数，这样在后边调用这个新函数时，它的 this 就是使用 bind() 所绑定的 this。<br />
+<br />
+例如将 handleClick() 修改为使用 bind()，代码如下：
+<pre class="javascript" showmenu="false" shownum="false">
+this.handleClick=function(){console.log(this.label)}.bind(this);
+//或者这样更清楚一些
+//this.handleClick=function(){console.log(this.label)}
+//this.handleClick=this.handleClick.bind(this)</pre>
+bind() 参数中的 this 就是给 handleClick() 绑定的 this，由于是在 Button 构造函数中，所以 this 指向的是 Button 构造函数中的 this，这样也能打印出 label 属性的值。<br />
+<br />
+这3种解决方法可以任选其一，不过使用箭头函数的方式更为简洁清晰。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="386.html" title="C++ multiset，STL multiset详解" target="_blank">C++ multiset，STL multiset详解</a></li>
+<li><a href="615.html" title="vi退出命令" target="_blank">vi退出命令</a></li>
+<li><a href="vip_2121.html" title="C语言static变量和函数" target="_blank">C语言static变量和函数</a></li>
+<li><a href="6187.html" title="PHP $_FILES详解" target="_blank">PHP $_FILES详解</a></li>
+<li><a href="7745.html" title="MySQL错误日志（Error Log）详解" target="_blank">MySQL错误日志（Error Log）详解</a></li>
+<li><a href="onq4jl.html" title="C语言#define指令" target="_blank">C语言#define指令</a></li>
+<li><a href="i0wfhmu.html" title="git pull命令：获取最新的远程仓库分支" target="_blank">git pull命令：获取最新的远程仓库分支</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10159;
+window.arcId = "e377hpG4qgZXnWUuTrQBje05BP/RXlCamFd5b4RIkn/KL4nUM6Mw6rf32fcL";
+window.typeidChain = "309|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

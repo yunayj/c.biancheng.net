@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C语言指向函数的指针</title>
+<meta name="description" content="C 语言的函数指针有很多用法。例如，当调用一个函数时，可能不仅想传入该函数需要被处理的数据，还希望传入指向子程序的指针，该子程序决定如何处理数据。 也 可以在数组中存储" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C语言指向函数的指针</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">C 语言的函数指针有很多用法。例如，当调用一个函数时，可能不仅想传入该函数需要被处理的数据，还希望传入指向子程序的指针，该子程序决定如何处理数据。<br />
+<br />
+也<span style="color:#b22222;">可以在数组中存储函数指针，然后使用数组的索引来调用这些函数。</span>例如，键盘驱动程序可能使用函数指针数组，数组索引对应到了键盘编码。当用户按下一个键时，程序就会跳到对应的函数。<br />
+<br />
+<span style="color:#b22222;">与数组指针的声明一样，函数指针的声明也需要括号。</span>下面的例子展示了如何声明函数指针。这个声明定义了一个指向函数的指针，该函数具有两个 double 类型的参数和 double 类型的返回值：
+<pre class="cpp">
+double (*funcPtr)(double, double);</pre>
+<br />
+该声明中采用括号将星号和标识符包围起来，这个括号很重要。如果没有它，声明 double*funcPtr（double，double）；则为函数原型，而不是指针定义。<br />
+<br />
+<span style="color:#b22222;">无论是否必须，函数名会被隐式地转换成函数指针</span>。因此，下面的语句会将标准函数 pow（）的地址赋值给指针 funcPtr，然后利用该指针调用这个函数：
+<pre class="cpp">
+double result;
+funcPtr = pow;               // 使得funcPtr指向函数pow()
+                                             // 因此，表达式*funcPtr获得函数pow()
+result = (*funcPtr)( 1.5, 2.0 ); // 通过funcPtr调用函数
+result = funcPtr( 1.5, 2.0 );    // 与上等效的函数调用</pre>
+<br />
+如本例中最后一行所示，当使用指针调用函数时，可以不用间接运算符，因为函数调用运算符的左操作数具有函数指针类型。<br />
+<br />
+例 1 所示程序提示用户输入两个数字，然后对它们进行简单的计算。该数学函数通过存储在数组 funcTable 中的指针调用获得。<br />
+<br />
+【例1】函数指针的简单用法
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;math.h&gt;
+
+double Add( double x, double y ) { return x + y; }
+double Sub( double x, double y ) { return x - y; }
+double Mul( double x, double y ) { return x * y; }
+double Div( double x, double y ) { return x / y; }
+
+// 具有5个函数指针的数组，这些函数需要两个double类型参数，返回值为double类型
+double (*funcTable[5])(double, double)
+          = { Add, Sub, Mul, Div, pow };        // 初始化器列表
+
+// 一个字符串指针数组，用于输出：
+char *msgTable[5] = {&quot;Sum&quot;, &quot;Difference&quot;, &quot;Product&quot;, &quot;Quotient&quot;, &quot;Power&quot;};
+
+int main()
+{
+  int i;                                                // 索引变量
+  double x = 0, y = 0;
+
+  printf( &quot;Enter two operands for some arithmetic:\n&quot; );
+  if ( scanf( &quot;%lf %lf&quot;, &amp;x, &amp;y ) != 2 )
+    printf( &quot;Invalid input.\n&quot; );
+
+  for ( i = 0; i &lt; 5; ++i )
+    printf( &quot;%10s: %6.2f\n&quot;, msgTable[i], funcTable[i](x, y) );
+
+  return 0;
+}</pre>
+<br />
+表达式 funcTable[i]（x，y）会调用地址保存在指针 funcTable[i] 中的函数。数组名称和下标不需要被包含在括号内，因为函数调用运算符（）和下标运算符 [] 都具有最高的优先级，以及从左至右的结合律。<br />
+<br />
+再次提醒，<span style="color:#b22222;">采用 typedef 定义简单的类型名称，对于诸如函数指针数组这样的复杂类型，将更容易管理。</span>例如，可以采用如下形式定义数组 funcTable：
+<pre class="cpp">
+typedef double func_t( double, double );      // 函数类型名称定义为func_t
+func_t *funcTable[5] = { Add, Sub, Mul, Div, pow };</pre>
+<br />
+上述定义方法显然比例 1 中的数组定义可读性更高。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="605.html" title="C++ copy_backward(STL copy_backward)算法详解" target="_blank">C++ copy_backward(STL copy_backward)算法详解</a></li>
+<li><a href="663.html" title="GCC编译流程" target="_blank">GCC编译流程</a></li>
+<li><a href="784.html" title="Java位运算符：Java移位运算符、复合位赋值运算符及位逻辑运算符" target="_blank">Java位运算符：Java移位运算符、复合位赋值运算符及位逻辑运算符</a></li>
+<li><a href="vip_8527.html" title="显示调用C/C++动态链接库" target="_blank">显示调用C/C++动态链接库</a></li>
+<li><a href="p0r30gk.html" title="Python lambda函数（匿名函数）的用法" target="_blank">Python lambda函数（匿名函数）的用法</a></li>
+<li><a href="htr5ykb.html" title="Java自增自减运算符（++、--）" target="_blank">Java自增自减运算符（++、--）</a></li>
+<li><a href="5lrfu8y.html" title="Redis HGETALL命令的用法" target="_blank">Redis HGETALL命令的用法</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 370;
+window.arcId = "6764KAaHqv3xzzJbk9pRkC2ggcwnmdOU+Mix//OvJPskUl6euJjZhJJWEA";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

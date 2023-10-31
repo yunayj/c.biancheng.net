@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>主成分分析法（PCA）原理和步骤（超级详细）</title>
+<meta name="description" content="主成分分析（Principal Component Analysis，PCA） 是一种多变量统计方法，它是最常用的降维方法之一，通过正交变换将一组可能存在相关性的变量数据转换为一组线性不相关的变量，转换后" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>主成分分析法（PCA）原理和步骤（超级详细）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body"><span style="color:#008000;">主成分分析（Principal Component Analysis，PCA）</span>是一种多变量统计方法，它是最常用的降维方法之一，通过正交变换将一组可能存在相关性的变量数据转换为一组线性不相关的变量，转换后的变量被称为<span style="color:#008000;">主成分</span>。<br />
+<br />
+<span style="color:#b22222;">可以使用两种方法进行 PCA，分别是</span><span style="color:#008000;">特征分解</span><span style="color:#b22222;">或</span><span style="color:#008000;">奇异值分解（SVD）</span><span style="color:#b22222;">。</span><br />
+<h2>
+	准备工作</h2>
+PCA 将 n 维输入数据缩减为 r 维，其中 r&lt;n。简单地说，PCA 实质上是一个基变换，使得变换后的数据有最大的方差，也就是通过对坐标轴的旋转和坐标原点的平移使得其中一个轴（主轴）与数据点之间的方差最小，坐标转换后去掉高方差的正交轴，得到降维数据集。<br />
+<br />
+这里使用 SVD 方法进行 PCA 降维，假定有 p&times;n 维数据样本 X，共有 p 个样本，每行是 n 维，p&times;n 实矩阵可以分解为：
+<div style="text-align: center;">
+	<br />
+	<img alt="" src="../uploads/allimg/190111/2-1Z111103523S8_2.gif" /><br />
+	&nbsp;</div>
+这里，正交阵 U 的维数是 p&times;n，正交阵 V 的维数是 n&times;n（正交阵满足：UU<sup>T</sup>=V<sup>T</sup>V=1），&Sigma; 是 n&times;n 的对角阵。接下来，将 &Sigma; 分割成 r 列，记作 &Sigma;<sub>r</sub>；利用 U 和 V 便能够得到降维数据点 Y<sub>r</sub>：
+<div style="text-align: center;">
+	<br />
+	<img alt="" src="../uploads/allimg/190111/2-1Z11110360QZ_2.gif" /></div>
+<h2>
+	具体做法</h2>
+<ol>
+	<li>
+		导入所需的模块，除了 <a href='https://m.biancheng.net/tensorflow/' target='_blank'>TensorFlow</a>，还需要 numpy 进行基本的矩阵计算，用 matplotlib、mpl_toolkit 和 seaborn 绘制图形：
+		<div>
+			<br />
+			<img alt="" src="../uploads/allimg/190111/2-1Z11110363Y35_2.gif" /><br />
+			&nbsp;</div>
+	</li>
+	<li>
+		加载数据集，此处使用常用的 MNIST 数据集：
+		<div>
+			<br />
+			<img alt="" src="../uploads/allimg/190111/2-1Z111103KbC_2.gif" /><br />
+			&nbsp;</div>
+	</li>
+	<li>
+		定义类 TF_PCA，此类初始化如下：
+		<div>
+			<br />
+			<img alt="" src="../uploads/allimg/190111/2-1Z111103R44A_2.gif" /><br />
+			&nbsp;</div>
+	</li>
+	<li>
+		定义 fit 函数计算输入数据的 SVD。定义计算图，以此计算奇异值和正交矩阵 U，self._X 以占位符的形式读入数据 self.data，tf.svd 以递减顺序返回形状为 [...，p] 的奇异值 s（singular_values），然后使用 tf.diag 将奇异值转换为对角矩阵：
+		<div>
+			<br />
+			<img alt="" src="../uploads/allimg/190111/2-1Z111103Fa94_2.gif" /><br />
+			&nbsp;</div>
+	</li>
+	<li>
+		现在有了 sigma 矩阵、正交矩阵 U 和奇异值，下面定义 reduce 函数来计算降维数据。该方法需要 n_dimensions 和 keep_info 两个输入参数之一，n_dimensions 参数表示在降维数据中保持的维数，keep_info 参数表示保留信息的百分比（0.8意味着保持 80% 的原始数据）。该方法创建一个计算图，对 sigma 矩阵进行分割并计算降维数据集 Yr：
+		<div>
+			<br />
+			<img alt="" src="../uploads/allimg/190111/2-1Z111104004959_2.gif" /><br />
+			&nbsp;</div>
+	</li>
+	<li>
+		TF_PCA 类已经准备就绪，下面会将 MNIST 的每个输入数据从维度为 784（28&times;28）减小到每个维度为 3。在这里为了对比效果只保留了 10% 的信息，但通常情况下需要保留大约 80% 的信息：
+		<div>
+			<br />
+			<img alt="" src="../uploads/allimg/190111/2-1Z11110403R57_2.gif" /><br />
+			&nbsp;</div>
+		代码输出如下：
+		<div>
+			<br />
+			<img alt="" src="../uploads/allimg/190111/2-1Z1111041035C_2.gif" /><br />
+			&nbsp;</div>
+	</li>
+	<li>
+		绘制三维空间中的 55000 个数据点：
+		<div>
+			<br />
+			<img alt="" src="../uploads/allimg/190111/2-1Z111104124606_2.gif" /><br />
+			&nbsp;</div>
+		<img alt="" src="../uploads/allimg/190111/2-1Z11110413L22_2.gif" /></li>
+</ol>
+<h2>
+	解读分析</h2>
+前面的代码对 MNIST 图像进行了降维操作。原图的大小为 28&times;28，利用 PCA 方法把尺寸压缩得更小。通常在图像处理中经常用到降维操作，因为太大的图像尺寸包含大量的冗余数据。<br />
+<br />
+TensorFlow 中的 embeddings 技术可以实现从对象到向量的映射，TensorBoard 中的 Embedding Projector 可以交互式地对模型的 embeddings 进行可视化，并提供了三种降维的方法：PCA、t-SNE 和自定义方式，可以使用 Embeddings Projector 来得到与上面类似的结果。<br />
+<br />
+这需要从 tensorflow.contrib.tensorboard.plugins 中导入 projector，并且通过简单的三个步骤就可以完成：<br />
+<ol>
+	<li>
+		加载数据：
+		<div>
+			<br />
+			<img alt="" src="../uploads/allimg/190111/2-1Z111104226344_2.gif" /><br />
+			&nbsp;</div>
+	</li>
+	<li>
+		新建一个 metadata 文件（用制表符分隔的 .tsv 文件）：
+		<div>
+			<br />
+			<img alt="" src="../uploads/allimg/190111/2-1Z11110424U12_2.gif" /><br />
+			&nbsp;</div>
+	</li>
+	<li>
+		将 embeddings 保存在 Log_DIR 中：
+		<div>
+			<br />
+			<img alt="" src="../uploads/allimg/190111/2-1Z111104313457_2.gif" /></div>
+	</li>
+</ol>
+<br />
+现在就可以使用 TensorBoard 查看 embeddings 了，通过命令行 tensorboard--logdir=log，在 Web 浏览器中打开 TensorBoard，然后进入 EMBEDDINGS 选项卡。下图显示的就是使用 PCA 方法运算的前三个主成分为轴的 TensorBoard 投影：
+<div style="text-align: center;">
+	<br />
+	<img alt="" src="../uploads/allimg/190111/2-1Z111104TV08_2.gif" /><br />
+	（<a href="../uploads/allimg/190111/2-1Z1111049103c_2.jpg" target="_blank">点此查看高清大图</a>）</div>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="3008_2.html" title="Vim移动光标快捷键汇总" target="_blank">Vim移动光标快捷键汇总</a></li>
+<li><a href="5693_2.html" title="Python绝对路径和相对路径详解" target="_blank">Python绝对路径和相对路径详解</a></li>
+<li><a href="vip_5864_2.html" title="面向连接和无连接的套接字到底有什么区别" target="_blank">面向连接和无连接的套接字到底有什么区别</a></li>
+<li><a href="vip_5917_2.html" title="C语言学生信息管理系统源码下载和思路解析（文件版）" target="_blank">C语言学生信息管理系统源码下载和思路解析（文件版）</a></li>
+<li><a href="../pandas/multiple_2.html" title="Pandas分层索引入门教程（详解）" target="_blank">Pandas分层索引入门教程（详解）</a></li>
+<li><a href="40rtq08_2.html" title="Go语言defer语句的用法" target="_blank">Go语言defer语句的用法</a></li>
+<li><a href="5lrfu8y_2.html" title="Redis HGETALL命令的用法" target="_blank">Redis HGETALL命令的用法</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 1951;
+window.arcId = "c9d8pvrmc3DGoaaX/bXHt+sN152QnYeq6+33hNm9gyz0yLMPNIE7ejXdQ+o";
+window.typeidChain = "454|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

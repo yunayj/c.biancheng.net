@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Shell awk命令详解（格式+使用方法）</title>
+<meta name="description" content="awk 命令 的基本格式如下： [root@localhost ~]# awk 条件1 {动作 1} 条件2 {动作 2} 文件名 条件（Pattern） ： 一般使用关系表达式作为条件。这些关系表达式非常多，具体参考表1。 表 1 awk支持" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Shell awk命令详解（格式+使用方法）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body"><span style="color:#008000;">awk 命令</span>的基本格式如下：
+<p class="info-box">
+	[root@localhost ~]# awk &#39;条件1 {动作 1} 条件 2 {动作 2} &hellip;&#39; 文件名</p>
+<br />
+<span style="color:#b22222;">条件（Pattern）</span>：<br />
+一般使用关系表达式作为条件。这些关系表达式非常多，具体参考表1。<br />
+<br />
+<table>
+	<caption>
+		表 1 awk支持的主要条件类型</caption>
+	<tbody>
+		<tr>
+			<th>
+				条件类型</th>
+			<th>
+				条&nbsp;件</th>
+			<th>
+				说&nbsp;明</th>
+		</tr>
+		<tr>
+			<td>
+				awk保留字</td>
+			<td>
+				BEGIN</td>
+			<td>
+				在 awk 程序一开始，尚未读取任何数据之前执行。BEGIN 后的动作只在程序开始时执行一次</td>
+		</tr>
+		<tr>
+			<td>
+				awk保留字</td>
+			<td>
+				END</td>
+			<td>
+				在 awk 程序处理完所有数据，即将结束时执行?END 后的动作只在程序结束时执行一次</td>
+		</tr>
+		<tr>
+			<td rowspan="8">
+				关系运算符</td>
+			<td>
+				&gt;</td>
+			<td>
+				大于</td>
+		</tr>
+		<tr>
+			<td>
+				&lt;</td>
+			<td>
+				小于</td>
+		</tr>
+		<tr>
+			<td>
+				&gt;=</td>
+			<td>
+				大于等于</td>
+		</tr>
+		<tr>
+			<td>
+				&lt;=</td>
+			<td>
+				小于等于</td>
+		</tr>
+		<tr>
+			<td>
+				==</td>
+			<td>
+				等于。用于判断两个值是否相等。如果是给变童赋值，则使用&quot;=&rdquo;</td>
+		</tr>
+		<tr>
+			<td>
+				!=</td>
+			<td>
+				不等于</td>
+		</tr>
+		<tr>
+			<td>
+				A~B</td>
+			<td>
+				判断字符串 A 中是否包含能匹配 B 表达式的子字符串</td>
+		</tr>
+		<tr>
+			<td>
+				A!~B</td>
+			<td>
+				判断字符串 A 中是否不包含能匹配 B 表达式的子字符串</td>
+		</tr>
+		<tr>
+			<td>
+				正则表达式</td>
+			<td>
+				/正则/</td>
+			<td>
+				如果在&ldquo;//&rdquo;中可以写入字符，则也可以支持正则表达式</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+例如：<br />
+x&gt;10：判断变量 x 是否大于10；<br />
+x == y：判断变量 x 是否等于变量 y；<br />
+A~B：判断字符串 A 中是否包含能匹配 B 表达式的子字符串；<br />
+A!~B：判断字符串 A 中是否不包含能匹配 B 表达式的子字符串；<br />
+<br />
+<span style="color:#b22222;">动作（Action）</span>：
+<ul>
+	<li>
+		格式化输出；</li>
+	<li>
+		流程控制语句；</li>
+</ul>
+<br />
+我们先来学习 awk 的基本用法，也就是只看看格式化输出动作是干什么的。看看这个例子：<br />
+<p class="info-box">
+	[root@localhost ~]# awk &#39;{printf $2 &quot;\t&quot; $6 &quot;\n&quot;}&#39; student.txt<br />
+	#输出第二列和第六列的内容<br />
+	Name Average<br />
+	Liming 87.66<br />
+	Sc 85.66<br />
+	Gao 91.66</p>
+在这个例子中没有设定任何的条件类型，所以这个文件中的所有内容都符合条件，动作会无条件执行。动作是格式化输出 printf，&quot;$2&quot;和&quot;$6&quot;分别代表第二个字段和第六个字段，所以这条 awk 命令会列出 student.txt 文件的第二个字段和第六个字段。<br />
+<br />
+虽然都是截取列的命令，但是 awk 命令比 cut 命令智能多了，cut 命令是不能很好地识别空格作为分隔符的；而对于 awk 命令来说，只要分隔开，不管是空格还是制表符，都可以识别。比如刚刚截取 df 命令的结果时，cut 命令已经力不从心了，我们来看看 awk 命令，命令如下：<br />
+<p class="info-box">
+	[root@localhost ~]#df -h | awk &#39;{print $1 &quot;\t&quot; $3}&#39;<br />
+	文件系统 已用<br />
+	/dev/sda3 1.8G<br />
+	tmpfs 0<br />
+	/dev/sda1 26M<br />
+	/dev/sr0 3.5G</p>
+在这两个例子中，我们分别使用了 printf 动作和 print 动作。发现了吗？如果使用 printf 动作，就必须在最后加入&quot;\n&quot;，因为 printf 只能识别标准输出格式；如果我们不使用&quot;\n&quot;，它就不会换行。而 print 动作则会在每次输出后自动换行，所以不用在最后加入&quot;\n&quot;。<br />
+<h2>
+	awk的条件</h2>
+我们来看看 awk 可以支持什么样的条件类型吧。awk 支持的主要条件类型如表 1 所示。<br />
+<h4>
+	1) BEGIN</h4>
+BEGIN 是 awk 的保留字，是一种特殊的条件类型。BEGIN 的执行时机是&quot;在 awk 程序一开始，尚未读取任何数据之前&quot;。<br />
+<br />
+一旦 BEGIN 后的动作执行一次，当 awk 开始从文件中读入数据时，BEGIN 的条件就不再成立，所以 BEGIN 定义的动作只能被执行一次。例如：<br />
+<p class="info-box">
+	[root@localhost ~]# awk &#39;BEGIN{printf &quot;This is a transcript\n&quot;}<br />
+	{printf $2 &quot;\t&quot; $6 &quot;\n&quot;}&#39; student.txt<br />
+	#awk命令只要检测不到完整的单引号就不会执行，所以这条命令的换行不用加入&quot;\&quot;，就是一行命令<br />
+	#这里定义了两个动作<br />
+	#第一个动作使用BEGIN条件，所以会在读入文件数据前打印&quot;这是一张成绩单&quot;（只会执行一次）<br />
+	#第二个动作会打印文件的第二个字段和第六个字段<br />
+	This is a transcript<br />
+	Name Average<br />
+	Liming 87.66<br />
+	Sc 85.66<br />
+	Gao 91.66</p>
+<h4>
+	2) END</h4>
+END 也是 awk 的保留字，不过刚好和 BEGIN 相反。END 是在 awk 程序处理完所有数据，即将结束时执行的。END 后的动作只在程序结束时执行一次。例如：<br />
+<p class="info-box">
+	[root@localhost ~]# awk &#39;END{printf &quot;The End \n&quot;}<br />
+	{printf $2 &quot;\t&quot; $6 &quot;\n&quot;}&#39; student.txt<br />
+	#输出结尾输入&quot;The End&quot;，这并不是文档本身的内容，而且只会执行一次<br />
+	Name Average<br />
+	Liming 87.66<br />
+	Sc 85.66<br />
+	Gao 91.66<br />
+	The End</p>
+<h4>
+	3)关系运算符</h4>
+举几个例子看看关系运算符。假设我想看看平均成绩大于等于 87 分的学员是谁，就可以这样输入命令：<br />
+<br />
+<strong>【例 1】</strong>
+<p class="info-box">
+	[root@localhost ~]# cat student.txt | grep -v Name |awk&#39;$6 &gt;= 87 {printf $2&#39;\n&quot;}&#39;<br />
+	#使用cat输出文件内容，用grep取反包含&quot;Name&quot;的行<br />
+	#判断第六个字段（平均成绩）大于等于87分的行，如果判断式成立，则打印第六列（学员名）<br />
+	Liming<br />
+	Gao</p>
+在加入了条件之后，只有条件成立，动作才会执行；如果条件不满足，则动作不执行。通过这个实验，大家可以发现，虽然 awk 是列提取命令，但是也要按行来读入。<br />
+<br />
+这条命令的执行过程是这样的：
+<ol>
+	<li>
+		如果有 BEGIN 条件，则先执行 BEGIN 定义的动作。</li>
+	<li>
+		如果没有 BEGIN 条件，则读入第一行，把第一行的数据依次赋予 $0、$1、$2 等变量。其中，$0 代表此行的整体数据，$1 代表第一个字段，$2 代表第二个字段。</li>
+	<li>
+		依据条件类型判断动作是否执行。如果条件符合，则执行动作；否则读入下一行激据。如果没有条件，则每行都执行动作。</li>
+	<li>
+		读入下一行数据，重复执行社步骤。</li>
+</ol>
+<br />
+如果我想看看 Sc 用户的平均成绩呢？<br />
+<br />
+<strong>【例 2】</strong>
+<p class="info-box">
+	[root@localhost ~]# awk&#39;$2 -/Sc/ {printf $6 &quot;\n&quot;}&#39; student.txt<br />
+	#如果第二个字段中包含&quot;Sc&quot;字符，则打印第六个字段<br />
+	85.66</p>
+这里要注意，在 awk 中，只有使用&quot;//&quot;包含的字符串，awk 命令才会査找。也就是说，字符串必须用&quot;//&quot;包含，awk 命令才能正确识别。<br />
+<h4>
+	4) 正则表达式</h4>
+如果想让 awk 识别字符串，则必须使用&quot;//&quot;包含，例如：<br />
+<p class="info-box">
+	[root@localhost ~]# awk &#39;/Liming/ {print}&#39; student.txt<br />
+	#打印Liming的成绩<br />
+	1 Liming 82 95 86 87.66</p>
+当使用 df 命令査看分区的使用情况时，如果我只想査看真正的系统分区的使用情况，而不想査看光盘和临时分区的使用情况，则可以这样做：<br />
+<p class="info-box">
+	[root@localhost ~]# df -h | awk &#39;/sda[0-9]/ {printf $1 &#39;\t\ $5 &quot;\n&quot;}&#39;<br />
+	#查询包含&quot;sda数字&quot;的行，并打印第一个字段和第五个字段<br />
+	/dev/sda3 10%<br />
+	/dev/sda1 15%</p>
+<h2>
+	awk流程制</h2>
+之所以称为 awk 编程，是因为在 awk 中允许定义变量，允许使用运算符，允许使用流程控制语句和定义函数。这样就使得 awk 编程成了一门完整的程序语言，当然难度也比普通的命令要大得多。<br />
+<br />
+所有语言的流程控制都非常类似，在这里只举一些例子，用来演示 awk 流程控制的作用。如果你现在看不懂这些例子，则可以等学习完 Bash 流程控制之后，回过头来学习。<br />
+<br />
+我们再利用 studert.txt 文件做一个练习，后面的使用比较复杂，我们再看看这个文件的内容，如下：<br />
+<p class="info-box">
+	[root@localhost ~]# cat student.txt<br />
+	ID Name <a href='../php/php_2.html' target='_blank'>PHP</a> Linux <a href='../mysql/mysql_2.html' target='_blank'>MySQL</a> Average<br />
+	1 Liming 82 95 86 87.66<br />
+	2 Sc 74 96 87 85.66<br />
+	3 Gao 99 83 93 91.66</p>
+先来看看如何在 awk 中定义变量与调用变量的值。假设我想统计 PHP 成绩的总分，就应该这样做：<br />
+<p class="info-box">
+	[root@localhost ~]# awk&#39;NR==2{php1 =$3}<br />
+	NR==3{php2=$3}<br />
+	NR==4{php3= $3;totle=php1+php2+php3;print &quot;totle php is&quot; totle}&#39; student.txt<br />
+	#统计PHP成绩的总分<br />
+	totle php is 255</p>
+这条命令有点复杂了，我们解释一下:<br />
+<ul>
+	<li>
+		&quot;NR==2{php1=$3}&quot;(条件是NR==2,动作是php=$3) 是指如果输入数据是第二行（第一行是标题行），就把第二行的第三个字段的值赋予变量&quot;php1&quot;。</li>
+	<li>
+		&quot;NR==3{php2=$3}&quot;是指如果输入数据是第三行，就把第三行的第三个字段的值赋予变量&quot;php2&quot;。NR==4{php3=$3;totle=php1+php2+php3;print&quot;totle php is&quot;totle}&quot;(&quot;NR==4&quot;是条件，后面{}中的都是动作）是指如果输入数是第四行，就把第四行的第三个字段的值赋予变量&quot;php3&quot;；然后定义变量 totle 的值是&quot;php1+php2+php3&quot;;最后输出&quot;totle php is&quot;关键字，后面加变量 totle 的值。</li>
+</ul>
+<br />
+在awk编程中，因为命令语句非常长，所以在输入格式时需要注意以下内容：
+<ul>
+	<li>
+		多个条件{动作}可以用空格分隔，也可以用回车分隔。</li>
+	<li>
+		在一个动作中，如果需要执行多条命令，则需要用分隔，或用回车分隔。</li>
+	<li>
+		在awk中，变量的赋值与调用都不需要加入&quot;$&quot;符号。</li>
+	<li>
+		在条件中判断两个值是否相同，请使用&quot;==&quot;，以便和变量赋值进行区分。</li>
+</ul>
+<br />
+再看看如何实现流程控制。假设 Linux 成绩大于 90 分，就非常棒，命令如下：<br />
+<p class="info-box">
+	[root@localhost ~]# awk&#39;{if (NR&gt;=2)<br />
+	{if ($4&gt;90) printf $2&quot; is a good man!\n&quot;}}&#39; student.txt<br />
+	#程序中有两个if判断，第一个判断行号大于2，第二个判断Linux成绩大于90分<br />
+	Liming is a good man!<br />
+	Sc is a good man!</p>
+其实在 awk 中，if 判断语句完全可以直接利用 awk 自带的条件来取代，刚刚的脚本可以改写成这样：<br />
+<p class="info-box">
+	[root@localhost ~]# awk&#39; NR&gt;=2 {test=$4}<br />
+	test&gt;90 {printf $2&quot; is a good man!\n&quot;}&#39; student.txt<br />
+	#先判断行号,如果大于2,就把第四个字段的值赋予变量test<br />
+	#再判断成绩，如果test的值大于90分，就打印好男人<br />
+	Liming is a good man!<br />
+	Sc is a good man!</p>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="114_2.html" title="Go语言通过反射访问结构体成员的值" target="_blank">Go语言通过反射访问结构体成员的值</a></li>
+<li><a href="vip_1984_2.html" title="C语言宏参数的字符串化和宏参数的连接" target="_blank">C语言宏参数的字符串化和宏参数的连接</a></li>
+<li><a href="vip_2255_2.html" title="C++ const引用与转换类型" target="_blank">C++ const引用与转换类型</a></li>
+<li><a href="vip_5083_2.html" title="修改/etc/fstab文件出错导致Linux不能启动，该怎么办？" target="_blank">修改/etc/fstab文件出错导致Linux不能启动，该怎么办？</a></li>
+<li><a href="5613_2.html" title="Java标识符和关键字" target="_blank">Java标识符和关键字</a></li>
+<li><a href="../ml_alg/conditions_2.html" title="决策树算法：选择决策条件" target="_blank">决策树算法：选择决策条件</a></li>
+<li><a href="4twxipr_2.html" title="Vue按键修饰符（keydown、keyup和keypress）" target="_blank">Vue按键修饰符（keydown、keyup和keypress）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 992;
+window.arcId = "1b91zZsb67z7O96dl9Q4x7VVBrTIeXBlU38RtMOPnIU3mAzVuziZjic6Cg";
+window.typeidChain = "210|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

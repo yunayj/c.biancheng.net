@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>V8引擎简介（非常详细）</title>
+<meta name="description" content="V8 是 Google为Chrome浏览器设计的JavaScript执行引擎，其初衷与目标是为Chrome设计一个领先行业的高性能JavaScript引擎。从此JavaScript被分为前V8时代与后V8时代。在前V8时代，JavaScript是一门纯解" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>V8引擎简介（非常详细）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">V8 是 Google 为 Chrome 浏览器设计的 JavaScript 执行引擎，其初衷与目标是为 Chrome 设计一个领先行业的高性能 JavaScript 引擎，从此 JavaScript 被分为前 V8 时代与后 V8 时代。<br />
+<br />
+在前 V8 时代，JavaScript 是一门纯解释性质的动态脚步语言，浏览器一行一行地执行 JavaScript。在后 V8 时代，JavaScript 成为一种类似 Java 的编译语言，在 V8 之后，现代浏览器（包括新的 IE）都是将 JavaScript 直接编译成机器指令直接让 CPU 执行。
+<h4>
+【扩展阅读】浏览器JavaScript发展简史</h4>
+1995 年，当时在网景公司就职的布兰登&middot;艾克正为 Netscape Navigator 2.0 浏览器开发一门名为 LiveScript 的脚本语言，后来由网景公司与昇阳电脑公司组成的开发联盟为了让这门语言搭上 Java 这个编程语言&ldquo;热词&rdquo;，将其临时改名为 JavaScript，日后这成为大众对这门语言有诸多误解的原因之一，虽然后来反复强调 JavaScript 和 Java 并没有任何联系。<br />
+<br />
+然而发明人和这些公司也许没有想到，到了后 V8 时代，JavaScript 越来越像 Java，程序员们越来越多地使用 JavaScript 来完成原来使用 Java 来完成的工作，JavaScript 真的成为 Script 版的 Java。<br />
+<br />
+其实在 V8 开发小组的一群程序语言专家中，核心工程师 Lars Bak 之前研发了 HotSpot，这是用在 Sun Microsystems 公司开发的 Java 虚拟机器（VM）的加速技术，所以 V8 这一 Google 工程师实现的创新其实或多或少基于 Java 语言的探索与发展。最终凭借 V8 这一创新，Chrome 浏览器坐上浏览器市场占有率第一的宝座。<br />
+<br />
+Java 语言中有两个过程：
+<ul>
+<li>
+一个是编译，将 Java 源代码编译成 Java 字节码（一种独立于机器的程序编码）；</li>
+<li>
+另一个是执行，将 Java 字节码翻译成对应执行平台的机器码执行。</li>
+</ul>
+<br />
+Java 字节码在执行过程中有两种模式，最初通过类似脚本的语言逐条翻译执行，后来又引入了编译执行，即将经常执行的 Java 字节码做即时编译，编译成机器码，加速执行。<br />
+<br />
+V8 引擎借鉴了 Java 的编译执行过程，也引入 Java 的虚拟机概念，将整个 V8 引擎打造成可以执行 JavaScript 的虚拟机。<br />
+<br />
+同时，V8 借鉴了 Java 虚拟机的内存管理技术，采用垃圾回收（Garbage Collection，GC）技术来回收不再需要的内存空间。<br />
+<br />
+每个 V8 引擎都是一个具有独立地址空间的虚拟机，不同的 JavaScript 程序在不同的虚拟机中执行，互不干扰，大大提高了 JavaScript 的稳定性。
+<h2>
+编译执行</h2>
+V8 引擎的性能保障来源于其内置的 JavaScript 编译器，相比于 Java 的解释执行与即时编译，V8 采用了和 C# 一样的一次编译技术，也就是 V8 采用的编译执行策略是在 JavaScript 从服务器端完成加载后，预先对所有的 JavaScript 代码进行编译。<br />
+<br />
+如果分析 V8 源代码，可以发现 V8 仍然有类似 Java 字节码的中间过程，但是从外部看，V8 是直接将 JavaScript 编译成本地的机器语言的，然后通过 CPU 直接运行这些机器码。执行过程中，编译器不再对执行过程干预。所以，在 V8 中，编译与执行是两个不同的部分。<br />
+<br />
+正是由于采用一次编译技术，V8 能够将所有现代编译器的优化能力都应用到 JavaScript 的编译中，实现对 JavaScript 的高度优化。<br />
+<br />
+如果读者有能力阅读 V8 的源代码，可以清晰地看到 V8 的设计完全遵循了现代编译器的设计思路，包括前端语法树生产、中端语法树到中间语言的翻译、中间语言优化、后端中间语言到机器语言的编译等部分。<br />
+<br />
+下图是 V8 的编译执行示意图：
+<div style="text-align: center;">
+<img alt="V8 的编译执行示意图" src="../uploads/allimg/221109/1-22110915203AK.jpg" /><br />
+图1：V8 的编译执行示意图</div>
+<br />
+但是像 JavaScript 这种脚本语言有一个不同于编译语言的特点，就是它的弱类型。换句话说，某个变量属于哪种类型只有在 JavaScript 语言运行过程中才能最终确定。<br />
+<br />
+V8 的编译器为解决这种问题，引入了内联缓存技术来加速这类在编译期不能被优化的代码。<br />
+<br />
+举一个简单的例子，下面是一个 JavaScript 读取属性的例子：
+<pre class="info-box">
+function f(v) { return v.x; }</pre>
+对于 V8 的编译器来说，仅仅通过静态的编译过程无从得知是要读取一个对象自己的属性（对象本身所具有的属性），还是原型对象的属性（来自于原型链上原型的属性），还是一个 getter 方法，抑或浏览器的某些自定义回调，这个属性还可能根本不存在。<br />
+<br />
+如果 V8 要在编译的代码中处理所有这些情况，即使一个简单的操作也会引发上百条指令。为了优化这种情况，V8 引擎需要对这个操作进行猜测。<br />
+<br />
+V8 引入内联缓存机制，将猜测最可能的几个方法放到内联缓存中（类似于处理器使用高速缓存来提高指令命中率），如果 V8 猜对了就能大大提高这类访问的速度，如果没猜对，那么继续寻找、执行并发现正确方法，这样访问代价也不是很高。
+<h2>
+垃圾回收</h2>
+对于一门编程语言，内存的管理是必须要有的功能。内存管理策略有两种：
+<ul>
+<li>
+一种是 C/C++ 的由程序员自己来控制内存的分配与释放；</li>
+<li>
+另一种是 Java 的由程序员来分配内存而使用垃圾回收系统来释放不再使用的内存。</li>
+</ul>
+<br />
+脚本语言由于不能进行内存的控制，所以其内存管理策略只能选择与 Java 相似的管理策略，即采用垃圾回收系统管理内存。<br />
+<br />
+由于 V8 的设计导向是性能优先，为保证快速的对象分配、缩短由垃圾回收造成的停顿以及避免内存碎片，其采用了一个这样的垃圾回收器。
+<h4>
+1) 停顿</h4>
+在执行垃圾回收操作的时候会中断程序的执行。下图是 V8 垃圾回收器的停顿示意图。
+<div style="text-align: center;">
+<img alt="V8 垃圾回收器的停顿示意图" src="../uploads/allimg/221109/1-221109152A0L9.jpg" /><br />
+图2：V8 垃圾回收的停顿</div>
+<h4>
+2) 弱分代假设</h4>
+对象的生命周期符合著名的帕累托分布，即 2/8 法则。80％ 的对象死得早，即刚被分配出来，很快就不再需要了。剩下的 20％ 对象，通常倾向于永生，因此在大部分情况下，V8 每个垃圾回收周期只处理整个对象堆的一部分，也就是那些年龄比较年轻的对象，这让程序中断造成的影响得以减轻。<br />
+<br />
+图3是对象弱分代假设示意图。
+<div style="text-align: center;">
+<img alt="对象弱分代假设示意图" src="../uploads/allimg/221109/1-221109152Z2340.jpg" style="width: 400px; height: 204px;" /><br />
+图3：对象弱分代假设示意图</div>
+<h4>
+3) 准确式垃圾回收</h4>
+V8 通过数据的最后一位来标记数据是指针还是数据实现了对指针的标记，V8 总是知道内存中所有对象和指针所在的位置，这避免了非准确式垃圾回收器普遍存在的错误，把对象当作指针而造成的内存溢出的情况。<br />
+<br />
+准确式垃圾回收器避免了非准确式垃圾回收器带来的弊端，能够尽早无遗漏地回收内存，并且能够在垃圾回收过程中移动对象以缓解内存碎片问题。<br />
+<br />
+目前 V8 对垃圾回收机制也在不断改进，正在朝着增量、并发、并行的方向前进，并在垃圾回收的不同阶段进行不同的优化，在未来 V8 可能会对物联网应用做进一步的优化。<br />
+<br />
+读者可以在运行 Node.js 时加上 --trace_gc--trace_gc_verbose--print_cumulative_gc_stat 参数来观察 Node.js 详细的垃圾回收行为。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="217.html" title="const关键字及其作用（用法），C语言const详解" target="_blank">const关键字及其作用（用法），C语言const详解</a></li>
+<li><a href="366.html" title="数组越界及其避免方法，C语言数组越界详解" target="_blank">数组越界及其避免方法，C语言数组越界详解</a></li>
+<li><a href="776.html" title="Java赋值运算符（=）" target="_blank">Java赋值运算符（=）</a></li>
+<li><a href="vip_2100.html" title="栈（Stack）是什么？栈溢出又是怎么回事？" target="_blank">栈（Stack）是什么？栈溢出又是怎么回事？</a></li>
+<li><a href="../spring/collection-injection.html" title="Spring注入集合" target="_blank">Spring注入集合</a></li>
+<li><a href="9767.html" title="Python变量命名规则（非常详细）" target="_blank">Python变量命名规则（非常详细）</a></li>
+<li><a href="zt3a6xj.html" title="Java if else if语句详解" target="_blank">Java if else if语句详解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9803;
+window.arcId = "6e756tCjUALdWsv5IWnhtHX/Q2lFDBBGNJHIrsrmmlJB1Qi9cLPQeiR/LJg";
+window.typeidChain = "309|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

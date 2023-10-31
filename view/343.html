@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>STL算法详解</title>
+<meta name="description" content="STL 提供能在各种容器中通用的算法（大约有70种），如插入、删除、查找、排序等。算法就是函数模板。算法通过迭代器来操纵容器中的元素。 许多算法操作的是容器上的一个区间（也" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>STL算法详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body"><a href='../stl/stl.html' target='_blank'>STL</a> 提供能在各种容器中通用的算法（大约有70种），如插入、删除、查找、排序等。算法就是函数模板。算法通过迭代器来操纵容器中的元素。<br />
+<br />
+许多算法操作的是容器上的一个区间（也可以是整个容器），因此需要两个参数，一个是区间起点元素的迭代器，另一个是区间终点元素的后面一个元素的迭代器。例如，排序和查找算法都需要这两个参数来指明待排序或待查找的区间。<br />
+<br />
+有的算法返回一个迭代器。例如，find 算法在容器中查找一个元素，并返回一个指向该元素的迭代器。<br />
+<br />
+算法可以处理容器，也可以处理普通的数组。<br />
+<br />
+有的算法会改变其所作用的容器。例如：
+<ul>
+<li>
+copy：将一个容器的内容复制到另一个容器。</li>
+<li>
+remove：在容器中删除一个元素。</li>
+<li>
+random_shuffle：随机打乱容器中的元素。</li>
+<li>
+fill：用某个值填充容器。</li>
+</ul>
+<br />
+有的算法不会改变其所作用的容器。例如：
+<ul>
+<li>
+find：在容器中查找元素。</li>
+<li>
+count_if：统计容器中符合某种条件的元素的个数。</li>
+</ul>
+<br />
+STL 中的大部分常用算法都在头文件 algorithm 中定义。此外，头文件 numeric 中也有一些算法。<br />
+<br />
+下面介绍一个常用算法 find，以便对算法是什么、怎么用有一个基本的概念。find 算法和其他算法一样都是函数模板。find 模板的原型如下：
+<p class="info-box">
+template &lt;class InIt, class T&gt;<br />
+InIt find(InIt first, InIt last, const T&amp; val);</p>
+其功能可以是在迭代器 first、last 指定的容器的一个区间 [first, last) 中，按顺序查找和 val 相等的元素。如果找到，就返回该元素的迭代器；如果找不到，就返回 last。
+<blockquote>
+[first, last) 这个区间是一个左闭右开的区间，即 last 指向的元素其实不在此区间内。</blockquote>
+find 模板使用<code>==</code>运算符判断元素是否相等。因此，如果 [first, last) 区间中存放的是对象，则<code>==</code>运算符应该被适当重载，使得两个对象可以用<code>==</code>运算符比较。<br />
+<br />
+注意：上一段话说的是&ldquo;其功能可以是&rdquo;，而不是&ldquo;其功能就是&rdquo;。这是因为模板只是一种代码形式，这种代码形式具体能完成什么功能，取决于程序员对该模板写法的了解及其想象力。按照语法，调用 find 模板时，first 和 last 只要类型相同就可以，不一定必须是迭代器。<br />
+<br />
+演示 find 用法的程序如下：
+<pre class="cpp">
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;iostream&gt;
+u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+int main()  {
+    int a[10] = {10,20,30,40};
+    vector&lt;int&gt; v;
+    v.push_back(1);    v.push_back(2);
+    v.push_back(3);    v.push_back(4); //此后v里放着4个元素：1,2,3,4
+    vector&lt;int&gt;::iterator p;
+    p = find(v.begin(),v.end(),3); //在v中查找3
+    if(p != v.end()) //若找不到,find返回 v.end()
+        cout &lt;&lt; &quot;1) &quot; &lt;&lt;  * p &lt;&lt; endl; //找到了
+    p = find(v.begin(),v.end(),9);
+    if(p == v.end())
+        cout &lt;&lt; &quot;not found &quot; &lt;&lt; endl; //没找到
+    p = find(v.begin()+1,v.end()-1,4); //在,3 这两个元素中查找4
+    cout &lt;&lt; &quot;2) &quot; &lt;&lt; * p &lt;&lt; endl;
+    int * pp = find(a,a+4,20);
+    if(pp == a + 4)
+        cout &lt;&lt; &quot;not found&quot; &lt;&lt; endl;
+    else
+        cout &lt;&lt; &quot;3) &quot; &lt;&lt;* pp &lt;&lt; endl;
+}</pre>
+程序的输出结果是：<br />
+1) 3<br />
+not found<br />
+2) 4<br />
+3) 20<br />
+<br />
+第 11 行，要查找的区间是 [v.begin(), v.end( ))，v.end() 不在查找范围内，因此没有问题。本行的查找会成功，因此 p 指向找到的元素 3。<br />
+<br />
+第 17 行，因为要查找的区间是 [v.begin()+l，v.end()-1)，这个区间中只有 2、3 这两个元素，因此查找会失败，p 的值变为 v.end() - 1，因此 p 正好指向 4 这个元素。<br />
+<br />
+第 19 行，数组 a 是一个容器。数组名 a 的类型是 int *，可以做迭代器使用，表达式<code>a+4</code>的类型也是 int*，因此也能做迭代器。本次调用 find,查找区间是 [a, a+4)，即数组 a 的前 4 个元素。如果查找失败，find 就会返回 a+4。<br />
+<br />
+STL 中还有一个常用的算法 sort，用于对容器排序，其原型为：
+<p class="info-box">
+template&lt;class_RandIt&gt;<br />
+void sort(_RandIt first, _RandIt last);</p>
+该算法可以用来对区间 [first, last) 从小到大进行排序。下面两行程序就能对数组 a 排序：
+<pre class="cpp">
+int a[4] = {3, 4, 2, 1};
+sort(a, a+4);</pre>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="137.html" title="英语和数学不好能学好C语言吗" target="_blank">英语和数学不好能学好C语言吗</a></li>
+<li><a href="415.html" title="C语言格式化输入" target="_blank">C语言格式化输入</a></li>
+<li><a href="2289.html" title="Python父类方法重写（入门必读）" target="_blank">Python父类方法重写（入门必读）</a></li>
+<li><a href="vip_3376.html" title="行逻辑链接的顺序表实现矩阵乘法（附带C语言完整代码）" target="_blank">行逻辑链接的顺序表实现矩阵乘法（附带C语言完整代码）</a></li>
+<li><a href="4253.html" title="Spring DI（依赖注入）的实现方式：属性注入和构造注入" target="_blank">Spring DI（依赖注入）的实现方式：属性注入和构造注入</a></li>
+<li><a href="../css3/what-is-css.html" title="CSS是什么" target="_blank">CSS是什么</a></li>
+<li><a href="0brwao1.html" title="git commit命令：保存仓库的历史记录" target="_blank">git commit命令：保存仓库的历史记录</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 343;
+window.arcId = "9950JaTGcggl7A702IIgW40ehTZic5Fs4cCYFmyhsEkfvUIZAKJP1FEVgg";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

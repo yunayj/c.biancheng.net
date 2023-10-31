@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C语言线程互斥和原子操作</title>
+<meta name="description" content="如果多个线程访问相同的数据，并且它们中至少有一个修改了数据，那么对共享数据的所有访问必须同步以防止数据竞争。但是，一个正在读取共享数据的线程可能中断另一个正在修改" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C语言线程互斥和原子操作</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">如果多个线程访问相同的数据，并且它们中至少有一个修改了数据，那么对共享数据的所有访问必须同步以防止数据竞争。但是，<span style="color:#b22222;">一个正在读取共享数据的线程可能中断另一个正在修改相同共享数据的线程</span>，因此，可能导致线程读取到不一致的数据。<br />
+<br />
+甚至，由于程序在每次执行时系统可能调度不同的线程，导致每次运行程序时错误消息只能间歇地反映当时情况，很难在测试中复现错误。如例 1 所示，哪怕是自增一个计数器这样的简单操作，都可能产生数据竞争。<br />
+<br />
+【例1】没有同步下的并行存储访问
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+#include &lt;threads.h&gt;
+#define COUNT 10000000L
+long counter = 0
+void incFunc(void) { for (long i = 0; i &lt; COUNT; ++i)  ++counter; }
+void decFunc(void) { for (long i = 0; i &lt; COUNT; ++I)  --counter; }
+
+int main(void)
+{
+    clock_t cl = clock()
+    thrd_t th1, th2;
+    if (thrd_create(&amp;th1, (thrd-start_t)incFunc, NULL) != thrd_success
+      || thrd_create(&amp;th2, (thrd_start_t)decFunc, NULL) != thrd_success)
+    {
+        fpintf(stderr,&quot;Error creating thread/n&quot;); return -1;
+    }
+    thrd_join(th1, NULL);
+    thrd_join(th2, NULL);
+
+    printf(&quot;Counter: %ld \t&quot;, counter);
+    printf(&quot;CPU time: %ld ms\n&quot;, (clock()-cl)*1000L/CLOCKS_PER_SEC);
+    return 0;
+}</pre>
+<br />
+在程序结束时，计数器应为 0。然而，在没有同步的情况下，结果则不同：程序每次运行时，最终获得计数器值都是不同的。下面是一个典型的输出示例：
+<pre class="cpp">
+Counter: -714573              CPU time: 59 ms</pre>
+<br />
+<span style="color:#b22222;">为了保障同步，C 标准库提供了互斥操作（mutex operation）和原子操作（atomic operation）。</span>
+<h2>
+互斥</h2>
+<span style="color:#b22222;">互相排斥（mutex exclusion）技术，简称为互斥（mutex），它用于防止多个线程同时访问共享资源。</span>互斥技术采用一个对象控制独占访问权限，该对象称之为互斥。配合条件变量（condition variable），互斥可以实现广泛的同步访问控制。例如，它们允许程序员为数据访问操作指定执行次序。<br />
+<br />
+在 C 程序中，一个互斥采用类型为 mtx_t 的对象表示，它能在一段时间内被一个线程锁定，而其他线程必须等待，直到它被解锁。<span style="color:#b22222;">在头文件 threads.h 中，包括了关于互斥操作的所有声明。</span>最重要的互斥函数有：
+<pre class="cpp">
+int mtx_init（mtx_t*mtx，int mutextype）；</pre>
+创建一个互斥，该互斥的属性由 mutextype 指定。如果成功创建了一个新互斥，函数 mtx_init（）会将新互斥写入由参数 mtx 引用的对象，然后返回宏值 thrd_success。<br />
+<br />
+参数 mutextype 的取值可以是以下 4 个：
+<p class="info-box">
+mtx_plain<br />
+mtx_timed<br />
+mtx_plain | mtx_recursive<br />
+mtx_timed | mtx_recursive</p>
+<span style="color:#b22222;">mtx_plain 表示请求一个简单的互斥，它既不支持超时也不支持递归，而其他 3 个值则表示支持超时和（或）递归。</span><br />
+<br />
+<pre class="cpp">
+void mtx_destroy（mtx_t*mtx）；</pre>
+销毁 mtx 引用的互斥，并释放它的所有资源。<br />
+<br />
+<pre class="cpp">
+int mtx_lock（mtx_t*mtx）；</pre>
+阻塞正在调用的线程，直到该线程获得参数 mtx 引用的互斥。除该互斥支持递归的情况以外，正在调用的线程不能是已持有该互斥的线程。如果调用成功获得互斥，则函数返回值 thrd_success，否则，返回值 thrd_error。<br />
+<br />
+<pre class="cpp">
+int mtx_unlock（mtx_t*mtx）；</pre>
+释放参数 mtx 引用的互斥。在调用函数 mtx_unlock（）之前，调用者必须持有该互斥。如果调用释放互斥成功，则函数返回值 thrd_success，否则，返回值 thrd_error。<br />
+<br />
+<span style="color:#b22222;">通常情况下，在代码某个关键区间（critical section）的起始点调用函数 mtx_lock（），在其结束点调用函数 mtx_unlock（），在这段区间中只有一个线程执行。</span><br />
+<br />
+<span style="color:#b22222;">函数 mtx_lock（）还有两个替代的选择：一个选择是函数 mtx_trylock（）</span>，如果该互斥恰好未被其他任何线程获取，它则为当前线程获得互斥，如果该互斥被其他线程获取，它也不会阻塞当前线程；<span style="color:#b22222;">另一个选择是函数 mtx_timedlock（）</span>，它仅在指定的时间内阻塞线程。所有这些函数都通过其返回值表明调用它们后，是否成功地获得了互斥。<br />
+<br />
+例 2 中的程序是例 1 的修改版本，它展示了如何使用互斥来消除对变量 counter 的数据竞争。<br />
+<br />
+【例2】在例 1 的程序中添加一个互斥
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+#include &lt;threads.h&gt;
+
+#define COUNT 10000000L
+
+long counter = 0;
+mtx_t mtx;                              // 为访问counter而设立的互斥
+void incFunc(void)
+{
+    for (long i = 0; i &lt; COUNT; ++i)
+    {  mtx_lock(&amp;mtx); ++counter; mtx_unlock(&amp;mtx); }
+}
+void decFunc(void)
+{
+    for (long i = 0; i &lt; COUNT; ++i)
+    {  mtx_lock(&amp;mtx); --counter; mtx_unlock(&amp;mtx); }
+}
+int main(void)
+{
+    if (mtx_init(&amp;mtx, mtx_plain) != thrd_success)
+    {
+        fprintf(stderr, &quot;Error initializing the mutex.\n&quot;);
+        return -1;
+    }
+    // 如例14-2所示，启动线程，等待它们完成，打印输出
+    mtx_destroy(&amp;mtx);
+    return 0;
+}</pre>
+<br />
+函数 incFunc（）和 decFunc（）将不再并行地访问 counter，因为一次只有其中一个可以锁定互斥（为保障可读性，省略错误检查）。现在，在程序结束时，计数器具有正确的值：0。下面是一个典型的输出示例：
+<pre class="cpp">
+Counter: 0             CPU time: 650 ms</pre>
+<br />
+实现同步性需要付出代价。较高的 CPU 时间表明：修改后的程序需要大约 10 倍于原来的时间来运行。其原因是，通过锁定互斥实现同步性远比自增和自减一个变量具有更为复杂的操作。在不需要互斥锁定的情况下，使用原子对象可以获得更好的性能。
+<h2>
+原子对象</h2>
+<span style="color:#b22222;">原子对象（atomic object）是一个可通过原子操作（atomic operation）被读取或修改的对象。原子操作是指不能被并行线程中断的操作</span>。在C11标准下，可以使用类型限定符_Atomic声明一个原子对象（如果实现版本定义了宏__STDC_NO_ATOMICS__，则表明该实现版本不支持原子操作，自然也不能声明原子对象）。例如，在例14-2程序中的变量counter可以通过以下方式声明它为原子对象：
+<pre class="cpp">
+_Atomic long counter = ATOMIC_VAR_INIT(0L);</pre>
+<br />
+上述声明定义了原子化的 long 类型变量 counter，并将其值初始化为 0。在头文件 stdatomic.h 中定义了宏 ATOMIC_VAR_INIT，以及其他所有用于原子对象的宏、类型和声明。特别是，stdatomic.h 中还定义了对应于所有整数类型的原子类型缩写。例如，类型 atomic_uchar 等效于 _Atomic unsigned char。<br />
+<br />
+语法 _Atomic（T）也可用于为给定的非原子类型 T 指定其对应的原子类型。<span style="color:#b22222;">数组和函数类型不能为原子类型。</span>然而，原子类型可以具有不同于其对应的非原子类型的空间大小和对齐方式。
+<h2>
+原子操作</h2>
+<span style="color:#b22222;">读取或写入一个原子对象是一个原子操作，也就是说它是不能被中断的操作。</span>这意味着：不同的线程可以同时访问一个原子对象而不引起竞态条件。对于每个原子对象，对象的所有修改以一个确定的全局化次序执行，这称为该<span style="color:#006400;">对象的修改次序</span>（modification order）。<br />
+<br />
+具有结构或联合类型的原子对象只能被作为一个整体读取或写入：为了安全地访问单个成员，原子结构或联合应首先复制到等效的非原子对象中。<br />
+<br />
+注意，无论是使用宏 ATOMIC_VAR_INIT，还是通过泛型函数 ATOMIC_INIT（），<span style="color:#b22222;">一个原子对象的初始化不是一个原子操作</span>。<br />
+<br />
+<span style="color:#b22222;">原子操作通常用于进行读-修改-写操作。</span>例如，后缀自增和自减运算符 ++ 和 --，当它们应用于原子对象时，是原子化的读-修改-写操作。同样，复合赋值运算符，如 +=，当其原子化使用时，它们的左操作数是一个原子对象。<br />
+<br />
+例 1 中的程序可以通过声明变量 counter 作为原子对象，在不受任何其他影响下执行正确的计数，以最终获得 0 值。该方案计时结果显示，使用原子类型变量 counter 比例 2 所使用的互斥方法要快两倍多。<br />
+<br />
+除了已经提到的运算符，还有<span style="color:#b22222;">许多函数可以执行原子操作，包括 atomic_store（）、atomic_exchange（）和 atomic_compare_exchange_strong（）</span>。<br />
+<br />
+<span style="color:#b22222;">原子类型具有无锁（lock-free）属性</span>，它表示不使用锁定和解锁操作实现对一个原子对象的原子访问。该方式只需要使用类型 atomic_flag（它是一个结构类型）以确保实现无锁，atomic_flag 有&ldquo;设置&rdquo;和&ldquo;清除&rdquo;两种状态。宏 ATOMIC_FLAG_INIT 将一个 atomic_flag 对象初始化为&ldquo;清除&rdquo;状态，如以下示例声明所示：
+<pre class="cpp">
+atomic_flag done = ATOMIC_FLAG_INIT;</pre>
+<br />
+C11 提供了函数 atomic_flag_test_and_set（）和 atomic_flag_clear（），由此对一个 atomic_flag 对象执行状态操作。整型原子类型通常也都是无锁的。要确定一个给定的类型是否是无锁的，程序可以检查宏 ATOMIC_type_LOCK_FREE，其中 type 是一个指定整数类型的大写缩写，如 BOOL、INT，或 LLONG。<br />
+<br />
+与指针类型对应的宏是 ATOMIC_POINTER_LOCK_FREE。所有这些宏的值可能为 0、1 或 2。值为 0，表示该类型不是无锁的；值为 1，表示该类型对特定对象是无锁的；值为 2，表示该类型始终是无锁的。或者，可以调用泛型函数来确定一个给定的原子对象是否是无锁的：
+<pre class="cpp">
+_Bool atomic_is_lock_free(const volatile A *obj);</pre>
+<br />
+在函数参数声明中的占位符A代表任一原子类型。因此，参数 obj 为指针，它指向任一给定原子对象。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="430.html" title="C++11 shared_ptr（智能指针）详解" target="_blank">C++11 shared_ptr（智能指针）详解</a></li>
+<li><a href="../mysql/curtime_current_time.html" title="MySQL CURTIME和CURRENT_TIME函数：获取系统当前时间" target="_blank">MySQL CURTIME和CURRENT_TIME函数：获取系统当前时间</a></li>
+<li><a href="4462.html" title="UE4添加人物动画之前后左右移动" target="_blank">UE4添加人物动画之前后左右移动</a></li>
+<li><a href="5925.html" title="JS removeAttribute()方法：删除元素的某个属性" target="_blank">JS removeAttribute()方法：删除元素的某个属性</a></li>
+<li><a href="6199.html" title="PHP设置时区" target="_blank">PHP设置时区</a></li>
+<li><a href="vip_7675.html" title="C++多文件编程是什么" target="_blank">C++多文件编程是什么</a></li>
+<li><a href="qqop4c.html" title="JavaScript介绍（非常详细）" target="_blank">JavaScript介绍（非常详细）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 428;
+window.arcId = "9719UATxeOdsDMsk1yr69/+vYeq78QrglYRKHraHxBfIf5VYvQ9AE/+Wdg";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

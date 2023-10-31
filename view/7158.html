@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++ auto和decltype的区别</title>
+<meta name="description" content="通过《 C++ auto 》和《 C++ decltype 》两节的学习，相信大家已经掌握了 auto 和 decltype 的语法规则以及使用场景，这节我们将 auto 和 decltype 放在一起，综合对比一下它们的区别。 语法格式" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++ auto和decltype的区别</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在掌握 <a href="6984.html" target="_blank">auto</a> 和 <a href="7151.html" target="_blank">decltype</a> 基本语法和用法的前提下，本节我们将 auto 和 decltype 放在一起，综合对比一下它们的区别，告诉大家两者各自的适用场景。<br />
+<h2>
+语法格式的区别</h2>
+auto 和 decltype 都是 <a href='../cplus/cplus.html' target='_blank'>C++</a>11 新增的关键字，都用于自动类型推导，但是它们的语法格式是有区别的，如下所示：
+<p class="info-box">
+auto varname = value;&nbsp; //auto的语法格式<br />
+decltype(exp) varname [= value];&nbsp; //decltype的语法格式</p>
+其中，varname 表示变量名，value 表示赋给变量的值，exp 表示一个表达式，方括号<code>[ ]</code>表示可有可无。<br />
+<br />
+auto 和 decltype 都会自动推导出变量 varname 的类型：
+<ul>
+<li>
+auto 根据<code>=</code>右边的初始值 value 推导出变量的类型；</li>
+<li>
+decltype 根据 exp 表达式推导出变量的类型，跟<code>=</code>右边的 value 没有关系。</li>
+</ul>
+<br />
+另外，auto 要求变量必须初始化，也就是在定义变量的同时必须给它赋值；而 decltype 不要求，初始化与否都不影响变量的类型。这很容易理解，因为 auto 是根据变量的初始值来推导出变量类型的，如果不初始化，变量的类型也就无法推导了。<br />
+<br />
+auto 将变量的类型和初始值绑定在一起，而 decltype 将变量的类型和初始值分开；虽然 auto 的书写更加简洁，但 decltype 的使用更加灵活。<br />
+<br />
+请看下面的例子：
+<pre class="cpp">
+auto n1 = 10;
+decltype(10) n2 = 99;
+
+auto url1 = &quot;http://c.biancheng.net/cplus/&quot;;
+decltype(url1) url2 = &quot;http://c.biancheng.net/java/&quot;;
+
+auto f1 = 2.5;
+decltype(n1*6.7) f2;</pre>
+这些用法在前面的两节中已经进行了分析，此处就不再赘述了。
+<h2>
+对 cv 限定符的处理</h2>
+「cv 限定符」是 const 和&nbsp;volatile 关键字的统称：
+<ul>
+<li>
+const 关键字用来表示数据是只读的，也就是不能被修改；</li>
+<li>
+volatile 和 const 是相反的，它用来表示数据是可变的、易变的，目的是不让 CPU 将数据缓存到寄存器，而是从原始的内存中读取。</li>
+</ul>
+<br />
+在推导变量类型时，auto 和 decltype 对 cv 限制符的处理是不一样的。decltype 会保留 cv 限定符，而 auto 有可能会去掉 cv 限定符。<br />
+<br />
+以下是 auto 关键字对 cv 限定符的推导规则：<br />
+<ul>
+<li>
+如果表达式的类型不是<a href='../c/80/80.html' target='_blank'>指针</a>或者引用，auto 会把 cv 限定符直接抛弃，推导成 non-const 或者 non-volatile 类型。</li>
+<li>
+如果表达式的类型是指针或者引用，auto 将保留 cv 限定符。</li>
+</ul>
+<br />
+下面的例子演示了对 const 限定符的推导：
+<pre class="cpp">
+//非指针非引用类型
+const int n1 = 0;
+
+auto n2 = 10;
+n2 = 99;  //赋值不报错
+
+decltype(n1) n3 = 20;
+n3 = 5;  //赋值报错
+
+//指针类型
+const int *p1 = &amp;n1;
+
+auto p2 = p1;
+*p2 = 66;  //赋值报错
+
+decltype(p1) p3 = p1;
+*p3 = 19;  //赋值报错</pre>
+在 C++ 中无法将一个变量的完整类型输出，我们通过对变量赋值来判断它是否被 const 修饰；如果被 const 修饰那么赋值失败，如果不被 const 修饰那么赋值成功。虽然这种方案不太直观，但也是能达到目的的。<br />
+<br />
+n2 赋值成功，说明不带 const，也就是 const 被 auto 抛弃了，这验证了 auto 的第一条推导规则。p2 赋值失败，说明是带 const 的，也就是 const 没有被 auto 抛弃，这验证了 auto 的第二条推导规则。<br />
+<br />
+n3 和 p3 都赋值失败，说明 decltype 不会去掉表达式的 const 属性。
+<h2>
+对引用的处理</h2>
+当表达式的类型为引用时，auto 和 decltype 的推导规则也不一样；decltype 会保留引用类型，而 auto 会抛弃引用类型，直接推导出它的原始类型。请看下面的例子：
+<pre class="cpp">
+#include &lt;iostream&gt;
+u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+
+int main() {
+    int n = 10;
+    int &amp;r1 = n;
+
+    //auto推导
+    auto r2 = r1;
+    r2 = 20;
+    cout &lt;&lt; n &lt;&lt; &quot;, &quot; &lt;&lt; r1 &lt;&lt; &quot;, &quot; &lt;&lt; r2 &lt;&lt; endl;
+
+    //decltype推导
+    decltype(r1) r3 = n;
+    r3 = 99;
+    cout &lt;&lt; n &lt;&lt; &quot;, &quot; &lt;&lt; r1 &lt;&lt; &quot;, &quot; &lt;&lt; r3 &lt;&lt; endl;
+
+    return 0;
+}</pre>
+运行结果：<br />
+10, 10, 20<br />
+99, 99, 99<br />
+<br />
+从运行结果可以发现，给 r2 赋值并没有改变 n 的值，这说明 r2 没有指向 n，而是自立门户，单独拥有了一块内存，这就证明 r 不再是引用类型，它的引用类型被 auto 抛弃了。<br />
+<br />
+给 r3 赋值，n 的值也跟着改变了，这说明 r3 仍然指向 n，它的引用类型被 decltype 保留了。
+<h2>
+总结</h2>
+auto 虽然在书写格式上比 decltype 简单，但是它的推导规则复杂，有时候会改变表达式的原始类型；而 decltype 比较纯粹，它一般会坚持保留原始表达式的任何类型，让推导的结果更加原汁原味。<br />
+<br />
+从代码是否健壮的角度考虑，我推荐使用 decltype，它没有那么多是非；但是 decltype 总是显得比较麻烦，尤其是当表达式比较复杂时，例如：
+<p class="info-box">
+vector&lt;int&gt; nums;<br />
+decltype(nums.begin()) it = nums.begin();</p>
+而如果使用 auto 就会清爽很多：
+<p class="info-box">
+vector&lt;int&gt; nums;<br />
+auto it = nums.begin();</p>
+在实际开发中人们仍然喜欢使用 auto 关键字（我也这么干），因为它用起来简单直观，更符合人们的审美。如果你的表达式类型不复杂，我还是推荐使用 auto 关键字，优雅的代码总是叫人赏心悦目，沉浸其中。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="4401.html" title="Python frozenset集合（set集合的不可变版本）" target="_blank">Python frozenset集合（set集合的不可变版本）</a></li>
+<li><a href="vip_8259.html" title="如何判断单链表为有环链表？" target="_blank">如何判断单链表为有环链表？</a></li>
+<li><a href="../mongodb2/indexs.html" title="MongoDB索引" target="_blank">MongoDB索引</a></li>
+<li><a href="../redis2/hset.html" title="Redis HSET命令" target="_blank">Redis HSET命令</a></li>
+<li><a href="../spring_boot/log-config.html" title="Spring Boot日志配置及输出" target="_blank">Spring Boot日志配置及输出</a></li>
+<li><a href="6t3k18f.html" title="C++局部变量和全局变量详解" target="_blank">C++局部变量和全局变量详解</a></li>
+<li><a href="4br7qfu.html" title="《Web前端开发精品课 JavaScript基础教程》PDF下载（高清完整版）" target="_blank">《Web前端开发精品课 JavaScript基础教程》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7158;
+window.arcId = "1e27r9lKcZKjNL7qKWeYiPjQaC3ygWkv7qG2+Gm4Gntgl0+qjY1rvFg2Jkg";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

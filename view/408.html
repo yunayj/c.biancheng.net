@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C语言格式化输出</title>
+<meta name="description" content="标准库提供相关函数以支持无格式数据的读写，无格式数据可以是独立的位、字符串以及给定大小的内存区域。本文将介绍这些函数，并列举这些字节字符函数和宽字符函数的原型。 类" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C语言格式化输出</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body"><span style="color:#b22222;">C 语言通过 printf（）函数系列来格式化地输出数据。</span>本文采用相应的示例说明常用的格式化选项。
+<h2>
+printf（）函数系列</h2>
+<span style="color:#b22222;">printf（）函数以及多种它的相关函数都能够提供数据的格式化输出功能，它们通过使用格式化字符串（format string）作为函数参数来指定具体格式。</span>然而，不同的函数具有不同的输出目的，以及对所需输出数据的访问方法。下面的 printf（）函数系列可用于处理字节导向流：<br />
+<pre class="cpp">
+int printf（const char*restrict format，...）；</pre>
+写入标准输出流，stdout。<br />
+<br />
+<pre class="cpp">
+int fprintf（FILE*restrict fp，const char*restrict format，...）；</pre>
+写入 fp 指定的输出流。printf（）函数可以视为 fprintf（）的特殊版本。<br />
+<br />
+<pre class="cpp">
+int sprintf（char*restrict buf，
+const char*restrict format，...）；</pre>
+将格式化数据写入 buf 指向的 char 数组，并在后面加上一个标志结尾的空字符。<br />
+<br />
+在上述函数原型中出现的省略号（...），表示还可有更多参数，但这些参数是可选的。还有一些 printf（）函数系列需要一个指针参数，以指向一个参数列表，而不是在函数调用时直接接收数量可变的参数。这些函数的名称都以一个 v 开始，表示&ldquo;variable argument list&rdquo;（可变参数列表）的意思：
+<pre class="cpp">
+int vprintf( const char * restrictformat, va_list argptr );
+int vfprintf( FILE * restrict fp, const char * restrict format,
+              va_list argptr );
+int vsprintf( char * restrict buf, const char * restrict format,
+              va_list argptr );
+int vsnprintf( char * restrict buffer, size_t n,
+               const char * restrict format, va_list argptr );</pre>
+<br />
+<span style="color:#b22222;">如果想使用支持可变参数列表的函数，除了头文件 stdio.h 以外，还必须包含头文件 stdarg.h。</span><br />
+<br />
+上述函数都有相应的宽字符导向流版本。<span style="color:#b22222;">针对宽字符的 printf（）函数名称中包括字符串 wprintf 而不是 pintf</span>，例如，vfwprintf（）和 swprintf（）等。但有一个例外：没有 snwprintf（）函数。而是采用 snprintf（）对应到 swprintf（），该函数采用一个参数来指定最大输出长度。<br />
+<br />
+C11 标准为这些函数都提供了一个新的&ldquo;安全&rdquo;的版本。这些对应的新函数均以后缀 _s（例如，fprintf_s（））。新函数测试它们接收的所有指针参数是否为空指针。
+<h2>
+格式化字符串</h2>
+<span style="color:#b22222;">格式化字符串是每个 printf（）系列函数都具有的一个参数。</span>格式化字符串定义了数据的输出格式，并包含了一些普通字符和转换说明（conversion specification）。每个转换说明都定义了函数该如何将可选参数转换并格式化，以供输出。printf（）函数将格式化字符串写入到输出，使用对应可选参数的格式化值来替代转换说明。<br />
+<br />
+转换说明以百分号 % 开始，并以一个字母结尾，这称为<span style="color:#006400;">转换修饰符（conversion specifier）</span>。（为了在输出中表示 %，需要一个特殊的转换修饰符：%%。printf（）将该符号转换成一个单独的百分号。）<br />
+<br />
+转换说明的语法以转换修饰符作为结尾。在本文中，我们将使用这两个术语来讨论调用函数 printf（）和 scanf（）时所使用的格式化字符串。<br />
+<br />
+<span style="color:#b22222;">转换修饰符决定了转换的类型，并且必须符合对应的可选参数。</span>如下例所示：
+<pre class="cpp">
+int score = 120;
+char player[ ] = &quot;Mary&quot;;
+printf( &quot;%s has %d points.\n&quot;, player, score );</pre>
+<br />
+<span style="color:#b22222;">在调用 printf（）时所使用的格式化字符串包含两个转换说明：%s 和 %d。</span>对应的两个可选参数也分别被指定：一个字符串，匹配转换修饰符 s（表示&ldquo;string&rdquo;），以及一个 int 数值，匹配转换修饰符 d（表示&ldquo;decimal&rdquo;）。示例中的函数调用，会在标准输出设备中写入下面的字符串：
+<p class="info-box">
+Mary has 120 points.</p>
+<br />
+所有的转换说明（但 %% 是例外）都具有下面的通用格式：
+<p class="info-box">
+%[标记][字段宽度][.精度][长度修饰符]修饰符</p>
+<br />
+方括号内的这部分语法都是可选的，但是若要使用它们，就必须遵循上述次序。下面一节会详细解释每个参数类型合法的转换说明。所有转换说明都可包含&ldquo;字段宽度&rdquo;（field width）。然而，并非所有的转换类型都有&ldquo;精度&rdquo;（precision）这个选项，对不同的修饰符来说，精度意义是不一样的。
+<h2>
+字段宽度</h2>
+进行格式化的表格输出时，字段宽度选项非常有用。如果包括该选项，字段宽度必须是正的十进制整数（或者是一个星号，下面会介绍）。<span style="color:#b22222;">字段宽度指定对应的数据项所输出的最少字符数量。</span>默认情况下，字段中的被转换数据为右对齐（right-justified），左边多的位置用空格填补。如果标记包含减号（－），则为左对齐（left-justified），超出的字段宽度采用空格向右填补。<br />
+<br />
+下面的例子先输出一行位置编号，然后展示字段宽度选项对输出的作用：
+<pre class="cpp">
+printf(&quot;1234567890123456\n&quot;);           // 字符位置
+printf( &quot;%-10s %s\n&quot;, &quot;Player&quot;, &quot;Score&quot; );      // 表头
+printf( &quot;%-10s %4d\n&quot;, &quot;John&quot;, 120 );   // 字段宽度：10；4
+printf( &quot;%-10s %4d\n&quot;, &quot;Mary&quot;, 77 );</pre>
+<br />
+上述语句会生成一个简单表格：
+<p class="info-box">
+1234567890123456<br />
+Player&nbsp;&nbsp;&nbsp;&nbsp; Score<br />
+John&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 120<br />
+Mary&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 77</p>
+<br />
+如果输出转换的结果比所指定的宽度具有更多的字符，那么字段会做必要的扩充，以输出完整的数据。<br />
+<br />
+<span style="color:#b22222;">如果字段是右对齐的，可以采用 0 而非空格填充。</span>要实现这样的效果，在转换说明标记中包括一个 0（指数字零）。下面的例子以 mm-dd-yyyy 的格式输出日期：
+<pre class="cpp">
+int month = 5, day = 1, year = 1987;
+printf( &quot;Date of birth: %02d-%02d-%04d\n&quot;, month, day, year );</pre>
+<br />
+该 printf（）调用会产生下面的输出：
+<p class="info-box">
+Date of birth: 05-01-1987</p>
+<br />
+也可以使用一个变量来指定字段宽度。要实现这样的效果，采用一个星号（*）作为转换说明中的字段宽度，并在 printf（）调用时包括一个额外的函数参数。该参数必须具有 int 类型，并且出现在需输出的参数之前。如下例所示：
+<pre class="cpp">
+char str[ ] = &quot;Variable field width&quot;;
+int width = 30;
+printf( &quot;%-*s!\n&quot;, width, str );</pre>
+<br />
+上例中的 printf 语句在字段靠左边位置输出字符串 str，并且字段宽度由变量 width 决定。结果如下：
+<p class="info-box">
+Variable field width&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; !</p>
+<br />
+请注意输出的最后有一个感叹号（！）。感叹号之前的一大段空格并非 str[] 在初始化时被赋值的内容。这些空格而是 printf 语句根据我们的要求为该字符串指定 30 个字符宽度而自动填充的。
+<h2>
+输出字符和字符串</h2>
+printf（）中针对字符串的转换修饰符是 s，正如前面代码中所示。<span style="color:#b22222;">针对字符的修饰符是 c（表示 char）。</span>它们总结如表 1 所示。<br />
+<br />
+<table border="1" cellpadding="1" cellspacing="1" style="width: 500px">
+<caption>
+表1 针对输出字符和字符串的转换修饰符</caption>
+<tbody>
+<tr>
+<td>
+修饰符</td>
+<td>
+参数类型</td>
+<td>
+表示</td>
+</tr>
+<tr>
+<td>
+c</td>
+<td>
+int</td>
+<td>
+一个单独的字符</td>
+</tr>
+<tr>
+<td>
+s</td>
+<td>
+char 指针</td>
+<td>
+该指针参数所指向的字符串</td>
+</tr>
+</tbody>
+</table>
+<br />
+下面的例子在一个队员名单中各成员之间输出一个分隔字符：
+<pre class="cpp">
+char *team[ ] = { &quot;Vivian&quot;, &quot;Tim&quot;, &quot;Frank&quot;, &quot;Sally&quot; };
+char separator = &#39;;&#39;;
+for ( int i = 0; i &lt; sizeof(team)/sizeof(char *); ++i )
+  printf( &quot;%10s%c &quot;, team[i], separator );
+putchar( &#39;\n&#39; );</pre>
+<br />
+用转换说明 %c 表示的参数，可以拥有比 int 还小的类型（例如 char）。整数提升会自动地将该类型参数转换成 int。然后函数 printf（）将该 int 参数转换为 unsigned char，并输出对应的字符。<br />
+<br />
+对于字符串输出来说，可以指定能被输出的最多字符数量。这时用到转换说明的精度选项，精度表示为一个点后接一个十进制整数。如下例所示：
+<pre class="cpp">
+char msg[] = &quot;Every solution breeds new problems.&quot;;
+printf( &quot;%.14s\n&quot;, msg );       // 精度：14
+printf( &quot;%20.14s\n&quot;, msg );     // 字段宽度是20；精度是14
+printf( &quot;%.8s\n&quot;, msg+6 );      // 从字符串msg的第7个字符起输出字符串，精度为8</pre>
+<br />
+上述语句会产生下面的输出结果：
+<p class="info-box">
+Every solution<br />
+　&nbsp;&nbsp;&nbsp; Every solution<br />
+solution</p>
+<h2>
+输出整数</h2>
+函数 printf（）可以把整数值转换为十进制、八进位或十六进制表示。表 2 列出了用于格式化输出整数的转换修饰符。<br />
+<br />
+<table border="1" cellpadding="1" cellspacing="1" style="width: 500px">
+<caption>
+表2 针对输出整数的转换修饰符</caption>
+<tbody>
+<tr>
+<td>
+修饰符</td>
+<td>
+参数类型</td>
+<td>
+表示</td>
+</tr>
+<tr>
+<td>
+d,i</td>
+<td>
+int</td>
+<td>
+十进制</td>
+</tr>
+<tr>
+<td>
+u</td>
+<td>
+unsigned int</td>
+<td>
+十进制</td>
+</tr>
+<tr>
+<td>
+o</td>
+<td>
+unsigned int</td>
+<td>
+八进位</td>
+</tr>
+<tr>
+<td>
+x</td>
+<td>
+unsigned int</td>
+<td>
+十六进制，用小写的 a、b、c、d、e、f</td>
+</tr>
+<tr>
+<td>
+X</td>
+<td>
+unsigned int</td>
+<td>
+十六进制，用大写的 A、B、C、D、E、F</td>
+</tr>
+</tbody>
+</table>
+<br />
+下面的例子展示同一个整数的不同转换方式：
+<pre class="cpp">
+printf( &quot;%4d %4o %4x %4X\n&quot;, 63, 63, 63, 63 );</pre>
+<br />
+该 printf（）调用会产生下面的输出：
+<p class="info-box">
+63&nbsp; 77&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3f&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3F</p>
+<br />
+<span style="color:#b22222;">修饰符 u、o、x 与 X 把对应的参数解释为无符号整数。</span>如果参数类型是 int，并且其值是负数，则转换后输出的是对应参数按照无符号整数解释时其位模式下的正数值：
+<pre class="cpp">
+printf( &quot;%d %u %X\n&quot;, -1, -1, -1 );</pre>
+<br />
+如果 int 为 32 位宽，那么该语句会产生下面的输出：
+<p class="info-box">
+-1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4294967295&nbsp;&nbsp;&nbsp; FFFFFFFF</p>
+<br />
+因为参数会受到整数提升的影响，同样的转换修饰符可以被用来格式化 short 和 unsigned short 参数。<span style="color:#b22222;">对于类型是 long 或 unsigned long 的参数，必须在 d、i、u、o、x 和 X 修饰符前面加上长度修饰符 l（小写的 L）。</span>类似地，如果参数是 long long 或 unsigned long long 类型，则其长度修饰符是 ll（两个小写 L）。如下例所示：
+<pre class="cpp">
+long bignumber = 100000L;
+unsigned long long hugenumber = 100000ULL * 1000000ULL;
+printf( &quot;%ld   %llX\n&quot;, bignumber, hugenumber );</pre>
+<br />
+上述语句产生下面的输出：
+<p class="info-box">
+100000 2540BE400</p>
+<h2>
+输出浮点数</h2>
+表 3 列出了函数 printf（）用来格式化输出浮点数的转换修饰符。<br />
+<br />
+<table border="1" cellpadding="1" cellspacing="1" style="width: 500px">
+<caption>
+表3 针对输出浮点数的转换修饰符</caption>
+<tbody>
+<tr>
+<td>
+修饰符</td>
+<td>
+参数类型</td>
+<td>
+表示</td>
+</tr>
+<tr>
+<td>
+f</td>
+<td>
+double</td>
+<td>
+十进制浮点数</td>
+</tr>
+<tr>
+<td>
+e、E</td>
+<td>
+double</td>
+<td>
+指数表示法，十进制</td>
+</tr>
+<tr>
+<td>
+g、G</td>
+<td>
+double</td>
+<td>
+浮点数或指数表示法，选择其中较短者</td>
+</tr>
+<tr>
+<td>
+a、A</td>
+<td>
+double</td>
+<td>
+指数表示法，十六进制</td>
+</tr>
+</tbody>
+</table>
+<br />
+最常用的修饰符是 f 和 e（或 E）。下面的例子展示了它们的用法：
+<pre class="cpp">
+double x = 12.34;
+printf( &quot;%f %e %E\n&quot;, x, x, x );</pre>
+<br />
+该 printf（）调用将产生下面的输出：
+<p class="info-box">
+12.340000&nbsp;&nbsp; 1.234000e+01&nbsp;&nbsp;&nbsp; 1.234000E+01</p>
+<br />
+在指数表示法中出现的 e 是大写还是小写，取决于函数转换修饰符中所用 e 的大小写。而且，如上例所示，默认输出显示精度为 6 位小数。转换修饰符中的精度选项可修改这个默认设置：
+<pre class="cpp">
+double value = 8.765;
+printf( &quot;Value: %.2f\n&quot;, value );               // 精度为2：表示输出为2位小数
+printf( &quot;Integer value:\n&quot;
+        &quot; Rounded: %5.0f\n&quot;                     // 字段宽度为5；精度为0
+        &quot; Truncated: %5d\n&quot;, value, (int)value );</pre>
+<br />
+该 printf（）调用会产生下面的输出：
+<p class="info-box">
+Value: 8.77<br />
+Integer value:<br />
+　Rounded:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 9<br />
+　Truncated:&nbsp;&nbsp;&nbsp;&nbsp; 8</p>
+<br />
+正如上例所示，printf（）会将浮点数按向上或向下取近似值，以便于输出。如果指定精度为0，那么小数点本身则会被省略。如果仅仅想把小数部分直接去掉，而不是取近似值，直接将它转换为整数类型可达到目的。<br />
+<br />
+上述修饰符也可以配合 float 参数使用，因为 float 参数会自动地被提升为 double。但是，如想输出类型为 long double 的参数，必须在转换修饰符之前插入长度修饰符 L，如下例所示：
+<pre class="cpp">
+#include &lt;math.h&gt;
+long double xxl = expl(1000);
+printf( &quot;e to the power of 1000 is %.2Le\n&quot;, xxl );</pre>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="788.html" title="Linux tar压缩命令：打包与解打包命令" target="_blank">Linux tar压缩命令：打包与解打包命令</a></li>
+<li><a href="6908.html" title="C++ STL deque容器底层实现原理（深度剖析）" target="_blank">C++ STL deque容器底层实现原理（深度剖析）</a></li>
+<li><a href="7375.html" title="Django路由系统精讲" target="_blank">Django路由系统精讲</a></li>
+<li><a href="../csharp/what-is-.net-framework.html" title=".NET Framework是什么" target="_blank">.NET Framework是什么</a></li>
+<li><a href="../csharp/operator.html" title="C#运算符" target="_blank">C#运算符</a></li>
+<li><a href="5b3keas.html" title="Python seek()方法：移动文件的读取指针" target="_blank">Python seek()方法：移动文件的读取指针</a></li>
+<li><a href="40jcz5q.html" title="Java数组的定义和使用（入门必读）" target="_blank">Java数组的定义和使用（入门必读）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 408;
+window.arcId = "555c3jXWfjLRsbMplT9la0L+Z2lssUwmlv0M2oe6QLw//BAyniKp2Mb7iQ";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

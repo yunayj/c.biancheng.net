@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C++ stack容器适配器详解</title>
+<meta name="description" content="在 C++ 中，容器适配器是一种特殊的容器类，它实际上不是自己存储数据，而是依赖于其它的容器，例如 vector、list、deque 等。 简单理解，容器适配器就是对已有容器进行了一次封装（包" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C++ stack容器适配器详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在 C++ 中，容器适配器是一种特殊的容器类，它实际上不是自己存储数据，而是依赖于其它的容器，例如 vector、list、deque 等。<br />
+<br />
+简单理解，容器适配器就是对现有容器进行了一次封装（包装），在容器的使用上做了更严格的规定，又或者进行了扩展。<br />
+<br />
+本节要讲的 stack 就是 C++ 标准库提供的一个容器适配器。默认情况下，stack 底层使用的是 deque 容器，deque 容器允许从两端插入、删除元素，且提供了迭代器可以遍历元素；stack 只允许从一端插入、删除元素，它没有提供迭代器，不支持直接遍历元素。<br />
+<h2>
+	stack容器适配器的创建</h2>
+stack 本质是一个模板类，定义在<code>&lt;stack&gt;</code>头文件中。<br />
+<br />
+默认情况下，stack 底层是用 deque 实现的：
+<pre class="info-box">
+template &lt;class T, class Container = deque&lt;T&gt; &gt; class stack;</pre>
+可以看到 template 的第二个参数 Container 默认指定的是 deque。除了 deque 之外，stack 的底层还可以指定用 vector 和 list 容器实现。<br />
+<br />
+构造 stack 容器的方式有多种，包括：<br />
+<br />
+1) 创建一个不包含任何元素的 stack 适配器，并采用默认的 deque 基础容器：
+<pre class="cpp" shownum="false">
+std::stack&lt;int&gt; values;</pre>
+上面这行代码，就成功创建了一个可存储 int 类型元素，底层采用 deque 基础容器的 stack 适配器。<br />
+<br />
+2) 上面提到，stack&lt;T,Container=deque&lt;T&gt;&gt; 模板类提供了 2 个参数，通过指定第二个模板类型参数，我们可以指定 vector 或者 list 作为 stack 的底层容器。
+<pre class="cpp" shownum="false">
+std::stack&lt;std::string, std::list&lt;int&gt;&gt; values;</pre>
+<br />
+3) 可以用一个基础容器来初始化 stack 适配器，只要该容器的类型和 stack 底层使用的基础容器类型相同即可。例如：
+<pre class="cpp" shownum="false">
+std::list&lt;int&gt; values {1, 2, 3};
+std::stack&lt;int,std::list&lt;int&gt;&gt; my_stack (values);</pre>
+注意，初始化后的 my_stack 适配器中，栈顶元素为 3，而不是 1。另外在第 2 行代码中，stack 第 2 个模板参数必须显式指定为 list&lt;int&gt;（必须为 int 类型，和存储类型保持一致），否则 stack 底层将默认使用 deque 容器，也就无法用 lsit 容器的内容来初始化 stack 适配器。<br />
+<br />
+4) 还可以用一个 stack 适配器来初始化另一个 stack 适配器，只要它们存储的元素类型以及底层采用的基础容器类型相同即可。例如：
+<pre class="cpp">
+std::list&lt;int&gt; values{ 1, 2, 3 };
+std::stack&lt;int, std::list&lt;int&gt;&gt; my_stack1(values);
+std::stack&lt;int, std::list&lt;int&gt;&gt; my_stack=my_stack1;
+//std::stack&lt;int, std::list&lt;int&gt;&gt; my_stack(my_stack1);</pre>
+可以看到，和使用基础容器不同，使用 stack 适配器给另一个 stack 进行初始化时，有 2 种方式，使用哪一种都可以。<br />
+<blockquote>
+	<p>
+		注意，第 3、4 种初始化方法中，my_stack 适配器的数据是经过拷贝得来的，也就是说，操作 my_stack 适配器，并不会对 values 容器以及 my_stack1 适配器有任何影响。</p>
+</blockquote>
+<h2>
+	stack容器适配器的使用</h2>
+stack 容器不提供迭代器，任何元素的进出都必须符合先进后出的规则，每次只能使用栈顶元素，而且也没有办法遍历整个容器中的内容。<br />
+<br />
+下表列出了操作 stack 容器的常用成员函数。<br />
+<br />
+<table>
+	<caption>
+		表 1 stack容器适配器支持的成员函数</caption>
+	<tbody>
+		<tr>
+			<th>
+				成员函数</th>
+			<th>
+				功能</th>
+		</tr>
+		<tr>
+			<td>
+				empty()</td>
+			<td>
+				当 stack 栈中没有元素时，该成员函数返回 true；反之，返回 false。</td>
+		</tr>
+		<tr>
+			<td>
+				size()</td>
+			<td>
+				返回 stack 栈中存储元素的个数。</td>
+		</tr>
+		<tr>
+			<td>
+				top()</td>
+			<td>
+				返回一个栈顶元素的引用，类型为 T&amp;。如果栈为空，程序会报错。</td>
+		</tr>
+		<tr>
+			<td>
+				push(const T&amp; val)</td>
+			<td>
+				先复制 val，再将 val 副本压入栈顶。这是通过调用底层容器的 push_back() 函数完成的。</td>
+		</tr>
+		<tr>
+			<td>
+				push(T&amp;&amp; obj)</td>
+			<td>
+				以移动元素的方式将其压入栈顶。这是通过调用底层容器的有右值引用参数的 push_back() 函数完成的。</td>
+		</tr>
+		<tr>
+			<td>
+				pop()</td>
+			<td>
+				弹出栈顶元素。</td>
+		</tr>
+		<tr>
+			<td>
+				emplace(arg...)</td>
+			<td>
+				arg... 可以是一个参数，也可以是多个参数，但它们都只用于构造一个对象，并在栈顶直接生成该对象，作为新的栈顶元素。</td>
+		</tr>
+		<tr>
+			<td>
+				swap(stack&lt;T&gt; &amp; other_stack)</td>
+			<td>
+				将两个 stack 适配器中的元素进行互换，需要注意的是，进行互换的 2 个 stack 适配器中存储的元素类型以及底层采用的基础容器类型，都必须相同。</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+下面的 C++ 程序演示了表中部分成员函数的用法：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;stack&gt;
+
+int main() {
+    std::stack&lt;int&gt; s;
+    s.push(1); // 添加元素
+    s.push(2);
+    s.push(3);
+
+    int x = s.top(); // 访问顶部元素（不删除）
+    std::cout &lt;&lt; x &lt;&lt; std::endl; // 输出3
+
+    s.pop(); // 删除顶部元素
+
+    bool isEmpty = s.empty(); // 检查stack是否为空
+    std::cout &lt;&lt; std::boolalpha &lt;&lt; isEmpty &lt;&lt; std::endl; // 输出false
+    return 0;
+}</pre>
+运行结果为：
+<p class="info-box">
+	3<br />
+	false</p>
+<h2>
+	总结</h2>
+容器适配器提供了一种非常有效的方式来限制或扩展基础容器（vector、list、deque 等）的功能。<br />
+<br />
+和 vector、list、deque 容器相比，stack 容器对它们的用法做了限制，元素的进出必须符合先进后出的规则，每次只能使用栈顶元素，而且也没有办法遍历整个容器中的内容。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="318_3.html" title="C语言跳转语句（break语句，continue语句，goto语句，return语句）" target="_blank">C语言跳转语句（break语句，continue语句，goto语句，return语句）</a></li>
+<li><a href="345_2.html" title="EOF宏，C语言EOF宏详解" target="_blank">EOF宏，C语言EOF宏详解</a></li>
+<li><a href="../mysql/curdate_current_date_2.html" title="MySQL CURDATE和CURRENT_DATE函数：获取系统当前日期" target="_blank">MySQL CURDATE和CURRENT_DATE函数：获取系统当前日期</a></li>
+<li><a href="vip_9653_2.html" title="Qt QLabel文本框的使用" target="_blank">Qt QLabel文本框的使用</a></li>
+<li><a href="kt3alqh_2.html" title="JS async和await关键字的用法（非常详细）" target="_blank">JS async和await关键字的用法（非常详细）</a></li>
+<li><a href="d03uvfj_2.html" title="《图解算法(使用C语言)》PDF下载（高清完整版）" target="_blank">《图解算法(使用C语言)》PDF下载（高清完整版）</a></li>
+<li><a href="p0r218t_2.html" title="《Web前端开发项目化教程》PDF下载（高清完整版）" target="_blank">《Web前端开发项目化教程》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10363;
+window.arcId = "18afFKbXDjsvw95HSkIQDzyRrkxOLlA/nQJiJ0Cy6vL2DgFhHuCHzXWG3zma";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

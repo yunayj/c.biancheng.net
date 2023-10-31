@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++函数对象详解</title>
+<meta name="description" content="函数对象又叫仿函数（functor），简单理解，函数对象就是可以当做函数使用的类对象。 使用函数的标志就是在函数名称后面加上函数调用运算符( )，即一对括号，外加其中的函数参数。" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++函数对象详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">函数对象又叫仿函数（functor），简单理解，函数对象就是可以当做函数使用的类对象。<br />
+<br />
+使用函数的标志就是在函数名称后面加上函数调用运算符&ldquo;( )&rdquo;，即一对括号，外加其中的函数参数。因此，如果一个对象能够当做函数使用，也必须能够在对象名后面加上括号和参数。要达到这样的目的，则必须为函数对象重载函数调用运算符。<br />
+<br />
+因此，函数对象实际上是一个类或结构体，它重载了 operator()，从而允许我们像像调用函数一样使用对象实例。<br />
+<br />
+函数对象的语法格式如下：<br />
+<pre class="info-box">
+template &lt;模板参数列表&gt;
+class 类名 {
+public:
+    返回值类型 operator()(函数参数列表) {
+        // 函数体
+    }
+
+    // 其他成员函数和数据成员...
+};</pre>
+以下是一个简单的 C++ 示例：
+<pre class="cpp">
+#include &lt;iostream&gt;
+
+class Adder {
+public:
+    int operator()(int a, int b) {
+        return a + b;
+    }
+};
+
+int main() {
+    Adder add;  // 创建函数对象实例
+    int result = add(3, 4);  // 使用函数对象
+    std::cout &lt;&lt; &quot;3 + 4 = &quot; &lt;&lt; result &lt;&lt; std::endl;
+
+    return 0;
+}</pre>
+示例中的 Adder 是一个函数对象，它接受两个整数参数，并返回它们的和。在 main 函数中，我们创建了这个函数对象的一个实例并调用它，就像它是一个函数一样。<br />
+<br />
+运行结果为：
+<p class="info-box">
+3 + 4 = 7</p>
+<h2>
+函数对象VS函数指针</h2>
+设计函数对象的主要目的是用来配置算法的策略。所谓算法的策略，就是计算或处理数据的方法、目标、条件等。<br />
+<br />
+为了将函数设计得更加灵活，并能够尽量重用，通常可以通过函数的参数来指定函数的计算方法、目标、条件等，而该参数就是所谓的算法策略。配置函数的算法策略有如下三种方法：
+<ul>
+<li>
+使用数值；</li>
+<li>
+使用函数指针；</li>
+<li>
+使用函数对象；</li>
+</ul>
+<br />
+如果使用数值方法，那么在设计算法时必须根据不同的数值做出相应的处理，这样做不够灵活。例如，设计一个查找函数 find_if，至于什么样的数据符合要求，则由调用者通过参数指定。假设使用数值方法来表示算法策略，则应当先定义一个表示各种策略的枚举体，然后在定义函数时为函数传入一个该枚举体的变量，以表示应用的策略，例如：<br />
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+// 定义策略枚举
+enum Strategy {
+    EVEN,      // 查找第一个偶数
+    ODD,       // 查找第一个奇数
+    GREATER_THAN_5   // 查找第一个大于5的数
+};
+
+int find_if(const std::vector&lt;int&gt;&amp; vec, Strategy strategy) {
+    for (int num : vec) {
+        switch (strategy) {
+            case EVEN:
+                if (num % 2 == 0) return num;
+                break;
+            case ODD:
+                if (num % 2 != 0) return num;
+                break;
+            case GREATER_THAN_5:
+                if (num &gt; 5) return num;
+                break;
+            default:
+                break;
+        }
+    }
+    return -1; // 表示未找到
+}
+
+int main() {
+    std::vector&lt;int&gt; numbers = {3, 4, 7, 8, 9};
+
+    std::cout &lt;&lt; &quot;First even number: &quot; &lt;&lt; find_if(numbers, EVEN) &lt;&lt; std::endl;
+    std::cout &lt;&lt; &quot;First odd number: &quot; &lt;&lt; find_if(numbers, ODD) &lt;&lt; std::endl;
+    std::cout &lt;&lt; &quot;First number greater than 5: &quot; &lt;&lt; find_if(numbers, GREATER_THAN_5) &lt;&lt; std::endl;
+
+    return 0;
+}</pre>
+示例中定义了一个 find_if() 函数，该函数根据传入的策略枚举值来查找满足特定条件的第一个元素。虽然这种方法在某些情况下可能会有用，但它不够灵活。如果要增加新的策略，就需要修改枚举和 find_if() 函数的内部逻辑。<br />
+<br />
+假设使用函数指针来表示算法策略，则应当在算法函数中传递一个函数指针，用以传递实现算法策略的函数，例如：<br />
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+typedef bool (*StrategyFunc)(int);
+
+bool isEven(int num) {
+    return num % 2 == 0;
+}
+
+bool isOdd(int num) {
+    return num % 2 != 0;
+}
+
+bool isGreaterThanFive(int num) {
+    return num &gt; 5;
+}
+
+int find_if(const std::vector&lt;int&gt;&amp; vec, StrategyFunc strategy) {
+    for (int num : vec) {
+        if (strategy(num)) {
+            return num;
+        }
+    }
+    return -1; // 表示未找到
+}
+
+int main() {
+    std::vector&lt;int&gt; numbers = {3, 4, 7, 8, 9};
+
+    std::cout &lt;&lt; &quot;First even number: &quot; &lt;&lt; find_if(numbers, isEven) &lt;&lt; std::endl;
+    std::cout &lt;&lt; &quot;First odd number: &quot; &lt;&lt; find_if(numbers, isOdd) &lt;&lt; std::endl;
+    std::cout &lt;&lt; &quot;First number greater than 5: &quot; &lt;&lt; find_if(numbers, isGreaterThanFive) &lt;&lt; std::endl;
+
+    return 0;
+}</pre>
+在上面的代码中，我们定义了三种策略函数：isEven()、isOdd() 和 isGreaterThanFive()。find_if() 函数接受一个函数指针作为策略，然后根据这个函数指针来查找满足条件的第一个元素。<br />
+<br />
+这种方法的优势是，如果我们想要定义新的策略，只需定义新的函数，而不需要修改 find_if() 函数。这使得代码更加灵活和可扩展。<br />
+<br />
+但和函数对象相比，使用函数指针表达算法策略仍然有一定的局限性：<br />
+<ul>
+<li>
+不能使用内联函数，以进一步提高调用效率。</li>
+<li>
+普通的函数或函数指针不能保存状态，而函数对象可以保存状态，因为它们是类的实例，可以有成员变量。</li>
+</ul>
+<br />
+使用函数对象表示查找某个目标数据的算法如下：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+class Finder {
+private:
+    int target;
+
+public:
+    // 构造函数，设置要查找的目标数据
+    Finder(int t) : target(t) {}
+
+    // 重载()操作符，使其可以被调用如同一个函数
+    bool operator()(int num) const {
+        return num == target;
+    }
+};
+
+int find_if(const std::vector&lt;int&gt;&amp; vec, const Finder&amp; strategy) {
+    for (int num : vec) {
+        if (strategy(num)) {
+            return num;
+        }
+    }
+    return -1; // 表示未找到
+}
+
+int main() {
+    std::vector&lt;int&gt; numbers = {3, 4, 7, 8, 9};
+
+    // 创建一个函数对象，用于查找数字7
+    Finder findSeven(7);
+
+    int result = find_if(numbers, findSeven);
+    if (result != -1) {
+        std::cout &lt;&lt; &quot;Found the number: &quot; &lt;&lt; result &lt;&lt; std::endl;
+    } else {
+        std::cout &lt;&lt; &quot;Number not found.&quot; &lt;&lt; std::endl;
+    }
+
+    return 0;
+}</pre>
+在上面的代码中，我们定义了一个名为 Finder 的类。这个类的对象可以像函数一样被调用，因为它重载了 operator()。<br />
+<br />
+通过使用函数对象作为策略，我们可以轻松地定义和扩展算法的策略。例如，如果我们想要查找其他的数字，只需创建一个新的 Finder 对象并传递所需的数字即可。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="3008.html" title="Vim移动光标快捷键汇总" target="_blank">Vim移动光标快捷键汇总</a></li>
+<li><a href="3396.html" title="树的孩子兄弟表示法" target="_blank">树的孩子兄弟表示法</a></li>
+<li><a href="vip_7337.html" title="Go语言二叉树数据结构的应用" target="_blank">Go语言二叉树数据结构的应用</a></li>
+<li><a href="vip_7648.html" title="Linux中大量使用脚本语言，而不是C语言！" target="_blank">Linux中大量使用脚本语言，而不是C语言！</a></li>
+<li><a href="../redis2/hkeys.html" title="Redis HKEYS命令" target="_blank">Redis HKEYS命令</a></li>
+<li><a href="9643.html" title="大厂打工VS自由职业，哪个更香？" target="_blank">大厂打工VS自由职业，哪个更香？</a></li>
+<li><a href="otjb022.html" title="MySQL查看表结构（2种方式）" target="_blank">MySQL查看表结构（2种方式）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10367;
+window.arcId = "fcbdH6NEx9PUum/zI5ok1l46+QjuMwgUQqoEecClgNnsbVOHpk8zHL8r9oI2";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

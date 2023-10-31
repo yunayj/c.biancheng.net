@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>JS async和await关键字的用法（非常详细）</title>
+<meta name="description" content="JavaScript 中的 async/await 是继 Promise 之后在 ES2017 中新定义的关键字。 async 用于定义异步函数，await 用于获取异步函数的执行结果，它们在语法形式上对 Promise 进行了修改，使代码编写起" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>JS async和await关键字的用法（非常详细）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">JavaScript 中的 async/await 是继 <a href="r0jktot.html" target="_blank">Promise</a> 之后在 ES2017 中新定义的关键字。<br />
+<br />
+async 用于定义异步函数，await 用于获取异步函数的执行结果，它们在语法形式上对 Promise 进行了修改，使代码编写起来更像是同步式的，阅读起来更加直观，但是底层还是基于 Promise 实现的。
+<h2>
+定义异步函数</h2>
+异步函数是使用 async 关键字定义的函数，除了函数名前边需要加上 async 之外，在定义上与普通的函数没有什么区别，不过它的返回值会包装成 Promise 对象。<br />
+<br />
+例如定义一个异步函数，代码如下：
+<pre class="javascript">
+async function getTitle(){
+    return &quot;标题&quot;
+}</pre>
+如果直接调用这个函数并打印返回值，则会输出：
+<p class="info-box">
+Promise{&lt;fulfilled &gt;: &quot;标题&quot;}</p>
+如果想要访问返回值，则需要像 Promise 一样使用 then()，代码如下：
+<pre class="javascript" showmenu="false" shownum="false">
+getTitle().then(title=&gt;console.log(title));</pre>
+除此之外，在异步函数中可以使用 await 关键字获取其他 Promise 或异步函数的执行结果。
+<h2>
+使用 await</h2>
+JS await 关键字的作用相当于 then()，Promise 完成之后的值会作为 await 关键字的返回值，可以把它保存到变量中再进行后续操作，代码如下：
+<pre class="javascript">
+const promise=new Promise(resolve=&gt;setTimeout(resolve,3*1000,＂done＂));
+async function logResult(){
+    const result=await promise;
+    console.log(result);
+}
+logResult();</pre>
+代码中定义了一个 promise，在 3s 后打印出＂done＂字符串，之后在一个 async 函数 logResult() 中，使用了 await 等待 promise 的执行结果，并打印出来，代码的最后直接调用了 logResult() 这个 async 函数，它没有返回值，所以不需要在后边使用 then()。 运行代码并等待 3s 后，控制台就会打印出＂done＂。<br />
+<br />
+这里的 await 和后边的代码相当于 then() 中的回调函数，类似下例，代码如下：
+<pre class="javascript" showmenu="false" shownum="false">
+promise.then(result=&gt;console.log(result));</pre>
+只不过使用 await 这种方式更符合同步代码的风格。<br />
+<br />
+需要注意的是，await 只能在异步函数中使用，类似于必须先有 Promise 才能有 then()，如果忘记写 async，则程序会抛出异常。<br />
+<br />
+再来看一个例子，之前使用 fetch() 获取博客文章列表的代码，如果使用 async/await 则可以使用下方示例的形式，代码如下：
+<pre class="javascript">
+async function getPosts(){
+    const res=await fetch(&quot;/api/posts&quot;);
+    const posts=await res.json();
+    return posts;
+}
+getPosts().then(posts=&gt;console.log(posts));</pre>
+代码最后同样会打印出获取的文章列表数组，不过这里可以看到，之前使用了两个 then() 分别获取 res 对象和 posts 数组，而这里使用 await 则更像是同步的代码，且两个 await 是按顺序执行的。<br />
+<br />
+也就是说第1个 await 会等待 fetch() 的返回结果，在得到结果之后，第2个 await 才会执行，如果后边有更多的 await 关键字，则它们都会等待前一个执行完毕之后才会执行。<br />
+<br />
+再看《<a href="r0jktot.html" target="_blank">JS Promise用法详解</a>》一文中（靠后的一部分内容）顺序执行 Promise 的例子，这里同样使用之前定义的3个 promise，改成使用 await 的形式顺序执行，代码如下：
+<pre class="javascript">
+async function execPromises(){
+    await promise1;
+    await promise2;
+    const value3=await promise3;
+    return value3;
+}
+execPromises().then(value=&gt;console.log(value));</pre>
+这里最后打印出的结果同样也是 promise3 的返回值：1。<br />
+<br />
+这种方式就比使用 then() 的方式清晰了很多。<br />
+<br />
+不过，要想使 await 同时开始执行所有的 promise 或 async函数，可以借助 Promise.all() 实现，例如使用代码：
+<pre class="javascript" showmenu="false" shownum="false">
+await Promise.all([promise, asyncFunc1(), asyncFunc2()])</pre>
+<h2>
+处理异常</h2>
+使用 async/await 处理异常的方式也相当直观，可以使用 try...catch 语句块包裹 await 语句，任何一条 await 抛出异常，都能够被 try 捕获，并在 catch 语句块中处理。<br />
+<br />
+例如使用 fetch() 处理网络和请求错误，可以使用下方示例的形式，代码如下：
+<pre class="javascript">
+async function getPosts(){
+    try{
+        const res=await fetch(＂/api/posts＂);
+        if(res.status&gt;=400){
+            throw res.status;
+        }
+        const posts=await res.json();
+        return posts;
+    }catch(error){
+        if(error===404){
+            return[];
+        }else{
+            console.log(error);
+        }
+    }
+}
+getPosts().then(posts=&gt;console.log(posts));</pre>
+如果响应状态码是 404，则 getPosts() 会返回空数组，其他状态码则直接使用 console.log() 打印了出来。<br />
+<br />
+如果想分别捕获 fetch() 和 res.json() 的异常，则可以把它们分别放到两个 try...catch() 语句块中。同样地，也可以使用 finally() 执行一些收尾操作。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="726.html" title="Linux touch命令：创建文件及修改文件时间戳" target="_blank">Linux touch命令：创建文件及修改文件时间戳</a></li>
+<li><a href="737.html" title="Linux tail命令：显示文件结尾的内容" target="_blank">Linux tail命令：显示文件结尾的内容</a></li>
+<li><a href="1286_2.html" title="Java JDK下载与安装教程" target="_blank">Java JDK下载与安装教程</a></li>
+<li><a href="../mysql/lower.html" title="MySQL LOWER函数：将字母转换成小写" target="_blank">MySQL LOWER函数：将字母转换成小写</a></li>
+<li><a href="3400.html" title="回溯算法详解" target="_blank">回溯算法详解</a></li>
+<li><a href="7253.html" title="MySQL db、tables_priv、columns_priv和procs_priv权限表" target="_blank">MySQL db、tables_priv、columns_priv和procs_priv权限表</a></li>
+<li><a href="jbw9p2q.html" title="《数据结构(C语言版)》秦玉平第4版PDF下载（高清完整版）" target="_blank">《数据结构(C语言版)》秦玉平第4版PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10319;
+window.arcId = "146f1pvFbopIyJp6K8eu27b/nY3nneYxs9EuGF1964d4Nx9u6B5AK7pr67v2";
+window.typeidChain = "309|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Scrapy爬虫框架入门教程（简明版）</title>
+<meta name="description" content="如果每次写爬虫程序，都将页面获取、页面解析、爬虫调度、异常处理和反爬应对等功能全部重新实现，会产生很多简单乏味的重复劳动。利用框架，我们只需要定制开发几个模块就可" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Scrapy爬虫框架入门教程（简明版）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">如果每次写爬虫程序，都将页面获取、页面解析、爬虫调度、异常处理和反爬应对等功能全部重新实现，会产生很多简单乏味的重复劳动。利用框架，我们只需要定制开发几个模块就可以实现一个爬虫，抓取网页内容和各种图片。<br />
+<h2>
+Scrapy简介</h2>
+Scrapy 是用 Python 实现一个用于爬取网站数据、提取结构性数据而编写的轻量级爬虫应用框架，可以用于数据挖掘、监测和自动化测试。<br />
+<br />
+Scrapy 基于多线程，具有如下优点：
+<ul>
+<li>
+Scrapy 是异步的，性能更强；</li>
+<li>
+采用可读性更强的 XPath 代替正则表达式；</li>
+<li>
+具备强大的统计和日志系统；</li>
+<li>
+可同时在不同的 URL 上爬行；</li>
+<li>
+支持 shell 方式，方便独立调试；</li>
+<li>
+方便写一些统一的过滤器；</li>
+<li>
+通过管道的方式存入数据库。</li>
+</ul>
+<br />
+Scrapy 涉及五大主要组件，分别是引擎、调度器、下载器、爬虫程序和管道，Scrapy 的组件如下表所示。<br />
+<br />
+<table>
+<caption>
+表 1 Scrapy 的组件</caption>
+<tbody>
+<tr>
+<th>
+组件</th>
+<th>
+作用</th>
+<th>
+备注</th>
+</tr>
+<tr>
+<td>
+引擎（Scrapy Engine）</td>
+<td>
+负责爬虫程序、管道、下载器和调度器中间的通信和数据传递等</td>
+<td>
+Scrapy 已经实现</td>
+</tr>
+<tr>
+<td>
+调度器（Scheduler）</td>
+<td>
+负责接收引擎发送的请求，并按照一定的方式整理排列，放入队列， 当引擎需要时，再交给引擎</td>
+<td>
+Scrapy 已经实现</td>
+</tr>
+<tr>
+<td>
+下载器（Downloader）</td>
+<td>
+负责下载引擎发送的所有请求，并将下载器获取的响应交给引擎，由引擎交给爬虫程序处理</td>
+<td>
+Scrapy 已经实现</td>
+</tr>
+<tr>
+<td>
+爬虫程序（Spider）</td>
+<td>
+负责处理所有响应，从中分析和提取数据，获取 Item 字段需要的数据，并将需要跟进的 URL 提交给引擎，再次进入调度器</td>
+<td>
+需要编写该模块</td>
+</tr>
+<tr>
+<td>
+管道（Item Pipeline）</td>
+<td>
+负责处理爬虫程序中获取的 Item，并进行后期处理（详细分析、过滤、存储等）的地方</td>
+<td>
+需要编写该模块</td>
+</tr>
+<tr>
+<td>
+下载中间件（Downloader Middlewares）</td>
+<td>
+可以当作一个可以自定义扩展下载功能的组件</td>
+<td>
+Scrapy 已经实现</td>
+</tr>
+<tr>
+<td>
+爬虫中间件（Spider Middlewares）</td>
+<td>
+可以当作一个可以自定义扩展和操作引擎与爬虫程序之间通信的功能组件（例如，进入爬虫程序的响应和从爬虫程序出去的请求）</td>
+<td>
+Scrapy 已经实现</td>
+</tr>
+</tbody>
+</table>
+<br />
+Scrapy 的运行框架如下图所示，主要涉及引擎、调度器、下载器、管道等组件。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230922/2-230922103632563.gif" /><br />
+图 1 Scrapy的运行框架</div>
+<br />
+具体的运行步骤如下：
+<ol>
+<li>
+引擎从爬虫程序拿到第一个需要处理的 URL，并将请求交给调度器。</li>
+<li>
+调度器拿到请求后，按照一定的方式进行整理排列，放入队列，并将处理好的请求返回引擎。</li>
+<li>
+引擎通知下载器，按照下载中间件的设置去下载请求。</li>
+<li>
+下载器下载请求，并将获取的响应按照下载中间件的设置处理，然后交给引擎，由引擎交给爬虫程序来处理。对于下载失败的请求，引擎会通知调度器进行记录，之后重新下载。</li>
+<li>
+爬虫程序获得响应，调用回调函数（默认调用 parse 函数）处理，并将提取的 Item 数据和需要跟进的 URL 交给引擎。</li>
+<li>
+引擎将 Items 数据交给管道处理，将需要跟进的 URL 交给调度器，然后开始循环，直到调度器中不存在任何请求，整个程序才会终止。</li>
+</ol>
+<h2>
+Scrapy框架的使用</h2>
+<h3>
+1、部署搭建</h3>
+在本节中，我们将配置虚拟环境、安装 Scrapy，以及在 PyCharm 中部署搭建项目工程。在 PyCharm 中进行 Scrapy 开发环境构建，采用的是 pipenv 虚拟环境，如下图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230922/2-230922103F2491.gif" /><br />
+图 2 Scrapy开发环境构建</div>
+<br />
+激活并进入 myScrapy 虚拟环境后，通过 pip 安装 Scrapy，使用命令 pip install -i [Scrapy下载源]，如下图所示，我们可以使用国内的下载源来提高下载安装的速度。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230922/2-230922103G9410.gif" /><br />
+图 3 通过pip安装Scrapy</div>
+<br />
+安装完成后在命令行输入 scrapy -v，如果出现下图所示的版本号就说明安装成功。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230922/2-230922103I3452.gif" /><br />
+图 4 Scrapy安装成功</div>
+<br />
+我们在安装 Twisted、pywin32、Scrapy 这 3 个库的同时可以安装其他的辅助库，如下图所示。注意，不同的第三方库可能需要不同版本的辅助库进行支持，这可能会出现版本纠缠问题，而且问题很难排查，所以建议使用虚拟环境搭建项目以方便项目管理。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230922/2-230922103J6357.gif" /><br />
+图 5 安装库</div>
+<br />
+接下来，手动初始化项目，进入 myScrapy 目录，输入命令 scrapy startproject SpiderObject，命令行出现下图所示结果说明项目创建成功。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230922/2-230922103PJ07.gif" /><br />
+图 6 项目创建成功</div>
+<br />
+在 myScrapy 目录下会生成文件目录 SpiderDemo 和 Scrapy 框架的 spiders 目录，如下图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230922/2-230922103R0600.gif" /><br />
+图 7 爬虫项目结构</div>
+<br />
+最后，简单测试一下，打开 PyCharm 的 Terminal，输入下图所示的命令，生成一个爬虫模板。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230922/2-230922103S2N2.gif" /><br />
+图 8 命令行生成爬虫模板</div>
+<br />
+成功后，spiders 包下面会多一个 BaiduSpider.py 文件，如下图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230922/2-230922103TU37.gif" /><br />
+图 9 创建爬虫代码</div>
+<br />
+这说明我们的爬虫程序创建成功，整个爬虫的框架搭建完成，后续我们可以在 PyCharm 中使用这个框架。<br />
+<h3>
+2、命令工具</h3>
+在 Scrapy 中，命令工具分为两种，一种为全局命令，另一种为项目命令。全局命令不需要依靠 Scrapy 项目就可以直接运行，而项目命令必须要在 Scrapy 项目中才可以运行。<br />
+<br />
+Scrapy 命令行格式如下：
+<p class="info-box">
+scrapy &lt;command&gt; [options]&nbsp;&nbsp;&nbsp;</p>
+Scrapy 的全局命令如下表所示。<br />
+<br />
+<table>
+<caption>
+表 2 Scrapy 的全局命令</caption>
+<tbody>
+<tr>
+<th>
+命令</th>
+<th>
+使用方式</th>
+<th>
+含义</th>
+</tr>
+<tr>
+<td>
+startproject</td>
+<td>
+scrapy startproject &lt;project_name&gt;[project_dir]</td>
+<td>
+创建一个新的项目</td>
+</tr>
+<tr>
+<td>
+genspider</td>
+<td>
+scrapy genspider[-t template]&lt;name&gt;&lt;domain&gt;</td>
+<td>
+创建新的爬虫程序</td>
+</tr>
+<tr>
+<td>
+settings</td>
+<td>
+scrapy settings[options]</td>
+<td>
+获取配置</td>
+</tr>
+<tr>
+<td>
+runspider</td>
+<td>
+scrapy runspider&lt;spider_file. py&gt;</td>
+<td>
+运行 Python 文件里的爬虫程序，不需要创建项目</td>
+</tr>
+<tr>
+<td>
+shell</td>
+<td>
+scrapy shell[url]</td>
+<td>
+启动 Scrapy 交互终端，可用于调试</td>
+</tr>
+<tr>
+<td>
+fetch</td>
+<td>
+scrapy fetch&lt;url&gt;</td>
+<td>
+使用 Scrapy 下载器下载给定的 URL，并将获取的内容送到标准输出</td>
+</tr>
+<tr>
+<td>
+view</td>
+<td>
+scrapy view&lt;url&gt;</td>
+<td>
+浏览器中打开 URL</td>
+</tr>
+<tr>
+<td>
+version</td>
+<td>
+scrapy version[-v]</td>
+<td>
+显示 Scrapy&nbsp;版木</td>
+</tr>
+</tbody>
+</table>
+<br />
+Scrapy 的项目命令如下表所示。<br />
+<br />
+<table>
+<caption>
+表 3 Scrapy 的项目命令</caption>
+<tbody>
+<tr>
+<th>
+命令</th>
+<th>
+使用方式</th>
+<th>
+含义</th>
+</tr>
+<tr>
+<td>
+crawl</td>
+<td>
+scrapy crawl&lt;spider&gt;</td>
+<td>
+使用爬虫程序进行爬取，-o 表示输出</td>
+</tr>
+<tr>
+<td>
+check</td>
+<td>
+scrapy check[-l]&lt;spider&gt;</td>
+<td>
+检查爬虫程序文件是否有语法错误</td>
+</tr>
+<tr>
+<td>
+list</td>
+<td>
+scrapy list</td>
+<td>
+列出当前项目可用的所有爬虫程序</td>
+</tr>
+<tr>
+<td>
+edit</td>
+<td>
+scrapy edit&lt;spider&gt;</td>
+<td>
+使用环境变量中设定的编辑器编辑爬虫程序</td>
+</tr>
+<tr>
+<td>
+parse</td>
+<td>
+scrapy parse&lt;url&gt;[options]</td>
+<td>
+获取给定的 URL 并使用爬虫程序分析处理</td>
+</tr>
+<tr>
+<td>
+bench</td>
+<td>
+scrapy bench</td>
+<td>
+运行基准测试</td>
+</tr>
+</tbody>
+</table>
+<br />
+在开发爬虫程序时，调试工作是必要且重要的。无论是开发前的准备工作（例如测试该网站在爬虫程序中是否可用），是下载时的伪装工作（例如为爬虫程序设置请求参数模拟浏览器），还是解析下载的数据（例如使用 XPath 解析等），我们无法每次都运行爬虫程序来达到调试的目的，因为这样效率太低了。我们可以使用浏览器或 Scrapy 命令工具进行调试。<br />
+<h4>
+1) 浏览器调试</h4>
+通常使用浏览器开发工具获取请求参数，如显示源码、firebug 等：
+<ul>
+<li>
+通常我们在浏览器中点击鼠标右键，选择显示网页源码功能，即可获取该URL的网页源码。</li>
+<li>
+代码检查可以精确地查看当前选中元素的 HTML 标签。</li>
+<li>
+查看请求参数，例如打开代码检查后在 network 标签下，查看请求头 Request Headers。</li>
+<li>
+XPath 调试是通过 Chrome 浏览器，检查代码后可以在标签上用鼠标右键点击 Copy-&gt;Copy XPath。</li>
+</ul>
+<h4>
+2) Scrapy命令工具调试</h4>
+执行命令 scrapy shell［待爬虫的URL］进入Scrapy 终端，可以开发和调试中测试 XPath 或 CSS 表达式，查看他们的工作方式及从爬取的网页中提取的数据。在编写我们的爬虫程序时，该终端提供了交互测试我们的表达式代码的功能，免去了每次修改后运行爬虫程序的麻烦。<br />
+<h3>
+3、使用说明</h3>
+Python 爬虫的基本流程主要包括发起请求、解析内容、获取响应内容和保存数据 4 步：
+<ol>
+<li>
+通过 HTTP 向目标站点发起请求，请求可以包含额外的请求头等信息，等待服务器响应。</li>
+<li>
+得到的内容可能是 HTML 对象，我们可以用正则表达式、网页解析库解析；可能是 JSON 对象，我们可以直接转为 JSON 对象解析；可能是二进制数据，我们可以保存或者做进一步处理。</li>
+<li>
+如果服务器能正常响应，会得到一个响应，响应的内容便是所要获取的页面内容，类型可能有 HTML、JSON、二进制（如图片视频）等类型。</li>
+<li>
+保存形式多样，可以存为文本、存至数据库，或者保存为特定格式的文件。</li>
+</ol>
+<br />
+因此，Scrapy项目构建爬虫的步骤主要有 4 步：
+<ol>
+<li>
+新建项目（scrapy startproject xxx）：新建一个新的爬虫项目。</li>
+<li>
+明确目标（items.py）：明确要抓取的目标。</li>
+<li>
+制作爬虫（spiders/xxspider.py）：制作爬虫，开始爬取网页。</li>
+<li>
+存储内容（pipelines.py）：设计管道，存储爬取的内容。</li>
+</ol>
+<br />
+下面具体讲解如何构建这 4 个步骤。<br />
+<h4>
+1) 创建Scrapy工程</h4>
+点击在 PyCharm 底部的 Terminal 窗口进入命令行，默认打开位置为 PyCharm 项目目录下，所以打开它即可输入命令。新建项目命令：
+<p class="info-box">
+scrapy startproject &times;&times;&times;</p>
+其中，<code>&times;&times;&times;</code>为项目名称,我们可以看到命令执行后会创建一个<code>&times;&times;&times;</code>目录。例如执行命令 scrapy startproject SpiderDemo，生成的项目类似下面的结构：<br />
+<pre class="info-box">
+SpiderDemo/
+   scrapy.cfg
+   SpiderDemo/
+       __init__.py
+       items.py
+       pipelines.py
+       settings.py
+       spiders/
+           __init__.py
+           ...</pre>
+<h4>
+2) 明确目标（定义Item）</h4>
+Item 是用于保存爬取到的数据的容器，其使用方法和字典类似。我们创建一个 scrapy.Item 类，并且定义类型为 scrapy.Field 的类属性来定义一个 Item。然后，实现一个爬取某图书网站的作者、书名和价格的爬虫。在 items.py 的 Item 类中定义字段，这些字段用来保存数据和方便后续的操作：<br />
+<pre class="python">
+import scrapy
+class BookItem(scrapy.Item):
+    author = scrapy.Field()
+    name = scrapy.Field()
+    price = scrapy.Field()</pre>
+<h4>
+3) 制作爬虫（编写爬虫程序）</h4>
+scrapy.Spider 是最基本的类，所有编写的爬虫必须继承这个类。<br />
+<br />
+Spider 类定义了如何爬取某个网站，包括爬取的动作和如何从网页的内容中提取结构化数据。我们要建立一个爬虫程序，必须用 scrapy.Spider 类创建一个子类，并确定 3 个强制属性和 1 个方法。
+<ul>
+<li>
+name：爬虫的识别名称，必须唯一。</li>
+<li>
+allow_domains：爬虫的约束区域，规定爬虫只爬取约束区域下的网页，不存在的 URL 会被忽略。</li>
+<li>
+start_urls：爬取的 URL 列表。因此，第一个被获取到的页面将是其中之一。后续的 URL 则从初始 URL 返回的数据中提取。</li>
+<li>
+parse(self,response)：Request 对象默认的回调解析方法。每个初始 URL 完成下载后调用该方法，将从每个初始 URL 传回的 Response 对象作为唯一参数传入该方法。该方法负责解析返回的数据（即 response.body），提取数据（即生成 item），生成需要进一步处理的 URL 的 Request 对象。</li>
+</ul>
+<br />
+示例如下：
+<pre class="python">
+class xxSpider(scrapy.Spider):
+    name = &#39;xxspider&#39;
+    def start_requests(self):
+        url=&#39;http://xxxx.xxxx.xxxx.xxxx&#39;
+        # 向队列中加入POST请求
+        yield scrapy.FormRequest(
+            url=url,
+            formdata={&#39;version&#39;:&#39;2.1&#39; },
+            callback=self.parse )
+    def parse(self, response):
+        print(response.body)</pre>
+我们可以使用 scrapy.FormRequest(url,formdata,callback) 方法发送 POST 请求。<br />
+<br />
+yield 是一个类似于 return 的关键字，当迭代遇到 yield 时将返回 yield 后面的值。注意，下一次迭代将从此次迭代遇到的 yield 后面的代码（即下一行）开始运行。带有 yield 的函数不再是一个普通函数，而是一个生成器（generator），可用于迭代。总之，yield 就是一个返回值关键字，它记住了返回的位置，下次迭代将从这个位置后开始。<br />
+<h4>
+4) 编写Item Pipeline（存储）</h4>
+每个 Item Pipeline 组件都是一个独立的 Python 类，被定义的 Item Pipeline 会默认且必须调用 process_item(self,item,spider) 方法，这个方法必须返回一个包含数据的字典或 item 对象，否则将抛出 DropItem 异常。<br />
+<br />
+process_item()方法的参数为 item 和 spider，其中 item 是 Item 对象，即被处理的 Item；spider 是 Spider 对象，即生成该 Item 的爬虫程序。<br />
+<br />
+pipeline 是一个非常重要的模块，主要作用是将返回的 items 写入数据库、文件等持久化模块。当 item 在爬虫程序中被收集之后，会被传递到 Item Pipeline 处理，以决定此 item 是丢弃还是被后续的 pipeline 继续处理。被丢弃的 item 将不会被之后的 pipeline 处理。<br />
+<br />
+使用 pipeline 的注意事项如下：
+<ul>
+<li>
+使用之前需要在 settings 配置文件中开启。</li>
+<li>
+pipeline 在 setting 配置文件中的键表示位置，即 pipeline 在项目中的位置可以自定义；值表示距离引擎的远近，越近数据会越先经过。</li>
+<li>
+有多个 pipeline 的时候，process_item() 方法必须返回item，否则后一个 pipeline 取到的数据为 None。</li>
+<li>
+pipeline 中必须有 process_item() 方法，否则没有办法接收和处理 item。</li>
+<li>
+process_item() 方法接收 item 和 spider，其中 spider 是当前传递 item 过来的爬虫程序。</li>
+</ul>
+<h2>
+Scrapy框架实例</h2>
+本示例爬虫某图书网站的作者、书名和价格，并把爬虫的结果输出到一个 Excel 文档中。<br />
+<br />
+首先，定义 Item。在 items.py 的 Item 类中定义字段，这些字段用来保存数据，方便后续的操作。<br />
+<pre class="python">
+import scrapy
+class BookItem(scrapy.Item):
+    author = scrapy.Field()
+    name = scrapy.Field()
+    price = scrapy.Field()</pre>
+接着，新增爬虫程序文件。修改 spiders 目录下名为 BookSpider.py 的文件，它是爬虫程序的核心，需要添加解析页面的代码，我们可以通过解析 Response 对象，获取图书的信息，代码如下所示。
+<pre class="python">
+import scrapy
+from scrapy import Selector, Request
+from scrapy.http import HtmlResponse
+from ..items import BookItem
+import json
+import time
+
+
+# 通过继承scrapy.Spider创建一个爬虫BookSpider
+class BooksSpider(scrapy.Spider):
+   name = &#39;epubitBook&#39;  # 爬虫的唯一标识，不能重复，启动爬虫的时候要用
+   allowed_domains = [&#39;epubit.com&#39;]
+   start_urls = [
+      &#39;https://www.epubit.com/pubcloud/content/front/portal/getUbookList?page=1&amp;row=20&amp;=&amp;startPrice=&amp;endPrice=&amp;tagId=&#39;]
+
+   def start_requests(self):
+      # 爬取接口网页连接
+      web_url = [
+         &#39;https://www.epubit.com/pubcloud/content/front/portal/getUbookList?page={}&amp;row=20&amp;=&amp;startPrice=&amp;endPrice=&amp;tagId=&#39;.format(
+            page) for page in range(1, 2)]
+      for i in web_url:
+         time.sleep(5)
+         headers = {&#39;Origin-Domain&#39;: &#39;www.epubit.com&#39;}
+         # scrapy.Request()参数一必须为str
+         yield scrapy.Request(i, self.parse, headers=headers)
+
+   def parse(self, response):
+      # 将接口中提取的Json数据转为dict字典
+      bk_dict = json.loads(response.text)
+      records = bk_dict[&#39;data&#39;][&#39;records&#39;]
+      for r in records:
+         item = BookItem()
+         author = r[&#39;authors&#39;]
+         name = r[&#39;name&#39;]
+         price = r[&#39;price&#39;]
+         # print(author,name,  price)
+         item[&#39;author&#39;] = author
+         item[&#39;name&#39;] = name
+         item[&#39;price&#39;] = price
+         yield item</pre>
+在上述代码中，parse 方法的参数 response 是对待爬取的链接进行爬取后的结果，在 parse 方法中，我们需要把 JSON 格式的数据转换为字典类型，然后读取需要的字段。本示例通过 page 实现翻页爬取，这样迭代实现整站的爬取。为了让服务器正常处理请求，我们要模拟正常的请求，并添加相应的请求头，如上述代码需要在 scrapy.Request() 函数的参数中设置，否则服务器会返回错误信息，从而无法获得数据。<br />
+<br />
+接下来是存储内容，如果仅仅想要保存 item，可以不需要实现任何的管道；如果想将这些数据保存到文件中，可以通过 -o 参数来指定文件名，Scrapy 支持我们将爬取到的数据导出为 JSON、CSV、XML 等格式，具体命令如下：<br />
+<pre class="info-box">
+# JSON格式，默认为Unicode编码
+scrapy crawl itcast -o result.json
+# CSV逗号表达式，可用Excel打开
+scrapy crawl itcast -o result.csv
+# XML格式
+scrapy crawl itcast -o result.xml</pre>
+执行这些命令，将会序列化爬取的数据，并生成文件。例如，执行命令 scrapy crawl epubitBook -o result.json，把爬取的数据保存到 result.json 中。<br />
+<br />
+如果我们想要持久化爬虫数据，可以在数据管道中处理爬虫程序产生的 Item 对象。例如，我们可以通过前面讲到的 openpyxl 库操作 Excel 文件，将数据写入 Excel 文件，代码如下所示。<br />
+<pre class="python">
+# 在这里定义item管道
+# 不要忘了将管道加入ITEM_PIPELINES设置
+# 详情可见Scrapy官方文档
+　
+from itemadapter import ItemAdapter
+import openpyxl
+from .items import BookItem
+class BookItemPipeline:
+    def open_spider(self, spider):
+        # 可选实现，开启spider时调用该方法
+        self.wb = openpyxl.Workbook()
+        self.sheet = self.wb.active
+        self.sheet.title = &#39;BooksMessage&#39;
+        self.sheet.append((&#39;作者&#39;, &#39;书名&#39;, &#39;价格&#39;))
+　
+    def process_item(self, item: BookItem, spider):
+        self.sheet.append((item[&#39;author&#39;], item[&#39;name&#39;],  item[&#39;price&#39;]))
+        return item
+　
+    def close_spider(self, spider):
+        self.wb.save(&#39;图书信息.xlsx&#39;)</pre>
+上面的 process_item() 和 close_spider() 都是回调方法，简单来说就是 Scrapy 框架会自动去调用的方法。当爬虫程序产生一个 Item 对象交给引擎时，引擎会将该 Item 对象交给管道，这时我们就会执行完成配置的管道的 parse_item 方法，从而在该方法中获取数据并完成数据的持久化操作。close_spider() 方法是在爬虫结束运行前自动执行的方法，在上述代码中，我们在 close_spider() 方法中实现了保存 Excel 文件的操作。<br />
+<br />
+最后，通过修改 settings.py 文件对项目进行配置，主要需要修改如下几个配置。<br />
+<pre class="info-box">
+ITEM_PIPELINES = {
+    &#39;SpiderDemo.pipelines.BookItemPipeline&#39;: 300
+}
+　
+# Obey robots.txt rules
+ROBOTSTXT_OBEY = False
+　
+BOT_NAME = &#39;SpiderDemo.SpiderDemo&#39;
+　
+SPIDER_MODULES = [&#39;SpiderDemo.spiders&#39;]
+NEWSPIDER_MODULE = &#39;SpiderDemo.spiders&#39;</pre>
+在 settings.py 文件里添加以上配置（可以取消原有的注释），后面的数字决定 item 通过 pipeline 的顺序，通常定义在 0~1000，数值越低，组件的优先级越高。<br />
+<br />
+所有代码和配置完成后，启动爬虫，命令为 scrapy crawl epubitBook，可以看到正在爬虫，若无报错则表示爬虫成功。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_7337.html" title="Go语言二叉树数据结构的应用" target="_blank">Go语言二叉树数据结构的应用</a></li>
+<li><a href="../redis2/zadd.html" title="Redis ZADD命令" target="_blank">Redis ZADD命令</a></li>
+<li><a href="../matplotlib/histogram.html" title="Matplotlib直方图" target="_blank">Matplotlib直方图</a></li>
+<li><a href="9342.html" title="JS输出语句汇总（5种）" target="_blank">JS输出语句汇总（5种）</a></li>
+<li><a href="3iiyh1.html" title="C语言标识符" target="_blank">C语言标识符</a></li>
+<li><a href="8bw04oo.html" title="JS定时器：setInterval()和setTimeout()方法" target="_blank">JS定时器：setInterval()和setTimeout()方法</a></li>
+<li><a href="2lj98f9.html" title="《嗨翻C语言》PDF下载（高清完整版）" target="_blank">《嗨翻C语言》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10498;
+window.arcId = "dd844PMIIvHpb3hGlxkswA0ic73fAf6nd3GHixW0Hq8xKOWouvPKtMhoBn9p";
+window.typeidChain = "145|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Linux chage用法详解：修改用户密码状态</title>
+<meta name="description" content="通过 chage 命令可以査看和修改 /etc/shadow 文件的第三个字段到第八个字段的密码状态。我个人建议直接修改 /etc/shadow 文件更加直观和简单。 那么为什么还要讲解 chage 命令呢？因为 chag" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../linux_tutorial/linux_tutorial.html">Linux</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href='../linux_tutorial/10/10.html'>Linux简介</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href='../linux_tutorial/20/20.html'>Linux安装</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href='../linux_tutorial/file_content/file_content.html'>Linux文件和目录管理</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href='../linux_tutorial/bale_compress/bale_compress.html'>Linux打包（归档）和压缩</a>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href='../linux_tutorial/40/40.html'>Vim文本编辑器</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href='../linux_tutorial/text_processing/text_processing.html'>Linux文本处理（Linux三剑客）</a>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href='../linux_tutorial/50/50.html'>Linux软件安装</a>
+</dd>
+<dd class="this"> <span class="channel-num">8</span> <a href="../linux_tutorial/60/60.html">Linux用户和用户组管理</a> </dd><dl class="dl-sub"><dd>8.1 <a href="3038.html">Linux用户和用户组</a></dd><dd>8.2 <a href="3042.html">Linux UID和GID</a></dd><dd>8.3 <a href="839.html">Linux /etc/passwd</a></dd><dd>8.4 <a href="840.html">Linux /etc/shadow</a></dd><dd>8.5 <a href="841.html">Linux /etc/group</a></dd><dd>8.6 <a href="842.html">Linux /etc/gshadow</a></dd><dd>8.7 <a href="3117.html">Linux初始组和附加组</a></dd><dd>8.8 <a href="3059.html">Linux /etc/login.defs</a></dd><dd>8.9 <a href="844.html">Linux系统添加新用户（useradd命令）</a></dd><dd>8.10 <a href="848.html">Linux修改系统用户密码（passwd命令）</a></dd><dd>8.11 <a href="849.html">Linux修改系统用户信息（usermod命令）</a></dd><dd>8.12 <a href="850.html">Linux强制系统用户登陆时修改密码（chage命令）</a></dd><dd>8.13 <a href="851.html">Linux删除系统用户（userdel命令）</a></dd><dd>8.14 <a href="853.html">Linux查看用户的UID和GID（id命令）</a></dd><dd>8.15 <a href="3089.html">Linux临时切换用户身份（su命令）</a></dd><dd>8.16 <a href="5894.html">Linux whoami和who am i命令</a></dd><dd>8.17 <a href="856.html">Linux添加用户组（groupadd命令）</a></dd><dd>8.18 <a href="857.html">Linux修改用户组（groupmod命令）</a></dd><dd>8.19 <a href="858.html">Linux删除用户组（groupdel命令）</a></dd><dd>8.20 <a href="859.html">Linux将系统用户加入或移除群组（gpasswd命令）</a></dd><dd>8.21 <a href="860.html">Linux切换用户的有效群组（newgrp命令）</a></dd></dl>
+<dd>
+<span class="channel-num">9</span>
+<a href='../linux_tutorial/70/70.html'>Linux权限管理</a>
+</dd>
+<dd>
+<span class="channel-num">10</span>
+<a href='../linux_tutorial/80/80.html'>Linux文件系统管理</a>
+</dd>
+<dd>
+<span class="channel-num">11</span>
+<a href='../linux_tutorial/90/90.html'>Linux高级文件系统管理</a>
+</dd>
+<dd>
+<span class="channel-num">12</span>
+<a href='../linux_tutorial/14/14.html'>Linux系统管理</a>
+</dd>
+<dd>
+<span class="channel-num">13</span>
+<a href='../linux_tutorial/17/17.html'>Linux备份与恢复</a>
+</dd>
+<dd>
+<span class="channel-num">14</span>
+<a href='../linux_tutorial/13/13.html'>Linux系统服务管理</a>
+</dd>
+<dd>
+<span class="channel-num">15</span>
+<a href='../linux_tutorial/15/15.html'>Linux系统日志管理</a>
+</dd>
+<dd>
+<span class="channel-num">16</span>
+<a href='../linux_tutorial/12/12.html'>Linux启动管理</a>
+</dd>
+<dd>
+<span class="channel-num">17</span>
+<a href='../linux_tutorial/16/16.html'>LAMP环境搭建和LNMP环境搭建</a>
+</dd>
+<dd>
+<span class="channel-num">18</span>
+<a href='../linux_tutorial/18/18.html'>SELinux管理</a>
+</dd>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../linux_tutorial/linux_tutorial.html">Linux</a> &gt; <a href="../linux_tutorial/60/60.html">Linux用户和用户组管理</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Linux chage用法详解：修改用户密码状态</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">除了 <code>passwd -S</code> 命令可以查看用户的密码信息外，还可以利用 chage 命令，它可以显示更加详细的用户密码信息，并且和 passwd 命令一样，提供了修改用户密码信息的功能。<br />
+<p class="info-box">
+如果你要修改用户的密码信息，我个人建议，还是直接修改 /etc/shadow 文件更加方便。</p>
+首先，我们来看 chage 命令的基本格式：
+<p class="info-box">
+[root@localhost ~]#chage [选项] 用户名</p>
+选项：
+<ul>
+<li>
+-l：列出用户的详细密码状态;</li>
+<li>
+-d 日期：修改 /etc/shadow 文件中指定用户密码信息的第 3 个字段，也就是最后一次修改密码的日期，格式为 YYYY-MM-DD；</li>
+<li>
+-m 天数：修改密码最短保留的天数，也就是 /etc/shadow 文件中的第 4 个字段；</li>
+<li>
+-M 天数：修改密码的有效期，也就是&nbsp;/etc/shadow 文件中的第 5 个字段；</li>
+<li>
+-W 天数：修改密码到期前的警告天数，也就是&nbsp;/etc/shadow 文件中的第 6&nbsp;个字段；</li>
+<li>
+-i 天数：修改密码过期后的宽限天数，也就是&nbsp;/etc/shadow 文件中的第 7&nbsp;个字段；</li>
+<li>
+-E 日期：修改账号失效日期，格式为 YYYY-MM-DD，也就是&nbsp;/etc/shadow 文件中的第 8&nbsp;个字段。</li>
+</ul>
+<br />
+【例 1】<br />
+<p class="info-box">
+#查看一下用户密码状态<br />
+[root@localhost ~]# chage -l lamp<br />
+Last password change:Jan 06, 2013<br />
+Password expires:never<br />
+Password inactive :never<br />
+Account expires :never<br />
+Minimum number of days between password change :0<br />
+Maximum number of days between password change :99999<br />
+Number of days of warning before password expires :7</p>
+<br />
+读者可能会问，既然直接修改用户密码文件更方便，为什么还要讲解 chage 命令呢？<span style="color: rgb(178, 34, 34);">因为 chage 命令除了修改密码信息的功能外，还可以强制用户在第一次登录后，必须先修改密码，并利用新密码重新登陆系统，此用户才能正常使用。</span><br />
+<br />
+例如，我们创建 lamp 用户，并让其首次登陆系统后立即修改密码，执行命令如下：
+<p class="info-box">
+#创建新用户 lamp<br />
+[root@localhost ~]#useradd lamp<br />
+#设置用户初始密码为 lamp<br />
+[root@localhost ~]#echo &quot;lamp&quot; | passwd --stdin lamp<br />
+#通过chage命令设置此账号密码创建的日期为 1970 年 1 月 1 日（0 就表示这一天），这样用户登陆后就必须修改密码<br />
+[root@localhost ~]#chage -d 0 lamp</p>
+<br />
+这样修改完 lamp 用户后，我们尝试用 lamp 用户登陆系统（初始密码也是 lamp）：<br />
+<p class="info-box">
+local host login:lamp<br />
+Password:&nbsp; &nbsp; &nbsp;&lt;--输入密码登陆<br />
+You are required to change your password immediately (root enforced)<br />
+changing password for lamp.&nbsp; &nbsp; &nbsp;&lt;--有一些提示，就是说明 root 强制你登录后修改密码<br />
+(current)UNIX password:<br />
+#输入旧密码<br />
+New password:<br />
+Retype new password:<br />
+#输入两次新密码</p>
+chage 的这个功能常和 passwd 批量初始化用户密码功能合用，且对学校老师帮助比较大，因为老师不想知道学生账号的密码，他们在初次上课时就使用与学号相同的账号和密码给学生，让他们登陆时自行设置他们的密码。这样一来，既能避免学生之间随意使用别人的账号，也能保证学生知道如何修改自己的密码。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_1836.html" title="C语言数组的越界和溢出" target="_blank">C语言数组的越界和溢出</a></li>
+<li><a href="2424.html" title="MySQL FLOAT、DOUBLE、DECIMAL（小数类型）" target="_blank">MySQL FLOAT、DOUBLE、DECIMAL（小数类型）</a></li>
+<li><a href="5132.html" title="Go语言inject库：依赖注入" target="_blank">Go语言inject库：依赖注入</a></li>
+<li><a href="vip_6162.html" title="Python __import__()函数引入模块名" target="_blank">Python __import__()函数引入模块名</a></li>
+<li><a href="../thread/first-thread.html" title="第一个多线程程序" target="_blank">第一个多线程程序</a></li>
+<li><a href="../c/snprintf.html" title="C语言snprintf()：将格式化字符串输出到数组中" target="_blank">C语言snprintf()：将格式化字符串输出到数组中</a></li>
+<li><a href="htj7tzn.html" title="Linux alias命令：为命令设置别名" target="_blank">Linux alias命令：为命令设置别名</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 850;
+window.arcId = "00328FjOuieYGOLeAJXEq8aB0wr3V791bOF2Nj0fa6hUxum8jQUhDCPSMQ";
+window.typeidChain = "85|77";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/view/849.html";
+window.nextPageURL = "/view/851.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

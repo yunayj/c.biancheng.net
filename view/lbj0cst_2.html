@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Python读取yaml配置文件（PyYAML模块）</title>
+<meta name="description" content="在开发过程中，我们常常会用到一些固定参数或常量。对于这些常用的部分，我们往往会将其写到一个固定文件中，避免在不同的模块代码中重复出现，以保持核心代码整洁。这个固定" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Python读取yaml配置文件（PyYAML模块）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在开发过程中，我们常常会用到一些固定参数或常量。对于这些常用的部分，我们往往会将其写到一个固定文件中，避免在不同的模块代码中重复出现，以保持核心代码整洁。这个固定文件我们可以直接写成一个 .py 文件，如 settings.py 或 config.py，这样的好处是能够在同一工程下通过 import 来导入当中的部分参数或变量。<br />
+<br />
+但如果我们需要在其他非 Python 的平台进行配置文件共享时，写成单个 .py 文件就不是一个很好的选择。这时我们就应该选择通用的配置文件格式类型存储这些固定的参数或变量。<br />
+<br />
+目前常用且流行的配置文件格式类型主要有 ini、JSON、yaml 等，如表1所示，我们可以通过标准库或第三方库来解析这些格式类型的配置文件。<br />
+<br />
+<table>
+	<caption>
+		表1：配置文件格式类型</caption>
+	<tbody>
+		<tr>
+			<th>
+				配置文件格式</th>
+			<th>
+				特点</th>
+		</tr>
+		<tr>
+			<td>
+				ini</td>
+			<td>
+				ini 即 Initialize（初始化），早期是在 Windows 上配置的文件的存储格式。<br />
+				<br />
+				ini 文件的写法通俗易懂，比较简单，通常由节（section）、键（key）和值（value）组成。Python 内置的 configparser 标准库，可以用来对 ini 文件进行解析。</td>
+		</tr>
+		<tr>
+			<td>
+				JSON</td>
+			<td>
+				JSON 格式可以说是我们常见的一种文件形式，也是目前在互联网较为流行的一种数据交换格式。除此之外，JSON 有时也是配置文件的一种。<br />
+				<br />
+				Python 内置了 JSON 标准库，可以通过 load() 方法和 loads() 方法来导入文件式和字符串式的 JSON 内容。</td>
+		</tr>
+		<tr>
+			<td>
+				yaml</td>
+			<td>
+				yaml 格式（或 yml 格式）是目前较为流行的一种配置文件，典型的就是 Docker 容器里的 docker-compose.yml 配置文件。<br />
+				<br />
+				yaml 是一种直观的能够被计算机识别的数据序列化格式，可读性好，并且容易和脚本语言交互。<br />
+				<br />
+				现有的大部分主流编程语言都支持 yaml，如 Ruby、Java、Perl、Python、PHP、OCaml、JavaScript 等。yaml 格式清晰、简洁，跟 Python 非常适配，我们在搭建自动化测试框架的时候，可以采用 yaml 作为配置文件格式</td>
+		</tr>
+	</tbody>
+</table>
+<h2>
+	yaml 基础</h2>
+yaml 的基本语法规则如下：
+<ul>
+	<li>
+		大小写敏感；</li>
+	<li>
+		使用缩进表示层级关系；</li>
+	<li>
+		缩进时不允许使用 Tab 键，只允许使用空格；</li>
+	<li>
+		缩进的空格数目不重要，只要相同层级的元素左侧对齐即可；</li>
+	<li>
+		# 表示注释，从这个字符一直到行尾，都会被解释器忽略；</li>
+	<li>
+		键值中间要有空格，即键后面的冒号必须加空格来分开键和值。</li>
+</ul>
+<br />
+yaml 支持的数据结构主要有如下3种。
+<ul>
+	<li>
+		对象：键值对的集合，如映射、哈希和字典。</li>
+	<li>
+		数组：一组按次序排列的值，如序列、列表。</li>
+	<li>
+		纯量：单个的、不可再分的值，如字符串、布尔值、整数、浮点数、Null、时间和日期。</li>
+</ul>
+<br />
+对象键值对使用冒号结构表示为<code>key: value</code>，冒号后面要加一个空格。我们可以使用 key:{child-key1: value1, child-key2: value2, ...}，可以使用缩进表示层级关系。<br />
+<br />
+数组由一组连词线开头的行构成。数组前加<code>-</code>符号，符号与值之间需用空格分隔：
+<pre class="info-box">
+key:
+    child-key1:  value1
+    child-key2:  value2</pre>
+以<code>-</code>开头的行构成一个数组：
+<pre class="info-box">
+- A
+- B
+- C</pre>
+yaml 支持多维数组，可以使用行内表示：
+<pre class="info-box">
+key: [value1, value2, ...]</pre>
+一个相对复杂的示例如下：
+<pre class="info-box">
+companies:
+    -
+        id: 1
+        name: company1
+        price: 200W
+    -
+        id: 2
+        name: company2
+        price: 500W</pre>
+其中 companies 属性是一个数组，每一个数组元素由 id、name、price 这 3 个属性构成。<br />
+<br />
+另外，数组和对象可以构成复合结构，示例如下：
+<pre class="info-box">
+languages:
+  - Ruby
+  - Perl
+  - Python
+websites:
+  YAML: yaml.org
+  Ruby: ruby-lang.org
+  Python: python.org
+  Perl: use.perl.org</pre>
+转换为 JSON 示例如下：
+<pre class="javascript" showmenu="false" shownum="false">
+{
+  languages: [ &#39;Ruby&#39;, &#39;Perl&#39;, &#39;Python&#39;],
+  websites: {
+    YAML: &#39;yaml.org&#39;,
+    Ruby: &#39;ruby-lang.org&#39;,
+    Python: &#39;python.org&#39;,
+    Perl: &#39;use.perl.org&#39;
+  }
+}</pre>
+纯量是最基本的、不可再分的值，使用纯量示例如下：
+<pre class="info-box">
+# 输出一个字典，其中 value 包括所有基本类型
+str: &quot;Hello World!&quot;
+int: 110
+float: 3.141
+boolean: true  # or false
+None: null  # 也可以用~号来表示null
+time: 2016-09-22t11:43:30.20+08:00 
+date: 2016-09-22 </pre>
+该示例实际输出结果如下：
+<p class="info-box">
+	{&#39;str&#39;: &#39;Hello World!&#39;, &#39;int&#39;: 110, &#39;float&#39;: 3.141, &#39;boolean&#39;: True, &#39;None&#39;: None, &#39;time&#39;:datetime.datetime(2016, 9, 22, 3, 43, 30, 200000), &#39;date&#39;: datetime.date(2016, 9, 22)}</p>
+<h4>
+	注意</h4>
+如果字符串没有空格或特殊字符，则不需要加引号。<br />
+<br />
+这里要注意单引号和双引号的区别，在 Python 中，单引号中的特殊字符会被转义，即原样输出字符，而双引号中的特殊字符不会被转义，即输出特殊字符应有的作用，例如<code>str1: &#39;Hello\nWorld&#39;</code>和<code>str2: &quot;Hello\nWorld&quot;</code>，单引号中的<code>\n</code>原样输出，双引号中的<code>\n</code>输出回车。<br />
+<br />
+在刚了解或刚开始使用时，我们可能对 yaml 格式掌握不熟练，容易出现格式错误，可以利用 yaml 格式校验的在线网站，校验我们写的 yaml 文件格式是否正确。
+<h2>
+	PyYAML库</h2>
+在 Python 中读取 yaml 配置文件，需要用到第三方库 PyYAML。安装 PyYAML 库的命令为：
+<pre class="info-box">
+pip install pyYAML</pre>
+下面针对 PyYAML 库，简要讲解读写操作。<br />
+<br />
+1) 创建一个 yaml 文件 config.yml，内容如下：
+<pre class="info-box">
+name: Tom Smith
+age: 37
+spouse:
+    name: Jane Smith
+    age: 25
+children:
+  - name: Jimmy Smith
+    age: 15
+  - name1: Jenny Smith
+    age1: 12</pre>
+<br />
+2) 利用 safe_load 方法返回一个对象：
+<pre class="python">
+import yaml
+# 通过open方式读取文件数据
+file = open(&#39;config.yml&#39;, &#39;r&#39;, encoding=&quot;utf-8&quot;)
+# 再通过safe_load函数将数据转化为列表或字典
+data = yaml.safe_load(file)
+print(data)</pre>
+输出结果如下：
+<p class="info-box">
+	{&#39;name&#39;: &#39;Tom Smith&#39;, &#39;age&#39;: 37, &#39;spouse&#39;: {&#39;name&#39;: &#39;Jane Smith&#39;, &#39;age&#39;: 25}, &#39;children&#39;: [{&#39;name&#39;: &#39;Jimmy Smith&#39;, &#39;age&#39;: 15}, {&#39;name1&#39;: &#39;Jenny Smith&#39;, &#39;age1&#39;: 12}]}</p>
+<br />
+3) 利用 load_all 方法生成一个迭代器。如果 string 或文件包含几块 yaml 文档，我们可以使用 yaml.load_all 来解析全部的文档。
+<pre class="python">
+import yaml
+# 通过open方法读取文件数据
+file = open(&#39;config.yml&#39;, &#39;r&#39;, encoding=&quot;utf-8&quot;)
+y = yaml.load_all(file, Loader=yaml.FullLoader)
+for data in y:
+    print(data)</pre>
+输出结果如下：
+<p class="info-box">
+	{&#39;name&#39;: &#39;James&#39;, &#39;age&#39;: 20}<br />
+	{&#39;name&#39;: &#39;Lily&#39;, &#39;age&#39;: 19}</p>
+<br />
+4) 利用 yaml.dump 方法将一个 Python 对象转换为 yaml 文档：
+<pre class="python">
+import yaml
+aproject = {
+            &#39;name&#39;: &#39;Silenthand Olleander&#39;,
+            &#39;race&#39;: &#39;Human&#39;,
+            &#39;traits&#39;: [&#39;ONE_HAND&#39;, &#39;ONE_EYE&#39;]
+           }
+print(yaml.dump(aproject))</pre>
+输出结果如下：
+<p class="info-box">
+	name: Silenthand Olleander<br />
+	race: Human<br />
+	traits:<br />
+	- ONE_HAND<br />
+	- ONE_EYE</p>
+<br />
+若 yaml.dump 方法的第二个参数不是空值，那么第二个参数一定要是一个打开的文本文件或二进制文件，yaml.dump 方法会把生成的 yaml 文档写入文件，示例如下：
+<pre class="python">
+import yaml
+aproject = {
+            &#39;name&#39;: &#39;Silenthand Olleander&#39;,
+            &#39;race&#39;: &#39;Human&#39;,
+            &#39;traits&#39;: [&#39;ONE_HAND&#39;, &#39;ONE_EYE&#39;]
+           }
+f = open(r&#39;config.yml&#39;,&#39;w&#39;)
+print(yaml.dump(aproject,f))</pre>
+<br />
+5) 利用 yaml.dump_all 方法将多个段输出到一个文件中：
+<pre class="python">
+import yaml
+obj1 = {&quot;name&quot;: &quot;James&quot;, &quot;age&quot;: 20}
+obj2 = [&quot;Lily&quot;, 19]
+with open(r&#39;config.yml&#39;, &#39;w&#39;) as f:
+    yaml.dump_all([obj1, obj2], f)</pre>
+输出到文件 config.yml，该文件里的内容如下：
+<p class="info-box">
+	age: 20<br />
+	name: James<br />
+	---<br />
+	- Lily<br />
+	- 19</p>
+<h2>
+	封装示例</h2>
+我们可以将 yaml 操作封装成一个公共类，这样在后续配置文件引用中直接调用，完整的封装代码示例如下所示，主要是封装了 yaml 配置文件的读取和写入。
+<pre class="python">
+# -*- coding: utf-8 -*-
+# @Time : 2023/7/26 10:29 上午
+# @Project : yamlDemo
+# @File : yamlUtil.py
+# @Version: Python3.9.8
+　
+import yaml
+class YamlHandler( ):
+    def __init__(self,file):
+        self.file = file
+    def read_yaml(self,encoding=&#39;utf-8&#39;):
+        &quot;&quot;&quot;读取yaml数据&quot;&quot;&quot;
+        with open(self.file, encoding=encoding) as f:
+            return yaml.load(f.read(), Loader=yaml.FullLoader)       
+    def write_yaml(self, data, encoding=&#39;utf-8&#39;):
+        &quot;&quot;&quot;向yaml文件写入数据&quot;&quot;&quot;
+        with open(self.file, encoding=encoding, mode=&#39;w&#39;) as f:
+            return yaml.dump(data, stream=f, allow_unicode=True)
+
+if __name__ == &#39;__main__&#39;:
+    data = {
+        &quot;user&quot;:{
+            &quot;username&quot;: &quot;vivi&quot;,
+            &quot;password&quot;: &quot;123456&quot;
+        }
+    }
+    # 读取config.yaml配置文件数据
+    read_data = YamlHandler(&#39;config.yaml&#39;).read_yaml()
+    # 将data数据写入config1.yaml配置文件
+    write_data = YamlHandler(&#39;config1.yaml&#39;).write_yaml(data)</pre>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1_2.html" title="Go语言简介" target="_blank">Go语言简介</a></li>
+<li><a href="4776_2.html" title="Go语言nil：空值/零值" target="_blank">Go语言nil：空值/零值</a></li>
+<li><a href="8067_2.html" title="Django Auth应用定义登录视图的方式" target="_blank">Django Auth应用定义登录视图的方式</a></li>
+<li><a href="../redis2/hvals_2.html" title="Redis HVALS命令" target="_blank">Redis HVALS命令</a></li>
+<li><a href="../redis2/blpop_2.html" title="Redis BLPOP命令" target="_blank">Redis BLPOP命令</a></li>
+<li><a href="s0304e0_2.html" title="Express到底是什么？" target="_blank">Express到底是什么？</a></li>
+<li><a href="ut3gt9m_2.html" title="《Web前端开发基础（HTML+CSS+JavaScript）》PDF下载（高清完整版）" target="_blank">《Web前端开发基础（HTML+CSS+JavaScript）》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10142;
+window.arcId = "3a5396l8rDBKSP0P1HnwtfnjcFNbEdldkjXHrhZv2pD7C06rtGUvCqUwa5YB";
+window.typeidChain = "145|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Linux logrotate命令用法详解：进行日志转储（轮替）</title>
+<meta name="description" content="日志轮替之所以可以在指定的时间备份日志，是因为其依赖系统定时任务。如果大家还记得 /etc/cron.daily/ 目录，就会发现这个目录中是有 logrotate 文件的，查看一下这个文件，命令如下：" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+	<div id="sidebar" class="toggle-target">
+	<div id="contents">
+		<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../linux_tutorial/linux_tutorial_2.html">Linux</a></dt>
+		
+			<dd>
+				<span class="channel-num">1</span>
+				<a href='../linux_tutorial/10/10_2.html'>Linux简介</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">2</span>
+				<a href='../linux_tutorial/20/20_2.html'>Linux安装</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">3</span>
+				<a href='../linux_tutorial/file_content/file_content_2.html'>Linux文件和目录管理</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">4</span>
+				<a href='../linux_tutorial/bale_compress/bale_compress_2.html'>Linux打包（归档）和压缩</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">5</span>
+				<a href='../linux_tutorial/40/40_2.html'>Vim文本编辑器</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">6</span>
+				<a href='../linux_tutorial/text_processing/text_processing_2.html'>Linux文本处理（Linux三剑客）</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">7</span>
+				<a href='../linux_tutorial/50/50_2.html'>Linux软件安装</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">8</span>
+				<a href='../linux_tutorial/60/60_2.html'>Linux用户和用户组管理</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">9</span>
+				<a href='../linux_tutorial/70/70_2.html'>Linux权限管理</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">10</span>
+				<a href='../linux_tutorial/80/80_2.html'>Linux文件系统管理</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">11</span>
+				<a href='../linux_tutorial/90/90_2.html'>Linux高级文件系统管理</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">12</span>
+				<a href='../linux_tutorial/14/14_2.html'>Linux系统管理</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">13</span>
+				<a href='../linux_tutorial/17/17_2.html'>Linux备份与恢复</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">14</span>
+				<a href='../linux_tutorial/13/13_2.html'>Linux系统服务管理</a>
+			</dd>
+		<dd class="this"> <span class="channel-num">15</span> <a href="../linux_tutorial/15/15_2.html">Linux系统日志管理</a> </dd><dl class="dl-sub"><dd>15.1 <a href="1096_2.html">Linux rsyslogd服务</a></dd><dd>15.2 <a href="1097_2.html">Linux日志文件及功能</a></dd><dd>15.3 <a href="1099_2.html">Linux日志文件的格式分析</a></dd><dd>15.4 <a href="1102_2.html">rsyslogd配置文件格式及其内容</a></dd><dd>15.5 <a href="1105_2.html">Linux日志服务器设置</a></dd><dd>15.6 <a href="1106_2.html">Linux日志轮替（日志转储）</a></dd><dd>15.7 <a href="1107_2.html">Linux logrotate命令</a></dd><dd>15.8 <a href="1108_2.html">Linux日志分析工具</a></dd></dl>
+			<dd>
+				<span class="channel-num">16</span>
+				<a href='../linux_tutorial/12/12_2.html'>Linux启动管理</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">17</span>
+				<a href='../linux_tutorial/16/16_2.html'>LAMP环境搭建和LNMP环境搭建</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">18</span>
+				<a href='../linux_tutorial/18/18_2.html'>SELinux管理</a>
+			</dd>
+		
+	</div>
+</div>
+	<div id="article-wrap">
+		<div id="article">
+			<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../linux_tutorial/linux_tutorial_2.html">Linux</a> &gt; <a href="../linux_tutorial/15/15_2.html">Linux系统日志管理</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+			<h1>Linux logrotate命令用法详解：进行日志转储（轮替）</h1>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+			<div id="arc-body">日志轮替之所以可以在指定的时间备份日志，是因为其依赖系统定时任务。如果大家还记得 /etc/cron.daily/ 目录，就会发现这个目录中是有 logrotate 文件的，查看一下这个文件，命令如下：<br />
+<p class="info-box">
+	[root@localhost ~]# vi /etc/cron.daily/logrotate<br />
+	#！/bin/sh<br />
+	/usr/sbin/logrotate /etc/logrotate.conf &gt;/dev/null 2&gt;&amp;1<br />
+	#最主要的就是执行了logrotate命令<br />
+	EXITVALUE=$?<br />
+	if [ $EXITVALUE！= 0 ]; then<br />
+	/usr/bin/logger -t logrotate &quot;ALERT exited abnormally with [$EXITVALUE]&quot;<br />
+	fi<br />
+	exit 0</p>
+也就是说，系统每天都会执行 /etc/cron.daily/logrotate 文件，运行这个文件中的&ldquo;/usr/sbin/logrotate/etc/logrotate.conf&gt;/dev/null 2&gt;&amp;1&rdquo;命令。logrotate 命令会依据 /etc/logrotate.conf 配置文件的配置，来判断配置文件中的日志是否符合日志轮替的条件（比如，日志备份时间已经满一周），如果符合，日志就会进行轮替。所以说，日志轮替还是由 crond 服务发起的。<br />
+<br />
+logrotate 命令的格式是什么样的呢？我们来学习一下。<br />
+<p class="info-box">
+	[root@localhost ~]# logrotate [选项] 配置文件名</p>
+<br />
+选项：
+<ul>
+	<li>
+		如果此命令没有选项，则会按照配置文件中的条件进行日志轮替</li>
+	<li>
+		-v：显示日志轮替过程。加入了-v选项，会显示日志的轮替过程</li>
+	<li>
+		-f： 强制进行日志轮替。不管日志轮替的条件是否符合，强制配置文件中所有的日志进行轮替</li>
+</ul>
+<br />
+我们执行 logrotate 命令，并查看一下执行过程。<br />
+<p class="info-box">
+	[root@localhost ~]# logrotate -v /etc/logrotate.conf<br />
+	#查看日志轮替的流程<br />
+	&hellip;省略部分输出&hellip;<br />
+	rotating pattern：/var/log/alert.log weekly (6 rotations)<br />
+	#这就是我们自己加入轮替的alert.log日志<br />
+	empty log files are rotated， old logs are removed<br />
+	considering log /var/log/alert.log<br />
+	log does not need rotating<br />
+	#时间不够一周，所以不进行日志轮替<br />
+	&hellip;省略部分输出&hellip;</p>
+我们发现，/var/log/alert.log 加入了日志轮替，已经被 logrotate 识别并调用了，只是时间没有达到轮替的标准，所以没有进行轮替。那我们强制进行一次日志轮替，看看会有什么结果。<br />
+<p class="info-box">
+	[root@localhost ~]# logrotate -vf /etc/logrotate.conf<br />
+	#强制进行日志轮替，不管是否符合轮替条件<br />
+	&hellip;省略部分输出&hellip;<br />
+	rotating pattern：/var/log/alert.log forced from command line (6 rotations)<br />
+	empty log files are rotated， old logs are removed<br />
+	considering log /var/log/alert.log<br />
+	log needs rotating<br />
+	#日志需要轮替<br />
+	rotating log /var/log/alert.log，log-&gt;rotateCount is 6<br />
+	dateext suffix &#39;-20130607&#39;<br />
+	#提取日期参数<br />
+	glob pattern &#39;-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]&#39;<br />
+	glob finding old rotated logs failed<br />
+	running prerotate script<br />
+	fscreate context set to unconfined_u：object_r：var_log_t：s0<br />
+	renaming /var/log/alert.log to /var/log/alert.log-20130607<br />
+	#旧的日志被重命名<br />
+	creating new /var/log/alert.log mode = 0600 uid = 0 gid = 0<br />
+	#创建新日志文件，同时指定权限、所有者和属组<br />
+	running postrotate script<br />
+	&hellip;省略部分输出&hellip;</p>
+我们发现，alert.log 日志已经完成了日志轮替。查看一下新生成的日志和旧日志，如下：<br />
+<p class="info-box">
+	[root@localhost ~]# ll /var/log/alert.log*<br />
+	-rw-------.1 root root 0 6月 7 10：07 /var/log/alert.log<br />
+	-rw-------.1 root root 237 6月 7 09：58 /var/log/alert.log-20130607<br />
+	#旧的日志文件已经轮替<br />
+	[root@localhost ~]# lsattr /var/log/alert.log<br />
+	-----a-------e- /var/log/alert.log<br />
+	#新的日志文件被自动加入了chattr的a属性</p>
+logrotate 命令在使用&ldquo;-f&rdquo;选项之后，就会不管日志是否符合轮替条件，而强制把所有的日志都进行轮替。</div>
+			<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="3120_2.html" title="ACL权限是什么，Linux ACL访问控制权限（包含开启方式）" target="_blank">ACL权限是什么，Linux ACL访问控制权限（包含开启方式）</a></li>
+<li><a href="vip_7324_2.html" title="Go语言使用事件系统实现事件的响应和处理" target="_blank">Go语言使用事件系统实现事件的响应和处理</a></li>
+<li><a href="7609_2.html" title="C++ getline()：从文件中读取一行字符串" target="_blank">C++ getline()：从文件中读取一行字符串</a></li>
+<li><a href="../spring_mvc/exception_2.html" title="Spring MVC异常处理" target="_blank">Spring MVC异常处理</a></li>
+<li><a href="../hibernate/orm_2.html" title="ORM是什么" target="_blank">ORM是什么</a></li>
+<li><a href="../spring/jdbc-template_2.html" title="Spring JdbcTemplate（使用详解）" target="_blank">Spring JdbcTemplate（使用详解）</a></li>
+<li><a href="vinn2r_2.html" title="Python标准异常汇总" target="_blank">Python标准异常汇总</a></li>
+</ul>
+</div>
+		</div>
+		
+	</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 1107;
+window.arcId = "693aTkN+j4rmFQGSwfasKzhkfEQayd+obvz3OmVWRjszISlK9IYoxlDQaA8";
+window.typeidChain = "106|77";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/view/1106.html";
+window.nextPageURL = "/view/1108.html";
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Qt信号和槽机制详解</title>
+<meta name="description" content="信号和槽是 Qt 特有的消息传输机制，它能将相互独立的控件关联起来。 举个简单的例子，按钮和窗口本是两个独立的控件，点击按钮并不会对窗口造成任何影响。通过信号和槽机制，我" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Qt信号和槽机制详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">信号和槽是 Qt 特有的消息传输机制，它能将相互独立的控件关联起来。<br />
+<br />
+举个简单的例子，按钮和窗口本是两个独立的控件，点击按钮并不会对窗口造成任何影响。通过信号和槽机制，我们可以将按钮和窗口关联起来，实现&ldquo;点击按钮会使窗口关闭&rdquo;的效果。<br />
+<h2>
+	信号和槽</h2>
+<p>
+	在 Qt 中，用户和控件的每次交互过程称为一个事件，比如&ldquo;用户点击按钮&rdquo;是一个事件，&ldquo;用户关闭窗口&rdquo;也是一个事件。每个事件都会发出一个信号，例如用户点击按钮会发出&ldquo;按钮被点击&rdquo;的信号，用户关闭窗口会发出&ldquo;窗口被关闭&rdquo;的信号。<br />
+	<br />
+	Qt 中的所有控件都具有接收信号的能力，一个控件还可以接收多个不同的信号。对于接收到的每个信号，控件都会做出相应的响应动作。例如，按钮所在的窗口接收到&ldquo;按钮被点击&rdquo;的信号后，会做出&ldquo;关闭自己&rdquo;的响应动作；再比如输入框自己接收到&ldquo;输入框被点击&rdquo;的信号后，会做出&ldquo;显示闪烁的光标，等待用户输入数据&rdquo;的响应动作。在 Qt 中，对信号做出的响应动作就称为槽。</p>
+<p>
+	&nbsp;</p>
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/211028/1632193B2-0_2.gif" /><br />
+	图 1 信号和槽</div>
+<br />
+信号和槽机制底层是通过函数间的相互调用实现的。每个信号都可以用函数来表示，称为<span style="color:#008000;">信号函数</span>；每个槽也可以用函数表示，称为<span style="color:#008000;">槽函数</span>。例如，&ldquo;按钮被按下&rdquo;这个信号可以用 clicked() 函数表示，&ldquo;窗口关闭&rdquo;这个槽可以用 close() 函数表示，信号和槽机制实现&ldquo;点击按钮会关闭窗口&rdquo;的功能，其实就是 clicked() 函数调用 close() 函数的效果。<br />
+<br />
+信号函数和槽函数通常位于某个类中，和普通的成员函数相比，它们的特别之处在于：<br />
+<ul>
+	<li>
+		信号函数用&nbsp; signals 关键字修饰，槽函数用 public slots、protected slots 或者&nbsp;private slots 修饰。signals 和 slots 是 Qt 在 C++ 的基础上扩展的关键字，专门用来指明信号函数和槽函数；</li>
+	<li>
+		信号函数只需要声明，不需要定义（实现），而槽函数需要定义（实现）。</li>
+</ul>
+<br />
+为了提高程序员的开发效率，Qt 的各个控件类都提供了一些常用的信号函数和槽函数。例如 QPushButton 类提供了 4 个信号函数和 5 个 public slots 属性的槽函数，可以满足大部分场景的需要。<br />
+<blockquote>
+	<p>
+		实际开发中，可以使用 Qt 提供的信号函数和槽函数，也可以根据需要自定义信号函数和槽函数，我们会在《<a href="9429_2.html" target="_blank">Qt自定义信号和槽函数</a>》一节做详细介绍。</p>
+</blockquote>
+Qt Creator 提供了很强大的 Qt GUI 开发手册，很容易就能查到某个控件类中包含哪些信号函数和槽函数。举个例子，查看 QPushButton 类中信号函数和槽函数的过程是：<br />
+1) 在程序中引入<code>&lt;QPushButton&gt;</code>头文件，双击选中&ldquo;QPushButton&rdquo;并按 &quot;Fn+F1&quot; 快捷键，就会弹出 QPushButton 类的使用手册，如下图所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/211028/16321940S-1_2.gif" /><br />
+	图 2 QPushButton类的使用说明</div>
+<br />
+2) 在 Contents 部分可以看到，QPushButton 类只提供了一些<code>Public Slots</code>属性的槽函数，没有提供信号函数。对于 QPushButton 类按钮，除了可以使用自己类提供的槽函数，还可以使用从父类继承过来的信号函数和槽函数。由图 2 可知，QPushButton 的父类是 QAbstractButton，点击&nbsp;QAbstractButton 就可以直接跳转到此类的使用手册，如下图所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/211028/1632191927-2_2.gif" /><br />
+	图 3 QPushButton父类使用说明</div>
+<br />
+QAbstractButton 类中既有 Signals 信号函数，也有 Public Slots 槽函数，这里不再一一列举，感兴趣的读者可以自行查看。<br />
+<br />
+注意，并非所有的控件之间都能通过信号和槽关联起来，信号和槽机制只适用于满足以下条件的控件：
+<ul>
+	<li>
+		控件类必须直接或者间接继承自 QObject 类。Qt 提供的控件类都满足这一条件，这里提供一张&nbsp;<a href="../uploads/allimg/211028/2-21102QG3143O_2.gif" target="_blank">Qt常用类的继承关系</a>的高清图片，感兴趣的读者可以简单了解一下。</li>
+	<li>
+		控件类中必须包含 private 属性的 Q_OBJECT 宏。</li>
+</ul>
+<br />
+将某个信号函数和某个槽函数关联起来，需要借助 QObject 类提供的 connect() 函数。<br />
+<h2>
+	connect()函数实现信号和槽</h2>
+connect() 是 QObject 类中的一个静态成员函数，专门用来关联指定的信号函数和槽函数。<br />
+<br />
+关联某个信号函数和槽函数，需要搞清楚以下 4 个问题：<br />
+<ul>
+	<li>
+		信号发送者是谁？</li>
+	<li>
+		哪个是信号函数？</li>
+	<li>
+		信号的接收者是谁？</li>
+	<li>
+		哪个是接收信号的槽函数？</li>
+</ul>
+<br />
+仍以实现&ldquo;按下按钮后窗口关闭&rdquo;为例，先创建一个窗口和一个按钮，如下所示：
+<pre class="cpp">
+QWidget widget;
+//定义一个按钮，它位于 widget 窗口中
+QPushButton But(&quot;按钮控件&quot;,&amp;widget);</pre>
+信号发送者是 But 按钮对象，要发送的信号是&ldquo;按钮被点击&rdquo;，可以用 QPushButton 类提供的 clicked() 信号函数表示；信号的接收者是 widget 主窗口对象，&ldquo;窗口关闭&rdquo;作为信号对应的槽，可以用 QWidget 类提供的 close() 函数表示。<br />
+<br />
+在 Qt5 版本之前，connect() 函数最常用的语法格式是：
+<p class="info-box">
+	QObject::connect(const QObject *sender, const char *signal, const QObject *receiver, const char *method, Qt::ConnectionType type = Qt::AutoConnection)</p>
+各个参数的含义分别是：
+<ul>
+	<li>
+		sender：指定信号的发送者；</li>
+	<li>
+		signal：指定信号函数，信号函数必须用 SIGNAL() 宏括起来；</li>
+	<li>
+		reveiver：指定信号的接收者；</li>
+	<li>
+		method：指定接收信号的槽函数，槽函数必须用 SLOT() 宏括起来；</li>
+	<li>
+		type 用于指定关联方式，默认的关联方式为 Qt::AutoConnection，通常不需要手动设定。</li>
+</ul>
+<br />
+用 connect() 函数将 But 按钮的 clicked() 信号函数和 widget 窗口的 close() 槽函数关联起来，实现代码如下：<br />
+<pre class="cpp" shownum="false">
+connect(&amp;But, SIGNAL(clicked()), &amp;widget, SLOT(close()));</pre>
+如此就实现了&ldquo;按下按钮会关闭窗口&rdquo;的功能。<br />
+<br />
+Qt5 版本中，connect() 函数引入了新的用法，常用的语法格式是：
+<p class="info-box">
+	QObject::connect(const QObject *sender, PointerToMemberFunction signal, const QObject *receiver, PointerToMemberFunction method, Qt::ConnectionType type = Qt::AutoConnection)</p>
+和旧版本相比，新版的 connect() 函数改进了指定信号函数和槽函数的方式，不再使用&nbsp; SIGNAL() 和&nbsp;SLOT() 宏。<br />
+<br />
+例如，用新版 connect() 函数关联 But 按钮的 clicked() 信号函数和 widget 窗口的 close() 槽函数，实现代码为：
+<pre class="cpp" shownum="false">
+connect(&amp;But, &amp;QPushButton::clicked, &amp;widget, &amp;QWidget::close);</pre>
+可以看到，新版 connect() 函数指定信号函数和槽函数的语法格式是<code>&amp;+函数所在类+函数名</code>。<br />
+<br />
+一个 connect() 函数只能关联一个信号函数和一个槽函数，程序中可以包含多个 connect() 函数，能实现以下几种效果：<br />
+<ul>
+	<li>
+		关联多个信号函数和多个槽函数；</li>
+	<li>
+		一个信号函数可以关联多个槽函数，当信号发出时，与之关联的槽函数会一个接一个地执行，但它们执行的顺序是随机的，无法人为指定哪个先执行、哪个后执行；</li>
+	<li>
+		多个信号函数可以关联同一个槽函数，无论哪个信号发出，槽函数都会执行。</li>
+</ul>
+<br />
+此外，connect() 函数的 method 参数还可以指定一个信号函数，也就是说，信号之间也可以相互关联，这样当信号发出时，会随之发出另一个信号。<br />
+<h2>
+	实例演示信号和槽机制</h2>
+创建一个不含 ui 文件的 Qt Widgets Application 项目，只保留 main.cpp 源文件，删除 mainwindow.h 和 mainwindow.cpp 文件。在 main.cpp 文件中编写如下代码：
+<pre class="cpp">
+#include &lt;QApplication&gt;
+#include &lt;QWidget&gt;
+#include &lt;QPushButton&gt;
+
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    //添加窗口
+    QWidget widget;
+    //定义一个按钮，它位于 widget 窗口中
+    QPushButton But(&quot;按钮控件&quot;,&amp;widget);
+    //设置按钮的位置和尺寸
+    But.setGeometry(10,10,100,50);
+    //信号与槽，实现当用户点击按钮时，widget 窗口关闭
+    QObject::connect(&amp;But,&amp;QPushButton::clicked,&amp;widget,&amp;QWidget::close);
+    //让 widget 窗口显示
+    widget.show();
+    return a.exec();
+}</pre>
+运行结果为：
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/211028/16321910a-3_2.gif" /></div>
+<br />
+如上图所示，由于使用了 conect() 函数将 But 的 clicked() 信号函数和 widget 的 close() 槽函数关联起来，所以生成了&ldquo;点击按钮后主窗口关闭&rdquo;的效果。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_1764_2.html" title="小数在内存中是如何存储的，揭秘诺贝尔奖级别的设计（长篇神文）" target="_blank">小数在内存中是如何存储的，揭秘诺贝尔奖级别的设计（长篇神文）</a></li>
+<li><a href="../jsp2/param_2.html" title="JSP param动作" target="_blank">JSP param动作</a></li>
+<li><a href="8608_2.html" title="pthread_exit()函数：终止线程" target="_blank">pthread_exit()函数：终止线程</a></li>
+<li><a href="../python_spider/xpath_2.html" title="Xpath简明教程（十分钟入门）" target="_blank">Xpath简明教程（十分钟入门）</a></li>
+<li><a href="../ml_alg/naive-bayes_2.html" title="朴素贝叶斯分类算法原理" target="_blank">朴素贝叶斯分类算法原理</a></li>
+<li><a href="9488_2.html" title="如何从零打造一个流量百万的网站？" target="_blank">如何从零打造一个流量百万的网站？</a></li>
+<li><a href="../c/rand_2.html" title="C语言rand()函数：生成随机数" target="_blank">C语言rand()函数：生成随机数</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9414;
+window.arcId = "9a1112tKaj/HsxcN0ZUlb11uYxmlKsW1qSNZPLcKYke8KQT84ca0RN2hq7k";
+window.typeidChain = "294|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

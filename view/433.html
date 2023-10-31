@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++11 Lambda表达式（匿名函数）详解</title>
+<meta name="description" content="使用 STL 时，往往会大量用到函数对象，为此要编写很多函数对象类。有的函数对象类只用来定义了一个对象，而且这个对象也只使用了一次，编写这样的函数对象类就有点浪费。 而且" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++11 Lambda表达式（匿名函数）详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">使用 <a href='../stl/stl.html' target='_blank'>STL</a> 时，往往会大量用到函数对象，为此要编写很多函数对象类。有的函数对象类只用来定义了一个对象，而且这个对象也只使用了一次，编写这样的函数对象类就有点浪费。<br />
+<br />
+而且，定义函数对象类的地方和使用函数对象的地方可能相隔较远，看到函数对象，想要查看其 operator() 成员函数到底是做什么的也会比较麻烦。<br />
+<br />
+对于只使用一次的函数对象类，能否直接在使用它的地方定义呢？Lambda 表达式能够解决这个问题。使用 Lambda 表达式可以减少程序中函数对象类的数量，使得程序更加优雅。<br />
+<br />
+Lambda 表达式的定义形式如下：
+<p class="info-box">
+[外部变量访问方式说明符] (参数表) -&gt; 返回值类型<br />
+{<br />
+&nbsp;&nbsp; 语句块<br />
+}</p>
+其中，&ldquo;外部变量访问方式说明符&rdquo;可以是<code>=</code>或<code>&amp;</code>，表示<code>{}</code>中用到的、定义在<code>{}</code>外面的变量在<code>{}</code>中是否允许被改变。<code>=</code>表示不允许，<code>&amp;</code>表示允许。当然，在<code>{}</code>中也可以不使用定义在外面的变量。&ldquo;-&gt; 返回值类型&rdquo;可以省略。<br />
+<br />
+下面是一个合法的Lambda表达式：
+<p class="info-box">
+[=] (int x, int y) -&gt; bool {return x%10 &lt; y%10; }</p>
+Lambda 表达式实际上是一个函数，只是它没有名字。下面的程序段使用了上面的 Lambda 表达式：
+<pre class="cpp">
+int a[4] = {11, 2, 33, 4};
+sort(a, a+4, [=](int x, int y) -&gt; bool { return x%10 &lt; y%10; } );
+for_each(a, a+4, [=](int x) { cout &lt;&lt; x &lt;&lt; &quot; &quot;;} );</pre>
+这段程的输出结果是：<br />
+11 2 33 4<br />
+<br />
+程序第 2 行使得数组 a 按个位数从小到大排序。具体的原理是：sort 在执行过程中，需要判断两个元素 x、y 的大小时，会以 x、y 作为参数，调用 Lambda 表达式所代表的函数，并根据返回值来判断 x、y 的大小。这样，就不用专门编写一个函数对象类了。<br />
+<br />
+第 3 行，for_each 的第 3 个参数是一个 Lambda 表达式。for_each 执行过程中会依次以每个元素作为参数调用它，因此每个元素都被输出。<br />
+<br />
+下面是用到了外部变量的Lambda表达式的程序：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+int main()
+{
+    int a[4] = { 1, 2, 3, 4 };
+    int total = 0;
+    for_each(a, a + 4, [&amp;](int &amp; x) { total += x; x *= 2; });
+    cout &lt;&lt; total &lt;&lt; endl;  //输出 10
+    for_each(a, a + 4, [=](int x) { cout &lt;&lt; x &lt;&lt; &quot; &quot;; });
+    return 0;
+}</pre>
+程序的输出结果如下：<br />
+10<br />
+2 4 6 8<br />
+<br />
+第 8 行，<code>[&amp;]</code>表示该 Lambda 表达式中用到的外部变量 total 是传引用的，其值可以在表达式执行过程中被改变（如果使用<code>[=]</code>，编译无法通过）。该 Lambda 表达式每次被 for_each 执行时，都将 a 中的一个元素累加到 total 上，然后将该元素加倍。<br />
+<br />
+实际上，&ldquo;外部变量访问方式说明符&rdquo;还可以有更加复杂和灵活的用法。例如：
+<ul>
+<li>
+<code>[=, &amp;x, &amp;y]</code>表示外部变量 x、y 的值可以被修改，其余外部变量不能被修改；</li>
+<li>
+<code>[&amp;, x, y]</code>表示除 x、y 以外的外部变量，值都可以被修改。</li>
+</ul>
+<br />
+例如下面的程序：
+<pre class="cpp">
+#include &lt;iostream&gt;
+using namespace std;
+int main()
+{   
+    int x = 100,y=200,z=300;
+    auto ff  = [=,&amp;y,&amp;z](int n) {
+        cout &lt;&lt;x &lt;&lt; endl;
+        y++; z++;
+        return n*n;
+    };
+    cout &lt;&lt; ff(15) &lt;&lt; endl;
+    cout &lt;&lt; y &lt;&lt; &quot;,&quot; &lt;&lt; z &lt;&lt; endl;
+}</pre>
+程序的输出结果如下：<br />
+100<br />
+225<br />
+201, 301<br />
+<br />
+第 6 行定义了一个变量 ff，ff 的类型是 auto，表示由编译器自动判断其类型（这也是 <a href='../cplus/cplus.html' target='_blank'>C++</a>11 的新特性）。本行将一个 Lambda 表达式赋值给 ff，以后就可以通过 ff 来调用该 Lambda 表达式了。<br />
+<br />
+第 11 行通过 ff，以 15 作为参数 n 调用上面的 Lambda 表达式。该 Lambda 表达式指明，对于外部变量 y、z，可以修改其值；对于其他外部变量，例如 x，不能修改其值。因此在该表达式执行时，可以修改外部变量 y、z 的值，但如果出现试图修改 x 值的语句，就会编译出错。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="166_2.html" title="C++常对象和常成员函数详解" target="_blank">C++常对象和常成员函数详解</a></li>
+<li><a href="818.html" title="Shell数组拼接，Shell数组合并" target="_blank">Shell数组拼接，Shell数组合并</a></li>
+<li><a href="vip_1742.html" title="C语言的三套标准：C89、C99和C11" target="_blank">C语言的三套标准：C89、C99和C11</a></li>
+<li><a href="4770.html" title="Python close()函数：关闭文件" target="_blank">Python close()函数：关闭文件</a></li>
+<li><a href="6866.html" title="C++ STL deque容器迭代器用法详解" target="_blank">C++ STL deque容器迭代器用法详解</a></li>
+<li><a href="../jsp2/application.html" title="JSP application对象" target="_blank">JSP application对象</a></li>
+<li><a href="1nqlc8.html" title="C语言选择排序" target="_blank">C语言选择排序</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 433;
+window.arcId = "5b6dXsEGBACO+eWQWbwse1p0B0terJye2NEB1w3QAEJIsJTyPQeCJOO6Zw";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

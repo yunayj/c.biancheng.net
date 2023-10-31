@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Django项目实例详解(一)</title>
+<meta name="description" content="在本节我们继续以项目实例的形式带领小伙伴们使 Django 进行相关的 Web 开发任务，在《》一节中，我们使用 HTML 表单完成了 书籍的查询功能。在本节我们将以完整的逻辑呈现图书的管理" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../django/django_2.html">Django</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Django项目实例详解(一)</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在本节我们继续以项目实例的形式带领小伙伴们使 Django 进行相关的 Web 开发任务，在《<a href="7895_7.html" target="_blank">Django HTML表单实例应用</a>》一节中，我们使用 HTML 表单完成了 书籍的查询功能。在本节我们将以完整的逻辑呈现图书的管理操作，本节的代码会较多，希望小伙伴们多加领悟，善于总结，并有所收获。下面我们正式开始本节的内容。<br />
+<h2>
+	1. 获取全量书籍信息</h2>
+将书籍的信息以表格的信息呈现的前端页面，通过页面中的的增加、删除按钮对表中的每条数据进行操作。这是本节要实现的主体功能。我们首先将书籍的信息按照表格的形式展现出来。在 index\templates 中编写 book_table.html 页面，代码如下所示：
+<pre class="html">
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;书籍信息表&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;table border=&quot;1&quot;&gt;
+    &lt;tr&gt;
+        &lt;th&gt;id&lt;/th&gt;
+        &lt;th&gt;title&lt;/th&gt;
+        &lt;th&gt;price&lt;/th&gt;
+        &lt;th&gt; retail_price&lt;/th&gt;
+        &lt;th&gt;public&lt;/th&gt;
+        &lt;th&gt;option&lt;/th&gt;
+    &lt;/tr&gt;
+    {% for book in all_book %}
+    &lt;tr&gt;
+        &lt;td&gt;{{ book.id }}&lt;/td&gt;
+        &lt;td&gt;{{ book.title }}&lt;/td&gt;
+        &lt;td&gt;{{ book.price }}&lt;/td&gt;
+        &lt;td&gt;{{ book.retail_price }}&lt;/td&gt;
+        &lt;td&gt;{{ book.pub.pubname }}&lt;/td&gt;
+        &lt;td&gt;
+            &lt;a href=&quot;/index/update_book/{{ book.id }}&quot;&gt;更新&lt;/a&gt;
+            &lt;a href=&quot;/index/delete_book/{{ book.id }}&quot;&gt;删除&lt;/a&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+     {% endfor %}
+    &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+上述代码中我们我们构建了一个有关书籍信息表的表格，下面就需要在 index.views.py 文件中编写视图层代码逻辑了，代码如下所示：
+<pre class="python">
+&quot;&quot;&quot;
+time: 22/6
+item: Book CURD
+&quot;&quot;&quot;
+def book_table(request):
+    try:
+        all_book=Book.objects.all().order_by(&#39;-price&#39;)
+        if not all_book:
+            return HttpResponse(&#39;书籍信息表为空，请录入！&#39;)
+    except Exception as e:
+        print(e)
+    return render(request, &#39;index/book_table.html&#39;, locals())</pre>
+并配置路由映射关系，最后访问 http://127.0.0.1:8000/index/all_book/ 可得如下界面显示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Django实例书籍信息表" src="../uploads/allimg/200622/9-2006221G612944_2.gif" /><br />
+	图1：Django实例书籍信息表</div>
+<h2>
+	2. 实现添加书籍信息</h2>
+接下来实现书籍信息的添加功能，编写 add_book.html 页面，代码如下所示：
+<pre class="html">
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;添加书籍信息&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;form action=&quot;/index/add_book/&quot; method=&quot;post&quot;&gt;
+{% csrf_token %}
+    &lt;p&gt;
+       title : &lt;input type=&quot;text&quot; name=&quot;title&quot;&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+       price : &lt;input type=&quot;text&quot; name=&quot;price&quot;&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+        retail_price : &lt;input type=&quot;text&quot; name=&quot;retail_price&quot;&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+        public : &lt;input type=&quot;text&quot; name=&quot;pub&quot;&gt;
+    &lt;/p&gt;
+    &lt;p&gt; 
+    &lt;!--按钮的值提交--&gt; &lt;input type=&quot;submit&quot; value=&quot;提交&quot;&gt; 
+    &lt;/p&gt; 
+&lt;/form&gt; 
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<br />
+上述我们编写完成了添加书籍信息的页面，然后需要在视图层 index\views.py 中编写提交书籍信息的逻辑代码。如下所示：
+<pre class="python">
+def add_book(request):
+    if request.method == &#39;GET&#39;:
+        return render(request, &#39;index/add_book.html&#39;)
+    elif request.method == &#39;POST&#39;:
+        #添加书籍
+        title = request.POST.get(&#39;title&#39;)
+        if not title:
+            return HttpResponse(&#39;请给出一个正确的title&#39;)
+        pub = request.POST.get(&#39;pub&#39;)
+        price = float(request.POST.get(&#39;price&#39;,&#39;999.99&#39;))
+        if not price:
+            return HttpResponse(&#39;请输入价格&#39;)
+        try:
+            retail_price = float(request.POST.get(&#39;retail_price&#39;))
+            if not retail_price:
+                return HttpResponse(&#39;请输入市场价&#39;)
+        except Exception as e:
+            print(e)
+
+        #判断title是不是已经存在了
+        old_book = Book.objects.filter(title=title)
+        if old_book:
+            return HttpResponse(&#39;你输入的书籍系统已经存在 !&#39;)
+        try:
+            pub1=PubName.objects.get(pubname=str(pub))
+            Book.objects.create(title=title,price=price,retail_price=retail_price,pub=pub1)
+        except Exception as e:
+            print(&#39;Add ErrorReason is %s&#39;%(e))
+        return HttpResponseRedirect(&#39;/index/all_book&#39;)
+    return HttpResponse(&#39;请使用正确Http请求方法 !&#39;)</pre>
+<pre class="python">
+</pre>
+最后将路由映射关系配置完成，通过上面的代码我们就完成书籍信息的添加的功能，访问 127.0.0.1/index/add_book,可得如下界面：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Django 实例图书添加功能" src="../uploads/allimg/200623/9-200623112313546_2.gif" /><br />
+	图2：Django实例图书添加功能 &nbsp;</div>
+<br />
+输入完上述信息点击添加按钮，会自动跳转到图书浏览目录页面，如下所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Django实例图书添加功能" src="../uploads/allimg/200623/9-200623112T3Q9_2.gif" /><br />
+	图3：Django实例图书添加功能<br />
+	&nbsp;</div>
+在本节中，我们实现了书籍的全量展示功能以及图书的添加功能。上述代码理解起来会比较的直观简单，但是实际编写起来，会有很多需要注意的细节，需要开发者做到思维缜密，当然这个能力并非一蹴而就，需要大家不断的练习与自我提升才可以。在下一节中，我们将继续讲解 Django 项目的实例应用，希望大家通过讲解能够熟练的使用Django 并将其作为 Web 开发的工具。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2216_2.html" title="Python pass语句及其作用" target="_blank">Python pass语句及其作用</a></li>
+<li><a href="../mysql/case_2.html" title="MySQL CASE函数：搜索语句" target="_blank">MySQL CASE函数：搜索语句</a></li>
+<li><a href="vip_3506_2.html" title="Linux Shell trap命令捕获信号实例演示" target="_blank">Linux Shell trap命令捕获信号实例演示</a></li>
+<li><a href="vip_5880_2.html" title="Python 2.x和Python 3.x，初学者应如何选择？" target="_blank">Python 2.x和Python 3.x，初学者应如何选择？</a></li>
+<li><a href="6867_2.html" title="Java多对多关系示例" target="_blank">Java多对多关系示例</a></li>
+<li><a href="../redis/hyperloglog_2.html" title="Redis HyperLoglog基数统计" target="_blank">Redis HyperLoglog基数统计</a></li>
+<li><a href="9855_2.html" title="网络空间安全介绍（超详细）" target="_blank">网络空间安全介绍（超详细）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7903;
+window.arcId = "780bv9/xhh9ldbpGwIGVhxjQWEbQiEci6LwLAhhhR4nV9dMcyrtStZ3aV8I";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

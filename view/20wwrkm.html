@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>pipenv使用教程（非常详细）</title>
+<meta name="description" content="pipenv 是一款 Python 虚拟环境管理工具。 常见的 Python 虚拟环境管理工具有 virtualenv、virtualenvwrapper、pipenv、conda 等，其中笔者比较推荐的是 pipenv。 pipenv 类似 virtualenv，它是一种 Python 包管" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>pipenv使用教程（非常详细）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">pipenv 是一款 <a href="8lww312.html" target="_blank">Python 虚拟环境</a>管理工具。<br />
+<br />
+常见的 Python 虚拟环境管理工具有 virtualenv、virtualenvwrapper、pipenv、conda 等，其中笔者比较推荐的是 pipenv。<br />
+<br />
+pipenv 类似 virtualenv，它是一种 Python 包管理工具，能自动处理各种工具之间的依赖关系，也能解决不同项目对于同一个工具有不同版本需求，而产生的同工具不同版本冲突的问题。<br />
+<br />
+pipenv 就是 pip 和 virtualenv 的结合体，它的出现解决了原有的 pip、virtualenv、requirements.txt 的工作方式的局限和弊端，能够更有效地管理 Python 的多个环境、各种第三方工具。<br />
+<br />
+pipenv 能解决以下两个问题。
+<h4>
+1) requirements.txt依赖管理的局限</h4>
+使用 requirements.txt 管理依赖的时候可能会出现版本不确定的构建问题。
+<h4>
+2) 多个项目依赖不同版本第三方工具的问题</h4>
+例如，应用程序A需要特定模块的 1.0 版本但应用程序B需要该模块的 2.0 版本，当我们在A和B应用程序间切换时，需要不断检测、卸载、安装该模块。这意味着只安装一个版本的模块可能无法满足每个应用程序的要求，因此需要创建虚拟环境来将 A、B 应用程序所需的第三方工具包分隔开来。<br />
+<br />
+pipenv 很好地解决了上述的两大问题，因此具备如下特性：
+<ul>
+<li>
+pipenv 集成了 pip、virtualenv 两者的功能且完善了两者的一些缺陷。pipenv 使用 Pipfile 和 Pipfile.lock，这使得对工具包的管理更为明确。</li>
+<li>
+pipenv 让使用者可以深入地了解第三方工具包的依赖关系图。我们使用命令 pipenv graph 即可查看第三方工具包的依赖关系图。</li>
+</ul>
+<h2>
+1. pipenv 安装</h2>
+pipenv 的安装依赖于 pip，如果没有配置和安装好 pip，需要先安装 pip。如果系统中是 Python 3，那么可以直接使用 pip3 进行安装。<br />
+<br />
+pipenv 安装过程如图1所示。命令为：
+<p class="info-box">
+pip3 install pipenv -i https://pypi.tuna.tsinghua.edu.cn/simple/</p>
+其中，<code>-i</code>表示采用指定的地址进行下载安装。<br />
+<br />
+<div style="text-align: center;">
+<img alt="pipenv安装过程" src="../uploads/allimg/230630/1-2306301R621L5.png" /><br />
+图1：pipenv 安装过程</div>
+<br />
+pipenv 安装完成后如图2所示，在 pip 相同的目录下会生成 pipenv 工具的相关文件。<br />
+<br />
+<div style="text-align: center;">
+<img alt="pipenv 安装成功" src="../uploads/allimg/230630/1-2306301RA05Y.png" /><br />
+图2：pipenv 安装成功</div>
+<h2>
+2. 创建虚拟环境</h2>
+接下来，通过如下命令创建一个在指定目录下的全新虚拟环境。<br />
+<br />
+1) 创建目录 demo 的命令为 mkdir demo。<br />
+<br />
+2) 进入目录 demo 的命令为 cd demo。<br />
+<br />
+3) 指定使用 Python 3.9.8 创建虚拟环境，否则为本地默认版本，命令为
+<p class="info-box">
+pipenv install--python/ usr/local/Python-3.9.8/bin/python3</p>
+pipenv 创建虚拟环境成功如图3所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="pipenv 创建虚拟环境成功" src="../uploads/allimg/230630/1-2306301RG3c1.png" /><br />
+图3：pipenv 创建虚拟环境成功</div>
+<br />
+安装完成后会在项目目录 demo 下自动生成 Pipfile 和 Pipfile.lock 两个文件，目录 demo 下的文件如图4所示，虚拟环境就是通过这两个文件进行管理依赖的。<br />
+<br />
+<div style="text-align: center;">
+<img alt="目录demo下的文件" src="../uploads/allimg/230630/1-2306301RIV55.png" /><br />
+图4：目录demo下的文件</div>
+<h2>
+3. pipenv 管理依赖</h2>
+pipenv 使用 Pipfile 代替 requirement.txt 文件来记录 Python 第三方工具的信息，另外增加 Pipfile.lock 文件来锁定 Python 第三方工具的包名、版本和依赖关系的列表。<br />
+<br />
+项目提交时，可将 Pipfile 文件和 Pipfile.lock 文件提交，待其他开发人员下载，根据此 Pipfile 文件，执行命令 pipenv install 来生成自己的虚拟环境。而 Pipfile.lock 文件用于保证包的完整性。
+<h4>
+1) Pipfile 文件</h4>
+每次创建环境在当前目录下都会生成一个名为 Pipfile 文件，用来记录刚创建的环境信息。如果在当前目录下存在之前的 Pipfile 文件，新的 Pipfile 文件会将其覆盖。<br />
+<br />
+Pipfile 文件主要用来配置项目依赖的第三方工具、工具包的镜像源、Python 解释器的版本等，该文件的示例如下：
+<pre class="info-box">
+# 主要用来配置包的下载网址
+[[source]]
+# 指定包的安装镜像源，一般使用国内的镜像来加快下载速度
+url = &quot;https://mirrors.aliyun.com/pypi/simple/&quot;
+verify_ssl = true
+name = &quot;pypi&quot;
+# 项目运行所需要依赖的第三方工具，即下载安装的工具包
+[packages]
+flask-authz ===&#39;2.4.0&#39;
+# * 表示安装最新稳定版本
+flask = &#39;*&#39;
+# 开发依赖的工具包
+[dev-packages]
+# 开发环境需要的包，不常用
+# Python 解释器配置
+[requires]
+# 指定Python解释器的版本
+python_version = &quot;3.9&quot;</pre>
+<h4>
+2) Pipfile.lock 文件</h4>
+Pipfile.lock 文件是通过哈希算法将包的名称、版本和依赖关系生成哈希值，可以保证包的完整性，锁定 Python 版本，便于以后项目发布使用固定的包。<br />
+<br />
+在正常情况下，Pipfile.lock 文件不会自动更新工具的版本，例如安装的 requests 库一开始是 2.26.0 版本，后来指定安装 2.25.1 版本，那么 Pipfile 文件会更新，但是 Pipfile.lock 文件不会更新，只有手动执行 pipenv lock 命令后才会更新。<br />
+<br />
+Pipfile.lock 文件保存了包的哈希值，这是确保生产环境和开发环境包信息一致的关键。当我们把项目从开发环境复制到生产环境，我们只需要执行 pipenv install，而无须重新安装之前在开发环境中安装的包，这很省心。
+<h2>
+4. pipenv 安装依赖工具包</h2>
+接下来，我们用 pipenv 安装 requests 库试一下，命令为：
+<p class="info-box">
+pipenv install requests</p>
+pipenv 安装依赖工具包成功如图5所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="pipenv 安装依赖工具包成功" src="../uploads/allimg/230630/1-2306301RPI62.png" /><br />
+图5：pipenv 安装依赖工具包成功</div>
+<br />
+另外，pipenv install 提供了<code>--dev</code>参数，用于区分需要部署到线上的开发包和只需要在测试环境中执行的包，这样就能明确不需要部署在线上的包，尽可能保证包干净。
+<h4>
+提示</h4>
+第一次安装包会比较慢，因为安装过程包含创建虚拟环境的过程。另外，如果使用默认安装源，大多数情况下会卡在锁定阶段，一般解决办法有两个。<br />
+<br />
+1) 更改安装源，修改项目目录下的 Pipfile 文件中 url 后边的内容。pipenv 本身就是基于 pip 的，所以也可以更换安装源。<br />
+<br />
+例如下面的 Pipfile 文件中使用阿里云提供的安装源：
+<pre class="info-box">
+[[source]]
+url = &quot;https://mirrors.aliyun.com/pypi/simple&quot;
+verify_ssl = true
+name = &quot;pypi&quot;</pre>
+2) 使用<code>--skip-lock</code>参数跳过锁定过程，锁定过程会比较费时，可以等真正完成项目开发要提交到仓库时再去锁定。
+<h2>
+5. 常用命令</h2>
+一般通过命令 pipenv -h 可以看到 pipenv 的命令参数和命令示例，如图 6 和图 7 所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="pipenv 的命令参数" src="../uploads/allimg/230630/1-2306301RSC29.png" /><br />
+图6：pipenv 的命令参数<br />
+<br />
+<img alt="pipenv 的命令示例" src="../uploads/allimg/230630/1-2306301RU2I6.png" /><br />
+图7：pipenv 的命令示例</div>
+<br />
+pipenv 具体的使用方法为：
+<p class="info-box">
+pipenv [OPTIONS] COMMAND [ARGS]...</p>
+其中，OPTIONS（操作参数）如表2所示。<br />
+<br />
+<table>
+<caption>
+表2：OPTIONS（操作参数）</caption>
+<tbody>
+<tr>
+<th>
+操作参数</th>
+<th>
+描述</th>
+</tr>
+<tr>
+<td>
+--where</td>
+<td>
+显示项目文件所在路径</td>
+</tr>
+<tr>
+<td>
+--venv</td>
+<td>
+显示虚拟环境下实际文件所在路径</td>
+</tr>
+<tr>
+<td>
+--py</td>
+<td>
+显示虚拟环境下Python解释器所在路径</td>
+</tr>
+<tr>
+<td>
+--envs</td>
+<td>
+显示虚拟环境的选项变量</td>
+</tr>
+<tr>
+<td>
+--rm</td>
+<td>
+删除虚拟环境</td>
+</tr>
+<tr>
+<td>
+--man</td>
+<td>
+显示帮助页面</td>
+</tr>
+<tr>
+<td>
+--three / --two</td>
+<td>
+使用Python 3或Python 2创建虚拟环境</td>
+</tr>
+<tr>
+<td>
+--site-packages</td>
+<td>
+附带安装原Python解释器中的第三方工具包</td>
+</tr>
+<tr>
+<td>
+--version</td>
+<td>
+显示版本信息</td>
+</tr>
+<tr>
+<td>
+-h, --help</td>
+<td>
+显示帮助信息</td>
+</tr>
+</tbody>
+</table>
+<br />
+pipenv 可使用的命令如表3所示。<br />
+<br />
+<table>
+<caption>
+表3：pipenv 可使用的命令</caption>
+<tbody>
+<tr>
+<th>
+命令</th>
+<th>
+描述</th>
+</tr>
+<tr>
+<td>
+check</td>
+<td>
+检查安全漏洞</td>
+</tr>
+<tr>
+<td>
+graph</td>
+<td>
+显示当前依赖关系图信息</td>
+</tr>
+<tr>
+<td>
+install</td>
+<td>
+安装虚拟环境或者第三方工具</td>
+</tr>
+<tr>
+<td>
+lock</td>
+<td>
+锁定并生成Pipfile.lock文件</td>
+</tr>
+<tr>
+<td>
+open</td>
+<td>
+在编辑器中查看一个工具</td>
+</tr>
+<tr>
+<td>
+run</td>
+<td>
+在虚拟环境中执行命令</td>
+</tr>
+<tr>
+<td>
+shell</td>
+<td>
+进入虚拟环境</td>
+</tr>
+<tr>
+<td>
+uninstall</td>
+<td>
+卸载一个工具</td>
+</tr>
+<tr>
+<td>
+update</td>
+<td>
+卸载当前所有的工具，并安装它们的最新版本</td>
+</tr>
+</tbody>
+</table>
+<br />
+例如，进入（激活）虚拟环境，执行 pipenv shell 命令。<br />
+<br />
+虚拟环境创建好后，需要被激活才能在当前命令行中使用，可以理解为将当前命令行环境中 PATH 变量的值替换。此时 pipenv 会启动一个激活虚拟环境的子 shell，然后我们会发现命令行提示符前添加了虚拟环境名，虚拟环境名为项目名。<br />
+<br />
+激活虚拟环境示例如图8所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="激活虚拟环境示例" src="../uploads/allimg/230630/1-2306301R932127.png" /><br />
+图8：激活虚拟环境示例</div>
+<br />
+在虚拟环境下，执行 exit 命令即可退出虚拟环境。所以，若要在虚拟环境中执行 Python 脚本，有如下两种方式。<br />
+<br />
+1) 第一种是直接执行命令：
+<p class="info-box">
+pipenv run python test.py</p>
+<br />
+2) 第二种是先激活虚拟环境，然后再运行脚本，命令如下：
+<p class="info-box">
+pipenv shell<br />
+python test.py</p>
+<h4>
+两点提示</h4>
+<ul>
+<li>
+不要使用命令 pip install。虽然在虚拟环境中也会安装对应的包，但是不会更新 Pipfile 文件和 Pipfile.lock 文件，不便于后续的环境迁移。</li>
+<li>
+pipenv --rm 只是把创建的虚拟环境删除了，但 Pipfile 文件和 Pipfile.lock 文件还存在。下次如果想要创建与项目名相同的虚拟环境，只要切换到原项目目录下执行命令 pip install 即可。</li>
+</ul>
+<h2>
+6. 部署迁移虚拟环境</h2>
+一般一个项目会创建一个目录，由于 Python 项目不需要编译，开发完成后，将项目目录拷贝到服务器上就可以完成部署了。但是，在项目开发过程中，我们会陆续安装和部署一些依赖工具，保证项目运行，要记住安装了哪些依赖不是件轻松的事。
+<h4>
+1) 以前的部署流程</h4>
+使用 pip 提供的导出依赖工具名的功能，将环境中项目依赖的第三方工具名导出并导入 requirements.txt 文件。命令为：
+<p class="info-box">
+pip freeze &gt; requirements.txt</p>
+然后，上传到服务器，在服务器上依据 requirements.txt 文件安装工具包，命令为：
+<p class="info-box">
+pip install -r requirements.txt</p>
+值得注意的是，pip freeze 命令并不是针对特定项目的，该命令导出的是所在 Python 环境中的所有第三方工具。<br />
+<br />
+如果一个 Python 环境中，创建了两个不同的项目，各自有不同的依赖，那么导出的依赖会是两个项目依赖的并集，虽然这对部署来说没有问题，但安装没必要的依赖不算是好事，后续可能出现包冲突的问题。<br />
+<br />
+因此，在创建项目时，为其创建一个独立的 Python 虚拟环境是个好的编程习惯。
+<h4>
+2) 现在的部署流程</h4>
+我们通过 pipenv 使用虚拟环境管理项目依赖，在开发环境完成开发后，如何构建生产环境呢？这时候需要使用 Pipfile.lock 文件。<br />
+<br />
+我们执行命令：
+<p class="info-box">
+pipenv lock</p>
+把当前环境的模块锁定，执行命令后它会更新 Pipfile.lock 文件，该文件是用于生产环境的。然后，我们只需要把代码、Pipfile 文件和 Pipfile.lock 文件放到生产环境，执行命令：
+<p class="info-box">
+pipenv install</p>
+就可以创建和开发环境一样的环境了。<br />
+<br />
+Pipfile.lock 文件记录了所有包和子包的明确版本，以完成确定的构建。如果要在另一个开发环境开发，则将代码和 Pipfile 文件复制过去，执行命令：
+<p class="info-box">
+pipenv install --dev</p>
+将会安装包括 dev 对应的开发环境中的包。<br />
+<br />
+我们之所以要在开发时养成创建和使用虚拟环境的好习惯，除了避免未来工具之间的冲突，还有一个重要的原因是方便部署迁移。因为虚拟环境是独立的，仅包含项目相关的依赖，所以部署的效率更高，风险更小。
+<h4>
+requirements.txt 文件的兼容</h4>
+pipenv 可以像 virtualenv 一样用命令生成 requirements.txt 文件。
+<pre class="info-box">
+# 将Pipfile文件和Pipfile.lock文件里面的工具名导出到requirements.txt文件
+pipenv lock -r  &gt; requirements.txt
+# 通过requirements.txt文件进行安装
+pipenv install -r requirements.txt</pre>
+如果老项目一开始没有使用 pipenv 进行依赖管理，那么因为 requirements.txt 文件的完全兼容的特性，我们可以重新通过 pipenv 来管理项目依赖，只需要 pipenv 读取原有的最新的 requirements.txt 并重新生成依赖到 Pipfile 文件中即可。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="442.html" title="C++ list（STL list）增加和插入元素详解（insert成员函数插入元素）" target="_blank">C++ list（STL list）增加和插入元素详解（insert成员函数插入元素）</a></li>
+<li><a href="885.html" title="Linux mount命令详解：挂载Linux系统外的文件" target="_blank">Linux mount命令详解：挂载Linux系统外的文件</a></li>
+<li><a href="vip_5060.html" title="Vim多窗口编辑模式" target="_blank">Vim多窗口编辑模式</a></li>
+<li><a href="7233.html" title="MySQL查看视图" target="_blank">MySQL查看视图</a></li>
+<li><a href="atjtot4.html" title="C#获取字符串长度（Length属性）" target="_blank">C#获取字符串长度（Length属性）</a></li>
+<li><a href="fbj0o4p.html" title="MySQL删除字段（附带示例）" target="_blank">MySQL删除字段（附带示例）</a></li>
+<li><a href="2tjydsx.html" title="MATLAB运算符（算术运算符、关系运算符和逻辑运算符）" target="_blank">MATLAB运算符（算术运算符、关系运算符和逻辑运算符）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10003;
+window.arcId = "e2barGctxYah4urfGPzoZcfQdlmAr93FN4Aq46HNCtmQAxs2Fm4qnsKbw1Ho";
+window.typeidChain = "145|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

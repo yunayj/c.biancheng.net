@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>CoreDNS简介（非常详细）</title>
+<meta name="description" content="CoreDNS 是一种现代化的 DNS 服务器，被设计成可以与容器（如Linux和Docker容器）化环境良好地结合，尤其是在非常流行的容器编排系统Kubernetes管理的环境中。 Miek Gieben 在 2016 年编写了 C" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>CoreDNS简介（非常详细）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">CoreDNS 是一种现代化的 DNS 服务器，被设计成可以与容器（如Linux和Docker容器）化环境良好地结合，尤其是在非常流行的容器编排系统Kubernetes管理的环境中。<br />
+<br />
+Miek Gieben 在 2016 年编写了 CoreDNS 的初始版本，在此之前他还写过一个叫作 SkyDNS 的 DNS 服务器，以及一个用 Go 语言写的 DNS 函数库 Go DNS。与它的继任者 CoreDNS 一样，SkyDNS 的主要目的也是支持服务发现。Miek 非常欣赏一个基于 Go 的网络服务器架构 Caddy，所以他就选用 Caddy 构建了 CoreDNS。CoreDNS 继承了 Caddy 的主要优点：简单的配置语法、强大的基于插件的架构以及 Go 语言。<br />
+<br />
+与 BIND 的配置文件的语法相比，CoreDNS 的 Corefile 使用起来非常简单。一个基础 CoreDNS 服务器的 Corefile 通常只有几行简单易懂的代码。<br />
+<br />
+CoreDNS 使用插件来支持不同的 DNS 功能。例如，用于缓存的插件、用于转发的插件、用于配置主 DNS 服务器（从配置文件中读取区域数据）的插件，以及用于配置辅助 DNS 服务器的插件。每个插件的配置都很简单，而且如果你不需要某些插件，可以完全不用关心它们，对应的代码也不会执行。插件架构使得 CoreDNS 更快、更安全。<br />
+<br />
+插件的开发也相当容易。这是非常重要的，原因有二。首先，如果想扩展 CoreDNS 的功能，你可以编写自己的插件；其次，降低开发难度有助于生态发展，所以目前已经有非常多的可用（以及更多正在实现的）插件，当有需要时，你很容易找到一个合适的现成插件。<br />
+<br />
+前言中提到，Go 语言是内存安全的，这意味着它可以避免&ldquo;内存访问错误&rdquo;，如缓冲区溢出和悬空指针。这对于像 CoreDNS 这样的 DNS 服务器来说尤为重要，因为互联网上的任何人都可以访问它。恶意破坏的黑客可能会利用缓冲区溢出使 DNS 服务器崩溃，甚至获得对底层操作系统的控制。事实上，在 BIND 过去的几十年历史中，大量的严重漏洞都是由内存访问错误引起的。而有了 CoreDNS，你就不需要再担心这类问题了。<br />
+<br />
+不过，CoreDNS 最显著的优势是它能够与容器基础设施和编排系统（如 etcd 和 Kubernetes）通信。<br />
+<h2>
+CoreDNS、容器和微服务</h2>
+你可以将容器视为轻量级的、高效的虚拟机（Virtual Machine，VM）。得益于 hypervisor 虚拟化技术，单个物理硬件可以被多台使用单独的 OS 内核的虚拟机共享，而容器则提供了运行在相同 OS 内核下的执行环境，以及与虚拟机类似的隔离级别。容器比虚拟机小得多，可以更快地启动和停止。<br />
+<br />
+容器通常用于基于微服务架构的软件中。在微服务中，一个复杂的应用程序通常被分解成许多个微小的服务，这些微服务各自负责提供一组很小的、定义清晰的功能。例如，一个微服务可能用来处理用户的身份验证，而另一个微服务则用于管理这些用户的授权。一个应用程序可能包含数十个甚至数百个微服务，同时，这些微服务可以在网络上相互通信。<br />
+<br />
+通常来说，每个微服务可能由一个或多个容器提供。例如，身份验证服务可以实现为一个容器。由于启动和停止容器非常容易而且特别迅速，因此应用程序或更高级别的容器编排工具可能会随着身份验证需求的变化，动态地启动（或停止）更多的身份验证容器。<br />
+<br />
+然而，在这样的动态环境中，跟踪特定服务的运行是非常具有挑战性的。假设支持数据库服务的容器需要与授权服务进行通信，从而确定是否应该允许某个特定用户执行特定的查询。而为了适应负载的变化，实现授权服务的容器会不断地动态启动或停止，那么我们该如何获得所有正在运行的授权服务容器的列表呢？<br />
+<br />
+答案通常是 DNS。由于容器之间的通信都是基于IP的，而且过去的几十年中开发人员也一直在使用通过 DNS 查找资源 IP 地址这种方法，所以，使用 DNS 来标识这些提供特定服务的容器是很自然的。<br />
+<br />
+这也正是 CoreDNS 真正发挥价值的地方。CoreDNS 不仅是一个灵活、安全的 DNS 服务器，而且它内置集成了包括 Kubernetes 在内的许多容器编排系统。这意味着容器化应用程序的管理员可以很容易地设置 DNS 服务器来协调和促进容器之间的通信。<br />
+<h2>
+CoreDNS的限制</h2>
+目前 CoreDNS 仍然有一些特别的限制，使得它并不适合所有的 DNS 服务器场景。其中最主要的是，CoreDNS 不支持完整的递归（recursion）功能。换句话说，CoreDNS 不能从根 DNS 命名空间开始处理查询&mdash;&mdash;查询根 DNS 服务器并跟踪引用直到从某个权威 DNS 服务器获得答案。相反，它需要依赖其他 DNS 服务器（通常称为转发器（forwarder））来实现这一点。<br />
+<br />
+如果你还不确定 CoreDNS 是否满足你的需求，请参考下表，其中总结了 CoreDNS 和 BIND 功能之间的关键区别。<br />
+<br />
+<table>
+<caption>
+表：CoreDNS 和 BIND 的主要功能对比</caption>
+<tbody>
+<tr>
+<th>
+&nbsp;</th>
+<th>
+CoreDNS</th>
+<th>
+BIND</th>
+</tr>
+<tr>
+<td>
+完整递归</td>
+<td>
+不支持</td>
+<td>
+支持</td>
+</tr>
+<tr>
+<td>
+动态更新</td>
+<td>
+不支持</td>
+<td>
+支持</td>
+</tr>
+<tr>
+<td>
+与&nbsp;Kubernetes&nbsp;集成</td>
+<td>
+支持</td>
+<td>
+不支持</td>
+</tr>
+<tr>
+<td>
+与&nbsp;Amazon Route 53&nbsp;集成</td>
+<td>
+支持</td>
+<td>
+不支持</td>
+</tr>
+<tr>
+<td>
+DNS&nbsp;安全扩展（Domain Name System Security Extension，DNSSEC）支持</td>
+<td>
+有限支持</td>
+<td>
+完全支持</td>
+</tr>
+<tr>
+<td>
+DNS over TLS（DoT）</td>
+<td>
+支持</td>
+<td>
+不支持</td>
+</tr>
+</tbody>
+</table>
+<h2>
+CoreDNS、Kubernetes和CNCF</h2>
+Kubernetes 最初是由谷歌公司编写的容器编排系统，然后在 2015 年转换成了一个开源项目，如前文所述，CoreDNS 能够很好地与之集成。为了管理新开源的 Kubernetes 项目，谷歌与 Linux 基金会合作创建了 CNCF。<br />
+<br />
+CNCF 已经成为构建基于云的应用程序的技术大本营，其中衍生的项目包括 Prometheus（支持收集指标和创建警报）以及 Envoy（一个服务代理）等。CNCF 管理的项目会从早期项目的沙箱（sandbox）发展到不同的成熟度级别（maturity level），再到孵化（incubating）阶段以让项目获得认可，直到最终发布（graduated），证明项目已经成熟并可以被广泛采用。<br />
+<br />
+CoreDNS 于 2017 年提交给 CNCF，并于 2019 年 1 月发布。Kubernetes 从 1.13 版本（该版本于 2018 年 12 月发布）开始将 CoreDNS 作为其默认的 DNS 服务器，由此可以看出 CoreDNS 对 Kubernetes 环境的关键作用。现在几乎所有的 Kubernetes 环境都安装部署了 CoreDNS，Kubernetes 已经在容器世界中掀起了一股巨大的浪潮（容器本身似乎正在席卷全球），我们预计 CoreDNS 的部署数量将会持续地呈爆发式增长。<br />
+<br />
+好啦，我们不再自卖自夸了，本文和大家讨论了 CoreDNS 基本的优点和缺点，以及它的命运是如何与 Kubernetes 绑在一起的。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="858.html" title="Linux groupdel命令：刪除用户组" target="_blank">Linux groupdel命令：刪除用户组</a></li>
+<li><a href="2190.html" title="Python运算符优先级和结合性一览表" target="_blank">Python运算符优先级和结合性一览表</a></li>
+<li><a href="../jsp2/first-jsp.html" title="第一个JSP程序" target="_blank">第一个JSP程序</a></li>
+<li><a href="../redis/server.html" title="Redis服务器命令" target="_blank">Redis服务器命令</a></li>
+<li><a href="9371.html" title="JS动画效果的实现（附带示例）" target="_blank">JS动画效果的实现（附带示例）</a></li>
+<li><a href="ctru3e9.html" title="CSS :focus伪类选择器用法详解" target="_blank">CSS :focus伪类选择器用法详解</a></li>
+<li><a href="i0wu564.html" title="《标准C语言基础教程(第四版)》中文版PDF下载（高清完整版）" target="_blank">《标准C语言基础教程(第四版)》中文版PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9842;
+window.arcId = "8d86oSb/OE1d7Ff2AUUFRI2jG5EBt0B9Lr64sxVSMyAWX0xP0u9ApJeravs";
+window.typeidChain = "119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Python实现矩阵转置详解</title>
+<meta name="description" content="解决矩阵转置问题，首先应该清楚什么是矩阵的转置。 矩阵转置在数学上的定义为： 设 A 为 mn 阶矩阵（即 m 行 n 列的矩阵），其第 i 行第 j 列的元素是 a(i,j)，即 A=a(i,j)mn。定义 A 的转" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Python实现矩阵转置详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">解决矩阵转置问题，首先应该清楚什么是矩阵的转置。<br />
+<br />
+矩阵转置在数学上的定义为：
+<p class="info-box">
+	设 A 为 m&times;n 阶矩阵（即 m 行 n 列的矩阵），其第 i 行第 j 列的元素是 a(i, j)，即 A=a(i, j)m&times;n。定义 A 的转置为这样一个 n&times;m 阶矩阵 B，满足 B=a(j,i)n&times;m，即 b(i, j)=a(j, i)（B 的第 i 行第 j 列元素是 A 的第 j 行第 i 列元素）。</p>
+假设有如下的矩阵 A：
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/221111/2-221111161R2142_2.gif" /></div>
+<br />
+则经过转置，即将矩阵的第i行变成了现在的第i列，原来的矩阵 A 变为如下的矩阵 B：
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/221111/2-221111161S4620_2.gif" /></div>
+<h2>
+	算法设计</h2>
+解决矩阵问题时通常都是先将矩阵存放在一个二维数组中，而当矩阵发生变化时，二维数组中对应的元素也会发生变化。<br />
+<br />
+以问题分析中提到的 A 矩阵为例，要实现 A 的转置，首先应将其存放在一个二维数组 n 中，该二维数组中的元素及其内容如下表所示：<br />
+<br />
+<table>
+	<caption>
+		表 1 二维数组 n 中的元素及其内容</caption>
+	<tbody>
+		<tr>
+			<td>
+				n[0][0]<br />
+				1</td>
+			<td>
+				n[0][1]<br />
+				2</td>
+			<td>
+				n[0][2]<br />
+				3</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="2">
+				n[1][0]<br />
+				4</td>
+			<td colspan="1" rowspan="2">
+				n[1][1]<br />
+				5</td>
+			<td colspan="1" rowspan="2">
+				n[1][2]<br />
+				6</td>
+		</tr>
+		<tr>
+		</tr>
+		<tr>
+			<td>
+				n[2][0]<br />
+				7</td>
+			<td>
+				n[2][1]<br />
+				8</td>
+			<td>
+				n[2][2]<br />
+				9</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+将 A 转置后，二维数组 n 中的元素及其内容如下表所示：<br />
+<br />
+<table>
+	<caption>
+		表 2 A转置后二维数组n中的元素及其内容</caption>
+	<tbody>
+		<tr>
+			<td>
+				n[0][0]<br />
+				1</td>
+			<td>
+				n[0][1]<br />
+				4</td>
+			<td>
+				n[0][2]<br />
+				7</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="2">
+				n[1][0]<br />
+				2</td>
+			<td colspan="1" rowspan="2">
+				n[1][1]<br />
+				5</td>
+			<td colspan="1" rowspan="2">
+				n[1][2]<br />
+				8</td>
+		</tr>
+		<tr>
+		</tr>
+		<tr>
+			<td>
+				n[2][0]<br />
+				3</td>
+			<td>
+				n[2][1]<br />
+				6</td>
+			<td>
+				n[2][2]<br />
+				9</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+观察表 2 可知，转置后矩阵主对角线上的数组元素 n[0][0]、n[1][1]、n[2][2] 的值并没有发生变化，只是位于对角线右上方的三个元素与位于对角线左下方的三个元素的值进行了交换。具体为 n[0][1] 与 n[1][0] 进行了交换，n[0][2] 与 n[2][0] 进行了交换，n[1][2] 与 n[2][1] 进行了交换。<br />
+<br />
+根据这个发现就可以来设计我们的算法，在对一个 3&times;3 阶矩阵转置时，只需将主对角线右上方的数组元素 n[0][1]、n[0][2]、n[1][2] 分别与主对角线左下方的数组元素 n[1][0]、n[2][0]、n[2][1] 的值通过一个临时变量进行交换即可，总共只需要进行三次交换就可以实现矩阵的转置。<br />
+<h2>
+	实现矩阵转置</h2>
+矩阵问题和循环结构是分不开的，要想访问二维数组中的每个元素，就需要使用一个双重循环。这里我们可以使用一个双重的for循环在循环体中完成数组元素交换，即矩阵转置的任务。<br />
+<br />
+编写程序如下：
+<pre class="python">
+if __name__ == &quot;__main__&quot;:
+    n = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+    print(&quot;原始矩阵：&quot;)
+    for i in range(3):
+        for j in range(3):
+            print(&quot;%d  &quot; %(n[i][j]), end=&quot; &quot;) # 输出原始矩阵
+        print()
+
+    for i in range(3):
+        for j in range(3):
+            #将主对角线右上方的数组元素与主对角线左下方的数组元素进行单方向交换
+            if j &gt; i:
+                temp = n[i][j]
+                n[i][j] = n[j][i]
+                n[j][i] = temp
+
+    print(&quot;转置矩阵：&quot;)
+    for i in range(3):
+        for j in range(3):
+            print(&quot;%d  &quot; %(n[i][j]), end=&quot; &quot;)
+        print()</pre>
+运行结果为：
+<p class="info-box">
+	原始矩阵：<br />
+	1&nbsp;&nbsp; 2&nbsp;&nbsp; 3&nbsp;&nbsp;<br />
+	4&nbsp;&nbsp; 5&nbsp;&nbsp; 6&nbsp;&nbsp;<br />
+	7&nbsp;&nbsp; 8&nbsp;&nbsp; 9&nbsp;&nbsp;<br />
+	转置矩阵：<br />
+	1&nbsp;&nbsp; 4&nbsp;&nbsp; 7&nbsp;&nbsp;<br />
+	2&nbsp;&nbsp; 5&nbsp;&nbsp; 8&nbsp;&nbsp;<br />
+	3&nbsp;&nbsp; 6&nbsp;&nbsp; 9&nbsp;</p>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="424_2.html" title="C++ vector添加（增加）元素" target="_blank">C++ vector添加（增加）元素</a></li>
+<li><a href="8114_2.html" title="VS Code运行C和C++程序" target="_blank">VS Code运行C和C++程序</a></li>
+<li><a href="../maven2/eclipse-maven-command_2.html" title="Eclipse执行Maven命令" target="_blank">Eclipse执行Maven命令</a></li>
+<li><a href="9645_2.html" title="曝光一下腾讯的工资待遇和职位级别" target="_blank">曝光一下腾讯的工资待遇和职位级别</a></li>
+<li><a href="../spring_mvc/9678_2.html" title="Spring MVC格式化器（Formatter）" target="_blank">Spring MVC格式化器（Formatter）</a></li>
+<li><a href="9820_2.html" title="Python求素数（带完整源码）" target="_blank">Python求素数（带完整源码）</a></li>
+<li><a href="5lj5grs_2.html" title="Redis HINCRBY命令的用法" target="_blank">Redis HINCRBY命令的用法</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9822;
+window.arcId = "8e05IyTwr/8TAAEPkGNxo0/wwQTWUIn1llomib4EvplRmcrGtnFUczJdGJo";
+window.typeidChain = "145|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

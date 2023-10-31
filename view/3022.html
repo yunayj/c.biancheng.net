@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C# DataReader：读取查询结果</title>
+<meta name="description" content="在 C# 中 DataReader 类的作用是读取查询结果，与在《 C# Command 》一节中介绍的 Command 类中的 ExecuteReader 方法一起使用。 下面来介绍一下 DataReader 类中常用的属性和方法，以及如何使用该类" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C# DataReader：读取查询结果</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在 <a href='../csharp/csharp.html' target='_blank'>C#</a> 中 DataReader 类的作用是读取查询结果，与在《<a href="3017.html" target="_blank">C# Command</a>》一节中介绍的 Command 类中的 ExecuteReader 方法一起使用。<br />
+<br />
+下面来介绍一下 DataReader 类中常用的属性和方法，以及如何使用该类查询表中的数据。<br />
+<h2>
+DataReader 类概述</h2>
+DataReader 类在 System.Data.SqlClient 命名空间中，对应的类是 SqlDataReader，主要用于读取表中的查询结果，并且是以只读方式读取的（即不能修改 DataReader 中存放的数据）。<br />
+<br />
+正是由于 DataReader 类的特殊的读取方式，其访问数据的速度比较快，占用的服务器资源比较少。<br />
+<br />
+SqlDataReader 类中常用的属性和方法如下表所示。<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+属性或方法</th>
+<th>
+说明</th>
+</tr>
+<tr>
+<td>
+FieldCount</td>
+<td>
+属性，获取当前行中的列数</td>
+</tr>
+<tr>
+<td>
+HasRows</td>
+<td>
+属性，获取 DataReader 中是否包含数据</td>
+</tr>
+<tr>
+<td>
+IsClosed</td>
+<td>
+属性，获取 DataReader 的状态是否为已经被关闭</td>
+</tr>
+<tr>
+<td>
+Read</td>
+<td>
+方法，让 DataReader 对象前进到下一条记录</td>
+</tr>
+<tr>
+<td>
+Close</td>
+<td>
+方法，关闭 DataReader 对象</td>
+</tr>
+<tr>
+<td>
+Get XXX (int i)</td>
+<td>
+方法，获取指定列的值，其中XXX代表的是数据类型。例如获取当前行第1列 double 类型的值，获取方法为GetDouble(o)</td>
+</tr>
+</tbody>
+</table>
+<h2>
+使用 DataReader 类读取查询结果</h2>
+在使用 DataReader 类读取查询结果时需要注意，当查询结果仅为一条时，可以使用 if 语句查询 DataReader 对象中的数据，如果返回值是多条数据，需要通过 while 语句遍历 DataReader 对象中的数据。<br />
+<br />
+在使用 DataReader 类读取查询结果时需要通过以下步骤完成：<br />
+<h4>
+1) 执行 SqlCommand 对象中的 ExecuteReader 方法</h4>
+具体代码如下。<br />
+<p class="info-box">
+SqlDataReader dr=SqlCommand 类实例 .ExecuteReader();</p>
+<h4>
+2) 遍历 SqlDataReader 中的结果</h4>
+SqlDataReader 类中提供的 Read 方法用于判断其是否有值，并指向 SqlDataReader 结果中的下一条记录。<br />
+<p class="info-box">
+dr.Read()</p>
+如果返回值为 True，则可以读取该条记录，否则无法读取。<br />
+<br />
+在读取记录时，要根据表中的数据类型来读取表中相应的列。<br />
+<h4>
+3) 关闭 SqlDataReader</h4>
+下面通过实例来演示 SqlDataReader 类的使用。<br />
+<br />
+【实例】根据用户姓名查询用户的编号和密码，并将编号和密码显示在标签控件 (Label) 上。<br />
+<br />
+根据姓名查询用户信息的界面如下图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="根据用户名查询用户信息" src="../uploads/allimg/190404/4-1Z4041J416427.gif" /></div>
+<br />
+在该界面中默认情况下显示&ldquo;没有符合条件的结果&rdquo;，如果根据文本框中输入的用户名能查询到指定用户的信息，则将默认文字替换成用户编号和密码。<br />
+<br />
+实现该功能的代码 如下。
+<pre class="cpp">
+//&ldquo;查询&rdquo;按钮单击事件
+private void button1_Click(object sender, EventArgs e)
+{
+    //编写数据库连接串
+    string connStr = &quot;Data Source=.;Initial Catalog=test;User ID=sa;Password=root&quot;;
+    //创建 SqlConnection的实例
+    SqlConnection conn = null;
+    //定义SqlDataReader类的对象
+    SqlDataReader dr = null;
+    try
+    {
+        conn = new SqlConnection(connStr);
+        //打开数据库连接
+        conn.Open();
+        string sql = &quot;select id,password from userinfo where name=&#39;{0}&#39;&quot;;
+        //填充SQL语句
+        sql = string.Format(sql, textBox1.Text);
+        //创建SqlCommand对象
+        SqlCommand cmd = new SqlCommand(sql, conn);
+        //执行Sql语句
+        dr = cmd.ExecuteReader();
+        //判断SQL语句是否执行成功
+        if (dr.Read())
+        {
+            //读取指定用户名对应的用户编号和密码
+            string msg = &quot;用户编号：&quot; + dr[0] + &quot; 密码：&quot; + dr[1];
+            //将msg的值显示在标签上
+            label2.Text = msg;
+        }
+    }
+    catch (Exception ex)
+    {
+        MessageBox.Show(&quot;查询失败！&quot; + ex.Message);
+    }
+    finally
+    {
+        if (dr != null)
+        {
+            //判断dr不为空，关闭SqlDataReader对象
+            dr.Close();
+        }
+        if (conn != null)
+        {
+            //关闭数据库连接
+            conn.Close();
+        }
+    }
+}</pre>
+运行该窗体，效果如下图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="查询用户名为“张三”的用户信息" src="../uploads/allimg/190404/4-1Z4041J4551A.gif" /></div>
+<br />
+从上面的运行效果可以看出，&ldquo;张三&rdquo;用户对应的用户编号为 1、密码为 123456。<br />
+<br />
+需要注意的是，实现上述功能的要求是用户表中的用户名是唯一的，以避免出现查询错误。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2584.html" title="MySQL创建视图（CREATE VIEW）" target="_blank">MySQL创建视图（CREATE VIEW）</a></li>
+<li><a href="vip_6066.html" title="提高代码可读性和颜值的几点建议（初学者必读）" target="_blank">提高代码可读性和颜值的几点建议（初学者必读）</a></li>
+<li><a href="vip_7341.html" title="Go语言生成二维码" target="_blank">Go语言生成二维码</a></li>
+<li><a href="7534.html" title="HTML有序列表+无序列表+定义列表" target="_blank">HTML有序列表+无序列表+定义列表</a></li>
+<li><a href="../spring_boot/config-bind.html" title="Spring Boot配置绑定" target="_blank">Spring Boot配置绑定</a></li>
+<li><a href="7q6n7m.html" title="使用C语言求一元二次方程的根" target="_blank">使用C语言求一元二次方程的根</a></li>
+<li><a href="diiit5.html" title="Python输出菱形" target="_blank">Python输出菱形</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 3022;
+window.arcId = "840bvFmymWHkgHhlo5EYoatiOw9XmFZcrYA/LYW1nAI0cHv902FeYZF8J9I";
+window.typeidChain = "211|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

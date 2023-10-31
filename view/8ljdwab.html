@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>CSS :focus-within伪类选择器用法详解</title>
+<meta name="description" content="整体焦点伪类 :focus-within 非常实用，且兼容性不错（如下表所示），目前已经可以在实际项目中使用，包括移动端项目和无须兼容 IE 浏览器的桌面端项目。 表 1 focus-within伪类的兼容性" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>CSS :focus-within伪类选择器用法详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">整体焦点伪类 :focus-within 非常实用，且兼容性不错（如下表所示），目前已经可以在实际项目中使用，包括移动端项目和无须兼容 IE 浏览器的桌面端项目。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230922/2-2309221524222G.gif" /><br />
+表 1 focus-within伪类的兼容性</div>
+<h2>
+:focus-within伪类和:focus伪类的区别</h2>
+CSS :focus-within 伪类和 :focus 伪类有很多相似之处，那就是伪类样式的匹配离不开元素聚焦行为的触发。区别在于，:focus 伪类样式只有在当前元素处于聚焦状态的时候才匹配，而 :focus-within 伪类样式在当前元素或者当前元素的任意子元素处于聚焦状态的时候均匹配。<br />
+<br />
+举个例子：
+<pre class="css" showmenu="false" shownum="false">
+form:focus {
+  outline: solid;
+}</pre>
+表示仅当 &lt;form&gt; 元素处于聚焦状态的时候，&lt;form&gt; 元素的 outline（轮廓）才会出现。<br />
+<pre class="css" showmenu="false" shownum="false">
+form:focus-within {
+  outline: solid;
+}</pre>
+表示 &lt;form&gt; 元素自身或者 &lt;form&gt; 元素内部的任意子元素处于聚焦状态时，&lt;form&gt; 元素的 outline（轮廓）均会出现。换句话说，子元素聚焦可以使父元素的样式发生变化。<br />
+<br />
+这是 CSS 选择器世界中很了不起的革新，因为 :focus-within 伪类的行为本质上是一种父选择器行为，子元素的状态会影响父元素的样式。由于这种父选择器行为需要借助用户的行为触发，属于&ldquo;后渲染&rdquo;，不会与现有的渲染机制冲突，自然也不会带来性能问题，因此浏览器在规范出现后不久就快速支持了。<br />
+<h2>
+:focus-within伪类实现无障碍访问的下拉列表</h2>
+:focus-within 伪类非常实用，一方面它可以用在表单控件元素上（无论是样式自定义还是交互布局），例如输入框聚焦时高亮显示前面的描述文字，我们可以不把描述文字放在输入框的后面，按正常的 DOM 顺序即可：
+<pre class="info-box">
+&lt;div class=&quot;cs-normal&quot;&gt;
+   &lt;label class=&quot;cs-label&quot;&gt;用户名：&lt;/label&gt;&lt;input class=&quot;cs-input&quot;&gt;
+&lt;/div&gt;
+.cs-normal:focus-within .cs-label {
+   color: darkblue;
+   text-shadow: 0 0 1px;
+}</pre>
+效果如下图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230922/2-230922151913364.gif" /><br />
+图 1 输入框聚焦，前面的文字被高亮显示</div>
+<br />
+另一方面，它可以用于实现完全无障碍访问的下拉列表，即使下拉列表中有其他链接或按钮也能正常访问。例如，要实现一个类似图 2 所示的下拉列表效果。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/230922/2-23092215192X96.gif" /><br />
+图 2 带有其他交互的下拉列表效果示意</div>
+<br />
+HTML 结构如下：<br />
+<pre class="html">
+&lt;div class=&quot;cs-details&quot;&gt;
+   &lt;a href=&quot;javascript:&quot; class=&quot;cs-summary&quot;&gt;我的消息&lt;/a&gt;
+   &lt;div class=&quot;cs-datalist&quot;&gt;
+      &lt;a href&gt;我的回答&lt;sup&gt;12&lt;/sup&gt;&lt;/a&gt;
+      &lt;a href&gt;我的私信&lt;/a&gt;
+      &lt;a href&gt;未评价订单&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;
+      &lt;a href&gt;我的关注&lt;/a&gt;
+   &lt;/div&gt;
+&lt;/div&gt;</pre>
+我们在父元素 .cs-details 上使用 :focus-within 伪类来控制下拉列表的显示和隐藏，如下：<br />
+<pre class="css">
+.cs-datalist {
+   display: none;
+   position: absolute;
+   border: 1px solid #ddd;
+   background-color: #fff;
+}
+/* 下拉列表展开 */
+.cs-details:focus-within .cs-datalist {
+   display: block;
+}</pre>
+本例中共有 5 个 &lt;a&gt; 元素，其中一个用于触发下拉显示的 .cs-summary 元素，另外 4 个在下拉列表中。无论点击这 5 个 &lt;a&gt; 元素中的哪一个，都会触发父元素 .cs-details 设置的 :focus-within 伪类样式，因此可以让下拉列表一直保持显示状态；点击页面任意空白处，下拉列表自动隐藏，效果非常理想。<br />
+<br />
+可以肯定的是，以后对于这类下拉交互，采用 :focus-within 伪类实现会是约定俗成的标准解决方案。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2881.html" title="UE4设置默认游戏模式和关卡" target="_blank">UE4设置默认游戏模式和关卡</a></li>
+<li><a href="vip_7315.html" title="Go语言将秒转换为具体的时间" target="_blank">Go语言将秒转换为具体的时间</a></li>
+<li><a href="7575.html" title="MySQL常用运算符概述" target="_blank">MySQL常用运算符概述</a></li>
+<li><a href="../redis2/zrank.html" title="Redis ZRANK命令" target="_blank">Redis ZRANK命令</a></li>
+<li><a href="../sql/transaction.html" title="SQL事务（非常详细）" target="_blank">SQL事务（非常详细）</a></li>
+<li><a href="../springcloud/eureka.html" title="Eureka：Spring Cloud服务注册与发现组件（非常详细）" target="_blank">Eureka：Spring Cloud服务注册与发现组件（非常详细）</a></li>
+<li><a href="zlj03n4.html" title="Go语言new()和make()的区别" target="_blank">Go语言new()和make()的区别</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10503;
+window.arcId = "283csN1tHqM4/4wIf0oOvVhdr1ZwTJri2egH1lE3Y+NZSkfbonAJdcdNtXkc";
+window.typeidChain = "121|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

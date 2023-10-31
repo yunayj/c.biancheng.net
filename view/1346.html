@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++ cin.get用法（详解版）</title>
+<meta name="description" content="与字符串输入一样，有时候使用 cin 读取字符也不会按我们想要的结果行事。 例如，因为它会忽略掉所有前导白色空格，所以使用 cin 就不可能仅输入一个空格或回车符。除非用户输入了" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++ cin.get用法（详解版）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">与字符串输入一样，有时候使用 cin&gt;&gt; 读取字符也不会按我们想要的结果行事。<br />
+<br />
+例如，因为它会忽略掉所有前导白色空格，所以使用 cin&gt;&gt; 就不可能仅输入一个空格或回车符。除非用户输入了空格键、制表符之外的其他字符，否则程序将不可能通过 cin 语句继续执行（一旦输入了这样的字符，在程序可以继续下一个语句之前，仍然需要按回车键）。因此，要求用户&ldquo;按回车键继续&rdquo;的程序，不能使用 &gt;&gt; 运算符只读取按回车键的行为。<br />
+<br />
+在这些情况下，cin 对象有一个名为 get 的内置函数很有帮助。<span style="color:#b22222;">因为 </span><span style="color:#008000;">get 函数</span><span style="color:#b22222;">是内置在 cin 对象中的，所以可称之为 cin 的一个成员函数。</span>get 成员函数读取单个字符，包括任何白色空格字符。如果程序需要存储正在读取的字符，则可以通过以下任意一种方式调用 get 成员函数。<br />
+<br />
+在这两个例子中，假设 cin 是正被读入字符的 char 变量的名称：<br />
+<p class="info-box">
+cin.get (ch);<br />
+ch = cin.get();</p>
+如果程序正在使用 get 函数简单地暂停屏幕直到按回车键，并且不需要存储字符，则该函数也可以这样调用：<br />
+<p class="info-box">
+cin.get();</p>
+请注意，在所有这 3 个编程语句中，get 函数调用的格式实际上是一样的。首先是对象的名称，在此示例中它是 cin。然后是一个句点，其后是被调用的成员函数的名称，在这里当然就是 get。语句的末尾是一组括号和一个表示结束的分号。这是调用任何成员函数的基本格式，如图 1 所示。
+<div style="text-align: center;">
+<br />
+<img alt="成员函数调用的基本格式" src="../uploads/allimg/181114/2-1Q11413062D44.gif" /><br />
+图 1 成员函数调用的基本格式</div>
+<br />
+下面的程序演示了使用 get 成员函数的所有 3 种方式：
+<pre class="cpp">
+// This program demonstrates three ways to use cin.get()
+// to pause a program.
+#include &lt;iostream&gt;
+u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+
+int main()
+{
+    char ch;
+    cout &lt;&lt; &quot;This program has paused. Press Enter to continue.&quot;;
+    cin.get(ch);
+    cout &lt;&lt; &quot;It has paused a second time. Please press Enter again.&quot;; ch = cin.get();
+    cout &lt;&lt; &quot;It has paused a third time. Please press Enter again.&quot;;
+    cin.get();
+    cout &lt;&lt; &quot;Thank you! \n&quot;;
+    return 0;
+}</pre>
+程序输出结果:
+<p class="info-box">
+This program has paused. Press Enter to continue.<br />
+It has paused a second time. Please press Enter again.<br />
+It has paused a third time. Please press Enter again.<br />
+Thank you!</p>
+注意，在 IDE 中运行程序时，当程序终止，则输出窗口会关闭，而 cin.get 函数可用于保持输出屏幕可见。<br />
+<h2>
+混合使用 cin&gt;&gt; 和 cin.get</h2>
+将 cin &gt;&gt; 与 cin.get 混合使用可能会导致烦人且难以发现的问题。请看下面的代码段示例：
+<pre class="info-box">
+char ch;    //定义一个字符变量
+int number; //定义一个整型变量
+cout &lt;&lt; &quot;Enter a number: &rdquo;;
+cin &gt;&gt; number;   // 读取整数
+cout &lt;&lt; &quot;Enter a character: &quot;;
+ch = cin.get() ;   // 读取字符
+cout &lt;&lt; &quot;Thank You!\n&quot;;</pre>
+这些语句允许用户输入一个数字，而不是一个字符。看来第 6 行的 cin.get 语句已经被跳过了。这是因为 cin&gt;&gt; 和 cin.get 使用略有不同的技术来读取数据。<br />
+<br />
+在示例代码段中，当执行第 4 行时，用户输入一个数字，然后按回车键。假设输入的是数字 100。按回车键会导致一个换行符(&#39;\n&#39;)存储在键盘缓冲区数字 100 之后，如图 2 所示。
+<div style="text-align: center;">
+<br />
+<img alt="键盘缓冲区存储和读取示意图" src="../uploads/allimg/181114/2-1Q114130JI45.gif" /><br />
+图 2 键盘缓冲区存储和读取示意图</div>
+<br />
+当第 4 行中的 cin&gt;&gt; 语句读取用户输入的数据时，它会在遇到换行符时停止。换行字符未被读取，而是仍保留在键盘缓冲区中。从键盘读取数据的输入语句只在键盘缓冲区为空时等待用户输入值，但现在不为空。<br />
+<br />
+当第 6 行中的 cin.get 函数执行时，它开始从先前输入操作停止的键盘缓冲区读取，并发现了换行符，所以它无须等待用户输入另一个值。这种问题最直接的解决办法是使用 cin.ignore 函数。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="575.html" title="C语言判断闰年，即判断年份是否为闰年" target="_blank">C语言判断闰年，即判断年份是否为闰年</a></li>
+<li><a href="4753.html" title="Java Map.values()方法：获取Map集合中的所有键值对象" target="_blank">Java Map.values()方法：获取Map集合中的所有键值对象</a></li>
+<li><a href="7645.html" title="Django数据表关联关系映射（一对一、一对多、多对多）" target="_blank">Django数据表关联关系映射（一对一、一对多、多对多）</a></li>
+<li><a href="../redis2/get.html" title="Redis GET命令" target="_blank">Redis GET命令</a></li>
+<li><a href="../jstl/fn-indexof.html" title="fn:indexOf()函数" target="_blank">fn:indexOf()函数</a></li>
+<li><a href="../spring/spring-abc.html" title="Spring是什么" target="_blank">Spring是什么</a></li>
+<li><a href="3t3f02t.html" title="Vue watch（监听器）详解" target="_blank">Vue watch（监听器）详解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 1346;
+window.arcId = "b424twCoYJzxLdlyn4CTs1udpY40meM5uhp5RNwqH73c02Yg9iDqEEJaG3E";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

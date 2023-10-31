@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>什么是死锁，死锁的原因及解决办法（含四个必要条件）</title>
+<meta name="description" content="在多道程序环境中，多个进程可以竞争有限数量的资源。当一个进程申请资源时，如果这时没有可用资源，那么这个进程进入等待状态。有时，如果所申请的资源被其他等待进程占有，" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>什么是死锁，死锁的原因及解决办法（含四个必要条件）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在多道程序环境中，多个进程可以竞争有限数量的资源。当一个进程申请资源时，如果这时没有可用资源，那么这个进程进入等待状态。有时，如果所申请的资源被其他等待进程占有，那么该等待进程有可能再也无法改变状态。这种情况称为<strong><span style="color:#008000;">死锁</span></strong>。<br />
+<br />
+或许，死锁的最好例证是 Kansas 立法机构在 20 世纪初通过的一项法律，其中说到&ldquo;当两列列车在十字路口逼近时，它们应完全停下来，并且在一列列车开走之前另一列列车不能再次启动。&rdquo;<br />
+<h2>
+	系统模型</h2>
+有一个系统拥有有限数量的资源，需要分配到若干竞争进程。这些资源可以分成多种类型，每种类型有一定数量的实例。资源类型有很多，如 CPU 周期、文件、I/O 设备（打印机和 DVD 驱动器）等。如果一个系统有两个 CPU，那么资源类型 CPU 就有两个实例。类似地，资源类型打印机可能有 5 个实例。<br />
+<br />
+如果一个进程申请某个资源类型的一个实例，那么分配这种类型的任何实例都可满足申请。否则，这些实例就不相同，并且资源分类没有定义正确。例如，一个系统有两台打印机。如果没有人关心哪台打印机打印哪些输出，那么这两台打印机可定义为属于同样的资源类型。然而，如果一台打印机在九楼，而另一台在底楼，那么九楼的用户就不会认为这两台打印机是相同的，这样每个打印机就可能需要定义成属于单独的类型。<br />
+<br />
+各种同步工具如互斥锁和信号量，也应作为系统资源，它们是常见的死锁源。然而，一个锁通常与保护某个特定的<a href='../data_structure/data_structure_2.html' target='_blank'>数据结构</a>相关联，即一个锁可用于保护队列的访问，另一个锁保护访问链接列表的访问，等等。由于这个原因，每个锁通常有自己的资源类型，并且这种定义不是一个问题。<br />
+<br />
+进程在使用资源前应申请资源，在使用资源之后应释放资源。一个进程可能要申请许多资源，以便完成指定任务。显然，申请的资源数量不能超过系统所有资源的总和。换言之，如果系统只有两台打印机，那么进程就不能申请三台打印机。<br />
+<br />
+在正常操作模式下，进程只能按如下顺序使用资源：
+<ul>
+	<li>
+		<span style="color:#b22222;">申请</span>：进程请求资源。如果申请不能立即被允许（例如，申请的资源正在被其他进程使用)，那么申请进程应等待，直到它能获得该资源为止。</li>
+	<li>
+		<span style="color:#b22222;">使用</span>：进程对资源进行操作（例如，如果资源是打印机，那么进程就可以在打印机上打印了）。</li>
+	<li>
+		<span style="color:#b22222;">释放</span>：进程释放资源。</li>
+</ul>
+<br />
+当进程或线程每次使用内核管理的资源时，操作系统会检查以确保该进程或线程已经请求并获得了资源。系统表记录每个资源是否是空闲的或分配的。对于每个已分配的资源，该表还记录了它被分配的进程。如果进程申请的资源正在为其他进程所使用，那么该进程会添加到该资源的等待队列上。<br />
+<br />
+当一组进程内的每个进程都在等待一个事件，而这一事件只能由这一组进程的另一个进程引起，那么这组进程就处于死锁状态。这里所关心的主要事件是资源的获取和释放。资源可能是物理资源（例如，打印机、磁带驱动器、内存空间和 CPU 周期）或逻辑资源（例如，信号量、互斥锁和文件）。然而，其他类型的事件也会导致死锁（例如 <a href="1208_2.html" target="_blank">IPC</a> 功能）。<br />
+<br />
+为说明死锁状态，假设一个系统具有三个 CD 刻录机。假定有三个进程，每个进程都占用了一台 CD 刻录机。如果每个进程现在需要另一台刻录机，那么这三个进程会处于死锁状态。每个进程都在等待事件&ldquo;CD刻录机被释放&rdquo;，这仅可能由一个等待进程来完成。这个例子说明了涉及同一种资源类型的死锁。<br />
+<br />
+死锁也可能涉及不同资源类型。例如，假设一个系统有一台打印机和一台 DVD 驱动器。假如进程 P<sub>i</sub> 占有 DVD 驱动器而进程 P<sub>2</sub> 占有打印机。如果 P<sub>i</sub> 申请打印机而 P<sub>j</sub> 申请 DVD 驱动器，那么就会出现死锁。<br />
+<br />
+多线程应用程序的开发人员应始终警惕可能的死锁。多线程应用程序容易死锁，因为多线程可能竞争共享资源。<br />
+<h2>
+	死锁特征</h2>
+发生死锁时，进程永远不能完成，系统资源被阻碍使用，以致于阻止了其他作业开始执行。在讨论处理死锁问题的各种方法之前，我们首先深入讨论一下死锁特点。<br />
+<h4>
+	必要条件</h4>
+如果在一个系统中以下四个条件同时成立，那么就能引起死锁：
+<ol>
+	<li>
+		<span style="color:#b22222;">互斥</span>：至少有一个资源必须处于非共享模式，即一次只有一个进程可使用。如果另一进程申请该资源，那么申请进程应等到该资源释放为止。</li>
+	<li>
+		<span style="color:#b22222;">占有并等待</span>：&mdash;个进程应占有至少一个资源，并等待另一个资源，而该资源为其他进程所占有。</li>
+	<li>
+		<span style="color:#b22222;">非抢占</span>：资源不能被抢占，即资源只能被进程在完成任务后自愿释放。</li>
+	<li>
+		<span style="color:#b22222;">循环等待</span>：有一组等待进程 {P<sub>0</sub>，P<sub>1</sub>，&hellip;，P<sub>n</sub>}，P<sub>0</sub> 等待的资源为 P<sub>1</sub> 占有，P<sub>1</sub> 等待的资源为 P<sub>2</sub> 占有，&hellip;&hellip;，P<sub>n-1</sub> 等待的资源为 P<sub>n</sub> 占有，P<sub>n</sub> 等待的资源为 P<sub>0</sub> 占有。</li>
+</ol>
+我们强调所有四个条件必须同时成立才会出现死锁。循环等待条件意味着占有并等待条件，这样四个条件并不完全独立。
+<h4>
+	资源分配图</h4>
+通过称为系统资源分配图的有向图可以更精确地描述死锁。该图包括一个节点集合 V 和一个边集合 E。节点集合 V 可分成两种类型：P={P<sub>1</sub>，p<sub>2</sub>,&hellip;，P<sub>n</sub>}（系统所有活动进程的集合）和 R={R<sub>1</sub>，R<sub>2</sub>，&hellip;，R<sub>m</sub>}（系统所有资源类型的集合）。<br />
+<br />
+从进程 P<sub>i</sub> 到资源类型 R<sub>j</sub> 的有向边记为 <code>P<sub>i</sub>-&gt;R<sub>j</sub></code>，它表示进程 P<sub>i</sub> 已经申请了资源类型 R<sub>j</sub> 的一个实例，并且正在等待这个资源。从资源类型 R<sub>j</sub> 到进程 P<sub>i</sub> 的有向边记为 <code>R<sub>j</sub>-&gt;P<sub>i</sub></code>，它表示资源类型 R<sub>j</sub> 的一个实例已经分配给了进程 P<sub>i</sub>。有向边 <code>P<sub>i</sub>-&gt;R<sub>j</sub></code> 称为<span style="color:#008000;">申请边</span>，有向边 <code>R<sub>j</sub>-&gt;P<sub>i</sub></code> 称为<span style="color:#008000;">分配边</span>。<br />
+<br />
+在图形上，用圆表示进程 P<sub>i</sub>，用矩形表示资源类型 R<sub>j</sub>。由于资源类型 R<sub>j</sub> 可能有多个实例，所以矩形内的点的数量表示实例数量。注意申请边只指向矩形 R<sub>j</sub>，而分配边应指定矩形内的某个圆点。<br />
+<br />
+当进程 P<sub>i</sub> 申请资源类型 R<sub>j</sub> 的一个实例时，就在资源分配图中加入一条申请边。当该申请可以得到满足时，那么申请边就立即转换成分配边。当进程不再需要访问资源时，它就释放资源，因此就删除了分配边。
+<div style="text-align: center;">
+	<br />
+	<img alt="资源分配图" src="../uploads/allimg/181105/2-1Q1051I544512_2.gif" /><br />
+	图 1 资源分配图</div>
+<br />
+图 1 的资源分配图表示了如下情况:<br />
+<ol>
+	<li>
+		集合 P、R 和 E：
+		<ul>
+			<li>
+				P={P<sub>1</sub>,P<sub>2</sub>,P<sub>3</sub>}</li>
+			<li>
+				R={R<sub>1</sub>,R<sub>2</sub>,R<sub>3</sub>,R<sub>4</sub>}</li>
+			<li>
+				E={P<sub>1&nbsp;</sub>-&gt; R<sub>1</sub>,P<sub>2&nbsp;</sub>-&gt; R<sub>3</sub>,R<sub>1&nbsp;</sub>-&gt; P<sub>2</sub>,R<sub>2&nbsp;</sub>-&gt; P<sub>2</sub>,R<sub>2&nbsp;</sub>-&gt; P<sub>1</sub>,R<sub>3 </sub>-&gt; P<sub>3</sub>}</li>
+		</ul>
+	</li>
+	<li>
+		资源实例：
+		<ul>
+			<li>
+				资源类型 R<sub>1</sub> 有 1 个实例；</li>
+			<li>
+				资源类型 R<sub>2</sub> 有 2 个实例；</li>
+			<li>
+				资源类型 R<sub>3</sub> 有 1 个实例；</li>
+			<li>
+				资源类型 R<sub>4</sub> 有 3 个实例；</li>
+		</ul>
+	</li>
+	<li>
+		进程状态：
+		<ul>
+			<li>
+				进程 P<sub>1</sub> 占有资源类型 R<sub>2</sub> 的 1 个实例，等待资源类型 R<sub>1</sub> 的 1 个实例。</li>
+			<li>
+				进程 P<sub>2</sub> 占有资源类型 R<sub>1</sub> 的 1 个实例和资源类型 R<sub>2</sub> 的 1 个实例，等待资源类型 R<sub>3</sub> 的 1 个实例。</li>
+			<li>
+				进程 P<sub>3</sub> 占有资源类型 R<sub>3</sub> 的 1 个实例。</li>
+		</ul>
+	</li>
+</ol>
+<br />
+根据资源分配图的定义，可以证明：如果分配图没有环，那么系统就没有进程死锁。如果分配图有环，那么可能存在死锁。<br />
+<br />
+如果每个资源类型刚好有一个实例，那么有环就意味着已经出现死锁。如果环上的每个类型只有一个实例，那么就出现了死锁。环上的进程就死锁。在这种情况下，图中的环就是死锁存在的充分且必要条件。<br />
+<br />
+如果每个资源类型有多个实例，那么有环并不意味着已经出现了死锁。在这种情况下，图中的环就是死锁存在的必要条件而不是充分条件。<br />
+<br />
+为了说明这点，下面回到图 1 所示资源分配图。假设进程 P<sub>3</sub> 申请了资源类型 R<sub>2</sub> 的一个资源。由于现在没有资源实例可用，所以就增加了有向边 <code>P<sub>3&nbsp;</sub>-&gt; R<sub>2</sub></code>（图 2)。
+<div style="text-align: center;">
+	<br />
+	<img alt="存在死锁的资源分配图" src="../uploads/allimg/181105/2-1Q1051IU3356_2.gif" /><br />
+	图 2 存在死锁的资源分配图</div>
+<br />
+这时，系统有两个最小环：
+<p class="info-box">
+	P<sub>1</sub>&mdash;&gt; R<sub>1</sub> &mdash;&gt; P<sub>2</sub> 一&gt; R<sub>3</sub> &mdash;&gt; P<sub>3</sub> &mdash;&gt; R<sub>2</sub> &mdash;&gt; P<sub>1</sub><br />
+	P<sub>2</sub> &mdash;&gt; R<sub>3</sub> &mdash;&gt; P<sub>3</sub> &mdash;&gt; R<sub>2</sub> &mdash;&gt; P<sub>2</sub></p>
+进程 P1、P2 和 P3 死锁了。进程 P2 等待资源类型 R3，而它又被进程 R3 占有。进程 P3 等待进程 P1 或进程 P2 以释放资源类型 R2。另外，进程 P1 等待进程 P2 释放资源 R1。<br />
+<div style="text-align: center;">
+	<br />
+	<img alt="具有环的并未死锁的资源分配图" src="../uploads/allimg/181105/2-1Q1051I953953_2.gif" /><br />
+	图 3 具有环的并未死锁的资源分配图</div>
+<br />
+现在考虑图 3 所示的资源分配图。在这个例子中，也有一个环：<br />
+<p class="info-box">
+	P<sub>1</sub> &mdash;&gt; R<sub>1</sub> &mdash;&gt; P<sub>3</sub> &mdash;&gt; R<sub>2</sub> &mdash;&gt; P<sub>1</sub></p>
+然而，并没有死锁。注意，进程 P<sub>4</sub> 可能释放资源类型 R<sub>2</sub> 的实例。这个资源可分配给进程 P<sub>3</sub>，从而打破环。<br />
+<br />
+总而言之，如果资源分配图没有环，那么系统就不处于死锁状态。如果有环，那么系统可能会也可能不会处于死锁状态。在处理死锁问题时，这点是很重要的。<br />
+<h2>
+	死锁处理方法</h2>
+一般来说，处理死锁问题有三种方法：<br />
+<ol>
+	<li>
+		通过协议来预防或避免死锁，确保系统不会进入死锁状态。</li>
+	<li>
+		可以允许系统进入死锁状态，然后检测它，并加以恢复。</li>
+	<li>
+		可以忽视这个问题，认为死锁不可能在系统内发生。</li>
+</ol>
+<br />
+第三种解决方案为大多数操作系统所采用，包括 Linux 和 Windows。因此，应用程序开发人员需要自己编写程序，以便处理死锁。<br />
+<br />
+接下来，我们简要阐述每种死锁处理方法。在进行之前，我们应该提一下，有些研究人员认为，这些基本方法不能单独用于处理操作系统的所有资源分配问题。然而，可以将这些基本方法组合起来，为每种系统资源选择一种最佳方法。<br />
+<br />
+为了确保死锁不会发生，系统可以采用死锁预防或死锁避免方案。死锁预防方法确保至少有一个必要条件不成立。这些方法通过限制如何申请资源的方法来预防死锁。<br />
+<br />
+死锁避免要求，操作系统事先得到有关进程申请资源和使用资源的额外信息。有了这些额外信息，系统可以确定对于每个申请，进程是否应等待。为了确定当前申请是允许还是延迟，系统应考虑现有的可用资源、已分配给每个进程的资源及每个进程将来申请和释放的资源。<br />
+<br />
+如果系统不使用死锁预防或死锁避免算法，那么死锁情况可能发生。在这种情况下，系统可以提供一个算法来检查系统状态以确定死锁是否发生，提供另一个算法来从死锁中恢复（如果死锁确实已经发生）。<br />
+<br />
+当没有算法用于检测和恢复死锁时，可能出现这样的情况，系统处于死锁，而又没有方法检测到底发生了什么。在这种情况下，未被发现的死锁会导致系统性能下降，因为资源被不能运行的进程占有，而越来越多的进程会因申请资源而进入死锁。最后，整个系统会停止工作，且需要人工重新启动。<br />
+<br />
+<span style="color:#b22222;">虽然这看起来似乎不是一个解决死锁问题的可行方法，但是它却为大多数操作系统所采用，许多系统死锁很少发生，因此与使用频繁的并且开销昂贵的死锁预防、死锁避免和死锁检测与恢复相比，这种方法更为便宜。</span><br />
+<br />
+此外，在有些情况下，系统处于冻结状态而不是死锁状态。例如，一个实时进程按最高优先级来运行（或其他进程在非抢占调用程序下运行），并且不将控制返回到操作系统。因此，系统应有人工方法可从这些状态中恢复过来，这些方法也可用于死锁恢复。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2318_2.html" title="C++类模板5分钟入门教程" target="_blank">C++类模板5分钟入门教程</a></li>
+<li><a href="5601_2.html" title="Eclipse快捷键大全" target="_blank">Eclipse快捷键大全</a></li>
+<li><a href="6389_2.html" title="ARP报文格式详解" target="_blank">ARP报文格式详解</a></li>
+<li><a href="6506_2.html" title="冒泡排序算法（超级详细）" target="_blank">冒泡排序算法（超级详细）</a></li>
+<li><a href="6555_2.html" title="MongoDB find()方法：查询数据" target="_blank">MongoDB find()方法：查询数据</a></li>
+<li><a href="7118_2.html" title="Python list列表查找元素" target="_blank">Python list列表查找元素</a></li>
+<li><a href="../jstl/fmt-formatnumber_2.html" title="&lt;fmt:formatNumber&gt;标签" target="_blank">&lt;fmt:formatNumber&gt;标签</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 1236;
+window.arcId = "52b05wa28dRgolQ4GV8IU2iWnvPehSJeaZ1e2iuhJ6/asbGNx2hhYlMdnNU";
+window.typeidChain = "113|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

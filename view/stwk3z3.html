@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++指针的定义和使用（入门必读）</title>
+<meta name="description" content="C++ 提供了一种可直接访问内存的方法，让开发者更灵活、高效地管理和操作内存，就是指针。 计算机中的数据都是存储在内存中的，内存中的这些数据都有地址，指针就是记录这些地址" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++指针的定义和使用（入门必读）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">C++ 提供了一种可直接访问内存的方法，让开发者更灵活、高效地管理和操作内存，就是指针。<br />
+<br />
+计算机中的数据都是存储在内存中的，内存中的这些数据都有地址，指针就是记录这些地址的变量，指针的类型表示指针所指地址上存储的数据的类型。<br />
+<br />
+在计算机的内存空间中，存放的最小单位是位（bit）。一个 bit 就是一个二进制的最小单元，其值只能为 0 或者 1。8 个 bit 是一个字节（byte），字节是计算机中常用的基本单位，一般的计量都是以字节为单位的，比如 char 类型数据占 1 个字节，int 类型数据占 4 个字节， double 类型数据占 8 个字节等。在操作系统中，这些内存单元都被编上了号。通过这些编号，可以快速地找到该内存单元，这些编号就是所谓的内存地址。<br />
+<br />
+在 C++ 中，可以用一个指针类型的变量来存放内存地址，这个变量被称为指针变量，或简称指针。指针与变量的关系如下图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/190114/1IG34354-0.png" /></div>
+<br />
+图中 c 是一个字符型变量，值为 &#39;K&#39;，存储在地址为 0x11A 的内存单元里。p 是一个整型指针变量，其值为 0x011A，也就是变量 c 的内存地址。在这种情况下，可以说 p 是一个指向变量 c 的指针。<br />
+<br />
+指针的值是一个内存地址，这个地址可以是变量的首地址，也可以是数组的首地址，甚至是函数的地址。<br />
+<h2>
+指针的定义</h2>
+指针是一个变量，存储着另一个变量的内存地址。定义指针时，不仅要指明该变量是个指针，还要说明这是一个什么类型的指针，即指针所指数据的类型。<br />
+<br />
+因此，定义指针变量包括三个内容，从前到后依次为：<br />
+<ul>
+<li>
+指针所指向数据的类型；</li>
+<li>
+指针类型的修饰符&ldquo;*&rdquo;，标注定义的是指针变量，而不是普通变量；</li>
+<li>
+指针变量的变量名。</li>
+</ul>
+<br />
+定义指针变量的语法是：<br />
+<pre class="info-box">
+类型 * 指针名;</pre>
+例如：
+<pre class="cpp" shownum="false">
+int *ptr; // 定义一个指向整数的指针
+double *dptr; // 定义一个指向双精度浮点数的指针</pre>
+<br />
+同定义普通变量一样，指针变量也可以连续定义，比如一次定义两个整型指针变量：<br />
+<pre class="cpp" shownum="false">
+int *p1, *p2;</pre>
+需要注意的是，每一个指针变量前面的指针修饰符&ldquo;*&rdquo;都是必不可少的，否则该变量就不是一个指针，而是一个普通的变量。例如下面的变量定义语句：<br />
+<pre class="cpp" shownum="false">
+int *p1, p2;</pre>
+这不是定义两个指针变量，而是定义一个指针变量 p1 以及一个整型变量 p2，因为 p2 的前面没有指针修饰符&ldquo;*&rdquo;。<br />
+<h2>
+指针的使用</h2>
+<h4>
+1) 确定指针的指向</h4>
+指针作为一个变量，跟普通的变量一样，使用之前要先定义，还必须赋予具体的值，也就是让指针指向某个具体的数据。<br />
+<blockquote>
+<p>
+使用没有明确指向的指针，可能会造成系统混乱，甚至程序崩溃。</p>
+</blockquote>
+指针的值必须是一个地址，而且必须保证它的有效性。C++中可以借助取地址符&ldquo;&amp;&rdquo;获取某个变量的地址，其语法如下：
+<pre class="info-box">
+&amp;变量名;</pre>
+比如，<code>&amp;x</code>表示变量 x 的地址，<code>&amp;y</code>表示变量 y 的地址。<br />
+<br />
+注意，取地址的变量必须是已经存在的变量，取地址符&ldquo;&amp;&rdquo;只能应用于内存中存在的数据，如变量、数组元素等，不能用于表达式、常数或者寄存器（register）变量。<br />
+<br />
+对于一个整型的指针变量 p，如果要让其指向整型变量 a，可以在定义 p 时将其初始化为 a 的地址，或者在定义 p 之后将 p 赋值为 a 的地址：
+<pre class="cpp" shownum="false">
+int a;
+//①：定义指针的同时为其初始化一个地址
+int *p1 = &amp;a;
+
+//②：先定义个指针，需要用的时候才指定一个地址
+int *p2;
+p2 = &amp;a;</pre>
+两种方法是等价的，不过推荐使用第一种方法，这样可以保证一开始指针就是有效的。未经初始化的指针将指向一个不确定的内存地址，操作这样的指针是非常危险的。<br />
+<br />
+注意，在上面指针的定义中，指针变量是 p2 而不是 *p2，因此要给指针赋值，等号左边是 p2 而不是 p2。另外，不允许把一个无效的地址（比如数字）赋给指针。<br />
+<br />
+指针变量和一般的变量是一样的，存放的值是可以改变的，也就是说可以改变指针的指向，例如：<br />
+<pre class="cpp" shownum="false">
+int a, b;
+int *p = &amp;a; // 指针 p 指向变量 a
+p = &amp;b;      // 修改 p 的指向，令它指向变量 b</pre>
+<h4>
+2) 获取指针指向的数据</h4>
+在程序中，有时需要知道指针所指的数据是什么，可以借助解引用运算符<code>*</code>。<br />
+<br />
+与取地址运算符<code>&amp;</code>相反，解引用运算符<code>*</code>作用于指针，得到指针所指向的变量，其语法如下：<br />
+<pre class="info-box">
+*指针名;</pre>
+举个简单的例子：<br />
+<pre class="cpp" shownum="false">
+int x = 123;
+int *p = &amp;x;</pre>
+想得到变量 x 的值，除了使用变量名 x 以外，还可以使用 *p 来间接地访问 x：<br />
+<pre class="cpp" shownum="false">
+int a = *p; //等价于 int a = x;</pre>
+下面的两个赋值语句也是等效的，都可以将变量 x 的值改为 0：
+<pre class="cpp" shownum="false">
+x = 0;
+*p = 0;</pre>
+通过指针来访问变量，虽然其效果和直接访问变量一样，但指针毕竟是一种间接的方式，其速度略慢于直接访问。不过指针也给程序的开发带来了很大的灵活性，其原因在于指针也是一个变量，可以在运行时修改其指向，从而达到&ldquo;使用一个指针，访问多个变量&rdquo;的目的。<br />
+<br />
+注意，使用<code>*</code>获取指针所指的数据之前，必须让指针指向一个合法的地址，否则程序的行为将是难以预料的，甚至会导致系统崩溃。原因是一个非法的地址可能是某个重要的数据地址，或者是某一条程序指令的地址，它们如果被修改，则程序的行为无法预料。<br />
+<br />
+例如下面的指针用法就是不正确的：
+<pre class="cpp" shownum="false">
+//①：NULL（值通常是 0）代表的内存不能用来存储数据，会导致程序崩溃。
+int *p = NULL;
+*p = 100;
+
+//②：没有明确指向的指针，指针所指的内存是不确定的，修改内存数据会导致无法预料的后果。
+int *q;
+*q = 123;</pre>
+<h4>
+3) 指针的算术运算</h4>
+指针支持一些算术运算，包括指针可以加减某个整型数，指针与指针可以相减，但指针与指针相加是没有意义的。另外，指针的乘除也没有意义。<br />
+<br />
+指针加减某个整数，其效果等同于将指针移动整数个变量的长度。假设一个整型指针 p 指向整型变量 x（占用 4 个字节的内存），而 x 的地址是 1000，则 p+1 指向的地址就是 1004，p-3 指向的地址就是 988。一般来讲，指针加减 n，就相当于指针的地址值加减 n*sizeof(指针的数据类型)。<br />
+<br />
+指针与指针相减，表示两个指针间可以存储的变量的个数。假设两个 short 型指针 p 和 q 所指的地址分别是 1000 和 996，则 p-q 的值就是 2，即两个 short 型变量。<br />
+<pre class="cpp">
+#include &lt;iostream&gt;
+
+int main() {
+    short* p = (short *)1000, * q = (short*)996;
+    std::cout &lt;&lt; p - q &lt;&lt; std::endl;
+    return 0;
+}</pre>
+输出结果为：
+<p class="info-box">
+2</p>
+注意，为指针直接赋值一个具体的内存地址，这种写法是不推荐的，此实例只是为了演示两个指针相减的效果。<br />
+<br />
+以下是一个 C++ 指针的完整实例，展示了如何使用指针来定义、初始化、操作变量。<br />
+<pre class="cpp">
+#include &lt;iostream&gt;
+
+int main() {
+    // 定义一个整数变量
+    int number = 5;
+
+    // 打印原始值
+    std::cout &lt;&lt; &quot;原始值： &quot; &lt;&lt; number &lt;&lt; std::endl;
+
+    // 定义一个指针，并将其初始化为 number 的地址
+    int* ptr = &amp;number;
+
+    // 借助 ptr 简介访问变量 number
+    std::cout &lt;&lt; &quot;*ptr： &quot; &lt;&lt; *ptr &lt;&lt; std::endl;
+
+    // 使用指针修改 number 的值
+    *ptr = 10;
+
+    // 打印通过指针修改后的值
+    std::cout &lt;&lt; &quot;通过指针修改number后的值： &quot; &lt;&lt; number &lt;&lt; std::endl;
+    return 0;
+}</pre>
+运行结果为：
+<p class="info-box">
+原始值： 5<br />
+*ptr： 5<br />
+通过指针修改number后的值： 10</p>
+<h2>
+总结</h2>
+指针指向被释放或无效的内存称为悬空指针，使用悬空指针很容易导致程序发生异常甚至崩溃。<br />
+<br />
+一个指针变量，只能指向同类型的变量。比如一个整型指针只能指向整型变量，而不能指向其他类型的变量。因此不能用其他类型变量的地址初始化指针变量，或者为其赋值。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="351.html" title="C++ list，STL list（双向链表）详解" target="_blank">C++ list，STL list（双向链表）详解</a></li>
+<li><a href="474.html" title="VS“无法查找或打开PDB文件”是怎么回事？如何解决" target="_blank">VS“无法查找或打开PDB文件”是怎么回事？如何解决</a></li>
+<li><a href="829.html" title="Java去除字符串中的空格（trim()）" target="_blank">Java去除字符串中的空格（trim()）</a></li>
+<li><a href="vip_5039.html" title="Linux的主要应用领域有哪些？" target="_blank">Linux的主要应用领域有哪些？</a></li>
+<li><a href="6nijcz.html" title="C语言水仙花数" target="_blank">C语言水仙花数</a></li>
+<li><a href="../c/rand.html" title="C语言rand()函数：生成随机数" target="_blank">C语言rand()函数：生成随机数</a></li>
+<li><a href="1ljcjfz.html" title="Python urllib库详解" target="_blank">Python urllib库详解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10308;
+window.arcId = "080czja5AHtCOoOgXiMH1RniN9wRp0z/ayZm91zaEUGNp0KuGp3ya1fl2NWH";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

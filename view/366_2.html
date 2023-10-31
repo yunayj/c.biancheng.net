@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>数组越界及其避免方法，C语言数组越界详解</title>
+<meta name="description" content="所谓的数组越界，简单地讲就是指数组下标变量的取值超过了初始定义时的大小，导致对数组元素的访问出现在数组的范围之外，这类错误也是 C 语言程序中最常见的错误之一。 在 C 语" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>数组越界及其避免方法，C语言数组越界详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">所谓的数组越界，简单地讲就是指数组下标变量的取值超过了初始定义时的大小，导致对数组元素的访问出现在数组的范围之外，这类错误也是 C 语言程序中最常见的错误之一。<br />
+<br />
+在 C 语言中，数组必须是静态的。换而言之，数组的大小必须在程序运行前就确定下来。由于 C 语言并不具有类似 <a href='../java/java_2.html' target='_blank'>Java</a> 等语言中现有的静态分析工具的功能，可以对程序中数组下标取值范围进行严格检查，一旦发现数组上溢或下溢，都会因抛出异常而终止程序。也就是说，C 语言并不检验数组边界，数组的两端都有可能越界，从而使其他变量的数据甚至程序代码被破坏。<br />
+<br />
+因此，数组下标的取值范围只能预先推断一个值来确定数组的维数，而检验数组的边界是程序员的职责。<br />
+<br />
+一般情况下，数组的越界错误主要包括两种：<span style="color:#008000;">数组下标取值越界</span>与<span style="color:#008000;">指向数组的指针的指向范围越界</span>。<br />
+<h2>
+	数组下标取值越界</h2>
+数组下标取值越界主要是指访问数组的时候，下标的取值不在已定义好的数组的取值范围内，而访问的是无法获取的内存地址。例如，对于数组 int a[3]，它的下标取值范围是 [0，2]（即 a[0]、a[1] 与 a[2]）。如果我们的取值不在这个范围内（如 a[3]），就会发生越界错误。示例代码如下所示：<br />
+<pre class="cpp">
+int a[3];
+int i=0;
+for(i=0;i&lt;4;i++)
+{
+    a[i] = i;
+}
+for(i=0;i&lt;4;i++)
+{
+    printf(&quot;a[%d]=%d\n&quot;,i,a[i]);
+}</pre>
+很显然，在上面的示例程序中，访问 a[3] 是非法的，将会发生越界错误。因此，我们应该将上面的代码修改成如下形式：<br />
+<pre class="cpp">
+int a[3];
+int i=0;
+for(i=0;i&lt;3;i++)
+{
+    a[i] = i;
+}
+for(i=0;i&lt;3;i++)
+{
+    printf(&quot;a[%d]=%d\n&quot;,i,a[i]);
+}</pre>
+<h2>
+	指向数组的指针的指向范围越界</h2>
+指向数组的指针的指向范围越界是指定义数组时会返回一个指向第一个变量的头指针，对这个指针进行加减运算可以向前或向后移动这个指针，进而访问数组中所有的变量。但在移动指针时，如果不注意移动的次数和位置，会使指针指向数组以外的位置，导致数组发生越界错误。下面的示例代码就是移动指针时没有考虑到移动的次数和数组的范围，从而使程序访问了数组以外的存储单元。<br />
+<pre class="cpp">
+int i;
+int *p;
+int a[5];
+/*数组a的头指针赋值给指针p*/
+p=a;
+for(i=0;i&lt;10;i++)
+{
+    /*指针p指向的变量*/
+    *p=i+10;
+    /*指针p下一个变量*/
+    p++;
+}</pre>
+在上面的示例代码中，for 循环会使指针 p 向后移动 10 次，并且每次向指针指向的单元赋值。但是，这里数组 a 的下标取值范围是 [0，4]（即 a[0]、a[1]、a[2]、a[3] 与 a[4]）。因此，后 5 次的操作会对未知的内存区域赋值，而这种向内存未知区域赋值的操作会使系统发生错误。正确的操作应该是指针移动的次数与数组中的变量个数相同，如下面的代码所示：<br />
+<pre class="cpp">
+int i;
+int *p;
+int a[5];
+/*数组a的头指针赋值给指针p*/
+p=a;
+for(i=0;i&lt;5;i++)
+{
+    /*指针p指向的变量*/
+    *p=i+10;
+    /*指针p下一个变量*/
+    p++;
+}</pre>
+为了加深大家对数组越界的了解，下面通过一段完整的数组越界示例来演示编程中数组越界将会导致哪些问题。<br />
+<pre class="cpp">
+#define PASSWORD &quot;123456&quot;
+int Test(char *str)
+{
+    int flag;
+    char buffer[7];
+    flag=strcmp(str,PASSWORD);
+    strcpy(buffer,str);
+    return flag;
+}
+int main(void)
+{
+    int flag=0;
+    char str[1024];
+    while(1)
+    {
+        printf(&quot;请输入密码：  &quot;);
+        scanf（&quot;%s&quot;,str);
+        flag = Test(str);
+        if(flag)
+        {
+            printf(&quot;密码错误！\n&quot;);
+        }
+            else
+            {
+                printf(&quot;密码正确！\n&quot;);
+            }
+    }
+    return 0;
+}</pre>
+上面的示例代码模拟了一个密码验证的例子，它将用户输入的密码与宏定义中的密码&ldquo;123456&rdquo;进行比较。很显然，本示例中最大的设计漏洞就在于 Test() 函数中的 strcpy(buffer,str) 调用。<br />
+<br />
+由于程序将用户输入的字符串原封不动地复制到 Test() 函数的数组 char buffer[7] 中。因此，当用户的输入大于 7 个字符的缓冲区尺寸时，就会发生数组越界错误，这也就是大家所谓的缓冲区溢出(Buffer overflow)漏洞。但是要注意，如果这个时候我们根据缓冲区溢出发生的具体情况填充缓冲区，不但可以避免程序崩溃，还会影响到程序的执行流程，甚至会让程序去执行缓冲区里的代码。示例运行结果为：<br />
+<br />
+请输入密码:12345<br />
+密码错误！<br />
+请输入密码:123456<br />
+密码正确！<br />
+请输入密码:1234567<br />
+密码正确！<br />
+请输入密码:aaaaaaa<br />
+密码正确！<br />
+请输入密码:0123456<br />
+密码错误！<br />
+请输入密码:<br />
+<br />
+在示例代码中，flag 变量实际上是一个标志变量，其值将决定着程序是进入&ldquo;密码错误&rdquo;的流程（非 0）还是&ldquo;密码正确&rdquo;的流程（0）。当我们输入错误的字符串&ldquo;1234567&rdquo;或者&ldquo;aaaaaaa&rdquo;，程序也都会输出&ldquo;密码正确&rdquo;。但在输入&ldquo;0123456&rdquo;的时候，程序却输出&ldquo;密码错误&rdquo;，这究竟是为什么呢？<br />
+<br />
+其实，原因很简单。当调用 Test() 函数时，系统将会给它分配一片连续的内存空间，而变量 char buffer[7] 与 int flag 将会紧挨着进行存储，用户输入的字符串将会被复制进 buffer[7] 中。如果这个时候，我们输入的字符串数量超过 6 个（注意，有字符串截断符也算一个），那么超出的部分将破坏掉与它紧邻着的 flag 变量的内容。<br />
+<br />
+当输入的密码不是宏定义的&ldquo;123456&rdquo;时，字符串比较将返回 1 或 -1。我们都知道，内存中的数据按照 4 字节（DWORD）逆序存储，所以当 flag 为 1 时，在内存中存储的是 0x01000000。如果我们输入包含 7 个字符的错误密码，如&ldquo;aaaaaaa&rdquo;，那么字符串截断符 0x00 将写入 flag 变量，这样溢出数组的一个字节 0x00 将恰好把逆序存放的 flag 变量改为 0x00000000。在函数返回后，一旦 main 函数的 flag 为 0，就会输出&ldquo;密码正确&rdquo;。这样，我们就用错误的密码得到了正确密码的运行效果。<br />
+<br />
+而对于&ldquo;0123456&rdquo;，因为在进行字符串的大小比较时，它小于&ldquo;123456&rdquo;，flag的值是 -1，在内存中将按照补码存放负数，所以实际存储的不是 0x01000000 而是 0xffffffff。那么字符串截断后符 0x00 淹没后，变成 0x00ffffff，还是非 0，所以没有进入正确分支。<br />
+<br />
+其实，本示例只是用一个字节淹没了邻接变量，导致程序进入密码正确的处理流程，使设计的验证功能失效。<br />
+<h2>
+	尽量显式地指定数组的边界</h2>
+在 C 语言中，为了提高运行效率，给程序员更大的空间，为指针操作带来更多的方便，C 语言内部本身不检查数组下标表达式的取值是否在合法范围内，也不检查指向数组元素的指针是不是移出了数组的合法区域。因此，在编程中使用数组时就必须格外谨慎，在对数组进行读写操作时都应当进行相应的检查，以免对数组的操作超过数组的边界，从而发生缓冲区溢出漏洞。<br />
+<br />
+要避免程序因数组越界所发生的错误，首先就需要从数组的边界定义开始。尽量显式地指定数组的边界，即使它已经由初始化值列表隐式指定。示例代码如下所示：<br />
+<pre class="cpp">
+int a[]={1,2,3,4,5,6,7,8,9,10};</pre>
+很显然，对于上面的数组 a[]，虽然编译器可以根据始化值列表来计算出数组的长度。但是，如果我们显式地指定该数组的长度，例如：<br />
+<pre class="cpp">
+int a[10]={1,2,3,4,5,6,7,8,9,10};</pre>
+它不仅使程序具有更好的可读性，并且大多数编译器在数组长度小于初始化值列表的长度时还会发生相应警告。<br />
+<br />
+当然，也可以使用宏的形式来显式指定数组的边界（实际上，这也是最常用的指定方法），如下面的代码所示：<br />
+<pre class="cpp">
+#define MAX 10
+&hellip;
+int a[MAX]={1,2,3,4,5,6,7,8,9,10};</pre>
+除此之外，在 C99 标准中，还允许我们使用单个指示符为数组的两段&ldquo;分配&rdquo;空间，如下面的代码所示：<br />
+<pre class="cpp">
+int a[MAX]={1,2,3,4,5,[MAX-5]=6,7,8,9,10};</pre>
+在上面的 a[MAX] 数组中，如果 MAX 大于 10，数组中间将用 0 值元素进行填充（填充的个数为 MAX-10，并从 a[5] 开始进行 0 值填充）；如果 MAX 小于 10，&ldquo;[MAX-5]&rdquo;之前的 5 个元素（1，2，3，4，5）中将有几个被&ldquo;[MAX-5]&rdquo;之后的 5 个元素（6，7，8，9，10）所覆盖，示例代码如下所示：<br />
+<pre class="cpp">
+#define MAX 10
+#define MAX1 15
+#define MAX2 6
+int main(void)
+{
+    int a[MAX]={1,2,3,4,5,[MAX-5]=6,7,8,9,10};
+    int b[MAX1]={1,2,3,4,5,[MAX1-5]=6,7,8,9,10};
+    int c[MAX2]={1,2,3,4,5,[MAX2-5]=6,7,8,9,10};
+    int i=0;
+    int j=0;
+    int z=0;
+    printf(&quot;a[MAX]：\n&quot;);
+    for(i=0;i&lt;MAX;i++)
+    {
+        printf(&quot;a[%d]=%d &quot;,i,a[i]);
+    }
+    printf(&quot;\nb[MAX1]：\n&quot;);
+    for(j=0;j&lt;MAX1;j++)
+    {
+        printf(&quot;b[%d]=%d &quot;,j,b[j]);
+    }
+    printf(&quot;\nc[MAX2]：\n&quot;);
+    for(z=0;z&lt;MAX2;z++)
+    {
+        printf(&quot;c[%d]=%d &quot;,z,c[z]);
+    }
+    printf(&quot;\n&quot;);
+    return 0;
+}</pre>
+运行结果为：<br />
+a[MAX]：<br />
+a[0]=1 a[1]=2 a[2]=3 a[3]=4 a[4]=5 a[5]=6 a[6]=7 a[7]=8 a[8]=9 a[9]=10<br />
+b[MAX1]：<br />
+b[0]=1 b[1]=2 b[2]=3 b[3]=4 b[4]=5 b[5]=0 b[6]=0 b[7]=0 b[8]=0 b[9]=0 b[10]=6 b[11]=7 b[12]=8 b[13]=9 b[14]=10<br />
+c[MAX2]：<br />
+c[0]=1 c[1]=6 c[2]=7 c[3]=8 c[4]=9 c[5]=10<br />
+<h2>
+	对数组做越界检查，确保索引值位于合法的范围之内</h2>
+要避免数组越界，除了上面所阐述的显式指定数组的边界之外，还可以在数组使用之前进行越界检查，检查数组的界限和字符串（也以数组的方式存放）的结束，以保证数组索引值位于合法的范围之内。例如，在写处理数组的函数时，一般应该有一个范围参数；在处理字符串时总检查是否遇到空字符&lsquo;\0&rsquo;。<br />
+<br />
+来看下面一段代码示例：<br />
+<pre class="cpp">
+#define ARRAY_NUM 10
+int *TestArray(int num,int value)
+{
+    int *arr=NULL;
+    arr=(int *)malloc(sizeof(int)*ARRAY_NUM);
+    if(arr!=NULL)
+    {
+        arr[num]=value;
+    }
+    else
+    {
+        /*处理arr==NULL*/
+    }
+    return arr;
+}</pre>
+从上面的&ldquo;int*TestArray（int num，int value）&rdquo;函数中不难看出，其中存在着一个很明显的问题，那就是无法保证 num 参数是否越界（即当 num&gt;=ARRAY_NUM 的情况）。因此，应该对 num 参数进行越界检查，示例代码如下所示：<br />
+<pre class="cpp">
+int *TestArray(int num,int value)
+{
+    int *arr=NULL;
+    /*越界检查(越上界)*/
+    if(num&lt;ARRAY_NUM)
+    {
+        arr=(int *)malloc(sizeof(int)*ARRAY_NUM);
+        if(arr!=NULL)
+        {
+            arr[num]=value;
+        }
+        else
+        {
+            /*处理arr==NULL*/
+        }
+    }
+    return arr;
+}</pre>
+这样通过&ldquo;if（num&lt;ARRAY_NUM）&rdquo;语句进行越界检查，从而保证 num 参数没有越过这个数组的上界。现在看起来，TestArray() 函数应该没什么问题，也不会发生什么越界错误。<br />
+<br />
+但是，如果仔细检查，TestArray() 函数仍然还存在一个致命的问题，那就是没有检查数组的下界。由于这里的 num 参数类型是 int 类型，因此可能为负数。如果 num 参数所传递的值为负数，将导致在 arr 所引用的内存边界之外进行写入。<br />
+<br />
+当然，你可以通过向&ldquo;if（num&lt;ARRAY_NUM）&rdquo;语句里面再加一个条件进行测试，如下面的代码所示：<br />
+<pre class="cpp">
+if(num&gt;=0&amp;&amp;num&lt;ARRAY_NUM)
+{
+}</pre>
+但是，这样的函数形式对调用者来说是不友好的（由于 int 类型的原因，对调用者来说仍然可以传递负数，至于在函数中怎么处理那是另外一件事情），因此，最佳的解决方案是将 num 参数声明为 size_t 类型，从根本上防止它传递负数，示例代码如下所示：<br />
+<pre class="cpp">
+int *TestArray(size_t num,int value)
+{
+    int *arr=NULL;
+    /*越界检查(越上界)*/
+    if(num&lt;ARRAY_NUM)
+    {
+        arr=(int *)malloc(sizeof(int)*ARRAY_NUM);
+        if(arr!=NULL)
+        {
+            arr[num]=value;
+        }
+        else
+        {
+            /*处理arr==NULL*/
+        }
+    }
+    return arr;
+}</pre>
+<h2>
+	获取数组的长度时不要对指针应用 sizeof 操作符</h2>
+在 C 语言中，sizeof 这个其貌不扬的家伙经常会让无数程序员叫苦连连。同时，它也是各大公司争相选用的面试必备题目。简单地讲，sizeof 是一个单目操作符，不是函数。其作用就是返回一个操作数所占的内存字节数。其中，操作数可以是一个表达式或括在括号内的类型名，操作数的存储大小由操作数的类型来决定。例如，对于数组 int a[5]，可以使用&ldquo;sizeof(a)&rdquo;来获取数组的长度，使用&ldquo;sizeof(a[0])&rdquo;来获取数组元素的长度。<br />
+<br />
+但需要注意的是，sizeof 操作符不能用于函数类型、不完全类型（指具有未知存储大小的数据类型，如未知存储大小的数组类型、未知内容的结构或联合类型、void 类型等）与位字段。例如，以下都是不正确形式：<br />
+<pre class="cpp">
+/*若此时max定义为intmax()；*/
+sizeof(max)
+/*若此时arr定义为char arr[MAX]，且MAX未知*/
+sizeof(arr)
+/*不能够用于void类型*/
+sizeof(void)
+/*不能够用于位字段*/
+struct S
+{
+    unsigned int f1 : 1;
+    unsigned int f2 : 5;
+    unsigned int f3 : 12;
+};
+sizeof(S.f1);</pre>
+了解 sizeof 操作符之后，现在来看下面的示例代码：<br />
+<pre class="cpp">
+void Init(int arr[])
+{
+    size_t i=0;
+    for(i=0;i&lt;sizeof(arr)/sizeof(arr[0]);i++)
+    {
+        arr[i]=i;
+    }
+}
+int main(void)
+{
+    int i=0;
+    int a[10];
+    Init(a);
+    for(i=0;i&lt;10;i++)
+    {
+        printf(&quot;%d\n&quot;,a[i]);
+    }
+    return 0;
+}</pre>
+从表面看，上面代码的输出结果应该是&ldquo;0，1，2，3，4，5，6，7，8，9&rdquo;，但实际结果却出乎我们的意料，如图 1 所示。<br />
+<div style="text-align: center;">
+	<br />
+	<img alt="" src="../uploads/allimg/180907/2-1PZG32103V0_2.jpg" style="width: 500px; height: 207px;" /><br />
+	图 1 示例代码在 V<a href='../cplus/cplus_2.html' target='_blank'>C++</a>2010 中的运行结果</div>
+<br />
+是什么原因导致这个结果呢？<br />
+<br />
+很显然，上面的示例代码在&ldquo;void Init(int arr[])&rdquo;函数中接收了一个&ldquo;int arr[]&rdquo;类型的形参，并且在main函数中向它传递一个&ldquo;a[10]&rdquo;实参。同时，在 Init() 函数中通过&ldquo;sizeof(arr)/sizeof(arr[0])&rdquo;来确定这个数组元素的数量和初始化值。<br />
+<br />
+在这里出现了一个很大问题：由于 arr 参数是一个形参，它是一个指针类型，其结果是&ldquo;sizeof(arr)=sizeof(int*)&rdquo;。在 IA-32 中，&ldquo;sizeof(arr)/sizeof(arr[0])&rdquo;的结果为 1。因此，最后的结果如图 1 所示。<br />
+<br />
+对于上面的示例代码，我们可以通过传入数组的长度的方式来解决这个问题，示例代码如下：<br />
+<pre class="cpp">
+void Init(int arr[],size_t arr_len)
+{
+    size_t i=0;
+    for(i=0;i&lt;arr_len;i++)
+    {
+        arr[i]=i;
+    }
+}
+int main(void)
+{
+    int i=0;
+    int a[10];
+    Init(a,10);
+    for(i=0;i&lt;10;i++)
+    {
+        printf(&quot;%d\n&quot;,a[i]);
+    }
+    return 0;
+}</pre>
+除此之外，我们还可以通过指针的方式来解决上面的问题，示例代码如下所示：<br />
+<pre class="cpp">
+void Init(int (*arr)[10])
+{
+    size_t i=0;
+    for(i=0;i&lt; sizeof(*arr)/sizeof(int);i++)
+    {
+        (*arr)[i]=i;
+    }
+}
+int main(void)
+{
+    int i=0;
+    int a[10];
+    Init(&amp;a);
+    for(i=0;i&lt;10;i++)
+    {
+        printf(&quot;%d\n&quot;,a[i]);
+    }
+    return 0;
+}</pre>
+现在，Init() 函数中的 arr 参数是一个指向&ldquo;arr[10]&rdquo;类型的指针。需要特别注意的是，这里绝对不能够使用&ldquo;void Init(int(*arr)[])&rdquo;来声明函数，而是必须指明要传入的数组的大小，否则&ldquo;sizeof(*arr)&rdquo;无法计算。但是在这种情况下，再通过 sizeof 来计算数组大小已经没有意义了，因为此时数组大小已经指定为 10 了。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="188_2.html" title="数组倒序排列，数组倒置，C语言数组倒序算法详解" target="_blank">数组倒序排列，数组倒置，C语言数组倒序算法详解</a></li>
+<li><a href="vip_8331_2.html" title="不使用三大范式会对数据库造成什么影响？" target="_blank">不使用三大范式会对数据库造成什么影响？</a></li>
+<li><a href="../nexus/deployment_2.html" title="部署构件到Nexus" target="_blank">部署构件到Nexus</a></li>
+<li><a href="../mongodb2/index-note_2.html" title="MongoDB索引使用注意事项" target="_blank">MongoDB索引使用注意事项</a></li>
+<li><a href="jlrtte1_2.html" title="Go语言select case语句的用法" target="_blank">Go语言select case语句的用法</a></li>
+<li><a href="x0347ld_2.html" title="嵌入式工程师的真实待遇（2023年）" target="_blank">嵌入式工程师的真实待遇（2023年）</a></li>
+<li><a href="nbjukw8_2.html" title="《假如C语言是我发明的:讲给孩子听的大师编程课》PDF下载（高清完整版）" target="_blank">《假如C语言是我发明的:讲给孩子听的大师编程课》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 366;
+window.arcId = "4fe8uA/I+2HFuo6vAYSQBo1ZvfgrgZMH2APpqFM+3rfG4gicHsnB8b8ACw";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

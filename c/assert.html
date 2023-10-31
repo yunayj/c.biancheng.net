@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C语言assert()：断言程序中的错误</title>
+<meta name="description" content="越是开发复杂的软件系统，及时捕获并处理程序的错误就越发得重要。C语言提供了一个强大的调试工具，就是本节要讲的 assert()。 什么是断言？ 想象你正在组装一辆自行车，你想确保" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="../view/niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C语言assert()：断言程序中的错误</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">断言是一种检查程序在某个特定点上是否符合预期的方法。如果某个条件不满足，则断言会生成一个错误，通常伴随着程序的终止。<br />
+<br />
+C语言的 assert() 就是一个用于实现断言的强有力工具。很多初学者将 assert() 误认为是一个函数，它本质是一个宏，定义在<code>&lt;assert.h&gt;</code>头文件中。<br />
+<br />
+assert() 用于检查程序中的某个条件（表达式）是否成立，如果成立，程序继续运行；如果不成立，程序将打印一条错误消息并中止执行。
+<blockquote>
+<p>
+不同的编译环境下，assert() 打印的错误消息可能不一样，但至少包括断言失败的表达式、失败发生的行号以及源文件名称。</p>
+</blockquote>
+assert() 的基本用法如下：<br />
+<p class="info-box">
+assert(expression);</p>
+expression 就是要检测的表达式，如果表达式为假（即值为 0），则程序会打印一条错误消息并调用 abort() 终止执行。<br />
+<br />
+以下是一个简单的示例，演示了 assert() 的用法。<br />
+<pre class="cpp">
+#include &lt;assert.h&gt;
+#include &lt;stdio.h&gt;
+
+int main() {
+  int x = 10;
+  printf(&quot;Before the assert\n&quot;);
+  assert(x == 10);
+  printf(&quot;After the assert\n&quot;);
+
+  printf(&quot;Before the failing assert\n&quot;);
+  assert(x == 5); // 这将失败，因为x不等于5
+  printf(&quot;After the failing assert\n&quot;); // 这行代码永远不会执行
+
+  return 0;
+}</pre>
+在这个示例中，第一个 assert() 调用成功，因为表达式<code>x==10</code>成立。第二个 assert() 调用会失败，因为表达式<code>x==5</code>不成立，所以程序会打印错误消息并中止执行。
+<h2>
+assert()实际应用场景</h2>
+上面的例子主要是给读取演示 assert() 的基本用法。在实际开发中，assert() 的常见应用场景有以下几种：
+<h4>
+1) 验证函数的先决条件</h4>
+在开发中，经常有一些明确的先决条件，比如函数需要一个非空指针。使用 assert() 确保这些条件得到满足可以在开发和测试阶段快速捕获问题。
+<pre class="cpp">
+void processArray(int* array, size_t size) {
+  assert(array != NULL); // 断言数组不为空
+  // ...
+}</pre>
+<h4>
+2) 检查算法的不变性</h4>
+算法中有时有一些不变性，即某些条件始终为真。例如，某个值始终应该是正的，某个指针不应为空等。assert() 可以用来在开发时捕捉这些不变性的违反。
+<pre class="cpp">
+for(int i = 0; i &lt; n; i++) {
+  // ...
+  assert(x &gt; 0); // x应始终大于0
+}</pre>
+<h4>
+3) 用于单元测试</h4>
+虽然不是最常用的单元测试方法，但 assert() 可以用于基本的单元测试，验证函数的输出和预期一致。
+<pre class="cpp">
+void testAddition() {
+  assert(add(3, 4) == 7);
+}</pre>
+<h4>
+4) 验证后置条件</h4>
+与先决条件类似，函数有时还有一些明确的后置条件，如返回值始终在特定范围内等。assert() 可以用于验证这些后置条件。
+<h2>
+禁用assert()</h2>
+assert() 旨在帮助程序员找到程序中的错误，而不是处理用户错误或者可预期的运行时错误。通常情况下，程序调试完成之后会禁用所有的 assert()。<br />
+<br />
+发布程序时禁用 assert() 的原因是多方面的，比如：
+<ul>
+<li>
+性能考虑：断言可能会在运行时引入额外的开销，特别是在执行了大量检查的密集计算任务中。禁用断言可以消除这些额外的开销。</li>
+<li>
+用户体验：断言失败通常会导致程序立即终止，并向标准错误输出一条消息。这在开发和测试阶段很有用，但在生产环境中可能会导致令用户困惑的行为。</li>
+<li>
+安全考虑：在某些情况下，断言可能会暴露敏感信息或有关软件内部工作方式的详细信息，从而可能被恶意用户利用。</li>
+</ul>
+<br />
+在 C语言中，可以通过定义宏 NDEBUG 来禁用 assert()：
+<h4>
+1) 在源代码中禁用</h4>
+在包含<code>&lt;assert.h&gt;</code>之前定义 NDEBUG 宏，就可以禁用所有的 assert()：
+<pre class="cpp">
+#define NDEBUG
+#include &lt;assert.h&gt;</pre>
+<h4>
+2) 在编译时禁用</h4>
+在编译命令行中定义 NDEBUG 宏。例如，使用 GCC 编译器时：
+<p class="info-box">
+gcc -DNDEBUG myfile.c</p>
+<h2>
+总结</h2>
+断言是 C语言中一个强大的调试工具，允许开发人员确保程序中的某些条件一定为真。通过灵活地使用 assert()，你可以更容易地识别潜在的问题，并在早期阶段捕获它们，从而提高代码质量和可靠性。<br />
+<br />
+注意，断言主要用于开发和调试阶段，帮助我们及时捕获程序中隐藏的 bug，它不能代替生产环境中的错误处理机制。在生产环境中，我们应该实施健壮的错误检测和处理策略，以确保软件的稳定和可靠运行。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="../view/niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/11.html" title="Go语言多个变量同时赋值" target="_blank">Go语言多个变量同时赋值</a></li>
+<li><a href="../view/465.html" title="Code::Blocks下载地址和安装教程（图解）" target="_blank">Code::Blocks下载地址和安装教程（图解）</a></li>
+<li><a href="../view/4776.html" title="Go语言nil：空值/零值" target="_blank">Go语言nil：空值/零值</a></li>
+<li><a href="../view/8105.html" title="单链表反转详解（4种算法实现）" target="_blank">单链表反转详解（4种算法实现）</a></li>
+<li><a href="../view/vip_8332.html" title="结合实例，彻底搞懂数据库设计的三大范式" target="_blank">结合实例，彻底搞懂数据库设计的三大范式</a></li>
+<li><a href="../spring_boot/global-exception.html" title="Spring Boot全局异常处理" target="_blank">Spring Boot全局异常处理</a></li>
+<li><a href="feof.html" title="C语言feof()：检测是否到达文件末尾" target="_blank">C语言feof()：检测是否到达文件末尾</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10203;
+window.arcId = "5fackw9NhoIqbFCDvQI5TW8OKSlXzuOGBqYuUVyvl7Vkb7E94NuyO7cSJdaH";
+window.typeidChain = "288|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="../view/8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="../view/8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="../view/8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="../view/9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="../view/8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

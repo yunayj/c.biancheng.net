@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C++虚继承和虚基类（入门必读）</title>
+<meta name="description" content="C++ 支持多继承，即一个派生类可以继承多个父类。 多继承中有一个比较常见的问题，就是会导致数据重复，并由此带来数据不一致的情况。 例如，一个派生类 D 从两个基类 B 和 C 中派" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C++虚继承和虚基类（入门必读）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">C++ 支持多继承，即一个派生类可以继承多个父类。<br />
+<br />
+多继承中有一个比较常见的问题，就是会导致数据重复，并由此带来数据不一致的情况。<br />
+<br />
+例如，一个派生类 D 从两个基类 B 和 C 中派生，而这两个基类又有一个共同的基类 A，这就会导致 A 的数据在 D 中被重复两次，如下图所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/200629/1-2006291I602320_2.png" /><br />
+	图 1 菱形继承</div>
+<br />
+图中，D 多继承 B 和 C，将 B 和 C 的数据复制到 D 中。由于 A 的数据已经分别被 B 和 C 继承，所以 A 的数据在 D 中将重复两次。<br />
+<br />
+从逻辑的角度来讲，在 D 类的对象中 A 的数据应当只有一份，为了解决多继承导致的数据冗余和数据不一致的问题，C++ 提出了虚继承。<br />
+<h2>
+	虚继承的定义</h2>
+虚继承可以保证基类的数据在派生类中只有一份。虚继承的方法是在普通继承的基类名前加上 virtual 关键字，如下所示：<br />
+<pre class="info-box">
+class Derived : virtual public Base {
+    // 派生类的成员和函数定义
+};</pre>
+例如，Mammal 类从 Animal 类虚继承：
+<pre class="info-box">
+class Animal {
+    //......
+};
+
+class Mammal : virtual public Animal {
+    //......
+};</pre>
+虚继承中的基类也称做&ldquo;虚基类&rdquo;，和多继承一样，虚基类也可以有多个，中间用逗号分隔。而且在定义派生类的过程中，虚基类和非虚基类可以一起使用。<br />
+<h2>
+	虚继承对象的内存布局</h2>
+一般来讲，虚继承用在具有三层以及三层以上的类层次结构中。当一个新的类多继承几个基类，而这几个基类又&ldquo;虚拟&rdquo;继承自同一个基类，则这个新类对象的内存将因虚拟继承而改变，即在新类的对象中，最初那个基类的数据将只有一份副本。<br />
+<br />
+结合图 1，A 类中定义一个数据 a，B 类和 C 类分别虚继承 A 类，而 D 类又多继承 B 类和 C 类，则在 D 类的对象中，数据 a 将只有一份，而不像普通多继承那样有两份数据 a。<br />
+<br />
+与普通继承不同，虚继承中派生类对象并不是在其内存中保留一份虚基类数据的副本，而是通过一种间接的引用方式，即将虚基类子对象的数据单独存放，在派生类对象中设置一个指针指向基类子对象。这样，当一个派生类通过多个继承路径继承同一个虚基类时，并不需要产生多个数据副本，而只要维护这个虚基类指针即可。<br />
+<br />
+由于是虚继承，无论虚基类在一个派生类中出现多少次，其数据只有一份。因此在派生类的成员函数中，或者通过派生类对象和指针访问虚基类的成员时，可以不使用域运算符::。<br />
+<br />
+例如，对于 A 类中的成员变量 a，D 类中的成员函数或者通过 D 类对象（或指针）访问数据 a 时，可以直接访问：
+<pre class="cpp">
+D dObj;
+dObj.a = 10; // 通过 D 类对象访问 a
+D *pObj = new D;
+pObj-&gt;a = 100; // 通过 D 类指针访问 a</pre>
+<h2>
+	虚继承中的构造函数</h2>
+在虚继承中，由于虚基类的数据只有一份，所以在间接派生类构造时需要特殊处理，即只能初始化虚基类一次。<br />
+<br />
+C++ 对虚基类的初始化进行了特殊处理，虚基类的初始化由最终的派生类负责。分析下面这个程序：<br />
+<pre class="cpp">
+#include &lt;iostream&gt;
+using namespace std;
+
+//虚基类A
+class A{
+public:
+    A(int a);
+protected:
+    int m_a;
+};
+A::A(int a): m_a(a){ }
+
+//直接派生类B
+class B: virtual public A{
+public:
+    B(int a, int b);
+public:
+    void display();
+protected:
+    int m_b;
+};
+B::B(int a, int b): A(a), m_b(b){ }
+void B::display(){
+    cout&lt;&lt;&quot;m_a=&quot;&lt;&lt;m_a&lt;&lt;&quot;, m_b=&quot;&lt;&lt;m_b&lt;&lt;endl;
+}
+
+//直接派生类C
+class C: virtual public A{
+public:
+    C(int a, int c);
+public:
+    void display();
+protected:
+    int m_c;
+};
+C::C(int a, int c): A(a), m_c(c){ }
+void C::display(){
+    cout&lt;&lt;&quot;m_a=&quot;&lt;&lt;m_a&lt;&lt;&quot;, m_c=&quot;&lt;&lt;m_c&lt;&lt;endl;
+}
+
+//间接派生类D
+class D: public B, public C{
+public:
+    D(int a, int b, int c, int d);
+public:
+    void display();
+private:
+    int m_d;
+};
+D::D(int a, int b, int c, int d): A(a), B(90, b), C(100, c), m_d(d){ }
+void D::display(){
+    cout&lt;&lt;&quot;m_a=&quot;&lt;&lt;m_a&lt;&lt;&quot;, m_b=&quot;&lt;&lt;m_b&lt;&lt;&quot;, m_c=&quot;&lt;&lt;m_c&lt;&lt;&quot;, m_d=&quot;&lt;&lt;m_d&lt;&lt;endl;
+}
+
+int main(){
+    B b(10, 20);
+    b.display();
+  
+    C c(30, 40);
+    c.display();
+
+    D d(50, 60, 70, 80);
+    d.display();
+    return 0;
+}</pre>
+运行结果为：
+<p class="info-box">
+	m_a=10, m_b=20<br />
+	m_a=30, m_c=40<br />
+	m_a=50, m_b=60, m_c=70, m_d=80</p>
+请注意第 50 行代码，在最终派生类 D 的构造函数中，除了调用 B 和 C 的构造函数，还调用了 A 的构造函数，这说明 D 不但要负责初始化直接基类 B 和 C，还要负责初始化间接基类 A。而在以往的普通继承中，派生类的构造函数只负责初始化它的直接基类，再由直接基类的构造函数初始化间接基类，用户尝试调用间接基类的构造函数将导致错误。<br />
+<br />
+现在采用了虚继承，虚基类 A 在最终派生类 D 中只保留了一份成员变量 m_a，如果由 B 和 C 初始化 m_a，那么 B 和 C 在调用 A 的构造函数时很有可能给出不同的实参，这个时候编译器就会犯迷糊，不知道使用哪个实参初始化 m_a。<br />
+<br />
+为了避免出现这种矛盾的情况，C++ 干脆规定必须由最终的派生类 D 来初始化虚基类 A，直接派生类 B 和 C 对 A 的构造函数的调用是无效的。在第 50 行代码中，调用 B 的构造函数时试图将 m_a 初始化为 90，调用 C 的构造函数时试图将 m_a 初始化为 100，但是输出结果有力地证明了这些都是无效的，m_a 最终被初始化为 50，这正是在 D 中直接调用 A 的构造函数的结果。<br />
+<br />
+另外需要关注的是构造函数的执行顺序。虚继承时构造函数的执行顺序与普通继承时不同：在最终派生类的构造函数调用列表中，不管各个构造函数出现的顺序如何，编译器总是先调用虚基类的构造函数，再按照出现的顺序调用其他的构造函数；而对于普通继承，就是按照构造函数出现的顺序依次调用的。<br />
+<h2>
+	虚继承的缺点</h2>
+虚继承虽然可以解决多继承带来的数据冗余和数据不一致的缺点，但本身也存在一些问题，具体问题如下：<br />
+<h4>
+	1) 损失效率</h4>
+为了保证虚基类的数据在派生类中只出现一次，必须采用一种间接的方式访问虚基类，从而在一定程度上损失了效率。<br />
+<h4>
+	2) 派生类要显式初始化虚基类</h4>
+通常从开发者的角度来讲，设计一个派生类只要初始化其直接基类即可。但是如果在类的派生层次中存在虚基类，那么派生类始终要负责这些虚基类的初始化，这在一定程度上导致了设计的复杂化。<br />
+<h2>
+	总结</h2>
+虚继承是 C++ 多继承中的一个重要概念，用于解决菱形继承等导致的数据成员冲突和二义性问题。<br />
+<br />
+虽然虚继承可能增加一些开销，但它是在一些特定情况下维护清晰继承关系的有用工具。通过在设计中合理使用虚继承，可以避免继承层次结构中的问题，确保代码的可维护性和可读性。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2377_2.html" title="GCC -S选项：生成汇编文件" target="_blank">GCC -S选项：生成汇编文件</a></li>
+<li><a href="7497_2.html" title="PHP new：实例化对象" target="_blank">PHP new：实例化对象</a></li>
+<li><a href="7974_2.html" title="GCC -S选项：编译非汇编文件" target="_blank">GCC -S选项：编译非汇编文件</a></li>
+<li><a href="vip_8362_2.html" title="MySQL设置日志输出方式" target="_blank">MySQL设置日志输出方式</a></li>
+<li><a href="../csharp/sortedList_2.html" title="C# SortedList：排序列表" target="_blank">C# SortedList：排序列表</a></li>
+<li><a href="dtwrkay_2.html" title="Go语言常量（const）的使用" target="_blank">Go语言常量（const）的使用</a></li>
+<li><a href="../c/localtime_2.html" title="C语言localtime()：将time_t时间转换成tm时间" target="_blank">C语言localtime()：将time_t时间转换成tm时间</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10355;
+window.arcId = "e17796Q5iniYH+iYpS77QtRbfM5ut7K6rzDgCTaUQxpbsKLwUPOQyIsXEzvE";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

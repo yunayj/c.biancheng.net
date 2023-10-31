@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C# DataRow和DataColumn：更新数据表</title>
+<meta name="description" content="在前面《 C# Command 》一节中已经介绍了使用 SqlCommand 对象中的 ExecuteNonQuery 方法执行非查询 SQL 语句来实现对数据表的更新操作，使用 DataSet 对象也能实现相同的功能， 并且能节省数据" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C# DataRow和DataColumn：更新数据表</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body"><br />
+在前面《<a href="3017_2.html" target="_blank">C# Command</a>》一节中已经介绍了使用 SqlCommand 对象中的 ExecuteNonQuery 方法执行非查询 SQL 语句来实现对数据表的更新操作，使用 DataSet 对象也能实现相同的功能， 并且能节省数据访问时间。<br />
+<br />
+每个 DataSet 都是由多个 DataTable 构成的，更新 DataSet 中的数据实际上是通过更新 DataTable 来实现的。<br />
+<br />
+每个 DataTable 对象都是由行 (DataRow) 和列 (DataColumn) 构成的，下面分别介绍 DataRow 类和 DataColumn 类的使用。<br />
+<h4>
+	1) DataRow 类</h4>
+DataRow 类代表数据表中的行，并允许通过该类直接对数据表进行添加、修改、删除行的操作。<br />
+<br />
+DataRow 类中常用的属性和方法如下表所示。<br />
+<br />
+<table>
+	<tbody>
+		<tr>
+			<th>
+				属性或方法</th>
+			<th>
+				说明</th>
+		</tr>
+		<tr>
+			<td>
+				Table</td>
+			<td>
+				属性，设置 DataRow 对象所创建 DataTable 的名称</td>
+		</tr>
+		<tr>
+			<td>
+				RowState</td>
+			<td>
+				属性，获取当前行的状态</td>
+		</tr>
+		<tr>
+			<td>
+				HasErrors</td>
+			<td>
+				属性，获取当前行是否存在错误</td>
+		</tr>
+		<tr>
+			<td>
+				AcceptChanges()</td>
+			<td>
+				方法，更新 DataTable 中的值</td>
+		</tr>
+		<tr>
+			<td>
+				RejectChanges()</td>
+			<td>
+				方法，撤销对 DataTable 中的值的更新</td>
+		</tr>
+		<tr>
+			<td>
+				Delete()</td>
+			<td>
+				方法，标记当前的行被删除，并在执行 AcceptChanges 方法后更新数据表</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+在 DataRow 类中没有提供构造方法，需要通过 DataTable 中的 NewRow 方法创建 DataRow 类的对象，具体的语句如下。<br />
+<pre class="cpp">
+DataTable dt = new DataTable();
+DataRow dr = dt.NewRow();</pre>
+这样，dr 即为新添加的行，每行数据是由多列构成的，如果在 DataTable 对象中已经存在表结构，则直接使用<code>dr[ 编号或列名 ]= 值</code>的形式即可为表中的列赋值。<br />
+<h4>
+	2) DataColumn 类</h4>
+DataColumn 类是数据表中的列对象，与数据库中表的列定义一样，都可以为其设置列名以及数据类型。<br />
+<br />
+DataColumn类中常用的构造方法如下表所示。<br />
+<br />
+<table>
+	<tbody>
+		<tr>
+			<th>
+				构造方法</th>
+			<th>
+				说明</th>
+		</tr>
+		<tr>
+			<td>
+				DataColumn()</td>
+			<td>
+				无参构造方法</td>
+		</tr>
+		<tr>
+			<td>
+				DataColumn(string columnName)</td>
+			<td>
+				带参数的构造方法，columnName 参数代表的是列名</td>
+		</tr>
+		<tr>
+			<td>
+				DataColumn(string columnName,Type dataType)</td>
+			<td>
+				带参数的构造方法，columnName 参数代表的是列名，dataType 参数代表的是列的数据类型</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+DataColumn 类提供了一些属性对 DataColumn 对象进行设置，常用的属性如下表所示。<br />
+<br />
+<table>
+	<tbody>
+		<tr>
+			<th>
+				属性</th>
+			<th>
+				说明</th>
+		</tr>
+		<tr>
+			<td>
+				ColumnName</td>
+			<td>
+				属性，设置 DataColumn 对象的列名</td>
+		</tr>
+		<tr>
+			<td>
+				DataType</td>
+			<td>
+				属性，设置 DataColumn 对象的数据类型</td>
+		</tr>
+		<tr>
+			<td>
+				MaxLength</td>
+			<td>
+				属性，设置 DataColumn 对象值的最大长度</td>
+		</tr>
+		<tr>
+			<td>
+				Caption</td>
+			<td>
+				属性，设置 DataColumn 对象在显示时的列名，类似于给表中的列设置别名</td>
+		</tr>
+		<tr>
+			<td>
+				DefaultValue</td>
+			<td>
+				属性，设置 DataColumn 对象的默认值</td>
+		</tr>
+		<tr>
+			<td>
+				AutoIncrement</td>
+			<td>
+				属性，设置 DataColumn 对象为自动增长列，与 SQL Server 中数据表的标识列类似</td>
+		</tr>
+		<tr>
+			<td>
+				AutoIncrementSeed</td>
+			<td>
+				属性，与 AutoIncrement 属性联用,用于设置自动增长列的初始值</td>
+		</tr>
+		<tr>
+			<td>
+				AutoIncrementStep</td>
+			<td>
+				属性，与 AutoIncrement 属性联用，用于设置自动增长列每次增加的值</td>
+		</tr>
+		<tr>
+			<td>
+				Unique</td>
+			<td>
+				属性，设置 DataColumn 对象的值是唯一的，类似于数据表的唯一约束</td>
+		</tr>
+		<tr>
+			<td>
+				AllowDBNull</td>
+			<td>
+				属性，设置 DataColumn 对象的值是否允许为空</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+下面通过实例来演示 DataRow 类和 DataColumn 类的使用。<br />
+<br />
+【实例】通过 DataRow 类、DataColumn 类以及 DataTable 类设计专业信息表，并向该表中添加专业，在 ListBox 控件中显示所有专业信息。<br />
+<br />
+专业信息表的列包括专业编号、专业名称，要求专业编号是自动增长列，专业名称是唯一值。<br />
+<br />
+创建 Windows 应用程序，添加专业信息并查询的界面设计如下图所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="添加专业信息并查询的界面设计" src="../uploads/allimg/190408/4-1Z40Q13545P2_2.gif" /></div>
+<br />
+在每次新添加专业名称时将新的专业添加到ListBox控件中，实现的代码如下。
+<pre class="cpp">
+public partial class DataRowform : Form
+{
+    //创建DataTable类的对象其表明为major
+    private DataTable dt = new DataTable(&quot;major&quot;);
+    //在构造方法中初始化DataTable对象，设置DataTable 中的列
+    public DataRowform()
+    {
+        InitializeComponent();
+        //创建专业编号列，列明为id 、数据类型为整型
+        DataColumn id = new DataColumn(&quot;id&quot;, typeof(int));
+        //设置id为自动增长列
+        id.AutoIncrement = true;
+        //设置id的初始值
+        id.AutoIncrementSeed = 1;
+        //设置id每次增长的值
+        id.AutoIncrementStep = 1;
+        //将id列加入到DataTable中
+        dt.Columns.Add(id);
+        //创建专业名称列，列明为name，数据类型为字符串类型
+        DataColumn name = new DataColumn(&quot;name&quot;, typeof(string));
+        //设置name列的值是唯一的
+        name.Unique = true;
+        //将name列加入到DataTable 对象中
+        dt.Columns.Add(name);
+    }
+    //添加按钮的单击事件
+    private void button1_Click(object sender, EventArgs e)
+    {
+        //向DataTable中天加一行，创建DataRow对象
+        DataRow dr = dt.NewRow();
+        //添加专业名称列的值
+        dr[&quot;name&quot;] = textBox1.Text;
+        //将DataRow添加到DataTable对象中
+        dt.Rows.Add(dr);
+        //设置ListBox控件中的DataSource属性
+        listBox1.DataSource = dt;
+        //设置在listBox控件中显示的列
+        listBox1.DisplayMember = dt.Columns[&quot;name&quot;].ToString();
+    }
+}</pre>
+运行该窗体，效果如下图所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="使用DataTable添加和查询专业信息" src="../uploads/allimg/190408/4-1Z40Q13634959_2.gif" /></div>
+<br />
+从上面的运行效果可以看出，DataTable 类的使用与直接设计数据库中的表是类似的，只是没有将数据存储到数据库中。<br />
+<br />
+既然使用 DataTable 类能完成与表设计和操作相同的功能，那么通过更新 DataTable 来更新数据库中的数据表效果会事半功倍，并能在离线状态下保存数据。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="448_2.html" title="C++ forward_list用法详解" target="_blank">C++ forward_list用法详解</a></li>
+<li><a href="764_2.html" title="Linux umask详解：令新建文件和目录拥有默认权限" target="_blank">Linux umask详解：令新建文件和目录拥有默认权限</a></li>
+<li><a href="vip_1872_2.html" title="C语言多层递归函数（最烧脑的一种递归）" target="_blank">C语言多层递归函数（最烧脑的一种递归）</a></li>
+<li><a href="vip_7306_2.html" title="Go语言map的多键索引——多个数值条件可以同时查询" target="_blank">Go语言map的多键索引——多个数值条件可以同时查询</a></li>
+<li><a href="vip_7348_2.html" title="Go语言通道的多路复用——同时处理接收和发送多个通道的数据" target="_blank">Go语言通道的多路复用——同时处理接收和发送多个通道的数据</a></li>
+<li><a href="../jsp2/jdbc_2.html" title="JSP JDBC访问数据库" target="_blank">JSP JDBC访问数据库</a></li>
+<li><a href="../c/ftell_2.html" title="C语言ftell()：定位文件中的位置指针" target="_blank">C语言ftell()：定位文件中的位置指针</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 3028;
+window.arcId = "2e29Nsfo7D3/qB8I1FWBqjRioosyyee/XGAaux7IfEiLj47lVKAcIYihY7c";
+window.typeidChain = "211|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

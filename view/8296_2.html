@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Windows平台安装GDB调试器</title>
+<meta name="description" content="前面介绍了如何将 GDB 调试器安装到 Linux 发行版系统中，其实它还能在 Windows 平台上使用。和前者不同，GDB 调试器无法直接安装到 Windows 平台上，如果想在 Windows 系统中使用 GDB 调试器" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Windows平台安装GDB调试器</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">前面介绍了如何将 GDB 调试器安装到 Linux 发行版系统中，其实它还能在 Windows 平台上使用。和前者不同，GDB 调试器无法直接安装到 Windows 平台上，如果想在 Windows 系统中使用 GDB 调试器，需要一个中间媒介，常用的就是 MinGW。<br />
+<br />
+MinGw 全称 Minimalist GNU for Windows，应用于 Windows 平台，可以为我们提供一个功能有限的 Linux 系统环境以使用一些 GNU 工具，比如 GCC、GDB、gawk 等。也就是说，如果我们想将 GDB 安装到 Windows 平台，必须提前在该平台上打造出一个虚拟的 Linux 环境，MinGW 就可以帮我们完成这项工作。<br />
+<br />
+由此，在 Windows 平台上安装 GDB 调试器的过程，分为如下 2 个步骤：
+<ol>
+	<li>
+		下载并安装 MinGW；</li>
+	<li>
+		借助 MinGW 安装 GDB 调试器。</li>
+</ol>
+<br />
+有关 MinGW 的下载和安装，我已经在《<a href="8077_2.html" target="_blank">MinGW下载和安装教程</a>》一节中做了详细的讲解，这里不再重复赘述（安装好的 MinGW 如图 1 所示）。本节要重点介绍的，就是当安装完成 MinGW 之后，如何安装 GDB 调试器。<br />
+&nbsp;
+<div style="text-align: center;">
+	<img alt="MinGW安装完成" src="../uploads/allimg/200818/1-200QP95301W5_2.gif" /><br />
+	图 1 MinGW 安装完成 MinGW安装GDB调试器</div>
+<h2>
+	MinGW安装GDB调试器</h2>
+使用 MinGW 安装 GDB 调试器的方法有 2 种，一种是利用 MinGW 的在线安装功能，由 MinGW 帮我们下载 GDB 并安装；另一种是由我们手动到 MinGW 官网上下载 GDB 安装包（本质是一个压缩包），然后将其解压到 MinGW 安装目录中的适当位置，由此完成 GDB 调试器的安装。
+<h4>
+	1、在线安装GDB调试器</h4>
+首先介绍较简单的第一种安装方法：<br />
+<br />
+1) 打开图 1 所示的 MinGW，在右侧框中找到 mingw32-gdb-bin，并勾选它，如图 2 所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="在线安装GDB调试器" src="../uploads/allimg/200818/1-200QQ05950K4_2.gif" /><br />
+	图 2 在线安装 GDB 调试器</div>
+<br />
+2) 菜单栏中依次选择<code>Installation -&gt; Apply Changes</code>，会弹出如下对话框：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="开始安装GDB调试器" src="../uploads/allimg/200818/1-200QQ1001AP_2.gif" /><br />
+	图 3 开始安装 GDB 调试器</div>
+<br />
+选择 &quot;Apply&quot;，MinGW 就会自动下载安装 GDB 调试器所需的包。此过程可能需要一段时间，读者耐心等待即可。看在如下对话框，证明 GDB 安装成功：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="GDB调试器成功安装" src="../uploads/allimg/200818/1-200QQ100412I_2.gif" /><br />
+	图 4 GDB调试器成功安装</div>
+<blockquote>
+	<p>
+		注意，在线安装过程中，GDB 安装包可能会下载失败。这种情况下，可以采用第 2 种安装方法。</p>
+</blockquote>
+<h4>
+	2、手动安装GDB调试器</h4>
+当 MinGW 提示 GDB 调试器安装包下载失败时，我们可以自行打开 <a href="https://sourceforge.net/projects/mingw/files/MinGW/Extension/gdb/" rel="nofollow" target="_blank">MinGW 官网</a>（如图 5 所示），下载所需版本的 GDB 调试器。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="进入GDB安装包下载界面" src="../uploads/allimg/200818/1-200QQ101111S_2.gif" /><br />
+	图 5 MinGW 官网下载 GDB 调试器安装包</div>
+<br />
+本节，我们选择安装 7.6.1 版本的 GDB 调试器，点击<code>gdb-7.6.1-1</code>，然后找到<code>gdb-7.6.1-1-mingw32-bin.tar.lzma</code>，这是一个安装 GDB 的压缩包，直接点击即可开始下载：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="下载GDB安装包" src="../uploads/allimg/200818/1-200QQ101422I_2.gif" /><br />
+	图 6 下载 GDB 安装包</div>
+<br />
+下载完成后，读者会得到<code>gdb-7.6.1-1-mingw32-bin.tar.lzma</code>压缩包，其内部包含一个<code>gdb-7.6.1-1-mingw32-bin.tar</code>的压缩包。所以，我们需要对下载的压缩包进行 2 次压缩，最终得到 bin 和 share 这 2 个文件夹。<br />
+<br />
+将 bin 文件夹内的 2 个可执行文件 gdb.exe 和 gdbserver.exe 拷贝到 MinGW 安装目录中的 bin 文件夹内（本机 MinGW 安装目录为 E:\MinGW），即可完成 GDB 的安装。
+<h4>
+	3、修改PATH环境变量</h4>
+注意，无论采用以上哪种安装方式，最终都需要将 MinGW 的 bin 文件夹所在路径添加到 PATH 环境变量中。以本机为例，我将 MinGW 安装到&nbsp;E:\MinGW 路径下，因此需要将&nbsp;E:\MinGW\bin 添加至 PATH 环境变量中，如图 7 所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="设置PATH环境变量" src="../uploads/allimg/200818/1-200QQ102251Y_2.gif" /><br />
+	图 7 设置 PATH 环境变量</div>
+<blockquote>
+	<p>
+		PATH环境变量打开方法是：右击计算机（我的电脑） -&gt; 属性 -&gt; 高级系统设置 -&gt; 环境变量，建议读者修改当前用户的 PATH 环境变量。</p>
+</blockquote>
+由此，GDB 调试器就算安装成功了。打开命令行窗口，输入<code>gdb -v</code>命令，如果输入如下信息：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="GDB调试器安装成功的示意图" src="../uploads/allimg/200818/1-200QQ10254163_2.gif" /><br />
+	图 8 GDB 调试器安装成功的示意图</div>
+<br />
+就证明 GDB 调试器安装成功，我们可以像在 Linux 系统中使用 GDB 那样，在 Windows 平台上使用 GDB 调试器。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2217_2.html" title="C++类成员的访问权限以及类的封装" target="_blank">C++类成员的访问权限以及类的封装</a></li>
+<li><a href="5123_2.html" title="Go语言自定义包" target="_blank">Go语言自定义包</a></li>
+<li><a href="vip_7724_2.html" title="如何自定义C++ STL无序容器的哈希函数和比较规则？（超级详细）" target="_blank">如何自定义C++ STL无序容器的哈希函数和比较规则？（超级详细）</a></li>
+<li><a href="../sql/self-join_2.html" title="SQL SELF JOIN：自连接" target="_blank">SQL SELF JOIN：自连接</a></li>
+<li><a href="iinre6_2.html" title="C语言求绝对值" target="_blank">C语言求绝对值</a></li>
+<li><a href="dtwrkay_2.html" title="Go语言常量（const）的使用" target="_blank">Go语言常量（const）的使用</a></li>
+<li><a href="u0jynfx_2.html" title="Java运算符优先级和结合性一览表" target="_blank">Java运算符优先级和结合性一览表</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8296;
+window.arcId = "29a2i+riQ72i3MXgKk8XBODirwoZaPG4S2GNkpkm5rvMGr3QC0I8195PCwA";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

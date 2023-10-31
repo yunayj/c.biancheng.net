@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>printf函数和scanf函数，C语言printf函数和scanf函数详解</title>
+<meta name="description" content="对于 printf 函数，相信大家并不陌生。之所以称它为 格式化输出函数 ，关键就是该函数可以按用户指定的格式，把指定的数据显示到显示器屏幕上。该函数原型的一般格式如下： int p" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>printf函数和scanf函数，C语言printf函数和scanf函数详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">对于 printf 函数，相信大家并不陌生。之所以称它为<span style="color:#008000;">格式化输出函数</span>，关键就是该函数可以按用户指定的格式，把指定的数据显示到显示器屏幕上。该函数原型的一般格式如下：
+<p class="info-box">
+int printf(const char * format, ... );</p>
+很显然，与其他库函数不同的是，printf 函数是一个&ldquo;可变参数函数&rdquo;（即函数参数的个数是可变的）。确切地说，是其输出参数的个数是可变的，且每一个输出参数的输出格式都有对应的格式说明符与之对应，从格式串的左端第 1 个格式说明符对应第 1 个输出参数，第 2 个格式说明符对应第 2 个输出参数，第 3 个格式说明符对应第 3 个输出参数，以此类推。其中，格式说明符的一般形式如下（方括号 [] 中的项为可选项）：<br />
+<p class="info-box">
+%[flags][width][.prec][length] type_char<br />
+/*用中文标识如下：*/<br />
+%[标志符][宽度][精度][长度]类型符</p>
+<h4>
+1) 类型符（type_char）</h4>
+它用以表示输出数据的类型，如表 1 所示。<br />
+<br />
+<table>
+<caption>
+表 1 常见的类型符及其说明</caption>
+<tbody>
+<tr>
+<th>
+符&nbsp;号</th>
+<th>
+类&nbsp;型</th>
+<th>
+说&nbsp;明</th>
+<th>
+示&nbsp;例</th>
+<th>
+结&nbsp;果</th>
+</tr>
+<tr>
+<td>
+%</td>
+<td>
+无</td>
+<td>
+输出字符&ldquo;％&rdquo;本身</td>
+<td>
+pnntf(&quot;%%&quot;);</td>
+<td>
+%</td>
+</tr>
+<tr>
+<td>
+d、i</td>
+<td>
+int</td>
+<td>
+以整型输出</td>
+<td>
+printf(&quot;%i,%d&quot;,&nbsp;100,100);</td>
+<td>
+100,100</td>
+</tr>
+<tr>
+<td>
+u</td>
+<td>
+unsigned int</td>
+<td>
+以无符号整型输出</td>
+<td>
+printf( &quot;%u,%u&quot;,100u,100);</td>
+<td>
+100,100</td>
+</tr>
+<tr>
+<td>
+o</td>
+<td>
+unsigned int</td>
+<td>
+以八进制无符号整S输出</td>
+<td>
+printf( &quot;%o&rdquo;,100);</td>
+<td>
+144</td>
+</tr>
+<tr>
+<td>
+x</td>
+<td>
+unsigned int</td>
+<td>
+以十六进制小写输出</td>
+<td>
+printf(&quot;%x&quot;,11);</td>
+<td>
+b</td>
+</tr>
+<tr>
+<td>
+X</td>
+<td>
+unsigned int</td>
+<td>
+以十六制大写输出</td>
+<td>
+printf(&quot;%X&quot;,11);</td>
+<td>
+B</td>
+</tr>
+</tbody>
+</table>
+<br />
+除表 1 所示的类型符之外，还有一个比较特殊与另类的类型符&ldquo;%n&rdquo;，当在格式化字符串中碰到&ldquo;%n&rdquo;时，在&ldquo;%n&rdquo;之前输出的字符个数会保存到下一个参数里。例如，下面的示例代码演示了如何获取在两个格式化的数字之间空间的偏量：<br />
+<pre class="cpp">
+int main(void)
+{
+    int pos=0;
+    int x = 123;
+    int y = 456;
+    printf(&quot;%d%n%d\n&quot;, x, &amp;pos, y);
+    printf(&quot;pos=%d\n&quot;, pos);
+    return 0;
+}</pre>
+很显然，上面代码中的 pos 将输出 3，即&ldquo;123&rdquo;的长度，运行结果为：<br />
+123456<br />
+pos=3<br />
+<br />
+这里需要特别注意，&ldquo;%n&rdquo;返回的是应该被输出的字符数目，而不是实际输出的字符数目。当把一个字符串格式化输出到一个定长缓冲区内时，输出字符串可能被截短。不考虑截短的影响，&ldquo;%n&rdquo;格式表示如果不被截短的偏量值（输出字符数目）。看下面的示例代码：<br />
+<pre class="cpp">
+int main(void)
+{
+    char buf[20];
+    int pos=0;
+    int x = 0;
+    snprintf(buf, sizeof(buf), &quot;%.100d%n&quot;, x, &amp;pos);
+    printf(&quot;pos=%d\n&quot;, pos);
+    return 0;
+}</pre>
+很显然，上面的代码会输出 100，而不是 20。<br />
+<br />
+由此可见，相对于&ldquo;%d&rdquo;&ldquo;%x&rdquo;&ldquo;%s&rdquo;等，&ldquo;%n&rdquo;的显著不同之处就是&ldquo;%n&rdquo;会改变变量的值，这也就是格式化字符串攻击的爆破点，如下面的示例代码所示：<br />
+<pre class="cpp">
+char daddr[16];
+int main(void)
+{
+    char buf[100];
+    int x=1;
+    memset(daddr,&#39;/0&#39;,16);
+    printf(&quot;前X： %d/%#x （%p）\n&quot;, x, x, &amp;x);
+    strncpy(daddr,&quot;AAAAAAA%n&quot;,9);
+    snprintf(buf,sizeof(buf),daddr);
+    buf[sizeof(buf) - 1] = 0;
+    printf(&quot;后X： %d/%#x （%p）\n&quot;,x, x, &amp;x);
+    return 0;
+}</pre>
+在上面的代码中，x 将被从 1 修改成 7，其运行结果为：<br />
+前X： 1/0x1 （0061FEA8）<br />
+后X： 7/0x7 （0061FEA8）<br />
+<br />
+之所以会出现这样的结果，是因为程序在调用 snprintf 函数之前，首先调用了 printf 函数，而这时 printf 函数的 &amp;x 参数在 main 函数的堆栈内存中留下了 &amp;x 的内存残像。当调用 snprintf 时，系统本来只给 snprintf 准备了 3 个参数，但是由于格式化字符串攻击原因，使得 snprinf 认为应该有 4 个参数传给它，这样 snprintf 就私自把 &amp;x 的内存残像作为第 4 个参数读走，而 snprintf 所谓的第 4 个参数对应的就是&ldquo;%n&rdquo;，于是 snprintf 就成功修改了变量 x 的值。这也就是最常见的使用 Linux 函数调用时的内存残像来实现格式化字符串攻击的方法之一，所以在使用的时候一定要注意。
+<h4>
+2) 标志符（flags）</h4>
+它用于规定输出格式，如表 2 所示。<br />
+<br />
+<table>
+<caption>
+表 2 标志符及其说明</caption>
+<tbody>
+<tr>
+<th>
+符号</th>
+<th>
+说&nbsp;明</th>
+</tr>
+<tr>
+<td>
+(空白）</td>
+<td>
+右对齐，左边填充 0 和空格</td>
+</tr>
+<tr>
+<td>
+(空格）</td>
+<td>
+输出值为正时加上空格，为负时加上负号</td>
+</tr>
+<tr>
+<td>
+-</td>
+<td>
+输出结果为左对齐（默认为右对齐)，边填空格（如果存在表格最后一行介绍的0，那么将忽略0)</td>
+</tr>
+<tr>
+<td>
++</td>
+<td>
+在数字前增加符号&ldquo;+&rdquo;（正号）或&ldquo;-&rdquo;（负号）</td>
+</tr>
+<tr>
+<td>
+#</td>
+<td>
+类塑符是o、x、X吋，增加前缀0、0x、0X；类型符是e、E、f、F、g、G时，一定要使用小数点；类型符是g、G时，尾部的 0 保留</td>
+</tr>
+<tr>
+<td>
+0</td>
+<td>
+参数的前面用0填充，直到占满指定列宽为止（如果同时存在&ldquo;-&rdquo;，将被&ldquo;-&rdquo;覆盖，导致 0 被忽略</td>
+</tr>
+</tbody>
+</table>
+<h4>
+3) 宽度（width）</h4>
+它用于控制显示数值的宽度，如表 3 所示。<br />
+<br />
+<table>
+<caption>
+表 3 宽度及其说明</caption>
+<tbody>
+<tr>
+<th>
+符号</th>
+<th>
+说 明</th>
+</tr>
+<tr>
+<td>
+n</td>
+<td>
+至少输出 n 个字符（n 是一个正整数）。如果输出少于 n 个字符，则用空格填满余下的位置（如果标识符为&ldquo;-&rdquo;，则在右侧填，否则在左端填）</td>
+</tr>
+<tr>
+<td>
+0n</td>
+<td>
+至少输出 n 个字符（n 是一个正整数)。如果输出值少于 n 个字符，则在左侧填满 0</td>
+</tr>
+<tr>
+<td>
+*</td>
+<td>
+输出字符个数由下一个输出参数指定（其必须为一个整形量）</td>
+</tr>
+</tbody>
+</table>
+<h4>
+4) 精度（.prec）</h4>
+它用于控制显示数值的精度。如果输出的是数字，则表示小数的位数；如果输出的是字符，则表示输出字符的个数；若实际位数大于所定义的精度数，则截去超过的部分。如表 4 所示。<br />
+<table>
+<caption>
+表 4 精度及其说明</caption>
+<tbody>
+<tr>
+<th>
+符号</th>
+<th>
+说&nbsp;明</th>
+</tr>
+<tr>
+<td>
+无</td>
+<td>
+系统默认精度</td>
+</tr>
+<tr>
+<td>
+.0</td>
+<td>
+对于 d、i、o、u、x、X等整形类型符，采用系统默认精度；对于f、F、e、E等浮点类型符，不输出小数部分</td>
+</tr>
+<tr>
+<td>
+.n</td>
+<td>
+1) 对于d、i、o、u、x、X类型符，至少输出 n 位数字，且：
+<ul>
+<li>
+如果对应的输出参数少于 n 位数字，则在其左端用零（0)填充</li>
+<li>
+如果对应的输出参数多于 n 位数字，则输出时不对其进行截断</li>
+</ul>
+2) 对于f、F、e、E类型符，输出结果保留 n 位小数。如果小数部分多于 n 位，则对其四舍五入<br />
+3) 对于 g 和 G 类型符，最多输出 n 位有效数字<br />
+4) 对于 s 类型符，如果对应的输出串的长度不超过 n 个字符，则将其原样输出，否则输出其头 n 个宁符</td>
+</tr>
+<tr>
+<td>
+*</td>
+<td>
+输出精度由下一个输出参数指定（其必须为一个整型量）</td>
+</tr>
+</tbody>
+</table>
+<h4>
+5) 长度（length）</h4>
+它用于控制显示数值的长度，如表 5 所示。<br />
+<table>
+<caption>
+<br />
+表 5 长度及其说明</caption>
+<tbody>
+<tr>
+<th>
+符号</th>
+<th>
+说&nbsp;明</th>
+</tr>
+<tr>
+<td>
+hh</td>
+<td>
+与d、i&nbsp;一起使用，表示一个signed char 类型的值；与o、u、x、X&mdash;起使用，表示一个unsigned char&nbsp;类型的值；与 n 一起使用，表示相应的变元是指向 signed char 型变量的指针（c99 )</td>
+</tr>
+<tr>
+<td>
+h</td>
+<td>
+与d、i、o、u、x、X 或 n 一起使用，表示一个short int 或 unsigned short int 类型的值</td>
+</tr>
+<tr>
+<td>
+l</td>
+<td>
+与d、i、o、u、x、X 或 n 一起使用，表示一个 long int 或者 unsigned long int 类型的值</td>
+</tr>
+<tr>
+<td>
+ll</td>
+<td>
+<span style="font-size: 10px;">与&nbsp;</span>d、i、o、u、x、X 或 n &mdash;起使用，表示相应的变元是 long long int 或 unsigned long long int 类型的值(c99 )</td>
+</tr>
+<tr>
+<td>
+j</td>
+<td>
+与 d、i、o、u、x、X 或 n &mdash;起使用，表示匹配的变元是 intmax_t 或 uintmax_t 类型，这些类型在&ldquo;stdint. h&rdquo;中声明（c99 )</td>
+</tr>
+<tr>
+<td>
+z</td>
+<td>
+与 d、i、o、u、x、X 或 n &mdash;起使用，表示匹配的变元是指向 size_t 类型对象的指针，该类型在&ldquo;stddef. h&rdquo;中声明(c99 )</td>
+</tr>
+<tr>
+<td>
+t</td>
+<td>
+与d、i、o、u、x、X 或 n &mdash;起使用，表示匹配的变元是指向 ptrdiff_t 类型对象的指针，该类型在&ldquo;stddef. h&rdquo;中声明(c99 )</td>
+</tr>
+<tr>
+<td>
+L</td>
+<td>
+和a、A、e、E、f、F、g、G&mdash;起使用，表示一个long double类型的值</td>
+</tr>
+</tbody>
+</table>
+<br />
+最后，在使用 printf 函数时还必须注意，尽量不要在 printf 语句中改变输出变量的值，因为可能会造成输出结果的不确定性。如下面的示例代码所示：<br />
+<pre class="cpp">
+int k=8;
+printf(&quot;%d,%d\n&quot;,k,++k);</pre>
+对于上面的代码，表面上看起来输出的结果应该是&ldquo;8，9&rdquo;。但实际情况并非如此，在调用printf函数时，其参数是从右至左进行处理的，即将先进行 ++k 运算，所以最后的结果是&ldquo;9，9&rdquo;。由此可见，千万不要在 printf 语句中试图改变输出变量的值，如果确实需要改变，可以按照下面的示例代码形式来处理：<br />
+<pre class="cpp">
+printf(&quot;%d\n&quot;,k);
+printf(&quot;%d\n&quot;,++k);</pre>
+这样处理之后，其结果就是我们所需要的&ldquo;8，9&rdquo;了。<br />
+<br />
+除此之外，每一个输出参数的输出格式都必须有对应的格式说明符与之一一对应，并且类型必须匹配。若二者不能够一一对应匹配，则不能够正确输出，而且编译时可能不会报错。同时，若格式说明符个数少于输出项个数，则多余的输出项将不予输出；若格式说明符个数多于输出项个数，则可能会输出一些毫无意义的数字乱码。<br />
+<h2>
+scanf 函数</h2>
+相对于 printf 函数，scanf 函数就简单得多。scanf 函数的功能与 printf 函数正好相反，执行格式化输入功能。即 scanf 函数从格式串的最左端开始，每遇到一个字符便将其与下一个输入字符进行&ldquo;匹配&rdquo;，如果二者匹配（相同）则继续，否则结束对后面输入的处理。而每遇到一个格式说明符，便按该格式说明符所描述的格式对其后的输入值进行转换，然后将其存于与其对应的输入地址中。以此类推，直到格式串结束为止。该函数原型的一般格式如下：<br />
+<pre class="cpp">
+int scanf (const char *format, ...);</pre>
+从函数原型可以看出，同 printf 函数相似，scanf 函数也是一个&ldquo;可变参数函数&rdquo;。同时，scanf 函数的第一个参数 format 也必须是一个格式化串。除此格式化串之外，scanf 函数还可以有若干个输入地址，且对于每一个输入地址，在格式串中都必须有一个格式说明符与之一一对应。即从格式串的左端第 1 个格式说明符对应第 1 个输入地址，第 2 个格式说明符对应第 2 个输入地址，第 3 个格式说明符对应第 3 个输入地址，以此类推。<br />
+<br />
+也就是说，除第 1 个格式化串参数之外，其他参数的个数是可变的，且每一个输入地址必须指向一个合法的存储空间，以便能正确地接受相应的输入值。每个输入值的转换格式都由格式说明符决定。格式说明符的一般形式如下（方括号 [] 中的项为可选项）：<br />
+<p class="info-box">
+%[*][width][length] type_char<br />
+/*用中文标识如下：*/<br />
+%[*][宽度][长度]类型符</p>
+在使用 scanf 函数的时候，需要特别注意的就是缓冲区问题。对 scanf 函数来说，估计最容易出错、最令人捉摸不透的问题应该是缓冲区问题了。<br />
+<br />
+下面先来看一段示例代码：<br />
+<pre class="cpp">
+int main(void)
+{
+    char c[5];
+    int i=0;
+    printf(&quot;输入数据(hello):\n&quot;);
+    for(i = 0;i &lt; 5; ++i)
+    {
+        scanf(&quot;%c&quot;, &amp;c[i]);
+    }
+    printf(&quot;输出数据：\n&quot;);
+    printf(&quot;%s\n&quot;, c);
+    return 0;
+}</pre>
+对于上面这段示例代码，我们希望在&ldquo;c[5]&rdquo;字符数组中能够存储&ldquo;hello&rdquo;字符串，并在最后输出到屏幕上。从表面上看，这段程序没有任何问题，但实际情况并非如此。当我们依次输入&ldquo;h（回车）&rdquo;&ldquo;e（回车）&rdquo;，然后再输入&ldquo;l&rdquo;时，问题发生了。此时，程序不仅中断输入操作，而且会打印出字符数组 c 中的内容，其运行结果为：<br />
+输入数据(hello):<br />
+h<br />
+e<br />
+l<br />
+输出数据：<br />
+h<br />
+e<br />
+l<br />
+<br />
+很显然，字符数组&ldquo;c[5]&rdquo;是完全能够存储&ldquo;hello&rdquo;字符串的，但为什么输入到&ldquo;l&rdquo;就结束了呢？<br />
+<br />
+其实原因很简单，在我们输入&ldquo;h&rdquo;和第一个回车后，&ldquo;h&rdquo;和这个回车符&ldquo;\n&rdquo;都保留在缓冲区中。第 1 个 scanf 读取了&ldquo;h&rdquo;，但是输入缓冲区里面还留有一个&ldquo;\n&rdquo;，于是第 2 个 scanf 读取这个&ldquo;\n&rdquo;，然后输入&ldquo;e&rdquo;和第 2 个回车符&ldquo;\n&rdquo;。同理，第 3 个 scanf 读取了&ldquo;e&rdquo;，第 4 个 scanf 读取了第 2 个回车符&ldquo;\n&rdquo;，第 5 个 scanf读取了&ldquo;l&rdquo;。因此，程序并没有提前结束，而是完整地循环了5次scanf语句，只不过有两次scanf都读取到回车符&ldquo;\n&rdquo;而已。<br />
+<br />
+由此可见，在使用 scanf 函数时，如果不及时刷新输入缓冲区，有时会出现莫名其妙的错误。对于这类问题，其实解决办法有许多，比如可以使用&ldquo;fflush（stdin）；&rdquo;语句来刷新输入缓冲区。但不得不说明的是，fflush 函数在可移植性上并不是很好。当然，也可以通过自己编写代码来解决，如下面的示例代码所示：<br />
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+void flush()
+{
+    char c;
+    while ((c=getchar()) != &#39;\n&#39;&amp;&amp;c!=EOF);
+}
+int main(void)
+{
+    char c[5];
+    int i=0;
+    printf(&quot;输入数据(hello)：\n&quot;);
+    for(i = 0; i &lt; 5; ++i)
+    {
+        scanf(&quot;%c&quot;, &amp;c[i]);
+        flush();
+    }
+    printf(&quot;输出数据:\n&quot;);
+    printf(&quot;%s\n&quot;, c);
+    return 0;
+}</pre>
+这样，就从根本上解决了输入缓冲区问题，其运行结果为：<br />
+输入数据(hello)：<br />
+h<br />
+e<br />
+l<br />
+l<br />
+o<br />
+输出数据:<br />
+hello<br />
+<br />
+除此之外，还应该注意 scanf 中的空白符（这里所指的空白符包括空格、制表符、换行符、回车符和换页符）带来的问题，如下面的代码所示：<br />
+<pre class="cpp">
+int main(void)
+{
+    int a=0;
+    printf(&quot;输入数据：\n&quot;);
+    /*请注意，这里多了一个回车符\n*/
+    scanf(&quot;%d\n&quot;,&amp;a);
+    printf(&quot;输出数据：\n&quot;,a);
+    printf(&quot;%d\n&quot;,a);
+    return 0;
+}</pre>
+在上面的代码中，因为在&ldquo;scanf(&quot;%d\n&quot;,&amp;a);&rdquo;语句中多加了一个回车符&ldquo;\n&rdquo;，导致的结果就是要输入两个数，程序才会正常结束，而不是我们所期望的一个数。运行结果为：<br />
+输入数据：<br />
+22<br />
+11<br />
+输出数据：<br />
+22<br />
+<br />
+原因就是在用空白符结尾时，scanf 会跳过空白符去读下一个字符，所以必须再输入一个数。因此在编写程序时一定要多注意这类手误导致的错误。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="28.html" title="Go语言append()为切片添加元素" target="_blank">Go语言append()为切片添加元素</a></li>
+<li><a href="vip_7660.html" title="Linux重定向（输入输出重定向）详解" target="_blank">Linux重定向（输入输出重定向）详解</a></li>
+<li><a href="vip_8371.html" title="MySQL小技巧：提高插入数据的速度" target="_blank">MySQL小技巧：提高插入数据的速度</a></li>
+<li><a href="shortest-path.html" title="最短路径算法" target="_blank">最短路径算法</a></li>
+<li><a href="../pandas/class-object.html" title="Python Pandas分类对象" target="_blank">Python Pandas分类对象</a></li>
+<li><a href="9773.html" title="NoSQL（非关系型数据库）是什么？" target="_blank">NoSQL（非关系型数据库）是什么？</a></li>
+<li><a href="2qi34n.html" title="C语言二维数组" target="_blank">C语言二维数组</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 373;
+window.arcId = "43f8nGYpOVc5lLYJjHc9MeANPso3SQb2SD2XjzIvB7SJ3nl2sIoULoo3dw";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

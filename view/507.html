@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C语言求最大公约数（详解版）</title>
+<meta name="description" content="问题描述 求任意两个正整数的最大公约数（GCD）。 问题分析 如果有一个自然数a能被自然数b整除，则称a为b的倍数，b为a的约数。几个自然数公有的约数，叫做这几个自然数的公约数。" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C语言求最大公约数（详解版）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body"><h2>
+问题描述</h2>
+求任意两个正整数的最大公约数（GCD）。
+<h2>
+问题分析</h2>
+如果有一个自然数a能被自然数b整除，则称a为b的倍数，b为a的约数。几个自然数公有的约数，叫做这几个自然数的公约数。公约数中最大的一个公约数，称为这几个自然数的最大公约数。<br />
+<br />
+根据约数的定义可知，某个数的所有约数必不大于这个数本身，几个自然数的最大公约数必不大于其中任何一个数。要求任意两个正整数的最大公约数即求出一个不大于其中两者中的任何一个，但又能同时整除两个整数的最大自然数。
+<h2>
+算法设计</h2>
+思路有两种：第一种，采用穷举法按从小到大（初值为1，最大值为两个整数当中较小的数）的顺序将所有满足条件的公约数列出，输出其中最大的一个；第二种，按照从大（两个整数中较小的数）到小（到最小的整数1）的顺序求出第一个能同时整除两个整数的自然数，即为所求。<br />
+<br />
+下面对第二种思路进行详细说明。<br />
+<br />
+两个数的最大公约数有可能是其中的小数，所以在按从大到小顺序找寻最大公约数时，循环变量i的初值从小数n开始依次递减，去寻找第一个能同时整除两整数的自然数，并将其输出。需要注意的是，虽然判定条件是i&gt;0，但在找到第一个满足条件的i值后，循环没必要继续下去，如，25和15，最大公约数是5，对于后面的4、3、2、1没必要再去执行，但此时判定条件仍然成立，要结束循环只能借助break语句。<br />
+<br />
+程序流程图：<br />
+<img alt="" src="../uploads/allimg/180914/1130521001-0.png" /><br />
+<br />
+下面是完整的代码：
+<pre class="cpp">
+#include&lt;stdio.h&gt;
+int main()
+{
+    int m, n, temp, i;
+    printf(&quot;Input m &amp; n:&quot;);
+    scanf(&quot;%d%d&quot;, &amp;m, &amp;n);
+    if(m&lt;n)  /*比较大小，使得m中存储大数，n中存储小数*/
+    { /*交换m和n的值*/
+        temp=m;
+        m=n;
+        n=temp;
+    }
+    for(i=n; i&gt;0; i--)  /*按照从大到小的顺序寻找满足条件的自然数*/
+        if(m%i==0 &amp;&amp; n%i==0)
+        {/*输出满足条件的自然数并结束循环*/
+            printf(&quot;The GCD of %d and %d is: %d\n&quot;, m, n, i);
+            break;
+        }
+   
+    return 0;
+}</pre>
+运行结果：<br />
+Input m &amp; n:100 125<br />
+The GCD of 125 and 100 is: 25</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="189.html" title="顺序查找算法和折半（二分法）查找算法，C语言查找算法详解" target="_blank">顺序查找算法和折半（二分法）查找算法，C语言查找算法详解</a></li>
+<li><a href="1053.html" title="Linux独立服务管理（RPM包的启动与自启动）" target="_blank">Linux独立服务管理（RPM包的启动与自启动）</a></li>
+<li><a href="2398.html" title="Python自定义模块" target="_blank">Python自定义模块</a></li>
+<li><a href="7830.html" title="Django HTML表单实现用户注册" target="_blank">Django HTML表单实现用户注册</a></li>
+<li><a href="vip_8344.html" title="索引在什么情况下不会被使用？" target="_blank">索引在什么情况下不会被使用？</a></li>
+<li><a href="../springcloud/eureka.html" title="Eureka：Spring Cloud服务注册与发现组件（非常详细）" target="_blank">Eureka：Spring Cloud服务注册与发现组件（非常详细）</a></li>
+<li><a href="jl39e9r.html" title="《C语言程序设计(第4版)》何钦铭PDF下载（高清完整版）" target="_blank">《C语言程序设计(第4版)》何钦铭PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 507;
+window.arcId = "93a4o0/tRbv/iyS3ySl0GeA3EKAbETbIWLu/+cnMZS0ah6ONFSn2SW3yjA";
+window.typeidChain = "66|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

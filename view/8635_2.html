@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Linux读写锁详解</title>
+<meta name="description" content="多线程程序中，如果仅有少数线程会对共享数据进行修改，多数线程只是读取共享数据的值，就适合用读写锁解决线程间抢夺资源的问题。 读写锁的核心思想是：将线程访问共享数据时" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Linux读写锁详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">多线程程序中，如果仅有少数线程会对共享数据进行修改，多数线程只是读取共享数据的值，就适合用读写锁解决&ldquo;线程间抢夺资源&rdquo;的问题。<br />
+<br />
+读写锁的核心思想是：将线程访问共享数据时发出的请求分为两种，分别是：
+<ul>
+	<li>
+		读请求：只读取共享数据，不做任何修改；</li>
+	<li>
+		写请求：存在修改共享数据的行为。</li>
+</ul>
+<br />
+当有多个线程发出读请求时，这些线程可以同时执行，也就是说，共享数据的值可以同时被多个发出读请求的线程获取；当有多个线程发出写请求时，这些线程只能一个一个地执行（同步执行）。此外，当发出读请求的线程正在执行时，发出写请求的线程必须等待前者执行完后才能开始执行；当发出写请求的线程正在执行时，发出读请求的线程也必须等待前者执行完后才能开始执行。<br />
+<br />
+本质上，读写锁就是一个全局变量，发出读请求和写请求的线程都可以访问它。为了区别线程发出的请求类别，当读写锁被发出读请求的线程占用时，我们称它为&ldquo;<span style="color:#008000;">读锁</span>&rdquo;；当读写锁被发出写请求的线程占用时，称它为&ldquo;<span style="color:#008000;">写锁</span>&rdquo;。<br />
+<br />
+为了让您更清楚地了解读写锁在多线程程序中发挥的作用，我们制作了下面这张表格：<br />
+<br />
+<table>
+	<caption>
+		表 1 读写锁的作用</caption>
+	<tbody>
+		<tr>
+			<th>
+				当前读写锁的状态</th>
+			<th>
+				线程发出&ldquo;读&rdquo;请求</th>
+			<th>
+				线程发出&ldquo;写&rdquo;请求</th>
+		</tr>
+		<tr>
+			<th>
+				无锁</th>
+			<td>
+				允许占用</td>
+			<td>
+				允许占用</td>
+		</tr>
+		<tr>
+			<th>
+				读锁</th>
+			<td>
+				允许占用</td>
+			<td>
+				阻塞线程执行</td>
+		</tr>
+		<tr>
+			<th>
+				写锁</th>
+			<td>
+				阻塞线程执行</td>
+			<td>
+				阻塞线程执行</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+从上表可以看出，不同状态下的读写锁会以不同的方式处理发出读请求或写请求的线程：<br />
+1) 当读写锁未被任何线程占用时，发出读请求和写请求的线程都可以占用它。注意，由于读请求和写请求的线程不能同时执行，读写锁默认会优先分配给发出读请求的线程。<br />
+<br />
+2) 当读写锁的状态为&ldquo;读锁&rdquo;时，表明当前执行的是发出读请求的线程（可能有多个）。此时如果又有线程发出读请求，该线程不会被阻塞，但如果有线程发出写请求，它就会被阻塞，直到读写锁状态改为&ldquo;无锁&rdquo;。<br />
+<br />
+3) 当读写锁状态为&ldquo;写锁&rdquo;时，表明当前执行的是发出写请求的线程（只能有 1 个）。此时无论其它线程发出的是读请求还是写请求，都必须等待读写锁状态改为&ldquo;无锁&rdquo;后才能执行。<br />
+<br />
+总的来说，对于进程空间中的共享资源，读写锁允许发出&ldquo;读&rdquo;请求的线程共享资源，发出&ldquo;写&rdquo;请求的线程必须独占资源，进而实现线程同步。
+<h2>
+	读写锁的具体用法</h2>
+POSIX 标准中，读写锁用 pthread_rwlock_t 类型的变量表示，此类型定义在<code>&lt;pthread.h&gt;</code>头文件中。举个例子：
+<pre class="cpp" shwonum="false">
+pthread_rwlock_t myRWLock;</pre>
+由此，我们就成功创建了一个读写锁。但要想使用 myRWLock 读写锁，还需要进行初始化操作。
+<h4>
+	1) 初始化读写锁</h4>
+初始化读写锁的方法有两种，一种是直接将&nbsp;PTHREAD_RWLOCK_INITIALIZER 宏赋值给读写锁变量，例如：
+<pre class="cpp" shwonum="false">
+pthread_rwlock_t myRWLock = PTHREAD_RWLOCK_INITIALIZER;</pre>
+还可以借助 pthread_rwlock_init() 函数初始化读写锁，此函数的语法格式为：
+<pre class="info-box">
+int pthread_rwlock_init(pthread_rwlock_t *rwlock, const pthread_rwlockattr_t *attr);</pre>
+rwlock 参数用于指定要初始化的读写锁变量；attr 参数用于自定义读写锁变量的属性，置为 NULL 时表示以默认属性初始化读写锁。<br />
+<br />
+当 pthread_rwlock_init() 函数初始化成功时，返回数字 0，反之返回非零数。
+<blockquote>
+	<p>
+		当 attr 参数为 NULL 时，以上两种初始化方式完全等价。</p>
+</blockquote>
+<h4>
+	2) 线程发出&ldquo;读锁&rdquo;请求</h4>
+通过以下两个函数，线程可以向读写锁发出&ldquo;读锁&rdquo;请求：
+<pre class="info-box">
+int pthread_rwlock_rdlock(pthread_rwlock_t* rwlock);
+int pthread_rwlock_tryrdlock(pthread_rwlock_t* rwlock);
+</pre>
+其中，rwlock 参数指的是初始化好的读写锁。<br />
+<br />
+当读写锁处于&ldquo;无锁&rdquo;或者&ldquo;读锁&rdquo;状态时，以上两个函数都能成功获得读锁；当读写锁处于&ldquo;写锁&rdquo;状态时：
+<ul>
+	<li>
+		pthread_rwlock_rdlock() 函数会阻塞当前线程，直至读写锁被释放；</li>
+	<li>
+		pthread_rwlock_tryrdlock() 函数不会阻塞当前线程，直接返回 EBUSY。</li>
+</ul>
+<br />
+以上两个函数如果能成功获得读锁，函数返回数字 0，反之返回非零数。<br />
+<h4>
+	3) 线程发出&ldquo;写锁&rdquo;请求</h4>
+通过以下两个函数，线程可以向读写锁发出&ldquo;写锁&rdquo;请求：
+<pre class="info-box">
+int pthread_rwlock_wrlock(pthread_rwlock_t* rwlock);
+int pthread_rwlock_trywrlock(pthread_rwlock_t* rwlock); </pre>
+rwlock 参数指的是初始化好的读写锁。<br />
+<br />
+当读写锁处于&ldquo;无锁&rdquo;状态时，两个函数都能成功获得写锁；当读写锁处于&ldquo;读锁&rdquo;或&ldquo;写锁&rdquo;状态时：
+<ul>
+	<li>
+		pthread_rwlock_wrlock() 函数将阻塞线程，直至读写锁被释放；</li>
+	<li>
+		pthread_rwlock_trywrlock() 函数不会阻塞线程，直接返回 EBUSY。</li>
+</ul>
+<br />
+以上两个函数如果能成功获得写锁，函数返回数字 0，反之返回非零数。
+<h4>
+	4) 释放读写锁</h4>
+无论是处于&ldquo;无锁&rdquo;、&ldquo;读锁&rdquo;还是&ldquo;写锁&rdquo;的读写锁，都可以使用如下函数释放读写锁：
+<pre class="info-box">
+int pthread_rwlock_unlock (pthread_rwlock_t* rwlock);</pre>
+rwlock 参数表示要释放的读写锁。<br />
+<br />
+当函数成功释放读写锁时，返回数字 0，反之则返回非零数。注意，由于多个线程可以同时获得&ldquo;读锁&rdquo;状态下的读写锁，这种情况下一个线程释放读写锁后，读写锁仍处于&ldquo;读锁&rdquo;状态，直至所有线程都释放读写锁，读写锁的状态才为&ldquo;无锁&rdquo;状态。<br />
+<h4>
+	5) 销毁读写锁</h4>
+当读写锁不再使用时，我们可以借助如下函数将它销毁：
+<pre class="info-box">
+int pthread_rwlock_destroy(pthread_rwlock_t* rwlock);</pre>
+参数 rwlock 表示要销毁的目标读写锁。<br />
+<br />
+如果函数成功销毁指定的读写锁，返回数字 0，反之则返回非零数。<br />
+<h2>
+	读写锁的实际应用</h2>
+接下来通过一个实例，给您演示读写锁的用法：
+<pre class="cpp">
+#include &lt;pthread.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+int x = 0;
+//创建读写锁变量
+pthread_rwlock_t myrwlock;
+
+void* read_thread(void* args){
+    printf(&quot;------%u read_thread ready\n&quot;,pthread_self());
+    while (1)
+    {
+        sleep(1);
+        //请求读锁
+        pthread_rwlock_rdlock(&amp;myrwlock);
+        printf(&quot;read_thread: %u,x=%d\n&quot;, pthread_self(), x);
+        sleep(1);
+        //释放读写锁
+        pthread_rwlock_unlock(&amp;myrwlock);
+    }
+    return NULL;
+}
+
+void* write_thread(void* param)
+{
+    printf(&quot;------%u write_thread ready!\n&quot;,pthread_self());
+    while (1)
+    {
+        sleep(1);
+        // 请求写锁
+        pthread_rwlock_wrlock(&amp;myrwlock);
+        ++x;
+        printf(&quot;write_thread: %u,x=%d\n&quot;, pthread_self(), x);
+        sleep(1);
+        //释放读写锁
+        pthread_rwlock_unlock(&amp;myrwlock);
+    }
+    return NULL;
+}
+
+int main()
+{
+    int i;
+    //初始化读写锁
+    pthread_rwlock_init(&amp;myrwlock, NULL);
+    //创建 3 个读 x 变量的线程
+    pthread_t readThread[3];
+    for (i = 0; i &lt; 3; ++i)
+    {
+        pthread_create(&amp;readThread[i], NULL, read_thread, NULL);
+    }
+    //创建 1 个修改 x 变量的线程
+    pthread_t writeThread;
+    pthread_create(&amp;writeThread, NULL, write_thread, NULL);
+    //等待各个线程执行完成
+    pthread_join(writeThread, NULL);
+
+    for (int i = 0; i &lt; 3; ++i)
+    {
+        pthread_join(readThread[i], NULL);
+    }
+    //销毁读写锁
+    pthread_rwlock_destroy(&amp;myrwlock);
+    return 0;
+}</pre>
+假设程序编写在 thread.c 文件中，执行过程如下：
+<pre class="info-box">
+[root@localhost ~]# gcc thread.c -o thread.exe -lpthread
+[root@localhost ~]# ./mythread.exe
+------1134741248 read_thread ready
+------1113761536 read_thread ready
+------1103271680 write_thread ready!
+------1124251392 read_thread ready
+read_thread: 1124251392,x=0
+read_thread: 1113761536,x=0
+read_thread: 1134741248,x=0
+write_thread: 1103271680,x=1
+read_thread: 1134741248,x=1
+read_thread: 1124251392,x=1
+read_thread: 1113761536,x=1
+write_thread: 1103271680,x=2
+read_thread: 1124251392,x=2
+read_thread: 1113761536,x=2
+read_thread: 1134741248,x=2</pre>
+<blockquote>
+	<p>
+		注意，此程序会一直执行，按 &quot;Ctrl+Z&quot; 组合键可以使程序停止。</p>
+</blockquote>
+程序中共创建了 4 个子线程，其中 3 个线程用于读取 x 变量的值，读取变量前会先获得&ldquo;读锁&rdquo;。剩余的 1 个线程用于修改 x 变量的值，修改前先获得&ldquo;写锁&rdquo;。<br />
+<br />
+通过执行结果不难看到，3 个读取 x 变量的线程总是能够同时获取到 x 变量的值，因为它们能够同时获得&ldquo;读锁&rdquo;并同时执行。
+<blockquote>
+	<p>
+		除了读写锁，线程同步的实现方式还有<a href="../thread/vip_8615_2.html" target="_blank">互斥锁</a>、<a href="../thread/vip_8616_2.html" target="_blank">信号量</a>以及<a href="../thread/vip_8617_2.html" target="_blank">条件变量</a>。</p>
+</blockquote>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="44_2.html" title="Go语言if else（分支结构）" target="_blank">Go语言if else（分支结构）</a></li>
+<li><a href="vip_2103_2.html" title="用一个实例来深入剖析函数进栈出栈的过程" target="_blank">用一个实例来深入剖析函数进栈出栈的过程</a></li>
+<li><a href="2398_2.html" title="Python自定义模块" target="_blank">Python自定义模块</a></li>
+<li><a href="3040_2.html" title="C# 数据表格（DataGridView）控件的应用案例" target="_blank">C# 数据表格（DataGridView）控件的应用案例</a></li>
+<li><a href="vip_6073_2.html" title="Python MetaClass元类实现的底层原理" target="_blank">Python MetaClass元类实现的底层原理</a></li>
+<li><a href="7992_2.html" title="gcc指令一次处理多个文件" target="_blank">gcc指令一次处理多个文件</a></li>
+<li><a href="../matplotlib/quiver_2.html" title="Matplotlib振动图" target="_blank">Matplotlib振动图</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8635;
+window.arcId = "cff79mG17ocPPmRprI9Zi/btP/I4QFykFD+SWiC+4fNBbCKQSza7BOpBncQ";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Qt QTreeWidget树形控件用法详解</title>
+<meta name="description" content="QTreeWidget 是 Qt 框架提供的一种树形控件，它能以树形结构展示数据（或者文件）之间的包含关系。举个简单的例子，下图是我们创建好的一个 Qt 项目： 图 1 树形结构 图 1 是树形结构的" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Qt QTreeWidget树形控件用法详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">QTreeWidget 是 Qt 框架提供的一种树形控件，它能以树形结构展示数据（或者文件）之间的包含关系。举个简单的例子，下图是我们创建好的一个 Qt 项目：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211028/16394RH8-0.gif" /></div>
+<div style="text-align: center;">
+图 1 树形结构</div>
+<br />
+图 1 是树形结构的一个典型示例，MyFirstQt 项目的内部构成一目了然，项目内部包含一个 MyFirstQt.pro 项目文件和 3 个文件夹，每个文件夹中包含哪些文件也都可以清楚地看到。<br />
+<br />
+作为一款成熟的 GUI 框架，Qt 提供了 QTreeWidget 树形控件，专门用来以树形结构显示数据。<br />
+<h2>
+QTreeWidget控件的创建</h2>
+QTreeWidget 类专门用来创建树形控件，使用此类前需在项目中引入<code>&lt;QTreeWidget&gt;</code>头文件。<br />
+<br />
+QTreeWidget 类只提供了 1 个构造函数：
+<p class="info-box">
+QTreeWidget(QWidget *parent = Q_NULLPTR)</p>
+parent 参数用于为新建树形控件指定父窗口。当为新建 QTreeWidget 对象指定父窗口后，它将作为该窗口中的一个控件（如图 2a) ）；反之，新建 QTreeWidget 控件将作为一个独立的窗口（如图 2b) ）。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211028/16394T940-1.gif" /><br />
+图 2 MyTreeWidget控件</div>
+举个例子：
+<pre class="cpp">
+//① 独立的树形窗口,对应图 2b)
+QTreeWidget treeWidget;
+//② 树形控件，作为 widget 窗口上的一个子控件，对应图 2a)
+QWidget widget;
+QTreeWidget treeWidget(&amp;widget);</pre>
+由于我们尚未指定 QTreeWidget 新控件要显示的数据内容，因此初始状态下的 QTreeWidget 控件如图 2 所示，不包含任何内容。图 2 中显示的数字 1，是 QTreeWidget 控件中的表头，默认情况下 QTreeWidget 只有一个表头，表头的内容就是 1。
+<h4>
+QTreeWidget\QTreeView的关系和区别</h4>
+QTreeWidget 类继承自 QTreeView 类，QTreeView 类也可以用来创建树形控件。<br />
+<br />
+QTreeWidget 可以看作&ldquo;简易版&rdquo;或&ldquo;升级版&rdquo;的 QTreeView，前者的使用方式更加简单，入门门槛低，对于刚刚接触 Qt 的初学者，我建议先学习 QTreeWidget 控件。<br />
+<br />
+作为简易版的 QTreeView，QTreeWidget 仅适用于构建简单的树形结构，当实际场景中需要构建数据量大、结构复杂的树形结构时，还是应该选择 QTreeView。
+<h4>
+QTreeWidgetItem类</h4>
+通常情况下，我们习惯将树形结构中的每份数据称为一个结点。QTreeWidget 控件中，每个结点都是 QTreeWidgetItem 类的实例对象。也就是说，QTreeWidget 类对象代表整个树形控件，而 QTreeWidgetItem 类对象代表树形控件中的结点。<br />
+<br />
+使用 QTreeWidgetItem 类创建结点之前，项目中需引入<code>&lt;QTreeWidgetItem&gt;</code>头文件。QTreeWidgetItem 类提供的构造函数有很多，常用的有如下几个：
+<pre class="info-box">
+//创建一个新结点，设置结点中包含的数据（strings），将该结点添加到指定的 parent 树形结构中
+QTreeWidgetItem(QTreeWidget *parent, const QStringList &amp;strings, int type = Type)
+//创建一个新结点，将其插入到 parent 树形结构中 preceding 结点之后的位置
+QTreeWidgetItem(QTreeWidget *parent, QTreeWidgetItem *preceding, int type = Type)
+//创建一个新结点，将其添加到指定 parent 结点中，作为 parent 结点的子结点
+QTreeWidgetItem(QTreeWidgetItem *parent, int type = Type)
+//创建一个新结点，指定结点中包含的文本内容（strings），将其添加到指定 parent 结点中，作为 parent 的子结点
+QTreeWidgetItem(QTreeWidgetItem *parent, const QStringList &amp;strings, int type = Type)
+//创建一个新结点，将其插入到 parent 结点中 preceding 结点之后的位置。
+QTreeWidgetItem(QTreeWidgetItem *parent, QTreeWidgetItem *preceding, int type = Type)</pre>
+<blockquote>
+<p>
+type 参数通常不需要手动指定，保持默认即可。</p>
+</blockquote>
+QTreeWidgetItem 还提供了很多实用的成员方法，下表罗列了一些常用的方法。借助它们，我们可以轻松地管理 QTreeWidget 控件中的各个结点。<br />
+<br />
+<table>
+<caption>
+表 1 QTreeWidgetItem常用成员方法</caption>
+<tbody>
+<tr>
+<th>
+成员方法</th>
+<th>
+功 能</th>
+</tr>
+<tr>
+<td>
+void QTreeWidgetItem::addChild(QTreeWidgetItem *child)</td>
+<td>
+为当前结点添加子结点。</td>
+</tr>
+<tr>
+<td>
+void QTreeWidgetItem::addChildren(const QList&lt;QTreeWidgetItem *&gt; &amp;children)</td>
+<td>
+一次性为当前结点添加多个子结点。</td>
+</tr>
+<tr>
+<td>
+QTreeWidgetItem *QTreeWidgetItem::child(int index) const</td>
+<td>
+获得当前结点的第 index 个子结点。</td>
+</tr>
+<tr>
+<td>
+int QTreeWidgetItem::childCount() const</td>
+<td>
+获得当前结点拥有的子结点数。</td>
+</tr>
+<tr>
+<td>
+QTreeWidgetItem *QTreeWidgetItem::parent() const</td>
+<td>
+获得当前结点的父结点。</td>
+</tr>
+<tr>
+<td>
+void QTreeWidgetItem::setCheckState(int column, Qt::CheckState state)</td>
+<td>
+设置当前结点第 column 列的复选框状态。</td>
+</tr>
+<tr>
+<td>
+void QTreeWidgetItem::setIcon(int column, const QIcon &amp;icon)</td>
+<td>
+设置当前结点第 column 列的 icon 图标。</td>
+</tr>
+<tr>
+<td>
+void QTreeWidgetItem::setText(int column, const QString &amp;text)</td>
+<td>
+设置当前结点第 column 列的文本。</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>
+关于表中这些成员方法的具体用法，本文后续会大家结合实例进行讲解。</p>
+</blockquote>
+<h2>
+QTreeWidget的实际应用</h2>
+<p>
+QTreeWidget 类提供了很多使用的成员方法，您可以借助 Qt Creator 打开 QTreeWidget 类的帮助手册查看。下表给大家罗列了常用的一些成员方法：</p>
+<p>
+&nbsp;</p>
+<table>
+<caption>
+表 2&nbsp;QTreeWidget常用成员方法</caption>
+<tbody>
+<tr>
+<th>
+成员方法</th>
+<th>
+功 能</th>
+</tr>
+<tr>
+<td>
+void setColumnCount(int columns)</td>
+<td>
+设置每个结点的列数。</td>
+</tr>
+<tr>
+<td>
+void setHeaderHidden(bool hide)</td>
+<td>
+设置控件的表头是否隐藏。</td>
+</tr>
+<tr>
+<td>
+void QTreeWidget::addTopLevelItem(QTreeWidgetItem *item)</td>
+<td>
+在树形控件中添加顶层结点。</td>
+</tr>
+<tr>
+<td>
+void QTreeWidget::setHeaderLabels(const QStringList &amp;labels)</td>
+<td>
+自定义控件中所有列的表头的文本内容。</td>
+</tr>
+<tr>
+<td>
+void QTreeWidget::setItemWidget(QTreeWidgetItem *item, int column, QWidget *widget)</td>
+<td>
+在 item 结点中第 column 列的位置添加一个 widget 控件。</td>
+</tr>
+<tr>
+<td>
+void QTreeWidget::removeItemWidget(QTreeWidgetItem *item, int column)</td>
+<td>
+移除 item 结点第 column 列处的控件。</td>
+</tr>
+<tr>
+<td>
+void QWidget::resize(int w, int h)</td>
+<td>
+设置整个控件的尺寸。</td>
+</tr>
+</tbody>
+</table>
+<br />
+结合表 1 和表 2 罗列的这些成员方法，接下来给大家介绍一些实际场景中 QTreeWidget 控件的用法，它们都非常实用，每位读者都应该掌握。
+<h4>
+1) 添加结点</h4>
+向 QTreeWidget 控件中添加结点，具体可分为两种情况，一种是添加最顶层的结点，另一种是为某个结点添加子结点。
+<blockquote>
+<p>
+如图 1 所示，MyFirstQt 就是最顶层的结点，而 mainwindow.h 是 Headers 的子节点。</p>
+</blockquote>
+一个 QTreeWidget 控件可以同时包含多个顶层结点。添加顶层结点的方法有两种，分别是：
+<pre class="cpp">
+//1、调用相应的构造函数，直接将结点作为树形控件的顶层结点
+QTreeWidgetItem topItem(&amp;treeWidget);
+//2、调用 QTreeWidget 类的 addTopLevelItem() 方法
+QTreeWidgetItem topItem2;
+treeWidget.addTopLevelItem(&amp;topItem2);</pre>
+第一种方法，我们向 treeWidget 树形控件中成功添加了 topItem 顶层结点；第二种方法，我们先创建了 topItem2 结点，然后借助 addTopLevelItem() 方法将其添加到 treeWidget 树形控件中，作为该控件的第二个顶层结点。<br />
+<br />
+同样，为某个结点添加子结点的方法也有两种，分别是：
+<pre class="cpp">
+//1、调用相应的构造函数，直接指定新结点的父结点
+QTreeWidgetItem childItem(&amp;item);
+//2、先创建一个新结点，调用 QTreeWidgetItem 类提供的 addChild() 方法，可以为某个结点添加子结点。
+QTreeWidgetItem childItem2;
+item2.addChild(&amp;childItem2);</pre>
+<br />
+除此之外，还有其它添加结点的方法，例如使用<code>QList&lt;QTreeWidgetItem *&gt; items</code>一次性向树形控件中添加多个顶层结点或者子结点：
+<pre class="cpp">
+QList&lt;QTreeWidgetItem *&gt; items;
+items.append(&amp;item);
+items.append(&amp;item2);
+treeWidget.addTopLevelItems(items);</pre>
+Qt 对 C++ STL 库中的容器进行了更好的封装，QList 容器就是其中之一。通过先将 item 和 item2 添加到 items 容器中，然后再将 items 传递给 treeWidget 对象的 addTopLevelItems() 方法，就可以将 items 容器中的所有结点添加到 treeWidget 控件中，作为该控件的顶层结点。
+<blockquote>
+<p>
+通过将装满结点的 QList 容器借助 QTreeWidgetItem 类提供的 addChildren() 方法，可以添加多个子结点。这里不再给出实例代码，感兴趣的读者可自行尝试实现。</p>
+</blockquote>
+<h4>
+2) 给结点添加图标</h4>
+对于每个 QTreeWidgetItem 类的结点，除了可以放置文本信息外，还可以添加 icon 图标。<br />
+<br />
+【实例一】
+<pre class="cpp">
+#include &lt;QApplication&gt;
+#include &lt;QWidget&gt;
+#include &lt;QTreeWidget&gt;
+#include &lt;QTreeWidgetItem&gt;
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    QWidget widget;
+    widget.setWindowTitle(&quot;MyTreeWidget控件&quot;);
+    QTreeWidget treeWidget(&amp;widget);
+    QTreeWidgetItem item;
+    item.setText(0,&quot;http://c.biancheng.net&quot;);
+    item.setIcon(0,QIcon(&quot;D:\\favicon.ico&quot;));
+    treeWidget.addTopLevelItem(&amp;item);
+    widget.show();
+
+    return a.exec();
+}</pre>
+假设 D 盘存储着一个名为 favicon.ico 的 icon 图标，程序执行结果为：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211028/16394SK5-2.gif" /><br />
+图 3 带 icon 的结点</div>
+<h4>
+3) 给结点添加复选框</h4>
+所谓复选框，举个简单的例子，在【实例一】程序的第 14 行插入一行代码：
+<pre class="cpp" shownum="false">
+item.setCheckState(0,Qt::Unchecked);</pre>
+再次执行程序，输出结果为：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211028/16394R2J-3.gif" /><br />
+图 4 带复选框的结点</div>
+<br />
+对比图 3 和图 4 不难发现，之前放置 icon 的位置被一个方框占据了。这个方框是可以被选择的，而且当同时存在多个方框时，用户可以根据需要选择性地选中多个方框，这样的方框称为复选框。<br />
+<br />
+默认情况下，QTreeWidgetItem 结点不显示复选框，通过调用 setCheckState() 方法，可以使结点自带的复选框显现出来。复选框的状态有 3 种，如下图所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211028/16394Wa0-4.gif" /><br />
+图 5 复选框的 3 种状态</div>
+<br />
+<ul>
+<li>
+Qt::Unchecked：未选中状态，对应图 5 中的第一种情况；</li>
+<li>
+Qt::Checked：选中状态，对应图 5 中的第二种情况；</li>
+<li>
+Qt::PartiallyChecked：部分选中状态，对应图 5 中的第三种情况。</li>
+</ul>
+<blockquote>
+<p>
+所谓部分选中状态，是指当该结点下包含多个带复选框的子节点时，如果用户只选中了其中一部分子结点，那么通常将该结点设置为部分选中状态。</p>
+</blockquote>
+<h4>
+4) 多列树形控件</h4>
+上文给大家创建的 QTreeWidget 控件，都只包含一列。图 2~5 中，各个 QTreeWdiget 控件中都显示一个数字 1，就是因为控件中只包含 1 列，数字 1 就是这一列的表头。根据需要，QTreeWidget 控件中每一行可以存放多列结点。<br />
+<br />
+【实例二】
+<pre class="cpp">
+#include &lt;QApplication&gt;
+#include &lt;QWidget&gt;
+#include &lt;QTreeWidget&gt;
+#include &lt;QTreeWidgetItem&gt;
+#include &lt;QStringList&gt;
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    QWidget widget;
+    widget.setWindowTitle(&quot;MyTreeWidget控件&quot;);
+    widget.resize(600,300);
+    QTreeWidget treeWidget(&amp;widget);
+    //设置列数
+    treeWidget.setColumnCount(3);
+    treeWidget.resize(600,300);
+
+    //添加顶层结点
+    QTreeWidgetItem topItem;
+    topItem.setText(0,&quot;教程&quot;);
+    treeWidget.addTopLevelItem(&amp;topItem);
+
+    //添加子结点
+    QStringList c;
+    c &lt;&lt; &quot;C语言教程&quot; &lt;&lt; &quot;http://c.biancheng.net/c/&quot; &lt;&lt;&quot;已完成&quot;;
+    QTreeWidgetItem childItem1(&amp;topItem,c);
+
+    QStringList qt;
+    qt &lt;&lt; &quot;Qt教程&quot; &lt;&lt; &quot;http://c.biancheng.net/qt/&quot; &lt;&lt;&quot;未完成&quot;;
+    QTreeWidgetItem childItem2(&amp;topItem,qt);
+
+    QStringList python;
+    python &lt;&lt; &quot;Python教程&quot; &lt;&lt; &quot;http://c.biancheng.net/python/&quot; &lt;&lt;&quot;已完成&quot;;
+    QTreeWidgetItem childItem3(&amp;topItem,python);
+
+    widget.show();
+    return a.exec();
+}</pre>
+程序运行结果为：
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211028/16394W519-5.png" /><br />
+图 6 多列树形控件</div>
+<br />
+默认情况下，每一列的表头是当前列的列号。必要的时候，我们还可以指定每一列的表头。例如：
+<pre class="cpp">
+QStringList top;
+top &lt;&lt; &quot;教程&quot; &lt;&lt; &quot;网址&quot; &lt;&lt;&quot;完成状态&quot;;
+treeWidget.setHeaderLabels(top);</pre>
+由此，图 6 中各个列的表头就依次变成了&ldquo;教程&rdquo;、&ldquo;网址&rdquo;和&ldquo;完成状态&rdquo;。读者可以将上述 3 行代码添加到实例二第 16 行的位置，然后再次运行程序查看执行结果。<br />
+<br />
+此外，QTreeWidget 控件默认会显示每一列的表头，通过调用从 QTreeView 父类继承过来的 setHeaderHidden() 方法，可以将表头隐藏起来。例如：
+<pre class="cpp" shownum="false">
+treeWidget.setHeaderHidden(true);</pre>
+当参数值为 true 时，表示将表头隐藏起来，反之则表示不隐藏表头。
+<h4>
+5)&nbsp;QTreeWidget中添加其它控件</h4>
+QTreeWidgetItem 结点除了可以显示文本信息、icon图标、复选框等基本内容外，还可以容纳其它的一些的控件，例如输入框、按钮等。<br />
+<br />
+QTreeWidget 类提供有 setItemWidget() 方法，可以将其它控件添加到指定列的结点中：
+<pre class="info-box">
+void QTreeWidget::setItemWidget(QTreeWidgetItem *item, int column, QWidget *widget)</pre>
+item 表示容纳 widget 控件的结点，column 参数用于指定将 widget 添加到 item 第几列的位置上。<br />
+<br />
+举个例子：
+<pre class="cpp">
+#include &lt;QApplication&gt;
+#include &lt;QWidget&gt;
+#include &lt;QTreeWidget&gt;
+#include &lt;QTreeWidgetItem&gt;
+#include &lt;QStringList&gt;
+#include &lt;QTableWidget&gt;
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    QWidget widget;
+    widget.setWindowTitle(&quot;MyTreeWidget控件&quot;);
+    widget.resize(600,300);
+
+    QTreeWidget treeWidget(&amp;widget);
+    //设置列数
+    treeWidget.resize(600,300);
+
+    //添加顶层结点
+    QTreeWidgetItem topItem;
+    treeWidget.addTopLevelItem(&amp;topItem);
+    //创建表格控件
+    QTableWidget TableWidget(4,3);
+    //设置表格中每一行的内容
+    TableWidget.setItem(0,0,new QTableWidgetItem(&quot;C语言教程&quot;));
+    TableWidget.setItem(0,1,new QTableWidgetItem(&quot;http://c.biancheng.net/c/&quot;));
+    TableWidget.setItem(0,2,new QTableWidgetItem(&quot;已更新完毕&quot;));
+    TableWidget.setItem(1,0,new QTableWidgetItem(&quot;Qt教程&quot;));
+    TableWidget.setItem(1,1,new QTableWidgetItem(&quot;http://c.biancheng.net/qt/&quot;));
+    TableWidget.setItem(1,2,new QTableWidgetItem(&quot;正在更新&quot;));
+    TableWidget.setItem(2,0,new QTableWidgetItem(&quot;C++教程&quot;));
+    TableWidget.setItem(2,1,new QTableWidgetItem(&quot;http://c.biancheng.net/cplus/&quot;));
+    TableWidget.setItem(2,2,new QTableWidgetItem(&quot;已更新完毕&quot;));
+    //将表格控件作为结点内容
+    treeWidget.setItemWidget(&amp;topItem,0,&amp;TableWidget);
+
+    widget.show();
+    return a.exec();
+}</pre>
+程序运行结果为：
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211028/16394QO9-6.png" /><br />
+图 7 QTreeWidget添加其它控件</div>
+<h2>
+QTreeWidget信号和槽</h2>
+QTreeWidget 控件提供了很多信号函数，可以捕捉用户的诸多动作，例如点击或双击了某个结点、某个结点被修改等等，如下罗列了几个常用的信号函数：
+<pre class="info-box">
+//用户单击某个结点时，会触发此信号函数
+void QTreeWidget::itemClicked(QTreeWidgetItem *item, int column)
+//用户双击某个结点时，会触发此信号函数
+void QTreeWidget::itemDoubleClicked(QTreeWidgetItem *item, int column)
+//当某个结点的内容被修改时，会触发此信号函数
+void QTreeWidget::itemChanged(QTreeWidgetItem *item, int column)
+//当用户选择其它结点时，会触发此信号函数
+void QTreeWidget::currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)</pre>
+同时，QTreeWidget 还提供了很多槽函数，例如：
+<pre class="info-box">
+//控件树形控件中的所有结点
+void QTreeWidget::clear()
+//折叠指定结点所有的子结点
+void QTreeWidget::collapseItem(const QTreeWidgetItem *item)
+//展开指定结点所有的子结点
+void QTreeWidget::expandItem(const QTreeWidgetItem *item)</pre>
+这里给大家举个简单的例子，实际场景中当某个结点的复选框被选中时，它的所有子结点也应该同时被选中。这个功能就可以利用 QTreeWidget 的信号和槽来实现。
+<pre class="cpp">
+//main.cpp
+#include &lt;QApplication&gt;
+#include &lt;QWidget&gt;
+#include &lt;QTreeWidget&gt;
+#include &lt;QTreeWidgetItem&gt;
+#include &lt;QStringList&gt;
+#include &lt;QTableWidget&gt;
+
+//自定义槽函数
+class MyWidget:public QWidget{
+    Q_OBJECT
+public slots:
+    void treeWidgetClicked(QTreeWidgetItem * item);
+};
+//接收 itemClicked() 信号函数传递过来的 item 参数
+void MyWidget::treeWidgetClicked(QTreeWidgetItem *item){
+    //遍历 item 结点所有的子结点
+    for(int i=0;i&lt;item-&gt;childCount();i++){
+        //找到每个子结点
+        QTreeWidgetItem *childItem = item-&gt;child(i);
+        //将子结点的选中状态调整为和父结点相同
+        childItem-&gt;setCheckState(0,item-&gt;checkState(0));
+    }
+}
+
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    MyWidget widget;
+    widget.setWindowTitle(&quot;MyTreeWidget控件&quot;);
+    widget.resize(600,300);
+    QTreeWidget treeWidget(&amp;widget);
+    //设置列数
+    treeWidget.setColumnCount(3);
+    treeWidget.resize(600,300);
+
+    //添加顶层结点
+    QTreeWidgetItem topItem;
+    topItem.setText(0,&quot;教程&quot;);
+    topItem.setCheckState(0,Qt::Unchecked);
+    treeWidget.addTopLevelItem(&amp;topItem);
+
+    //添加子结点
+    QStringList c;
+    c &lt;&lt; &quot;C语言教程&quot; &lt;&lt; &quot;http://c.biancheng.net/c/&quot; &lt;&lt;&quot;已完成&quot;;
+    QTreeWidgetItem childItem1(&amp;topItem,c);
+    childItem1.setCheckState(0,Qt::Unchecked);
+
+    QStringList qt;
+    qt &lt;&lt; &quot;Qt教程&quot; &lt;&lt; &quot;http://c.biancheng.net/qt/&quot; &lt;&lt;&quot;未完成&quot;;
+    QTreeWidgetItem childItem2(&amp;topItem,qt);
+    childItem2.setCheckState(0,Qt::Unchecked);
+
+    QStringList python;
+    python &lt;&lt; &quot;Python教程&quot; &lt;&lt; &quot;http://c.biancheng.net/python/&quot; &lt;&lt;&quot;已完成&quot;;
+    QTreeWidgetItem childItem3(&amp;topItem,python);
+    childItem3.setCheckState(0,Qt::Unchecked);
+
+    //添加信号和槽机制，当某个结点被点击时，调整所有子结点的选中状态，同时将所有子结点展开。
+    QObject::connect(&amp;treeWidget,&amp;QTreeWidget::itemClicked,&amp;widget,&amp;MyWidget::treeWidgetClicked);
+    QObject::connect(&amp;treeWidget,&amp;QTreeWidget::itemClicked,&amp;treeWidget,&amp;QTreeWidget::expandItem);
+    widget.show();
+    return a.exec();
+}
+//MyWidget类的定义应该放到 .h 文件中，本例中将其写到 main.cpp 中，程序最后需要添加 #include &quot;当前源文件名.moc&quot; 语句，否则无法通过编译。
+#include &quot;main.moc&quot;</pre>
+程序执行结果为：
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211028/16394Q941-7.gif" /></div>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="882.html" title="Java日期查询" target="_blank">Java日期查询</a></li>
+<li><a href="3590.html" title="汇编语言SHL（左移）指令：将操作数逻辑左移一位" target="_blank">汇编语言SHL（左移）指令：将操作数逻辑左移一位</a></li>
+<li><a href="vip_6065.html" title="Python 3函数注解：为函数提供类型提示信息" target="_blank">Python 3函数注解：为函数提供类型提示信息</a></li>
+<li><a href="7903.html" title="Django项目实例详解(一)" target="_blank">Django项目实例详解(一)</a></li>
+<li><a href="vip_8341.html" title="SQL注入是什么？SQL注入原理及预防方法" target="_blank">SQL注入是什么？SQL注入原理及预防方法</a></li>
+<li><a href="9838.html" title="FPGA是什么（超级详细）" target="_blank">FPGA是什么（超级详细）</a></li>
+<li><a href="2iqh0q.html" title="将PPT转换成Word（4个步骤）" target="_blank">将PPT转换成Word（4个步骤）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9420;
+window.arcId = "f9248MLAuVyR+mUaisjd0u+q8jEOhhLgqyO45PsqBQFJkRWhCddZ1IhFVSU";
+window.typeidChain = "294|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

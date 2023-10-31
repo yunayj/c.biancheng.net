@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C++友元函数（超详细）</title>
+<meta name="description" content="私有成员对于类外部的所有程序部分而言都是隐藏的，访问它们需要调用一个公共成员函数，但有时也可能会需要创建该规则的一项例外。 友元函数 是一个不属于类成员的函数，但它可" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C++友元函数（超详细）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">私有成员对于类外部的所有程序部分而言都是隐藏的，访问它们需要调用一个公共成员函数，但有时也可能会需要创建该规则的一项例外。<br />
+<br />
+<span style="color:#008000;">友元函数</span>是一个不属于类成员的函数，但它可以访问该类的私有成员。换句话说，友元函数被视为好像是该类的一个成员。友元函数可以是常规的独立函数，也可以是其他类的成员。实际上，整个类都可以声明为另一个类的友元。<br />
+<br />
+为了使一个函数或类成为另一个类的友元，必须由授予它访问权限的类来声明。类保留了它们的朋友的 &quot;名单&quot;，只有名字出现在列表中的外部函数或类才被授予访问权限。<span style="color:#b22222;">通过将关键字 friend 放置在函数的原型之前，即可将函数声明为友元。</span><br />
+<br />
+友元函数的一般格式如下：
+<p class="info-box">
+	friend &lt;return type&gt;&lt;function name&gt; (&lt;parameter type list&gt;);</p>
+在 Budget 类的以下声明中，另一个类的 addBudget 函数 Aux 已声明为友元：<br />
+<pre class="cpp">
+class Budget
+{
+    private:
+        static double corpBudget;
+        double divBudget;
+    public:
+        Budget() { divBudget = 0; }
+        void addBudget(double b)
+        {
+            divBudget += b;
+            corpBudget += divBudget;
+        }
+        double getDivBudget() const { return divBudget; }
+        static double getCorpBudget() { return corpBudget; }
+        static void mainOffice(double);
+        friend void Aux::addBudget (double) ; // 友元
+};</pre>
+假设另一个 Aux 类代表一个分部的附属办公室，也许在另一个国家。附属办公室提出了一个单独的预算要求，该要求必须添加到整个企业的预算中。则 Aux::addBudget 函数的友元声明告诉编译器，该函数己授予访问 Budget 的私有成员的权限。该函数釆用 double 类型的实参，表示要添加到企业预算中的金额：&nbsp;<br />
+<pre class="cpp">
+class Aux
+{
+    private:
+        double auxBudget;
+    public:
+        Aux() { auxBudget =0; }
+        void addBudget(double);
+        double getDivBudget() { return auxBudget; }
+};</pre>
+以下是 Aux addBudget 成员函数的定义：<br />
+<pre class="cpp">
+void Aux::addBudget(double b)
+{
+    auxBudget += b;
+    Budget::corpBudget += auxBudget;
+}</pre>
+形参 b 被添加到企业预算中，这是通过使用表达式 Budget::corpBudget 来访问并实现的。下面的程序演示了这些类在完整程序中的用法。
+<pre class="cpp">
+//auxil.h的内容
+#ifndef AUXIL_H
+#define AUXIL_H
+// Aux class declaration.
+class Aux
+{
+    private:
+        double auxBudget;
+    public:
+        Aux() { auxBudget = 0; }
+        void addBudget(double);
+        double getDivBudget() const { return auxBudget; }
+};
+#endif
+//budget3.h的内容
+#ifndef BUDGET3_H
+#define BUDGET3_H
+#include &quot;auxil.h&quot; // For Aux class declaration
+//Budget class declaration.
+class Budget {
+    private:
+        static double corpBudget;
+        double divBudget;
+    public:
+        Budget() { divBudget =0; }
+        void addBudget(double b)
+        {
+            divBudget += b;
+            corpBudget += divBudget;
+        }
+        double getDivBudget() const {return divBudget;}
+        static double getCorpBudget() {return corpBudget;}
+        static void mainOffice(double);
+        friend void Aux::addBudget(double);
+};
+#endif
+
+//budget3.cpp的内容
+#include &quot;budget3.h&quot;
+//Definition of static member.
+double Budget::corpBudget = 0;
+void Budget:imainOffice(double budReq)
+{
+    corpBudget += budReq;
+}
+
+//auxil.cpp的内容
+#include &quot;auxil.h&quot;
+#include &quot;budget3.h&quot;
+void Aux::addBudget(double b)
+{
+    auxBudget += b;
+    Budget::corpBudget += auxBudget;
+}
+
+//main程序的内容
+//This program demonstrates a static class member variable. #include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+#include &quot;budget3.h&quot;
+u<a href='https://m.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+
+int main()
+{
+    const int N_DIVISIONS = 4;
+    // Get the budget requests for the divisions and offices
+    cout &lt;&lt; &quot;Enter the main office&#39;s budget request:&quot;;
+    double amount;
+    cin &gt;&gt; amount;
+    Budget:imainOffice(amount);
+    // Create the division and auxiliary offices
+    Budget divisions [N_DIVISIONS];
+    Aux auxOffices[N_DIVISIONS];
+    cout &lt;&lt; &quot;\nEnter the budget requests for the divisions and&quot; &lt;&lt; &quot;\ntheir auxiliary offices as prompted:\n&quot;;
+    for (int count = 0; count &lt; N_DIVISIONS; count++)
+    {
+        double bud;
+        cout &lt;&lt; &quot;Division &quot; &lt;&lt; (count + 1) &lt;&lt; &quot;: &quot;;
+        cin &gt;&gt; bud;
+        divisions[count].addBudget(bud);
+        cout &lt;&lt; &quot;Division &quot; &lt;&lt; (count + 1) &lt;&lt; &quot;&#39;s auxiliary office:&quot;;
+        cin &gt;&gt; bud;
+        auxOffices[count].addBudget(bud);
+    }
+
+    // Print the budgets
+    cout &lt;&lt; setprecision (2);
+    cout &lt;&lt; showpoint &lt;&lt; fixed;
+    cout &lt;&lt; &quot;Here are the division budget requests:\n&quot;;
+    for (int count = 0; count &lt; N_DIVISIONS; count++)
+    {
+        cout &lt;&lt; &quot;\tDivision: &quot; &lt;&lt; (count + 1) &lt;&lt; &quot;\t\t\t$ &quot;;
+        cout &lt;&lt; setw(7);
+        cout &lt;&lt; divisions[count].getDivBudget() &lt;&lt; endl;
+        cout &lt;&lt; &quot;\tAuxiliary Office of Division &quot; &lt;&lt; (count+1);
+        cout &lt;&lt; &quot;\t$ &quot;;
+        cout &lt;&lt; auxOffices[count].getDivBudget() &lt;&lt; endl;
+    }
+
+    // Print total requests
+    cout &lt;&lt; &quot;\tTotal Requests (including main office): $ &quot;;
+    cout &lt;&lt; Budget::getCorpBudget() &lt;&lt; endl;
+    return 0;
+}</pre>
+程序输出结果：
+<p class="info-box">
+	Enter the main office&#39;s budget request: 100000<br />
+	Enter the budget requests for the divisions and their auxiliary offices as prompted:<br />
+	Division 1: 100000<br />
+	Division 1&#39;s auxiliary office: 500000<br />
+	Division 2: 200000<br />
+	Division 2&#39;s auxiliary office: 40000<br />
+	Division 3: 300000<br />
+	Division 3&#39;s auxiliary office: 700000<br />
+	Division 4: 400000<br />
+	Division 4&#39;s auxiliary office: 650000<br />
+	Here are the division budget requests:<br />
+	Division: 1&nbsp;&nbsp;&nbsp; $ 100000.00<br />
+	Auxiliary Office of Division 1 $ 50000.00<br />
+	Division: 2&nbsp;&nbsp;&nbsp; $ 200000.00<br />
+	Auxiliary Office of Division 2&nbsp;&nbsp;&nbsp; $ 40000.00<br />
+	Division: 3&nbsp;&nbsp;&nbsp; $ 300000.00<br />
+	Auxiliary Office of. Division 3&nbsp;&nbsp;&nbsp; $ 70000.00<br />
+	Division: 4&nbsp;&nbsp;&nbsp; $ 400000.00<br />
+	Auxiliary Office of Division 4&nbsp;&nbsp;&nbsp; $ 65000.00<br />
+	Total Requests (including main&nbsp;&nbsp;&nbsp; office): $ 1325000.00</p>
+注意，如前所述，可以使整个类成为另一个类的友元。Budget 类可以通过以下声明使 Aux 类成为友元：<br />
+<p class="info-box">
+	friend class Aux;</p>
+但是，这可能并不是一个好主意，因为这将导致 Aux 的每个成员函数（包括稍后可能添加的函数）都可以访问 Budget 的私有成员。所以，最好的做法是只声明那些必须有权访问类的私有成员的函数作为友元。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="37_3.html" title="Go语言遍历字符串——获取每一个字符串元素" target="_blank">Go语言遍历字符串——获取每一个字符串元素</a></li>
+<li><a href="4400_2.html" title="Python set集合基本操作（添加、删除、交集、并集、差集）" target="_blank">Python set集合基本操作（添加、删除、交集、并集、差集）</a></li>
+<li><a href="../numpy/string-function_2.html" title="NumPy字符串处理函数" target="_blank">NumPy字符串处理函数</a></li>
+<li><a href="9484_2.html" title="大学生不要为了赚钱而兼职，没有什么卵用！" target="_blank">大学生不要为了赚钱而兼职，没有什么卵用！</a></li>
+<li><a href="9647_2.html" title="5分钟了解汽车操作系统（科普篇）" target="_blank">5分钟了解汽车操作系统（科普篇）</a></li>
+<li><a href="../c/free_2.html" title="C语言free()：释放堆内存" target="_blank">C语言free()：释放堆内存</a></li>
+<li><a href="llrcx1c_2.html" title="Go语言函数的返回值" target="_blank">Go语言函数的返回值</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 1489;
+window.arcId = "9c07AfPCAjNCZyjxl4woHa8U9vLnFPKvPiAFb4I1xWVbou/nk68fvr9UKqI";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

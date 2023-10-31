@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>部分背包问题</title>
+<meta name="description" content="在限定条件下，如何从众多物品中选出收益最高的几件物品，这样的问题就称为背包问题。 图 1 背包问题 举个简单的例子，商店的货架上摆放着不同重量和价值的商品，一个小偷在商店" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>部分背包问题</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在限定条件下，如何从众多物品中选出收益最高的几件物品，这样的问题就称为背包问题。<br />
+&nbsp;
+<p style="text-align: center;">
+<img alt="" src="../uploads/allimg/210820/2-210R0101452P3.gif" /><br />
+图 1 背包问题</p>
+<br />
+举个简单的例子，商店的货架上摆放着不同重量和价值的商品，一个小偷在商店行窃，他携带的背包只能装固定重量的商品，选择哪些商品才能获得最大的收益呢？这个问题就属于背包问题，限定条件是背包的承重，最终目标是令背包中存放的物品的总收益最高。<br />
+<br />
+根据不同的限定条件，背包问题还可以有更细致的划分：
+<ul>
+<li>
+0-1 背包问题：每件物品都不可再分，要么整个装入背包，要么放弃，不允许出现类似&ldquo;将物品的 1/3 装入背包&rdquo;的情况；</li>
+<li>
+部分背包问题：每件物品是可再分的，即允许将某件物品的一部分（例如 1/3）放入背包；</li>
+<li>
+完全背包问题：挑选物品时，每件物品可以选择多个，也就是说不限物品的数量。</li>
+<li>
+多重背包问题：每件物品的数量是有严格规定的，比如物品 A 有 2 件，物品 B 有 3 件。</li>
+</ul>
+<br />
+不同的背包问题，对应的解决方案也不相同。本节我们给大家讲解，如何用<a href="../algorithm/greedy.html" target="_blank">贪心算法</a>解决部分背包问题。
+<h2>
+贪心算法解决部分背包问题</h2>
+假设商店中有 3 种商品，它们各自的重量和收益是：
+<ul>
+<li>
+商品 1：重量 10 斤，收益 60 元；</li>
+<li>
+商品 2：重量 20 斤，收益 100 元；</li>
+<li>
+商品 3：重量 30 斤，收益 120 元。</li>
+</ul>
+<br />
+对于每件商品，顾客可以购买商品的一部分（可再分）。一个小偷想到商店行窃，他的背包最多只能装 50 斤的商品，如何选择才能获得最大的收益呢？<br />
+<br />
+贪心算法解决此问题的思路是：计算每个商品的收益率（收益/重量），优先选择收益率最大的商品，直至所选商品的总重量达到 50 斤。<br />
+<br />
+如下是使用贪心算法解决此问题的伪代码：
+<pre class="info-box">
+// w 存储各个商品的重量，p 存储各个商品的收益，W 表示背包的承重
+fractional_knapsack(w[] , p[] , W):
+    sort(w , p)                   //根据收益率对商品进行排序
+    i &lt;- 0
+    while W &gt; 0:                  //只要背包还有剩余空间，就一直装
+        temp = min(W , w[i])      //判断该商品能否全部装入
+        result[i] &lt;- temp/w[i]    //将实际装入到背包中的商品量以百分比的方式存储起来
+        W &lt;- W - temp             //计算背包的剩余容量，为装后续商品做准备
+        i &lt;- i + 1
+    return result                 //返回统计装入信息的 result</pre>
+<br />
+如下是根据伪代码编写的 C 语言程序：
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+#define N 3    //设定商品数量
+//根据收益率，对记录的商品进行从大到小排序
+void Sort(float w[], float p[]) {
+    int i,j;
+    float temp;
+    float v[N] = { 0 };
+    //用v[]存商品的收益率
+    for (i = 0; i &lt; N; i++)
+        v[i] = p[i] / w[i];
+    //根据 v 数组记录的各个商品收益率的大小，同时对 w 和 p 数组进行排序
+    for (i = 0; i &lt; N; i++) {
+        for (j = i + 1; j &lt; N; j++) {
+            if (v[i] &lt; v[j]) {
+                temp = v[i];
+                v[i] = v[j];
+                v[j] = temp;
+                temp = w[i];
+                w[i] = w[j];
+                w[j] = temp;
+                temp = p[i];
+                p[i] = p[j];
+                p[j] = temp;
+            }
+        }
+    }
+}
+/*贪心算法解决部分背包问题
+w：记录各个商品的总重量
+p：记录各个商品的总价值
+result：记录各个商品装入背包的比例
+W：背包的容量
+*/
+void fractional_knapsack(float w[], float p[], float result[], float W) {
+    float temp = 0;
+    int i = 0;
+    //根据收益率，重新商品进行排序
+    Sort(w, p);
+    //从收益率最高的商品开始装入背包，直至背包装满为止
+    while (W &gt; 0) {
+        temp = W &gt; w[i] ? w[i] : W;
+        result[i] = temp / w[i];
+        W -= temp;
+        i++;
+    }
+}
+
+int main() {
+    int i;
+    //统计背包中商品的总收益
+    float values = 0;
+    //各个商品的重量
+    float w[N] = { 10,30,20 };
+    //各个商品的收益
+    float p[N] = { 60,100,120 };
+    float result[N] = { 0 };
+    //调用解决部分背包问题的函数
+    fractional_knapsack(w, p, result, 50);
+    //根据 result 数组中记录的数据，决定装入哪些商品
+    for (i = 0; i &lt; N; i++) {
+        if (result[i] == 1) {
+            printf(&quot;总重量为 %f,总价值为 %f 的商品全部装入\n&quot;, w[i], p[i]);
+            values += p[i];
+        }
+        else if (result[i] == 0)
+            printf(&quot;总重量为 %f,总价值为 %f 的商品不装\n&quot;, w[i], p[i]);
+        else {
+            printf(&quot;总重量为 %f,总价值为 %f 的商品装入 %f%%\n&quot;, w[i], p[i], result[i] * 100);
+            values += p[i] * result[i];
+        }
+    }
+    printf(&quot;最终收获的商品价值为 %.2f\n&quot;, values);
+    return 0;
+}</pre>
+<br />
+如下是根据伪代码编写的 Java 程序：
+<pre class="java">
+public class Demo {
+    //根据收益率，对记录的商品进行从大到小排序
+    public static void sort(float [] w, float [] p) {
+        int length = w.length;
+        //用v[]存商品的收益率
+        float [] v = new float[length];
+        for (int i=0;i&lt;length;i++) {
+            v[i] = p[i]/w[i];
+        }
+        //根据 v 数组记录的各个商品收益率的大小，同时对 w 和 p 数组进行排序
+        for (int i = 0; i &lt; length; i++) {
+            for (int j = i + 1; j &lt; length; j++) {
+                if (v[i] &lt; v[j]) {
+                    float temp = v[i];
+                    v[i] = v[j];
+                    v[j] = temp;
+                    temp = w[i];
+                    w[i] = w[j];
+                    w[j] = temp;
+                    temp = p[i];
+                    p[i] = p[j];
+                    p[j] = temp;
+                }
+            }
+        }
+    }
+    /*贪心算法解决部分背包问题
+    w：记录各个商品的总重量
+    p：记录各个商品的总价值
+    result：记录各个商品装入背包的比例
+    W：背包的容量
+    */
+    public static void fractional_knapsack(float []w, float []p, float []result, float W) {
+        //根据收益率，重新对商品进行排序
+        sort(w, p);
+        int i=0;
+        //从收益率最高的商品开始装入背包，直至背包装满为止
+        while (W &gt; 0) {
+            float temp = W &gt; w[i]?w[i]:W;
+            result[i] = temp / w[i];
+            W -= temp;
+            i++;
+        }
+    }
+    public static void main(String[] args) {
+        //设定背包的容量
+        float W = 50;
+        //各个商品的重量
+        float [] w = { 10,30,20 };
+        //各个商品的价值
+        float [] p = { 60,100,120 };
+        //统计背包中商品的总收益
+        float [] result = {0,0,0};
+        //调用解决部分背包问题的函数
+        fractional_knapsack(w,p,result,W);
+        //统计背包中商品的总收益
+        float values = 0;
+        //根据 result 数组中记录的数据，决定装入哪些商品
+        for (int i = 0; i &lt; w.length; i++) {
+            if (result[i] == 1) {
+                System.out.println(&quot;总重量为&quot;+w[i]+&quot;,总价值为&quot;+p[i]+&quot;的商品全部装入&quot;);
+                values += p[i];
+            }
+            else if (result[i] == 0)
+                System.out.println(&quot;总重量为&quot;+w[i]+&quot;,总价值为&quot;+p[i]+&quot;的商品不装&quot;);
+            else {
+                System.out.println(&quot;总重量为&quot;+w[i]+&quot;,总价值为&quot;+p[i]+&quot;的商品装入&quot;+result[i]*100+&quot;%&quot;);
+                values += p[i] * result[i];
+            }
+        }
+        System.out.print(&quot;最终收获的商品价值为&quot;+values);
+    }
+}</pre>
+<br />
+如下是根据伪代码编写的 Python 程序：
+<pre class="python">
+#设定背包的容量
+W = 50
+#各个商品的重量
+w = [10,30,20]
+#各个商品的价值
+p = [60,100,120]
+#根据收益率，对记录的商品进行从大到小排序
+def sort():
+    #用v列表存商品的收益率
+    v = []
+    length = len(w)
+    for i in range(length):
+        v.append(p[i]/w[i])
+    #根据 v 列表记录的各个商品收益率的大小，同时对 w 和 p 数组进行排序
+    for i in range(length):
+        for j in range(i+1,length):
+            if v[i] &lt; v[j]:
+                v[i],v[j] = v[j],v[i]
+                w[i],w[j] = w[j],w[i]
+                p[i],p[j] = p[j],p[i]
+
+result = [0,0,0]
+def fractional_knapsack():
+    global W
+    #根据收益率，重新对商品进行排序
+    sort()
+    i = 0
+    #从收益率最高的商品开始装入背包，直至背包装满为止
+    while(W&gt;0):
+        temp = min(W,w[i])
+        result[i] = temp/w[i]
+        W = W - temp
+        i = i + 1
+
+fractional_knapsack()
+#统计背包中商品的总收益
+values = 0
+#根据 result 列表中记录的数据，决定装入哪些商品
+for i in range(len(result)):
+    if result[i] ==1:
+        print(&quot;总重量为 %f,总价值为 %f 的商品全部装入&quot;%(w[i],p[i]))
+        values = values + p[i]
+    elif result[i]==0:
+        print(&quot;总重量为 %f,总价值为 %f 的商品不装&quot;%(w[i],p[i]))
+    else:
+        print(&quot;总重量为 %f,总价值为 %f 的商品装入%f%%&quot;%(w[i],p[i],result[i]*100))
+        values = values + p[i]*result[i]
+print(&quot;最终收获的商品价值为：%f&quot; %(values))</pre>
+<br />
+以上程序的输出结果均为：
+<p class="info-box">
+总重量为 10.000000,总价值为 60.000000 的商品全部装入<br />
+总重量为 20.000000,总价值为 120.000000 的商品全部装入<br />
+总重量为 30.000000,总价值为 100.000000 的商品装入66.666667%<br />
+最终收获的商品价值为：246.666667</p>
+当背包最大承重为 50 斤时，商品一全部装入，商品二也全部装入，商品三装入 2/3，此时收益是最大的。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2012.html" title="C语言字符串指针（指向字符串的指针）详解" target="_blank">C语言字符串指针（指向字符串的指针）详解</a></li>
+<li><a href="2557.html" title="MySQL ORDER BY：对查询结果进行排序" target="_blank">MySQL ORDER BY：对查询结果进行排序</a></li>
+<li><a href="3131.html" title="Linux Shell管道详解" target="_blank">Linux Shell管道详解</a></li>
+<li><a href="vip_7046.html" title="掌握这几个方法，学习Java事半功倍！" target="_blank">掌握这几个方法，学习Java事半功倍！</a></li>
+<li><a href="vip_7362.html" title="Go语言内存管理简述" target="_blank">Go语言内存管理简述</a></li>
+<li><a href="../redis2/zrevrank.html" title="Redis ZREVRANK命令" target="_blank">Redis ZREVRANK命令</a></li>
+<li><a href="../csharp/indexer.html" title="C#索引器（Indexer）" target="_blank">C#索引器（Indexer）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9102;
+window.arcId = "084aNhROBuIMBaXg/Gyj+gOqnrjktdBwvsvzdVbGqc9n8odUPnqolH9W/dE";
+window.typeidChain = "457|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

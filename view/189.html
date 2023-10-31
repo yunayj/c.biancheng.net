@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>顺序查找算法和折半（二分法）查找算法，C语言查找算法详解</title>
+<meta name="description" content="查找是指在大量的信息中寻找一个特定的信息。在计算机中，查找是非常重要的一个应用，比如百度。查找算法的好坏直接影响查找的速度。 常用的查找算法主要有 顺序查找 和 折半（" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>顺序查找算法和折半（二分法）查找算法，C语言查找算法详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">查找是指在大量的信息中寻找一个特定的信息。在计算机中，查找是非常重要的一个应用，比如&ldquo;百度&rdquo;。查找算法的好坏直接影响查找的速度。<br />
+<br />
+常用的查找算法主要有<span style="color:#008000;">顺序查找</span>和<span style="color:#008000;">折半（二分法）查找</span>：
+<ul>
+<li>
+顺序查找是指从数组的一端开始逐个进行比较，直到找到该数据为止。</li>
+<li>
+折半查找是指在已经排好序的一组数据中快速查找数据。</li>
+</ul>
+<br />
+现实编程中，数据一般都是有序的。即使刚开始是无序的，但存储到数据库中时都是先将它们排好序然后再放进去，这样在实际应用中才能更方便。<br />
+<h2>
+顺序查找</h2>
+查找数组 a 中第一次出现数字 m 的下标并输出该下标，如果没有则输出&ldquo;sorry&rdquo;，实现代码如下：<br />
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int a[] = {1,5,66,8,55,9,1,32,5,65,4,8,5,15,64,156,1564,15,1,8,9,7,215,
+           16,45,5,6,164,15,236,2,5,55,6,4,1,59,23,4,5,314,56,15,3,54,
+           1,54,54,2,4,4,5,15,698,486,56,26,98,78,456,1894,564,26,56,5};
+    int n;  //存放数组a中元素的个数
+    int m;  //查找的数字
+    int i;  //循环变量
+    n = sizeof(a) / sizeof(int);  //求出数组中所有元素的个数
+    printf(&quot;请输入一个数字:&quot;);
+    scanf(&quot;%d&quot;, &amp;m);
+    for (i=0; i&lt;n; ++i)
+    {
+        if (a[i] == m)
+        {
+            printf(&quot;下标 = %d\n&quot;, i);
+            break;
+        }
+    }
+    if (i == n)
+    {
+        printf(&quot;sorry\n&quot;);
+    }
+    return 0;
+}</pre>
+输出结果是：<br />
+请输入一个数字:7<br />
+下标 = 21<br />
+请输入一个数字:58<br />
+sorry<br />
+<h2>
+折半查找</h2>
+折半查找是很有意思的，它的算法复杂度非常低，但它要求数据必须是已经排好序的。比如数组 a 中：<br />
+<p class="info-box">
+13&nbsp; 45&nbsp; 78&nbsp; 90&nbsp; 127&nbsp; 189&nbsp; 243&nbsp; 355</p>
+现在看看怎么用折半算法在其中查找 243。<br />
+1) 先定义一个变量 key 用于存放要查找的 243：
+<p class="info-box">
+key = 243</p>
+2) 定义变量 low、mid和high 分别存储数组的最小下标、中间下标和最大下标。并有：
+<p class="info-box">
+mid = (low+high)/2 = (0+7)/2 = 3</p>
+3) 此时 a[3]=90，而 key&gt;90，说明 243 在 90 的右边，则往后查找：
+<p class="info-box">
+low = mid + 1 = 4</p>
+4) 然后重新更新 mid：
+<p class="info-box">
+mid = (4+7)/2 = 5</p>
+5) 此时 a[5]=189，而 key&gt;189，说明 243 在 189 的右边，继续往后查找：
+<p class="info-box">
+low = mid+1 = 6</p>
+6) 然后重新更新 mid：
+<p class="info-box">
+mid = (6+7)/2 = 6</p>
+7) 此时 a[6]=key=243，找到了。<br />
+<br />
+下面再来怎么查找 78：<br />
+1) key=78，mid=(low+high)/2=(0+7)/2=3。<br />
+<br />
+2) 此时 a[3]=90，而 key&lt;90，说明 78 在 90 的左边，则往前查找：
+<p class="info-box">
+high = mid-1 = 2</p>
+3) 然后重新更新 mid：
+<p class="info-box">
+mid = (0+2)/2 = 1</p>
+4) 此时 a[1]=45，而 key&gt;45，说明 78 在 45 的右边，则往后查找：
+<p class="info-box">
+low = 1+1 = 2</p>
+5) 然后重新更新 mid：
+<p class="info-box">
+mid = (2+2)/2 = 2</p>
+6) 此时 a[2]=key=78，就找到了。<br />
+<br />
+若所查找的在数据序列中没有呢？比如查找 123：<br />
+1) key=123，mid=(low+high)/2=(0+7)/2=3。<br />
+<br />
+2) 此时 a[3]=90，而 key&gt;90，说明 123 在 90 的左边，则往后查找：
+<p class="info-box">
+low = mid+1 = 4</p>
+3) 然后重新更新 mid：
+<p class="info-box">
+mid = (4+7)/2 = 5</p>
+4) 此时 a[5]=189，而 key&lt;189，说明 123 在 189 的左边，则往前查找：
+<p class="info-box">
+high=mid-1=4。</p>
+5) 此时 low==high，如果该数仍不是要找的数的话，说明该序列中就没有该数了。<br />
+<br />
+下面将这个程序写下来：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int a[] = {13, 45, 78, 90, 127, 189, 243, 355};
+    int key;  //存放要查找的数
+    int low = 0;
+    int high = sizeof(a)/sizeof(a[0]) - 1;
+    int mid;
+    int flag = 0;  //标志位, 用于判断是否存在要找的数
+    printf(&quot;请输入您想查找的数:&quot;);
+    scanf(&quot;%d&quot;, &amp;key);
+    while ((low &lt;= high))
+    {
+        mid = (low + high) / 2;
+        if (key &lt; a[mid])
+        {
+            high = mid - 1;
+        }
+        else if (a[mid] &lt; key)
+        {
+            low = mid +1;
+        }
+        else
+        {
+            printf(&quot;下标 = %d\n&quot;, mid);
+            flag = 1;
+            break;
+        }
+    }
+    if (0 == flag)
+    {
+        printf(&quot;sorry, data is not found\n&quot;);
+    }
+    return 0;
+}</pre>
+输出结果是：<br />
+请输入您想查找的数:78<br />
+下标 = 2<br />
+请输入您想查找的数:123<br />
+sorry, data is not found<br />
+<br />
+<span style="color:#b22222;">折半查找在每次查找时都排除了一半数据，所以它的效率是非常高的。</span>顺序查找的平均查找长度为 <code>n+1/2</code>，而折半查找的平均查找长度为 log<sub>2</sub><sup>(n+1)</sup>-1。可见使用折半查找时，数据数量越多查找效率就越高。<br />
+<br />
+<span style="color:#b22222;">但是，折半查找只适合数组，不适合链表。</span>链表中也可以用折半查找，但是不仅不会提高效率，反而还会降低效率。因为数组可以通过下标直接找到 low、mid 和 high 对应的元素，而链表是通过指针连接起来的不连续的链，所以若要查找 low、mid 和 high 对应的元素，每次都要从第一个结点出发一个一个往后找。所以一般不在链表内使用折半查找。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="299.html" title="C++文本文件的读取和写入" target="_blank">C++文本文件的读取和写入</a></li>
+<li><a href="1133.html" title="Java File类（文件操作类）详解" target="_blank">Java File类（文件操作类）详解</a></li>
+<li><a href="3432.html" title="平衡二叉树（AVL树）及C语言实现" target="_blank">平衡二叉树（AVL树）及C语言实现</a></li>
+<li><a href="4286.html" title="Python index()方法：检测字符串中是否包含某子串" target="_blank">Python index()方法：检测字符串中是否包含某子串</a></li>
+<li><a href="vip_7324.html" title="Go语言使用事件系统实现事件的响应和处理" target="_blank">Go语言使用事件系统实现事件的响应和处理</a></li>
+<li><a href="9563.html" title="剑指大厂：小白入职大厂完全攻略，很肝~" target="_blank">剑指大厂：小白入职大厂完全攻略，很肝~</a></li>
+<li><a href="rtrtnrg.html" title="Go语言range语句的用法" target="_blank">Go语言range语句的用法</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 189;
+window.arcId = "3d23ICkq6zKMGXHAen+fcN7Ez+zO1zbuyQuvUA2FfKvAxo1WbOP1nwkX2A";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

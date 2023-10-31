@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>CDN加速是什么？它是如何工作的？</title>
+<meta name="description" content="作为一个开发或者运维人员，你经常会看到 CDN 这个名词。CDN 是 Content Delivery Network 的缩写，译为内容分发网络。CDN 的好处有很多，包括： 极大提高网站访问速度 极大降低服务器压力" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../hot/hot.html">推荐阅读</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>CDN加速是什么？它是如何工作的？</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">作为一个开发或者运维人员，你经常会看到 CDN 这个名词。CDN 是 Content Delivery Network 的缩写，译为&ldquo;内容分发网络&rdquo;。CDN 的好处有很多，包括：
+<ul>
+<li>
+极大提高网站访问速度</li>
+<li>
+极大降低服务器压力</li>
+<li>
+让全国/全球用户都能访问你的网站</li>
+<li>
+隐藏真实的服务器</li>
+<li>
+避免网站服务器遭受黑客攻击</li>
+<li>
+防盗链</li>
+<li>
+降低网络带宽成本</li>
+<li>
+负载均衡，流量低谷不浪费资源，流量高峰轻松应对</li>
+</ul>
+<br />
+这篇文章除了会讲解 CDN 的概念，还会告诉你 CDN 的工作原理。作为一个十年的老站长，我一直在使用 CDN，我将从实践的角度教你如何架构网站，以让网站更加适应于 CDN。<br />
+<br />
+创作这篇文章，我参阅了大量的中英文资料，相信你一定会有所收获。OK，那就让我们开始吧。<br />
+<br />
+<div style="text-align: center;">
+<img alt="CDN加速示意图" src="../uploads/allimg/210810/151P25253-0.gif" /></div>
+<h2>
+什么是 CDN？</h2>
+CDN 是一种用来分发内容的网络拓扑结构，在彻底搞明白它之前，我们需要先来理解另外两个名词。
+<h4>
+1) 节点</h4>
+让用户使用 CDN 网络之前，CDN 提供商会在全国/全球部署多个节点。这里的节点可以看做机房，或者服务器集群，专业的称呼是 PoP（Point-of-Presence，入网点）或者边缘服务器（Origin Server）。<br />
+<br />
+每个节点用来服务它周围的用户，因为距离近，所以响应时间短。另外，节点是由很多服务器构成的集群，所以能够抗住巨大流量。
+<h4>
+2) 源服务器</h4>
+源服务器就是你部署网站的服务器，它为整个 CDN 网络提供初始内容。<br />
+<br />
+不使用 CDN 的话，用户的每次请求都会到达你的源服务器。用户和源服务器之间的距离越远，数据包转发的次数就越多，等待页面加载的时间就越长。另外，数据包的每次转发都有可能受到网络拥堵的影响，进一步延迟网页加载时间。<br />
+<br />
+访问境外网站时，距离远，网络拥堵，用户往往需要等待 3 秒以上，这是无法忍受的。
+<p class="tip-box">
+网站的每一秒都非常重要！研究表明，1 秒钟的延迟会导致转化率下降 7%，页面浏览量下降 11%，客户满意度下降 16%。</p>
+好了，现在让我们看看使用了 CDN 以后的网络请求流程是什么样的。<br />
+<br />
+如果你的网站使用了 CDN 加速，当用户请求你的网站时，CDN 会找到离用户最近的节点，看看这个节点中是否缓存了用户想要的内容：
+<ul>
+<li>
+如果节点缓存了用户想要的内容，就直接发送给用户，不用再去请求源服务器；</li>
+<li>
+如果节点没有缓存用户想要的内容，那么节点会自动请求源服务器获取想要的内容，然后再发送给用户；同时，节点也会把从源服务器获取的内容缓存起来，下次有用户再请求相同内容时，节点会直接发送给用户，而不用再去请求源服务器。</li>
+</ul>
+<br />
+只有在用户第一次请求内容时，节点才会访问源服务器，以后用户（包括新用户和老用户）再去请求相同内容，因为节点已经缓存了，所以会直接发送给用户，不会再去访问源服务器，此时源服务器就被&ldquo;屏蔽&rdquo;了，它不会知道有用户请求内容。
+<p class="tip-box">
+页面从源服务器拉取内容的过程，专业术语叫做反向代理（Reverse Proxy），Nginx 就是一个著名的反向代理服务器。</p>
+向离你最近的服务器集群请求内容，这个速度是极快的，通常是秒级响应。<a href="http://c.biancheng.net/" target="_blank">C语言中文网</a>和<a href="http://www.weixueyuan.net/" target="_blank">魏雪原</a>两个网站都使用了阿里云的 CDN，你看它的响应速度多快。<br />
+<br />
+现在全球有超过一半的流量由 CDN 提供，而且这个比例还在迅速上升。不使用 CDN，你很难把页面响应时间控制在 1 秒以内，让用户等待超过 1 秒的时间是非常不舒服的。<br />
+<br />
+下图演示了使用 CDN 和不使用 CDN 的两种网络结构：
+<div style="text-align: center;">
+<img alt="使用CDN和不使用CDN的网络结构" src="../uploads/allimg/210810/151P24237-1.png" /></div>
+<br />
+现在我们再来看看&ldquo;内容分发网络&rdquo;这个术语，它实际上包含了 3 方面的内容：
+<h4>
+1) 内容</h4>
+CDN 是用来处理内容的。什么内容？和网站有关的内容，这包括动态/静态网页、CSS、JavaScript、图像、视频、音频、可下载的文件等。
+<h4>
+2) 分发</h4>
+CDN 会将内容分发到节点。如何分发？节点需要内容时自动从源服务器拉取，也即反向代理。
+<h4>
+3) 网络</h4>
+从 CDN 内部看，CDN 是一种网络拓扑结构，或者说是一种私有网络/局域网。用户只和节点交换数据，并不知道 CDN 的内部网络结构，只有搭建 CDN 的机构才知道。<br />
+<br />
+总起来说，CDN 是机构搭建的一种私有网络，它能将用户部署在源服务器上的内容分发到各个节点，从而提高网站的响应速度。用户和站长都不需要知道 CDN 的内部拓扑结构，却能享受 CDN 带来的好处。<br />
+<br />
+CDN 的原理虽然非常简单，但是它的内部架构其实非常复杂，涉及多级缓存、负载均衡、大数据处理、分布式存储、健康监控、热插拔等众多科研难题。在市场力量的推动下，CDN 经过 20 年的发展才把成本降下来，让中小站长也用得起。<br />
+<h2>
+使用 CDN 的好处</h2>
+使用 CDN 的好处太多了，而且成本极低，甚至还能省钱，站长没有理由不使用 CDN。不使用 CDN，网站响应时间长，SEO 效果差。接下来，我们罗列一下 CDN 的好处。<br />
+<h4>
+1) 提高网站访问速度</h4>
+这是 CDN 的初衷，也是 CDN 的主要作用，其原理我们已经在上面介绍了。CDN 能够<strong>极大</strong>或者<strong>成倍</strong>地提高网站访问速度，由于是距离源服务器较远的用户，感受更加明显。
+<h4>
+2) 降低服务器压力</h4>
+几乎 80% 以上的访问量都被边缘节点承接了，只有内容更新或者缓存到期时才需要访问源服务器，这样源服务器的压力就会小很多，廉价的配置就能撑起巨大的流量。
+<h4>
+3) 让全国/全球用户访问网站</h4>
+CDN 节点遍布全国/全球，境外用户或者偏远地区用户也能访问你的网站。不使用 CDN 的话，有些地区可能因为网络原因无法访问你的网站。
+<h4>
+4) 提高服务器安全性</h4>
+用户请求先达到 CDN 网络最外层，用户不知道源服务器在哪里，源服务器的位置被 CDN 网络屏蔽了。不知道源服务器的位置，就无法攻击。<br />
+<br />
+另外，CDN 网络一般自带防火墙或者安全措施，即使黑客尝试粗暴的 DDoS 攻击也压垮不了网站，CDN 会检测出这种攻击，屏蔽可疑 IP。即使不屏蔽 IP，凭借 CDN 网络的大集群和均衡负载能力，DDoS 流量也压垮不了 CDN。
+<h4>
+5) 负载均衡</h4>
+CDN 自带负载均衡功能，你不用担心突如其来的峰值流量，CDN 能够轻松应对，而你的源服务器不会感受到压力。
+<h4>
+6) 7*24 小时服务</h4>
+CDN 已经缓存了网站内容，即使源服务器挂掉，用户也能够访问网站。
+<p class="tip-box">
+但是据我实测，即使使用了 CDN，阿里云也要求源服务器也必须正常工作，否则用户将不能访问网站，不太清楚这是什么迷之操作。</p>
+<h4>
+7) 减少开支</h4>
+为了应对流量峰值，你必须租用配置强大的服务器，购买足够的带宽，这是一笔不小的开支。大部分情况下，服务器的配置都是过剩的，你需要为应对极限场景多支出数倍。<br />
+<br />
+使用了 CDN 的话，你可以将服务器的配置降到很低，反正有 CDN 呢，什么都不怕。<br />
+<br />
+另外，CDN 一般都可以按量付费，你消耗多少流量就支付多少费用。你可以将带宽设置到最大，既保证了访问速度，又不用多花一分钱。
+<h4>
+8) 降低运维成本</h4>
+相信我，黑客攻击会放倒大多数网站，尤其是不懂安全的小公司或者个人站长。<br />
+<br />
+黑客攻击是致命的，他们让你的网站崩溃，你却找不到原因，手足无措。不稳定的网站，经常遭受攻击的网站，不但让用户烦躁，也不受搜索引擎的待见。持续受到攻击的网站，流量一定会降低。<br />
+<br />
+绝不要让黑客攻击你的网站，否则我保证你会受不了。<br />
+<br />
+很多小公司或者个人站长都没有能力保证网站安全，裸奔的服务器分分钟被拿下。为了免受黑客攻击，请你一定要使用 CDN。CDN 屏蔽了你的服务器，让黑客不容易找到源头。<br />
+<br />
+CDN 还能帮你抵御粗暴的 DDoS 攻击，不使用 CDN 的话，DDoS 攻击基本是无解的。
+<h2>
+如何架构网站</h2>
+合理的架构让网站更适应于 CDN，降低成本的同时，也提高了安全性。如果你的网站在开发之初没有考虑使用 CDN，那你可能需要一些调整。<br />
+<br />
+一般来说，架构适用于 CDN 的网站主要有两大原则：
+<h4>
+1) 动静分离</h4>
+将网站的静态内容和动态内容分离。<br />
+<br />
+静态内容指的是不随用户行为而改变的内容，比如文章、商品介绍等，不管用户是否登录，这些内容都是一样的。动态内容则反之，它随着用户的行为而改变，比如用户信息、留言列表、收藏按钮等。<br />
+<br />
+一个页面往往会混合静态内容和动态内容，我们可以页面中使用 JavaScript 来加载动态内容。<br />
+<br />
+为了降低请求次数，同时提高 SEO 效果，可以将用户评论、点击量、点赞量等看做静态内容，只要定期或者按照规则刷新 CDN 缓存即可。
+<p class="tip-box">
+CDN 缓存可以设置失效时间，也可以主动刷新，一般的 CDN 都支持手动刷新或者 API 刷新（编程刷新）。</p>
+另外为了安全，最好准备两台服务器，一台放置静态内容并启用 CDN，一台放置动态内容不启用 CDN。放置动态内容的服务器更容易遭受攻击，即使动态内容服务器挂掉，也不影响静态内容的访问。<br />
+<br />
+既然使用了不同的服务器，也应该为静态内容和动态内容设置不同的域名。<br />
+<h4>
+2) 资源文件分离</h4>
+资源文件是指那些内容几乎不会变动的文件，比如图片、视频、压缩包等。<br />
+<br />
+由于网站模板更改、内容变动、用户评论、放置广告等诸多原因，静态内容需要经常更新，这个时候就需要刷新 CDN 缓存。我们通常可以针对一个 URL、一个目录、一个域名刷新 CDN 缓存。<br />
+<br />
+尤其是针对一个域名刷新 CDN 缓存的时候，如果资源文件和静态内容位于同一个域名下，那么所有资源文件的缓存也会被刷新。资源文件的体积往往是静态内容的数倍，刷新资源文件不但会消耗很多流量，还会给源服务器带来不小的压力。<br />
+<br />
+如果你为了提高 SEO 效果，将用户评论、点击量、收藏量等看做静态内容，那你就需要经常刷新域名下的所有静态内容，此时资源文件也会一并刷新。<br />
+<br />
+为了避免资源文件被连带刷新，我非常建议为资源文件设置一个新的域名，该域名下只存储资源文件。但是，为资源文件启用新域名会增加开发成本，请读者自己权衡。
+<h2>
+总结</h2>
+本文讲解了 CDN 的概念、工作原理、优势以及网站架构，如果你的网站是基于内容的（比如文章站、视频站、电商站），我相信你没有理由不使用 CDN。<br />
+<br />
+国内知名的云服务商有<a href="https://www.aliyun.com/" target="_blank">阿里云</a>、<a href="https://cloud.tencent.com/" target="_blank">腾讯云</a>、<a href="https://www.huaweicloud.com/" target="_blank">华为云</a>，国际知名的云服务商有<a href="https://www.amazonaws.cn/" target="_blank">亚马逊 AWS</a>、<a href="https://azure.microsoft.com/">微软 Azure</a>，它们都提供了非常优秀的 CDN 服务。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="178_2.html" title="for循环嵌套，C语言for循环嵌套详解" target="_blank">for循环嵌套，C语言for循环嵌套详解</a></li>
+<li><a href="1032.html" title="Linux /boot/grub/grub.conf（GRUB配置文件）内容详解" target="_blank">Linux /boot/grub/grub.conf（GRUB配置文件）内容详解</a></li>
+<li><a href="5736.html" title="Python pickle模块：实现Python对象的持久化存储" target="_blank">Python pickle模块：实现Python对象的持久化存储</a></li>
+<li><a href="5743.html" title="Java for循环详解" target="_blank">Java for循环详解</a></li>
+<li><a href="7981.html" title="GCC -c选项：生成目标文件" target="_blank">GCC -c选项：生成目标文件</a></li>
+<li><a href="../maven2/profile.html" title="Maven简介" target="_blank">Maven简介</a></li>
+<li><a href="../pandas/date-formatting.html" title="Pandas日期时间格式化" target="_blank">Pandas日期时间格式化</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9021;
+window.arcId = "17e4GWK+Wo1J8Pqle0WnddTXui9tqxIIrvZY1GkjmX1JyD/6r8AAUcuHVbo";
+window.typeidChain = "397";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="https://c.biancheng.net/sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="https://c.biancheng.net/templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

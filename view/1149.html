@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>SELinux安全上下文查看方法（超详细）</title>
+<meta name="description" content="在 SELinux 管理过程中，一般通过调整安全上下文来管理进程是否可以正确地访问文件资源，所以安全上下文管理是我们需要重点掌握的 SELinux 管理技巧。 我们知道，进程和文件都有自己" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../linux_tutorial/linux_tutorial.html">Linux</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href='../linux_tutorial/10/10.html'>Linux简介</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href='../linux_tutorial/20/20.html'>Linux安装</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href='../linux_tutorial/file_content/file_content.html'>Linux文件和目录管理</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href='../linux_tutorial/bale_compress/bale_compress.html'>Linux打包（归档）和压缩</a>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href='../linux_tutorial/40/40.html'>Vim文本编辑器</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href='../linux_tutorial/text_processing/text_processing.html'>Linux文本处理（Linux三剑客）</a>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href='../linux_tutorial/50/50.html'>Linux软件安装</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href='../linux_tutorial/60/60.html'>Linux用户和用户组管理</a>
+</dd>
+<dd>
+<span class="channel-num">9</span>
+<a href='../linux_tutorial/70/70.html'>Linux权限管理</a>
+</dd>
+<dd>
+<span class="channel-num">10</span>
+<a href='../linux_tutorial/80/80.html'>Linux文件系统管理</a>
+</dd>
+<dd>
+<span class="channel-num">11</span>
+<a href='../linux_tutorial/90/90.html'>Linux高级文件系统管理</a>
+</dd>
+<dd>
+<span class="channel-num">12</span>
+<a href='../linux_tutorial/14/14.html'>Linux系统管理</a>
+</dd>
+<dd>
+<span class="channel-num">13</span>
+<a href='../linux_tutorial/17/17.html'>Linux备份与恢复</a>
+</dd>
+<dd>
+<span class="channel-num">14</span>
+<a href='../linux_tutorial/13/13.html'>Linux系统服务管理</a>
+</dd>
+<dd>
+<span class="channel-num">15</span>
+<a href='../linux_tutorial/15/15.html'>Linux系统日志管理</a>
+</dd>
+<dd>
+<span class="channel-num">16</span>
+<a href='../linux_tutorial/12/12.html'>Linux启动管理</a>
+</dd>
+<dd>
+<span class="channel-num">17</span>
+<a href='../linux_tutorial/16/16.html'>LAMP环境搭建和LNMP环境搭建</a>
+</dd>
+<dd class="this"> <span class="channel-num">18</span> <a href="../linux_tutorial/18/18.html">SELinux管理</a> </dd><dl class="dl-sub"><dd>18.1 <a href="1147.html">SELinux是什么</a></dd><dd>18.2 <a href="3930.html">SELinux的主要作用</a></dd><dd>18.3 <a href="3906.html">SELinux 的3种工作模式</a></dd><dd>18.4 <a href="3925.html">SELinux配置文件（/etc/selinux/config）</a></dd><dd>18.5 <a href="3921.html">SELinux工作模式设置</a></dd><dd>18.6 <a href="1149.html">SELinux安全上下文查看</a></dd><dd>18.7 <a href="1151.html">SELinux安全上下文的修改和设置</a></dd><dd>18.8 <a href="1152.html">SELinux默认安全上下文的查询和修改</a></dd><dd>18.9 <a href="1154.html">SELinux auditd日志系统的安装与启动</a></dd><dd>18.10 <a href="1155.html">SELinux auditd日志使用方法</a></dd><dd>18.11 <a href="3918.html">SELinux的3种策略类型</a></dd><dd>18.12 <a href="1156.html">SELinux策略规则查看的方法</a></dd><dd>18.13 <a href="1158.html">SELinux策略规则的开启和关闭</a></dd></dl>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../linux_tutorial/linux_tutorial.html">Linux</a> &gt; <a href="../linux_tutorial/18/18.html">SELinux管理</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>SELinux安全上下文查看方法（超详细）</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">SELinux 管理过程中，进程是否可以正确地访问文件资源，取决于它们的安全上下文。进程和文件都有自己的安全上下文，SELinux 会为进程和文件添加安全信息标签，比如 SELinux 用户、角色、类型、类别等，当运行 SELinux 后，所有这些信息都将作为访问控制的依据。<br />
+<br />
+首先，通过一个实例看看如何查看文件和目录的安全上下文，执行命令如下：<br />
+<p class="info-box">
+[root@localhost ~]# ls -Z<br />
+#使用选项-Z查看文件和目录的安全上下文<br />
+-rw-------．root root&nbsp;<strong>system_u：object_r：admin_home_t：s0</strong>&nbsp;anaconda-ks.cfg<br />
+-rw-r--r--．root root&nbsp;<strong>system_u：object_r：admin_home_t：s0</strong>&nbsp;install.log<br />
+-rw-r--r--．root root&nbsp;<strong>system_u：object_r：admin_home_t：s0</strong>&nbsp;install.log.syslog</p>
+可以看到，查看文件的安全上下文非常简单，就是使用&ldquo;ls -Z&rdquo;命令。而在此基础上，如果想要查看目录的安全上下文，需要添加&ldquo;-d&rdquo;选项，代表查看目录本身，而非目录下的子文件。举个例子：<br />
+<p class="info-box">
+[root@localhost ~]# ls -Zd /var/www/html/<br />
+drwxr-xr-x．root root&nbsp;<strong>system_u：object_r：httpd_sys_content_t：s0</strong>&nbsp;/var/www/html/</p>
+<br />
+那么，该如何查看进程的安全上下文呢？只需使用 ps 命令即可。命令如下：<br />
+<p class="info-box">
+[root@localhost ~]# service httpd start<br />
+#启动apache服务<br />
+[root@localhost ~]# ps auxZ | grep httpd<br />
+<strong>unconfined_u：system_r：httpd_t：s0</strong>&nbsp;root 25620 0.0 0.5 11188 3304 ? Ss<br />
+03：44 0：02 /usr/sbin/httpd<br />
+&hellip;省略部分输出&hellip;</p>
+也就是说，只要进程和文件的安全上下文匹配，该进程就可以访问该文件资源。在上面的命令输出中，我们加粗的就是安全上下文。<br />
+<br />
+安全上下文看起来比较复杂，它使用&ldquo;：&rdquo;分隔为 4 个字段，其实共有 5 个字段，只是最后一个&ldquo;类别&rdquo;字段是可选的，例如：<br />
+<p class="info-box">
+system_u：object_r：httpd_sys_content_t：s0：[类别]<br />
+#身份字段：角色：类型：灵敏度：[类别]</p>
+下面对这 5 个字段的作用进行说明。
+<h4>
+1) 身份字段（user)</h4>
+用于标识该数据被哪个身份所拥有，相当于权限中的用户身份。这个字段并没有特别的作用，知道就好。常见的身份类型有以下 3 种：<br />
+<ol>
+<li>
+- root：表示安全上下文的身份是 root。</li>
+<li>
+- system_u：表示系统用户身份，其中&ldquo;_u&rdquo;代表 user。</li>
+<li>
+- user_u：表示与一般用户账号相关的身份，其中&ldquo;_u&rdquo;代表 user。</li>
+</ol>
+<br />
+user 字段只用于标识数据或进程被哪个身份所拥有，一般系统数据的 user 字段就是 system_u，而用户数据的 user 字段就是 user_u。<br />
+<br />
+那么，SELinux 中到底可以识别多少用户身份字段呢？我们可以使用 seinfo 命令来进行查询。SELinux 的相关命令一般都是以&ldquo;se&rdquo;开头的，所以也较为好记。<br />
+<br />
+seinfo 命令格式如下：<br />
+<p class="info-box">
+[root@localhost ~]# seinfo [选项]<br />
+选项：<br />
+-u： 列出SELinux中所有的身份（user）；<br />
+-r： 列出SELinux中所有的角色（role）；<br />
+-t： 列出SELinux中所有的类型（type）；<br />
+-b： 列出所有的布尔值（也就是策略中的具体规则名称）；<br />
+-x： 显示更多的信息；</p>
+<br />
+seinfo 命令的功能较多，我们在这里只想查询 SELinux 中的身份，那么只需执行如下命令：<br />
+<p class="info-box">
+[root@localhost ~]# seinfo -u<br />
+Users：9<br />
+sysadm_u<br />
+system_u<br />
+xguest_u<br />
+root<br />
+guest_u<br />
+staff_u<br />
+user_u<br />
+unconfined_u<br />
+git_shell_u</p>
+就可以看到 SELinux 中能够识别的 user 身份共有 9 种。不过这个字段在实际使用中并没有太多的作用，了解一下即可。<br />
+<h4>
+2) 角色（role）</h4>
+主要用来表示此数据是进程还是文件或目录。这个字段在实际使用中也不需要修改，所以了解就好。<br />
+<br />
+常见的角色有以下两种：
+<ul>
+<li>
+- object_r：代表该数据是文件或目录，这里的&ldquo;_r&rdquo;代表 role。</li>
+<li>
+- system_r：代表该数据是进程，这里的&ldquo;_r&rdquo;代表 role。</li>
+</ul>
+<br />
+那么，SELinux 中到底有多少种角色呢？使用 seinfo 命令也可以查询，命令如下：<br />
+<p class="info-box">
+[root@localhost ~]# seinfo -r<br />
+Roles：12<br />
+guest_r<br />
+staff_r<br />
+user_r<br />
+git_shell_r<br />
+logadm_r<br />
+object_r<br />
+sysadm_r<br />
+system_r<br />
+webadm_r<br />
+xguest_r<br />
+nx_server_r<br />
+unconfined_r</p>
+<h4>
+3) 类型（type）</h4>
+类型字段是安全上下文中最重要的字段，进程是否可以访问文件，主要就是看进程的安全上下文类型字段是否和文件的安全上下文类型字段相匹配，如果匹配则可以访问。<br />
+<br />
+注意，类型字段在文件或目录的安全上下文中被称作<span style="color: rgb(0, 128, 0);">类型（type）</span>，但是在进程的安全上下文中被称作<span style="color: rgb(0, 128, 0);">域（domain）</span>。也就是说，在主体（Subject）的安全上下文中，这个字段被称为域；在目标（Object）的安全上下文中，这个字段被称为类型。域和类型需要匹配（进程的类型要和文件的类型相匹配），才能正确访问。<br />
+<br />
+SELinux 中到底有多少类型也是通过 seinfo 命令查询的，命令如下：<br />
+<p class="info-box">
+[root@localhost ~]# seinfo -t | more<br />
+Types：3488<br />
+#共有3488个类型<br />
+bluetooth_conf_t<br />
+cmirrord_exec_t<br />
+foghorn_exec_t<br />
+jacorb_port_t<br />
+sosreport_t<br />
+etc_runtime_t<br />
+&hellip;省略部分输出&hellip;</p>
+我们知道了类型的作用，可是我们怎么知道进程的域和文件的类型是否匹配呢？这就要查询具体的策略规则了，我们在后面再进行介绍。<br />
+<br />
+不过，我们已知 apache 进程可以访问 /var/www/html/（此目录为 RPM 包安装的 apache 的默认网页主目录）目录中的网页文件，所以 apache 进程的域和 /var/www/html/ 目录的类型应该是匹配的，我们查询一下，命令如下：<br />
+<p class="info-box">
+[root@localhost ~]# ps auxZ | grep httpd<br />
+unconfined_u：system_r：httpd_t：s0 root 25620 0.0 0.5 11188 3304 ? Ss<br />
+03：44 0：02 /usr/sbin/httpd<br />
+#apache进程的域是httpd_t<br />
+[root@localhost ~]# ls -dZ /var/www/html/<br />
+drwxr-xr-x．root root system_u：object_r：httpd_sys_content_t：s0 /var/www/html/<br />
+#/var/www/html/目录的类型是httpd_sys_content_t</p>
+apache 进程的域是 httpd_t，/var/www/html/ 目录的类型是 httpd_sys_content_t，这个主体的安全上下文类型经过策略规则的比对，是和目标的安全上下文类型匹配的，所以 apache 进程可以访问 /var/www/html/ 目录。<br />
+<br />
+我们在 SELinux 中最常遇到的问题就是进程的域和文件的类型不匹配，所以我们一定要掌握如何修改类型字段。<br />
+<h4>
+4) 灵敏度</h4>
+灵敏度一般是用 s0、s1、s2 来命名的，数字代表灵敏度的分级。数值越大，代表灵敏度越高。<br />
+<h4>
+5) 类别</h4>
+类别字段不是必须有的，所以我们使用 ls 和 ps 命令查询的时候并没有看到类别字段。但是我们可以通过 seinfo 命令来查询，命令如下：<br />
+<p class="info-box">
+[root@localhost ~]# seinfo -u -x<br />
+#查询所有的user字段，并查看详细信息<br />
+system_u<br />
+#user字段名<br />
+default level：s0<br />
+#默认灵敏度<br />
+range：s0 - s0：c0.c1023<br />
+#灵敏度可以识别的类别<br />
+roles：<br />
+#该user能够匹配的role（角色）<br />
+object_r<br />
+system_r<br />
+unconfined_r</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../mysql/left.html" title="MySQL LEFT函数：从左侧截取字符串" target="_blank">MySQL LEFT函数：从左侧截取字符串</a></li>
+<li><a href="3338.html" title="单链表的基本操作（C语言版）" target="_blank">单链表的基本操作（C语言版）</a></li>
+<li><a href="5822.html" title="String、StringBuffer和StringBuilder类的区别" target="_blank">String、StringBuffer和StringBuilder类的区别</a></li>
+<li><a href="vip_6074.html" title="利用面向对象思想实现搜索引擎" target="_blank">利用面向对象思想实现搜索引擎</a></li>
+<li><a href="vip_7723.html" title="深度剖析C++无序容器的底层实现机制" target="_blank">深度剖析C++无序容器的底层实现机制</a></li>
+<li><a href="8125.html" title="MySQL系统变量（查看和修改）" target="_blank">MySQL系统变量（查看和修改）</a></li>
+<li><a href="nlr3po8.html" title="Go语言switch case语句的用法" target="_blank">Go语言switch case语句的用法</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 1149;
+window.arcId = "0272s7MU/hzH+iZ3LexoFWXEgy5mcYk/k0F09e7YiQ+fUv+okuz471Xeavo";
+window.typeidChain = "111|77";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/view/3921.html";
+window.nextPageURL = "/view/1151.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>桶排序算法</title>
+<meta name="description" content="桶排序（又称箱排序）是一种基于分治思想、效率很高的排序算法，理想情况下对应的时间复杂度为 O(n)。 接下来，我们系统地学习一下桶排序算法。 桶排序算法的实现思路 假设一种场" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>桶排序算法</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">桶排序（又称箱排序）是一种基于分治思想、效率很高的排序算法，理想情况下对应的时间复杂度为 O(n)。<br />
+<br />
+接下来，我们系统地学习一下桶排序算法。
+<h2>
+桶排序算法的实现思路</h2>
+假设一种场景，对 {5, 2, 1, 4, 3} 进行升序排序，桶排序算法的实现思路是：
+<ul>
+<li>
+准备 5 个桶，从 1~5 对它们进行编号；</li>
+<li>
+将待排序序列的各个元素放置到相同编号的桶中；</li>
+<li>
+从 1 号桶开始，依次获取桶中放置的元素，得到的就是一个升序序列。</li>
+</ul>
+<br />
+整个实现思路如下图所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210820/2-210R0132U3Q1.gif" /></div>
+<br />
+桶排序算法中，待排序的数据量和桶的数量并不一定是简单的&ldquo;一对一&rdquo;的关系，更多场景中是&ldquo;多对一&rdquo;的关系，例如，使用桶排序算法对 {11, 9, 21, 8, 17, 19, 13, 1, 24, 12} 进行升序排序，实现过程如下图所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210820/2-210R013291B38.gif" /></div>
+<br />
+待排序序列中有 10 个元素，但算法中只用了 5 个桶，因此有些桶需要存放多个元素。实际场景中，我们可以自定义各个桶存放元素的区间（范围），比如上图中第一个桶存放 [0,5) 区间内的元素，第二个桶存放 [6,10) 之间的元素。<br />
+<br />
+当存在&ldquo;一个桶中有多个元素&rdquo;的情况时，要先使用合适的排序算法对各个痛内的元素进行排序，然后再根据桶的次序逐一取出所有元素，最终得到的才是一个有序序列。<br />
+<br />
+总之，桶排序算法的实现思路是：将待排序序列中的元素根据规则分组，每一组采用快排、插入排序等算法进行排序，然后再按照次序将所有元素合并，就可以得到一个有序序列。
+<h2>
+桶排序算法的具体实现</h2>
+假设用桶排序算法对 {0.42, 0.32, 0.23, 0.52, 0.25, 0.47, 0.51} 进行升序排序，采用的分组规则是：将所有元素分为 10 组，每组的标号分别为 0~9。对序列中的各个元素乘以 10 再取整，得到的值即为该元素所在组的组号。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210820/2-210R0132950609.gif" /></div>
+<br />
+使用桶排序算法解决此问题的 C 语言程序如下：
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+#define N 7   // 待排序序列中的元素个数
+#define NBUCKET 6  // 桶的数量
+#define INTERVAL 10  // 每个桶能存放的元素个数
+//建立桶
+struct Node {
+    float data;
+    struct Node *next;
+};
+
+void BucketSort(float arr[]);
+struct Node *InsertionSort(struct Node *list);
+void print(float arr[]);
+
+int main() {
+    float array[N] = { 0.42, 0.32, 0.23, 0.52, 0.25, 0.47, 0.51 };
+    BucketSort(array);
+    print(array);
+    return 0;
+}
+
+// 桶排序，arr 为待排序序列
+void BucketSort(float arr[]) {
+    int i, j;
+    struct Node **buckets;
+    // 创建所有桶
+    buckets = (struct Node **)malloc(sizeof(struct Node *) * NBUCKET);
+    // 设置每个桶为空桶
+    for (i = 0; i &lt; NBUCKET; ++i) {
+        buckets[i] = NULL;
+    }
+    // 根据规定，将 arr 中的每个元素分散存储到各个桶中
+    for (i = 0; i &lt; N; ++i) {
+        struct Node *current;
+        int pos = arr[i] * 10;  //根据规则，确定元素所在的桶
+        //创建存储该元素的存储块，并连接到指定的桶中
+        current = (struct Node *)malloc(sizeof(struct Node));
+        current-&gt;data = arr[i];
+        current-&gt;next = buckets[pos];
+        buckets[pos] = current;
+    }
+    // 调用自定义的排序算法，对各个桶进行排序
+    for (i = 0; i &lt; NBUCKET; ++i) {
+        buckets[i] = InsertionSort(buckets[i]);
+    }
+    // 合并所有桶内的元素
+    for (j = 0, i = 0; i &lt; NBUCKET; ++i) {
+        struct Node *node;
+        node = buckets[i];
+        while (node) {
+            arr[j++] = node-&gt;data;
+            node = node-&gt;next;
+        }
+    }
+}
+
+// 自定义的排序算法，用于对各个桶内元素进行排序
+struct Node *InsertionSort(struct Node *list) {
+    struct Node *k, *nodeList;
+    if (list == NULL || list-&gt;next == NULL) {
+        return list;
+    }
+    nodeList = list;
+    k = list-&gt;next;
+    nodeList-&gt;next = NULL;
+    while (k != NULL) {
+        struct Node *ptr;
+        if (nodeList-&gt;data &gt; k-&gt;data) {
+            struct Node *tmp;
+            tmp = k;
+            k = k-&gt;next;
+            tmp-&gt;next = nodeList;
+            nodeList = tmp;
+            continue;
+        }
+        for (ptr = nodeList; ptr-&gt;next != 0; ptr = ptr-&gt;next) {
+            if (ptr-&gt;next-&gt;data &gt; k-&gt;data)
+                break;
+        }
+        if (ptr-&gt;next != 0) {
+            struct Node *tmp;
+            tmp = k;
+            k = k-&gt;next;
+            tmp-&gt;next = ptr-&gt;next;
+            ptr-&gt;next = tmp;
+            continue;
+        }
+        else {
+            ptr-&gt;next = k;
+            k = k-&gt;next;
+            ptr-&gt;next-&gt;next = 0;
+            continue;
+        }
+    }
+    return nodeList;
+}
+
+void print(float ar[]) {
+    int i;
+    for (i = 0; i &lt; N; ++i) {
+        printf(&quot;%.2f &quot;, ar[i]);
+    }
+}</pre>
+<br />
+使用桶排序算法解决此问题的 Java 程序如下：
+<pre class="java">
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class BucketSort {
+    public static void bucketSort(float[] arr) {
+        int n = arr.length;
+        if (n &lt;= 0)
+            return;
+        @SuppressWarnings(&quot;unchecked&quot;)
+        ArrayList&lt;Float&gt;[] bucket = new ArrayList[n];
+        // 创建空桶
+        for (int i = 0; i &lt; n; i++)
+            bucket[i] = new ArrayList&lt;Float&gt;();
+        // 根据规则将序列中元素分散到桶中
+        for (int i = 0; i &lt; n; i++) {
+            int bucketIndex = (int) arr[i] * n;
+            bucket[bucketIndex].add(arr[i]);
+        }
+        // 对各个桶内的元素进行排序
+        for (int i = 0; i &lt; n; i++) {
+            Collections.sort((bucket[i]));
+        }
+        // 合并所有桶内的元素
+        int index = 0;
+        for (int i = 0; i &lt; n; i++) {
+            for (int j = 0, size = bucket[i].size(); j &lt; size; j++) {
+                arr[index++] = bucket[i].get(j);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        float[] arr = { (float) 0.42, (float) 0.32, (float) 0.23, (float) 0.52, (float) 0.25, (float) 0.47,
+                (float) 0.51 };
+        bucketSort(arr);
+
+        for (float i : arr)
+            System.out.print(i + &quot; &quot;);
+    }
+}</pre>
+<br />
+使用桶排序算法解决此问题的 Python 程序如下：
+<pre class="python">
+#桶排序算法，array 为待排序序列
+def bucketSort(array):
+    bucket = []
+    # 创建空桶
+    for i in range(len(array)):
+        bucket.append([])
+    # 根据规则将所有元素分散到各个桶中
+    for j in array:
+        index_b = int(10 * j)
+        bucket[index_b].append(j)
+    # 分别对各个桶进行排序
+    for i in range(len(array)):
+        bucket[i] = sorted(bucket[i])
+    # 合并所有桶内的元素
+    k = 0
+    for i in range(len(array)):
+        for j in range(len(bucket[i])):
+            array[k] = bucket[i][j]
+            k += 1
+    return array
+
+array = [0.42, 0.32, 0.23, 0.52, 0.25, 0.47, 0.51]
+print(bucketSort(array))</pre>
+<br />
+以上程序的输出结果均为：
+<p class="info-box">
+0.23, 0.25, 0.32, 0.42, 0.47, 0.51, 0.52</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="96.html" title="goroutine和coroutine的区别" target="_blank">goroutine和coroutine的区别</a></li>
+<li><a href="231.html" title="memset函数及其用法，C语言memset函数详解" target="_blank">memset函数及其用法，C语言memset函数详解</a></li>
+<li><a href="2560.html" title="Python tempfile模块：生成临时文件和临时目录" target="_blank">Python tempfile模块：生成临时文件和临时目录</a></li>
+<li><a href="6407.html" title="IP地址的格式和分类" target="_blank">IP地址的格式和分类</a></li>
+<li><a href="vip_8082.html" title="数据结构如何自学，效率更高？" target="_blank">数据结构如何自学，效率更高？</a></li>
+<li><a href="../tkinter/what-is-gui.html" title="GUI是什么" target="_blank">GUI是什么</a></li>
+<li><a href="../c/trunc.html" title="C语言trunc()函数：截断浮点数" target="_blank">C语言trunc()函数：截断浮点数</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9116;
+window.arcId = "d59dcaolH/wjT4cF6nq6ai75+l1s/cado0WMqJ4HXUuSiJD3CeB0S1sL1Og";
+window.typeidChain = "457|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

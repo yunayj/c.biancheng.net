@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>什么是流？C++流类和流对象</title>
+<meta name="description" content="程序中常用的 cin 和 cout，分别用于从键盘输入数据和向屏幕输出数据（简称为标准 I/O）。除此之外，程序还可以从文件中读入数据，以及向文件中写入数据（简称为文件 I/O)。 数据输入" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>什么是流？C++流类和流对象</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">程序中常用的 cin 和 cout，分别用于从键盘输入数据和向屏幕输出数据（简称为标准 I/O）。除此之外，程序还可以从文件中读入数据，以及向文件中写入数据（简称为文件 I/O)。<br />
+<br />
+数据输入和输出的过程也是数据传输的过程。数据像水一样从一个地方流动到另一个地方，因此，在 <a href='../cplus/cplus_2.html' target='_blank'>C++</a> 中将此过程称为 &ldquo;流（stream）&rdquo;。<br />
+<br />
+在 C++ 的标准类库中，将用于进行数据输入输出的类统称为&ldquo;流类&rdquo;。cin 是流类 istream 的对象，cout 是流类 ostream 的对象。要使用流类，需要在程序中包含 iostream 头文件。<br />
+<br />
+C++ 中常用的几个流类及其相互关系如图1所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/180831/1-1PS1153301321_2.jpg" /><br />
+	图1：C++类库中的流类</div>
+<br />
+图1中的箭头代表派生关系。例如，ios 是抽象的基类，它派生出 istream 和 ostream。 istream 和 ostream 又共同派生了 iostream 类。<br />
+<br />
+为了避免多继承的二义性，从 ios 派生出 istream 和 ostream 时，均使用了 virtual 关键字（虚继承）。
+<ul>
+	<li>
+		istream 是用于输入的流类，cin 就是该类的对象。</li>
+	<li>
+		ostream 是用于输出的流类，cout 就是该类的对象。</li>
+	<li>
+		ifstream 是用于从文件读取数据的类。</li>
+	<li>
+		ofstream 是用于向文件写入数据的类。</li>
+	<li>
+		iostream 是既能用于输入，又能用于输出的类。</li>
+	<li>
+		fstream 是既能从文件读取数据，又能向文件写入数据的类。</li>
+</ul>
+<h2>
+	标准流对象</h2>
+iostream 头文件中定义了四个标准流对象，它们是 cin、cout、cerr 和 clog。
+<ul>
+	<li>
+		cin 对应于标准输入流，用于从键盘读取数据，也可以被重定向为从文件中读取数据。</li>
+	<li>
+		cout 对应于标准输出流，用于向屏幕输出数据，也可以被重定向为向文件写入数据。</li>
+	<li>
+		cerr 对应于标准错误输出流，用于向屏幕输出出错信息，不能被重定向。</li>
+	<li>
+		clog 对应于标准错误输出流，用于向屏幕输出出错信息，不能被重定向。</li>
+</ul>
+<br />
+cerr 和 clog的区别在于：cerr 不使用缓冲区，直接向显示器输出信息；而输出到 clog 中的信息会先被存放到缓冲区，缓冲区满或者刷新时才输出到屏幕。<br />
+<br />
+cout 是 ostream 类的对象。在 Visual Studio 2010 安装文件夹中有<code>vc\crt\src\cout.cpp</code>文件，该文件中 cout 的定义如下：
+<pre class="cpp">
+_PURE_APPDOMAIN_GLOBAL static filebuf fout(_cpp_stdout);
+_PURE_APPDOMAIN_GLOBAL extern _CRTDATA2 ostream cout (&amp;fout);</pre>
+简单地看，就是：
+<pre class="cpp">
+ostream cout(&amp;fout);</pre>
+ostream 类的无参构造函数和复制构造函数都是私有的，因此在程序中一般无法定义 ostream 类的对象，唯一能用的 ostream 类的对象就是 cout。<br />
+<br />
+当然，上面关于 cout 对象的定义语句说明 ostream 类是有一个公有构造函数的，如果知道这个构造函数是什么样的，那么也能自己定义 ostream 类的对象&mdash;&mdash;但这么做并无必要。<br />
+<br />
+cout 可以被重定向，而 cerr 不能。所谓重定向，就是将输入的源或输出的目的地改变。例如，cout 本来是输出到屏幕上的，但是经过重定向，本该输出到屏幕上的东西就可以被输出到文件中。<br />
+<br />
+例如下面的程序：
+<pre class="cpp">
+#include &lt;iostream&gt;
+u<a href='https://m.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+int main()
+{
+    int x,y;
+    cin &gt;&gt; x &gt;&gt; y;
+    freopen(&quot;test.txt&quot;, &quot;w&quot;, stdout);  //将标准输出重定向到 test.txt文件
+    if( y == 0 )  //除数为0则输出错误信息
+        cerr &lt;&lt; &quot;error.&quot; &lt;&lt; endl;
+    else
+        cout &lt;&lt; x /y ;
+    return 0;
+}</pre>
+第 7 行的 freopen 是一个标准库函数，第二个参数 w 代表写模式，第三个参数代表标准输出。该语句的作用是将标准输出重定向为 test.txt 文件。<br />
+<br />
+重定向之后，所有对 cout 的输出都不再出现在屏幕上，而是出现在 test.txt 文件中。<br />
+<br />
+test.txt 文件会和本程序的可执行文件出现在同一个文件夹中。重定向仅对本程序有效，不影响其他程序。<br />
+<br />
+运行本程序，输入<br />
+6 2↙<br />
+程序没有输出，但是打开 test.txt文件，可以看到文件中有<br />
+3<br />
+<br />
+如果输入<br />
+4 0↙<br />
+则程序在屏幕上输出<br />
+error.<br />
+<br />
+说明 cerr 不会被重定向。<br />
+<br />
+cin 也是可以被重定向的。如果在程序中加入
+<pre class="cpp">
+freopen(&quot;input.dat&quot;, &quot;r&quot;, stdin);</pre>
+第二个参数 r 代表读入方式，第三个参数 stdin 代表标准输入。执行此语句后，cin 就不再从键盘读入数据，而是从 input.dat 文件中读人数据，input.dat 文件中有什么，就相当于从键盘输入了什么。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="992_2.html" title="Shell awk命令详解（格式+使用方法）" target="_blank">Shell awk命令详解（格式+使用方法）</a></li>
+<li><a href="4774_2.html" title="Go语言依赖管理" target="_blank">Go语言依赖管理</a></li>
+<li><a href="vip_5882_2.html" title="学习小妙招，及时掌握Python更新动态" target="_blank">学习小妙招，及时掌握Python更新动态</a></li>
+<li><a href="../sql/what-is-sql_2.html" title="SQL是什么" target="_blank">SQL是什么</a></li>
+<li><a href="hi6z4k_2.html" title="Kamailio是什么？" target="_blank">Kamailio是什么？</a></li>
+<li><a href="riqva2_2.html" title="C语言void是什么" target="_blank">C语言void是什么</a></li>
+<li><a href="ltrknfk_2.html" title="CSS子代选择符（&gt;）用法详解" target="_blank">CSS子代选择符（&gt;）用法详解</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 272;
+window.arcId = "3595ZmHn9CcQFcE56d622BMUTL/5vXwV8OtNHGGlDMFLxMROY2OLpfqkhg";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

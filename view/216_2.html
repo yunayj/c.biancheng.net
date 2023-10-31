@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>指针作为函数参数，C语言指针作为函数参数详解</title>
+<meta name="description" content="我们在前面讲指针重要性的时候讲过：指针能使被调函数返回一个以上的结果。本小节给大家写一个经典的程序，就是通过一个函数修改主函数中好几个变量的值。这个程序很经典，把" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>指针作为函数参数，C语言指针作为函数参数详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">我们在前面讲指针重要性的时候讲过：&ldquo;指针能使被调函数返回一个以上的结果&rdquo;。本小节给大家写一个经典的程序，就是通过一个函数修改主函数中好几个变量的值。这个程序很经典，把这个程序弄清楚了，指针就算是入门了。在写这个程序之前先来作一个铺垫：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+void Swap(int a, int b);  //函数声明
+int main(void)
+{
+    int i = 3, j = 5;
+    Swap(i, j);
+    printf(&quot;i = %d, j = %d\n&quot;, i, j);
+    return 0;
+}
+void Swap(int a, int b)
+{
+    int buf;
+    buf = a;
+    a = b;
+    b = buf;
+    return;
+}</pre>
+大家想一下，执行这个程序是否能互换 i 和 j 的值？不能！i 还是3，j 还是5。<br />
+<br />
+因为实参和形参之间的传递是单向的，只能由实参向形参传递。被调函数调用完之后系统为其分配的内存单元都会被释放。所以虽然将 i 和 j 的值传给了 a 和 b，但是交换的仅仅是内存单元 a 和 b 中的数据，对 i 和 j 没有任何影响。<br />
+<br />
+&ldquo;为什么不用 return 语句？&rdquo;因为 return 语句只能返回一个值，并不能返回两个值。&ldquo;将 printf 放在被调函数中不就行了吗？&rdquo;我们的目的是互换内存单元 i 和内存单元 j 中的数据。而 printf 的功能仅仅是将结果输出，并不能改变数据处理的本质，互换的还是单元 a 和单元 b 中的数据。<br />
+<br />
+以上传递方式叫作<span style="color:#008000;">拷贝传递</span>，即将内存 1 中的值拷贝到内存 2 中。拷贝传递的结果是：不管如何改变内存 2 中的值，对内存 1 中的值都没有任何影响，因为它们两个是不同的内存空间。<br />
+<br />
+所以要想直接对内存单元进行操控，用指针最直接，指针的功能很强大。
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+void Swap(int *p, int *q);  //函数声明
+int main(void)
+{
+    int i = 3, j = 5;
+    Swap(&amp;i, &amp;j);
+    printf(&quot;i = %d, j = %d\n&quot;, i, j);
+    return 0;
+}
+void Swap(int *p, int *q)
+{
+    int buf;
+    buf = *p;
+    *p = *q;
+    *q = buf;
+    return;
+}</pre>
+输出结果是：<br />
+i = 5, j = 3<br />
+<br />
+此时实参向形参传递的不是变量 i 和 j 的数据，而是变量 i 和 j 的地址。其实传递指针也是拷贝传递，只不过它拷贝的不是内存单元中的内容，而是内存单元的地址，这就是天壤之别了。拷贝地址就可以直接对地址所指向的内存单元进行操作，即此时被调函数就可以直接对变量 i 和 j 进行操作了。有人会说：&ldquo;被调函数用完就释放了，不就把 i 和 j 都释放了吗？&rdquo;不是的，当函数调用完之后，释放的是 p 和 q，不是 i 和 j。p 和 q 中存放的是 i 和 j 的地址。所以 p 和 q 被释放之后并不会影响 i 和 j 中的值。前面讲过，修改指针变量的值不会影响所指向变量中的数据。只不过它们之间的指向关系没有了而已。&nbsp;<br />
+<br />
+此外需要注意的是，形参中变量名分别为 p 和 q，变量类型都是 int* 型。所以实参 i 和 j 的地址 &amp;i 和 &amp;j 是分别传递给 p 和 q，而不是传递给 *p 和 *q。<br />
+&nbsp;<br />
+函数参数传指针和传数据的区别<br />
+<br />
+综上所述，如果希望在另外一个函数中修改本函数中变量的值，那么在调用函数时只能传递该变量的地址。如果这个变量是普通变量，那么传递它的地址就可以直接操作该变量的内存空间。<br />
+<br />
+那么，是不是要定义一个指针变量指向它然后传递这个指针变量呢？不用多此一举。比如有一个&ldquo;int i；&rdquo;，如果想传递i的地址那就直接传递 &amp;i 就行了，不用专门定义一个指针变量指向它，然后再传递这个指针变量。<br />
+<br />
+如果要传递的变量本身就是一个指针变量怎么办？如果要操作该指针变量所指向的内存空间是不是要传递该指针变量的地址呢？<br />
+<br />
+指针变量本身就是地址，本身就是指向那个内存空间的，所以直接把它传过去就行了。除非你要改变那个指针变量里面存放的地址，即你要改变指针变量的指向，那么你就必须要传递指针变量的地址。<br />
+<br />
+此外，传指针和传数据相比还有一个好处就是节约内存。我们知道，传数据拷贝的是内存单元的数据，如果数据很多的话拷贝过来都要为它们分配内存。而传指针的话只需要传递 4 字节的地址就行了。而且传数据非常消耗效率，为形参分配内存需要时间，拷贝需要时间，最后结束了返回还是需要时间。前面说过，return 时系统会先自动创建一个临时变量来存放返回的值。所以传数据时很消耗效率，而传指针就是为了提高效率。<br />
+<br />
+事实上，在实际编程中我们都是传递指针！往往只有满足下面这两个条件的时候我们才会直接传递数据而不是传递指针，而且这两个条件缺一不可：
+<ul>
+	<li>
+		数据很小，比如就一个 int 型变量。</li>
+	<li>
+		不需要改变它的值，只是使用它的值。</li>
+</ul>
+<br />
+此时不是不能用指针，当然也可以用指针，只是没有必要。<br />
+<br />
+以后在使用函数的时候，只要函数的参数不满足上面这两个条件，那么全部都用指针。此外需要注意的是，数组名本身就是地址，所以如果传递数组的话直接传递数组名就行了。接收的形参可以定义成数组也可以定义为同类型的指针，这点后面再讲。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="144_3.html" title="C语言编译器（C语言编程软件）完全攻略（包含所有平台）" target="_blank">C语言编译器（C语言编程软件）完全攻略（包含所有平台）</a></li>
+<li><a href="420_2.html" title="C++ vector迭代器及用法" target="_blank">C++ vector迭代器及用法</a></li>
+<li><a href="vip_2302_2.html" title="C++ RTTI机制精讲（C++运行时类型识别机制）" target="_blank">C++ RTTI机制精讲（C++运行时类型识别机制）</a></li>
+<li><a href="2315_2.html" title="Python try except else（异常处理）用法详解" target="_blank">Python try except else（异常处理）用法详解</a></li>
+<li><a href="6174_2.html" title="PHP array_merge()：数组合并" target="_blank">PHP array_merge()：数组合并</a></li>
+<li><a href="../numpy/io_2.html" title="NumPy IO操作" target="_blank">NumPy IO操作</a></li>
+<li><a href="gi6zz6_2.html" title="C语言简介" target="_blank">C语言简介</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 216;
+window.arcId = "c54cw+/7QRBrwugCOnL/VXSe8BeLqFrNMstWW8StSOTSo6S+FlEJDBoAJQ";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

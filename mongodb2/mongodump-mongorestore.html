@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>MongoDB备份和恢复</title>
+<meta name="description" content="本节我们来介绍一下 MongoDB 中如何对数据进行备份与恢复。 数据备份 在 MongoDB 中我们可以使用 mongodump 命令来对 MongoDB 进行数据备份，该命令可以导出所有数据到指定目录中，也可以通" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="../view/niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="mongodb2.html">MongoDB</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href="what-is-nosql.html">NoSQL是什么</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href="what-is-mongodb.html">MongoDB是什么</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href="install-on-windows.html">Windows安装MongoDB</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href="install-on-linux.html">Linux安装MongoDB</a>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href="install-on-macos.html">MacOS安装MongoDB</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href="concept.html">MongoDB常用概念</a>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href="data-type.html">MongoDB数据类型</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href="data-model.html">MongoDB数据模型</a>
+</dd>
+<dd>
+<span class="channel-num">9</span>
+<a href="connection.html">MongoDB连接数据库</a>
+</dd>
+<dd>
+<span class="channel-num">10</span>
+<a href="create-database.html">MongoDB创建数据库</a>
+</dd>
+<dd>
+<span class="channel-num">11</span>
+<a href="drop-database.html">MongoDB删除数据库</a>
+</dd>
+<dd>
+<span class="channel-num">12</span>
+<a href="create-collection.html">MongoDB创建集合</a>
+</dd>
+<dd>
+<span class="channel-num">13</span>
+<a href="drop-collection.html">MongoDB删除集合</a>
+</dd>
+<dd>
+<span class="channel-num">14</span>
+<a href="insert-document.html">MongoDB插入文档</a>
+</dd>
+<dd>
+<span class="channel-num">15</span>
+<a href="find-document.html">MongoDB查询文档</a>
+</dd>
+<dd>
+<span class="channel-num">16</span>
+<a href="update-document.html">MongoDB更新文档</a>
+</dd>
+<dd>
+<span class="channel-num">17</span>
+<a href="remove-document.html">MongoDB删除文档</a>
+</dd>
+<dd>
+<span class="channel-num">18</span>
+<a href="projection.html">MongoDB投影</a>
+</dd>
+<dd>
+<span class="channel-num">19</span>
+<a href="limit-skip.html">MongoDB限制查询条数</a>
+</dd>
+<dd>
+<span class="channel-num">20</span>
+<a href="sort.html">MongoDB排序</a>
+</dd>
+<dd>
+<span class="channel-num">21</span>
+<a href="indexs.html">MongoDB索引</a>
+</dd>
+<dd>
+<span class="channel-num">22</span>
+<a href="aggregate.html">MongoDB聚合查询</a>
+</dd>
+<dd>
+<span class="channel-num">23</span>
+<a href="replication.html">MongoDB复制</a>
+</dd>
+<dd>
+<span class="channel-num">24</span>
+<a href="shard.html">MongoDB分片</a>
+</dd>
+<dd>
+<span class="channel-num">25</span>
+<a href="mongodump-mongorestore.html">MongoDB备份和恢复</a>
+</dd>
+<dd>
+<span class="channel-num">26</span>
+<a href="mongostat-mongotop.html">MongoDB监控</a>
+</dd>
+<dd>
+<span class="channel-num">27</span>
+<a href="java-mongodb.html">Java操作MongoDB</a>
+</dd>
+<dd>
+<span class="channel-num">28</span>
+<a href="php-mongodb.html">PHP操作MongoDB</a>
+</dd>
+<dd>
+<span class="channel-num">29</span>
+<a href="relationship.html">MongoDB关系</a>
+</dd>
+<dd>
+<span class="channel-num">30</span>
+<a href="dbref.html">MongoDB DBRefs</a>
+</dd>
+<dd>
+<span class="channel-num">31</span>
+<a href="cover-index-find.html">MongoDB覆盖索引查询</a>
+</dd>
+<dd>
+<span class="channel-num">32</span>
+<a href="explain-hint.html">MongoDB查询分析</a>
+</dd>
+<dd>
+<span class="channel-num">33</span>
+<a href="atomic-operation.html">MongoDB原子操作</a>
+</dd>
+<dd>
+<span class="channel-num">34</span>
+<a href="advanced-indexs.html">MongoDB高级索引</a>
+</dd>
+<dd>
+<span class="channel-num">35</span>
+<a href="index-note.html">MongoDB索引使用注意事项</a>
+</dd>
+<dd>
+<span class="channel-num">36</span>
+<a href="objectid.html">MongoDB ObjectId</a>
+</dd>
+<dd>
+<span class="channel-num">37</span>
+<a href="map-reduce.html">MongoDB MapReduce</a>
+</dd>
+<dd>
+<span class="channel-num">38</span>
+<a href="text-indexs.html">MongoDB全文检索</a>
+</dd>
+<dd>
+<span class="channel-num">39</span>
+<a href="regex.html">MongoDB正则表达式</a>
+</dd>
+<dd>
+<span class="channel-num">40</span>
+<a href="rockmongo.html">MongoDB管理工具</a>
+</dd>
+<dd>
+<span class="channel-num">41</span>
+<a href="gridfs.html">MongoDB GridFS</a>
+</dd>
+<dd>
+<span class="channel-num">42</span>
+<a href="capped-collection.html">MongoDB固定集合</a>
+</dd>
+<dd>
+<span class="channel-num">43</span>
+<a href="auto-increment.html">MongoDB自动增长</a>
+</dd>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="mongodb2.html">MongoDB</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>MongoDB备份和恢复</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">本节我们来介绍一下 MongoDB 中如何对数据进行备份与恢复。<br />
+<h2>
+数据备份</h2>
+在 MongoDB 中我们可以使用 mongodump 命令来对 MongoDB 进行数据备份，该命令可以导出所有数据到指定目录中，也可以通过参数将导出数据转存的服务器。其语法格式如下：<br />
+<p class="info-box">
+mongodump -h dbhost -d dbname -o dbdirectory</p>
+参数说明如下：<br />
+<ul>
+<li>
+-h：MongDB 所在服务器的地址，例如：127.0.0.1，同时也可以指定端口号，例如：127.0.0.1:27017；</li>
+<li>
+-d：需要备份的数据库实例，例如：test；</li>
+<li>
+-o：备份数据存放的位置，例如：c:\data\dump，该目录需要提前建立，在备份完成后，系统会自动在 dump 目录下建立一个 test 目录，并在这个目录里面存放该数据库实例的备份数据。</li>
+</ul>
+<br />
+【示例】假设在电脑本地（127.0.0.1）的 27017 端口运行 MongoDB 服务，然后打开命令提示符（CMD）窗口并进入 MongoDB 安装目录下的 bin 目录，最后输入<code> mongodump </code>命令，运行结果如下：<br />
+<p class="info-box">
+C:\Users\79330&gt;D:<br />
+<br />
+D:\&gt;cd install/MongoDB/bin<br />
+<br />
+D:\install\Mongodb\bin&gt;mongodump<br />
+2021-02-25T11:22:39.468+0800&nbsp;&nbsp;&nbsp; writing admin.system.version to<br />
+2021-02-25T11:22:39.516+0800&nbsp;&nbsp;&nbsp; done dumping admin.system.version (1 document)<br />
+2021-02-25T11:22:39.516+0800&nbsp;&nbsp;&nbsp; writing bianchengbang.course to<br />
+2021-02-25T11:22:39.517+0800&nbsp;&nbsp;&nbsp; done dumping bianchengbang.course (3 documents)</p>
+<code>mongodump </code>命令将连接到运行于<code> 127.0.0.1:27017 </code>的 MongoDB 服务器上，并将服务器中的所有数据备份到 MongoDB 安装目录下的 /bin/dump/ 目录下。<br />
+<br />
+下表中列举了可以与<code> mongodump </code>命令一起使用的参数列表：<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+语法</th>
+<th>
+描述</th>
+<th>
+实例</th>
+</tr>
+<tr>
+<td>
+mongodump --host HOST_NAME --port PORT_NUMBER</td>
+<td>
+该命令将备份所有 MongoDB 数据</td>
+<td>
+mongodump --host runoob.com --port 27017</td>
+</tr>
+<tr>
+<td>
+mongodump --dbpath DB_PATH --out BACKUP_DIRECTORY</td>
+<td>
+该命令将仅备份指定路径上的指定数据库</td>
+<td>
+mongodump --dbpath /data/db/ --out /data/backup/</td>
+</tr>
+<tr>
+<td>
+mongodump --collection COLLECTION --db DB_NAME</td>
+<td>
+该命令将备份指定数据库的集合</td>
+<td>
+mongodump --collection mycol --db test</td>
+</tr>
+</tbody>
+</table>
+<h2>
+恢复数据</h2>
+要想还原备份的数据，您可以使用 MongoDB 的<code> mongorestore </code>命令，此命令会从备份目录还原所有数据，语法格式如下：<br />
+<p class="info-box">
+mongorestore</p>
+【示例】下面通过一个简单的示例演示一下<code> mongorestore </code>命令的使用：<br />
+<p class="info-box">
+D:\install\Mongodb\bin&gt;mongorestore<br />
+2021-02-25T13:26:27.757+0800&nbsp;&nbsp;&nbsp; using default &#39;dump&#39; directory<br />
+2021-02-25T13:26:27.775+0800&nbsp;&nbsp;&nbsp; preparing collections to restore from<br />
+2021-02-25T13:26:27.776+0800&nbsp;&nbsp;&nbsp; reading metadata for bianchengbang.course from dump\bianchengbang\course.metadata.json<br />
+2021-02-25T13:26:27.791+0800&nbsp;&nbsp;&nbsp; restoring bianchengbang.course from dump\bianchengbang\course.bson<br />
+2021-02-25T13:26:27.800+0800&nbsp;&nbsp;&nbsp; restoring indexes for collection bianchengbang.course from metadata<br />
+2021-02-25T13:26:27.813+0800&nbsp;&nbsp;&nbsp; finished restoring bianchengbang.course (3 documents)<br />
+2021-02-25T13:26:27.814+0800&nbsp;&nbsp;&nbsp; done</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="../view/niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/1290_2.html" title="Java JDK环境变量配置" target="_blank">Java JDK环境变量配置</a></li>
+<li><a href="../view/4474.html" title="什么是位置参数，Python位置参数" target="_blank">什么是位置参数，Python位置参数</a></li>
+<li><a href="../thread/vip_8614.html" title="线程同步机制" target="_blank">线程同步机制</a></li>
+<li><a href="../mybatis/where.html" title="MyBatis where标签" target="_blank">MyBatis where标签</a></li>
+<li><a href="../css3/font.html" title="CSS字体样式（font）" target="_blank">CSS字体样式（font）</a></li>
+<li><a href="../view/hin2pj.html" title="日志（Log）到底是什么？" target="_blank">日志（Log）到底是什么？</a></li>
+<li><a href="../view/pbwy3ic.html" title="Linux shutdown关机命令（入门必读）" target="_blank">Linux shutdown关机命令（入门必读）</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8828;
+window.arcId = "5a01S7TeRdGDQGlHACg38b17VcpTbMtioeZN5O1U5LcAyRi95IyvJZTMvU0";
+window.typeidChain = "404";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="../view/8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="../view/8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="../view/8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="../view/9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="../view/8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/mongodb2/shard.html";
+window.nextPageURL = "/mongodb2/mongostat-mongotop.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

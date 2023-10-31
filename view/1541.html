@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++ seekp和seekg函数用法详解</title>
+<meta name="description" content="文件流对象有两个成员函数，分别是 seekp 和 seekg。它们可以用于将读写位置移动到文件中的任何字节。 seekp 函数用于已经打开要进行输出的文件，而 seekg 函数则用于已经打开要进行输" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++ seekp和seekg函数用法详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">文件流对象有两个成员函数，分别是 <span style="color:#008000;">seekp</span> 和 <span style="color:#008000;">seekg</span>。它们可以用于将读写位置移动到文件中的任何字节。<br />
+<br />
+seekp 函数用于已经打开要进行输出的文件，而 seekg 函数则用于已经打开要进行输入的文件。可以将 &quot;p&quot; 理解为 &quot;put&quot;，将 &quot;g&quot; 理解为 &quot;get&quot;，这样理解当然是有根据的，因为 seekp 可用于将信息 put（放入）到文件中，而 seekg 则可用于从文件中 get（获取）信息。<br />
+<br />
+以下是 seekp 的用法示例：<br />
+<p class="info-box">
+file.seekp(20L, ios::beg);</p>
+第一个实参是一个 long 类型的整数，表示文件中的偏移量。这就是想要移动到的字节数。在该示例中，使用的是 20L（请记住，L 字符可以强制编译器将该数字视为一个 long 类型的整数）。该语句可以将文件的写入位置移动到编号为 20 的字节（所有编号从 0 开始，因此编号为 20 的字节实际上是第 21 个字节）。<br />
+<br />
+第二个实参称为<span style="color:#008000;">模式标志</span>，它指定从哪里计算偏移量。标志 ios::beg 表示偏移量是从文件开头算起的。也可以修改该参数，从文件末尾或文件中的当前位置计算偏移量。表 1 列出了所有 3 种随机访问模式的标志。<br />
+<br />
+<table>
+<caption>
+表 1 文件定位标志</caption>
+<tbody>
+<tr>
+<th>
+模式标志</th>
+<th>
+描&nbsp;述</th>
+</tr>
+<tr>
+<td>
+ios::beg</td>
+<td>
+从文件头开始计算偏移量</td>
+</tr>
+<tr>
+<td>
+ios::end</td>
+<td>
+从文件末尾开始计算偏移量</td>
+</tr>
+<tr>
+<td>
+ios::cur</td>
+<td>
+从当前位置开始计算偏移量</td>
+</tr>
+</tbody>
+</table>
+<br />
+表 2 显示了 seekp 和 seekg 使用不同模式标志的示例。<br />
+<br />
+<table>
+<caption>
+表 2 文件寻找操作</caption>
+<tbody>
+<tr>
+<th>
+语&nbsp;句</th>
+<th>
+如何影响读/写位置</th>
+</tr>
+<tr>
+<td>
+file.seekp(32L, ios::beg);</td>
+<td>
+将写入位置设置为从文件开头开始的第 33 个字节（字节 32)</td>
+</tr>
+<tr>
+<td>
+file.seekp(-10L, ios::end);</td>
+<td>
+将写入位置设置为从文件末尾开始的第 11 个字节（字节 10)</td>
+</tr>
+<tr>
+<td>
+file.seekp(120L, ios::cur);</td>
+<td>
+将写入位置设置为从当前位置开始的第 121 个字节（字节 120)</td>
+</tr>
+<tr>
+<td>
+file.seekg(2L, ios::beg);</td>
+<td>
+将读取位置设置为从文件开头开始的第 3 个字节（字节 2)</td>
+</tr>
+<tr>
+<td>
+file.seekg(-100L, ios::end);</td>
+<td>
+将读取位置设置为从文件末尾开始的第 101 个字节（字节 100)</td>
+</tr>
+<tr>
+<td>
+file.seekg(40L, ios::cur);</td>
+<td>
+将读取位置设置为从当前位置开始的第 41 个字节（字节 40)</td>
+</tr>
+<tr>
+<td>
+file.seekg(0L, ios:rend);</td>
+<td>
+将读取位置设置为文件末尾</td>
+</tr>
+</tbody>
+</table>
+<br />
+请注意，表 2 中的一些示例使用了负偏移量。负偏移量导致读或写位置在文件中向后移动，而正偏移量则导致向前移动。<br />
+<br />
+假设文件 letters.txt 中包含以下数据：<br />
+<p class="info-box">
+Byte 5 from beginning: f<br />
+Byte 10 from end: q<br />
+Byte 3 from current: u</p>
+下面的程序使用了 seekg 函数跳转到 letters.txt 文件中的不同位置，每次停止后都检索一个字符：<br />
+<pre class="cpp">
+//This program demonstrates the seekg function.
+#include &lt;iostream&gt;
+#include &lt;fstream&gt;
+u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+
+int main()
+{
+    // Variable to access file
+    char ch;
+    // Open the file for reading
+    fstream file (&quot;letters.txt&quot;, ios::in);
+    if (!file)
+    {
+        cout &lt;&lt; &quot;Error opening file.&quot;;
+        return 0;
+    }
+    // Get fifth byte from beginning of alphabet file
+    file.seekg(5L, ios::beg);
+    file.get(ch);
+    cout &lt;&lt; &quot;Byte 5 from beginning: &quot; &lt;&lt; ch &lt;&lt; endl;
+    // Get tenth byte from end of alphabet file
+    file.seekg(-10L, ios::end);
+    file.get(ch);
+    cout &lt;&lt; &quot;Byte 10 from end: &quot; &lt;&lt; ch &lt;&lt; endl;
+    //Go forward three bytes from current position
+    file.seekg(3L, ios::cur);
+    file.get(ch);
+    cout &lt;&lt; &quot;Byte 3 from current: &quot; &lt;&lt; ch &lt;&lt; endl;
+    // Close file
+    file.close ();
+    return 0;
+}</pre>
+程序输出结果：
+<p class="info-box">
+Byte 5 from beginning: f<br />
+Byte 10 from end: q<br />
+Byte 3 from current: u</p>
+下面的程序显示了 seekg 函数的另一个例子。它打开了包含两个记录的 people.dat 文件。该程序首先显示记录 1（第二条记录），然后显示记录 0。
+<pre class="cpp">
+// This program demonstrates the use of a structure
+// variable to read a record of information from a file.
+#include &lt;iostream&gt;
+#include &lt;fstream&gt;
+using namespace std;
+const int NAME_SIZE = 51, ADDR_SIZE = 51, PHONE_SIZE = 14;
+
+//声明记录的结构
+struct Info
+{
+    char name[NAME_SIZE];
+    int age;
+    char address1[ADDR_SIZE];
+    char address2[ADDR_SIZE];
+    char phone[PHONE_SIZE];
+};
+
+// Function Prototypes
+long byteNum(int);
+void showRec(Info);
+
+int main()
+{
+    // Person information
+    Info person;
+    // Create file object and open the file
+    fstream people(&quot;people.dat&quot;, ios::in | ios::binary);
+    if (!people)
+    {
+        cout &lt;&lt; &quot;Error opening file. Program aborting.\n&quot;; return 0;
+    }
+    // Skip forward and read record 1 in the file
+    cout &lt;&lt; &quot;Here is record 1:\n&quot;;
+    people.seekg(byteNum(1), ios::beg);
+    people.read(reinterpret_cast&lt;char *&gt;(&amp;person), sizeof (person));
+    showRec(person);
+    // Skip backwards and read record 0 in the file
+    cout &lt;&lt; &quot;\nHere is record 0:\n&quot;;
+    people.seekg(byteNum(0), ios::beg);
+    people.read(reinterpret_cast&lt;char *&gt;(&amp;person), sizeof (person));
+    showRec(person);
+    // Close the file
+    people.close();
+    return 0;
+}
+long byteNum(int recNum)
+{
+    return sizeof (Info) * recNum;
+}
+void showRec(Info record)
+{
+    cout &lt;&lt; &quot;Name:&quot;;
+    cout &lt;&lt; record.name &lt;&lt; endl;
+    cout &lt;&lt; &quot;Age: &quot;;
+    cout &lt;&lt; record.age &lt;&lt; endl;
+    cout &lt;&lt; &quot;Address line 1: &quot;;
+    cout &lt;&lt; record.address1 &lt;&lt; endl;
+    cout &lt;&lt; &quot;Address line 2: &quot;;
+    cout &lt;&lt; record.address2 &lt;&lt; endl;
+    cout &lt;&lt; &quot;Phone: &quot;;
+    cout &lt;&lt; record.phone &lt;&lt; endl;
+}</pre>
+程序屏幕输出结果：
+<p class="info-box">
+Here is record 1:<br />
+Name:cyuyan<br />
+Age: 20<br />
+Address line 1: No.1<br />
+Address line 2: No.2<br />
+Phone: 12345678<br />
+<br />
+Here is record 0:<br />
+Name:http://c.biancheng.net<br />
+Age: 5<br />
+Address line 1: No.1<br />
+Address line 2: No.2<br />
+Phone: 123456</p>
+该程序除了 main 以外还有两个重要的函数。第一个是 byteNum，它釆用一个记录编号作为实参，并返回该记录的起始字节。它通过将记录编号乘以 Info 结构的大小来计算记录的起始字节。这将从文件的开始处返回该记录的偏移量。第二个函数是 showRec，它接收一个 Info 结构作为实参，并在屏幕上显示其内容。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="185_2.html" title="数组之间的赋值，C语言数组之间赋值详解" target="_blank">数组之间的赋值，C语言数组之间赋值详解</a></li>
+<li><a href="1719.html" title="英语和数学不好，能学编程吗？" target="_blank">英语和数学不好，能学编程吗？</a></li>
+<li><a href="7790.html" title="Electron是什么？" target="_blank">Electron是什么？</a></li>
+<li><a href="../ml_alg/knn.html" title="KNN最邻近分类算法" target="_blank">KNN最邻近分类算法</a></li>
+<li><a href="../pygame/installer.html" title="Pygame下载和安装" target="_blank">Pygame下载和安装</a></li>
+<li><a href="../spring_mvc/9671.html" title="Spring MVC获取请求参数" target="_blank">Spring MVC获取请求参数</a></li>
+<li><a href="sb35se5.html" title="C# StartsWith()：判断字符串是否以指定内容开头" target="_blank">C# StartsWith()：判断字符串是否以指定内容开头</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 1541;
+window.arcId = "1cf1WAeewbo6hGxZ11YpS1f9LYbnwzLooN1BqnBT0AaAqi3ccAhz2R+yoao";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

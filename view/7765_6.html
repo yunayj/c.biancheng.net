@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Django表单系统初体验</title>
+<meta name="description" content="每个 Web 站点上都需要有用户注册、登陆以及退出这些基本功能，有的站会稍微复杂点，比如让用户输入验证码来鉴别是否是机器人，当然这是后话。既然所有的 Web 站点都需要实现这项" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../django/django_2.html">Django</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Django表单系统初体验</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">每个 Web 站点上都需要有用户注册、登陆以及退出这些基本功能，有的站会稍微复杂点，比如让用户输入验证码来鉴别是否是机器人，当然这是后话。既然所有的 Web 站点都需要实现这项基本功能，就可见这个功能的重要性。在本章中我们将主要讲述如何实现一个 Web 站点的注册、登出、退出、以及用户登录时的校验，最终我们还可以使用 Bootstrap4 前端框架对登录界面进行优化调整，下面就让我们开始学习之旅吧。<br />
+<br />
+在 Django 中实现用户的登出这项功能，主要有两种方式，一个是利用 HTML 中的 form 表单通过 Post 传参到服务器，另一个就是本节我们要讲到的 Django 的表单系统，对于第一种方式后续也会介绍到，本节我们主要讲解第二种。在后续的学习中我们将用到 Get 和 Post 这两种向服务端发起请求的方法，如果对于 Http 协议或者 Http 请求方法生疏了，大家要及时的学习，在这里推荐给大家一篇文章，希望可以对你有所帮助《<a href="http://zhuanlan.zhihu.com/p/94076120" rel="nofollow">Http请求总结</a>》。<br />
+<h2>
+	1. 初识Django Form表单</h2>
+<h4>
+	1) HTML表单提交简单流程</h4>
+在正式介绍 Django 的表单系统之前，我们先了解以下一个普通 HTML 表单的处理流程，也就是上述的第一种方式。一个 HTML 表单必须指定以下两项，一个是用户数据发送的目的 URL，另一个是发送数据所使用的 HTTP 方法，在 Form 表单中有两种请求方法也就是 GET 和 POST，它们分别表示向从服务器资源和向服务器提交信息，登录表单的实现就是通过 POST 方法，为了让大家详细的了解推荐《<a href="https://zhidao.baidu.com/question/1048272938344437739.html" target="_blank">HttpRequest的POST和GET的区别</a>》这篇文章。<br />
+<br />
+处理表单的过程往往会相对复杂，但是不同的表单的处理过程却非常的相似。不同类型的数据项在表单中渲染成 HTML 向用户展示，用户可以在表单中编辑并提交数据到后端服务器，通过后端的逻辑代码对用户提交的数据进行验证，并进行后续的处理，若存在数据有误的情况，则对用户进行提示并告知信息存在错误。这就是通过表单向后端服务器提交数据的简单流程。<br />
+<h4>
+	2) HttpRequest对象常用属性与方法</h4>
+为了方便后续理解本节中的代码，在这里我们对 Httprequest 对象的常用属性与方法进行简单的介绍。在 Django 中 视图函数的第一个参数 request 就是 HttpRequest 的对象，在前面章节，我们也进行了介绍。它的常用属性有如下几种，在这里我们以表格的形式呈现给大家。如下所示：<br />
+<table border="1" cellpadding="1" cellspacing="1" style="width: 500px">
+	<caption>
+		HttpRequest对象常用属性</caption>
+	<tbody>
+		<tr>
+			<th>
+				属性名称</th>
+			<th>
+				属性简单描述</th>
+		</tr>
+		<tr>
+			<td>
+				<span style="color:#ff0000;">path</span></td>
+			<td>
+				表示提交请求页面的URL的字符串，不包括域名。</td>
+		</tr>
+		<tr>
+			<td>
+				<span style="color:#ff0000;">method</span></td>
+			<td>
+				表示提交请求时使用的HTTP方法。这是最常用的属性，比如：<br />
+				<br />
+				if request.method == &#39;GET&#39;:<br />
+				...处理GET请求数据并响应<br />
+				elif request.method == &#39;POST&#39;:<br />
+				....处理POST请求数据并响应</td>
+		</tr>
+		<tr>
+			<td>
+				<span style="color:#ff0000;">GET</span></td>
+			<td>
+				QueryDict查询字典的对象，包含get请求方式的所有数据</td>
+		</tr>
+		<tr>
+			<td>
+				<span style="color:#ff0000;">POST</span></td>
+			<td>
+				QueryDict查询字典的对象，包含post请求方式的所有数据</td>
+		</tr>
+		<tr>
+			<td>
+				<span style="color:#ff0000;">COOKIES</span></td>
+			<td>
+				Python字典，包含所有的cookie，键和值都为字符串，浏览器端实现会话保持。</td>
+		</tr>
+		<tr>
+			<td>
+				<span style="color:#ff0000;">SESSION</span></td>
+			<td>
+				是一个可读写的类字典对象，表示当前session。服务端实现会话保持。</td>
+		</tr>
+		<tr>
+			<td>
+				<span style="color:#ff0000;">FILES</span></td>
+			<td>
+				类似于字典的对象，包含所有的上传文件信息&nbsp;FILES 的键来自于&lt;input type=&quot;file&quot; name=&quot;&quot; /&gt; 中的 name 。 FILES 的值是一个标准的Python字典。<br />
+				注意：&nbsp;FILES 只有在请求的方法是 POST ，并且提交的 &lt;form&gt; 包含enctype=&quot;multipart/form-data&quot; 时才包含数据。否则， FILES 只是一个空的类字典对象。</td>
+		</tr>
+		<tr>
+			<td>
+				<span style="color:#ff0000;">META</span></td>
+			<td>
+				一个标准的Python字典，包含所有有效的HTTP头信息。有效的头信息与客户端和服务器有关。示例：request.META[&#39;REMOTE_ADDR&#39;]&nbsp; 获取请求方的客户端IP地址</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+它的常用方法有如下几个，分别为：
+<ul>
+	<li>
+		请求的完整路径：request.get_full_path()&nbsp;</li>
+	<li>
+		请求的主机的 IP：request.get_host()&nbsp;</li>
+	<li>
+		检查请求是否安全，安全则返回 True：is_secure()</li>
+</ul>
+<h4>
+	3) Django表单系统功能</h4>
+使用 Django 提供的表单系统可以将上述第一种方式的流程大大简化，这也符合 Django 框架的艺术性即使用简单代码优雅。下面就让我们看一下 Django 表单系统为开发者提供了哪些主要的功能呢？它主要有 4 大核心功能，如下所示：
+<ul>
+	<li>
+		自动生成 HTML 表单元素。</li>
+	<li>
+		对用户提交的数据进行校验</li>
+	<li>
+		对校验存在错误的数据进行回显，告知错误。</li>
+	<li>
+		将表单数据转换为对应的 Python 数据类型。</li>
+</ul>
+<br />
+下面我们通过简单的实例生成一个最简单的 form 表单，从而进一步的认识 Django 表单系统。
+<h2>
+	2. 表单系统简单应用</h2>
+Django 的表单系统和 Django 的 Model 模型类非常相似，虽然他们负责不同的功能，但是学习的过程中，我们也要学会总结，这样有利于我们快速的理解与记忆。所有的表单对象继承自 Form 类，Form 的定义如下所示：<br />
+<p class="info-box">
+	class Form(BaseForm,metaclass=DeclarativeFieldsMetaclass)</p>
+Form 中指定了基类 BaseForm 和元类 DeclarativeFieldsMetaclass。BaseForm 中定义了生成 HTML与字段值的校验方法，而 DeclarativeFieldsMetaclass 则定义了创建 Form 对象的过程。要应用 Django 表单首先就要创建 Form 对象，并定义表单的字段分别是 user_name 与 user_password，代码如下所示：<br />
+<pre class="python">
+#第一步index/views.py 创建Form对象。
+from django import forms
+class LoginForm(forms.Form): #继承自Form类，
+    user_name=forms.CharField(label=&quot;用户名&quot;,min_length=6,max_length=12)#新建表单字段
+    user_password=forms.CharField(label=&quot;用户密码&quot;,min_length=8)
+
+#第二步围绕form对象完成表单。
+def login(request):#定义登录处理函数login()
+    if request.method == &quot;POST&quot;: #request是 HttpRequest的对象，利用它的的method属性，判断请求方法。
+        form = LoginForm(request.POST)#实例化对象，post提交数据是QuerySet类型的字典，GET方法与其一样。
+        if form.is_valid(): #提供验证判断是否有效，成立则返回是Ture
+            return HttpResponse(&quot;登录成功&quot;)
+    else:
+        form=LoginForm()
+    return render(request, &quot;index/login.html&quot;,locals())</pre>
+并在 templates/index 目录下新建 login.html 文件，代码如下所示：
+<pre class="html">
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;用户登录页面&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;form action=&quot;/login/&quot; method=&quot;post&quot;&gt;
+&lt;!--&nbsp;&nbsp;&nbsp; 防止 CSRF 攻击--&gt;
+    {% csrf_token %} 
+    {{ form}}
+&lt;input type=&quot;submit&quot; value=&quot;提交&quot;&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+配置完路由后，在浏览器地址栏进行访问,结果如下所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="Django表单系统简单应用" src="../uploads/allimg/200602/9-2006021IG3942_2.png" /><br />
+	图1：Django表单系统的简单应用<br />
+	&nbsp;</div>
+Django 的表单系统将复杂的工作变得简单，它自身提供了很多的方法，让开发者不必自己再去写一些 API，直接调用相应的接口即可，比如提供验证的 <code>is_valid()</code>，诸如此类接口还有很多，在后续章节我们会详细介绍。<br />
+<br />
+<code>request.POST</code>的返回值是一个 QueryDict 的类字典对象，我们通过可以通过 get 方法进行取值。判断 form 表单的请求方法使用 request.method，这是 form 表单中固定的使用方式。CharField 是表单的字段类型，当然还有其他的字段类型，后续也会进行相应的介绍。<br />
+<p class="tip-box">
+	从第一步可以看出，表单系统的应用和 Model 模型类的用法非常相似，大家要学会比较性的学习。</p>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1829_2.html" title="C语言二维数组的定义、初始化、赋值" target="_blank">C语言二维数组的定义、初始化、赋值</a></li>
+<li><a href="5631_2.html" title="使用Eclipse开发第一个Java程序" target="_blank">使用Eclipse开发第一个Java程序</a></li>
+<li><a href="../mongodb2/install-on-windows_2.html" title="Windows安装MongoDB（图解）" target="_blank">Windows安装MongoDB（图解）</a></li>
+<li><a href="../redis2/smembers_2.html" title="Redis SMEMBERS命令" target="_blank">Redis SMEMBERS命令</a></li>
+<li><a href="0lr0gae_2.html" title="Python工厂方法模式（附带源码）" target="_blank">Python工厂方法模式（附带源码）</a></li>
+<li><a href="do_while_2.html" title="C++ do while循环结构详解" target="_blank">C++ do while循环结构详解</a></li>
+<li><a href="4b3a26r_2.html" title="C++ for_each()遍历算法详解" target="_blank">C++ for_each()遍历算法详解</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7765;
+window.arcId = "1ce3Mzit+QNbSiVvbCUPRL5rejewy0YefQalQ7/kJRrlQLU9ftoBYgCbdbg";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="https://m.biancheng.net/templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

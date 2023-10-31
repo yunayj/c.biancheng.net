@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>值传递和地址传递，C语言函数传参方式详解</title>
+<meta name="description" content="在 C 语言中，函数的参数传递方式有两种：值传递与地址传递。下面分别介绍这两种传递形式。 值传递 这种方式使用变量、常量、数组元素作为函数参数，实际是将实参的值复制到形参" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>值传递和地址传递，C语言函数传参方式详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在 C 语言中，函数的参数传递方式有两种：值传递与地址传递。下面分别介绍这两种传递形式。
+<h2>
+值传递</h2>
+这种方式使用变量、常量、数组元素作为函数参数，实际是将实参的值复制到形参相应的存储单元中，即形参和实参分别占用不同的存储单元，这种传递方式称为&ldquo;参数的值传递&rdquo;或者&ldquo;函数的传值调用&rdquo;。<br />
+<br />
+值传递的特点是单向传递，即主调函数调用时给形参分配存储单元，把实参的值传递给形参，在调用结束后，形参的存储单元被释放，而形参值的任何变化都不会影响到实参的值，实参的存储单元仍保留并维持数值不变。<br />
+<br />
+来看下面一个调用示例：<br />
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+/* 变量x、y为Swap函数的形式参数 */
+void Swap(int x, int y)
+{
+    int tmp;
+    tmp = x;
+    x = y;
+    y = tmp;
+    printf(&quot;x = %d, y = %d\n&quot;, x, y);
+}
+int main(void)
+{
+    int a=10;
+    int b=20;
+     /*变量a、b为Swap函数的实际参数*/
+    Swap(a, b);
+    printf(&quot;a = %d, b = %d\n&quot;, a, b);
+    return 0;
+}</pre>
+在上面这个示例代码中，实参将值传递给形参，形参值发生互换后的值不能回传给主调函数。因此，主调函数中的数值不变，代码的运行结果为：<br />
+x = 20, y = 10<br />
+a = 10, b = 20<br />
+<br />
+对于上面这个示例，或许有人会有如下疑问：上面的示例中明确地把 a、b 分别代入了 x、y 中，并在函数 Swap() 里完成了两个变量值的交换，为什么 a、b 变量值还是没有交换。其结果仍然是&ldquo;a=10，b=20&rdquo;，而不是&ldquo;a=20，b=10&rdquo;呢？<br />
+<br />
+其实，原因很简单。函数在调用时，隐含地把实参 a 的值赋值给了参数 x，而将实参 b 的值赋值给了参数 y，如下面的代码所示：<br />
+<pre class="cpp">
+/*将a的值赋值给x（隐含动作）*/
+int x = a;
+/*将a的值赋值给y（隐含动作）*/
+int y = b;</pre>
+因此，之后在 Swap() 函数体内再也没有对 a、b 进行任何操作。而在 Swap() 函数体内交换的只是 x、y，并不是 a、b，当然，a、b 的值没有改变。整个 Swap() 函数调用是按照如下顺序执行的：<br />
+<pre class="cpp">
+/*将a的值赋值给x（隐含动作）*/
+int x = a;
+/*将a的值赋值给y（隐含动作）*/
+int y = b;
+int tmp;
+tmp = x;
+x = y;
+y = tmp;
+printf(&quot;x = %d, y = %d\n&quot;, x, y);</pre>
+由此可见，函数只是把 a、b 的值通过赋值传递给 x、y，在函数 Swap() 中操作的只是 x、y 的值，并不是 a、b 的值，这也就是所谓的参数的值传递。<br />
+<h2>
+地址传递</h2>
+这种方式使用数组名或者指针作为函数参数，传递的是该数组的首地址或指针的值，而形参接收到的是地址，即指向实参的存储单元，形参和实参占用相同的存储单元，这种传递方式称为&ldquo;参数的地址传递&rdquo;。<br />
+<br />
+地址传递的特点是形参并不存在存储空间，编译系统不为形参数组分配内存。数组名或指针就是一组连续空间的首地址。因此在数组名或指针作函数参数时所进行的传送只是地址传送，形参在取得该首地址之后，与实参共同拥有一段内存空间，形参的变化也就是实参的变化。<br />
+<br />
+来看下面一个调用示例：<br />
+<pre class="cpp">
+void Swap(int *px, int *py)
+{
+    int tmp;
+    tmp = *px;
+    *px = *py;
+    *py = tmp;
+    printf(&quot;*px = %d, *py = %d\n&quot;, *px, *py);
+}
+int main(void)
+{
+    int a=10;
+    int b=20;
+    Swap(&amp;a, &amp;b);
+    printf(&quot;a = %d, b = %d\n&quot;, a, b);
+    return 0;
+}</pre>
+在上面的示例代码中，函数 void Swap(int*px,int*py) 中的参数 px、py 都是指针类型，在 main 函数中使用语句&ldquo;Swap(&amp;a,&amp;b)&rdquo;进行调用，该调用语句将 a 的地址(&amp;a)代入 px，b 的地址(&amp;b)代入 py。很显然，这里的函数调用有两个隐含操作：将 &amp;a 的值赋值给参数 px，将 &amp;b 的值赋值给参数 py，如下面的代码所示：<br />
+<pre class="cpp">
+px = &amp;a;
+py = &amp;b;</pre>
+注意，这里与值传递方式存在着很大的区别。在值传递方式中，传递的是变量 a、b 的内容（即在上面的值传递示例代码中，将 a、b 的内容传递给参数 x、y）；而这里的地址传递方式则是将变量 a、b 的地址值（&amp;a、&amp;b）传递给参数 px、py。因此，整个 Swap() 函数调用是按照如下顺序执行的：<br />
+<pre class="cpp">
+/*将&amp;a的值赋值给px（隐含动作）*/
+px = &amp;a; /* &larr; */
+/*将&amp;b的值赋值给py（隐含动作）*/
+py = &amp;b;
+int tmp;
+tmp = *px;
+*px = *py;
+*py = tmp;
+printf(&quot;*px = %d, *py = %d\n&quot;, *px, *py);</pre>
+这样，有了前两行的隐含赋值操作，指针变量 px、py 的值已经分别是变量 a、b 的地址值（&amp;a、&amp;b）。接下来，对&ldquo;*px&rdquo;&ldquo;*py&rdquo;的操作当然也就是对 a、b 变量本身的操作了。所以 Swap() 函数中的交换操作就是对 a、b 值进行交换，这就是所谓的地址传递，运行结果为：<br />
+*px = 20, *py = 10<br />
+a = 20, b = 10<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_4555.html" title="常用的Shell有哪些？" target="_blank">常用的Shell有哪些？</a></li>
+<li><a href="7175.html" title="MySQL数据类型的选择（精讲版）" target="_blank">MySQL数据类型的选择（精讲版）</a></li>
+<li><a href="7399.html" title="MySQL运算符的优先级" target="_blank">MySQL运算符的优先级</a></li>
+<li><a href="../mongodb2/indexs.html" title="MongoDB索引" target="_blank">MongoDB索引</a></li>
+<li><a href="../jstl/sql-setdatasource.html" title="&lt;sql:setDataSource&gt;标签" target="_blank">&lt;sql:setDataSource&gt;标签</a></li>
+<li><a href="riqva2.html" title="C语言void是什么" target="_blank">C语言void是什么</a></li>
+<li><a href="ztwj6r1.html" title="CISC和RISC的区别以及对比" target="_blank">CISC和RISC的区别以及对比</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 371;
+window.arcId = "f735e4pnbDC+ViWw2D9KYnhOGegxYgDpnFxNHrfro+VAZh6k5TH/U6mYYQ";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Django数据表关联关系映射（一对一、一对多、多对多）</title>
+<meta name="description" content="涉及到数据表之间的对应关系我们就会自然的想到一对一、一对多、多对多，在学习 MySQL 数据库时表关系设计是需要重点掌握的知识。Django 中定义了三种关系类型的字段用来描述数据库" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../django/django.html">Django</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Django数据表关联关系映射（一对一、一对多、多对多）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">我们知道涉及到数据表之间的对应关系就会想到一对一、一对多、多对多，在学习 MySQL 数据库时表关系设计是需要重点掌握的知识。Django 中定义了三种关系类型的字段用来描述数据库表的关联关系：一对多（Foreignkey）、一对一（OneToOneFiled）、以及多对多（ManyToManyFiled），在本节我们对它们做简单的介绍。
+<h2>
+1. 一对多关系类型</h2>
+这种类型在数据库中体现是外键关联关系，它在和其他的 Model 建立关联同时也和自己建立关联，用来描述一对多的关系，例如一个作者可以写很多不同的书，但是这些书又只能对应这一个作者，再比如一本图书只能属于一个出版社，一个出版社可以出版很多不同种类的图书，这就是一对多的关系。Django 会自动将字段的名称添加&ldquo;_id&rdquo;作为列名，ForgienKey 的定义如下：<br />
+<p class="info-box">
+class django.db,model.ForeignKey(to,on_delete,**options)</p>
+<h4>
+1) 必填参数</h4>
+它有两个必填参数。to，指定所关联的 Model，它的中取值可以是直接引用其他的 Model，也可以是 Model 所对应的字符串名称；on_delete，当删除关联表的数据时，Django 将根据这个参数设定的值确定应该执行什么样的 SQL 约束。<br />
+<br />
+on_delete 可以理解为 MySQL 外键的级联动作，当主表执行删除操作时对子表的影响，即子表要执行的操作，Django 提供的可选值如下所示：
+<ul>
+<li>
+CASCADE，级联删除，它是大部分 ForeignKey 的定义时选择的约束。它的表现是删除了&ldquo;主&rdquo;，则&ldquo;子&rdquo;也会被自动删除。</li>
+<li>
+PROTECT，删除被引用对象时，将会抛出 ProtectedError 异常。当主表被一个或多个子表关联时，主表被删除则会抛出异常。</li>
+<li>
+SET_NULL，设置删除对象所关联的外键字段为 null，但前提是设置了选项 null 为True，否则会抛出异常。</li>
+<li>
+SET_DEFAULT：将外键字段设置为默认值，但前提是设置了 default 选项，且指向的对象是存在的。</li>
+<li>
+SET(value)：删除被引用对象时，设置外键字段为 value。value 如果是一个可调用对象，那么就会被设置为调用后的结果。</li>
+<li>
+DO_NOTHING：不做任何处理。但是，由于数据表之间存在引用关系，删除关联数据，会造成数据库抛出异常。</li>
+</ul>
+<h4>
+2) 可选参数</h4>
+除了必填参数以外，ForeignKey 还有一些常用的可选参数需要关注。如下所示：
+<ul>
+<li>
+to_field：关联对象的字段名称。默认情况下，Django 使用关联对象的主键（大部分情况下是 id），如果需要修改成其他字段，可以设置这个参数。但是，需要注意，能够关联的字段必须有 unique=True 的约束。</li>
+<li>
+db_constraint：默认值是 True，它会在数据库中创建外键约束，维护数据完整性。通常情况下，这符合大部分场景的需求。如果数据库中存在一些历史遗留的无效数据，则可以将其设置为 False，这时就需要自己去维护关联关系的正确性了。</li>
+<li>
+related_name：这个字段设置的值用于反向查询，默认不需要设置，Django 会设置其为&ldquo;小写模型名 _set&rdquo;。</li>
+<li>
+related_query_name：这个名称用于反向过滤。如果设置了 related_name，那么将用它作为默认值，否则 Django 会把模型的名称作为默认值。</li>
+</ul>
+<h4>
+3) 语法格式</h4>
+<pre class="python">
+#一个A类实例对象关联多个B类实例对象
+class A(model.Model):
+....
+class B(model.Model):
+    属性 = models.ForeignKey(多对一中&quot;一&quot;的模型类, ...)
+</pre>
+<h4>
+4) 实例应用</h4>
+修改原来在《<a href="7512_3.html">Django ORM进阶之项目实战</a>》定义的代码，将出版社与图书之间修改为一对多的关系，添加如下代码：
+<pre class="python">
+from django.db import models
+#新建出版社表
+class PubName(models.Model):
+    pubname=models.CharField(&#39;名称&#39;,max_length=255,unique=True)
+#更改书籍信息表
+class Book(models.Model):
+    title=models.CharField(max_length=30,unique=True, verbose_name=&#39;书名&#39;)
+    price=models.DecimalField(max_digits=7,decimal_places=2,verbose_name=&#39;定价&#39;)
+    #添加默认价格
+    def default_price(self):
+        return &#39;￥30&#39;
+    #零售价格
+    retail_price=models.DecimalField(max_digits=7,decimal_places=2,verbose_name=&#39;零售价&#39;,default=default_price)
+    pub=models.ForeignKey(to=PubName,on_delete=models.CASCADE ,null=True) #创建Foreign外键关联pub,以pub_id关联
+    def __str__(self)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return &quot;title:%s pub:%s price:%s&quot; % (self.title, self.pub, self.price)</pre>
+此处需要注意每次更改完 models 都需要进行数据库迁移操作，依次执行以下命令即可：
+<p class="info-box">
+python manager.py makemigrations<br />
+python manager.py migrate</p>
+插入数据创建一对多对象，如下所示：
+<pre class="python">
+#创建PubName实例化对象pub1并插入书籍信息
+pub1=PubName.objects.create(pubname=&quot;清华出版社&quot;)
+Book.objects.create(title=&quot;Python&quot;,price=&quot;59.00&quot;,retail_price=&quot;59.00&quot;,pub=pub1)
+Book.objects.create(title=&quot;Redis&quot;,price=&quot;25.00&quot;,retail_price=&quot;25.00&quot;,pub=pub1)
+Book.objects.create(title=&quot;Java&quot;,price=&quot;45.00&quot;,retail_price=&quot;45.00&quot;,pub=pub1)
+#创建PubName实例化对象pub2并插入书籍信息
+pub2=PubName.objects.create(pubname=&quot;c语言中文网出版&quot;)
+Book.objects.create(title=&quot;Django&quot;,price=&quot;65.00&quot;,retail_price=&quot;65.00&quot;,pub=pub2)
+Book.objects.create(title=&quot;Flask&quot;,price=&quot;45.00&quot;,retail_price=&quot;45.00&quot;,pub=pub2)
+Book.objects.create(title=&quot;Tornado&quot;,price=&quot;35.00&quot;,retail_price=&quot;35.00&quot;,pub=pub2)</pre>
+访问 MySQL 数据库分别查询 index_book、index_pubname 数据表（如下所示），index_pubname 数据表的 id 字段作为唯一值关联多个书籍信息，ForeignKey 外键关联键自动在 index_book 表中生成 pub_Id 字段并作为关联字段。此时 index_pubname 作为主表而 index_book 是子表，主表的 id 是子表的外键，两者之间存在外键约束 CASCADE。<br />
+<pre class="info-box">
+mysql&gt; select * from index_book;
++----+---------+--------+-------+--------------+
+| id | title   | pub_id | price | retail_price |
++----+---------+--------+-------+--------------+
+|  1 | Python  |      1 | 59.00 |        59.00 |
+|  2 | Redis   |      1 | 25.00 |        25.00 |
+|  3 | Java    |      1 | 45.00 |        45.00 |
+|  4 | Django  |      2 | 65.00 |        65.00 |
+|  5 | Flask   |      2 | 45.00 |        45.00 |
+|  6 | Tornado |      2 | 35.00 |        35.00 |
++----+---------+--------+-------+--------------+
+6 rows in set (0.01 sec)
+
+mysql&gt; select * from index_pubname;
++----+-----------------+
+| id | pubname         |
++----+-----------------+
+|  1 | c语言中文网出版   |
+|  2 | 清华出版社        |
++----+-----------------+
+6 rows in set (0.00 sec)
+</pre>
+<h2>
+2. 一对一关系类型</h2>
+OneToOneFiled 继承自 ForeignKey，在概念上，它类似 unique=Ture 的 ForeignKey，它与 ForeignKey 最显著的区别在于反向查询上，ForeignKey 反向查询返回的是一个对象实例列表，而&nbsp;OneToOneFiled 反向查询返回的是一个对象实例。<br />
+<br />
+一对关系类型的使用和场景相对其他两种关联关系要少，经常用于对已有 Model 的扩展，例如我们可以对 UserInfo 表进行扩展，添加类似用户昵称、个性签名等字段。此时就可以新建一个 Model，并定义一个字段与 UserInfo 表一对一关联。这样就实现了用户信息拓展表与 UserInfo 表一对一关联，下面会用通过实例进行说明。<br />
+<h4>
+1) 语法格式</h4>
+<pre class="python">
+class A(model.Model): 
+...
+class B(model.Model):
+    属性 = models.OneToOneField(A)</pre>
+<h4>
+2) 实例应用</h4>
+新建 index\models.py 下添加以下代码：
+<pre class="python">
+#新建一对一关用户信息表拓展表,添加完成后执行数据库迁移同步操作
+class ExtendUserinfo(models.Model):
+    user=models.OneToOneField(to=UserInfo,on_delete=models.CASCADE)
+    signature=models.CharField(max_length=255,verbose_name=&#39;用户签名&#39;,help_text=&#39;自建签名&#39;)
+    nickname=models.CharField(max_length=255,verbose_name=&#39;昵称&#39;,help_text=&#39;自建昵称&#39;)</pre>
+使用 Django shell 创建数据，如下所示：<br />
+<pre class="python">
+from index.models import UserInfo,ExtendUserinfo
+username=UserInfo.objects.create(username=&quot;xiaoming&quot;,password=&quot;******&quot;)
+username=UserInfo.objects.create(username=&quot;xiaohong&quot;,password=&quot;*******&quot;,gender=&quot;F&quot;)
+#创建一对一表关联
+ExtendUserinfo.objects.create(user=username,signature=&quot;good good study,day day up&quot;,nickname=&quot;XH&quot;)</pre>
+<h4>
+3) MySQL数据表显示</h4>
+最后通过访问 MySQL 数据库，我们可以得到如下所示数据表，使用 user_id 进行表之间的关联：
+<pre class="info-box">
+mysql&gt; select * from index_userinfo;
++----+----------+----------+--------+
+| id | username | password | gender |
++----+----------+----------+--------+
+|  1 | xiaoming | ******   | M      |
+|  2 | xiaohong | *******  | F      |
++----+----------+----------+--------+
+2 rows in set (0.00 sec)
+
+mysql&gt; select * from index_extenduserinfo;
++----+----------------------------+----------+---------+
+| id | signature                  | nickname | user_id |
++----+----------------------------+----------+---------+
+|  1 | good good study,day day up | XH       |       2 |
++----+----------------------------+----------+---------+
+1 row in set (0.00 sec)</pre>
+<h2>
+3. 多对多关系类型</h2>
+<p>
+多对多关系也是比较常见的，比如一个作者可以写很多本书，一本书也可以由很多作者一起完成，那么这时候 Author 和 Book 之间就是多对多的关系。 Django 通过中间表的方式来实现 Model 之间的多对多的关系，这和 MySQL 中实现方式是一致的。这个中间表我们可以自己提供，也可以使用 Django 默认生成的中间表。</p>
+<h4>
+1) ManyToManyFiled定义</h4>
+<p class="info-box">
+class django.db.models.ManyToManyFiled(to,**options)</p>
+它只有一个必填的参数即 to，与其他两个关联词在一样，用来指定与当前的 Model 关联的 Model。
+<h4>
+2）可选参数</h4>
+当然&nbsp;<span style="background-color: rgb(248, 248, 248);">ManyToManyFiled 还有一些重要的可选参数，下面我们对它们依次进行介绍：</span>
+<ul>
+<li>
+relate_name 与 ForeignKey 中的相同都用于反向查询。</li>
+<li>
+db_table 用于指定中间表的名称，如果没有提供，Django 会使用多对多字段的名称和包含这张表的 Model 的名称组合起来构成中间表的名称，当然也会包含 index 前缀。</li>
+<li>
+through 用于指定中间表，这个参数不需要设置，Django会自动生成隐式的 through Model。由于 Django可以生成自身默认的中间表，该参数可以让用户自己去控制表之间的关联关系或者增加一些额外的信息。</li>
+</ul>
+<h4>
+3) 语法格式</h4>
+<pre class="python">
+class Author(models.Model):
+  ...
+class Book(models.Model):
+    ...
+    authors = models.ManyToManyField(Author)</pre>
+<h4>
+4) 多对多中间表</h4>
+创建 Author 与 Book 之间多对多关联关系，在 Author&nbsp; Model 中添加如下代码：
+<pre class="python">
+books=models.ManyToManyField(to=&quot;Book&quot;) #创建多对多映射关系
+</pre>
+然后再执行数据库迁移命令，我们可以执行以下命令可以查看 Django 执行 sql 语句：<br />
+<p class="info-box">
+python manage.py sqlmigrate index 0007_author_books</p>
+sql 语句如下所示：
+<pre class="mysql">
+CREATE TABLE `index_author_books` (`id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY, `author_id` integer NOT NULL, `book_id` integer NOT NULL);
+ALTER TABLE `index_author_books` ADD CONSTRAINT `index_author_books_author_id_2bfd143c_fk_index_author_id` FOREIGN KEY (`author_id`) REFERENCES `index_author` (`id`);
+ALTER TABLE `index_author_books` ADD CONSTRAINT `index_author_books_book_id_1c280bc9_fk_index_book_id` FOREIGN KEY (`book_id`) REFERENCES `index_book` (`id`);
+ALTER TABLE `index_author_books` ADD CONSTRAINT `index_author_books_author_id_book_id_b0dd3503_uniq` UNIQUE (`author_id`, `book_id`);</pre>
+由 sql 语句可以看出，Django 默认隐式的创建了 index_author_books 表（Django 的命名规范），即维护关联关系的中间表。这个表有三个字段分别是主键 id，与index_author 表关联的 author_id，以及 index_book 表关联的 book_id。同时为这两个关联 id 创建了外键约束（FORGIEN KEY）,最后还为&nbsp;index_author_books 表创建了唯一性约束 author_id 和 book_id。<br />
+<br />
+上面介绍了 Django 自身默认创建中间表的过程，当然我们也可以自己建立中间表，然后通过 Author 表中 books 字段的 through 参数指向这张中间表。如果大家对于 MySQL 自建中间表或其它知识不熟悉，推荐学习本网站的《<a href="../mysql/mysql_3.html">MySQL教程</a>》来查漏补缺。
+<h4>
+5) 实例应用</h4>
+插入作者信息数据，如下所示：
+<pre class="python">
+author1=Author.objects.create(name=&quot;Luncy&quot;,email=&quot;123456@qq.com&quot;) 
+author2=Author.objects.create(name=&quot;Tom&quot;,email=&quot;456789@163.com&quot;)</pre>
+因为书籍信息之前已经准备完毕，所以下面我们开始创建多对多映射关系，我们在 Django shell 进行如下操作：
+<pre class="python">
+author1.books.add(Book.objects.get(id=&quot;1&quot;))
+author1.books.add(Book.objects.get(id=&quot;2&quot;))
+author1.books.add(Book.objects.get(id=&quot;3&quot;))
+author2.books.add(Book.objects.get(id=&quot;1&quot;))
+author2.books.add(Book.objects.get(id=&quot;4&quot;))
+author2.books.add(Book.objects.get(id=&quot;5&quot;))
+author2.books.add(Book.objects.get(id=&quot;3&quot;))
+author2.books.add(Book.objects.get(id=&quot;6&quot;))
+author1.books.add(Book.objects.get(id=&quot;6&quot;))</pre>
+多对多关系在中间表插入数据需要使用 add() 方法，books 是对应的多对多字段。通过以上代码就完成多对多关系的创建，最后在 MySQL 中查看多对多相关联的三张数据表，如下所示：
+<pre class="info-box">
+<span style="color:#ff0000;">#书籍信息表（index_book）</span>
++----+---------+--------+-------+--------------+
+| id | title   | pub_id | price | retail_price |
++----+---------+--------+-------+--------------+
+|  1 | Python  |      8 | 59.00 |        59.00 |
+|  2 | Redis   |      8 | 25.00 |        25.00 |
+|  3 | Java    |      8 | 45.00 |        45.00 |
+|  4 | Django  |      9 | 65.00 |        65.00 |
+|  5 | Flask   |      9 | 45.00 |        45.00 |
+|  6 | Tornado |      9 | 35.00 |        35.00 |
++----+---------+--------+-------+--------------+
+<span style="color:#ff0000;">#作家信息表（index_author）</span>
++----+-------+----------------+
+| id | name  | email          |
++----+-------+----------------+
+|  1 | Luncy | 123456@qq.com  |
+|  2 | Tom   | 456789@163.com |
++----+-------+----------------+
+<span style="color:#ff0000;">#中间表（index_author_books）</span>
++----+-----------+---------+
+| id | author_id | book_id |
++----+-----------+---------+
+|  4 |         1 |       1 |
+|  7 |         1 |       3 |
+|  5 |         1 |       4 |
+|  6 |         1 |       5 |
+|  8 |         1 |       6 |
+|  1 |         2 |       1 |
+|  2 |         2 |       2 |
+|  3 |         2 |       3 |
+|  9 |         2 |       6 |
++----+-----------+---------+
+</pre>
+本节用了较长的篇幅给大家讲解了 Django 中数据表的关联关系，它和 MySQL 的思想是一致的，只是 Django 提供了自己的一套方法，所以我们也要学会使用它，在后续章节我们将基于此节的内容介绍 Django QuerySet API 即与数据库接口相关的表查询、更新、删除操作。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="153.html" title="C语言变量定义和赋值" target="_blank">C语言变量定义和赋值</a></li>
+<li><a href="5701.html" title="JS函数返回值和return关键字" target="_blank">JS函数返回值和return关键字</a></li>
+<li><a href="../maven2/eclipse-maven-config.html" title="Eclipse配置Maven" target="_blank">Eclipse配置Maven</a></li>
+<li><a href="../mongodb2/create-database.html" title="MongoDB创建数据库" target="_blank">MongoDB创建数据库</a></li>
+<li><a href="../matplotlib/boxplot.html" title="Matplotlib箱型图" target="_blank">Matplotlib箱型图</a></li>
+<li><a href="0lwracx.html" title="Go语言变量的声明和初始化" target="_blank">Go语言变量的声明和初始化</a></li>
+<li><a href="i0jb7nn.html" title="JS this到底指向什么？" target="_blank">JS this到底指向什么？</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7645;
+window.arcId = "8733eCmig99oO6vynQeFatD87/xaKyKLCoVzXuN636qODfXuyS/kSpsckhE";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

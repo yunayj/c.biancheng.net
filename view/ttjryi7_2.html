@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>openpyxl使用教程（简明版）</title>
+<meta name="description" content="Python 的 xlsxwriter、xlwings、openpyxl、pandas 等库都可以用于操作 Excel，如表1所示。 表1：Python 中用于操作 Excel 的常用库 库 描述 xlwings 非常方便地读写 Excel 文件中的数据和修改单元格格式" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>openpyxl使用教程（简明版）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">Python 的 xlsxwriter、xlwings、openpyxl、pandas 等库都可以用于操作 Excel，如表1所示。<br />
+<br />
+<table>
+	<caption>
+		表1：Python 中用于操作 Excel 的常用库</caption>
+	<tbody>
+		<tr>
+			<th>
+				库</th>
+			<th>
+				描述</th>
+		</tr>
+		<tr>
+			<td>
+				xlwings</td>
+			<td>
+				非常方便地读写 Excel 文件中的数据和修改单元格格式。</td>
+		</tr>
+		<tr>
+			<td>
+				xlsxwriter</td>
+			<td>
+				用于写 xlsx 格式的文件的库。它可以用来写文本、数字和公式，支持单元格格式化、文档配置、自动过滤等特性，但不能用于读取和修改 Excel 文件。</td>
+		</tr>
+		<tr>
+			<td>
+				openpyxl</td>
+			<td>
+				通过工作簿&ldquo;Workbook-工作表Sheet-单元格Cell&rdquo;的模式对 xlsx 格式的文件进行读、写和改，还可以调整样式。</td>
+		</tr>
+		<tr>
+			<td>
+				pandas</td>
+			<td>
+				用于数据处理和分析的强大的库，有时也可以用于自动化处理 Excel 文件。</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+openpyxl 是一款比较综合的工具，它不仅能够同时读取和修改 Excel 文件，而且可以详细设置 Excel 文件内的单元格，包括单元格样式等内容。它还支持图表插入、打印设置等内容。<br />
+<br />
+使用 openpyxl 可以读写 xltm、xltx、xlsm、xlsx 等类型的文件，且可以处理数据量较大的 Excel 文件，它的跨平台处理大量数据的能力是其他库没法相比的。<br />
+<br />
+总之，openpyxl 成为处理 Excel 复杂问题的首选库。<br />
+<br />
+openpyxl 是一个非标准库，需要自行安装，它的安装过程并不复杂，Windows 或 macOS 用户均可以在命令行或终端中使用 pip 安装 openpyxl，命令为：
+<p class="info-box">
+	pip install openpyxl</p>
+<h2 class="center">
+	openpyxl 的基本概念</h2>
+openpyxl 中主要用到 3 个概念是 Workbook、Sheet 和 Cell。
+<ul>
+	<li>
+		Workbook 是一个 Excel 工作簿（Excel 文件）；</li>
+	<li>
+		Sheet 是工作簿中的一张表；</li>
+	<li>
+		Cell 是一个简单的单元格。</li>
+</ul>
+<br />
+openpyxl 就是围绕着这 3 个概念进行操作的，不论读写，操作步骤都是打开 Workbook，定位 Sheet，操作 Cell。<br />
+<br />
+openpyxl 中有 3 个不同层次的类，Workbook 是对工作簿的抽象，Worksheet 是对工作表的抽象，Cell 是对单元格的抽象。这 3 个类中每一个类都包含很多属性和方法。
+<h3>
+	1) Workbook对象</h3>
+一个 Workbook 对象表示一个 Excel 文件，在操作 Excel 之前，我们应该先创建一个 Workbook 对象。
+<ul>
+	<li>
+		如果需要创建一个新的 Excel 文档，直接调用 Workbook 类即可；</li>
+	<li>
+		如果需要处理一个已经存在的 Excel 文件，可以使用 openpyxl 的 load_workbook 函数进行读操作。</li>
+</ul>
+<br />
+Workbook 类和 load_workbook 函数相同，返回的都是一个 Workbook 对象。<br />
+<br />
+Workbook 类有很多属性和方法，大部分方法都与表有关，如表2和表3所示。<br />
+<br />
+<table>
+	<caption>
+		表2：Workbook 类的属性</caption>
+	<tbody>
+		<tr>
+			<th>
+				属性</th>
+			<th>
+				描述</th>
+		</tr>
+		<tr>
+			<td>
+				active</td>
+			<td>
+				获取当前活跃的 Worksheet。</td>
+		</tr>
+		<tr>
+			<td>
+				worksheets</td>
+			<td>
+				以列表的形式返回所有的 Worksheet。</td>
+		</tr>
+		<tr>
+			<td>
+				read_only</td>
+			<td>
+				判断是否以 read_only（只读）模式打开 Excel 文件。</td>
+		</tr>
+		<tr>
+			<td>
+				encoding</td>
+			<td>
+				获取文档的字符集编码。</td>
+		</tr>
+		<tr>
+			<td>
+				properties</td>
+			<td>
+				获取文档的元数据，如标题、创建者、创建日期等。</td>
+		</tr>
+		<tr>
+			<td>
+				sheetnames</td>
+			<td>
+				获取工作簿中的表（列表）。</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+<table>
+	<caption>
+		表3：Workbook 类的方法</caption>
+	<tbody>
+		<tr>
+			<th>
+				方法</th>
+			<th>
+				描述</th>
+		</tr>
+		<tr>
+			<td>
+				get_sheet_names</td>
+			<td>
+				获取所有表的名称（不建议使用新版的 openpyxl，可通过 Workbook 的 sheetnames 属性获取）。</td>
+		</tr>
+		<tr>
+			<td>
+				get_sheet_by_name</td>
+			<td>
+				通过表名称获取 Worksheet 对象（不建议使用新版的 openpyxl，可通过<code>Worksheet [&#39;表名&#39;]</code>获取）。</td>
+		</tr>
+		<tr>
+			<td>
+				get_active_sheet</td>
+			<td>
+				获取活跃的表（建议通过 active 属性获取新版的 openpyxl）。</td>
+		</tr>
+		<tr>
+			<td>
+				remove_sheet</td>
+			<td>
+				删除一个表。</td>
+		</tr>
+		<tr>
+			<td>
+				create_sheet</td>
+			<td>
+				创建一个空表。</td>
+		</tr>
+		<tr>
+			<td>
+				copy_worksheet</td>
+			<td>
+				在 Workbook 内复制表。</td>
+		</tr>
+	</tbody>
+</table>
+<h3>
+	2) Worksheet 对象</h3>
+我们可以通过 Worksheet 对象获取表的属性，得到单元格中的数据，修改表中的内容。<br />
+<br />
+openpyxl 提供了非常灵活的方式来访问表中的单元格和数据，常用的 Worksheet 类的属性和方法如表4和表5所示。其中，行以数字 1 开始，列以字母 A 开始。<br />
+<br />
+<table>
+	<caption>
+		表4：Worksheet 类的属性</caption>
+	<tbody>
+		<tr>
+			<th>
+				属性</th>
+			<th>
+				描述</th>
+		</tr>
+		<tr>
+			<td>
+				title</td>
+			<td>
+				表的标题。</td>
+		</tr>
+		<tr>
+			<td>
+				dimensions</td>
+			<td>
+				表的大小，这里的大小是指含有数据的表的大小，其值为&ldquo;左上角的坐标:右下角的坐标&rdquo;。</td>
+		</tr>
+		<tr>
+			<td>
+				max_row</td>
+			<td>
+				表的最大行。</td>
+		</tr>
+		<tr>
+			<td>
+				min_row</td>
+			<td>
+				表的最小行。</td>
+		</tr>
+		<tr>
+			<td>
+				max_column</td>
+			<td>
+				表的最大列。</td>
+		</tr>
+		<tr>
+			<td>
+				min_column</td>
+			<td>
+				表的最小列。</td>
+		</tr>
+		<tr>
+			<td>
+				rows</td>
+			<td>
+				按行获取单元格（Cell 对象）生成器。</td>
+		</tr>
+		<tr>
+			<td>
+				columns</td>
+			<td>
+				按列获取单元格（Cell 对象）生成器。</td>
+		</tr>
+		<tr>
+			<td>
+				freeze_panes</td>
+			<td>
+				冻结窗格。</td>
+		</tr>
+		<tr>
+			<td>
+				values</td>
+			<td>
+				按行获取表的内容（数据）生成器。</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+<table>
+	<caption>
+		表5：Worksheet 类的方法</caption>
+	<tbody>
+		<tr>
+			<th>
+				方法</th>
+			<th>
+				描述</th>
+		</tr>
+		<tr>
+			<td>
+				iter_rows</td>
+			<td>
+				按行获取所有单元格，内置属性有 min_row、max_row、min_col 和 max_col。</td>
+		</tr>
+		<tr>
+			<td>
+				iter_columns</td>
+			<td>
+				按列获取所有的单元格。</td>
+		</tr>
+		<tr>
+			<td>
+				append</td>
+			<td>
+				在表末尾添加数据。</td>
+		</tr>
+		<tr>
+			<td>
+				merged_cells</td>
+			<td>
+				合并多个单元格。</td>
+		</tr>
+		<tr>
+			<td>
+				unmerged_cells</td>
+			<td>
+				移除合并的单元格。</td>
+		</tr>
+	</tbody>
+</table>
+<h3>
+	3) Cell 对象</h3>
+Cell 对象比较简单，常用的属性如表6所示。Cell 对象只存储两种数据类型&mdash;&mdash;数字和字符串，除了纯数字，其他均为字符串类型。<br />
+<br />
+<table>
+	<caption>
+		表6：Cell 常用属性</caption>
+	<tbody>
+		<tr>
+			<th>
+				属性</th>
+			<th>
+				描述</th>
+		</tr>
+		<tr>
+			<td>
+				row</td>
+			<td>
+				单元格所在的行。</td>
+		</tr>
+		<tr>
+			<td>
+				column</td>
+			<td>
+				单元格所在的列。</td>
+		</tr>
+		<tr>
+			<td>
+				value</td>
+			<td>
+				单元格的值。</td>
+		</tr>
+		<tr>
+			<td>
+				coordinate</td>
+			<td>
+				单元格的坐标。</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+如前文所述，一个 Excel 文件 Workbook 由一个或者多个工作表 Worksheet 组成，一个 Worksheet 可以看作由多个行 row 组成，也可以看作由多个列 column 组成，而每一行每一列都由多个单元格 Cell 组成。<br />
+<br />
+下面简要讲解一下如何读取和写入 Excel。
+<h3>
+	4) 读取 Excel</h3>
+读取 Excel 的方式有如下4种。<br />
+<br />
+① 载入 Excel：
+<pre class="info-box">
+from openpyxl import load_workbook
+workbook = load_workbook(filename=&#39;测试.xlsx&#39;)
+print(workbook.sheetnames)</pre>
+注意，load_workbook 只能打开已经存在的 Excel，不能创建新的 Excel。<br />
+<br />
+② 根据名称获取工作表：
+<pre class="info-box">
+from openpyxl import load_workbook
+workbook = load_workbook(filename=&#39;其他.xlsx&#39;)
+print(workbook.sheetnames)
+sheet = workbook[&#39;工作业务&#39;]</pre>
+<br />
+③ 获取多个格子的值。<br />
+<br />
+Excel 中每一列由字母确定，是字符型；每一行由一个数字确定，是整型。如果我们要输出每一个格子的值，那么需要遍历：
+<pre class="info-box">
+for cell in cells:
+    print(cell.value)</pre>
+<br />
+④ 读取所有的行：
+<pre class="info-box">
+for row in sheet.rows:
+    print(row)</pre>
+<h3>
+	5) Excel 写入</h3>
+Excel 写入的方式有如下两种。<br />
+<br />
+① 保存 Excel：
+<pre class="info-box">
+workbook.save(filename=&#39;Excel工作表1.xlsx&#39;)</pre>
+如果读取和写入 Excel 的路径相同则对原文件进行修改，如果读取和写入 Excel 的路径不同则保存成新的文件。<br />
+<br />
+② 写入单元格：
+<pre class="info-box">
+cell = sheet[&#39;A1&#39;]
+cell.value = &#39;业务需求&#39;</pre>
+<h4>
+	Excel 样式调整</h4>
+openpyxl 处理 Excel 文件中的单元格样式，总共有 6 个属性类，分别是：
+<ul>
+	<li>
+		Font（字体类，可设置字号、字体颜色、下画线等）；</li>
+	<li>
+		PatternFill（填充类，可设置单元格填充颜色等）；</li>
+	<li>
+		Border（边框类，可以设置单元格各种类型的边框）；</li>
+	<li>
+		Alignment（位置类，可以设置单元格内数据各种对齐方式）。</li>
+</ul>
+<br />
+例如，通过语句 From openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font 导入相应的库。
+<h2 class="center">
+	示例</h2>
+openpyxl 是读写 Excel 2010 的 xlsx、xlsm、xltx、xltm 格式文件的 Python 库，简单易用，功能广泛，单元格格式调整、图表处理、公式处理、筛选、批注、文件保护等功能应有尽有，图表处理功能是其一大亮点。<br />
+<br />
+openpyxl 几乎可以实现所有的 Excel 功能，而且接口清晰，文档丰富，学习成本相对较低。<br />
+<br />
+封装一个可以读取任意 Excel 文件的方法，就可以指定读取的表单，当我们多次从 Excel 文件中读取数据时，不用重复地写代码，只需调用封装的类即可，如代码清单1所示。<br />
+<br />
+代码清单1：excelUtil:
+<pre class="python">
+# -*- coding: utf-8 -*-
+# @Time : 2022/7/12 10:29 上午
+# @Project : excelDemo
+# @File : excelUtil.py
+# @Version: Python3.9.8
+　
+from openpyxl import load_workbook
+from openpyxl.worksheet.worksheet import Worksheet
+
+class ExcelHandler():
+    &#39;&#39;&#39;
+    操作Excel
+    &#39;&#39;&#39;
+
+    def __init__(self, file):
+        &#39;&#39;&#39;初始化函数&#39;&#39;&#39;
+        self.file = file
+
+    def open_sheet(self, sheet_name) -&gt; Worksheet:
+        &#39;&#39;&#39;打开表单&#39;&#39;&#39;
+        wb = load_workbook(self.file)
+        sheet = wb[sheet_name]
+        return sheet
+
+    def read_header(self, sheet_name):
+        &#39;&#39;&#39;获取表单的表头&#39;&#39;&#39;
+        sheet = self.open_sheet(sheet_name)
+        headers = []
+        for i in sheet[1]:
+            headers.append(i.value)
+        return headers
+
+    def read_rows(self,sheet_name):
+        &#39;&#39;&#39;
+        读取除表头外所有数据（除第一行外的所有数据）
+        返回的内容是一个二维列表，若想获取每一行的数据，可使用for循环或使用*解包
+        &#39;&#39;&#39;
+        sheet = self.open_sheet(sheet_name)
+        rows = list(sheet.rows)[1:]
+    
+        data = []
+        for row in rows:
+            row_data = []
+            for cell in row:
+                row_data.append(cell.value)
+            data.append(row_data)
+    
+        return data
+
+    def read_key_value(self,sheet_name):
+        &#39;&#39;&#39;
+        获取所有数据，且将表头中的内容与数据结合展示（以字典的形式）
+        如：[
+        {&#39;序号&#39;:1,&#39;会员卡号&#39;: &#39;680021685898&#39;,&#39;机场名称&#39;:&#39;上海机场&#39;},
+        {&#39;序号&#39;:2,&#39;会员卡号&#39;: &#39;680021685899&#39;,&#39;机场名称&#39;:&#39;广州机场&#39;}
+        ]
+        &#39;&#39;&#39;
+        sheet = self.open_sheet(sheet_name)
+        rows = list(sheet.rows)
+
+        # 获取标题
+        data = []
+        for row in rows[1:]:
+            row_data = []
+            for cell in row:
+                row_data.append(cell.value)
+                # 列表转换成字典，与表头内容一起使用zip函数进行打包
+            data_dict = dict(zip(self.read_header(sheet_name),row_data))
+            data.append(data_dict)
+        return data
+
+    @staticmethod
+    def write_change(file,sheet_name,row,column,data):
+        &#39;&#39;&#39;写入Excel数据&#39;&#39;&#39;
+        wb = load_workbook(file)
+        sheet = wb[sheet_name]
+    
+        # 修改单元格
+        sheet.cell(row,column).value = data
+        # 保存
+        wb.save(file)
+        # 关闭
+        wb.close()</pre>
+写入 Excel 使用了静态方法，原因是读取文件无须保存。如果修改文件后没有保存，其他地方又调用了该方法，则会引起报错，所以每次修改 Excel 文件，都要进行保存。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="547_2.html" title="vi修改文件内容（文本修改命令）" target="_blank">vi修改文件内容（文本修改命令）</a></li>
+<li><a href="939_2.html" title="Java面向对象：对象的概念及面向对象的三个基本特征" target="_blank">Java面向对象：对象的概念及面向对象的三个基本特征</a></li>
+<li><a href="1303_2.html" title="Java如何创建项目" target="_blank">Java如何创建项目</a></li>
+<li><a href="../maven2/eclipse-maven-config_2.html" title="Eclipse配置Maven" target="_blank">Eclipse配置Maven</a></li>
+<li><a href="../mongodb2/atomic-operation_2.html" title="MongoDB原子操作" target="_blank">MongoDB原子操作</a></li>
+<li><a href="../css3/filter_2.html" title="CSS filter（滤镜）详解" target="_blank">CSS filter（滤镜）详解</a></li>
+<li><a href="p0r4qnd_2.html" title="Vue v-model修饰符（lazy、number和trim）详解" target="_blank">Vue v-model修饰符（lazy、number和trim）详解</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10049;
+window.arcId = "57d85PKvfsUopf/epCANgYIa2qgQr2Ah0o891g4/zS4K/9rCBVQ0qxzVvNRA";
+window.typeidChain = "145|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

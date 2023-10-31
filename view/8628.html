@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>pthread_join()函数：等待线程执行结束</title>
+<meta name="description" content="如果想获取某个线程执行结束时返回的数据，可以调用 pthread_join() 函数来实现。本节，我们就为您详细讲解 pthread_join() 函数的功能和用法。 pthread_join() 函数声明在 pthread.h 头文件中，语" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>pthread_join()函数：等待线程执行结束</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">如果想获取某个线程执行结束时返回的数据，可以调用 pthread_join() 函数来实现。本节，我们就为您详细讲解 pthread_join() 函数的功能和用法。<br />
+<br />
+pthread_join() 函数声明在<code>&lt;pthread.h&gt;</code>头文件中，语法格式如下：
+<pre class="info-box">
+int pthread_join(pthread_t thread, void ** retval);</pre>
+thread 参数用于指定接收哪个线程的返回值；retval 参数表示接收到的返回值，如果 thread 线程没有返回值，又或者我们不需要接收 thread 线程的返回值，可以将 retval 参数置为 NULL。<br />
+<br />
+pthread_join() 函数会一直阻塞调用它的线程，直至目标线程执行结束（接收到目标线程的返回值），阻塞状态才会解除。如果 pthread_join() 函数成功等到了目标线程执行结束（成功获取到目标线程的返回值），返回值为数字 0；反之如果执行失败，函数会根据失败原因返回相应的非零值，每个非零值都对应着不同的宏，例如：<br />
+<ul>
+<li>
+EDEADLK：检测到线程发生了死锁。关于线程发生死锁，我们会在《<a href="../thread/vip_8619.html" target="_blank">Linux如何避免线程发生死锁？</a>》一节中做详细讲解。</li>
+<li>
+EINVAL：分为两种情况，要么目标线程本身不允许其它线程获取它的返回值，要么事先就已经有线程调用 pthread_join() 函数获取到了目标线程的返回值。</li>
+<li>
+ESRCH：找不到指定的 thread 线程。</li>
+</ul>
+<blockquote>
+<p>
+以上这些宏都声明在 &lt;errno.h&gt; 头文件中，如果程序中想使用这些宏，需提前引入此头文件。</p>
+</blockquote>
+再次强调，一个线程执行结束的返回值只能由一个 pthread_join() 函数获取，当有多个线程调用 pthread_join() 函数获取同一个线程的执行结果时，哪个线程最先执行 pthread_join() 函数，执行结果就由那个线程获得，其它线程的 pthread_join() 函数都将执行失败。<br />
+<br />
+对于一个默认属性的线程 A 来说，线程占用的资源并不会因为执行结束而得到释放。而通过在其它线程中执行<code>pthread_join(A,NULL);</code>语句，可以轻松实现&ldquo;及时释放线程 A 所占资源&rdquo;的目的。&nbsp;<br />
+<br />
+接下来通过一个样例，给大家演示 pthread_join() 函数的用法：
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+#include &lt;errno.h&gt;   //使用宏 ESRCH
+#include &lt;pthread.h&gt;
+//线程执行的函数
+void *ThreadFun(void *arg)
+{
+    pthread_exit(&quot;http://c.biancheng.net&quot;);
+}
+int main()
+{
+    int res;
+    void * thread_result;
+    pthread_t myThread;
+    //创建 myThread 线程
+    res = pthread_create(&amp;myThread, NULL, ThreadFun, NULL);
+    if (res != 0) {
+        printf(&quot;线程创建失败&quot;);
+        return 0;
+    }
+    //阻塞主线程，等待 myThread 线程执行结束
+    res = pthread_join(myThread, &amp;thread_result);
+    if (res != 0) {
+        printf(&quot;1：等待线程失败&quot;);
+    }
+    //输出获取到的 myThread 线程的返回值
+    printf(&quot;%s\n&quot;, (char*)thread_result);
+
+    //尝试再次获取 myThread 线程的返回值
+    res = pthread_join(myThread, &amp;thread_result);
+    if (res == ESRCH) {
+        printf(&quot;2：等待线程失败，线程不存在&quot;);
+    }
+    return 0;
+}</pre>
+假设程序位于 thread.c 文件中，执行过程如下：
+<p class="info-box">
+[root@localhost ~]# gcc thread.c -o thread.exe -lpthread<br />
+[root@localhost ~]# ./thread.exe<br />
+http://c.biancheng.net<br />
+2：等待线程失败，线程不存在</p>
+在程序的在主线程（main() 函数）中，我们尝试两次调用 pthread_join() 函数获取 myThread 线程执行结束的返回值。通过执行结果可以看到，第一个 pthread_join() 函数成功执行，而第二个 Pthread_join() 函数执行失败。原因很简单，第一个成功执行的 pthread_join() 函数会使 myThread 线程释放自己占用的资源，myThread 线程也就不复存在，所以第二个 pthread_join() 函数会返回 ESRCH。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="342.html" title="strlen函数与sizeof的区别，C语言strlen与sizeof的区别详解" target="_blank">strlen函数与sizeof的区别，C语言strlen与sizeof的区别详解</a></li>
+<li><a href="382.html" title="feof和ferror函数，C语言feof和ferror函数详解" target="_blank">feof和ferror函数，C语言feof和ferror函数详解</a></li>
+<li><a href="1144.html" title="Java字节流的使用：字节输入/输出流、文件输入/输出流、字节数组输入/输出流" target="_blank">Java字节流的使用：字节输入/输出流、文件输入/输出流、字节数组输入/输出流</a></li>
+<li><a href="6184.html" title="PHP array_flip()：交换数组中的键和值" target="_blank">PHP array_flip()：交换数组中的键和值</a></li>
+<li><a href="7264.html" title="PHP注释：单行注释+多行注释" target="_blank">PHP注释：单行注释+多行注释</a></li>
+<li><a href="../spring_mvc/validation.html" title="Spring MVC数据校验" target="_blank">Spring MVC数据校验</a></li>
+<li><a href="20wyhlq.html" title="PHP类型转换（自动类型转换+强制类型转换）" target="_blank">PHP类型转换（自动类型转换+强制类型转换）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8628;
+window.arcId = "92d8Rz4xsnfkMPdVMGuIXmBlqXArO1G0sJuZlr+FnYfnW2eYttc4tOCH9YM";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

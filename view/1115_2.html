@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Java在远程方法调用中运用反射机制</title>
+<meta name="description" content="上一节详细介绍了如何使用 java.lang.reflect 包提供的 Constructor 类获取构造方法的信息、使用 Method 类获取成员方法的信息以及使用 Field 类获取成员变量的信息。 本茱例将介绍反射机制在" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+	<div id="sidebar" class="toggle-target">
+	<div id="contents">
+		<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../java/java_2.html">Java教程</a></dt>
+		
+			<dd>
+				<span class="channel-num">1</span>
+				<a href='../java/10/10_2.html'>Java入门基础及环境搭建</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">2</span>
+				<a href='../java/20/20_2.html'>Java程序设计基础</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">3</span>
+				<a href='../java/30/30_2.html'>Java流程控制语句</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">4</span>
+				<a href='../java/40/40_2.html'>Java字符串处理</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">5</span>
+				<a href='../java/50/50_2.html'>Java数字和日期处理</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">6</span>
+				<a href='../java/60/60_2.html'>Java内置包装类</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">7</span>
+				<a href='../java/70/70_2.html'>Java数组处理</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">8</span>
+				<a href='../java/80/80_2.html'>Java类和对象</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">9</span>
+				<a href='../java/90/90_2.html'>Java继承和多态</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">10</span>
+				<a href='../java/100/100_2.html'>Java异常处理</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">11</span>
+				<a href='../java/110/110_2.html'>Java集合、泛型和枚举</a>
+			</dd>
+		<dd class="this"> <span class="channel-num">12</span> <a href="../java/120/120_2.html">Java反射机制</a> </dd><dl class="dl-sub"><dd>12.1 <a href="6907_2.html">Java反射机制的基本概念</a></dd><dd>12.2 <a href="6909_2.html">Java反射机制API</a></dd><dd>12.3 <a href="1109_2.html">Java通过反射访问构造方法</a></dd><dd>12.4 <a href="1111_2.html">Java通过反射访问方法</a></dd><dd>12.5 <a href="1112_2.html">Java通过反射访问成员变量</a></dd><dd>12.6 <a href="1115_2.html">Java在远程方法中使用反射机制</a></dd><dd>12.7 <a href="vip_7083_2.html">Java高级应用之通过反射访问操作数组</a><span class="iconfont iconfont-vip2"></span></dd><dd>12.8 <a href="vip_7082_2.html">Java高级应用之通过反射操作泛型</a><span class="iconfont iconfont-vip2"></span></dd></dl>
+			<dd>
+				<span class="channel-num">13</span>
+				<a href='../java/130/130_2.html'>Java输入/输出流</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">14</span>
+				<a href='../java/java/135/135_2.html'>Java注解</a>
+			</dd>
+		
+	</div>
+</div>
+	<div id="article-wrap">
+		<div id="article">
+			<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../java/java_2.html">Java教程</a> &gt; <a href="../java/120/120_2.html">Java反射机制</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+			<h1>Java在远程方法调用中运用反射机制</h1>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+			<div id="arc-body">上一节详细介绍了如何使用 java.lang.reflect 包提供的 Constructor 类获取构造方法的信息、使用 Method 类获取成员方法的信息以及使用 Field 类获取成员变量的信息。<br />
+<br />
+本案例将介绍反射机制在网络编程中的应用，实现如何在客户端通过远程方法调用服务器端的方法。<br />
+<br />
+假定在服务器端有一个 HelloService 接口，该接口具有 getTime() 和 echo() 方法，具体代码如下：
+<pre class="java">
+import java.util.Date;
+
+public interface HelloService {
+    public String echo(String msg);
+
+    public Date getTime();
+}</pre>
+在服务器上创建一个 HelloServiceImpl 类并实现 HelloService 接口。HelloServiceImpl 类的代码如下：
+<pre class="java">
+import java.util.Date;
+
+public class HelloServiceImpl implements HelloService {
+    @Override
+    public String echo(String msg) {
+        return &quot;echo:&quot; + msg;
+    }
+
+    @Override
+    public Date getTime() {
+        return new Date();
+    }
+}</pre>
+上述代码所示，在 HelloServiceImpl 类中对 echo() 方法和 getTime() 方法进行了重写。那么，客户端如何调用服务器端 Hello-ServiceImpl 类中的 getTime() 和 echo() 方法呢？<br />
+<br />
+具体方法是：客户端需要把调用的方法名、方法参数类型、方法参数值，以及方法所属的类名或接口名发送给服务器端。服务器端再调用相关对象的方法，然后把方法的返回值发送给客户端。<br />
+<br />
+为了便于按照面向对象的方式来处理客户端与服务器端的通信，可以把它们发送的信息用 Call 类来表示。一个 Call 对象表示客户端发起的一个远程调用，它包括调用的类名或接口名、方法名、方法参数类型、方法参数值和方法执行结果。<br />
+<br />
+Call 类的实现代码如下：
+<pre class="java">
+import java.io.Serializable;
+
+public class Call implements Serializable {
+
+    private static final long serialVersionUID = 6659953547331194808L;
+
+    private String className; // 表示类名或接口名
+    private String methodName; // 表示方法名
+    private Class[] paramTypes; // 表示方法参数类型
+    private Object[] params; // 表示方法参数值
+
+    // 表示方法的执行结果
+    // 如果方法正常执行，则result为方法返回值，如果方法抛出异常，那么result为该异常。
+    private Object result;
+
+    public Call() {
+    }
+
+    public Call(String className, String methodName, Class[] paramTypes, Object[] params) {
+        this.className = className;
+        this.methodName = methodName;
+        this.paramTypes = paramTypes;
+        this.params = params;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
+    }
+
+    public Class[] getParamTypes() {
+        return paramTypes;
+    }
+
+    public void setParamTypes(Class[] paramTypes) {
+        this.paramTypes = paramTypes;
+    }
+
+    public Object[] getParams() {
+        return params;
+    }
+
+    public void setParams(Object[] params) {
+        this.params = params;
+    }
+
+    public Object getResult() {
+        return result;
+    }
+
+    public void setResult(Object result) {
+        this.result = result;
+    }
+
+    public String toString() {
+        return &quot;className=&quot; + className + &quot;methodName=&quot; + methodName;
+    }
+}</pre>
+假设客户端为 SimpleClient，服务器端为 SimpleServer。SimpleClient 调用 SimpleServer 的 HelloServiceImpl 对象中 echo() 方法的流程如下：
+<ol>
+	<li>
+		SimpleClient 创建一个 Call 对象，它包含调用 HelloService 接口的 echo() 方法的信息。</li>
+	<li>
+		SimpleClient 通过对象输出流把 Call 对象发送给 SimpleServer。</li>
+	<li>
+		SimpleServer 通过对象输入流读取 Call 对象，运用反射机制调用 HelloServiceImpl 对象的 echo() 方法，把 echo() 方法的执行结果保存到 Call 对象中。</li>
+	<li>
+		SimpleServer 通过对象输出流把包含方法执行结果的 Call 对象发送给 SimpleClient。</li>
+	<li>
+		SimpleClient 通过对象输入流读取 Call 对象，从中获得方法执行结果。</li>
+</ol>
+<br />
+首先来看看客户端程序 SimpleClient 类的实现代码。
+<pre class="java">
+import java.io.*;
+import java.net.*;
+import java.util.*;
+import java.lang.reflect.*;
+import java.io.*;
+import java.net.*;
+import java.util.*;
+
+public class SimpleClient {
+    public void invoke() throws Exception {
+        Socket <a href='../socket/socket_2.html' target='_blank'>socket</a> = new Socket(&quot;localhost&quot;, 8000);
+        OutputStream out = socket.getOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(out);
+        InputStream in = socket.getInputStream();
+        ObjectInputStream ois = new ObjectInputStream(in);
+        // 创建一个远程调用对象
+        Call call = new Call(&quot;ch12.HelloService&quot;, &quot;echo&quot;, new Class[] { String.class }, new Object[] { &quot;<a href='../java/java_2.html' target='_blank'>Java</a>&quot; });
+        oos.writeObject(call); // 向服务器发送Call对象
+        call = (Call) ois.readObject(); // 接收包含了方法执行结果的Call对象
+        System.out.println(call.getResult());
+        ois.close();
+        oos.close();
+        socket.close();
+    }
+
+    public static void main(String args[]) throws Exception {
+        new SimpleClient().invoke();
+    }
+}</pre>
+如上述代码所示，客户端 SimpleClient 类的主要作用是建立与服务器的连接，然后将带有调用信息的 Call 对象发送到服务器端。<br />
+<br />
+服务器端 SimpleServer 类在收到调用请求之后会使用反射机制动态调用指定对象的指定方法，再将执行结果返回给客户端。<br />
+<br />
+SimpleServer 类的实现代码如下：
+<pre class="java">
+import java.io.*;
+import java.net.*;
+import java.util.*;
+import java.lang.reflect.*;
+
+public class SimpleServer {
+    private Map remoteObjects = new HashMap(); // 存放远程对象的缓存
+
+    /** 把一个远程对象放到缓存中 */
+    public void register(String className, Object remoteObject) {
+        remoteObjects.put(className, remoteObject);
+    }
+
+    public void service() throws Exception {
+        ServerSocket serverSocket = new ServerSocket(8000);
+        System.out.println(&quot;服务器启动.&quot;);
+        while (true) {
+            Socket socket = serverSocket.accept();
+            InputStream in = socket.getInputStream();
+            ObjectInputStream ois = new ObjectInputStream(in);
+            OutputStream out = socket.getOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(out);
+            Call call = (Call) ois.readObject(); // 接收客户发送的Call对象
+            System.out.println(call);
+            call = invoke(call); // 调用相关对象的方法
+            oos.writeObject(call); // 向客户发送包含了执行结果的Call对象
+            ois.close();
+            oos.close();
+            socket.close();
+        }
+    }
+
+    public Call invoke(Call call) {
+        Object result = null;
+        try {
+            String className = call.getClassName();
+            String methodName = call.getMethodName();
+            Object[] params = call.getParams();
+            Class classType = Class.forName(className);
+            Class[] paramTypes = call.getParamTypes();
+            Method method = classType.getMethod(methodName, paramTypes);
+            Object remoteObject = remoteObjects.get(className); // 从缓存中取出相关的远程对象
+            if (remoteObject == null) {
+                throw new Exception(className + &quot;的远程对象不存在&quot;);
+            } else {
+                result = method.invoke(remoteObject, params);
+            }
+        } catch (Exception e) {
+            result = e;
+        }
+        call.setResult(result); // 设置方法执行结果
+        return call;
+    }
+
+    public static void main(String args[]) throws Exception {
+        SimpleServer server = new SimpleServer();
+        // 把事先创建的HelloServiceImpl对象加入到服务器的缓存中
+        server.register(&quot;ch13.HelloService&quot;, new HelloServiceImpl());
+        server.service();
+    }
+}</pre>
+由于这是一个网络程序，首先需要运行服务器端 SimpleServer，然后再运行客户端 SimpleClient。运行结果是在客户端看到输出&ldquo;echoJava&rdquo;，这个结果是服务器端执行 HelloServicelmpl 对象的 echo() 方法的返回值。图 1 所示显示了 SimpleClient 与 SimpleServer 的通信过程。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/181029/3-1Q029104I45E_2.jpg" /><br />
+	图1&nbsp;SimpleClient与SimpleServer的通信过程</div>
+</div>
+			<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="7583_2.html" title="MySQL ALTER TABLE：修改数据表" target="_blank">MySQL ALTER TABLE：修改数据表</a></li>
+<li><a href="7613_2.html" title="HTML &lt;select&gt;标签（下拉列表）" target="_blank">HTML &lt;select&gt;标签（下拉列表）</a></li>
+<li><a href="../jstl/c-out_2.html" title="&lt;c:out&gt;标签" target="_blank">&lt;c:out&gt;标签</a></li>
+<li><a href="../python_spider/xpath-helper_2.html" title="Xpath Helper的安装和使用" target="_blank">Xpath Helper的安装和使用</a></li>
+<li><a href="nb355qj_2.html" title="MATLAB是什么" target="_blank">MATLAB是什么</a></li>
+<li><a href="5lrfu8y_2.html" title="Redis HGETALL命令的用法" target="_blank">Redis HGETALL命令的用法</a></li>
+<li><a href="u0jynfx_2.html" title="Java运算符优先级和结合性一览表" target="_blank">Java运算符优先级和结合性一览表</a></li>
+</ul>
+</div>
+		</div>
+		
+	</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 1115;
+window.arcId = "cb92OInbONvUz35MGJo9Us1hNMfB5cnOsp+vJAF7riFrQc7uvkFWiS9OcLA";
+window.typeidChain = "107|79";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/view/1112.html";
+window.nextPageURL = "/view/vip_7083.html";
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

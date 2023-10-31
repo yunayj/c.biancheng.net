@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Vue slot（插槽）详解</title>
+<meta name="description" content="在 Vue 中，组件是当作自定义的 HTML 元素来使用的，其元素可以包括属性和内容，通过组件定义的 prop 来接收属性值，那么组件的内容怎么实现呢？可以使用插槽（slot 元素）来解决。" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Vue slot（插槽）详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在 Vue 中，组件是当作自定义的 HTML 元素来使用的，其元素可以包括属性和内容，通过组件定义的 prop 来接收属性值，那么组件的内容怎么实现呢？可以使用插槽（slot 元素）来解决。<br />
+<h2>
+插槽的基本用法</h2>
+下面定义一个组件：
+<pre class="info-box">
+vm.component(&#39;page&#39;, {
+    template:&#39;&lt;div&gt;&lt;slot&gt;&lt;/slot&gt;&lt;/div&gt;&#39;
+});</pre>
+在 page 组件中，div 元素内容定义了 slot 元素，可以把它理解为占位符。<br />
+<br />
+在 Vue 实例中使用这个组件：
+<pre class="html" showmenu="false" shownum="false">
+&lt;div id=&quot;app&quot;&gt;
+    &lt;page&gt;如今直上银河去，同到牵牛织女家。&lt;/page&gt;
+&lt;/div&gt;</pre>
+page 元素给出了内容，在渲染组件时，这个内容会置换组件内部的 &lt;slot&gt; 元素。<br />
+<br />
+在 Chrome 浏览器中运行程序，渲染的结果如下图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/231007/2-23100G05R1J5.gif" /><br />
+图 1 插槽的基本用法</div>
+<br />
+如果 page 组件中没有 slot 元素，&lt;page&gt; 元素中的内容将不会渲染到页面。<br />
+<h2>
+编译作用域</h2>
+当想通过插槽向组件传递动态数据时，例如：<br />
+<pre class="info-box">
+&lt;page&gt;欢迎来到{{name}}的官网&lt;/page&gt;</pre>
+代码中，name 属性是在父组件作用域下解析的，而不是 page 组件的作用域。在 page 组件中定义的属性，在父组件中是访问不到的，这就是编译作用域。<br />
+<br />
+有一条规则要记住：父组件模板中的所有内容都是在父级作用域中编译的，子组件模板中的所有内容都是在子作用域中编译的。<br />
+<h2>
+默认内容</h2>
+有时为一个插槽设置默认内容是很有用的，它只会在没有提供内容的时候被渲染。例如在一个 &lt;submit-button&gt; 组件中：<br />
+<pre class="info-box">
+&lt;button type=&quot;submit&quot;&gt;
+    &lt;slot&gt;&lt;/slot&gt;
+&lt;/button&gt;</pre>
+如果希望这个 &lt;button&gt; 内绝大多数情况下都渲染文本&ldquo;Submit&rdquo;，可以将&ldquo;Submit&rdquo;作为默认内容放在 &lt;slot&gt; 标签内：<br />
+<pre class="info-box">
+&lt;button type=&quot;submit&quot;&gt;
+    &lt;slot&gt;Submit&lt;/slot&gt;
+&lt;/button&gt;</pre>
+现在在一个父组件中使用 &lt;submit-button&gt;，并且不提供任何插槽内容：<br />
+<pre class="info-box">
+&lt;submit-button&gt;&lt;/submit-button&gt;</pre>
+默认内容&ldquo;Submit&rdquo;将会被渲染：
+<pre class="info-box">
+&lt;button type=&quot;submit&quot;&gt;
+    Submit
+&lt;/button&gt;</pre>
+但是如果提供内容：
+<pre class="info-box">
+&lt;submit-button&gt;
+   提交
+&lt;/submit-button&gt;</pre>
+则这个提供的内容将会替换掉默认值 Submit，渲染如下：
+<pre class="info-box">
+&lt;button type=&quot;submit&quot;&gt;
+    提交
+&lt;/button&gt;</pre>
+【实例】设置插槽的默认内容。
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+    &lt;page&gt;流年莫虚掷，华发不相容。&lt;/page&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+    //创建一个应用程序实例
+    const vm= Vue.createApp({ });
+    vm.component(&#39;page&#39;, {
+        template:`&lt;button type=&quot;submit&quot;&gt;
+                    &lt;slot&gt;Submit&lt;/slot&gt;
+                  &lt;/button&gt;
+                  &#39;
+    });
+    //在指定的DOM元素上装载应用程序实例的根组件
+    vm.mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，渲染的结果如下图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/231007/2-23100G05933137.gif" /><br />
+图 2 设置插槽的默认内容</div>
+<h2>
+命名插槽</h2>
+在组件开发中，有时需要使用多个插槽。例如对于一个带有如下模板的 &lt;page-layout&gt; 组件：
+<pre class="html">
+&lt;div class=&quot;container&quot;&gt;
+    &lt;header&gt;
+        &lt;!-- 我们希望把页头放这里 --&gt;
+    &lt;/header&gt;
+    &lt;main&gt;
+        &lt;!-- 我们希望把主要内容放这里 --&gt;
+    &lt;/main&gt;
+    &lt;footer&gt;
+        &lt;!-- 我们希望把页脚放这里 --&gt;
+    &lt;/footer&gt;
+&lt;/div&gt;</pre>
+对于这样的情况，&lt;slot&gt; 元素有一个特殊的特性 name，它用来命名插槽。因此，可以定义多个名字不同的插槽，例如下面的代码：<br />
+<pre class="html">
+&lt;div class=&quot;container&quot;&gt;
+    &lt;header&gt;
+        &lt;slot name=&quot;header&quot;&gt;&lt;/slot&gt;
+    &lt;/header&gt;
+    &lt;main&gt;
+        &lt;slot&gt;&lt;/slot&gt;
+    &lt;/main&gt;
+    &lt;footer&gt;
+        &lt;slot name=&quot;footer&quot;&gt;&lt;/slot&gt;
+    &lt;/footer&gt;
+&lt;/div&gt;</pre>
+一个不带 name 的 &lt;slot&gt; 元素，它有默认的名字&ldquo;default&rdquo;。<br />
+<br />
+在向命名插槽提供内容的时候，可以在一个 &lt;template&gt; 元素上使用 v-slot 指令，并以 v-slot 的参数的形式提供其名称：<br />
+<pre class="html">
+&lt;page-layout&gt;
+    &lt;template v-slot:header&gt;
+        &lt;h1&gt;这里有一个页面标题&lt;/h1&gt;
+    &lt;/template&gt;
+    &lt;p&gt;这里有一段主要内容&lt;/p&gt;
+    &lt;p&gt;和另一段主要内容&lt;/p&gt;
+    &lt;template v-slot:footer&gt;
+        &lt;p&gt;这是一些联系方式&lt;/p&gt;
+    &lt;/template&gt;
+&lt;/page-layout&gt;</pre>
+现在 &lt;template&gt; 元素中的所有内容都将会被传入相应的插槽。任何没有被包裹在带有 v-slot 的 &lt;template&gt; 中的内容都会被视为默认插槽的内容。<br />
+<br />
+然而，如果希望更明确一些，仍然可以在一个 &lt;template&gt; 中包裹默认命名插槽的内容：<br />
+<pre class="html">
+&lt;page-layout&gt;
+    &lt;template v-slot:header&gt;
+        &lt;h1&gt;这里有一个页面标题&lt;/h1&gt;
+    &lt;/template&gt;
+    &lt;template v-slot:default&gt;
+        &lt;p&gt;这里有一段主要内容&lt;/p&gt;
+        &lt;p&gt;和另一段主要内容&lt;/p&gt;
+    &lt;/template&gt;
+    &lt;template v-slot:footer&gt;
+        &lt;&lt;p&gt;这是一些联系方式&lt;/p&gt;
+    &lt;/template&gt;
+&lt;/page-layout&gt;</pre>
+上面两种写法都会渲染出如下代码：<br />
+<pre class="html">
+&lt;div class=&quot;container&quot;&gt;
+    &lt;header&gt;
+        &lt;h3&gt;这里有一个页面标题&lt;/h3&gt;
+    &lt;/header&gt;
+    &lt;main&gt;
+        &lt;p&gt;这里有一段主要内容&lt;/p&gt;
+        &lt;p&gt;和另一段主要内容&lt;/p&gt;
+    &lt;/main&gt;
+    &lt;footer&gt;
+        &lt;p&gt;这是一些联系方式&lt;/p&gt;
+    &lt;/footer&gt;
+&lt;/div&gt;</pre>
+【实例】命名插槽。
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+    &lt;page-layout&gt;
+        &lt;template v-slot:header&gt;
+            &lt;h2 align=&#39;center&#39;&gt;书河上亭壁&lt;/h2&gt;
+        &lt;/template&gt;
+        &lt;template v-slot:main&gt;
+            &lt;h3&gt;岸阔樯稀波渺茫，独凭危槛思何长。&lt;/h3&gt;
+            &lt;h3&gt;萧萧远树疏林外，一半秋山带夕阳。&lt;/h3&gt;
+        &lt;/template&gt;
+        &lt;template v-slot:footer&gt;
+            &lt;p align=&#39;right&#39;&gt;经典古诗&lt;/p&gt;
+        &lt;/template&gt;
+    &lt;/page-layout&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+    //创建一个应用程序实例
+    const vm= Vue.createApp({ });
+    vm.component(&#39;page-layout&#39;, {
+        template:`
+            &lt;div class=&quot;container&quot;&gt;
+                &lt;header&gt;
+                    &lt;slot name=&quot;header&quot;&gt;&lt;/slot&gt;
+                &lt;/header&gt;
+                &lt;main&gt;
+                    &lt;slot name=&quot;main&quot;&gt;&lt;/slot&gt;
+                &lt;/main&gt;
+                &lt;footer&gt;
+                    &lt;slot name=&quot;footer&quot;&gt;&lt;/slot&gt;
+                &lt;/footer&gt;
+            &lt;/div&gt;
+        `
+    });
+    //在指定的DOM元素上装载应用程序实例的根组件
+    vm.mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，效果如下图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/231007/2-23100G1003UT.gif" /><br />
+图 3 命名插槽</div>
+<br />
+与 v-on 和 v-bind 一样，v-slot 也有缩写，即把参数之前的所有内容（v-slot:）替换为字符 #。例如下面的代码：
+<pre class="html">
+&lt;page-layout&gt;
+    &lt;template #header&gt;
+        &lt;h1&gt;这里有一个页面标题&lt;/h1&gt;
+    &lt;/template&gt;
+    &lt;template #main&gt;
+        &lt;p&gt;这里有一段主要内容&lt;/p&gt;
+        &lt;p&gt;和另一段主要内容&lt;/p&gt;
+    &lt;/template&gt;
+    &lt;template #footer&gt;
+        &lt;&lt;p&gt;这是一些联系方式&lt;/p&gt;
+    &lt;/template&gt;
+&lt;/page-layout&gt;</pre>
+<h2>
+作用域插槽</h2>
+在父级作用域下，在插槽的内容中是无法访问子组件的数据属性的，但有时需要在父级的插槽内容中访问子组件的属性，我们可以在子组件的 &lt;slot&gt; 元素上使用 v-bind 指令绑定一个 prop 属性。看下面的组件代码：
+<pre class="info-box">
+vm.component(&#39;page-layout&#39;, {
+    data:function(){
+      return{
+          info:{
+              name:&#39;小明&#39;,
+              age:18,
+              sex:&quot;男&quot;
+          }
+      }
+    },
+    template:`
+        &lt;button&gt;
+            &lt;slot v-bind:values=&quot;info&quot;&gt;
+                {{info.name}}
+            &lt;/slot&gt;
+        &lt;/button&gt;
+    `
+});</pre>
+这个按钮可以显示 info 对象中的任意一个，为了让父组件可以访问 info 对象，在 &lt;slot&gt; 元素上使用 v-bind 指令绑定一个 values 属性，称为插槽 prop，这个 prop 不需要在 props 选项中声明。<br />
+<br />
+在父级作用域下使用该组件时，可以给 v-slot 指令一个值来定义组件提供的插槽 prop 的名字。代码如下：<br />
+<pre class="info-box">
+&lt;page-layout&gt;
+    &lt;template v-slot:default=&quot;slotProps&quot;&gt;
+        {{slotProps.values.name}}
+    &lt;/template&gt;
+&lt;/page-layout&gt;</pre>
+因为 &lt;page-layout&gt; 组件内的插槽是默认插槽，所以这里使用其默认的名字 default，然后给出一个名字 slotProps，这个名字可以随便取，代表的是包含组件内所有插槽 prop 的一个对象，然后就可以在父组件中利用这个对象访问子组件的插槽 prop，prop 是绑定到 info 数据属性上的，所以可以进一步访问 info 的内容。示例代码如下。<br />
+<br />
+【实例】访问插槽的内容。
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+    &lt;page-layout&gt;
+        &lt;template v-slot:default=&quot;slotProps&quot;&gt;
+            {{slotProps.values.city}}
+        &lt;/template&gt;
+    &lt;/page-layout&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+    //创建一个应用程序实例
+    const vm= Vue.createApp({ });
+    vm.component(&#39;page-layout&#39;, {
+        data:function(){
+          return{
+              info:{
+                  name:&#39;苹果&#39;,
+                  price:8.86,
+                  city:&quot;深圳&quot;
+              }
+          }
+        },
+        template:`
+            &lt;button&gt;
+                &lt;slot v-bind:values=&quot;info&quot;&gt;
+                    {{info.city}}
+                &lt;/slot&gt;
+            &lt;/button&gt;
+        `
+    });
+    //在指定的DOM元素上装载应用程序实例的根组件
+    vm.mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，效果如下图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/231007/2-23100G10145634.gif" /><br />
+图 4 命名插槽</div>
+<h2>
+解构插槽prop</h2>
+作用域插槽的内部工作原理是将插槽内容传入函数的单个参数中：
+<pre class="info-box">
+function (slotProps) {
+    // 插槽内容
+}</pre>
+这意味着 v-slot 的值实际上可以是任何能够作为函数定义中的参数的 JavaScript 表达式。所以在支持的环境下（单文件组件或现代浏览器），也可以使用 ES 6 解构来传入具体的插槽 prop，示例代码如下：
+<pre class="info-box">
+&lt;current-verse v-slot=&quot;{ verse }&quot;&gt;
+    {{ verse.firstContent }}
+&lt;/current-user&gt;</pre>
+这样可以使模板更简洁，尤其是在该插槽提供了多个 prop 的时候。它同样开启了 prop 重命名等其他可能，例如将 verse 重命名为 poetry：
+<pre class="info-box">
+&lt;current-verse v-slot=&quot;{ verse: poetry }&quot;&gt;
+    {{ poetry.firstContent }}
+&lt;/current-verse&gt;</pre>
+甚至可以定义默认的内容，用于插槽 prop 是 undefined 的情形：
+<pre class="info-box">
+&lt;current-verse v-slot=&quot;{ verser = { firstContent: &#39;古诗&#39; } }&quot;&gt;
+    {{ verse.Content}}
+&lt;/current-verser&gt;</pre>
+【实例】解构插槽prop。
+<pre class="html">
+&lt;div id=&quot;app&quot;&gt;
+    &lt;current-verse&gt;
+        &lt;template v-slot=&quot;{verse:poetry}&quot;&gt;
+            {{poetry.firstContent }}
+        &lt;/template&gt;
+    &lt;/current-verse&gt;
+&lt;/div&gt;
+&lt;!--引入Vue文件--&gt;
+&lt;script src=&quot;https://unpkg.com/vue@next&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+    //创建一个应用程序实例
+    const vm= Vue.createApp({ });
+    vm.component(&#39;currentVerse&#39;, {
+        template: &#39;
+&lt;span&gt;&lt;slot :verse=&quot;verse&quot;&gt;{{ verse.lastContent }}&lt;/slot&gt;&lt;/span&gt;&#39;,
+        data:function(){
+            return {
+                verse: {
+                    firstContent: &#39;此心随去马，迢递过千峰。&#39;,
+                   secondContent: &#39;野渡波摇月，空城雨翳钟。&#39;
+                }
+            }
+        }
+    });
+    //在指定的DOM元素上装载应用程序实例的根组件
+    vm.mount(&#39;#app&#39;);
+&lt;/script&gt;</pre>
+在 Chrome 浏览器中运行程序，效果如下图所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/231007/2-23100G1023O02.gif" /><br />
+图 5 解构插槽prop</div>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="450.html" title="什么是编译器？" target="_blank">什么是编译器？</a></li>
+<li><a href="2883.html" title="UE4设置默认角色和控制器" target="_blank">UE4设置默认角色和控制器</a></li>
+<li><a href="vip_7350.html" title="Go语言使用通道响应计时器的事件" target="_blank">Go语言使用通道响应计时器的事件</a></li>
+<li><a href="../jsp2/include_command.html" title="JSP include指令" target="_blank">JSP include指令</a></li>
+<li><a href="../nexus/create-repository.html" title="Nexus创建仓库" target="_blank">Nexus创建仓库</a></li>
+<li><a href="lq6p73.html" title="Serverless介绍（非常详细）" target="_blank">Serverless介绍（非常详细）</a></li>
+<li><a href="riqva2.html" title="C语言void是什么" target="_blank">C语言void是什么</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10508;
+window.arcId = "e3bd8RXacC+lMmepGGBV69RP1RbLkx1yB2GT9DkC3XyUBeceNgbK1VTE8di0";
+window.typeidChain = "309|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

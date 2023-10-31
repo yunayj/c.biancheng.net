@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>01背包问题</title>
+<meta name="description" content="01背包问题指的是在物品不可分的前提下，如何挑选物品可以获得最大的收益。01背包问题可以用动态规划算法解决，本文将给出解决01背包问题的C/C++、Java、Python程序。" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>01背包问题</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">商店的货架上摆放着不同重量和价值的商品，一个小偷在商店行窃，他携带的背包只能装固定重量的商品。装哪些商品才能获得最大的收益呢？在限定条件内找到最佳的物品组合，这样的问题统称为背包问题。<br />
+<br />
+根据限定的条件不同，背包问题还可以细分：
+<ul>
+<li>
+部分背包问题：所有物品是可再分的，即允许将某件物品的一部分（例如 1/3）放入背包；</li>
+<li>
+0-1 背包问题：所有物品不可再分，要么整个装入背包，要么放弃，不允许出现&ldquo;仅选择物品的 1/3 装入背包&rdquo;的情况；</li>
+<li>
+完全背包问题：不对每一件物品的数量做限制，同一件物品可以选择多个装入背包；</li>
+<li>
+多重背包问题：每件物品的数量是有严格规定的，比如物品 A 有 2 件，物品 B 有 3 件。</li>
+</ul>
+<br />
+前面章节中，我们学会了用<a href="../algorithm/greedy.html" target="_blank">贪心算法</a>解决<a href="../algorithm/fractional-knapsack.html" target="_blank">部分背包问题</a>。本节，我们学习如何用动态规划算法解决 0-1 背包问题。
+<h2>
+动态规划解决01背包问题</h2>
+虚拟一个场景，商店中拥有 5 件商品，它们各自的重量和收益分别是：
+<ul>
+<li>
+商品 1：重量 1 斤，收益 1 元；</li>
+<li>
+商品 2：重量 2 斤，收益 6 元；</li>
+<li>
+商品 3：重量 5 斤，收益 18 元；</li>
+<li>
+商品 4：重量 6 斤，收益 22 元；</li>
+<li>
+商品 5：重量 7 斤，收益 28 元。</li>
+</ul>
+<br />
+所有商品不可再分，顾客要么&ldquo;整件&rdquo;购买商品，要么放弃购买。一个小偷想窃取商品，他的背包只能装 11 斤商品，如何选择商品才能获得最大的收益呢？<br />
+<br />
+动态规划算法解决此问题的核心思想是：背包承重 1 斤时所能获得的最大收益是很容易计算的，在此基础上，可以推算出背包承重 2 斤、3斤、...、14斤、15斤时所能获得的最大收益。建立如下这张表格，依次将各个商品装入不同承重的背包中，计算出它们所能获得的最大收益。<br />
+<br />
+<table>
+<caption>
+表 1 动态规划算法解决01背包问题</caption>
+<tbody>
+<tr>
+<th colspan="1" rowspan="2">
+商品种类</th>
+<th colspan="12" rowspan="1">
+背包承重</th>
+</tr>
+<tr>
+<th>
+0</th>
+<th>
+1</th>
+<th>
+2</th>
+<th>
+3</th>
+<th>
+4</th>
+<th>
+5</th>
+<th>
+6</th>
+<th>
+7</th>
+<th>
+8</th>
+<th>
+9</th>
+<th>
+10</th>
+<th>
+11</th>
+</tr>
+<tr>
+<td>
+不装任何商品</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+</tr>
+<tr>
+<td>
+w1 = 1，v1 = 1</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+</tr>
+<tr>
+<td>
+w2 = 2，v2 = 6</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+</tr>
+<tr>
+<td>
+w3 = 5，v3 = 18</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+</tr>
+<tr>
+<td>
+w4 = 6，v4 = 22</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+</tr>
+<tr>
+<td>
+w5 = 7，v5 = 28</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>
+表格中，wi 表示第 i 件商品的重量，vi 表示第 i 件商品的收益值。承重不同的各个背包尚未装入商品时，对应的收益值都为 0。</p>
+</blockquote>
+1) 首先考虑将商品一装入各个背包，除了承重值为 0 的背包，其它背包都能装入，且与不装任何商品相比，装入商品一后各个背包的收益更大，各个背包的收益值如表 2 所示：<br />
+<br />
+<table>
+<caption>
+表 2 动态规划算法解决01背包问题</caption>
+<tbody>
+<tr>
+<th colspan="1" rowspan="2">
+商品种类</th>
+<th colspan="12" rowspan="1">
+背包承重</th>
+</tr>
+<tr>
+<th>
+0</th>
+<th>
+1</th>
+<th>
+2</th>
+<th>
+3</th>
+<th>
+4</th>
+<th>
+5</th>
+<th>
+6</th>
+<th>
+7</th>
+<th>
+8</th>
+<th>
+9</th>
+<th>
+10</th>
+<th>
+11</th>
+</tr>
+<tr>
+<td>
+不装任何商品</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+</tr>
+<tr>
+<td>
+w1 = 1，v1 = 1</td>
+<td>
+0</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+</tr>
+<tr>
+<td>
+w2 = 2，v2 = 6</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+</tr>
+<tr>
+<td>
+w3 = 5，v3 = 18</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+</tr>
+<tr>
+<td>
+w4 = 6，v4 = 22</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+</tr>
+<tr>
+<td>
+w5 = 7，v5 = 28</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<br />
+我们用 f(n) 表示承重值为 n 的背包对应的最大收益。从算法的角度，各个背包收益值是这样计算的：f(1)=1+f(0)、f(2)=1+f(1)、...、f(11)=1+f(10)，其中等号右侧表达式中的 1 指的是商品一的收益值，f(0)~f(10) 指的是不装任何商品时承重分别为 0~10 的背包对应的收益值，借助表格可以看到，它们的值都为 0。<br />
+<br />
+2) 考虑将商品二装入各个背包，除了承重值为 0 和 1 的背包，其它背包都可以装入。我们可以计算出它们各自对应的收益值：
+<p class="info-box">
+f(2) = 6 + f(0) = 6<br />
+f(3) = 6 + f(1) = 7<br />
+f(4) = 6 + f(2) = 7<br />
+...<br />
+f(9) = 6 + f(7) = 7<br />
+f(10) = 6 + f(8) = 7<br />
+f(11) = 6 + f(9) = 7</p>
+等号右侧 f(0)~f(9) 的值是表 2 中装入商品一的各个背包对应的收益值。相比装入商品一统计的各个背包的收益值，装入商品二能使提高各个背包的收益。更新后的表格为：<br />
+<br />
+<table>
+<caption>
+表 3&nbsp;动态规划算法解决01背包问题</caption>
+<tbody>
+<tr>
+<th colspan="1" rowspan="2">
+商品种类</th>
+<th colspan="12" rowspan="1">
+背包承重</th>
+</tr>
+<tr>
+<th>
+0</th>
+<th>
+1</th>
+<th>
+2</th>
+<th>
+3</th>
+<th>
+4</th>
+<th>
+5</th>
+<th>
+6</th>
+<th>
+7</th>
+<th>
+8</th>
+<th>
+9</th>
+<th>
+10</th>
+<th>
+11</th>
+</tr>
+<tr>
+<td>
+不装任何商品</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+</tr>
+<tr>
+<td>
+w1 = 1，v1 = 1</td>
+<td>
+0</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+</tr>
+<tr>
+<td>
+w2 = 2，v2 = 6</td>
+<td>
+0</td>
+<td>
+1</td>
+<td>
+6</td>
+<td>
+7</td>
+<td>
+7</td>
+<td>
+7</td>
+<td>
+7</td>
+<td>
+7</td>
+<td>
+7</td>
+<td>
+7</td>
+<td>
+7</td>
+<td>
+7</td>
+</tr>
+<tr>
+<td>
+w3 = 5，v3 = 18</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+</tr>
+<tr>
+<td>
+w4 = 6，v4 = 22</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+</tr>
+<tr>
+<td>
+w5 = 7，v5 = 28</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<br />
+3) 考虑将商品三装入各个背包，除了承重值为小于 5 的背包，其它背包都可以装入。我们可以计算出它们各自对应的收益值：
+<p class="info-box">
+f(5) = 18 + f(0)&nbsp; = 18<br />
+f(6) = 18 + f(1) = 19<br />
+f(7) = 18 + f(2) = 24<br />
+f(8) = 18 + f(3) = 25<br />
+f(9) = 18 + f(4) = 25<br />
+f(10) = 18 + f(5) = 25<br />
+f(11) = 18 + f(6) = 25</p>
+等号右侧 f(0)~f(6) 的值是表 2 中装入商品二的各个背包对应的收益值。和装入商品二时统计的各个背包的收益值相比，装入商品三能提高各个背包的收益。更新后的表格为：<br />
+<br />
+<table>
+<caption>
+表 4&nbsp;动态规划算法解决01背包问题</caption>
+<tbody>
+<tr>
+<th colspan="1" rowspan="2">
+商品种类</th>
+<th colspan="12" rowspan="1">
+背包承重</th>
+</tr>
+<tr>
+<th>
+0</th>
+<th>
+1</th>
+<th>
+2</th>
+<th>
+3</th>
+<th>
+4</th>
+<th>
+5</th>
+<th>
+6</th>
+<th>
+7</th>
+<th>
+8</th>
+<th>
+9</th>
+<th>
+10</th>
+<th>
+11</th>
+</tr>
+<tr>
+<td>
+不装任何商品</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+</tr>
+<tr>
+<td>
+w1 = 1，v1 = 1</td>
+<td>
+0</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+</tr>
+<tr>
+<td>
+w2 = 2，v2 = 6</td>
+<td>
+0</td>
+<td>
+1</td>
+<td>
+6</td>
+<td>
+7</td>
+<td>
+7</td>
+<td>
+7</td>
+<td>
+7</td>
+<td>
+7</td>
+<td>
+7</td>
+<td>
+7</td>
+<td>
+7</td>
+<td>
+7</td>
+</tr>
+<tr>
+<td>
+w3 = 5，v3 = 18</td>
+<td>
+0</td>
+<td>
+1</td>
+<td>
+6</td>
+<td>
+7</td>
+<td>
+7</td>
+<td>
+18</td>
+<td>
+19</td>
+<td>
+24</td>
+<td>
+25</td>
+<td>
+25</td>
+<td>
+25</td>
+<td>
+25</td>
+</tr>
+<tr>
+<td>
+w4 = 6，v4 = 22</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+</tr>
+<tr>
+<td>
+w5 = 7，v5 = 28</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+<td>
+&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<br />
+4) 采用同样的方法，我们可以将表 4 中缺失的数据补全，最终得到的表格为：<br />
+<br />
+<table>
+<caption>
+表 5&nbsp;动态规划算法解决01背包问题</caption>
+<tbody>
+<tr>
+<th colspan="1" rowspan="2">
+商品种类</th>
+<th colspan="12" rowspan="1">
+背包承重</th>
+</tr>
+<tr>
+<th>
+0</th>
+<th>
+1</th>
+<th>
+2</th>
+<th>
+3</th>
+<th>
+4</th>
+<th>
+5</th>
+<th>
+6</th>
+<th>
+7</th>
+<th>
+8</th>
+<th>
+9</th>
+<th>
+10</th>
+<th>
+11</th>
+</tr>
+<tr>
+<td>
+不装任何商品</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+<td>
+0</td>
+</tr>
+<tr>
+<td>
+w1 = 1，v1 = 1</td>
+<td>
+0</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+<td>
+1</td>
+</tr>
+<tr>
+<td>
+w2 = 2，v2 = 6</td>
+<td>
+0</td>
+<td>
+1</td>
+<td>
+6</td>
+<td>
+7</td>
+<td>
+7</td>
+<td>
+7</td>
+<td>
+7</td>
+<td>
+7</td>
+<td>
+7</td>
+<td>
+7</td>
+<td>
+7</td>
+<td>
+7</td>
+</tr>
+<tr>
+<td>
+w3 = 5，v3 = 18</td>
+<td>
+0</td>
+<td>
+1</td>
+<td>
+6</td>
+<td>
+7</td>
+<td>
+7</td>
+<td>
+18</td>
+<td>
+19</td>
+<td>
+24</td>
+<td>
+25</td>
+<td>
+25</td>
+<td>
+25</td>
+<td>
+25</td>
+</tr>
+<tr>
+<td>
+w4 = 6，v4 = 22</td>
+<td>
+0</td>
+<td>
+1</td>
+<td>
+6</td>
+<td>
+7</td>
+<td>
+7</td>
+<td>
+18</td>
+<td>
+22</td>
+<td>
+24</td>
+<td>
+28</td>
+<td>
+29</td>
+<td>
+29</td>
+<td>
+40</td>
+</tr>
+<tr>
+<td>
+w5 = 7，v5 = 28</td>
+<td>
+0</td>
+<td>
+1</td>
+<td>
+6</td>
+<td>
+7</td>
+<td>
+7</td>
+<td>
+18</td>
+<td>
+22</td>
+<td>
+28</td>
+<td>
+29</td>
+<td>
+34</td>
+<td>
+35</td>
+<td>
+40</td>
+</tr>
+</tbody>
+</table>
+<br />
+注意，并不是每试图装入一个新商品，背包的收益一定会提高。举个例子，承重为 7 斤的背包装入商品四时的最大收益是：f(7) = 22+f(1) = 23，装入商品三时最大的收益值为：f(7) = 18+f(2) = 24。因此，表 5 中承重 7 斤的背包装入商品 4 时对应的收益值仍为 24，并未发生改变。<br />
+<br />
+结合表 5，当背包承重为 11 斤时，所能获得的最大收益为 40 元。如下以伪代码的形式给大家总结了以上推理的整个过程：
+<pre class="info-box">
+输入 N    // 指定商品种类
+输入 W    // 指定背包载重量
+//w[] 记录各个商品的载重量，v[] 记录各个商品对应的收益
+knapsack01(w[] , v[]):
+    //逐个遍历每个商品
+    for i &lt;- 1 to N：
+        //求出从 1 到 W 各个载重量对应的最大收益
+        for j &lt;- 1 to W:
+            //如果背包载重量小于商品总重量，则商品无法放入背包，收益不变
+            if  j &lt; w[i]:
+                result[i][j] = result[i-1][j]
+            else:
+                //比较装入该商品和不装该商品，哪种情况获得的收益更大，记录最大收益值
+                result[i][j] = max(result[i-1][j] , v[i]+result[i-1][j-w[i]])
+    return result </pre>
+<h2>
+01背包问题的具体实现</h2>
+&nbsp;结合伪代码，如下是用动态规划算法解决 01 背包问题的 C 语言程序：
+<pre class="cpp">
+#include&lt;stdio.h&gt;
+#define N 5    //商品的种类
+#define W 11   //背包的最大承重
+/*
+动态规划算法解决01背包问题
+result[N + 1][W + 1]：存储最终的结果
+w[N + 1]：存储各商品的重量
+v[N + 1]：存储各商品的价值
+*/
+void knapsack01(int result[N + 1][W + 1], int w[N + 1], int v[N + 1]) {
+    int i, j;
+    //逐个遍历每个商品
+    for (i = 1; i &lt;= N; i++) {
+        //求出从 1 到 W 各个载重对应的最大收益
+        for (j = 1; j &lt;= W; j++) {
+            //如果背包载重小于商品总重量，则该商品无法放入背包，收益不变
+            if (j &lt; w[i])
+                result[i][j] = result[i - 1][j];
+            else
+                //比较装入该商品和不装该商品，哪种情况获得的收益更大，记录最大收益值
+                result[i][j] = result[i - 1][j] &gt; (v[i] + result[i - 1][j - w[i]]) ? result[i - 1][j] : (v[i] + result[i - 1][j - w[i]]);
+        }
+    }
+}
+//追溯选中的商品
+void select(int result[N + 1][W + 1], int w[N + 1], int v[N + 1]) {
+    int n = N;
+    int bagw = W;
+    //逐个商品进行判断
+    while (n &gt; 0) {
+        //如果在指定载重量下，该商品对应的收益和上一个商品对应的收益相同，则表明未选中
+        if (result[n][bagw] == result[n - 1][bagw]) {
+            n--;
+        }
+        else {
+            //输出被选用商品的重量和价值
+            printf(&quot;(%d,%d) &quot;, w[n], v[n]);
+            //删除被选用商品的承重，以便继续遍历
+            bagw = bagw - w[n];
+            n--;
+        }
+    }
+}
+
+int main()
+{
+    int w[N + 1] = { 0,1 , 2 , 5 , 6 , 7 };            //商品的承重
+    int v[N + 1] = { 0,1 , 6 , 18 , 22 , 28 };        //商品的价值
+    int result[N + 1][W + 1] = { 0 };                        //记录统计数据
+    knapsack01(result, w, v);
+    printf(&quot;背包承重为 %d,最大收益为 %d\n&quot;, W, result[N][W]);
+    printf(&quot;选择了：&quot;);
+    select(result, w, v);
+    return 0;
+}</pre>
+<br />
+如下为用动态规划算法解决 01 背包问题的 Java 程序：
+<pre class="java">
+public class Demo {
+    static int N = 5;//商品的种类
+    static int W = 11;//背包的承重
+    //动态规划算法解决01背包问题
+    public static void knapsack01(int [][] result , int [] w,int []v) {
+        //逐个遍历每个商品
+        for(int i=1;i&lt;=N;i++) {
+            //求出从 1 到 W 各个承重对应的最大收益
+            for ( int j=1;j&lt;=W;j++) {
+                //如果背包承重小于商品总重量，则该商品无法放入背包，收益不变
+                if(j&lt;w[i]) {
+                    result[i][j] = result[i-1][j];
+                }else {
+                    //比较装入该商品和不装该商品，哪种情况获得的收益更大，记录最大收益值
+                    result[i][j] = result[i - 1][j] &gt; (v[i] + result[i - 1][j - w[i]]) ? result[i - 1][j] : (v[i] + result[i - 1][j - w[i]]);
+                }
+            }
+        }
+    }
+    //追溯选中的商品
+    public static void select(int [][] result , int [] w,int []v) {
+        int n = N;
+        int bagw = W;
+        //逐个商品进行判断
+        while(n&gt;0) {
+            //如果在指定承重下，该商品对应的收益和上一个商品对应的收益相同，则表明未选中
+             if (result[n][bagw] == result[n - 1][bagw]) {
+                    n--;
+                }
+                else {
+                    //输出被选用商品的重量和价值
+                    System.out.print(&quot;(&quot;+w[n]+&quot;,&quot;+v[n]+&quot;) &quot;);
+                    //删除被选用商品的承重，以便继续遍历
+                    bagw = bagw - w[n];
+                    n--;
+                }
+        }
+    }
+    public static void main(String[] args) {
+        int [] w= {0,1 , 2 , 5 , 6 , 7}; //商品的重量
+        int [] v ={0,1 , 6 , 18 , 22 , 28};  //商品的价值
+        int [][] result = new int[N+1][W+1];
+        knapsack01(result, w, v);;
+        System.out.println(&quot;背包可容纳重量为 &quot;+W+&quot;，最大收益为 &quot;+result[N][W]);
+        System.out.print(&quot;选择了&quot;);
+        select(result, w,v);
+    }
+}</pre>
+<br />
+如下为用动态规划算法解决 01 背包问题的 Python 程序：
+<pre class="python">
+N = 5       #商品的种类
+W = 11      #背包的承重
+w = [0,1,2,5,6,7]    #商品的承重，不使用 w[0]
+v = [0,1,6,18,22,28]   #商品的价值，不使用 v[0]
+#二维列表，记录统计数据
+result = [[0]*(W+1),[0]*(W+1),[0]*(W+1),[0]*(W+1),[0]*(W+1),[0]*(W+1)]
+#动态规划算法解决01背包问题
+def knapsack01():
+    #逐个遍历每个商品
+    for i in range(1,N+1):
+        #求出从 1 到 W 各个承重对应的最大收益
+        for j in range(1,W+1):
+            #如果背包承重小于商品总重量，则该商品无法放入背包，收益不变
+            if j&lt;w[i]:
+                result[i][j] = result[i-1][j];
+            else:
+                #比较装入该商品和不装该商品，哪种情况获得的收益更大，记录最大收益值
+                result[i][j] = max(result[i-1][j],v[i]+result[i-1][j-w[i]])
+
+knapsack01()
+print(&quot;背包可容纳重量为 %d,最大收益为 %d&quot;%(W, result[N][W]))
+#追溯选中的商品
+def select():
+    n = N
+    bagw = W
+    #逐个商品进行判断
+    while n &gt; 0:
+         #如果在指定承重下，该商品对应的收益和上一个商品对应的收益相同，则表明未选中
+        if result[n][bagw] == result[n-1][bagw]:
+            n = n - 1
+        else:
+            #输出被选用商品的重量和价值
+            print(&quot;(%d,%d) &quot;%(w[n],v[n]))
+            #删除被选用商品的承重，以便继续遍历
+            bagw = bagw - w[n]
+            n = n - 1
+
+print(&quot;所选商品为:&quot;)
+select()</pre>
+<br />
+以上程序的输出结果均为：
+<p class="info-box">
+背包可容纳重量为 11，最大收益为 40<br />
+选择了(6,22) (5,18)</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="923.html" title="Java数组使用binarySearch()方法查找指定元素" target="_blank">Java数组使用binarySearch()方法查找指定元素</a></li>
+<li><a href="2391.html" title="MySQL下载步骤详解" target="_blank">MySQL下载步骤详解</a></li>
+<li><a href="3968.html" title="Linux tar命令备份数据" target="_blank">Linux tar命令备份数据</a></li>
+<li><a href="4312.html" title="什么是序列，Python序列详解（包括序列类型和常用操作）" target="_blank">什么是序列，Python序列详解（包括序列类型和常用操作）</a></li>
+<li><a href="4743.html" title="Java List.subList()方法：获取列表中指定范围的子列表" target="_blank">Java List.subList()方法：获取列表中指定范围的子列表</a></li>
+<li><a href="7613.html" title="HTML &lt;select&gt;标签（下拉列表）" target="_blank">HTML &lt;select&gt;标签（下拉列表）</a></li>
+<li><a href="9394.html" title="HTML &lt;iframe&gt;标签：内联框架" target="_blank">HTML &lt;iframe&gt;标签：内联框架</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9104;
+window.arcId = "c64aC7MJQh2+pv8wTcj5R8WIMYSlVrM8uDpPDVfStU7q3tx6YJijWBAPkNo";
+window.typeidChain = "457|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

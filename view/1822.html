@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Qt界面布局管理详解</title>
+<meta name="description" content="在上一节，通过一个简单的应用程序，分析了 Qt 创建的 GUI 应用程序中各个文件的作用，剖析了可视化设计的UI文件是如何被转换为 C++ 的类定义，并自动创建界面的。这些是使用 Qt Cr" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Qt界面布局管理详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在上一节，通过一个简单的应用程序，分析了 <a href='../qt/qt_3.html' target='_blank'>Qt</a> 创建的 GUI 应用程序中各个文件的作用，剖析了可视化设计的UI文件是如何被转换为 <a href='../cplus/cplus.html' target='_blank'>C++</a> 的类定义，并自动创建界面的。这些是使用 Qt Creator 可视化设计用户界面，并使各个部分融合起来运行的基本原理。<br />
+<br />
+本节再以一个稍微复杂的例子来讲解设计 GUI 的常见功能，包括界面设计时布局的管理，以及程序里如何访问界面组件。<br />
+<h2>
+实例程序功能</h2>
+创建一个 Widget Application 项目 samp2_2，在创建窗体时选择基类 QDialog，生成的类命名为 QWDialog，并选择生成窗体。<br />
+<br />
+如此新建的项目 samp2_2 有一个界面文件 qwdialog.ui，一个头文件 qwdialog.h 和源程序文件 qwdialog.cpp。此外，还有项目文件 samp2_2.pro 和主程序文件 main.cpp。<br />
+<br />
+qwdialog.ui 界面文件设计时界面如图 1 所示。程序的主要功能是对中间一个文本框的文字字体样式和颜色进行设置。
+<div style="text-align: center;">
+<br />
+<img alt="实例程序 samp2_2 设计时界面" src="../uploads/allimg/181229/2-1Q229135J1356.gif" /><br />
+图 1 实例程序 samp2_2 设计时界面</div>
+<br />
+在界面设计时，对需要访问的组件修改其 objectName，如各个按钮、需要读取输入的编辑框、需要显示结果的标签等，以便在程序里区分。对于不需要程序访问的组件则无需修改其 objectName，如用于界面上组件分组的 GroupBox、Frame、布局等，让 UI 设计器自动命名即可。<br />
+<br />
+对图 1 中几个主要组件的命名、属性设置见表 2。<br />
+<br />
+<table>
+<caption>
+表 2 qwdialog.ui 中各个组件的相关设置</caption>
+<tbody>
+<tr>
+<th>
+对象名</th>
+<th>
+类名称</th>
+<th>
+属性设置</th>
+<th>
+备注</th>
+</tr>
+<tr>
+<td>
+txtEdit&nbsp;</td>
+<td>
+QPlainTextEdit</td>
+<td>
+Text=&quot;Hello, World<br />
+It is my demo. &quot;<br />
+Font.PointSize=20</td>
+<td>
+用于显示文字内容，可编辑</td>
+</tr>
+<tr>
+<td>
+chkBoxUnder&nbsp;</td>
+<td>
+QCheckBox&nbsp;</td>
+<td>
+Text=&quot;Underline&quot;</td>
+<td>
+设置字体为下划线</td>
+</tr>
+<tr>
+<td>
+chkBoxItalic&nbsp;</td>
+<td>
+QCheckBox&nbsp;</td>
+<td>
+Text=&quot;Italic&quot;</td>
+<td>
+设置字体为斜体</td>
+</tr>
+<tr>
+<td>
+chkBoxBold&nbsp;</td>
+<td>
+QCheckBox&nbsp;</td>
+<td>
+Text=&quot;Bold&quot;</td>
+<td>
+设置字体为粗体</td>
+</tr>
+<tr>
+<td>
+rBtnBlack&nbsp;</td>
+<td>
+QRadioButton&nbsp;</td>
+<td>
+Text=&quot;Black&quot;</td>
+<td>
+字体颜色为黑色</td>
+</tr>
+<tr>
+<td>
+rBtnRed&nbsp;</td>
+<td>
+QRadioButton&nbsp;</td>
+<td>
+Text=&quot;Red&quot;</td>
+<td>
+字体颜色为红色</td>
+</tr>
+<tr>
+<td>
+rBtnBlue&nbsp;</td>
+<td>
+QRadioButton&nbsp;</td>
+<td>
+Text=&quot;Blue&quot;</td>
+<td>
+字体颜色为蓝色</td>
+</tr>
+<tr>
+<td>
+btnOK&nbsp;</td>
+<td>
+QPushButton&nbsp;</td>
+<td>
+Text=&quot;确定&quot;</td>
+<td>
+返回确定，并关闭窗口</td>
+</tr>
+<tr>
+<td>
+btnCancel&nbsp;</td>
+<td>
+QPushButton&nbsp;</td>
+<td>
+Text=&quot;取消&quot;&nbsp;</td>
+<td>
+返回取消，并关闭窗口</td>
+</tr>
+<tr>
+<td>
+btnClose&nbsp;</td>
+<td>
+QPushButton&nbsp;</td>
+<td>
+Text=&quot;退出&quot;</td>
+<td>
+退出程序</td>
+</tr>
+<tr>
+<td>
+QWDialog&nbsp;</td>
+<td>
+QWDialog&nbsp;</td>
+<td>
+windowTitle=&quot;Dialog by Designer&quot;</td>
+<td>
+界面窗口的类名称是QWDialog，objectName 不要修改</td>
+</tr>
+</tbody>
+</table>
+<br />
+对于界面组件的属性设置，需要注意以下几点。
+<ol>
+<li>
+objectName 是窗体上创建的组件的实例名称，界面上的每个组件需要有一个唯一的 objectName，程序里访问界面组件时都是通过其 objectName 进行访问，自动生成的槽函数名称里也有 objectName。所以，组件的 objectName 需要在设计程序之前设置好，设置好之后一般不要再改动。若设计程序之后再改动 objectName，涉及的代码需要相应的改动。</li>
+<li>
+窗体的 objectName 就是窗体的类名称，在 UI 设计器里不要修改窗体的 objectName，窗体的实例名称需要在使用窗体的代码里去定义。</li>
+</ol>
+<h2>
+界面组件布局</h2>
+Qt 的界面设计使用了布局（Layout）功能。所谓布局，就是界面上组件的排列方式，使用布局可以使组件有规则地分布，并且随着窗体大小变化自动地调整大小和相对位置。布局管理是 GUI 设计的必备技巧，下面逐步讲解如何实现图 1 所示的界面设计。<br />
+<h4>
+界面组件的层次关系</h4>
+为了将界面上的各个组件的分布设计得更加美观，经常使用一些容器类，如 QgoupBox、QtabWidget、QFrame 等。<br />
+<br />
+例如，将 3 个 CheckBox 组件放置在一个 GroupBox 组件里，该 GroupBox 组件就是这 3 个 CheckBox 的容器，移动这个 GroupBox 就会同时移动其中的 3 个 CheckBox。<br />
+<div style="text-align: center;">
+<br />
+<img alt="界面组件的放置及层次关系" src="../uploads/allimg/181229/2-1Q22914033EB.gif" /><br />
+图 3 界面组件的放置及层次关系</div>
+<br />
+图 3 显示的是设计图 1 界面的前期阶段。在窗体上放置了 2 个 GroupBox 组件，在 groupBox1 里放置 3 个 CheckBox 组件，在 groupBox2 里放置 3 个 RadioButton 组件。图 3 右侧 Object Inspector 里显示了界面上各组件之间的层次关系。<br />
+<h4>
+布局管理</h4>
+Qt 为界面设计提供了丰富的布局管理功能，在 UI 设计器中，组件面板里有 Layouts 和 Spacers 两个组件面板，在窗体上方的工具栏里有布局管理的按钮（如图 4 所示）。
+<div style="text-align: center;">
+<br />
+<img alt="用于布局可视化设计的组件面板和工具栏" src="../uploads/allimg/181229/2-1Q229140423649.gif" /><br />
+图 4 用于布局可视化设计的组件面板和工具栏</div>
+<br />
+Layouts 和 Spacers 两个组件面板里的布局组件的功能见表 5：<br />
+<br />
+<table>
+<caption>
+表 5 组件面板上用于布局的组件</caption>
+<tbody>
+<tr>
+<th>
+布局组件</th>
+<th>
+功能</th>
+</tr>
+<tr>
+<td>
+Vertical Layout</td>
+<td>
+垂直方向布局，组件自动在垂直方向上分布</td>
+</tr>
+<tr>
+<td>
+Horizontal Layout</td>
+<td>
+水平方向布局，组件自动在水平方向上分布</td>
+</tr>
+<tr>
+<td>
+Grid Layout</td>
+<td>
+网格状布局，网状布局大小改变时，每个网格的大小都改变</td>
+</tr>
+<tr>
+<td>
+Form Layout</td>
+<td>
+窗体布局，与网格状布局类似，但是只有最右侧的一列网格会改变大小</td>
+</tr>
+<tr>
+<td>
+Horizontal Spacer</td>
+<td>
+一个用于水平分隔的空格</td>
+</tr>
+<tr>
+<td>
+Vertical Spacer</td>
+<td>
+一个用于垂直分隔的空格</td>
+</tr>
+</tbody>
+</table>
+<br />
+使用组件面板里的布局组件设计布局时，先拖放一个布局组件到窗体上，如在设计图 4 中 3 个按钮的布局时，先放一个 Horizontal Layout 到窗体上，布局组件会以红色边框显示。再往布局组件里拖放 3 个 Push Button 和 2 个 Horizontal Spacer，就可以得到图 1 中 3 个按钮的水平布局效果。<br />
+<br />
+在设计窗体的上方有一个工具栏，用于调整设计器进入不同的状态，以及进行布局设计，工具栏上各按钮的功能见表 6。<br />
+<br />
+<table>
+<caption>
+表 6 UI设计器工具栏各按钮的功能</caption>
+<tbody>
+<tr>
+<th>
+按钮及快捷键</th>
+<th>
+功能</th>
+</tr>
+<tr>
+<td>
+Edit Widget (F3)</td>
+<td>
+界面设计进入编辑状态，就是正常的设计状态</td>
+</tr>
+<tr>
+<td>
+Edit Signals/Slots(F4)&nbsp;</td>
+<td>
+进入信号与槽的可视化设计状态</td>
+</tr>
+<tr>
+<td>
+Edit Buddies</td>
+<td>
+进入伙伴关系编辑状态，可以设置一个Label 与一个组件成为伙伴关系</td>
+</tr>
+<tr>
+<td>
+Edit Tab Order</td>
+<td>
+进入Tab 顺序编辑状态，Tab 顺序是在键盘上按Tab 键时，输入焦点在界面各组件之间跳动的顺序</td>
+</tr>
+<tr>
+<td>
+Lay Out Horizontally (Ctrl+H)</td>
+<td>
+将窗体上所选组件水平布局</td>
+</tr>
+<tr>
+<td>
+Lay Out Vertically (Ctrl+L)&nbsp;</td>
+<td>
+将窗体上所选组件垂直布局</td>
+</tr>
+<tr>
+<td>
+Lay Out Horizontally in Splitter</td>
+<td>
+将窗体上所选组件用一个分割条进行水平分割布局</td>
+</tr>
+<tr>
+<td>
+Lay Out Vertically in Splitter</td>
+<td>
+将窗体上所选组件用一个分割条进行垂直分割布局</td>
+</tr>
+<tr>
+<td>
+Lay Out in a Form Layout</td>
+<td>
+将窗体上所选组件按窗体布局</td>
+</tr>
+<tr>
+<td>
+Lay Out in a Grid</td>
+<td>
+将窗体上所选组件网格布局</td>
+</tr>
+<tr>
+<td>
+Break Layout</td>
+<td>
+解除窗体上所选组件的布局，也就是打散现有的布局</td>
+</tr>
+<tr>
+<td>
+Adjust Size(Ctrl+J)</td>
+<td>
+自动调整所选组件的大小</td>
+</tr>
+</tbody>
+</table>
+<br />
+使用工具栏上的布局控制按钮时，只需在窗体上选中需要设计布局的组件，然后点击某个布局按钮即可。在窗体上选择组件时同时按住 Ctrl 键，可以实现组件多选，选择某个容器类组件，相当于选择了其内部的所有组件。<br />
+<br />
+例如，在图 3 的界面中，选中 groupBox1，然后单击&ldquo;Lay Out Horizontally&rdquo;工具栏按钮，就可以对 groupBox1 内的 3 个 CheckBox 水平布局。<br />
+<br />
+在图 4 的界面上，使 groupBox1 里的 3 个 CheckBox 水平布局，groupBox2 里的 3 个 RadioButton 水平布局，下方 3个按钮水平布局。在窗体上又放置了一个 PlainTextEdit 组件。现在，改变 groupBox1、groupBox2 或按钮的水平布局的大小，其内部组件都会自动改变大小。但是当改变窗体大小时，界面上的各组件却并不会自动改变大小。<br />
+<br />
+随后还需为窗体指定一个总的布局。选中窗体（即不要选择任何组件），单击工具栏上的&ldquo;Lay Out Vertically&rdquo;按钮，使 4 个组件垂直分布。这样布局后，当窗体大小改变时，各个组件都会自动改变大小。<br />
+<br />
+在 UI 设计器里可视化设计布局时，要善于利用水平和垂直空格组件，善于设置组件的最大、最小宽度和高度来实现某些需要的布局效果。<br />
+<h4>
+伙伴关系与 Tab 顺序</h4>
+在 UI 设计工具栏上单击&ldquo;Edit Buddies&rdquo;按钮可以进入伙伴关系编辑状态，如设计一个窗体时，进入伙伴编辑状态之后的界面如图 7 所示。
+<div style="text-align: center;">
+<br />
+<img alt="编辑伙伴关系" src="../uploads/allimg/181229/2-1Q229141123159.gif" /><br />
+图 7 编辑伙伴关系</div>
+<br />
+伙伴关系（Buddy）是指界面上一个 Label 和一个组件相关联，如图 7 中的伙伴关系编辑状态，单击一个 Label，按住鼠标左键，然后拖向一个组件，就建立了 Label 和组件之间的伙伴关系。<br />
+<br />
+伙伴关系是为了在程序运行时，在窗体上用快捷键快速将输入焦点切换到某个组件上。例如，在图 7 的界面上，设定&ldquo;姓名&rdquo;标签的 Text 属性为&ldquo;姓名(&amp;N)&rdquo;，其中符号&ldquo;&amp;&rdquo;用来指定快捷字符，界面上并不显示&ldquo;&amp;&rdquo;，这里指定快捷字母为 N。那么程序运行时，用户按下 <code>Alt+N</code>，输入焦点就会快速切换到&ldquo;姓名&rdquo;关联的输入框内。
+<div style="text-align: center;">
+<br />
+<img alt="Tab 顺序编辑状态" src="../uploads/allimg/181229/2-1Q229141210291.gif" /><br />
+图 8 Tab 顺序编辑状态</div>
+<br />
+在 UI 设计器工具栏上单击&ldquo;Edit Tab Order&rdquo;按钮进入Tab 顺序编辑状态（如图 8 所示）。Tab 顺序是指在程序运行时，按下键盘上的 Tab 键时输入焦点的移动顺序。一个好的用户界面，在按 Tab 键时，焦点应该以合理的顺序在界面上移动，而不是随意地移动。<br />
+<br />
+进入 Tab 顺序编辑状态后，在界面上会显示具有 Tab 顺序组件的编号，依次按希望的顺序单击组件，就可以重排 Tab 顺序了。没有输入焦点的组件是没有 Tab 顺序的，如 Label 组件。<br />
+<h2>
+项目功能实现</h2>
+下面开始设计程序功能。对于该程序，希望它的功能如下：
+<ol>
+<li>
+单击 UnderLine、Italic、Bold 3 个 CheckBox 时，根据其状态，设置 PlainTextEdit 里的文字的字体样式；</li>
+<li>
+Black、Red、Blue 3 个 RadioButton 是互斥选择的，单击某个 RadioButton 时，设置文字的颜色；</li>
+<li>
+单击&ldquo;确定&rdquo;&ldquo;取消&rdquo;或&ldquo;退出&rdquo;按钮时，关闭窗口，退出程序。</li>
+</ol>
+<h4>
+字体样式设置</h4>
+窗体在<a href='../design_pattern/design_pattern.html' target='_blank'>设计模式</a>下，选中 chkBoxUnder 组件，单击右键调出其快捷菜单。在快捷菜单中单击菜单项&ldquo;Go to slot&hellip;&rdquo;（中文状态为&ldquo;转到槽&rdquo;），出现如图 9 所示的对话框。
+<div style="text-align: center;">
+<br />
+<img alt="QcheckBox的Go to slot对话框" src="../uploads/allimg/181229/2-1Q229141404493.gif" /><br />
+图 9 QcheckBox的Go to slot对话框</div>
+<br />
+该对话框列出了 QCheckBox 类的所有信号，第一个是 clicked()，第二个是带一个布尔类型参数的 clicked(bool)。<br />
+<br />
+信号 clicked(bool) 会将 CheckBox 组件当前的选择状态作为一个参数传递，在响应代码里可以直接利用这个传递的参数。而如果用信号 clicked()，则需要在代码里读取 CheckBox 组件的选中状态。为了简化代码，选择 clicked(bool) 信号。<br />
+<br />
+选择 clicked(bool)，然后单击&ldquo;OK&rdquo;按钮，在 QWDialog 的类定义中，会在 private slots 部分自动增加一个槽函数声明，函数名是根据发射对象及其信号名称自动命名的。<br />
+<p class="info-box">
+void on_chkBoxUnder_clicked(bool checked);</p>
+同时，在 qwdialog.cpp 文件中自动添加了函数 on_chkBoxUnder_clicked(bool) 的框架，在此函数中添加如下的代码，实现文本框字体下划线的控制。<br />
+<pre class="info-box">
+void QWDialog::on_chkBoxUnder_clicked(bool checked)
+{
+    QFont font=ui-&gt;txtEdit-&gt;font();
+    font.setUnderline(checked);
+    ui-&gt;txtEdit-&gt;setFont(font);
+}</pre>
+以同样的方法为 Italic 和 Bold 两个 CheckBox设计槽函数，编译后运行，发现已经实现了修改字体的下划线、斜体、粗体属性的功能，说明信号与槽函数已经关联了。<br />
+<br />
+但是，查看 QWDialog 的构造函数，构造函数只有简单的一条语句。<br />
+<pre class="info-box">
+QWDialog::QWDialog(QWidget *parent) : QDialog(parent), ui(new Ui::QWDialog)
+{
+    ui-&gt;setupUi(this);
+}</pre>
+这里没有发现用 connect() 函数进行几个 CheckBox 的信号与槽函数关联的操作。这些功能是如何实现的呢？<br />
+<br />
+查看编译生成的 ui_qwdialog.h 文件。构造函数里调用的 setupUi() 是在 ui_qwdialog.h 文件里实现的。查看 setupUi() 函数的内容，也没有发现用 connect() 函数进行几个 CheckBox 的信号与槽关联的操作，只是在 setupUI()里发现了如下的一条语句：
+<p class="info-box">
+QMetaObject::connectSlotsByName(QWDialog);</p>
+秘密就在于这条语句。connectSlotsByName(QWDialog) 函数将搜索 QWDialog 界面上的所有组件，将信号与槽函数匹配的信号和槽关联起来，它假设槽函数的名称是：
+<p class="info-box">
+void on_&lt;object name&gt;_&lt;signal name&gt;(&lt;signal parameters&gt;);</p>
+例如，通过 UI 设计器的操作，为 chkBoxUnder 自动生成的槽函数是：
+<p class="info-box">
+void on_chkBoxUnder_clicked(bool checked);</p>
+它就正好是 chkBoxUnder 的信号 clicked(bool) 的槽函数。那么，connectSlotsByName() 就会将此信号和槽函数关联起来，如同执行了下面的这样一条语句：
+<p class="info-box">
+connect(chkBoxUnder, SIGNAL(clicked (bool)),<br />
+this, SLOT (on_chkBoxUnder_clicked (bool));</p>
+这就是用 UI 设计器可视化设计某个组件的信号响应槽函数，而不用手工去将其关联起来的原因，都是在界面类的构造函数里调用 setupUi() 自动完成了关联。<br />
+<h4>
+字体颜色设置</h4>
+设置字体的 3 个 RadioButton 是互斥性选择的，即一次只有一个 RadioButton 被选中，虽然也可以采用可视化设计的方式设计其 clicked() 信号的槽函数，但是这样就需要生成 3 个槽函数。这里可以简化设计，即设计一个槽函数，将 3 个 RadioButton 的 clicked() 信号关联到这一个槽函数。<br />
+<br />
+为此，在 QWDialog 类的 private slots 部分增加一个槽函数定义如下：
+<p class="info-box">
+void setTextFontColor();</p>
+提示 将鼠标光标移动到这个函数的函数名上面，单击右键，在弹出的快捷菜单中选择&ldquo;Refactor&rdquo;&rarr;&ldquo;Add Definition in qwdialog.cpp&rdquo;，就可以在 qwdialog.cpp 文件中自动为函数 setTextFontColor() 生成一个函数框架。<br />
+<br />
+在 qwdialog.cpp 文件中，为 setTextFontColor() 编写实现代码如下：
+<pre class="info-box">
+void QWDialog::setTextFontColor()
+{
+    QPalette plet=ui-&gt;txtEdit-&gt;palette();
+    if (ui-&gt;rBtnBlue-&gt;isChecked())
+        plet.setColor(QPalette::Text,Qt::blue);
+    else if (ui-&gt;rBtnRed-&gt;isChecked())
+       plet.setColor(QPalette::Text,Qt::red);
+    else if (ui-&gt;rBtnBlack-&gt;isChecked())
+        plet.setColor(QPalette::Text,Qt::black);
+    else
+       plet.setColor(QPalette::Text,Qt::black);
+    ui-&gt;txtEdit-&gt;setPalette(plet);
+}</pre>
+由于这个槽函数是自定义的，所以不会自动与 RadioButton 的 clicked() 事件关联，此时编译后运行程序不会实现改变字体颜色的功能。需要在 QWDialog 的构造函数中手工进行关联，代码如下：<br />
+<pre class="info-box">
+QWDialog::QWDialog(QWidget *parent) : QDialog(parent), ui(new Ui::QWDialog)
+{
+    ui-&gt;setupUi(this);
+    connect(ui-&gt;rBtnBlue,SIGNAL(clicked()),this,SLOT(setTextFontColor()));
+    connect(ui-&gt;rBtnRed,SIGNAL(clicked()),this,SLOT(setTextFontColor()));
+    connect(ui-&gt;rBtnBlack,SIGNAL(clicked()),this,SLOT(setTextFontColor()));
+}</pre>
+在构造函数中将 3 个 RadioButton 的 clicked() 信号与同一个槽函数 setTextFontColor() 相关联。再编译后运行，就可以更改文字的颜色了。<br />
+<h4>
+三个按钮的功能设计</h4>
+界面上还有&ldquo;确定&rdquo;&ldquo;取消&rdquo;&ldquo;退出&rdquo;3 个按钮，这是在对话框中常见的按钮。&ldquo;确定&rdquo;表示确认选择并关闭对话框，&ldquo;取消&rdquo;表示取消选择并关闭对话框，&ldquo;退出&rdquo;则直接关闭对话框。<br />
+<br />
+QWDialog 是从 QDialog 继承而来的，QDialog 提供了 accept()、reject()、close() 等槽函数来表示这三种状态，只需将按钮的 clicked() 信号与相应槽函数关联即可。<br />
+<br />
+下面采用可视化的方式，将按钮的 clicked() 信号与这些槽函数关联起来。在 UI 设计器里，单击上方工具栏里的&ldquo;Edit Signals/Slots&rdquo;按钮，窗体进入信号与槽函数编辑状态，如图 10 所示。
+<div style="text-align: center;">
+<br />
+<img alt="窗体进入Signals/Slot编辑状态" src="../uploads/allimg/181229/2-1Q229141HCE.gif" /><br />
+图 10 窗体进入Signals/Slot编辑状态</div>
+<br />
+将鼠标移动到&ldquo;确定&rdquo;按钮上方，再按下鼠标左键，移动到窗体的空白区域释放左键，这时出现如图 11 所示的关联设置对话框。
+<div style="text-align: center;">
+<br />
+<img alt="信号与槽关联编辑对话框" src="../uploads/allimg/181229/2-1Q229141K2Q2.gif" /><br />
+图 11 信号与槽关联编辑对话框</div>
+<br />
+在图 11 中，左侧的列表框里显示了 btnOK 的信号，选择 clicked()，右边的列表框里显示了 QWDialog 的槽函数，选择 accept()，单击&ldquo;OK&rdquo;按钮。<br />
+<br />
+同样的方法可以将 btnCancel 的 clicked() 信号与 QWDialog 的 reject() 槽函数关联，将 btnClose 的 clicked() 信号与 QWDialog 的 close() 槽函数关联。<br />
+<p class="info-box">
+注意，在图 11 的右侧列表框中没有 close() 槽函数，需要勾选下方的&ldquo;Show signals and slots inherited from QWidget&rdquo;才会出现 close() 函数。</p>
+设置完 3 个按钮的信号与槽关联之后，在窗体下方的 Signals 和 Slots 编辑器里也显示了这 3 个关联。实际上，可以直接在 Signals 和 Slots 编辑器进行关联设置。现在编译并运行程序，单击这 3 个按钮都会关闭程序。<br />
+<br />
+那么，这 3 个按钮的信号与槽函数的关联是在哪里实现的呢？答案在 setupUi() 函数里，在 setupUi() 函数里自动增加了以下 3 行代码：<br />
+<pre class="info-box">
+QObject::connect(btnOK, SIGNAL(clicked()), QWDialog, SLOT(accept()));
+QObject::connect(btnCancel, SIGNAL(clicked()), QWDialog, SLOT(reject()));
+QObject::connect(btnClose, SIGNAL(clicked()), QWDialog, SLOT(close()));</pre>
+这个实例程序的功能全部完成了。采用 UI 设计器设计了窗体界面，采用可视化和程序化的方式设计槽函数，设计信号与槽函数之间的关联。<br />
+<br />
+从以上的设计过程可以看到，Qt Creator 和 UI 设计器为设计应用程序提供了强大的可视化设计功能。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="165.html" title="C++静态成员变量和静态成员函数详解" target="_blank">C++静态成员变量和静态成员函数详解</a></li>
+<li><a href="1850.html" title="什么是函数？C语言函数的概念" target="_blank">什么是函数？C语言函数的概念</a></li>
+<li><a href="2317.html" title="C++函数模板5分钟入门教程" target="_blank">C++函数模板5分钟入门教程</a></li>
+<li><a href="3534.html" title="汇编语言PUSH和POP指令（压栈和出栈）" target="_blank">汇编语言PUSH和POP指令（压栈和出栈）</a></li>
+<li><a href="6448.html" title="虚拟机是什么" target="_blank">虚拟机是什么</a></li>
+<li><a href="7013.html" title="Java @FunctionalInterface注解" target="_blank">Java @FunctionalInterface注解</a></li>
+<li><a href="../pandas/sql.html" title="Pandas执行SQL操作" target="_blank">Pandas执行SQL操作</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 1822;
+window.arcId = "69c9t8qHdPwXl01z0+J8Jl5MrK5ggwF45zzZeo8Z8BVLGaGxHZJ2zRq6ofM";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

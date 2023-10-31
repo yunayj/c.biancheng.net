@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Go语言WEB框架(Gin)详解</title>
+<meta name="description" content="在 Go语言开发的 Web 框架中，有两款著名 Web 框架分别是 Martini 和 Gin，两款 Web 框架相比较的话，Gin 自己说它比 Martini 要强很多。 Gin 是 Go语言写的一个 web 框架，它具有运行速度快，分" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Go语言WEB框架(Gin)详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在 Go语言开发的 Web 框架中，有两款著名 Web 框架分别是 Martini 和 Gin，两款 Web 框架相比较的话，Gin 自己说它比 Martini 要强很多。<br />
+<br />
+Gin 是 Go语言写的一个 web 框架，它具有运行速度快，分组的路由器，良好的崩溃捕获和错误处理，非常好的支持中间件和 json。总之在 Go语言开发领域是一款值得好好研究的 Web 框架，开源网址：<a href="https://github.com/gin-gonic/gin" target="_blank">https://github.com/gin-gonic/gin</a><br />
+<br />
+首先下载安装 gin 包：<br />
+<p class="info-box">
+	go get -u github.com/gin-gonic/gin</p>
+一个简单的例子：<br />
+<pre class="go">
+package main
+
+import &quot;github.com/gin-gonic/gin&quot;
+
+func main() {
+    //Default返回一个默认的路由引擎
+    r := gin.Default()
+    r.GET(&quot;/ping&quot;, func(c *gin.Context) {
+        //输出json结果给调用方
+        c.JSON(200, gin.H{
+            &quot;message&quot;: &quot;pong&quot;,
+        })
+    })
+    r.Run() // listen and serve on 0.0.0.0:8080
+}</pre>
+编译运行程序，打开浏览器，访问<code style="font-size: 14px;">http://localhost:8080/ping</code>页面显示：<br />
+<p class="info-box">
+	{&quot;message&quot;:&quot;pong&quot;}</p>
+gin 的功能不只是简单输出 Json 数据。它是一个轻量级的 WEB 框架，支持 RestFull 风格 API，支持 GET，POST，PUT，PATCH，DELETE，OPTIONS 等 http 方法，支持文件上传，分组路由，Multipart/Urlencoded FORM，以及支持 JsonP，参数处理等等功能，这些都和 WEB 紧密相关，通过提供这些功能，使开发人员更方便地处理 WEB 业务。<br />
+<h2>
+	Gin 实际应用</h2>
+接下来使用 Gin 作为框架来搭建一个拥有静态资源站点，动态 WEB 站点，以及 RESTFull API 接口站点（可专门作为手机 APP 应用提供服务使用）组成的，亦可根据情况分拆这套系统，每种功能独立出来单独提供服务。<br />
+<br />
+下面按照一套系统但采用分站点来说明，首先是整个系统的目录结构，website 目录下面 static 是资源类文件，为静态资源站点专用；photo 目录是 UGC 上传图片目录，tpl 是动态站点的模板。<br />
+<br />
+当然这个目录结构是一种约定，可以根据情况来修改。整个项目已经开源，可以访问来详细了解：<a href="https://github.com/ffhelicopter/tmm" target="_blank">https://github.com/ffhelicopter/tmm</a>具体每个站点的功能怎么实现呢？请看下面有关每个功能的讲述：<br />
+<h4>
+	静态资源站点</h4>
+一般网站开发中，我们会考虑把 js，css，以及资源图片放在一起，作为静态站点部署在 CDN，提升响应速度。采用 Gin 实现起来非常简单，当然也可以使用 net/http 包轻松实现，但使用 Gin 会更方便。<br />
+<br />
+不管怎么样，使用 Go 开发，我们可以不用花太多时间在 WEB 服务环境搭建上，程序启动就直接可以提供 WEB 服务了。<br />
+<pre class="go">
+package main
+
+import (
+    &quot;net/http&quot;
+    &quot;github.com/gin-gonic/gin&quot;
+)
+
+func main() {
+    router := gin.Default()
+
+    // 静态资源加载，本例为css,js以及资源图片
+    router.StaticFS(&quot;/public&quot;, http.Dir(&quot;D:/goproject/src/github.com/ffhelicopter/tmm/website/static&quot;))
+    router.StaticFile(&quot;/favicon.ico&quot;, &quot;./resources/favicon.ico&quot;)
+
+    // Listen and serve on 0.0.0.0:80
+    router.Run(&quot;:80&quot;)
+}</pre>
+首先需要是生成一个 Engine，这是 gin 的核心，默认带有 Logger 和 Recovery 两个中间件。<br />
+<p class="info-box">
+	router := gin.Default()</p>
+StaticFile 是加载单个文件，而 StaticFS 是加载一个完整的目录资源：<br />
+<p class="info-box">
+	func (group *RouterGroup) StaticFile(relativePath, filepath string) IRoutes<br />
+	func (group *RouterGroup) StaticFS(relativePath string, fs http.FileSystem) IRoutes</p>
+这些目录下资源是可以随时更新，而不用重新启动程序。现在编译运行程序，静态站点就可以正常访问了。<br />
+<br />
+访问<code style="font-size: 14px;">http://localhost/public/images/logo.jpg</code>图片加载正常。每次请求响应都会在服务端有日志产生，包括响应时间，加载资源名称，响应状态值等等。<br />
+<h4>
+	动态站点</h4>
+如果需要动态交互的功能，比如发一段文字+图片上传。由于这些功能出来前端页面外，还需要服务端程序一起来实现，而且迭代需要经常需要修改代码和模板，所以把这些统一放在一个大目录下，姑且称动态站点。<br />
+<br />
+tpl 是动态站点所有模板的根目录，这些模板可调用静态资源站点的 css，图片等；photo 是图片上传后存放的目录。<br />
+<pre class="go">
+package main
+
+import (
+    &quot;context&quot;
+    &quot;log&quot;
+    &quot;net/http&quot;
+    &quot;os&quot;
+    &quot;os/signal&quot;
+    &quot;time&quot;
+
+    &quot;github.com/ffhelicopter/tmm/handler&quot;
+
+    &quot;github.com/gin-gonic/gin&quot;
+)
+
+func main() {
+    router := gin.Default()
+
+    // 静态资源加载，本例为css,js以及资源图片
+    router.StaticFS(&quot;/public&quot;, http.Dir(&quot;D:/goproject/src/github.com/ffhelicopter/tmm/website/static&quot;))
+    router.StaticFile(&quot;/favicon.ico&quot;, &quot;./resources/favicon.ico&quot;)
+
+    // 导入所有模板，多级目录结构需要这样写
+    router.LoadHTMLGlob(&quot;website/tpl/*/*&quot;)
+
+    // website分组
+    v := router.Group(&quot;/&quot;)
+    {
+
+        v.GET(&quot;/index.html&quot;, handler.IndexHandler)
+        v.GET(&quot;/add.html&quot;, handler.AddHandler)
+        v.POST(&quot;/postme.html&quot;, handler.PostmeHandler)
+    }
+
+    // router.Run(&quot;:80&quot;)
+    // 这样写就可以了，下面所有代码（go1.8+）是为了优雅处理重启等动作。
+    srv := &amp;http.Server{
+        Addr:         &quot;:80&quot;,
+        Handler:      router,
+        ReadTimeout:  30 * time.Second,
+        WriteTimeout: 30 * time.Second,
+    }
+
+    go func() {
+        // 监听请求
+        if err := srv.ListenAndServe(); err != nil &amp;&amp; err != http.ErrServerClosed {
+            log.Fatalf(&quot;listen: %s\n&quot;, err)
+        }
+    }()
+
+    // 优雅Shutdown（或重启）服务
+    quit := make(chan os.Signal)
+    signal.Notify(quit, os.Interrupt) // syscall.SIGKILL
+    &lt;-quit
+    log.Println(&quot;Shutdown Server ...&quot;)
+
+    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+    defer cancel()
+    if err := srv.Shutdown(ctx); err != nil {
+        log.Fatal(&quot;Server Shutdown:&quot;, err)
+    }
+    select {
+    case &lt;-ctx.Done():
+    }   
+    log.Println(&quot;Server exiting&quot;)
+}</pre>
+在动态站点实现中，引入 WEB 分组以及优雅重启这两个功能。WEB 分组功能可以通过不同的入口根路径来区别不同的模块，这里我们可以访问：<code style="font-size: 14px;">http://localhost/index.html</code>。如果新增一个分组，比如：<br />
+<p class="info-box">
+	v := router.Group(&quot;/login&quot;)</p>
+我们可以访问：<code style="font-size: 14px;">http://localhost/login/xxxx</code>，xxx 是我们在 v.GET 方法或 v.POST 方法中的路径。<br />
+<p class="info-box">
+	// 导入所有模板，多级目录结构需要这样写<br />
+	router.LoadHTMLGlob(&quot;website/tpl/*/*&quot;)<br />
+	<br />
+	// website分组<br />
+	v := router.Group(&quot;/&quot;)<br />
+	{<br />
+	<br />
+	&nbsp;&nbsp;&nbsp; v.GET(&quot;/index.html&quot;, handler.IndexHandler)<br />
+	&nbsp;&nbsp;&nbsp; v.GET(&quot;/add.html&quot;, handler.AddHandler)<br />
+	&nbsp;&nbsp;&nbsp; v.POST(&quot;/postme.html&quot;, handler.PostmeHandler)<br />
+	}</p>
+通过 router.LoadHTMLGlob(&quot;website/tpl//&quot;) 导入模板根目录下所有的文件。在前面有讲过 html/template 包的使用，这里模板文件中的语法和前面一致。<br />
+<p class="info-box">
+	router.LoadHTMLGlob(&quot;website/tpl/*/*&quot;)</p>
+比如 v.GET(&quot;/index.html&quot;, handler.IndexHandler)，通过访问<code style="font-size: 14px;">http://localhost/index.html</code>这个 URL，实际由 handler.IndexHandler 来处理。而在 tmm 目录下的 handler 存放了 package handler 文件。在包里定义了 IndexHandler 函数，它使用了 index.html 模板。<br />
+<p class="info-box">
+	func IndexHandler(c *gin.Context) {<br />
+	&nbsp;&nbsp;&nbsp; c.HTML(http.StatusOK, &quot;index.html&quot;, gin.H{<br />
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;Title&quot;: &quot;作品欣赏&quot;,<br />
+	&nbsp;&nbsp;&nbsp; })<br />
+	}</p>
+index.html 模板：<br />
+<pre class="html">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+{{template &quot;header&quot; .}}
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;!--导航--&gt;
+&lt;div class=&quot;feeds&quot;&gt;
+    &lt;div class=&quot;top-nav&quot;&gt;
+        &lt;a href=&quot;/index.tml&quot; class=&quot;active&quot;&gt;欣赏&lt;/a&gt;
+        &lt;a href=&quot;/add.html&quot; class=&quot;add-btn&quot;&gt;
+            &lt;svg class=&quot;icon&quot; aria-hidden=&quot;true&quot;&gt;
+                &lt;use  xlink:href=&quot;#icon-add&quot;&gt;&lt;/use&gt;
+            &lt;/svg&gt;
+            发布
+        &lt;/a&gt;
+    &lt;/div&gt;
+    &lt;input type=&quot;hidden&quot; id=&quot;showmore&quot; value=&quot;{$showmore}&quot;&gt;
+    &lt;input type=&quot;hidden&quot; id=&quot;page&quot; value=&quot;{$page}&quot;&gt;
+    &lt;!--&lt;/div&gt;--&gt;
+&lt;/div&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+    var done = true;
+    $(window).scroll(function(){
+        var scrollTop = $(window).scrollTop();
+        var scrollHeight = $(document).height();
+        var windowHeight = $(window).height();
+        var showmore = $(&quot;#showmore&quot;).val();
+        if(scrollTop + windowHeight + 300 &gt;= scrollHeight &amp;&amp; showmore == 1 &amp;&amp; done){
+            var page = $(&quot;#page&quot;).val();
+            done = false;
+            $.get(&quot;{:U(&#39;Product/listsAjax&#39;)}&quot;, { page : page }, function(json) {
+                if (json.rs != &quot;&quot;) {
+                    $(&quot;.feeds&quot;).append(json.rs);
+                    $(&quot;#showmore&quot;).val(json.showmore);
+                    $(&quot;#page&quot;).val(json.page);
+                    done = true;
+                }
+            },&#39;json&#39;);
+        }
+    });
+&lt;/script&gt;
+    &lt;script src=&quot;//at.alicdn.com/t/font_ttszo9rnm0wwmi.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+在 index.html 模板中，通过 {{template &quot;header&quot; .}} 语句，嵌套了 header.html 模板。<br />
+<br />
+header.html 模板：<br />
+<pre class="html">
+{{ define &quot;header&quot; }}
+    &lt;meta charset=&quot;UTF-8&quot;&gt;   
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui&quot;&gt;
+    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge,chrome=1&quot;&gt;
+    &lt;meta name=&quot;format-detection&quot; content=&quot;telephone=no,email=no&quot;&gt;
+    &lt;title&gt;{{ .Title }}&lt;/title&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;/public/css/common.css&quot;&gt;
+    &lt;script src=&quot;/public/lib/jquery-3.1.1.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;/public/lib/jquery.cookie.js&quot;&gt;&lt;/script&gt;
+    &lt;link href=&quot;/public/css/font-awesome.css?v=4.4.0&quot; rel=&quot;stylesheet&quot;&gt;
+{{ end }}</pre>
+{{ define &quot;header&quot; }} 让我们在模板嵌套时直接使用 header 名字，而在 index.html 中的 {{template &quot;header&quot; .}} 注意&ldquo;.&rdquo;，可以使参数嵌套传递，否则不能传递，比如这里的 Title。<br />
+<br />
+现在我们访问<code style="font-size: 14px;">http://localhost/index.html</code>，可以看到浏览器显示 Title 是&ldquo;作品欣赏&rdquo;，这个 Title 是通过 IndexHandler 来指定的。<br />
+<br />
+接下来点击&ldquo;发布&rdquo;按钮，我们进入发布页面，上传图片，点击&ldquo;完成&rdquo;提交，会提示我们成功上传图片。可以在 photo 目录中看到刚才上传的图片。<br />
+<blockquote>
+	<p>
+		注意：由于在本人在发布到 github 的代码中，在处理图片上传的代码中，除了服务器存储外，还实现了 IPFS 发布存储，如果不需要 IPFS，请注释相关代码。</p>
+</blockquote>
+有关 IPFS: IPFS 本质上是一种内容可寻址、版本化、点对点超媒体的分布式存储、传输协议，目标是补充甚至取代过去 20 年里使用的超文本媒体传输协议（HTTP），希望构建更快、更安全、更自由的互联网时代。<br />
+<br />
+IPFS 不算严格意义上<a href='https://m.biancheng.net/blockchain/' target='_blank'>区块链</a>项目，是一个去中心化存储解决方案，但有些区块链项目通过它来做存储。<br />
+<br />
+IPFS 项目有在 github 上开源，Go语言实现哦，可以关注并了解。<br />
+<br />
+优雅重启在迭代中有较好的实际意义，每次版本发布，如果直接停服务在部署重启，对业务还是有蛮大的影响，而通过优雅重启，这方面的体验可以做得更好些。这里 ctrl + c 后过 5 秒服务停止。<br />
+<br />
+中间件的使用，在 API 中可能使用限流，身份验证等<br />
+<br />
+Go语言中 net/http 设计的一大特点就是特别容易构建中间件。gin 也提供了类似的中间件。需要注意的是在 gin 里面中间件只对注册过的路由函数起作用。<br />
+<br />
+而对于分组路由，嵌套使用中间件，可以限定中间件的作用范围。大致分为全局中间件，单个路由中间件和分组中间件。<br />
+<br />
+即使是全局中间件，其使用前的代码不受影响。也可在 handler 中局部使用，具体见 api.GetUser。<br />
+<br />
+在高并发场景中，有时候需要用到限流降速的功能，这里引入一个限流中间件。有关限流方法常见有两种，具体可自行研究，这里只讲使用。<br />
+<br />
+导入<code style="font-size: 14px;">import &quot;github.com/didip/tollbooth/limiter&quot;</code>包，在上面代码基础上增加如下语句：<br />
+<p class="info-box">
+	//rate-limit 限流中间件<br />
+	lmt := tollbooth.NewLimiter(1, nil)<br />
+	lmt.SetMessage(&quot;服务繁忙，请稍后再试...&quot;)</p>
+并修改<br />
+<p class="info-box">
+	v.GET(&quot;/index.html&quot;, LimitHandler(lmt), handler.IndexHandler)</p>
+当 F5 刷新刷新<code style="font-size: 14px;">http://localhost/index.html</code>页面时，浏览器会显示：服务繁忙，请稍后再试...<br />
+<br />
+限流策略也可以为 IP：<br />
+<p class="info-box">
+	tollbooth.LimitByKeys(lmt, []string{&quot;127.0.0.1&quot;, &quot;/&quot;})</p>
+更多限流策略的配置，可以进一步<code style="font-size: 14px;">github.com/didip/tollbooth/limiter</code>了解。<br />
+<h4>
+	RestFull API 接口</h4>
+前面说了在 gin 里面可以采用分组来组织访问 URL，这里 RestFull API 需要给出不同的访问 URL 来和动态站点区分，所以新建了一个分组 v1。<br />
+<br />
+在浏览器中访问<code style="font-size: 14px;">http://localhost/v1/user/1100000/</code>这里对 v1.GET(&quot;/user/:id/*action&quot;, LimitHandler(lmt), api.GetUser) 进行了限流控制，所以如果频繁访问上面地址也将会有限制，这在 API 接口中非常有作用。<br />
+<br />
+通过 api 这个包，来实现所有有关 API 的代码。在 GetUser 函数中，通过读取 mysql 数据库，查找到对应 userid 的用户信息，并通过 Json 格式返回给 client。<br />
+<br />
+在 api.GetUser 中，设置了一个局部中间件：<br />
+<p class="info-box">
+	//CORS 局部CORS，可在路由中设置全局的CORS<br />
+	c.Writer.Header().Add(&quot;Access-Control-Allow-Origin&quot;, &quot;*&quot;)</p>
+gin 关于参数的处理，api 包中 api.go 文件中有简单说明，限于篇幅原因，就不在此展开。这个项目的详细情况，请访问<a href="https://github.com/ffhelicopter/tmm" target="_blank">https://github.com/ffhelicopter/tmm</a>了解。有关 gin 的更多信息，请访问&nbsp;<a href="https://github.com/gin-gonic/gin" target="_blank">https://github.com/gin-gonic/gin</a>，该开源项目比较活跃，可以关注。<br />
+<br />
+完整 mian.go 代码：<br />
+<pre class="go">
+package main
+
+import (
+    &quot;context&quot;
+    &quot;log&quot;
+    &quot;net/http&quot;
+    &quot;os&quot;
+    &quot;os/signal&quot;
+    &quot;time&quot;
+
+    &quot;github.com/didip/tollbooth&quot;
+    &quot;github.com/didip/tollbooth/limiter&quot;
+    &quot;github.com/ffhelicopter/tmm/api&quot;
+    &quot;github.com/ffhelicopter/tmm/handler&quot;
+
+    &quot;github.com/gin-gonic/gin&quot;
+)
+
+// 定义全局的CORS中间件
+func Cors() gin.HandlerFunc {
+    return func(c *gin.Context) {
+        c.Writer.Header().Add(&quot;Access-Control-Allow-Origin&quot;, &quot;*&quot;)
+        c.Next()
+    }
+}
+
+func LimitHandler(lmt *limiter.Limiter) gin.HandlerFunc {
+    return func(c *gin.Context) {
+        httpError := tollbooth.LimitByRequest(lmt, c.Writer, c.Request)
+        if httpError != nil {
+            c.Data(httpError.StatusCode, lmt.GetMessageContentType(), []byte(httpError.Message))
+            c.Abort()
+        } else {
+            c.Next()
+        }
+    }
+}
+
+func main() {
+    gin.SetMode(gin.ReleaseMode)
+    router := gin.Default()
+
+    // 静态资源加载，本例为css,js以及资源图片
+    router.StaticFS(&quot;/public&quot;, http.Dir(&quot;D:/goproject/src/github.com/ffhelicopter/tmm/website/static&quot;))
+    router.StaticFile(&quot;/favicon.ico&quot;, &quot;./resources/favicon.ico&quot;)
+
+    // 导入所有模板，多级目录结构需要这样写
+    router.LoadHTMLGlob(&quot;website/tpl/*/*&quot;)
+    // 也可以根据handler，实时导入模板。
+
+    // website分组
+    v := router.Group(&quot;/&quot;)
+    {
+        v.GET(&quot;/index.html&quot;, handler.IndexHandler)
+        v.GET(&quot;/add.html&quot;, handler.AddHandler)
+        v.POST(&quot;/postme.html&quot;, handler.PostmeHandler)
+    }
+
+    // 中间件 golang的net/http设计的一大特点就是特别容易构建中间件。
+    // gin也提供了类似的中间件。需要注意的是中间件只对注册过的路由函数起作用。
+    // 对于分组路由，嵌套使用中间件，可以限定中间件的作用范围。
+    // 大致分为全局中间件，单个路由中间件和群组中间件。
+
+    // 使用全局CORS中间件。
+    // router.Use(Cors())
+    // 即使是全局中间件，在use前的代码不受影响
+    // 也可在handler中局部使用，见api.GetUser
+
+    //rate-limit 中间件
+    lmt := tollbooth.NewLimiter(1, nil)
+    lmt.SetMessage(&quot;服务繁忙，请稍后再试...&quot;)
+
+    // API分组(RESTFULL)以及版本控制
+    v1 := router.Group(&quot;/v1&quot;)
+    {
+        // 下面是群组中间的用法
+        // v1.Use(Cors())
+
+        // 单个中间件的用法
+        // v1.GET(&quot;/user/:id/*action&quot;,Cors(), api.GetUser)
+
+        // rate-limit
+        v1.GET(&quot;/user/:id/*action&quot;, LimitHandler(lmt), api.GetUser)
+
+        //v1.GET(&quot;/user/:id/*action&quot;, Cors(), api.GetUser)
+        // AJAX OPTIONS ，下面是有关OPTIONS用法的示例
+        // v1.OPTIONS(&quot;/users&quot;, OptionsUser)      // POST
+        // v1.OPTIONS(&quot;/users/:id&quot;, OptionsUser)  // PUT, DELETE
+    }
+
+    srv := &amp;http.Server{
+        Addr:         &quot;:80&quot;,
+        Handler:      router,
+        ReadTimeout:  30 * time.Second,
+        WriteTimeout: 30 * time.Second,
+    }
+
+    go func() {
+        if err := srv.ListenAndServe(); err != nil &amp;&amp; err != http.ErrServerClosed {
+            log.Fatalf(&quot;listen: %s\n&quot;, err)
+        }
+    }()
+
+    // 优雅Shutdown（或重启）服务
+    // 5秒后优雅Shutdown服务
+    quit := make(chan os.Signal)
+    signal.Notify(quit, os.Interrupt) //syscall.SIGKILL
+    &lt;-quit
+    log.Println(&quot;Shutdown Server ...&quot;)
+
+    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+    defer cancel()
+    if err := srv.Shutdown(ctx); err != nil {
+        log.Fatal(&quot;Server Shutdown:&quot;, err)
+    }
+    select {
+    case &lt;-ctx.Done():
+    }
+    log.Println(&quot;Server exiting&quot;)
+}</pre>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2419_2.html" title="MySQL查看或显示数据库（SHOW DATABASES语句）" target="_blank">MySQL查看或显示数据库（SHOW DATABASES语句）</a></li>
+<li><a href="3398_2.html" title="哈夫曼树（赫夫曼树、最优树）详解" target="_blank">哈夫曼树（赫夫曼树、最优树）详解</a></li>
+<li><a href="4712_2.html" title="Linux视频教程汇总（出自各大培训机构）" target="_blank">Linux视频教程汇总（出自各大培训机构）</a></li>
+<li><a href="6824_2.html" title="Java集合详解" target="_blank">Java集合详解</a></li>
+<li><a href="7253_2.html" title="MySQL db、tables_priv、columns_priv和procs_priv权限表" target="_blank">MySQL db、tables_priv、columns_priv和procs_priv权限表</a></li>
+<li><a href="../python_spider/csv-module_2.html" title="Python csv模块（读写文件）" target="_blank">Python csv模块（读写文件）</a></li>
+<li><a href="../tkinter/scrollbar-widget_2.html" title="Tkinter Scrollbar滚动条控件" target="_blank">Tkinter Scrollbar滚动条控件</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 5574;
+window.arcId = "3066GG761xBj/eUJthhgScpvwNgcTB1W6YBIdvLx3uvxdg42rToLkpvxaEU";
+window.typeidChain = "6|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="https://m.biancheng.net/sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="https://m.biancheng.net/templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

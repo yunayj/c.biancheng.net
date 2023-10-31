@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Spring MVC @ModelAttribute注解</title>
+<meta name="description" content="本文介绍在 Spring MVC 中非常重要的注解 @ModelAttribute，用来将请求参数绑定到 Model 对象。 在 Controller 中使用 @ModelAttribute 时，有以下几种应用情况。 应用在方法上 应用在方法的参数上" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="../view/niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Spring MVC @ModelAttribute注解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">本文介绍在 Spring MVC 中非常重要的注解 @ModelAttribute，用来将请求参数绑定到 Model 对象。<br />
+<br />
+在 Controller 中使用 @ModelAttribute 时，有以下几种应用情况。
+<ul>
+<li>
+应用在方法上</li>
+<li>
+应用在方法的参数上</li>
+<li>
+应用在方法上，并且方法也使用了 @RequestMapping</li>
+</ul>
+<br />
+需要注意的是，因为模型对象要先于 controller 方法之前创建，所以被 @ModelAttribute 注解的方法会在 Controller 每个方法执行之前都执行。因此一个 Controller 映射多个 URL 时，要谨慎使用。
+<h2>
+1. 应用在方法上</h2>
+下面从应用在有无返回值的方法上两个方面进行讲解。<br />
+<h3>
+1）应用在无返回值的方法</h3>
+<b>示例 1</b>：创建&nbsp;ModelAttributeController，代码如下。
+<pre class="java">
+package net.biancheng.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+@Controller
+public class ModelAttributeController {
+    // 方法无返回值
+    @ModelAttribute
+    public void myModel(@RequestParam(required = false) String name, Model model) {
+        model.addAttribute(&quot;name&quot;, name);
+    }
+
+    @RequestMapping(value = &quot;/model&quot;)
+    public String model() {
+        return &quot;index&quot;;
+    }
+}</pre>
+创建 index.jsp 页面，代码如下。
+<pre class="xml">
+&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=UTF-8&quot;
+pageEncoding=&quot;UTF-8&quot;%&gt;
+&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot;&gt;
+&lt;title&gt;编程帮&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    ${name }
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+访问地址：http://localhost:8080/springmvcDemo2/model?name=%E7%BC%96%E7%A8%8B%E5%B8%AE，运行结果如图 1 所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/210705/151P16055-0.png" /><br />
+图 1：运行结果</div>
+<br />
+以上示例，在请求&nbsp;/model?name=%E7%BC%96%E7%A8%8B%E5%B8%AE 后，Spring MVC 会先执行 myModel 方法，将 name 的值存入到 Model 中。然后执行 model 方法，这样 name 的值就被带到了 model 方法中。<br />
+<br />
+将 myModel 和 model 方法合二为一后，代码如下。
+<pre class="java">
+@RequestMapping(value = &quot;/model&quot;)
+public String model(@RequestParam(required = false) String name, Model model) {
+    model.addAttribute(&quot;name&quot;, name);
+    return &quot;index&quot;;
+}</pre>
+<h3>
+2）应用在有返回值的方法</h3>
+<b>示例 2</b>：修改&nbsp;ModelAttributeController 控制类，代码如下。
+<pre class="java">
+package net.biancheng.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+@Controller
+public class ModelAttributeController {
+    // 方法有返回值
+    @ModelAttribute(&quot;name&quot;)
+    public String myModel(@RequestParam(required = false) String name) {
+
+        return name;
+    }
+
+    @RequestMapping(value = &quot;/model&quot;)
+    public String model() {
+        return &quot;index&quot;;
+    }
+}</pre>
+修改 index.jsp，代码如下。
+<pre class="xml">
+&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=UTF-8&quot;
+pageEncoding=&quot;UTF-8&quot;%&gt;
+&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot;&gt;
+&lt;title&gt;编程帮&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    ${string }
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+访问地址和运行结果与示例 1 相同。<br />
+<br />
+对于以上情况，返回值对象 name 会被默认放到隐含的 Model 中，在 Model 中 key 为返回值首字母小写，value 为返回的值。等同于&nbsp;<code>model.addAttribute(&quot;string&quot;, name);</code>。<br />
+<br />
+但正常情况下，程序中尽量不要出现 key 为 string、int、float 等这样数据类型的返回值。使用 @ModelAttribute 注解 value 属性可以自定义 key，代码如下。
+<pre class="java">
+// 方法有返回值
+@ModelAttribute(&quot;name&quot;)
+public String myModel(@RequestParam(required = false) String name) {
+
+    return name;
+}</pre>
+等同于
+<pre class="java" shownum="false">
+model.addAttribute(&quot;name&quot;, name);</pre>
+<h2>
+2. 应用在方法的参数上</h2>
+@ModelAttribute 注解在方法的参数上，调用方法时，模型的值会被注入。这在实际使用时非常简单，常用于将表单属性映射到模型对象。<br />
+<pre class="java">
+@RequestMapping(&quot;/register&quot;)
+public String register(@ModelAttribute(&quot;user&quot;) UserForm user) {
+    if (&quot;zhangsan&quot;.equals(uname) &amp;&amp; &quot;123456&quot;.equals(upass)) {
+        logger.info(&quot;成功&quot;);
+        return &quot;login&quot;;
+    } else {
+        logger.info(&quot;失败&quot;);
+        return &quot;register&quot;;
+}</pre>
+上述代码中&ldquo;@ModelAttribute(&quot;user&quot;) UserForm user&rdquo;语句的功能有两个：
+<ul>
+<li>
+将请求参数的输入封装到 user 对象中</li>
+<li>
+创建 UserForm 实例</li>
+</ul>
+<br />
+以&ldquo;user&rdquo;为键值存储在 Model 对象中，和&ldquo;model.addAttribute(&quot;user&quot;,user)&rdquo;语句的功能一样。如果没有指定键值，即&ldquo;@ModelAttribute UserForm user&rdquo;，那么在创建 UserForm 实例时以&ldquo;userForm&rdquo;为键值存储在 Model 对象中，和&ldquo;model.addAtttribute(&quot;userForm&quot;, user)&rdquo;语句的功能一样。<br />
+<h2>
+3. ModelAttribute+RequestMapping</h2>
+<b>示例 3</b>：修改&nbsp;ModelAttributeController，代码如下。
+<pre class="java">
+package net.biancheng.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+@Controller
+public class ModelAttributeController {
+    // @ModelAttribute和@RequestMapping同时放在方法上
+    @RequestMapping(value = &quot;/index&quot;)
+    @ModelAttribute(&quot;name&quot;)
+    public String model(@RequestParam(required = false) String name) {
+        return name;
+    }
+}</pre>
+index.jsp 代码如下。
+<pre class="xml">
+&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=UTF-8&quot;
+pageEncoding=&quot;UTF-8&quot;%&gt;
+&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot;&gt;
+&lt;title&gt;编程帮&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    ${name }
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+访问地址：http://localhost:8080/springmvcDemo2/index?name=%E7%BC%96%E7%A8%8B%E5%B8%AE，运行结果如图 1 所示。<br />
+<br />
+@ModelAttribute 和 @RequestMapping 注解同时应用在方法上时，有以下作用：
+<ol>
+<li>
+方法的返回值会存入到 Model 对象中，key 为 ModelAttribute 的 value 属性值。</li>
+<li>
+方法的返回值不再是方法的访问路径，访问路径会变为 @RequestMapping 的 value 值，例如：@RequestMapping(value = &quot;/index&quot;) 跳转的页面是 index.jsp 页面。</li>
+</ol>
+<br />
+总而言之，@ModelAttribute 注解的使用方法有很多种，非常灵活，可以根据业务需求选择使用。
+<h2>
+Model和ModelView的区别</h2>
+Model：每次请求中都存在的默认参数，利用其 addAttribute() 方法即可将服务器的值传递到客户端页面中。<br />
+<br />
+ModelAndView：包含 model 和 view 两部分，使用时需要自己实例化，利用 ModelMap 来传值，也可以设置 view 的名称。<br />
+<h2>
+拓展</h2>
+@ModelAttribute 注解的方法会在每次调用该控制器类的请求处理方法前被调用。这种特性可以用来控制登录权限。<br />
+<blockquote>
+<p>
+控制登录权限的方法有很多，例如拦截器、过滤器等。</p>
+</blockquote>
+创建 BaseController，代码如下所示。
+<pre class="java">
+package net.biancheng.controller;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.web.bind.annotation.ModelAttribute;
+
+public class BaseController {
+    @ModelAttribute
+    public void isLogin(HttpSession session) throws Exception {
+        if (session.getAttribute(&quot;user&quot;) == null) {
+            throw new Exception(&quot;没有权限&quot;);
+        }
+    }
+}</pre>
+创建&nbsp;ModelAttributeController ，代码如下所示：
+<pre class="java">
+package net.biancheng.controller;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@RequestMapping(&quot;/admin&quot;)
+public class ModelAttributeController extends BaseController {
+
+    @RequestMapping(&quot;/add&quot;)
+    public String add() {
+
+        return &quot;addSuccess&quot;;
+
+    }
+
+    @RequestMapping(&quot;/update&quot;)
+    public String update() {
+
+        return &quot;updateSuccess&quot;;
+
+    }
+
+    @RequestMapping(&quot;/delete&quot;)
+    public String delete() {
+
+        return &quot;deleteSuccess&quot;;
+    }
+}</pre>
+在上述 ModelAttributeController 类中的 add、update、delete 请求处理方法执行时，首先执行父类 BaseController 中的 isLogin 方法判断登录权限，可以通过地址&ldquo;http://localhost:8080/springMVCDemo2/admin/add&rdquo;测试登录权限。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="../view/niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/vip_2101.html" title="一个函数在栈上到底是怎样的？" target="_blank">一个函数在栈上到底是怎样的？</a></li>
+<li><a href="../view/2217.html" title="C++类成员的访问权限以及类的封装" target="_blank">C++类成员的访问权限以及类的封装</a></li>
+<li><a href="../view/4384.html" title="Python dict字典keys()、values()和items()方法" target="_blank">Python dict字典keys()、values()和items()方法</a></li>
+<li><a href="../view/vip_8348.html" title="MySQL修改和删除事件" target="_blank">MySQL修改和删除事件</a></li>
+<li><a href="../python_spider/xpath-helper.html" title="Xpath Helper的安装和使用" target="_blank">Xpath Helper的安装和使用</a></li>
+<li><a href="../view/gn6nzg.html" title="学会C语言可以做什么" target="_blank">学会C语言可以做什么</a></li>
+<li><a href="../view/j0wt2bw.html" title="JS call()、apply()和bind()的区别" target="_blank">JS call()、apply()和bind()的区别</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8713;
+window.arcId = "9a578Oc3BrEZj+WeXxPiRO9qL1ZhZNJUV2fl0YiYX0Yn2N8lc42Plw6qp1k";
+window.typeidChain = "456|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="../view/8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="../view/8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="../view/8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="../view/9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="../view/8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

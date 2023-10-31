@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Qt自定义信号和槽函数</title>
+<meta name="description" content="实际开发中，如果仅使用 Qt 提供的信号函数和槽函数，会经常遇到信号函数的参数类型和个数无法满足实际需求、信号函数和槽函数的参数类型不匹配等问题。解决此类问题，最简单有" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Qt自定义信号和槽函数</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">实际开发中，如果仅使用 Qt 提供的信号函数和槽函数，会经常遇到信号函数的参数类型和个数无法满足实际需求、信号函数和槽函数的参数类型不匹配等问题。解决此类问题，最简单有效的方式就是：自定义场景需要的信号函数和槽函数。
+<h2>
+	自定义信号函数</h2>
+信号函数指的是符合以下条件的函数：
+<ul>
+	<li>
+		定义在某个类中，该类直接或间接继承自 QObject 类；</li>
+	<li>
+		用 signals 关键字修饰；</li>
+	<li>
+		函数只需要声明，不需要定义（实现）；</li>
+	<li>
+		函数的返回值类型为 void，参数的类型和个数不限。</li>
+</ul>
+<br />
+举个简单的例子：
+<pre class="cpp">
+class MyWidget:public QWidget{
+    //Q_OBJECT 是一个宏，添加它才能正常使用 Qt 的信号和槽机制
+    Q_OBJECT
+//修饰信号函数的关键字
+signals:
+    //自定义的信号函数
+    void MySignal(QString message);
+};</pre>
+我们自定义了一个继承自 QWidget 的 MyWidget 类，QWidget 是 QObject 的子类，所以 MyWidget 间接继承自 QObject 类。MyWidget 类中自定义了名为 MySignal 的信号函数（可以简称 MySignal 信号），它用 signals 关键字修饰，没有返回值，也没有定义（实现），仅有 1 个参数。<br />
+<br />
+对于&nbsp;MySignal() 信号函数，程序中不会直接调用它，而是借助 connect() 连接某个槽函数，实现的语法格式是：
+<pre class="cpp" shownum="false">
+MyWidget myWidget;
+QObject::connect(&amp;myWidget,&amp;MyWidget::MySignal,信号接收者,槽函数);</pre>
+一旦确定了信号接收者和槽函数，当 MySignal 信号发出后，与之相连的槽函数就会执行。那么，程序中如何发出 MySignal 信号呢？<br />
+<br />
+对于 Qt 提供给我们的信号函数，其底层已经设置好了信号发出的时机，例如按下鼠标时、点击 Enter 回车键时等等。对于自定义的信号，我们需要自己指定信号发出的时机，这就需要用到&nbsp; emit 关键字。emit 中文意思为&ldquo;发出、射出&rdquo;，是 Qt 在 C++ 基础上扩展的一个关键字，专门用来发射信号。<br />
+<br />
+以定义好的 MySignal 信号为例，修改 MyWidget 类为：
+<pre class="cpp">
+class MyWidget:public QWidget{
+    //Q_OBJECT 是一个宏，添加它才能正常使用 Qt 的信号和槽机制
+    Q_OBJECT
+//自定义信号函数
+signals:
+    void MySignal(QString mess);
+public:
+    void emitSignal(){
+        emit MySignal(message);
+    }
+private:
+    QString message;
+};</pre>
+我们为 MyWidget 类新增了一个 emitSignal() 方法和一个 message 属性，emitSignal() 方法中的<code>emit MySignal(message);</code>语句就表示发射 MySignal 信号。当程序中执行 emitSingal() 函数时，就会发出 MySignal 信号，message 属性的值也会随信号一同发出，对应的槽函数可以接收到 message 的值。<br />
+<blockquote>
+	<p>
+		对于每一个自定义的信号函数，程序中都应该提供发射该信号的方法（函数），而且这样的方法（函数）可以有多个。</p>
+</blockquote>
+<h2>
+	自定义槽函数</h2>
+Qt5 中，槽函数既可以是普通的全局函数、也可以是类的成员函数、静态成员函数、友元函数、虚函数，还可以用 lambda 表达式表示。<br />
+<br />
+和信号函数不同，槽函数必须手动定义（实现）。槽函数可以在程序中直接调用，但主要用来响应某个信号。自定义一个槽函数时，需要注意以下几点：<br />
+<ul>
+	<li>
+		槽函数的返回值必须和信号函数相同，由于信号函数的返回值一定是 void，所以槽函数的返回值也必须为&nbsp;void；</li>
+	<li>
+		对于带参的信号函数，槽函数可以选择接收所有参数，则参数的类型、顺序、个数都必须与信号函数相同；也可以选择接收前几个参数，这些参数的类型、顺序都必须与信号函数相同；还可以选择不接受任何参数。</li>
+	<li>
+		槽函数的参数个数只能比信号函数少，不能比信号函数多；</li>
+	<li>
+		槽函数的参数不能有默认值。</li>
+</ul>
+<br />
+举个例子，自定义响应 MySignal 信号的槽函数：
+<pre class="cpp">
+class MyWidget:public QWidget{
+    //Q_OBJECT 是一个宏，添加它才能正常使用 Qt 的信号和槽机制
+    Q_OBJECT
+signals:
+    void MySignal(QString mess1,QString mess2);
+public:
+    void emitSignal(){
+        emit MySignal(message1,message2);
+    }
+    //类的成员函数
+    void recSlot1(QString mess){
+        qDebug() &lt;&lt; &quot;执行 recSlot1() 成员函数，输出&quot; &lt;&lt; mess;
+    }
+//指明定义的是槽函数
+public slots:
+    void recSlot2(QString mess1,QString mess2){
+        qDebug() &lt;&lt; &quot;执行 recSlot2() 槽函数，输出&quot;&lt;&lt; mess1 &lt;&lt; &quot; &quot; &lt;&lt; mess2;
+    }
+public:
+    QString message1;
+    QString message2;
+};
+//全局函数
+void recSlot3(){
+    qDebug() &lt;&lt; &quot;执行 recSlot3() 全局函数&quot;;
+}</pre>
+程序中，重点关注 recSlot1()、recSlot2()、recSlot3() 这 3 个函数：
+<ul>
+	<li>
+		recSlot1() 是 MyWidget 类内部的 public 成员函数，可以当做槽函数使用；</li>
+	<li>
+		recSlot2() 位于&nbsp;MyWidget 类的内部，修饰它的关键字是&nbsp;<code>public slots</code>。slots 和 emit 一样，是 Qt 扩展的一个关键字，专门用来修饰槽函数。也就是说，recSlot2() 是 MyWidget 类中的槽函数。</li>
+	<li>
+		recSlot3() 是全局函数，可以当做槽函数使用。</li>
+</ul>
+<br />
+slots 关键字可以和 public、protected、private 搭配使用，它们的区别是：
+<ul>
+	<li>
+		public slots：该关键字修饰的槽函数，既可以在当前类及其子类的成员函数中调用，也可以在类外部的其它函数（比如 main() 函数）中调用；</li>
+	<li>
+		protected slots：该关键字修饰的槽函数，仅允许在当前类及其子类的成员函数内调用，不能在类外部的其它函数内调用；</li>
+	<li>
+		private slots：该关键字修饰的槽函数，只允许在当前类的成员函数内调用，不能在子类中调用，也不能在类外部的其它函数内调用。</li>
+</ul>
+<br />
+通常情况下，槽函数使用 public slots 修饰。
+<blockquote>
+	<p>
+		很多读者会问，既然 public 修饰的成员函数可以当做槽函数，为什么还要提供 slots 关键字呢？笔者认为，&ldquo;兼容旧的 Qt 版本&rdquo;是其中的一个原因。Qt4 中的槽函数只能是 slots 修饰的类成员函数，Qt5 中取消了这一限制，但考虑到要兼容旧的 Qt 版本，Qt5 保留了旧版本中 connect() 函数的语法格式，也保留了 slots 关键字。</p>
+</blockquote>
+调用 connect() 函数，将 MySignal() 信号函数分别连接 recSlot1()、recSlot2()、recSlot3() 三个槽函数，实现代码为：
+<pre class="cpp">
+//类的成员函数作为槽函数
+QObject::connect(&amp;mywidget,&amp;MyWidget::MySignal,&amp;mywidget,&amp;MyWidget::recSlot1);
+//信号函数和槽函数相连接
+QObject::connect(&amp;mywidget,&amp;MyWidget::MySignal,&amp;mywidget,&amp;MyWidget::recSlot2);
+//全局函数作为槽函数
+QObject::connect(&amp;mywidget,&amp;MyWidget::MySignal,&amp;recSlot3);</pre>
+<h2>
+	自定义信号和槽的完整实例</h2>
+<pre class="cpp">
+//main.cpp
+#include &lt;QApplication&gt;
+#include &lt;QWidget&gt;
+#include &lt;QDebug&gt;
+class MyWidget:public QWidget{
+    //Q_OBJECT 是一个宏，添加它才能正常使用 Qt 的信号和槽机制
+    Q_OBJECT
+//信号函数
+signals:
+    void MySignal(QString mess1,QString mess2);
+public:
+    //发射信号的函数
+    void emitSignal(){
+        emit MySignal(message1,message2);
+    }
+    //普通类成员函数
+    void recSlot1(QString mess){
+        qDebug() &lt;&lt; &quot;执行 recSlot1() 成员函数，输出&quot; &lt;&lt; mess;
+    }
+//槽函数
+public slots:
+    void recSlot2(QString mess1,QString mess2){
+        qDebug() &lt;&lt; &quot;执行 recSlot2() 槽函数，输出&quot;&lt;&lt; mess1 &lt;&lt; &quot; &quot; &lt;&lt; mess2;
+    }
+
+public:
+    QString message1;
+    QString message2;
+};
+//全局函数
+void recSlot3(){
+    qDebug() &lt;&lt; &quot;执行 recSlot3() 全局函数&quot;;
+}
+
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    //创建主窗口
+    MyWidget mywidget;
+    mywidget.message1 = &quot;C语言中文网&quot;;
+    mywidget.message2 = &quot;http://c.biancheng.net&quot;;
+    //类的成员函数作为槽函数
+    QObject::connect(&amp;mywidget,&amp;MyWidget::MySignal,&amp;mywidget,&amp;MyWidget::recSlot1);
+    //信号函数和槽函数相连接
+    QObject::connect(&amp;mywidget,&amp;MyWidget::MySignal,&amp;mywidget,&amp;MyWidget::recSlot2);
+    //全局函数作为槽函数
+    QObject::connect(&amp;mywidget,&amp;MyWidget::MySignal,&amp;recSlot3);
+
+    mywidget.show();
+    //发射 Signal 信号
+    mywidget.emitSignal();
+    return a.exec();
+}
+//MyWidget类的定义应该放到 .h 文件中，本例中将其写到 main.cpp 中，程序最后需要添加 #include &quot;当前源文件名.moc&quot; 语句，否则无法通过编译。
+#include &quot;main.moc&quot;</pre>
+执行程序，会弹出一个 myWidget 空白窗口，同时输出以下信息：
+<p class="info-box">
+	执行 recSlot1() 成员函数，输出 &quot;C语言中文网&quot;<br />
+	执行 recSlot2() 槽函数，输出 &quot;C语言中文网&quot;&nbsp;&nbsp; &quot;http://c.biancheng.net&quot;<br />
+	执行 recSlot3() 全局函数</p>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2846_2.html" title="C#正则表达式（Regex类）" target="_blank">C#正则表达式（Regex类）</a></li>
+<li><a href="vip_6074_2.html" title="利用面向对象思想实现搜索引擎" target="_blank">利用面向对象思想实现搜索引擎</a></li>
+<li><a href="7639_3.html" title="Django Meta元数据类属性解析" target="_blank">Django Meta元数据类属性解析</a></li>
+<li><a href="8256_3.html" title="Django项目部署流程与Nginx安装配置（超详细）" target="_blank">Django项目部署流程与Nginx安装配置（超详细）</a></li>
+<li><a href="../matplotlib/pylab-module_2.html" title="PyLab绘制曲线图" target="_blank">PyLab绘制曲线图</a></li>
+<li><a href="9482_2.html" title="大学是最好的学习时间，错过了悔恨终生" target="_blank">大学是最好的学习时间，错过了悔恨终生</a></li>
+<li><a href="3bwwn45_2.html" title="Django入门教程（简明版）" target="_blank">Django入门教程（简明版）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9429;
+window.arcId = "6942jUIYH+ZbAMuKQnT8DwkQurz1Iput1tlZ3aFtuo8CL9escJfmg1IE+Sw";
+window.typeidChain = "294|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

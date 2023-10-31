@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Spring MVC文件上传</title>
+<meta name="description" content="Spring MVC 框架的文件上传基于 commons-fileupload 组件，并在该组件上做了进一步的封装，简化了文件上传的代码实现，取消了不同上传组件上的编程差异。 MultpartResolver接口 在 Spring MVC 中实" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="../view/niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Spring MVC文件上传</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">Spring MVC 框架的文件上传基于 commons-fileupload 组件，并在该组件上做了进一步的封装，简化了文件上传的代码实现，取消了不同上传组件上的编程差异。
+<h2>
+	MultipartResolver接口</h2>
+在 Spring MVC 中实现文件上传十分容易，它为文件上传提供了直接支持，即 MultpartiResolver 接口。MultipartResolver 用于处理上传请求，将上传请求包装成可以直接获取文件的数据，从而方便操作。<br />
+<br />
+MultpartiResolver 接口有以下两个实现类：<br />
+<ul>
+	<li>
+		StandardServletMultipartResolver：使用了 Servlet 3.0 标准的上传方式。</li>
+	<li>
+		CommonsMultipartResolver：使用了 Apache 的 commons-fileupload 来完成具体的上传操作。</li>
+</ul>
+<br />
+MultpartiResolver&nbsp;接口具有以下方法。<br />
+<br />
+<table>
+	<tbody>
+		<tr>
+			<th>
+				名称</th>
+			<th>
+				作用</th>
+		</tr>
+		<tr>
+			<td>
+				byte[] getBytes()</td>
+			<td>
+				以字节数组的形式返回文件的内容</td>
+		</tr>
+		<tr>
+			<td>
+				String getContentType()</td>
+			<td>
+				返回文件的内容类型</td>
+		</tr>
+		<tr>
+			<td>
+				InputStream getInputStream()</td>
+			<td>
+				返回一个InputStream，从中读取文件的内容</td>
+		</tr>
+		<tr>
+			<td>
+				String getName()</td>
+			<td>
+				返回请求参数的名称</td>
+		</tr>
+		<tr>
+			<td>
+				String getOriginalFillename()</td>
+			<td>
+				返回客户端提交的原始文件名称</td>
+		</tr>
+		<tr>
+			<td>
+				long getSize()</td>
+			<td>
+				返回文件的大小，单位为字节</td>
+		</tr>
+		<tr>
+			<td>
+				boolean isEmpty()</td>
+			<td>
+				判断被上传文件是否为空</td>
+		</tr>
+		<tr>
+			<td>
+				void transferTo(File destination)</td>
+			<td>
+				将上传文件保存到目标目录下</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+下面我们使用&nbsp;CommonsMultipartResolver 来完成文件上传，分为单文件上传和多文件上传两部分介绍。
+<h2>
+	单文件上传</h2>
+<h4>
+	1. 导入 jar 文件</h4>
+文件上传使用 Apache Commons FileUpload 组件，需要导入 commons-io-2.4.jar 和 commons-fileupload-1.2.2.jar 两个 jar 文件（可在 Apache 官网下载）。<br />
+<br />
+Maven 项目在 pom.xml 文件中添加以下依赖。
+<pre class="xml">
+&lt;dependency&gt;
+    &lt;groupId&gt;commons-io&lt;/groupId&gt;
+    &lt;artifactId&gt;commons-io&lt;/artifactId&gt;
+    &lt;version&gt;2.4&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+    &lt;groupId&gt;commons-fileupload&lt;/groupId&gt;
+    &lt;artifactId&gt;commons-fileupload&lt;/artifactId&gt;
+    &lt;version&gt;1.2.2&lt;/version&gt;
+&lt;/dependency&gt;</pre>
+<h4>
+	2. 配置 MultipartResolver</h4>
+使用 CommonsMultipartReslover 配置 MultipartResolver 解析器，在 springmvc-servlet.xml 中添加代码如下。
+<pre class="xml">
+&lt;!-- 配置MultipartResolver，用于上传文件，使用spring的CommonsMultipartResolver --&gt;
+&lt;bean id=&quot;multipartResolver&quot;
+    class=&quot;org.springframework.web.multipart.commons.CommonsMultipartResolver&quot;&gt;
+    &lt;property name=&quot;maxUploadSize&quot; value=&quot;5000000&quot; /&gt;
+    &lt;property name=&quot;defaultEncoding&quot; value=&quot;UTF-8&quot; /&gt;
+&lt;/bean&gt;</pre>
+<ul>
+	<li>
+		defaultEncoding：请求的编码格式，默认为 ISO-8859-1，此处设置为 UTF-8（注：defaultEncoding 必须和 JSP 中的 pageEncoding 一致，以便正确读取表单的内容）。</li>
+	<li>
+		maxUploadSize：上传文件大小上限，单位为字节。</li>
+</ul>
+<h4>
+	3. 编写文件上传表单页面</h4>
+负责文件上传表单的编码类型必须是&ldquo;multipart/form-data&rdquo;类型。<br />
+<br />
+fleUpload.jsp 代码如下。
+<pre class="xml">
+&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=UTF-8&quot;
+    pageEncoding=&quot;UTF-8&quot;%&gt;
+&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot;&gt;
+&lt;title&gt;文件上传&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;form action=&quot;${pageContext.request.contextPath }/fileupload&quot;
+        method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;
+        选择文件：&lt;input type=&quot;file&quot; name=&quot;myfile&quot;&gt;&lt;br&gt; 
+        文件描述：&lt;input type=&quot;text&quot; name=&quot;description&quot;&gt;&lt;br&gt; 
+        &lt;input type=&quot;submit&quot; value=&quot;提交&quot;&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+基于表单的文件上传需要使用 enctype 属性，并将它的值设置为 multipart/form-data，同时将表单的提交方式设置为 post。<br />
+<br />
+表单的 enctype 属性指定的是表单数据的编码方式，该属性有以下 3 个值。
+<ul>
+	<li>
+		application/x-www-form-urlencoded：这是默认的编码方式，它只处理表单域里的 value 属性值。</li>
+	<li>
+		multipart/form-data：该编码方式以二进制流的方式来处理表单数据，并将文件域指定文件的内容封装到请求参数里。</li>
+	<li>
+		text/plain：该编码方式只有当表单的 action 属性为&ldquo;mailto：&rdquo;URL 的形式时才使用，主要适用于直接通过表单发送邮件的方式。</li>
+</ul>
+<br />
+由上面 3 个属性的解释可知，在基于表单上传文件时 enctype 的属性值应为 multipart/form-data。<br />
+<h4>
+	4. 创建POJO类</h4>
+创建 net.biancheng.opjo 包，在该包下创建&nbsp;FileDomain 类，在该 POJO 类中声明一个 MultipartFile 类型的属性封装被上传的文件信息，属性名与文件选择页面 filleUpload.jsp 中的 file 类型的表单参数名 myfile 相同，代码如下。
+<pre class="java">
+package net.biancheng.po;
+
+import org.springframework.web.multipart.MultipartFile;
+
+public class FileDomain {
+    private String description;
+    private MultipartFile myfile;
+
+    /** 省略setter和getter参数*/
+}</pre>
+<h4>
+	5. 编写控制器</h4>
+创建 net.biancheng.controller 包，在该包下创建&nbsp;FileUploadController 控制类，具体代码如下。
+<pre class="java">
+package net.biancheng.controller;
+
+import java.io.File;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import net.biancheng.po.FileDomain;
+
+@Controller
+public class FileUploadController {
+    // 得到一个用来记录日志的对象，这样在打印信息时能够标记打印的是哪个类的信息
+    private static final Log logger = LogFactory.getLog(FileUploadController.class);
+
+    @RequestMapping(&quot;getFileUpload&quot;)
+    public String getFileUpload() {
+        return &quot;fileUpload&quot;;
+    }
+
+    /**
+     * 单文件上传
+     */
+    @RequestMapping(&quot;/fileupload&quot;)
+    public String oneFileUpload(@ModelAttribute FileDomain fileDomain, HttpServletRequest request) {
+        /*
+         * 文件上传到服务器的位置&ldquo;/uploadfiles&rdquo;,该位置是指 workspace\.metadata\.plugins\org.eclipse
+         * .wst.server.core\tmp0\wtpwebapps, 发布后使用
+         */
+        String realpath = request.getServletContext().getRealPath(&quot;uploadfiles&quot;);
+        String fileName = fileDomain.getMyfile().getOriginalFilename();
+        File targetFile = new File(realpath, fileName);
+        if (!targetFile.exists()) {
+            targetFile.mkdirs();
+        }
+        // 上传
+        try {
+            fileDomain.getMyfile().transferTo(targetFile);
+            logger.info(&quot;成功&quot;);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return &quot;showFile&quot;;
+    }
+}</pre>
+<h4>
+	6. 创建成功显示页面</h4>
+showFile.jsp 代码如下。
+<pre class="xml">
+&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=UTF-8&quot;
+    pageEncoding=&quot;UTF-8&quot;%&gt;
+&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot;&gt;
+&lt;title&gt;文件上传&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    文件描述：${fileDomain.description }
+    &lt;br&gt;
+    &lt;!-- fileDomain.getMyFile().getOriginalFilename()--&gt;
+    文件名称：${fileDomain.myfile.originalFilename }
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+<h4>
+	7. 测试文件上传</h4>
+访问地址：<a href="http://localhost:8080/springmvcDemo2/getFileUpload" target="_blank">http://localhost:8080/springmvcDemo2/getFileUpload</a>，运行结果如下。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="fileUpload.jsp页面" src="../uploads/allimg/210705/15361W355-0_2.png" /><br />
+	fileUpload.jsp 页面<br />
+	<br />
+	<img alt="showFile.jsp页面" src="../uploads/allimg/210705/15361S103-1_2.png" /><br />
+	showFile.jsp 页面</div>
+<h2>
+	多文件上传</h2>
+在以上代码的基础上，实现 Spring MVC 多文件上传。<br />
+<h4>
+	1. 创建 JSP 页面</h4>
+创建 multiFiles.jsp 页面，在该页面中使用表单上传多个文件。代码如下。
+<pre class="xml">
+&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=UTF-8&quot;
+    pageEncoding=&quot;UTF-8&quot;%&gt;
+&lt;%@ taglib prefix=&quot;fm&quot; uri=&quot;http://www.springframework.org/tags/form&quot;%&gt;
+&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot;&gt;
+&lt;title&gt;多文件上传&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;form action=&quot;${pageContext.request.contextPath }/multifile&quot;
+        method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;
+        选择文件1：&lt;input type=&quot;file&quot; name=&quot;myfile&quot;&gt;&lt;br&gt;
+        文件描述1：&lt;input type=&quot;text&quot; name=&quot;description&quot;&gt;&lt;br&gt;
+        选择文件2：&lt;input type=&quot;file&quot; name=&quot;myfile&quot;&gt;&lt;br&gt;
+        文件描述2：&lt;input type=&quot;text&quot; name=&quot;description&quot;&gt;&lt;br&gt;
+        选择文件3：&lt;input type=&quot;file&quot; name=&quot;myfile&quot;&gt;&lt;br&gt;
+        文件描述3：&lt;input type=&quot;text&quot; name=&quot;description&quot;&gt;&lt;br&gt;
+            &lt;input type=&quot;submit&quot; value=&quot;提交&quot;&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+<h4>
+	2. 创建POJO类</h4>
+创建&nbsp;MultiFileDomain 类，上传多文件时用于封装文件信息，代码如下。<br />
+<pre class="java">
+package net.biancheng.po;
+
+import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
+
+public class MultiFileDomain {
+    private List&lt;String&gt; description;
+    private List&lt;MultipartFile&gt; myfile;
+
+    public List&lt;String&gt; getDescription() {
+        return description;
+    }
+
+    public void setDescription(List&lt;String&gt; description) {
+        this.description = description;
+    }
+
+    public List&lt;MultipartFile&gt; getMyfile() {
+        return myfile;
+    }
+
+    public void setMyfile(List&lt;MultipartFile&gt; myfile) {
+        this.myfile = myfile;
+    }
+
+}</pre>
+<h4>
+	3. 添加多文件上传处理方法</h4>
+在 FileUploadController 控制器类中添加多文件上传处理方法 multifile，具体代码如下。
+<pre class="java">
+@RequestMapping(&quot;/getmultiFile&quot;)
+public String getmultiFile() {
+    return &quot;multiFiles&quot;;
+}
+
+/**
+* 多文件上传
+*/
+@RequestMapping(&quot;/multifile&quot;)
+public String multiFileUpload(@ModelAttribute MultiFileDomain multiFileDomain, HttpServletRequest request) {
+    String realpath = request.getServletContext().getRealPath(&quot;uploadfiles&quot;);
+    File targetDir = new File(realpath);
+    if (!targetDir.exists()) {
+        targetDir.mkdirs();
+    }
+    List&lt;MultipartFile&gt; files = multiFileDomain.getMyfile();
+    System.out.println(&quot;files&quot;+files);
+    for (int i = 0; i &lt; files.size(); i++) {
+        MultipartFile file = files.get(i);
+        String fileName = file.getOriginalFilename();
+        File targetFile = new File(realpath, fileName);
+        // 上传
+        try {
+            file.transferTo(targetFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    return &quot;showMulti&quot;;
+}</pre>
+<h4>
+	4. 创建成功显示页面</h4>
+创建多文件上传成功显示页面 showMulti.jsp，具体代码如下：
+<pre class="xml">
+&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=UTF-8&quot;
+    pageEncoding=&quot;UTF-8&quot;%&gt;
+&lt;%@taglib uri=&quot;http://java.sun.com/jsp/jstl/core&quot; prefix=&quot;c&quot;%&gt;
+&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot;&gt;
+&lt;title&gt;多文件上传显示&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+    &lt;table border=&quot;1px&quot;&gt;
+        &lt;tr&gt;
+            &lt;td&gt;详情&lt;/td&gt;
+            &lt;td&gt;文件名&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;!-- 同时取两个数组的元素 --&gt;
+        &lt;c:forEach items=&quot;${multiFileDomain.description}&quot; var=&quot;description&quot;
+            varStatus=&quot;loop&quot;&gt;
+            &lt;tr&gt;
+                &lt;td&gt;${description}&lt;/td&gt;
+                &lt;td&gt;${multiFileDomain.myfile[loop.count-1].originalFilename}&lt;/td&gt;
+            &lt;/tr&gt;
+        &lt;/c:forEach&gt;
+        &lt;!-- fileDomain.getMyfile().getOriginalFilename() --&gt;
+    &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+<h4>
+	5. 测试文件上传</h4>
+访问地址：http://localhost:8080/springmvcDemo2/getmultiFile，运行结果如下。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="multiFiles.jsp页面" src="../uploads/allimg/210705/15361S939-2_2.png" /><br />
+	multiFiles.jsp页面<br />
+	&nbsp;</div>
+<div style="text-align: center;">
+	<img alt="showMulti.jsp页面" src="../uploads/allimg/210705/15361T508-3_2.png" /><br />
+	showMulti.jsp页面</div>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="../view/niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/125_2.html" title="go pprof命令（Go语言性能分析命令）完全攻略" target="_blank">go pprof命令（Go语言性能分析命令）完全攻略</a></li>
+<li><a href="../view/448_2.html" title="C++ forward_list用法详解" target="_blank">C++ forward_list用法详解</a></li>
+<li><a href="../view/776_2.html" title="Java赋值运算符（=）" target="_blank">Java赋值运算符（=）</a></li>
+<li><a href="../view/vip_3341_2.html" title="存储结构和存取结构，完全不是一码事！" target="_blank">存储结构和存取结构，完全不是一码事！</a></li>
+<li><a href="../view/vip_8118_2.html" title="目前主流的Java Web开发框架，初学者一定要了解！" target="_blank">目前主流的Java Web开发框架，初学者一定要了解！</a></li>
+<li><a href="../csharp/const_2.html" title="C#常量" target="_blank">C#常量</a></li>
+<li><a href="../c/memcmp_2.html" title="C语言memcmp()：比较两块内存中数据的大小" target="_blank">C语言memcmp()：比较两块内存中数据的大小</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8722;
+window.arcId = "f23f0iXPRlgP9uFW0RvsQJFv/kpYCvfmuIhtcd/mt3rCtYdP38GqgB8x1PE";
+window.typeidChain = "456|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="../view/8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="../view/8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="../view/8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="../view/9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="../view/8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

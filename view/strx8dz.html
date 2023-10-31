@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++ map容器用法详解</title>
+<meta name="description" content="在 C++ 中，可以用 map 容器来存储具有对应关系的数据。 所谓对应关系，指的是可以从一个数据迅速查找到另外一个数据。通常，我们将前面的数据称为键，后面的数据称为值，它们的组" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++ map容器用法详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在 C++ 中，可以用 map 容器来存储具有对应关系的数据。<br />
+<br />
+所谓对应关系，指的是可以从一个数据迅速查找到另外一个数据。通常，我们将前面的数据称为键，后面的数据称为值，它们的组合称为键值对（Key-Value Pair），用<code>&lt;K, V&gt;</code>表示。<br />
+<br />
+例如，&lt;1, &quot;apple&quot;&gt;、&lt;2, &quot;banana&quot;&gt;、&lt;3, &quot;cherry&quot;&gt; 是 3 个键值对，其中 1、2、3 是键，&quot;apple&quot;、&quot;banana&quot;、&quot;cherry&quot; 是和各个键对应的值。<br />
+<br />
+也就是说，map 是一种存储键值对的容器。map 容器具有以下两个特点：
+<ul>
+<li>
+它会自动根据键的值对键值对进行排序，并且可以根据给定的键迅速找到对应的值。</li>
+<li>
+在 map 容器中，各个键值对的键不能重复，必须是唯一的。</li>
+</ul>
+<h2>
+map容器的构建</h2>
+map 容器本质是一个模板类，定义在<code>&lt;map&gt;</code>头文件中，并位于 std 命名空间中。<br />
+<br />
+map 模板类中包含多种构造函数，常用的有以下几个：
+<pre class="info-box">
+// 创建一个空的 map 容器，可以提供一个自定义的键比较函数（key_compare），所有键值对做升序排序。
+explicit map (const key_compare&amp; comp = key_compare(), const allocator_type&amp; alloc = allocator_type());
+
+// 输入迭代器 first 和 last 指定的范围内的元素创建一个 map 容器
+template &lt;class InputIterator&gt;  map (InputIterator first, InputIterator last, const key_compare&amp; comp = key_compare(), const allocator_type&amp; = allocator_type());
+
+// 拷贝构造函数，创建一个和参数 x 相同的新 map 容器
+map (const map&amp; x);
+
+// 移动构造函数，&ldquo;移动&rdquo;参数 x 的所有元素到新创建的 map 容器。
+map (map&amp;&amp; x);
+
+// 使用一个初始化列表来创建一个新 map 容器
+map (initializer_list&lt;value_type&gt; il, const key_compare&amp; comp = key_compare(), const allocator_type&amp; alloc = allocator_type());</pre>
+<br />
+下面的 C++ 代码示例演示了如何使用 map 容器的各种构造函数。<br />
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+
+int main() {
+    // 使用默认构造函数创建一个空的 map
+    std::map&lt;std::string, int&gt; map1;
+    map1[&quot;apple&quot;] = 1;
+   
+    // 使用范围构造函数创建一个 map
+    std::pair&lt;std::string, int&gt; arr[] = { {&quot;banana&quot;, 2}, {&quot;cherry&quot;, 3} };
+    std::map&lt;std::string, int&gt; map2(arr, arr + sizeof(arr) / sizeof(arr[0]));
+   
+    // 使用拷贝构造函数创建一个新的与 map1 相同的 map
+    std::map&lt;std::string, int&gt; map3(map1);
+   
+    // 使用移动构造函数创建一个新的 map
+    std::map&lt;std::string, int&gt; map4(std::move(map2));  // 注意：map2 不能再用
+   
+    // 使用初始化列表构造函数创建一个新的 map
+    std::map&lt;std::string, int&gt; map5 = { {&quot;pear&quot;, 4}, {&quot;mango&quot;, 5} };
+
+    return 0;
+}</pre>
+<br />
+默认情况下，map 容器调用 std::less&lt;T&gt; 规则，根据容器内各键值对的键的大小，对所有键值对做升序排序。我们可以手动指定 std::greater&lt;T&gt; 进行降序排序，必要时还可以自定义排序规则。<br />
+<br />
+下面的 C++ 代码示例演示了如何修改 map 容器的排序规则。<br />
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;string&gt;
+#include &lt;functional&gt;  // 对 std::greater&lt;T&gt; 的定义
+
+// 使用 std::less&lt;T&gt;（默认）
+std::map&lt;std::string, int&gt; map1 = {{&quot;apple&quot;, 1}, {&quot;banana&quot;, 2}, {&quot;cherry&quot;, 3}};
+
+// 使用 std::greater&lt;T&gt; 进行降序排序
+std::map&lt;std::string, int, std::greater&lt;std::string&gt;&gt; map2 = {{&quot;apple&quot;, 1}, {&quot;banana&quot;, 2}, {&quot;cherry&quot;, 3}};
+
+// 自定义比较函数
+struct CustomCompare {
+    bool operator()(const std::string&amp; a, const std::string&amp; b) const {
+        return a &gt; b;  // 降序
+    }
+};
+
+// 使用自定义比较函数
+std::map&lt;std::string, int, CustomCompare&gt; map3 = {{&quot;apple&quot;, 1}, {&quot;banana&quot;, 2}, {&quot;cherry&quot;, 3}};
+
+int main() {
+    std::cout &lt;&lt; &quot;Map1 (std::less&lt;T&gt;, default, ascending):&quot; &lt;&lt; std::endl;
+    for (const auto&amp; pair : map1) {
+        std::cout &lt;&lt; pair.first &lt;&lt; &quot;: &quot; &lt;&lt; pair.second &lt;&lt; std::endl;
+    }
+
+    std::cout &lt;&lt; &quot;Map2 (std::greater&lt;T&gt;, descending):&quot; &lt;&lt; std::endl;
+    for (const auto&amp; pair : map2) {
+        std::cout &lt;&lt; pair.first &lt;&lt; &quot;: &quot; &lt;&lt; pair.second &lt;&lt; std::endl;
+    }
+
+    std::cout &lt;&lt; &quot;Map3 (CustomCompare, descending):&quot; &lt;&lt; std::endl;
+    for (const auto&amp; pair : map3) {
+        std::cout &lt;&lt; pair.first &lt;&lt; &quot;: &quot; &lt;&lt; pair.second &lt;&lt; std::endl;
+    }
+   
+    return 0;
+}</pre>
+运行结果为：
+<p class="info-box">
+Map1 (std::less&lt;T&gt;, default, ascending):<br />
+apple: 1<br />
+banana: 2<br />
+cherry: 3<br />
+Map2 (std::greater&lt;T&gt;, descending):<br />
+cherry: 3<br />
+banana: 2<br />
+apple: 1<br />
+Map3 (CustomCompare, descending):<br />
+cherry: 3<br />
+banana: 2<br />
+apple: 1</p>
+<h2>
+map容器的使用</h2>
+map 模板类提供了诸多实用的成员函数，可以满足大部分场景中操作 map 容器的需要。<br />
+<br />
+表 1 列出了 map 容器提供的常用成员方法以及各自的功能。<br />
+<br />
+<table>
+<caption>
+表 1 C++ map容器常用成员方法</caption>
+<tbody>
+<tr>
+<th>
+成员方法</th>
+<th>
+功能</th>
+</tr>
+<tr>
+<td>
+begin()</td>
+<td>
+返回指向容器中第一个（注意，是已排好序的第一个）键值对的双向迭代器。如果 map 容器用 const 限定，则该方法返回的是 const 类型的双向迭代器。</td>
+</tr>
+<tr>
+<td>
+end()</td>
+<td>
+返回指向容器最后一个元素（注意，是已排好序的最后一个）所在位置后一个位置的双向迭代器，通常和 begin() 结合使用。如果 map 容器用 const 限定，则该方法返回的是 const 类型的双向迭代器。</td>
+</tr>
+<tr>
+<td>
+rbegin()</td>
+<td>
+返回指向最后一个（注意，是已排好序的最后一个）元素的反向双向迭代器。如果 map 容器用 const 限定，则该方法返回的是 const 类型的反向双向迭代器。</td>
+</tr>
+<tr>
+<td>
+rend()</td>
+<td>
+返回指向第一个（注意，是已排好序的第一个）元素所在位置前一个位置的反向双向迭代器。如果 map 容器用 const 限定，则该方法返回的是 const 类型的反向双向迭代器。</td>
+</tr>
+<tr>
+<td>
+cbegin()</td>
+<td>
+和 begin() 功能相同，只不过在其基础上，增加了 const 属性，不能用于修改容器内存储的键值对。</td>
+</tr>
+<tr>
+<td>
+cend()</td>
+<td>
+和 end() 功能相同，只不过在其基础上，增加了 const 属性，不能用于修改容器内存储的键值对。</td>
+</tr>
+<tr>
+<td>
+crbegin()</td>
+<td>
+和 rbegin() 功能相同，只不过在其基础上，增加了 const 属性，不能用于修改容器内存储的键值对。</td>
+</tr>
+<tr>
+<td>
+crend()</td>
+<td>
+和 rend() 功能相同，只不过在其基础上，增加了 const 属性，不能用于修改容器内存储的键值对。</td>
+</tr>
+<tr>
+<td>
+find(key)</td>
+<td>
+在 map 容器中查找键为 key 的键值对，如果成功找到，则返回指向该键值对的双向迭代器；反之，则返回和 end() 方法一样的迭代器。另外，如果 map 容器用 const 限定，则该方法返回的是 const 类型的双向迭代器。</td>
+</tr>
+<tr>
+<td>
+lower_bound(key)</td>
+<td>
+返回一个指向当前 map 容器中第一个大于或等于 key 的键值对的双向迭代器。如果 map 容器用 const 限定，则该方法返回的是 const 类型的双向迭代器。</td>
+</tr>
+<tr>
+<td>
+upper_bound(key)</td>
+<td>
+返回一个指向当前 map 容器中第一个大于 key 的键值对的迭代器。如果 map 容器用 const 限定，则该方法返回的是 const 类型的双向迭代器。</td>
+</tr>
+<tr>
+<td>
+equal_range(key)</td>
+<td>
+该方法返回一个 pair 对象（包含 2 个双向迭代器），其中 pair.first 和 lower_bound() 方法的返回值等价，pair.second 和 upper_bound() 方法的返回值等价。也就是说，该方法将返回一个范围，该范围中包含的键为 key 的键值对（map 容器键值对唯一，因此该范围最多包含一个键值对）。</td>
+</tr>
+<tr>
+<td>
+empty()&nbsp;</td>
+<td>
+若容器为空，则返回 true；否则 false。</td>
+</tr>
+<tr>
+<td>
+size()</td>
+<td>
+返回当前 map 容器中存有键值对的个数。</td>
+</tr>
+<tr>
+<td>
+max_size()</td>
+<td>
+返回 map 容器所能容纳键值对的最大个数，不同的操作系统，其返回值亦不相同。</td>
+</tr>
+<tr>
+<td>
+operator[]</td>
+<td>
+map容器重载了 [] 运算符，只要知道 map 容器中某个键值对的键的值，就可以向获取数组中元素那样，通过键直接获取对应的值。</td>
+</tr>
+<tr>
+<td>
+at(key)</td>
+<td>
+找到 map 容器中 key 键对应的值，如果找不到，该函数会引发 out_of_range 异常。</td>
+</tr>
+<tr>
+<td>
+insert()</td>
+<td>
+向 map 容器中插入键值对。</td>
+</tr>
+<tr>
+<td>
+erase()</td>
+<td>
+删除 map 容器指定位置、指定键（key）值或者指定区域内的键值对。后续章节还会对该方法做重点讲解。</td>
+</tr>
+<tr>
+<td>
+swap()</td>
+<td>
+交换 2 个 map 容器中存储的键值对，这意味着，操作的 2 个键值对的类型必须相同。</td>
+</tr>
+<tr>
+<td>
+clear()</td>
+<td>
+清空 map 容器中所有的键值对，即使 map 容器的 size() 为 0。</td>
+</tr>
+<tr>
+<td>
+emplace()</td>
+<td>
+在当前 map 容器中的指定位置处构造新键值对。其效果和插入键值对一样，但效率更高。</td>
+</tr>
+<tr>
+<td>
+emplace_hint()</td>
+<td>
+在本质上和 emplace() 在 map 容器中构造新键值对的方式是一样的，不同之处在于，使用者必须为该方法提供一个指示键值对生成位置的迭代器，并作为该方法的第一个参数。</td>
+</tr>
+<tr>
+<td>
+count(key)</td>
+<td>
+在当前 map 容器中，查找键为 key 的键值对的个数并返回。注意，由于 map 容器中各键值对的键的值是唯一的，因此该函数的返回值最大为 1。</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>
+有关表示各个成员函数的语法格式，读者不需要死记硬背，需要时直接去查<a href="https://cplusplus.com/reference/map/map/" target="_blank"> C++ 标准库</a>即可，这里不再过多赘述。</p>
+</blockquote>
+下面的 C++ 程序演示了表中部分成员函数的用法：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;string&gt;
+using namespace std;
+
+int main() {
+    // 创建一个空的 map 容器
+    map&lt;string, int&gt; fruits;
+
+    // 插入元素
+    fruits[&quot;apple&quot;] = 1;
+    fruits[&quot;banana&quot;] = 2;
+    fruits[&quot;cherry&quot;] = 3;
+    fruits.insert(make_pair(&quot;date&quot;, 4));
+
+    // 查找元素并打印
+    auto it = fruits.find(&quot;banana&quot;);
+    if (it != fruits.end()) {
+        cout &lt;&lt; &quot;Banana found: &quot; &lt;&lt; it-&gt;second &lt;&lt; endl;
+    } else {
+        cout &lt;&lt; &quot;Banana not found&quot; &lt;&lt; endl;
+    }
+
+    // 删除元素
+    fruits.erase(&quot;apple&quot;);
+
+    // 遍历 map
+    for (const auto&amp; pair : fruits) {
+        cout &lt;&lt; pair.first &lt;&lt; &quot;: &quot; &lt;&lt; pair.second &lt;&lt; endl;
+    }
+
+    return 0;
+}</pre>
+运行结果为：
+<p class="info-box">
+Banana found: 2<br />
+banana: 2<br />
+cherry: 3<br />
+date: 4</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1856.html" title="C语言函数调用详解（从中发现程序运行的秘密）" target="_blank">C语言函数调用详解（从中发现程序运行的秘密）</a></li>
+<li><a href="vip_2325.html" title="将C++模板应用于多文件编程" target="_blank">将C++模板应用于多文件编程</a></li>
+<li><a href="5359.html" title="JavaScript中的几个重要概念" target="_blank">JavaScript中的几个重要概念</a></li>
+<li><a href="../redis2/sinter.html" title="Redis SINTER命令" target="_blank">Redis SINTER命令</a></li>
+<li><a href="../csharp/exception-handling.html" title="C#异常处理" target="_blank">C#异常处理</a></li>
+<li><a href="1bwym23.html" title="git clone命令：获取远程仓库" target="_blank">git clone命令：获取远程仓库</a></li>
+<li><a href="qbwgk8x.html" title="《Web前端开发——JavaScript+jQuery活页式教程》PDF下载（高清完整版）" target="_blank">《Web前端开发——JavaScript+jQuery活页式教程》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10365;
+window.arcId = "1b65QfBe3LQ86NsM1B1mW7JwUyysPL+Kqe1ctHJoIBHuOq8Oy2Omw7w3Nu6h";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

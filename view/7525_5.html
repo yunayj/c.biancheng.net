@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Django模板加载与响应</title>
+<meta name="description" content="在前文章节《 Django模板系统 》中，我们对 Django 的模板系统有了初步的认识，在本节我们将重点讲解 Django 的模板语法，" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../django/django_2.html">Django</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Django模板加载与响应</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在前文章节《<a href="7369_4.html" target="_blank">Django模板系统</a>》中，我们对 Django 的模板系统有了初步的认识，在本章我们将重点讲解 Django 的模板语言。<br />
+<br />
+Djano 的模板系统将 Python 代码与 HTML 代码解耦，动态地生成 HTML 页面。Django 项目可以配置一个或多个模板引擎，但是通常使用 Django 的模板系统时，应该首先考虑其内置的后端 DTL（Django Template Language，Django 模板语言。<br />
+<h2>
+	1. 什么是模板</h2>
+在 Django 中，模板是可以根据字典数据动态变化的，并且能够根据视图中传递的字典数据动态生成相应的 HTML 网页。Django 中使用 Template 来表示模板，Template 对象定义在 django/template/base.py 文件中，它的构造函数如下所示：
+<pre class="python">
+def __init__(self,template_string,origin=None,name=None,engine=None)</pre>
+它只有一个必填的参数：字符串表示的模板代码。
+<h4>
+	1) 模板的配置</h4>
+首先按照<code> BookStore/templates</code>路径创建模板文件夹 templates，在 settings.py 配置文件中有一个 TEMPLATES 变量，如下所示：
+<pre class="python">
+TEMPLATES = [
+    {
+        &#39;BACKEND&#39;: &#39;django.template.backends.django.DjangoTemplates&#39;,
+        &#39;DIRS&#39;: [],  #指定模板文件的存放路径
+        &#39;APP_DIRS&#39;: True, #搜索APP里面的所有templates目录
+        &#39;OPTIONS&#39;: {
+            &#39;context_processors&#39;: [  #context_processors 用于配置模板上下文处理器
+                &#39;django.template.context_processors.debug&#39;,
+                &#39;django.template.context_processors.request&#39;,
+                &#39;django.contrib.auth.context_processors.auth&#39;,
+                &#39;django.contrib.messages.context_processors.messages&#39;,
+            ],
+        },
+    },
+]</pre>
+其中每一项释义如下所示：
+<ul>
+	<li>
+		BACKEND : Django默认设置，指定了要是用的模板引擎的 Python 路径；</li>
+	<li>
+		DIRS : 一个目录列表，指定模板文件的存放路径，可以是一个或者多个。模板引擎将按照列表中定义的顺序查找模板文件；</li>
+	<li>
+		APP_DIRS : 一个布尔值，默认为 Ture。表示会在安装应用中的 templates 目录中搜索所有模板文件；</li>
+	<li>
+		OPTIONS : 指定额外的选项，不同的模板引擎有着不同的可选参数，例如 context_processors 用于配置模板上下文处理器，在使 RequestContext 时将看到它们的作用。</li>
+</ul>
+<h4>
+	2) 修改settings配置文件</h4>
+修改 settings.py 文件，设置 TEMPLATES 的 DIRS 值来指定模板的搜索目录为&ldquo;templates&rdquo;如下所示：<br />
+<pre class="python">
+&#39;DIRS&#39;: [os.path.join(BASE_DIR, &#39;templates&#39;)]</pre>
+<h2>
+	2. 模板的加载与响应方式</h2>
+那么我们如何加载模板并响应给浏览器呢？在前文《<a href="7369_4.html" target="_blank">Django模板系统</a>》一文，我们已经介绍了一种 render 的方法，其实这里可以使用的方式主要有两种，在本节我们将更加全面的讲解它们。<br />
+<br />
+方式一：通过 loader 获取模板,通过 HttpResponse 进行响应<br />
+<pre class="python">
+from django.template import loader
+# 1.通过loader加载模板
+t = loader.get_template(&quot;模板文件名&quot;)
+# 2.将t转换成HTML字符串
+html = t.render(字典数据)
+# 3.用响应对象将转换的字符串内容返回给浏览器
+return HttpResponse(html)</pre>
+方式二：使用 render 方法直接加载并响应模板<br />
+<pre class="python">
+from django.shortcuts import render
+return render(request,&#39;模板文件名&#39;, 字典数据)
+</pre>
+下面我们对上述两种方式分别来说明：
+<pre class="python">
+#方式一
+from django.template import loader # 导入loader方法
+from django.shortcuts import render #导入render 方法
+def test_html(request): 
+    t=loader.get_template(&#39;test.html&#39;) 
+    html=t.render({&#39;name&#39;:&#39;c语言中文网&#39;})#以字典形式传递数据并生成html
+    return HttpResponse(html) #以 HttpResponse方式响应html
+#方式二
+from django.shortcuts import render #导入reder方法 
+def test_html(request): 
+    return render(request,&#39;test.html&#39;,{&#39;name&#39;:&#39;c语言中文网&#39;})#根据字典数据生成动态模板 
+</pre>
+然后在 templates 目录下创建 test.html 文件并在其中添加如下代码：
+<pre class="html">
+&lt;p style=&quot;font-size:50px;color:red&quot;&gt;{{name}}，网址是&lt;a href=&quot;http://c.biancheng.net/&quot;&gt;http://c.biancheng.net/&lt;/a&gt;&lt;/p&gt;
+</pre>
+<p class="tip-box">
+	提示：{{name}} 属于 django 模板语言的语法，代表一个变量，在后续章节我们会讲解。</p>
+最后在 BookStore/urls.py 文件的 urlpatterns 列表中为视图函数 test_html() 配置路由映射关系,如下所示：
+<pre class="python">
+urlpatterns = [ path(&#39;admin/&#39;, admin.site.urls), path(&#39;test/&#39;,views.test_html), ]
+</pre>
+从上述过程我们不难体会 Django 视图函数的实现流程。首先定义了视图函数 test_html()，然后在 templates 文件夹中新建了 test.html 文件，使用它作为模板文件；最后我们配置了视图函数的路由映射关系，以上步骤完成后，我们可以通过访问 127.0.0.1/test 得到如下展示页面：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="C语言中文网" src="../uploads/allimg/200410/9-2004101420593b_2.png" /><br />
+	图1：页面展示效果</div>
+<h2>
+	3. render方法详解</h2>
+renbder 方法的作用是结合一个给定的模板和一个给定的字典，并返回一个渲染后的 HttpResponse 对象。通俗的讲就是把字典格式的内容, 加载进 templates 目录中定义的 HTML 文件, 最终通过浏览器渲染呈现.<br />
+<br />
+rebder() 方法的完整参数格式如下所示：
+<pre class="python">
+render(request, template_name, context=None, content_type=None, status=None, using=None)</pre>
+以下每个参数的含义如下所示：
+<ul>
+	<li>
+		request: 是一个固定参数，用于生成响应的请求对象；</li>
+	<li>
+		template_name:&nbsp;templates 中定义的文件, 要注意路径名. 比如 &#39;templates\appname\index.html&#39;, 参数就要写&lsquo;appname\index.html&rsquo;；</li>
+	<li>
+		context: 要传入文件中用于渲染呈现的数据, 默认是字典格式；</li>
+	<li>
+		content_type:&nbsp;生成的文档要使用的媒体格式类型。默认为 DEFAULT_CONTENT_TYPE 设置的值；</li>
+	<li>
+		status: http 的响应代码,默认是 200；</li>
+	<li>
+		using:&nbsp;用于加载模板使用的模板引擎的名称。</li>
+</ul>
+<br />
+常见的 content_type 媒体格式，如下所示：<br />
+<p class="info-box">
+	text/html ： HTML 格式<br />
+	text/plain ：纯文本格式<br />
+	text/xml ： XML 格式<br />
+	<br />
+	image/gif ：gif 图片格式<br />
+	image/jpeg ：jpg 图片格式<br />
+	image/png：png 图片格式<br />
+	<br />
+	application/xhtml+xml ：XHTML 格式<br />
+	application/xml： XML 数据格式<br />
+	application/atom+xml ：Atom XML 聚合格式<br />
+	application/json： JSON 数据格式<br />
+	application/pdf：pdf 格式<br />
+	application/msword ：Word 文档格式<br />
+	application/octet-stream ： 二进制流数据（如常见的文件下载）<br />
+	application/x-www-form-urlencoded ：form 表单数据被编码为 key/value 格式发送到服务器（表单默认的提交数据的格式）。<br />
+	<br />
+	multipart/form-data ： 需要在表单中进行文件上传时，就需要使用该格式</p>
+本节是我们使用 Templates 模板的的开始，下一节我们将详细介绍 Django 模板语言的语法，对它展开进一步的学习。 </div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_2079_2.html" title="C语言插入、删除、更改文件内容" target="_blank">C语言插入、删除、更改文件内容</a></li>
+<li><a href="2593_2.html" title="MySQL创建存储过程（CREATE PROCEDURE）" target="_blank">MySQL创建存储过程（CREATE PROCEDURE）</a></li>
+<li><a href="vip_7649_2.html" title="为什么要学Linux，它比Windows好在哪里？" target="_blank">为什么要学Linux，它比Windows好在哪里？</a></li>
+<li><a href="8064_2.html" title="extern &quot;C&quot;：实现C++和C的混合编程" target="_blank">extern &quot;C&quot;：实现C++和C的混合编程</a></li>
+<li><a href="../jstl/fmt-requestencoding_2.html" title="&lt;fmt:requestEncoding&gt;标签" target="_blank">&lt;fmt:requestEncoding&gt;标签</a></li>
+<li><a href="../csharp/while_2.html" title="C# while循环" target="_blank">C# while循环</a></li>
+<li><a href="f03wu83_2.html" title="Redis缓存雪崩、缓存击穿和缓存穿透是怎么回事？" target="_blank">Redis缓存雪崩、缓存击穿和缓存穿透是怎么回事？</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7525;
+window.arcId = "ee87kn3MGFljxiKMh7lpQXcGX54oUxBFeLdT+0mmNtdJQ/mWmFKTE/a/CVk";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C语言渔夫打鱼晒网问题</title>
+<meta name="description" content="如果一个渔夫从 2011 年 1 月 1 日开始每三天打一次渔，两天晒一次网，编程实现当输入 2011 1 月 1 日以后的任意一天，输出该渔夫是在打渔还是在晒网。 实现过程： (1) 自定义函数 leap" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C语言渔夫打鱼晒网问题</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">如果一个渔夫从 2011 年 1 月 1 日开始每三天打一次渔，两天晒一次网，编程实现当输入 2011 1 月 1 日以后的任意一天，输出该渔夫是在打渔还是在晒网。
+<h2>
+实现过程：</h2>
+(1) 自定义函数 leap()，用来判断输入的年份是否是闰年。<br />
+<br />
+(2) 自定义函数 number()，用来计算输入日期距 2011 年 1 月 1 日共有多少天。<br />
+<br />
+(3) main() 函数作为程序的入口函数，在 main() 函数中调用上面两个函数。程序代码如下：
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+int leap(int a) /*自定义函数leap()用来指定输入的年份是否为闰年*/
+{
+    if (a%4==0&amp;&amp;a%100!=0||a%400==0)    /* 闰年判定条件 */
+        return 1;    /*是闰年返回1*/
+    else
+        return 0;    /*不是闰年返回O*/
+}
+
+int number(int year,int month,int day)    /*自定义函数 number() 计算输入日期距2011年1月1日共有多少天*/
+{
+    int sum = 0, i, j, k;
+    int a[12]={31,28,31,30,31,30,31,31,30,31,30,31};    /*数组a存放平年每月的天数*/
+    int b[12]={31,29,31,30,31,30,31,31,30,31,30,31};    /*数组b存放闰年每月的天数*/
+
+    if(leap(year)==1)    /*判断是否为闰年*/
+        for(i=0;i&lt;month-1;i++)
+        sum+=b[i];    /*是闰年，累加数组b前m-1个月份的天数*/
+    else
+        for(i=0;i&lt;month-1;i++)
+        sum+=a[i];    /*不是闰年，累加数组a前m-1个月份的天数*/
+    for(j=2011;j&lt;year;j++)
+    if (leap(j)==i)
+        sum+=366;    /*2011年到输入的年份是闰年的加366*/
+    else
+        sum+=365;    /*2011年到输入的年份不是闰年的加365*/
+    sum+=day;    /*将前面累加的结果加上日期，求出总天数*/
+    return sum;    /*返回计算的天数*/
+}
+
+int main()
+{
+    int year,month,day,n;
+    printf(&quot;请输入年月日\n&quot;);
+    scanf(&quot;%d%d%d&quot;,&amp;year,&amp;month,&amp;day);    /*输入年月日*/
+    n=number(year,month,day);    /*调用函数 number()*/
+    if((n%5)&lt;4&amp;&amp;(n%5)&gt;0)    /*余数是1或2或3时说明在打渔，否则在晒网*/
+        printf(&quot;%d：%d：%d 打鱼\n&quot;,year,month,day);
+    else
+        printf(&quot;%d：%d：%d 晒网\n&quot;,year,month,day);
+    return 0;
+}</pre>
+<h2>
+运行结果：</h2>
+<p class="info-box">
+请输入年月日<br />
+2011 1 4<br />
+2011：1：4 晒网</p>
+<h2>
+技术要点：</h2>
+本实例主要有以下两个技术要点：<br />
+<br />
+(1) 判断输入的年份（2011 年以后包括 2011 年）是否为闰年，这里自定义函数 leap() 来进行判断。该函数的核心内容就是闰年的判断条件即能被 4 整除但不能被 100 整除，或能被 400 整除。<br />
+<br />
+(2) 求输入日期距 2011 年 1 月 1 日有多少天。首先判断 2011 年距输入的年份有多少年，这其中有多少年是闰年就将 sum 加多少个 366，有多少年是平年便将 sum 加上多少个 365。<br />
+<br />
+其次要将 12 个月每月的天数存到数组中，因为闰年 2 月份的天数有别于平年，故采用两个数组 a 和 b 分别存储。若输入年份是平年，月份为 m 时就在前面累加日期的基础上继续累加存储着平年每月天数的数组的前 m-1 个元素，将累加结果加上输入的日期便求出了最终结果。闰年的算法类似。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1725.html" title="进制转换：二进制、八进制、十六进制、十进制之间的转换" target="_blank">进制转换：二进制、八进制、十六进制、十进制之间的转换</a></li>
+<li><a href="../c/exp.html" title="C语言exp()函数：返回以e的x次幂（次方）" target="_blank">C语言exp()函数：返回以e的x次幂（次方）</a></li>
+<li><a href="4118.html" title="Go语言range关键字：循环迭代切片" target="_blank">Go语言range关键字：循环迭代切片</a></li>
+<li><a href="vip_7084.html" title="Java通过反射获取注解信息" target="_blank">Java通过反射获取注解信息</a></li>
+<li><a href="7694.html" title="Django聚合查询和分组查询" target="_blank">Django聚合查询和分组查询</a></li>
+<li><a href="vip_8340.html" title="向MySQL发送一个请求的时候，MySQL到底做了些什么？" target="_blank">向MySQL发送一个请求的时候，MySQL到底做了些什么？</a></li>
+<li><a href="9856.html" title="RPA技术简介" target="_blank">RPA技术简介</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 516;
+window.arcId = "53f9WhDthUWQOPyOcB/Bv4fZZcESI9hOXMffAMwPhwPipbSYuWzxIl3mrg";
+window.typeidChain = "66|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

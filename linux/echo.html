@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>echo命令_Linux echo命令：显示文字并给文字添加颜色</title>
+<meta name="description" content="相信绝大多数程序员人生中的第一个程序都是Hello，world，而在 Linux Shell 中，这个程序是由 echo 命令来完成的。当你需要在屏幕上显示一些提示信息时，你就需要 echo 的帮忙，它就像一个" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="../view/niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>echo命令_Linux echo命令：显示文字并给文字添加颜色</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">相信绝大多数程序员人生中的第一个程序都是&ldquo;Hello，world&rdquo;，而在 Linux Shell 中，这个程序是由 echo 命令来完成的。当你需要在屏幕上显示一些提示信息时，你就需要 echo 的帮忙，它就像一个麦克风，说你想说，唱你想唱。
+<h2>
+用 echo 显示字符串</h2>
+其实非常的简单，就是在 echo 后面加上想要显示的内容就好了：
+<pre class="info-box">
+[roc@roclinux ~]$ echo &#39;Hello World&#39;
+Hello World
+ 
+[roc@roclinux ~]$ echo &quot;Hello World&quot;
+Hello World
+ 
+[roc@roclinux ~]$ echo Hello World
+Hello World</pre>
+至于单引号、双引号、不加引号的区别，还请看下面的内容。
+<h2>
+用 echo 显示变量的值</h2>
+在 echo 的后面，不仅可以加字符串，还可以加变量名：
+<pre class="info-box">
+#我们定义了一个变量, 叫作str
+[roc@roclinux ~]$ str=&quot;Hello World&quot;
+ 
+#在echo后面加上str变量, 照样可以显示出来
+[roc@roclinux ~]$ echo &quot;$str, good morning&quot;
+Hello World, good morning</pre>
+<h2>
+神奇的反斜杠转义</h2>
+转义字符，是 Shell 中的一些具有特殊功能的字符，比如 \n 表示换行、\t 表示制表符等。转义字符统一由反斜线&ldquo;\&rdquo;开头，后跟一个或几个字符，这样就赋予了字符&ldquo;神奇的能力&rdquo;。<br />
+<br />
+在 echo 中，要使用转义字符，需要使用<code>-e</code>选项，并使用双引号将转义字符括起来。<br />
+<br />
+下面来看看实际的用法吧：
+<pre class="info-box">
+#一个很普通的Hello World
+[roc@roclinux ~]$ echo &quot;Hello World&quot;
+Hello World
+ 
+#尾部带有\n的Hello World, \n并没有被赋予&quot;神奇的能力&quot;
+[roc@roclinux ~]$ echo &quot;Hello World\n&quot;
+Hello World\n
+ 
+#使用了-e选项后, \n被赋予了&quot;神奇的能力&quot;, 它实现了换行效果
+[roc@roclinux ~]$ echo -e &quot;Hello World\n&quot;
+Hello World</pre>
+<br />
+从上面的例子可以得出结论：
+<ul>
+<li>
+不带<code>-e</code>选项的 echo，将 \n 认为是普通字符；</li>
+<li>
+使用了<code>-e</code>选项的 echo，会将 \n 认为是换行符。</li>
+</ul>
+<br />
+其实世间还有很多转义字符，我们来一起开开眼界，如表 1 所示。<br />
+<table border="1">
+<caption>
+表1 转义字符</caption>
+<tbody>
+<tr>
+<th>
+打印参数</th>
+<th>
+解&nbsp;释</th>
+</tr>
+<tr>
+<td>
+\a</td>
+<td>
+响铃</td>
+</tr>
+<tr>
+<td>
+\b</td>
+<td>
+退格(backspace)</td>
+</tr>
+<tr>
+<td>
+\e</td>
+<td>
+转义符</td>
+</tr>
+<tr>
+<td>
+\c</td>
+<td>
+不换行</td>
+</tr>
+<tr>
+<td>
+\f</td>
+<td>
+换页</td>
+</tr>
+<tr>
+<td>
+\n</td>
+<td>
+换行</td>
+</tr>
+<tr>
+<td>
+\r</td>
+<td>
+回车</td>
+</tr>
+<tr>
+<td>
+\t</td>
+<td>
+水平制表符</td>
+</tr>
+<tr>
+<td>
+\v</td>
+<td>
+垂直制表符</td>
+</tr>
+<tr>
+<td>
+\ONNN</td>
+<td>
+字节数以八进制数 NNN (1 至 3 位）表不</td>
+</tr>
+<tr>
+<td>
+\xHH</td>
+<td>
+字节数以十六进制数 HH (1 至 2 位）表不</td>
+</tr>
+</tbody>
+</table>
+<h2>
+关闭 echo 的自动换行行为</h2>
+默认情况下，echo 会在内容输出之后换行。如果平时没有注意过的话，这里再为大家演示一遍：
+<pre class="info-box">
+[roc@roclinux ~]$ echo &quot;Hello World&quot;
+Hello World
+[roc@roclinux ~]$</pre>
+<br />
+如果希望改变这种默认的换行行为，有两种方法：
+<ul>
+<li>
+用<code>-n</code>选项去掉 echo 末尾的换行符；</li>
+<li>
+用<code>-e</code>选项打印出转义字符。</li>
+</ul>
+<br />
+在开发 Shell 程序时，我们经常需要用户在一些提示语句后面的同一行输入一些内容，这时，我们就需要用到&ldquo;让 echo 不换行&rdquo;的技能了。<br />
+<br />
+面的例子中，我们显示&ldquo;Enter your username：&rdquo;的同时不进行换行，等待用户在提示语后面输入他们的用户名，这种体验要比换行后输入用户名更友好：
+<pre class="info-box">
+#使用-n后, echo后面的换行效果消失了, 这也就导致了Shell提示符显示在了提示语同一行的后面
+[roc@roclinux ~]$ echo -n &quot;Enter your username:&quot;
+Enter your username:[roc@roclinux ~]$
+ 
+#用-e选项加\c转义符, 也可以实现不换行效果
+[roc@roclinux ~]$ echo -e &quot;Enter your username:\c&quot;
+Enter your username:[roc@roclinux ~]$</pre>
+<h2>
+echo 后面的引号</h2>
+在文章开始阶段，我们为大家展示了三种 Hello World，大家还记得下面这三个命令吧：
+<pre class="info-box">
+[roc@roclinux ~]$ echo &#39;Hello World&#39;
+Hello World
+ 
+[roc@roclinux ~]$ echo &quot;Hello World&quot;
+Hello World
+ 
+[roc@roclinux ~]$ echo Hello World
+Hello World</pre>
+<br />
+这三个 echo 命令的写法不同，但却有着相同的输出，所以很多人就误以为单引号、双引号、不加引号的效果是相同的。希望看完这一段落，大家会对这些引号拥有新的认识。<br />
+<br />
+<table border="1">
+<caption>
+表2 引号的效果</caption>
+<tbody>
+<tr>
+<th>
+输入命令</th>
+<th>
+输出内容</th>
+<th>
+解&nbsp;释</th>
+</tr>
+<tr>
+<td>
+echo &#39;$USER * $(date)&#39;</td>
+<td>
+$USER * $(date)</td>
+<td>
+单引号无视所有特殊字符，所有字符在它眼里 都是普通字符，都是芸芸众生</td>
+</tr>
+<tr>
+<td>
+echo &quot;$USER * $(date)&quot;</td>
+<td>
+root * Thu Feb 25 12:03:48 CST 2016</td>
+<td>
+双引号会无视文件通配符，但&ldquo;$&rdquo;、&ldquo;\&rdquo;、 会起作用，我管它们叫&ldquo;美金&rdquo;、&ldquo;砍刀&rdquo;、&nbsp;&ldquo;硫酸雨&rdquo;</td>
+</tr>
+<tr>
+<td>
+echo $USER * $(date)</td>
+<td>
+root book others Thu Feb 25 12:03:48 CST 2016</td>
+<td>
+$USER&nbsp;被翻译了&nbsp;root, * 被翻译了&nbsp;book, others<br />
+是我当前目录下的目录结构</td>
+</tr>
+</tbody>
+</table>
+<br />
+我们由表 2 可以看出，单引号将所有字符都看成普通字符，双引号会解释<code>$</code>、<code>\</code>和<code>`</code>这三种特殊字符，不加引号的话则会解释所有特殊字符。<br />
+<br />
+如果我们想用 echo 打印出双引号，该怎么做呢：<br />
+方法一：echo&quot;\&quot;Hello World\&quot;&quot;，最外层是双引号，它不敢无视&ldquo;砍刀&rdquo;，所以<code>\</code>能起到转义字符的作用，可以把后面的<code>&quot;</code>打印出来。<br />
+方法二：echo&lsquo;&quot;Hello World&quot;&rsquo;，最外层是单引号，无视所有特殊字符包括双引号，所以双引号被认为是普通字符。<br />
+<pre class="info-box">
+[roc@roclinux ~]$ echo &quot;\&quot;Hello World\&quot;&quot;
+&quot;Hello World&quot;
+[roc@roclinux ~]$ echo &#39;&quot;Hello World&quot;&#39;
+&quot;Hello World&quot;</pre>
+<br />
+既然有打印双引号的需求，也就有可能打印单引号，方法是类似的，使用双引号套单引号就可以实现了：
+<pre class="info-box">
+[roc@roclinux ~]$ echo &quot;&#39;Hello World&#39;&quot;
+&#39;Hello World&#39;</pre>
+<br />
+这时有些 GEEK 会发出疑问了，如果单引号中间套单引号，或者双引号中间套双引号，会是什么结果呢？
+<pre class="info-box">
+[root@roclinux ~]# echo &quot;&quot;Hello World&quot;&quot;
+Hello World</pre>
+从输出的内容可以看出，并没有任何的双引号被显示出来，这是为什么呢？<br />
+<br />
+原来，在 Shell 中，一个双引号会去寻找它右边最靠近它的那个双引号进行配对，形成&ldquo;一对双引号&rdquo;。所以我们上面的命令事与愿违了，echo 会认为我们要打印三块内容：
+<ol>
+<li>
+一对双引号，内容是空的</li>
+<li>
+Hello World</li>
+<li>
+又一对双引号，内容还是空的</li>
+</ol>
+<h2>
+在 Shell 中显示色彩</h2>
+echo 命令，中文叫作&ldquo;回声&rdquo;，echo 还有另一面，那就是它色彩斑斓的一面。耳听为虚，眼见为实，我们先来看一个示例，如图 1 所示。<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/180926/3-1P926164009458.jpg" /><br />
+图1</div>
+<br />
+看到了吧，echo 命令输出了红底青字，大家也看到了 echo 的另一面。原理其实并不难，echo 是通过使用&ldquo;转义序列&rdquo;来为世界涂上颜色的。语法格式如下：
+<pre class="info-box">
+echo -e &quot;\033[颜色1;颜色2m 要展示的文字 \033[0m&quot;</pre>
+<br />
+格式详解：
+<ul>
+<li>
+-e选项：表示允许反斜杠（对字符）转义。</li>
+<li>
+\033[颜色1；颜色2m：称为转义序列，它本身是一个整体，中间不要有空格。</li>
+<li>
+\033[：转义序列的开始。其中\033代表Esc符号，也可以使用\E或\e来代替。</li>
+<li>
+颜色1和颜色2：表示字体的前景色或背景色，至于颜色1和颜色2哪一个表示前景色，哪一个表示背景色，由其设定的数值来决定，前景色和背景色的数值空间是不同的。</li>
+<li>
+m：转义序列的终止标志。</li>
+<li>
+\033[0m：表示将颜色恢复回原来的配色。</li>
+</ul>
+<br />
+好了，了解完原理，我们再来详细看一下上面的示例，如图 2 所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/180926/3-1P926164539348.jpg" /><br />
+图2</div>
+<br />
+图 2 中所有涉及的颜色如表 3 所示。<br />
+<table border="1" cellpadding="1" cellspacing="1">
+<caption>
+表3 涉及的颜色</caption>
+<tbody>
+<tr>
+<th>
+色彩</th>
+<th>
+黑</th>
+<th>
+红</th>
+<th>
+绿</th>
+<th>
+黄</th>
+<th>
+蓝</th>
+<th>
+洋红</th>
+<th>
+青</th>
+<th>
+白</th>
+</tr>
+<tr>
+<th>
+前景色</th>
+<td>
+30</td>
+<td>
+31</td>
+<td>
+32</td>
+<td>
+33</td>
+<td>
+34</td>
+<td>
+35</td>
+<td>
+36</td>
+<td>
+37</td>
+</tr>
+<tr>
+<th>
+背景色</th>
+<td>
+40</td>
+<td>
+41</td>
+<td>
+42</td>
+<td>
+43</td>
+<td>
+44</td>
+<td>
+45</td>
+<td>
+46</td>
+<td>
+47</td>
+</tr>
+</tbody>
+</table>
+<h2>
+在脚本中显示色彩</h2>
+脚本中使用 echo 显示色彩的方法有两种：
+<ol>
+<li>
+在 Shell 脚本中事先定义好&ldquo;颜色变量&rdquo;，然后使用 echo-e 来调用变量显示颜色。</li>
+<li>
+在 Shell 脚本中事先定义好&ldquo;颜色动作&rdquo;，然后直接调用动作来输出变量。</li>
+</ol>
+<br />
+我们通过两个示例来为大家展示什么是颜色变量，什么又是颜色动作。<br />
+<br />
+第一种方法：定义颜色变量
+<pre class="info-box">
+#!/bin/bash
+# 定义颜色变量, 还记得吧, \033、\e和\E是等价的
+RED=&#39;\E[1;31m&#39;       # 红
+GREEN=&#39;\E[1;32m&#39;    # 绿
+YELOW=&#39;\E[1;33m&#39;    # 黄
+BLUE=&#39;\E[1;34m&#39;     # 蓝
+PINK=&#39;\E[1;35m&#39;     # 粉红
+RES=&#39;\E[0m&#39;          # 清除颜色
+ 
+ 
+# 真正使用时, 我们通过echo -e来调用
+echo -e  &quot;${RED}Red color${RES}&quot;
+echo -e  &quot;${YELOW}Yelow color${RES}&quot;
+echo -e  &quot;${BLUE}Blue color${RES}&quot;
+echo -e  &quot;${GREEN}Green color${RES}&quot;
+echo -e  &quot;${PINK}Pink color${RES}&quot;</pre>
+这种方法的原理是，把转义序列定义为变量，echo 时直接引用变量就行了。<br />
+<br />
+第二种方法：定义颜色动作
+<pre class="info-box">
+#!/bin/bash
+# 定义颜色动作, 把echo -e也定义到变量中
+SETCOLOR_SUCCESS=&quot;echo -en \\E[1;32m&quot;
+SETCOLOR_FAILURE=&quot;echo -en \\E[1;31m&quot;
+SETCOLOR_WARNING=&quot;echo -en \\E[1;33m&quot;
+SETCOLOR_NORMAL=&quot;echo -en  \\E[0;39m&quot;
+ 
+# 使用时直接调用颜色动作即可
+$SETCOLOR_SUCCESS &amp;&amp; echo SUCCESS   
+$SETCOLOR_FAILURE &amp;&amp; echo FAILURE   
+$SETCOLOR_WARNING &amp;&amp; echo WARNING   
+$SETCOLOR_NORMAL  &amp;&amp; echo NORMAL</pre>
+<br />
+第二种方法和第一种方法的思路类似，唯一不同的是我们把 echo 也加入到了定义中。这样有一个好处就是，使用时不用频繁输入 echo 了。不过，需要注意其中的一些细节：
+<ol>
+<li>
+需要增加<code>-n</code>选项，这样引用时不会出现换行的问题。</li>
+<li>
+<code>\\</code>本质是<code>\</code>，在双引号中反斜线符号一定要写成<code>\\</code>。</li>
+<li>
+引用变量要放到其他语句前面，并使用<code>&amp;&amp;</code>连接。</li>
+</ol>
+<br />
+好了，有了这些知识，相信你一定能让你的 Shell 程序绚烂多彩的，给用户带来一次视觉上的饕餮大餐。
+<h2>
+拥抱 terminfo，逃避火星文</h2>
+截至目前，我们所掌握的两种&ldquo;涂色&rdquo;方法，都是通过转义序列来实现的。使用转义序列会有一个很不爽的地方，那就是我们要记忆&ldquo;反人类的&rdquo;火星文（\E[1；31m），这无论对谁来说，都会是一个负担。那么，有没有比较优雅的方式来实现&ldquo;涂色&rdquo;呢？<br />
+<br />
+有的，要相信世界是美好的。我们可以通过 terminfo 来实现。那么，terminfo 是什么呢？<br />
+<br />
+UNIX 诞生之初，计算机专家们就是利用终端来登录到 UNIX 主机的，而不同类型的终端使用着不同的命令集，这会导致终端与 UNIX 之间无法配合工作。<br />
+<br />
+为了解决这个问题，计算机专家们将几乎所有类型的终端的命令集都存储到了一个数据库中，以便实现统一化、标准化的处理和响应。而这个数据库就被称为 terminfo。<br />
+<br />
+要想逃避火星文，我们需要 terminfo 的帮忙，而 tput 便是帮我们与 terminfo 建立联系的那个人。
+<h2>
+tput 让我们简单地涂色</h2>
+tput 命令会利用 terminfo 数据库中的信息，来控制和更改我们的终端，比如控制光标、更改文本属性、控制屏幕，以及为文本涂色。<br />
+<br />
+其中，为文本涂色的方法是：
+<ul>
+<li>
+tput setab：用于设置背景色；</li>
+<li>
+tput setaf：用于设置前景色。</li>
+</ul>
+<br />
+其中颜色的定义如表 4 所示。<br />
+<table border="1" cellpadding="1" cellspacing="1">
+<caption>
+表4 颜色的定义</caption>
+<tbody>
+<tr>
+<th>
+数值</th>
+<td>
+0</td>
+<td>
+1</td>
+<td>
+2</td>
+<td>
+3</td>
+<td>
+4</td>
+<td>
+5</td>
+<td>
+6</td>
+<td>
+7</td>
+</tr>
+<tr>
+<th>
+颜色</th>
+<td>
+黑色</td>
+<td>
+红色</td>
+<td>
+绿色</td>
+<td>
+黄色</td>
+<td>
+蓝色</td>
+<td>
+洋红色</td>
+<td>
+黄色</td>
+<td>
+白色</td>
+</tr>
+</tbody>
+</table>
+<br />
+好了，万事俱备，只欠东风，我们来通过 tput 编写涂色脚本吧：
+<pre class="info-box">
+RED=$(tput setaf 1)
+GREEN=$(tput setaf 2)
+RESET=$(tput sgr0)
+echo &quot;${RED}red text ${GREEN}green text${RESET}&quot;</pre>
+<br />
+这样看着清爽直观多了，解答一个可能的疑惑：sgr0 表示颜色重置。<br />
+<br />
+好了，恭喜大家学习完了 echo，相信对 echo 的内容输出和涂色功能，都有了更深的理解和掌握，相信大家以后一定可以开发出交互性更好、更漂亮的 Shell 程序的。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="../view/niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/355.html" title="C语言字符串数组" target="_blank">C语言字符串数组</a></li>
+<li><a href="../view/vip_3248.html" title="子Shell和子进程到底有什么区别？" target="_blank">子Shell和子进程到底有什么区别？</a></li>
+<li><a href="../view/7628.html" title="我们身边有哪些数据库？" target="_blank">我们身边有哪些数据库？</a></li>
+<li><a href="../dll/vip_8707.html" title="Linux下动态链接库的创建和使用" target="_blank">Linux下动态链接库的创建和使用</a></li>
+<li><a href="../view/9859.html" title="区块链是什么" target="_blank">区块链是什么</a></li>
+<li><a href="../view/lnnkiq.html" title="C语言常用占位符" target="_blank">C语言常用占位符</a></li>
+<li><a href="../c/trunc.html" title="C语言trunc()函数：截断浮点数" target="_blank">C语言trunc()函数：截断浮点数</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 708;
+window.arcId = "d362JrVuI0yFSxW7shD+JFk3Ze0e55bn3yGBVaQi3cOpD2qMAvTyLe2k5w";
+window.typeidChain = "71|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="../view/8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="../view/8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="../view/8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="../view/9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="../view/8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

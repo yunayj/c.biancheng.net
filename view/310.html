@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>switch语句用法注意事项，如何正确使用switch语句</title>
+<meta name="description" content="相对于 if 语句而言，switch 语句可以更方便地应用于多个分支的控制流程。C89 指明，一个 switch 语句最少可以支持 257 个 case 语句，而 C99 则要求至少支持 1023 个 case 语句。然而，在实际" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>switch语句用法注意事项，如何正确使用switch语句</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">相对于 if 语句而言，switch 语句可以更方便地应用于多个分支的控制流程。C89 指明，一个 switch 语句最少可以支持 257 个 case 语句，而 C99 则要求至少支持 1023 个 case 语句。然而，在实际开发环境中，为了程序的可读性与执行效率，应该尽量减少 switch 语句中的 case 语句。<br />
+<br />
+除此之外，switch 语句与 if 语句不同的是，switch 语句只能够测试是否相等，因此，case 语句后面只能是整型或字符型的常量或常量表达式；而在 if 语句中还能够测试关系与逻辑表达式。<br />
+<h2>
+不要忘记在 case 语句的结尾添加 break 语句</h2>
+在 switch 语句中，每个 case 语句的结尾不要忘记添加 break 语句，否则将导致多个分支重叠。当然，除非有意使多个分支重叠，这样可以免去 break 语句。下面我们来看一个实际示例。
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+void print_week(unsigned int day);
+void print_week(unsigned int day)
+{
+    switch(day)
+    {
+        case 1:
+            printf(&quot;Monday\n&quot;);
+            break;
+        case 2:
+            printf(&quot;Tuesday\n&quot;);
+            break;
+        case 3:
+            printf(&quot;Wednesday\n&quot;);
+            break;
+        case 4:
+            printf(&quot;Thursday\n&quot;);
+            break;
+        case 5:
+            printf(&quot;Friday\n&quot;);
+            break;
+        case 6:
+            printf(&quot;Saturday\n&quot;);
+            break;
+        case 7:
+            printf(&quot;Sunday\n&quot;);
+            break;
+        default:
+            printf(&quot;error\n&quot;);
+            break;
+    }
+}
+int main (void)
+{
+    print_week(3);
+    return 0;
+}</pre>
+该程序中，在 print_week 函数中通过 switch 语句实现根据数字输出星期名称的功能。执行代码，程序将输出&ldquo;Wednesday&rdquo;。<br />
+<br />
+现在，如果将 case 1~case 4 的 break 语句去掉，如下代码所示，程序会输出什么结果呢？
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+void print_week(unsigned int day);
+void print_week(unsigned int day)
+{
+    switch(day)
+    {
+        case 1:
+            printf(&quot;Monday\n&quot;);
+        case 2:
+            printf(&quot;Tuesday\n&quot;);
+        case 3:
+            printf(&quot;Wednesday\n&quot;);
+        case 4:
+            printf(&quot;Thursday\n&quot;);
+        case 5:
+            printf(&quot;Friday\n&quot;);
+            break;
+        case 6:
+            printf(&quot;Saturday\n&quot;);
+            break;
+        case 7:
+            printf(&quot;Sunday\n&quot;);
+            break;
+        default:
+            printf(&quot;error\n&quot;);
+            break;
+    }
+}
+int main (void)
+{
+    print_week(3);
+    return 0;
+}</pre>
+运行结果为：<br />
+Wednesday<br />
+Thursday<br />
+Friday
+<h2>
+不要忘记在 switch 语句的结尾添加 default 语句</h2>
+在 switch 语句中，default 语句主要用于检查默认情况，或者处理错误情况，如下面的示例代码所示：<br />
+<pre class="cpp">
+default:
+    printf(&quot;error\n&quot;);
+    break;</pre>
+如果在 switch 语句中去掉 default 语句，那么 switch 语句将失去对默认情况与错误情况的处理能力。所以，奉劝大家不要偷懒，老老实实把每一种情况都用 case 语句来完成，而把真正对默认情况的处理交给 default 语句来完成。即使程序真的不需要 default 处理，也应该保留此语句：<br />
+<pre class="cpp">
+default:
+    break;</pre>
+这样做并非画蛇添足，可以避免令人误以为你忘记了 default 处理。<br />
+<h2>
+不要为了使用 case 语句而刻意构造一个变量</h2>
+在实际编程应用中，switch 中的 case 语句应该只用于处理简单的、容易分类的数据。如果数据并不简单，却为了使用 case 语句而刻意构造一个变量，那么这种变量很容易令我们得不偿失。因此应该严格避免这种变量，并使用 if/else 结构来处理这类程序，如下面的示例代码所示：<br />
+<pre class="cpp">
+char ch = c[0];
+switch (ch)
+{
+    case &#39;a&#39;:
+        f1();
+        break;
+    case &#39;b&#39;:
+        f2();
+        break;
+    case &#39;c&#39;:
+        f3();
+        break;
+    default:
+        break;
+}</pre>
+在上面的程序中，字符变量 ch 的值是取字符数组 c[] 的第一个字符，与 case 语句中的常量值逐一进行比较。很显然，这种方法存在一个严重的问题。<br />
+<br />
+例如，如果字符数组 c[] 中存储的是&ldquo;ab&rdquo;字符串，那么 c[0] 会取第一个字符&ldquo;a&rdquo;与 case 语句进行匹配，因此会匹配到第一个 case 语句，并调用 f1() 函数。然而，如果字符数组 c[] 中存储的是其他以字符 a 开头的字符串（比如&ldquo;abc&rdquo;&ldquo;abcd&rdquo;&ldquo;abcde&rdquo;等），因为 c[0] 始终会取第一个字符的关系，因此它们同样会匹配第一个 case 语句而调用 f1() 函数。其他的 case 语句同理。很显然，这并不是我们想要的结果。<br />
+<br />
+由此可见，当为了使用 case 语句而刻意构造一个变量时，真正的数据可能不会按照我们所希望的方式映射到 case 语句。因此，我们应该严格避免为了使用 case 语句而刻意构造一个变量，并使用 if/else 结构来处理这类程序，如下面的示例代码所示：<br />
+<pre class="cpp">
+if(0 == strcmp(&quot;ab&quot;,c))
+{
+    f1();
+}
+else if(0 == strcmp(&quot;bc&quot;,c))
+{
+    f2();
+}
+else if(0 == strcmp(&quot;cd&quot;,c))
+{
+    f3();
+}
+else
+{
+}</pre>
+<h2>
+尽量将长的 switch 语句转换为嵌套的 switch 语句</h2>
+有时候，当一个 switch 语句中包括很多个 case 语句时，为了减少比较的次数，可以把这类长 switch 语句转为嵌套 switch 语句，即把发生频率高的 case 语句放在一个 switch 语句中，作为嵌套 switch 语句的最外层；把发生频率相对低的 case 语句放在另一个 switch 语句中，放置于嵌套 switch 语句的内层。<br />
+<br />
+例如，下面的代码把发生频率相对较低的情况放置于默认的 case 语句内。
+<pre class="cpp">
+void print_week(unsigned int day)
+{
+    switch(day)
+    {
+        case 1:
+            printf(&quot;Monday\n&quot;);
+            break;
+        case 2:
+            printf(&quot;Tuesday\n&quot;);
+            break;
+        case 3:
+            printf(&quot;Wednesday\n&quot;);
+            break;
+        case 4:
+            printf(&quot;Thursday\n&quot;);
+            break;
+        case 5:
+            printf(&quot;Friday\n&quot;);
+            break;
+        default:
+            switch(day)
+            {
+                case 6:
+                    printf(&quot;Saturday\n&quot;);
+                    break;
+                case 7:
+                    printf(&quot;Sunday\n&quot;);
+                    break;
+                default:
+                    printf(&quot;error\n&quot;);
+                    break;
+            }
+    }
+}</pre>
+在上面的代码中，假设 case 6 与 case 7 不经常发生，因此将它们放置到嵌套 switch 语句的最内层。从表面看，虽然这样损失了程序的一定可读性，但当 case 语句很多，并且确实有些 case 语句发生的频率比较低时，这种解决方案还是可取的。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2041.html" title="C语言const的用法详解，C语言常量定义详解" target="_blank">C语言const的用法详解，C语言常量定义详解</a></li>
+<li><a href="4543.html" title="Go语言自定义数据文件" target="_blank">Go语言自定义数据文件</a></li>
+<li><a href="5532.html" title="Swagger是什么？Swagger怎么用？" target="_blank">Swagger是什么？Swagger怎么用？</a></li>
+<li><a href="6184.html" title="PHP array_flip()：交换数组中的键和值" target="_blank">PHP array_flip()：交换数组中的键和值</a></li>
+<li><a href="6732.html" title="Java try catch语句详解" target="_blank">Java try catch语句详解</a></li>
+<li><a href="mljdaz4.html" title="《C语言程序设计》全国计算机等级考试二级教程PDF下载（高清完整版）" target="_blank">《C语言程序设计》全国计算机等级考试二级教程PDF下载（高清完整版）</a></li>
+<li><a href="ql38ta7.html" title="《HTML与CSS基础教程 Web前端开发精品课》PDF下载（高清完整版）" target="_blank">《HTML与CSS基础教程 Web前端开发精品课》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 310;
+window.arcId = "53ecSEqJhy6XGW9bADZrSJpQRO4g7WjZlJOGwQhDuN0wGBVCiNrnVT8UoQ";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

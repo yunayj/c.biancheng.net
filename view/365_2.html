@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>void指针及其应用，C语言void指针及使用注意事项详解</title>
+<meta name="description" content="void 指针是一种特殊的指针，表示为无类型指针，在 ANSI C 中使用它来代替char*作为通用指针的类型。由于 void 指针没有特定的类型，因此它可以指向任何类型的数据。也就是说，任何类" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>void指针及其应用，C语言void指针及使用注意事项详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">void 指针是一种特殊的指针，表示为&ldquo;无类型指针&rdquo;，在 ANSI C 中使用它来代替&ldquo;char*&rdquo;作为通用指针的类型。由于 void 指针没有特定的类型，因此它可以指向任何类型的数据。也就是说，任何类型的指针都可以直接赋值给 void 指针，而无需进行其他相关的强制类型转换，如下面的示例代码所示：<br />
+<pre class="cpp">
+void *p1;
+int *p2;
+&hellip;
+p1 = p2;</pre>
+虽然如此，但这并不意味着可以无需任何强制类型转换就将 void 指针直接赋给其他类型的指针，因为&ldquo;空类型&rdquo;可以包容&ldquo;有类型&rdquo;，而&ldquo;有类型&rdquo;则不能包容&ldquo;空类型&rdquo;。正如我们可以说&ldquo;男人和女人都是人&rdquo;，但不能说&ldquo;人是男人&rdquo;或者&ldquo;人是女人&rdquo;一样。因此，下面的示例代码将编译出错，如果在 V<a href='../cplus/cplus_2.html' target='_blank'>C++</a>2010 中，将提示&ldquo;a value of type&quot;void*&quot;cannot be assigned to an entity of type&quot;int*&quot;&rdquo;的错误信息。<br />
+<pre class="cpp">
+void *p1;
+int *p2;
+&hellip;
+p2 = p1;</pre>
+由此可见，要将 void 指针赋值给其他类型的指针，必须进行强制类型转换。如下面的示例代码所示：<br />
+<pre class="cpp">
+void *p1;
+int *p2;
+&hellip;
+p2 = (int*)p1;</pre>
+<h2>
+	避免对void指针进行算术操作</h2>
+ANSI C 标准规定，进行算法操作的指针必须确定知道其指向数据类型大小，也就是说必须知道内存目的地址的确切值。如下面的示例代码所示：<br />
+<pre class="cpp">
+char a[20]=&quot;qwertyuiopasdfghjkl&quot;;
+int *p=(int *)a;
+p++;
+printf(&quot;%s&quot;, p);</pre>
+在上面的示例代码中，指针变量 p 的类型是&ldquo;int*&rdquo;，指向的类型是 int，被初始化为指向整型变量 a。<br />
+<br />
+在执行语句&ldquo;p++&rdquo;时，编译器是这样处理的：把指针 p 的值加上了&ldquo;sizeof（int）&rdquo;（由于在 32 位系统中，int 占 4 字节，所以这里是被加上了 4），即 p 所指向的地址由原来的变量 a 的地址向高地址方向增加了 4 字节。但又由于 char 类型的长度是一个字节，所以语句&ldquo;printf(&quot;%s&quot;,p)&rdquo;将输出&ldquo;tyuiopasdfghjkl&rdquo;。<br />
+<br />
+而对于 void 指针，编译器并不知道所指对象的大小，所以对 void 指针进行算术操作都是不合法的，如下面的示例代码所示：<br />
+<pre class="cpp">
+void * p;
+p++;      // ANSI：错误
+p+= 1;      // ANSI：错误</pre>
+上面的代码在 VC++2010 中将提示&ldquo;expression must be a pointer to a complete object type&rdquo;的错误信息。<br />
+<br />
+但值得注意的是，GNU 则不这么认为，它指定&ldquo;void*&rdquo;的算法操作与&ldquo;char*&rdquo;一致。因此下列语句在 GNU 编译器中都是正确的：<br />
+<pre class="cpp">
+void * p;
+p++;      // GUN：正确
+p+=1;      // GUN：正确</pre>
+下面的示例代码演示了在 <a href='../gcc/gcc_2.html' target='_blank'>GCC</a> 中执行对 void 指针的自增操作：<br />
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+int main(void)
+{
+    void * p=&quot;ILoveC&quot;;
+    p++;
+    printf(&quot;%s\n&quot;, p);
+}</pre>
+运行结果为：<br />
+LoveC<br />
+<br />
+由此可见，GNU 和 ANSI 还存在着一些区别，相比之下，GNU 较 ANSI 更&ldquo;开放&rdquo;，提供了对更多语法的支持。但是在真实的设计环境中，还是应该尽可能符合 ANSI 标准，尽量避免对 void 指针进行算术操作。<br />
+<h2>
+	如果函数的参数可以是任意类型指针，应该将其参数声明为 void*</h2>
+前面提到，void 指针可以指向任意类型的数据，同时任何类型的指针都可以直接赋值给 void 指针，而无需进行其他相关的强制类型转换。因此，在编程中，如果函数的参数可以是任意类型指针，那么应该使用 void 指针作为函数的形参，这样函数就可以接受任意数据类型的指针作为参数。<br />
+<br />
+比较典型的函数有内存操作函数 memcpy 和 memset，如下面的代码所示：<br />
+<pre class="cpp">
+void *memset(void *buffer, int b, size_t size)
+{
+    assert(buffer!=NULL);
+    char* retAddr = (char*)buffer;
+    while (size--&gt; 0)
+    {
+        *(retAddr++) = (char)b;
+    }
+    return retAddr;
+}
+void *memcpy (void *dst,  const void *src,  size_t size)
+{
+    assert((dst!=NULL) &amp;&amp; (src!=NULL));
+    char *temp_dest = (char *)dst;
+    char *temp_src = (char *)src;
+    char* retAddr = temp_dest;
+    size_t i = 0;
+    /* 解决数据区重叠问题*/
+    if ((retAddr&gt;temp_src) &amp;&amp; (retAddr&lt;(temp_src+size)))
+    {
+        for (i=size-1; i&gt;=0; i--)
+        {
+            *(temp_dest++) = *(temp_src++);
+        }
+    }
+    else
+    {
+        for (i=0; i&lt;size; i++)
+        {
+            *(temp_dest++) = *(temp_src++);
+        }
+    }
+    *(retAddr+size)=&#39;\0&#39;;
+    return retAddr;
+}</pre>
+这样，任何类型的指针都可以传入 memcpy 函数和 memset 函数中，这也真实地体现了内存操作函数的意义，因为它操作的对象仅仅是一片内存，而不论这片内存是什么类型。memcpy 函数的调用示例如下面的代码所示：<br />
+<pre class="cpp">
+char buf[]=&quot;abcdefg&quot;;
+// buf+2（从c开始，长度3个，即cde）
+memcpy(buf, buf+2 ,3);
+printf(&quot;%s\n&quot;, buf);</pre>
+或者进行如下形式的调用：<br />
+<pre class="cpp">
+int dst[100];
+int src[100];
+memcpy(dst, src, 100*sizeof(int));</pre>
+因为参数类型是 void*，所以上面的调用都是正确的。现在假设 memcpy 函数的参数类型不是 void*，而是 char*，如下面的代码所示：<br />
+<pre class="cpp">
+char *memcpy(char* dst, const char* src, size_t size)
+{
+    assert((dst !=NULL) &amp;&amp; (src != NULL));
+    char *retAddr = dst;
+    size_t i = 0;
+    if ((retAddr&gt;src) &amp;&amp; (retAddr&lt;(src+size)))
+    {
+        for (i=size-1; i&gt;=0; i--)
+        {
+            *(dst++)= *(src++);
+        }
+    }
+    else
+    {
+        for (i=0; i&lt;size; i++)
+        {
+            *(dst++) = *(src++);
+        }
+    }
+    *（retAddr+size）=&#39;\0&#39;;
+    return retAddr;
+}</pre>
+现在继续执行如下形式的调用：<br />
+<pre class="cpp">
+int dst[100];
+int src[100];
+memcpy(dst, src, 100*sizeof(int));</pre>
+由于类型不匹配，编译器就会报错。由此可见，这样的函数同时也失去了通用性。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="4395_2.html" title="Python set集合详解" target="_blank">Python set集合详解</a></li>
+<li><a href="5967_2.html" title="JS scroll事件：页面滚动" target="_blank">JS scroll事件：页面滚动</a></li>
+<li><a href="8200_2.html" title="JS split()分割字符串" target="_blank">JS split()分割字符串</a></li>
+<li><a href="../maven2/idea-build-maven_2.html" title="IDEA新建Maven项目" target="_blank">IDEA新建Maven项目</a></li>
+<li><a href="9625_2.html" title="预防裁员，科普一下N+1和2N补偿机制" target="_blank">预防裁员，科普一下N+1和2N补偿机制</a></li>
+<li><a href="vip_9659_2.html" title="Qt QTreeWidget树形控件用法详解" target="_blank">Qt QTreeWidget树形控件用法详解</a></li>
+<li><a href="it3ui9d_2.html" title="《数据结构(C语言版)》邓文华第5版PDF下载（高清完整版）" target="_blank">《数据结构(C语言版)》邓文华第5版PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 365;
+window.arcId = "b845XJOecTgvJe8umg8o5HcKu3eiIYhjjeDfmVgiXnBUdlsgOA/ENcphgw";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

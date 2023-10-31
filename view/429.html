@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++ vector删除元素（数据）详解</title>
+<meta name="description" content="正像所说的那样，只能通过容器的成员函数来删除元素。可以通过使用 vector 的成员函数 clear() 来删除所有的元素。例如： std::vectorint data(100, 99);// Contains 100 elements initialized to 99dataclea" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++ vector删除元素（数据）详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">正像所说的那样，只能通过容器的成员函数来删除元素。可以通过使用 vector 的成员函数 clear() 来删除所有的元素。例如：<br />
+<pre class="cpp">
+std::vector&lt;int&gt; data(100, 99);// Contains 100 elements initialized to 99
+data.clear(); // Remove all elements</pre>
+第一条语句创建了一个有 100 个 int 型元素的 vector 对象，它的大小和容量都是 100；所有元素的初始值都是 99。第二条语句移除了所有的元素，因此大小变为 0，因为这个操作并没有改变容器的容量，所以容量还是 100。<br />
+<br />
+可以使用 vector 的成员函数 pop_back() 来删除容器尾部的元素。例如：<br />
+<pre class="cpp">
+std::vector&lt;int&gt; data(100, 99); // Contains 100 elements initialized to 99
+data.pop_back(); // Remove the last element</pre>
+第二条语句移除了最后一个元素，因此 data 的大小变为 99，容量还是 100。只要不在意元素的顺序，就可以通过删除最后一个元素的方式来删除容器的任何元素，这不需要移动大量元素。假设要删除 data 中的第二个元素，可以像这样操作：<br />
+<pre class="cpp">
+std::swap(std::begin(data)+1,std::end(data)-1);
+// Interchange 2nd element with the last data.pop_back(); // Remove the last element</pre>
+第一条语句调用了模板函数 swap()，它在头文件 algorithm 和 utility 中都有定义。这个函数将第二个元素和最后一个元素互相交换。然后调用 pop_back() 移除最后一个元素，这样就从容器中移除了第二个元素。<br />
+<br />
+注意，vector 也有成员函数 swap()，这个函数用来交换两个 vector 容器中的元素。显然，这两个容器的元素类型必须相同。全局的 swap() 函数只要将两个容器作为参数，也可以交换它们的元素。<br />
+<br />
+如果要去掉容器中多余的容量，例如不再向容器中添加新元素，那么可以通过使用成 员函数 shrink_to_fit() 来实现：<br />
+<pre class="cpp">
+data.shrink_to_fit(); // Reduce the capacity to that needed for elements</pre>
+不管这个操作是否依赖 <a href='../stl/stl.html' target='_blank'>STL</a> 的实现，如果它生效了，那么这个容器现有的迭代器都失效，所以在执行完这个操作后，最好重新获取迭代器。<br />
+<br />
+可以使用成员函数 erase() 来删除容器中的一个或多个元素。如果只删除单个元素，那么只需要提供一个参数，例如：<br />
+<pre class="cpp">
+auto iter = data.erase(std::begin(data)+1); //Delete the second element</pre>
+删除一个元素后，vector 的大小减 1；但容量不变。会返回一个迭代器，它指向被删除元素后的一个元素。这里的返回值和表达式 std::begin(data)+1 相关；如果移除了最后一个元素，会返回 std::end(data)。<br />
+<br />
+如果要移除一个元素序列，只需要传入两个迭代器，用来指定移除元素的范围。例如：<br />
+<pre class="cpp">
+// Delete the 2nd and 3rd elements
+auto iter = data.erase(std::begin(data)+1,std::begin(data)+3);</pre>
+不要忘记，第二个迭代器指向这段元素末尾的下一个位置。上面的语句删除了位于 std::begin(data)+1 和 std::begin(data)+2 的元素。返回的迭代器指向被删除元素后的位置，它是 std::begin(data)+1 ；如果删除了最后一个元素，它就是 std::end(data)。<br />
+<br />
+remove() 算法由定义在 algorithm 头文件中的模板生成，它可以删除匹配特定值的一段元素。例如：<br />
+<pre class="cpp">
+std::vector&lt;std::string&gt; words { &quot;one&quot;, &quot;none&quot;,&quot;some&quot;, &quot;all&rdquo;, &quot;none&quot;, &quot;most&quot;,&quot;many&quot;};
+auto iter = std::remove(std::begin(words), std::end(words), &quot;none&quot;);</pre>
+第二条语句在头两个参数指定的元素范围内，移除了所有匹配 remove() 的第三个参数 string(&quot;none&quot;) 的元素。移除元素这个表述有一点误导，remove() 是一个全局函数，所以它不能删除容器中的元素。remove() 移除元素的方式和从字符串中移除空格的方式相似，都是通过用匹配元素右边的元素来覆盖匹配元素的方式移除元素。图 1 展示了这个过程：<br />
+<div style="text-align: center;">
+<br />
+<img alt="" src="../uploads/allimg/180912/2-1P9121100234T.jpg" style="width: 600px; height: 287px;" /><br />
+图 1 remove() 算法的工作原理</div>
+<br />
+如果在 remove() 操作后输出 words 中的元素，只会输出前 5 个元素。尽管 size() 返回的值仍然是 7，而且最后两个元素仍然存在，但是它们被替换成了空字符串对象。为了摆脱这些多余的元素，可以使用成员函数 erase()。remove() 返回的迭代器可以这样使用：<br />
+<pre class="cpp">
+words.erase(iter, std::end(words));//Remove surplus elements</pre>
+这被叫作 erase-remove，执行删除操作后，iter 指向最后一个元素之后的位置，所以它标识了被删除序列的第一个元素，被删除序列的结束位置由 std::end(words) 指定。当然，在一条语句中，也能先移除元素，然后再删除末尾不想要的元素：<br />
+<pre class="cpp">
+words.erase(std::remove(std::begin(words), std::end(words),&quot;none&quot;), std::end(words));</pre>
+remove() 算法返回的迭代器作为 erase() 的第一个参数，erase() 的第二个参数是所指向容器中最后一个元素后一个位置的迭代器。了解如何为 vector 容器分配额外容量，可以让你明白会产生多少额外开销，以及可分配的内存量。下面是一个示例，可以让你了解到这一点：
+<pre class="cpp">
+// Unders<a href='https://c.biancheng.net/ref/tan.html' target='_blank'>tan</a>ding how capacity is increased in a vector container
+#include &lt;iostream&gt;                             // For standard streams
+#include &lt;vector&gt;                               // For vector container
+
+int main()
+{
+    std::vector &lt;size_t&gt; sizes;                    // Record numbers of elements
+    std::vector &lt;size_t&gt; capacities;               // and corresponding capacities
+    size_t el_incr {10};                           // Increment to initial element count
+    size_t incr_count {4 * el_incr};               // Number of increments to element count
+
+     for (size_t n_elements {}; n_elements &lt; incr_count; n_elements += el_incr)
+    {
+        std::vector&lt;int&gt; values(n_elements);
+        std::cout &lt;&lt; &quot;\nAppending to a vector with &quot; &lt;&lt; n_elements &lt;&lt; &quot; initial elements:\n&quot;;
+        sizes.push_back(values.size());
+        size_t space {values.capacity()};
+        capacities.push_back(space);
+
+        // Append elements to obtain capacity increases
+        size_t count {};                             // Counts capacity increases
+        size_t n_increases {10};
+        while (count &lt; n_increases)
+        {
+            values.push_back(22);                      // Append a new element
+            if (space &lt; values.capacity())             // Capacity increased...
+            {                                            // ...so record size and capacity
+                space = values.capacity();
+                capacities.push_back(space);
+                sizes.push_back(values.size());
+                ++count;
+            }
+        }
+        // Show sizes &amp; capacities when increments occur
+        std::cout &lt;&lt; &quot;Size/Capacity: &quot;;
+        for (size_t i {}; i &lt; sizes.size(); ++i)
+            std::cout &lt;&lt; sizes.at(i) &lt;&lt; &quot;/&quot; &lt;&lt; capacities.at(i) &lt;&lt; &quot;  &quot;;
+        std::cout &lt;&lt; std::endl;
+        sizes.clear();                               // Remove all elements
+        capacities.clear();                          // Remove all elements
+    }
+}</pre>
+这个示例中的操作很简单。向容器中添加元素，直到不得不增加容器容量，这时候容器的大小和容量会被保存在 sizes 和 capacities 容器中。对不同初始元素个数的容器重复几次这种操作。编译器得到的输出结果如下：
+<p class="info-box">
+Appending to a vector with 0 initial elements:<br />
+Size/Capacity: 0/0&nbsp; 1/1&nbsp; 2/2&nbsp; 3/4&nbsp; 5/8&nbsp; 9/16&nbsp; 17/32&nbsp; 33/64&nbsp; 65/128&nbsp; 129/256&nbsp; 257/512<br />
+<br />
+Appending to a vector with 10 initial elements:<br />
+Size/Capacity: 10/10&nbsp; 11/20&nbsp; 21/40&nbsp; 41/80&nbsp; 81/160&nbsp; 161/320&nbsp; 321/640&nbsp; 641/1280&nbsp; 1281/2560&nbsp; 2561/5120&nbsp; 5121/10240<br />
+<br />
+Appending to a vector with 20 initial elements:<br />
+Size/Capacity: 20/20&nbsp; 21/40&nbsp; 41/80&nbsp; 81/160&nbsp; 161/320&nbsp; 321/640&nbsp; 641/1280&nbsp; 1281/2560&nbsp; 2561/5120&nbsp; 5121/10240&nbsp; 10241/20480<br />
+<br />
+Appending to a vector with 30 initial elements:<br />
+Size/Capacity: 30/30&nbsp; 31/60&nbsp; 61/120&nbsp; 121/240&nbsp; 241/480&nbsp; 481/960&nbsp; 961/1920&nbsp; 1921/3840&nbsp; 3841/7680&nbsp; 7681/15360&nbsp; 15361/30720</p>
+不同编译器的输出结果可能不同，这取决于用来增加 vector 容量的算法。从第一组的输出可以看出，当开始使用一个空的 vector 时，需要频繁地分配更多的内存，因为容量增量很小&mdash;&mdash;内存从一个元素开始增加。其他组的输出表明，容量增量和容器的大小相关。每次分配，会额外分配相当于当前元素数目 50% 的内存。这意味着在能够选择容器初始大小时，需要注意一些事情。<br />
+<br />
+假设生成了一个初始容量为 1000 个元素的 vector，但实际上存储了 1001 个元素。这样就会有用于 499 个元素的多余容量。如果元素是数组或其他不会占用太多空间的对象，这不会有任何问题。但是如果对象非常大，例如每个 10KB，那么程序需要分配几乎 5MB 的多余内存。所以，最好可以稍微高估 vector 的初始大小，而不能低估。<br />
+<br />
+当然，也能自己管理内存的分配。可以比较容器的大小和容量，当需要内存时，就可以通过容器的 reserve() 函数来增加容器的容量。例如：<br />
+<pre class="cpp">
+std::vector &lt;size_t&gt; junk {1, 2, 3};
+for(size_t i {} ; i&lt;1000 ; ++i)
+{
+    if(junk.size() == junk.capacity()) // When the size has reached the capacity...
+        junk.reserve(junk.size 0*13/10); // ...increase the capacity
+    junk.push_back(i);
+}</pre>
+这里容量增量为最大值的 30% 而不是默认的 50%。容量增量不需要一定是当前大小的百分比。可以将 junk 指定为 reserve() 的参数。例如 capacity()+10，无论当前大小为多少，都会将当前的容量增加 10 个元素大小。不要忘了当使用 reserve() 为容器增加容量后，现有的容器迭代器都会失效。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="205.html" title="函数的递归调用，C语言函数递归调用完全攻略" target="_blank">函数的递归调用，C语言函数递归调用完全攻略</a></li>
+<li><a href="vip_3376.html" title="行逻辑链接的顺序表实现矩阵乘法（附带C语言完整代码）" target="_blank">行逻辑链接的顺序表实现矩阵乘法（附带C语言完整代码）</a></li>
+<li><a href="vip_5065.html" title="Linux重建RPM数据库（修复损坏的RPM数据库）" target="_blank">Linux重建RPM数据库（修复损坏的RPM数据库）</a></li>
+<li><a href="8064.html" title="extern &quot;C&quot;：实现C++和C的混合编程" target="_blank">extern &quot;C&quot;：实现C++和C的混合编程</a></li>
+<li><a href="../dll/vip_8704.html" title="Windows下静态链接库的创建和使用" target="_blank">Windows下静态链接库的创建和使用</a></li>
+<li><a href="../mybatis/set.html" title="MyBatis set标签" target="_blank">MyBatis set标签</a></li>
+<li><a href="fbjdyhf.html" title="《换个姿势学C语言》PDF下载（高清完整版）" target="_blank">《换个姿势学C语言》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 429;
+window.arcId = "49a7NVkjlG0lwbQkIud/i06msEdksEgDzqwD661vaZAGTcEK2PFmovj/Ew";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

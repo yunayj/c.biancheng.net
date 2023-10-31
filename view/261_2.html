@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C语言自动类型转换和强制类型转换详解</title>
+<meta name="description" content="计算机硬件进行算术操作时，要求各操作数的类型具有相同的大小（存储位数）及存储方式。例如，由于各操作数大小不同，硬件不能将 char 型（ 1 字节）数据与 int 型（ 2 或 4 字节）数" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C语言自动类型转换和强制类型转换详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">计算机硬件进行算术操作时，要求各操作数的类型具有相同的大小（存储位数）及存储方式。例如，由于各操作数大小不同，硬件不能将 char 型（ 1 字节）数据与 int 型（ 2 或 4 字节）数据直接参与运算；由于存储方式的不同，也不能将 int 型数据与 float 型数据直接参与运算。<br />
+<br />
+然而，由于 C 语言编程的灵活性，在一个表达式或一条语句中，允许不同类型的数据混合运算。<br />
+<br />
+C 语言的灵活性与计算机硬件的机械性是一对矛盾，如处理不好，将会产生错误结果。对于某些类型的转换编译器可隐式地自动进行，不需人工干预，称这种转换为<span style="color:#008000;">自动类型转换</span>；而有些类型转换需要编程者显式指定，通常，把这种类型转换称为<span style="color:#008000;">强制类型转换</span>。<br />
+<h2>
+	自动类型转换</h2>
+一个表达式中出现不同类型间的混合运算，较低类型将自动向较高类型转换。<br />
+<br />
+不同数据类型之间的差别在于数据的表示范围及精度上，一般情况下，数据的表示范围越大、精度越高，其类型也越&ldquo;高级&rdquo;。<br />
+<br />
+整型类型级别从低到高依次为：<br />
+<p class="info-box">
+	int -&gt; unsigned int -&gt; long -&gt; unsigned long -&gt; long long -&gt; unsigned long long</p>
+浮点型级别从低到高依次为：
+<p class="info-box">
+	float -&gt; double</p>
+<br />
+<strong>1)</strong> 操作数中没有浮点型数据时:<br />
+<br />
+当 char、unsigned char、short 或 unsigned short 出现在表达式中参与运算时，一般将其自动转换为 int 类型，特殊情况下 unsigned short 也可能转换成 unsigned int（如 Turbo C2.0 中，short 和 int 所占字节数相同，unsigned short 的正数表示范围比 int 大，故将其转换为 unsigned int）。<br />
+<br />
+int 与 unsigned int混合运算时：<br />
+<p class="info-box">
+	int -&gt; unsigned int</p>
+int、unsigned int 与 long 混合运算时，均转换为 long 类型。<br />
+<br />
+<strong>2) </strong>橾作数中有浮点型数据时:<br />
+<br />
+当操作数中含有浮点型数据（float 或 double）时，所有操作数都将转换为 double 型。<br />
+<br />
+例如：<br />
+<pre class="cpp">
+3+5.3f+1.7</pre>
+上述算术表达式中操作数 1.7 为双精度浮点数，故先把 3 和单精度浮点数 5.3 自动提升为双精度浮点数后，参与运算。运算结果为双精度浮点数 10.0。<br />
+<br />
+<strong>3)</strong> 赋值运算符两恻的类型不一致时:<br />
+<br />
+当赋值运算符的右值（可能为常量、变量或表达式）类型与左值类型不一致时，将右值类型可能提升或降低为左值类型。例如：<br />
+<pre class="cpp">
+double d;
+d=5.1f;</pre>
+由于左值为双精度浮点型，故先把右值单精度浮点型常量 5.1 提升为双精度浮点型后，再赋值给 d，不但不丢失精度反而提高了精度。<br />
+<pre class="cpp">
+int i;
+i=5.1; //右值5.1为双精度，左值为整型</pre>
+右值双精度浮点型 5.1 降低为左值整型，即 5.1 舍弃小数部分后，把 5 赋给整型变量 i，这种情况会丢失精度。<br />
+<br />
+<strong>4) </strong>右值超出左值类型范围时：<br />
+<br />
+更糟糕的情况是，赋值运算符右值的范围超出了左值类型的表示范围，将把该右值截断后，赋给左值。所得结果可能毫无意义。例如：<br />
+<pre class="cpp">
+char c; //char 占8位，表示范围-127〜128
+c=1025; //1025 对应二进制形式：100 0000 0001，超出了8位
+printf(&quot;％d&quot;,c) ; //以十进制输出c的值</pre>
+该输出结果为 1，因为只取 1025 低 8 位 0000 0001（值为1），赋给字符型变量 c，故得到毫无意义的值。<br />
+<br />
+当 return 后的表达式类型与函数的返回值类型不一致时，也会自动把 return 后表达式的值转换为函数类型后，再返回。<br />
+<br />
+当函数调用时，所传实参与形参类型不一致时，也会把实参自动转换为形参类型后再赋值。<br />
+<h2>
+	强制类型转换</h2>
+虽然自动类型转换不需要人工干预，使用方便，但有利也有弊，尤其当自动类型转换是从较高类型转换为较低类型时，将会降低精度或截断数据，可能得不到预期的结果。<br />
+<br />
+为了给程序设计人员提供更多的类型转换控制权限，使程序设计更加灵活，转换的目的更加清晰，C 语言提供了可显式指定类型转换的语法支持，通常称之为强制类型转换。<br />
+<br />
+强制类型转换的格式为：<br />
+<p class="info-box">
+	(目标类型) 表达式</p>
+例如，计算某工厂目前可出厂的产品总件数用 total 表示，该工厂共有三个车间，已知：1 车间目前完成 10.9 件，2 车间目前完成 12.7 件，3 车间目前完成 11.8 件。则:<br />
+<pre class="cpp">
+int total;
+total=(int)10.9+(int)12.7+(int)11.8;</pre>
+故 total=10+12+11=33，符合题意。<br />
+<br />
+而如果采用如下的自动类型转换：<br />
+<pre class="cpp">
+int total=10.9+12.7+11.8;</pre>
+其值将为 35。因为赋值运算符右端表达式 10.9+12.7+11.8=35.4 为双精度浮点型，而左值 total 类型为整型，将 35.4 自动转换为整数 35 后赋给 total。与题意不符。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2859_2.html" title="什么是挂载，Linux挂载详解" target="_blank">什么是挂载，Linux挂载详解</a></li>
+<li><a href="vip_3231_2.html" title="Shell四种运行方式（启动方式）精讲" target="_blank">Shell四种运行方式（启动方式）精讲</a></li>
+<li><a href="3274_2.html" title="HTML DOM是什么" target="_blank">HTML DOM是什么</a></li>
+<li><a href="../c/pow_2.html" title="C语言pow()函数：求x的y次方的值" target="_blank">C语言pow()函数：求x的y次方的值</a></li>
+<li><a href="7505_2.html" title="Django项目创建第一个应用" target="_blank">Django项目创建第一个应用</a></li>
+<li><a href="../pillow/image-objects_2.html" title="Pillow创建Image对象" target="_blank">Pillow创建Image对象</a></li>
+<li><a href="r0jktot_2.html" title="JS Promise用法详解（非常全面）" target="_blank">JS Promise用法详解（非常全面）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 261;
+window.arcId = "22dcOM7F7vEKJqDRE5tTTmsgpDbPkoyHl+UQk4cgWyDnDULvtAo1wBBGUQ";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

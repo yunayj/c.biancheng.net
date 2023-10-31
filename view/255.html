@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++派生类的构造函数和析构函数</title>
+<meta name="description" content="派生类对象中包含基类对象，因此派生类对象在创建时，除了要调用自身的构造函数进行初始化外，还要调用基类的构造函数初始化其包含的基类对象。因此，程序中任何能够生成派生" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++派生类的构造函数和析构函数</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">派生类对象中包含基类对象，因此派生类对象在创建时，除了要调用自身的构造函数进行初始化外，还要调用基类的构造函数初始化其包含的基类对象。因此，程序中任何能够生成派生类对象的语句，都要说明其包含的基类对象是如何初始化的。<br />
+<br />
+如果对此不做说明，则编译器认为基类对象要用无参构造函数初始化&mdash;&mdash;如果基类没有无参构造函数，则会导致编译错误。<br />
+<br />
+在执行一个派生类的构造函数之前，总是先执行基类的构造函数。<br />
+<br />
+和封闭类说明成员对象如何初始化类似，派生类说明基类对象如何初始化，也需要在构造函数后面添加初始化列表。在初始化列表中，要指明调用基类构造函数的形式。具体写法如下：
+<p class="info-box">
+构造函数名(形参表): 基类名(基类构造函数实参表)<br />
+{<br />
+&nbsp;&nbsp; ...<br />
+}</p>
+派生类对象消亡时，先执行派生类的析构函数，再执行基类的析构函数。<br />
+<br />
+下面的程序演示了派生类的构造函数和析构函数的调用顺序：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+class CBug {
+    int legNum, color;
+public:
+    CBug(int ln, int c1) : legNum(ln), color(c1)
+    {
+        cout &lt;&lt; &quot;CBug Constructor&quot; &lt;&lt; endl;
+    };
+    ~CBug()
+    {
+        cout &lt;&lt; &quot;CBug Destructor&quot; &lt;&lt; endl;
+    }
+    void Printlnfo()
+    {
+        cout &lt;&lt; legNum &lt;&lt; &quot;,&quot; &lt;&lt; color &lt;&lt; endl;
+    }
+
+};
+class CFlyingBug : public CBug
+{
+    int wingNum;
+public:
+    //CFlyingBug(){}  若不注释掉则会编译出错
+    CFlyingBug::CFlyingBug(int ln, int c1, int wn) : CBug(ln, c1), wingNum(wn)
+    {
+        cout &lt;&lt; &quot;CFlyingBug Constructor&quot; &lt;&lt; endl;
+    }
+    ~CFlyingBug()
+    {
+        cout &lt;&lt; &quot;CFlyingBug Destructor&quot; &lt;&lt; endl;
+    }
+};
+int main() {
+    CFlyingBug fb(2, 3, 4);
+    fb.Printlnfo();
+    return 0;
+}</pre>
+程序输出结果：<br />
+CBug Constructor<br />
+CFlyingBug Constructor<br />
+2,3<br />
+CFlyingBug Destructor<br />
+CBug Destructor<br />
+<br />
+第 25 行如果没有注释掉会编译出错。因为这个构造函数没有说明在派生类对象用该构造函数初始化的情况下，其基类对象该如何初始化&mdash;&mdash;这也就意味着基类对象应该用无参构造函数初始化，可是 CBug 类并没有无参构造函数，所以编译会出错。<br />
+<br />
+第 26 行中的&ldquo;CBUg(ln, c1)&rdquo;指明了在派生类对象用该构造函数初始化的情况下，其基类对象的初始化方式。<br />
+<br />
+思考题：派生类对象生成时要先执行基类构造函数，消亡时要先执行自身析构函数，再执行基类析构函数，为什么？<br />
+<br />
+和封闭类的情况类似，如果一个派生类对象是用默认复制构造函数初始化的，那么它内部包含的基类对象也要用基类的复制构造函数初始化。
+<h2>
+多层次的派生</h2>
+在 <a href='../cplus/cplus.html' target='_blank'>C++</a> 中，派生可以是多层次的。例如学生类派生出中学生类，中学生类又派生出初中生类和高中生类。总之，类 A 派生类 B，类 B 可再派生类 C，类 C 又能派生类 D，以此类推。<br />
+<br />
+这种情况下，称类 A 是类 B 的直接基类，类 B 是类 C 的直接基类，类 A 是类 C 的间接基类。当然，类 A 也是类 D 的间接基类。在定义派生类时，只写直接基类，不写间接基类。派生类沿着类的层次自动向上继承它所有的间接基类。<br />
+<br />
+派生类的成员包括派生类自己定义的成员、直接基类中定义的成员，以及所有间接基类的全部成员。<br />
+<br />
+当派生类的对象生成时，会从最顶层的基类开始逐层往下执行所有基类的构造函数，最后再执行自身的构造函数；当派生类对象消亡时，会先执行自身的析构函数，然后从底向上依次执行各个基类的析构函数。<br />
+<br />
+例如下面的程序：
+<pre class="cpp">
+#include &lt;iostream&gt;
+using namespace std;
+class A {
+public:
+    int n;
+    A(int i) :n(i) { cout &lt;&lt; &quot;A &quot; &lt;&lt; n &lt;&lt; &quot; constructed&quot; &lt;&lt; endl; }
+    ~A() { cout &lt;&lt; &quot;A &quot; &lt;&lt; n &lt;&lt; &quot; destructed&quot; &lt;&lt; endl; }
+};
+class B :public A
+{
+public:
+    B(int i) :A(i) { cout &lt;&lt; &quot;B constructed&quot; &lt;&lt; endl; }
+    ~B() { cout &lt;&lt; &quot;B destructed&quot; &lt;&lt; endl; }
+
+};
+class C :public B {
+public:
+    C() :B(2) { cout &lt;&lt; &quot;B constructed&quot; &lt;&lt; endl; }
+    ~C() { cout &lt;&lt; &quot;B destructed&quot; &lt;&lt; endl; }
+};
+int main()
+{
+    C Obj;
+    return 0;
+}</pre>
+程序的输出结果：<br />
+A 2 constructed<br />
+B constructed<br />
+B constructed<br />
+B destructed<br />
+B destructed<br />
+A 2 destructed
+<h2>
+包含成员对象的派生类</h2>
+在派生类也是封闭类的情况下，构造函数的初始化列表不但要指明基类对象的初始化方式，还要指明成员对象的初始化方式。<br />
+<br />
+派生类对象生成时，会引发一系列构造函数调用，顺序是：先从上至下执行所有基类的构造函数，再按照成员对象的定义顺序执行各个成员对象的构造函数，最后执行自身的构造函数；而派生类对象消亡时，先执行自身的析构函数，然后按与构造的次序相反的顺序依次执行所有成员对象的析构函数，最后再从底向上依次执行各个基类的析构函数。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_2114.html" title="符号——链接的粘合剂" target="_blank">符号——链接的粘合剂</a></li>
+<li><a href="2857.html" title="UE4新建人物和地图模式" target="_blank">UE4新建人物和地图模式</a></li>
+<li><a href="vip_7686.html" title="C++如何跳过（忽略）指定字符？" target="_blank">C++如何跳过（忽略）指定字符？</a></li>
+<li><a href="tower-of-hanoi.html" title="汉诺塔问题（分治+源码+动画演示）" target="_blank">汉诺塔问题（分治+源码+动画演示）</a></li>
+<li><a href="9844.html" title="电阻是什么（超级详细）" target="_blank">电阻是什么（超级详细）</a></li>
+<li><a href="3iiyh1.html" title="C语言标识符" target="_blank">C语言标识符</a></li>
+<li><a href="t0rfwgj.html" title="Python requests库详解" target="_blank">Python requests库详解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 255;
+window.arcId = "19e1sFaQ/I4JqLABww3N9O6yMM9XveFJ/l+m8iV5L+Za2gAbuTCpdvnDhg";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

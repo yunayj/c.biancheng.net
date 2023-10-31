@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Linux PATH环境变量及作用（初学者必读）</title>
+<meta name="description" content="在讲解 PATH 环境变量之前，首先介绍一下 which 命令，它用于查找某个命令所在的绝对路径。例如： [root@localhost ~]# which rm/bin/rm[root@localhost ~]# which rmdir/bin/rmdir[root@localhost ~]# which lsalias" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Linux PATH环境变量及作用（初学者必读）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在讲解 PATH 环境变量之前，首先介绍一下 which 命令，它用于查找某个命令所在的绝对路径。例如：<br />
+<pre class="info-box">
+[root@localhost ~]# which rm
+/bin/rm
+[root@localhost ~]# which rmdir
+/bin/rmdir
+[root@localhost ~]# which ls
+alias ls=&#39;ls --color=auto&#39;
+        /bin/ls</pre>
+注意，ls 是一个相对特殊的命令，它使用 alias 命令做了别名，也就是说，我们常用的 ls 实际上执行的是 ls --color=auto。<br />
+<br />
+通过使用 which 命令，可以查找各个外部命令（和 Shell 内置命令相对）所在的绝对路径。学到这里，读者是否有这样一个疑问，为什么前面在使用 rm、rmdir、ls 等命令时，无论当前位于哪个目录，都可以直接使用，而无需指明命令的执行文件所在的位置（绝对路径）呢？其实，这是 PATH 环境变量在起作用。<br />
+<br />
+首先，执行如下命令：
+<pre class="info-box">
+[root@localhost ~]# echo $PATH
+/usr/local/sbin:/usr/sbin:/sbin:/usr/local/bin:/usr/bin:/bin:/root/bin</pre>
+这里的 echo 命令用来输出 PATH 环境变量的值（这里的 $ 是 PATH 的前缀符号），PATH 环境变量的内容是由一堆目录组成的，各目录之间用冒号&ldquo;:&rdquo;隔开。当执行某个命令时，Linux 会依照 PATH 中包含的目录依次搜寻该命令的可执行文件，一旦找到，即正常执行；反之，则提示无法找到该命令。
+<blockquote>
+<p>
+如果在 PATH 包含的目录中，有多个目录都包含某命令的可执行文件，那么会执行先搜索到的可执行文件。</p>
+</blockquote>
+从执行结果中可以看到，/bin 目录已经包含在 PATH 环境变量中，因此在使用类似 rm、rmdir、ls等命令时，即便直接使用其命令名，Linux 也可以找到该命令。<br />
+<br />
+为了印证以上观点，下面举个反例，如果我们将 ls 命令移动到 /root 目录下，由于 PATH 环境变量中没有包含此目录，所有当直接使用 ls 命令名执行时，Linux 将无法找到此命令的可执行文件，并提示 No such file or directory，示例命令如下：
+<pre class="info-box">
+[root@localhost ~]# mv /bin/ls /root
+[root@localhost ~]# ls
+bash: /bin/ls: No such file or directory</pre>
+<br />
+此时，如果仍想使用 ls 命令，有 2 种方法，一种是直接将 /root 添加到 PATH 环境变量中，例如：
+<pre class="info-box">
+[root@localhost ~]# PATH=$PATH:/root
+[root@localhost ~]# echo $PATH
+/usr/local/sbin:/usr/sbin:/usr/local/bin:/usr/bin:/bin:/root/bin:/root
+[root@localhost ~]# ls
+Desktop    Downloads    Music    post-install     Public    Videos
+Documents  ls           Pictures post-install.org Templates</pre>
+<blockquote>
+<p>
+注意，这种方式只是临时有效，一旦退出下次再登陆的时候，$PATH 就恢复成了默认值。</p>
+</blockquote>
+<br />
+另一种方法是以绝对路径的方式使用此命令，例如：
+<pre class="info-box">
+[root@localhost ~]# /root/ls
+Desktop    Downloads    Music    post-install     Public    Videos
+Documents  ls           Pictures post-install.org Templates</pre>
+<p>
+&nbsp;</p>
+<p>
+为了不影响系统的正常使用，强烈建议大家将移动后的 ls 文件还原，命令如下：</p>
+<pre class="info-box">
+[root@localhost ~]# mv /root/ls /bin</pre>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_1744.html" title="程序安装是怎么回事？" target="_blank">程序安装是怎么回事？</a></li>
+<li><a href="1975.html" title="C语言#include的用法详解（文件包含命令）" target="_blank">C语言#include的用法详解（文件包含命令）</a></li>
+<li><a href="vip_2097.html" title="Linux下C语言程序的内存布局（内存模型）" target="_blank">Linux下C语言程序的内存布局（内存模型）</a></li>
+<li><a href="2208.html" title="Python list列表添加元素的3种方法" target="_blank">Python list列表添加元素的3种方法</a></li>
+<li><a href="8232.html" title="GDB单步调试程序" target="_blank">GDB单步调试程序</a></li>
+<li><a href="10j42mg.html" title="C++函数对象详解" target="_blank">C++函数对象详解</a></li>
+<li><a href="90r705i.html" title="Python threading模块简介" target="_blank">Python threading模块简介</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 5876;
+window.arcId = "0da2DWGC9jp1eA8/2sLuT8JbWtgsI+/QAJtqGTxfXzJz8WJzPYYaOSAg6Iw";
+window.typeidChain = "210|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

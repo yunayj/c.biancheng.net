@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>选择排序算法，C语言选择排序算法详解</title>
+<meta name="description" content="选择排序 是一种简单直观的排序算法。它与冒泡排序很相似，都是比较 n-1 轮，每轮都是比较 n1i 次，每轮找出一个最大值或最小值。 只不过，冒泡排序是将每轮找出的最值放到最右边" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>选择排序算法，C语言选择排序算法详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body"><span style="color:#008000;">选择排序</span>是一种简单直观的排序算法。它与冒泡排序很相似，都是比较 n-1 轮，每轮都是比较 n&ndash;1&ndash;i 次，每轮找出一个最大值或最小值。<br />
+<br />
+只不过，冒泡排序是将每轮找出的最值放到最右边，而选择排序是将每轮找出的最值放到最左边。并且在算法上，冒泡排序是将相邻的数进行逐个比较，以从小到大排序为例，只要前面的比后面的大，就互换这两个数，直到最后将最大的数&ldquo;浮&rdquo;到最右边，如此依次循环。而选择排序是先保存第一个元素的下标，然后后面所有的数依次与第一个元素相比，如果遇到更小的，则记录更小的那个数的下标，然后后面所有的数都依次与那个更小的数比较，直到最后将最小的数的下标找出来，然后再将这个数放到最左边，即与下标为 0 的数互换。如果最小的数的下标就是 0 那么就不用互换。<br />
+<br />
+所以，选择排序算法是先判断最小的数的下标是不是 0，如果不是则说明最小的数不是第一个元素，则将这个数与第一个元素互换位置，这样一轮下来最小的那个数就被找到并放到了最左边。<br />
+<br />
+在第二轮同样先保存新序列第二个元素的下标，后面所有的数依次与第二个元素相比较，如果遇到更小的则记录更小的那个数的下标，然后后面所有的数都依次与那个更小的数比较，直到最后又找到一个最小的，此时这个最小的在整个序列中是&ldquo;第二小&rdquo;。然后再判断这个数的下标是否等于 1，如果不等于 1 说明&ldquo;第二小&rdquo;的那个数不是第二个元素，则将这个数与第二个元素互换位置，这样第二轮下来就找到了&ldquo;第二小&rdquo;的那个数，并将它放到了第二个位置。如此循环，直到整个序列实现从小到大排序。<br />
+<br />
+如果是从大到小排序，那么就记录大的那个数的下标，每一轮找出一个最大的数放到左边。<br />
+<br />
+从上面的分析可以看出，选择排序和冒泡排序的另一个不同点是，冒泡排序只要遇到前面比后面大的就互换，而选择排序是比较一轮才互换一次，而且如果本轮中最小的就是最左边那个数则不用互换。所以从这个角度看，选择排序比冒泡排序的效率要高。而且通过上面对选择排序的分析发现，从逻辑上讲，与冒泡排序相比，选择排序更符合人的思维。<br />
+<br />
+下面来写一个程序，用选择排序实现一个序列的从小到大排序：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int i, j;  //循环变量
+    int MinIndex;  //保存最小的值的下标
+    int buf;  //互换数据时的临时变量
+    int a[] = {5, 5, 3, 7, 4, 2, 5, 4, 9, 1, 8, 6};
+    int n = sizeof(a) / sizeof(a[0]);  //存放数组a中元素的个数
+    for (i=0; i&lt;n-1; ++i)  //n个数比较n-1轮
+    {
+        MinIndex = i;
+        for (j=i+1; j&lt;n; ++j)  //每轮比较n-1-i次, 找本轮最小数的下标
+        {
+            if (a[MinIndex] &gt; a[j])
+            {
+                MinIndex = j;  //保存小的数的下标
+            }
+        }
+        if (MinIndex != i)  /*找到最小数之后如果它的下标不是i则说明它不在最左边, 则互换位置*/
+        {
+            buf = a[MinIndex];
+            a[MinIndex] = a[i];
+            a[i] = buf;
+        }
+    }
+    printf(&quot;最终排序结果为:\n&quot;);
+    for (i=0; i&lt;12; ++i)
+    {
+        printf(&quot;%d &quot;, a[i]);
+    }
+    printf(&quot;\n&quot;);
+    return 0;
+}</pre>
+输出结果是：<br />
+最终排序结果为:<br />
+1 2 3 4 4 5 5 5 6 7 8 9<br />
+<br />
+通过程序可以看出，虽然选择排序比冒泡排序的效率高，逻辑上也更符合人的思维，但是程序相对更复杂，冒泡排序比选择排序在逻辑上要清晰一点，也稍微简单一点。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_1762_2.html" title="C语言整数的取值范围以及数值溢出" target="_blank">C语言整数的取值范围以及数值溢出</a></li>
+<li><a href="2287_2.html" title="Python封装机制及实现方法" target="_blank">Python封装机制及实现方法</a></li>
+<li><a href="5574_2.html" title="Go语言WEB框架(Gin)详解" target="_blank">Go语言WEB框架(Gin)详解</a></li>
+<li><a href="6346_2.html" title="Java instanceof关键字详解" target="_blank">Java instanceof关键字详解</a></li>
+<li><a href="7610_2.html" title="HTML &lt;textarea&gt;标签（文本域）" target="_blank">HTML &lt;textarea&gt;标签（文本域）</a></li>
+<li><a href="../pillow/create-dynamic-gif_2.html" title="Pillow生成GIF动态图" target="_blank">Pillow生成GIF动态图</a></li>
+<li><a href="fbwuf2m_2.html" title="《玩转C语言程序设计》全彩版PDF下载（高清完整版）" target="_blank">《玩转C语言程序设计》全彩版PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 197;
+window.arcId = "fb634MUXc7HG8cddt9Lm16IGR8qcz68ZFnxzibIQJL9h6Nqw+E/LKXtFug";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

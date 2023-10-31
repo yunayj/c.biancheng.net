@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Shell函数返回值（return关键字）</title>
+<meta name="description" content="在 C++、Java、C#、Python 等大部分编程语言中，返回值是指函数被调用之后，执行函数体中的代码所得到的结果，这个结果就通过 return 语句返回。 但是，Shell 中的返回值表示的是函数的退" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Shell函数返回值（return关键字）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在 <a href='../cplus/cplus.html' target='_blank'>C++</a>、<a href='../java/java_3.html' target='_blank'>Java</a>、<a href='../csharp/csharp.html' target='_blank'>C#</a>、<a href='../python/python.html' target='_blank'>Python</a> 等大部分编程语言中，返回值是指函数被调用之后，执行函数体中的代码所得到的结果，这个结果就通过 return 语句返回。<br />
+<br />
+但是 Shell 中的返回值表示的是函数的退出状态：返回值为 0 表示函数执行成功了，返回值为非 0 表示函数执行失败（出错）了。if、while、for 等语句都是根据函数的退出状态来判断条件是否成立。<br />
+<br />
+<span style="color:#b22222;">Shell 函数的返回值只能是一个介于 0~255 之间的整数，其中只有 0 表示成功，其它值都表示失败。</span><br />
+<br />
+函数执行失败时，可以根据返回值（退出状态）来判断具体出现了什么错误，比如一个打开文件的函数，我们可以指定 1 表示文件不存在，2 表示文件没有读取权限，3 表示文件类型不对。<br />
+<br />
+如果函数体中没有 return 语句，那么使用默认的退出状态，也就是最后一条命令的退出状态。如果这就是你想要的，那么更加严谨的写法为：
+<p class="info-box">
+return $?</p>
+<code>$?</code>是一个特殊变量，用来获取上一个命令的退出状态，或者上一个函数的返回值，请猛击《<a href="808.html" target="_blank">Shell $?</a>》了解更多。
+<h2>
+如何得到函数的处理结果？</h2>
+有人可能会疑惑，既然 return 表示退出状态，那么该如何得到函数的处理结果呢？比如，我定义了一个函数，计算从 m 加到 n 的和，最终得到的结果该如何返回呢？<br />
+<br />
+这个问题有两种解决方案：
+<ul>
+<li>
+一种是借助全局变量，将得到的结果赋值给全局变量；</li>
+<li>
+一种是在函数内部使用 echo、printf 命令将结果输出，在函数外部使用<code>$()</code>或者<code>``</code>捕获结果。</li>
+</ul>
+<br />
+下面我们具体来定义一个函数 getsum，计算从 m 加到 n 的和，并使用以上两种解决方案。<br />
+<br />
+【实例1】将函数处理结果赋值给一个全局变量。
+<pre class="sh">
+#!/bin/bash
+
+sum=0  #全局变量
+
+function getsum(){
+    for((i=$1; i&lt;=$2; i++)); do
+        ((sum+=i))  #改变全局变量
+    done
+
+    return $?  #返回上一条命令的退出状态
+}
+
+read m
+read n
+
+if getsum $m $n; then
+    echo &quot;The sum is $sum&quot;  #输出全局变量
+else
+    echo &quot;Error!&quot;
+fi</pre>
+运行结果：<br />
+1<br />
+100<br />
+The sum is 5050<br />
+<br />
+这种方案的弊端是：定义函数的同时还得额外定义一个全局变量，如果我们仅仅知道函数的名字，但是不知道全局变量的名字，那么也是无法获取结果的。<br />
+<br />
+【实例2】在函数内部使用 echo 输出结果。
+<pre class="sh">
+#!/bin/bash
+
+function getsum(){
+    local sum=0  #局部变量
+    for((i=$1; i&lt;=$2; i++)); do
+        ((sum+=i))
+    done
+   
+    echo $sum
+    return $?
+}
+
+read m
+read n
+
+total=$(getsum $m $n)
+echo &quot;The sum is $total&quot;
+
+#也可以省略 total 变量，直接写成下面的形式
+#echo &quot;The sum is &quot;$(getsum $m $n)</pre>
+运行结果：<br />
+1↙<br />
+100↙<br />
+The sum is 5050<br />
+<br />
+代码中总共执行了两次 echo 命令，但是却只输出一次，这是因为<code>$()</code>捕获了第一个 echo 的输出结果，它并没有真正输出到终端上。除了<code>$()</code>，你也可以使用<code>``</code>来捕获 echo 的输出结果，请猛击《<a href="743.html" target="_blank">Shell变量</a>》了解两者的区别。<br />
+<br />
+这种方案的弊端是：如果不使用<code>$()</code>，而是直接调用函数，那么就会将结果直接输出到终端上，不过这貌似也无所谓，所以我推荐这种方案。<br />
+<br />
+总起来说，虽然C语言、C++、Java 等其它编程语言中的返回值用起来更加方便，但是 Shell 中的返回值有它独特的用途，所以不要带着传统的编程思维来看待 Shell 函数的返回值。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_2111.html" title="那些被编译器隐藏了的过程" target="_blank">那些被编译器隐藏了的过程</a></li>
+<li><a href="2362.html" title="Python traceback模块：获取异常信息" target="_blank">Python traceback模块：获取异常信息</a></li>
+<li><a href="6105.html" title="Linux虚拟内存和物理内存" target="_blank">Linux虚拟内存和物理内存</a></li>
+<li><a href="7533.html" title="HTML块级元素及行内元素" target="_blank">HTML块级元素及行内元素</a></li>
+<li><a href="7763.html" title="Django的FBV与CBV模式" target="_blank">Django的FBV与CBV模式</a></li>
+<li><a href="8232.html" title="GDB单步调试程序" target="_blank">GDB单步调试程序</a></li>
+<li><a href="9780.html" title="Go语言是什么" target="_blank">Go语言是什么</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 2863;
+window.arcId = "e7c2f19Erq0hlka6Vo3YbTgeI86O6Q+QTX5qJhgiHO1teHGRdgp1WcGzDck";
+window.typeidChain = "210|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

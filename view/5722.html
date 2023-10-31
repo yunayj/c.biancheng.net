@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Go语言make和new关键字的区别及实现原理</title>
+<meta name="description" content="当我们想要在Go语言中初始化一个结构时，其实会使用到两个完全不同的关键字，也就是 make 和 new，同时出现两个用于初始化的关键字对于初学者来说可能会感到非常困惑，不过它们两" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Go语言make和new关键字的区别及实现原理</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">Go语言中 new 和 make 是两个内置函数，主要用来创建并分配类型的内存。在我们定义变量的时候，可能会觉得有点迷惑，不知道应该使用哪个函数来声明变量，其实他们的规则很简单，new 只分配内存，而 make 只能用于 slice、map 和 channel 的初始化，下面我们就来具体介绍一下。<br />
+<h2>
+new</h2>
+在Go语言中，new 函数描述如下：<br />
+<pre class="go">
+// The new built-in function allocates memory. The first argument is a type,
+// not a value, and the value returned is a pointer to a newly
+// allocated zero value of that type.
+func new(Type) *Type</pre>
+从上面的代码可以看出，new 函数只接受一个参数，这个参数是一个类型，并且返回一个指向该类型内存地址的指针。同时 new 函数会把分配的内存置为零，也就是类型的零值。<br />
+<br />
+【示例】使用 new 函数为变量分配内存空间。
+<pre class="go">
+var sum *int
+sum = new(int) //分配空间
+*sum = 98
+fmt.Println(*sum)</pre>
+当然，new 函数不仅仅能够为系统默认的数据类型，分配空间，自定义类型也可以使用 new 函数来分配空间，如下所示：<br />
+<pre class="go">
+type Student struct {
+   name string
+   age int
+}
+
+var s *Student
+s = new(Student) //分配空间
+s.name =&quot;dequan&quot;
+
+fmt.Println(s)</pre>
+这里如果我们不使用 new 函数为自定义类型分配空间（将第 7 行注释），就会报错：<br />
+<p class="info-box">
+panic: runtime error: invalid memory address or nil pointer dereference<br />
+[signal SIGSEGV: segmentation violation code=0x1 addr=0x0 pc=0x80bd277]<br />
+goroutine 1 [running]:</p>
+这就是 new 函数，它返回的永远是类型的指针，指针指向分配类型的内存地址。<br />
+<h2>
+make</h2>
+make 也是用于内存分配的，但是和 new 不同，它只用于 chan、map 以及 slice 的内存创建，而且它返回的类型就是这三个类型本身，而不是他们的指针类型，因为这三种类型就是引用类型，所以就没有必要返回他们的指针了。<br />
+<br />
+在Go语言中，make 函数的描述如下：<br />
+<pre class="go">
+// The make built-in function allocates and initializes an object of type
+// slice, map, or chan (only). Like new, the first argument is a type, not a
+// value. Unlike new, make&#39;s return type is the same as the type of its
+// argument, not a pointer to it. The specification of the result depends on
+// the type:
+// Slice: The size specifies the length. The capacity of the slice is
+// equal to its length. A second integer argument may be provided to
+// specify a different capacity; it must be no smaller than the
+// length, so make([]int, 0, 10) allocates a slice of length 0 and
+// capacity 10.
+// Map: An empty map is allocated with enough space to hold the
+// specified number of elements. The size may be omitted, in which case
+// a small starting size is allocated.
+// Channel: The channel&#39;s buffer is initialized with the specified
+// buffer capacity. If zero, or the size is omitted, the channel is
+// unbuffered.
+func make(t Type, size ...IntegerType) Type</pre>
+通过上面的代码可以看出 make 函数的 t 参数必须是 chan（通道）、map（字典）、slice（切片）中的一个，并且返回值也是类型本身。<br />
+<p class="tip-box">
+注意：make 函数只用于 map，slice 和 channel，并且不返回指针。如果想要获得一个显式的指针，可以使用 new 函数进行分配，或者显式地使用一个变量的地址。</p>
+Go语言中的 new 和 make 主要区别如下：
+<ul>
+<li>
+make 只能用来分配及初始化类型为 slice、map、chan 的数据。new 可以分配任意类型的数据；</li>
+<li>
+new 分配返回的是指针，即类型 *Type。make 返回引用，即 Type；</li>
+<li>
+new 分配的空间被清零。make 分配空间后，会进行初始化；</li>
+</ul>
+<h2>
+实现原理</h2>
+接下来我们将分别介绍一下 make 和 new 在初始化不同<a href='../data_structure/data_structure.html' target='_blank'>数据结构</a>时的具体过程，我们会从编译期间和运行时两个不同的阶段理解这两个关键字的原理。<br />
+<h4>
+make</h4>
+我们已经了解了 make 在创建 slice、map 和 channel 的具体过程，所以在这里我们也只是会简单提及 make 相关的数据结构初始化原理。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/190903/4-1ZZ31I35HJ.gif" /></div>
+<br />
+在编译期的类型检查阶段，Go语言其实就将代表 make 关键字的 OMAKE 节点根据参数类型的不同转换成了 OMAKESLICE、OMAKEMAP 和 OMAKECHAN 三种不同类型的节点，这些节点最终也会调用不同的运行时函数来初始化数据结构。<br />
+<h4>
+new</h4>
+内置函数 new 会在编译期的 SSA 代码生成阶段经过 callnew 函数的处理，如果请求创建的类型大小是 0，那么就会返回一个表示空指针的 zerobase 变量，在遇到其他情况时会将关键字转换成 newobject：<br />
+<pre class="go">
+func callnew(t *types.Type) *Node {
+    if t.NotInHeap() {
+        yyerror(&quot;%v is go:notinheap; heap allocation disallowed&quot;, t)
+    }
+    dowidth(t)
+
+    if t.Size() == 0 {
+        z := newname(Runtimepkg.Lookup(&quot;zerobase&quot;))
+        z.SetClass(PEXTERN)
+        z.Type = t
+        return typecheck(nod(OADDR, z, nil), ctxExpr)
+    }
+
+    fn := syslook(&quot;newobject&quot;)
+    fn = substArgTypes(fn, t)
+    v := mkcall1(fn, types.NewPtr(t), nil, typename(t))
+    v.SetNonNil(true)
+    return v
+}</pre>
+需要提到的是，哪怕当前变量是使用 var 进行初始化，在这一阶段也可能会被转换成 newobject 的函数调用并在堆上申请内存：<br />
+<pre class="go">
+func walkstmt(n *Node) *Node {
+    switch n.Op {
+    case ODCL:
+        v := n.Left
+        if v.Class() == PAUTOHEAP {
+            if prealloc[v] == nil {
+                prealloc[v] = callnew(v.Type)
+            }
+            nn := nod(OAS, v.Name.Param.Heapaddr, prealloc[v])
+            nn.SetColas(true)
+            nn = typecheck(nn, ctxStmt)
+            return walkstmt(nn)
+        }
+    case ONEW:
+        if n.Esc == EscNone {
+            r := temp(n.Type.Elem())
+            r = nod(OAS, r, nil)
+            r = typecheck(r, ctxStmt)
+            init.Append(r)
+            r = nod(OADDR, r.Left, nil)
+            r = typecheck(r, ctxExpr)
+            n = r
+        } else {
+            n = callnew(n.Type.Elem())
+        }
+    }
+}</pre>
+当然这也不是绝对的，如果当前声明的变量或者参数不需要在当前作用域外生存，那么其实就不会被初始化在堆上，而是会初始化在当前函数的栈中并随着函数调用的结束而被销毁。<br />
+<br />
+newobject 函数的工作就是获取传入类型的大小并调用 mallocgc 在堆上申请一片大小合适的内存空间并返回指向这片内存空间的指针：<br />
+<p class="info-box">
+func newobject(typ *_type) unsafe.Pointer {<br />
+&nbsp;&nbsp;&nbsp; return mallocgc(typ.size, typ, true)<br />
+}</p>
+<h2>
+总结</h2>
+最后，简单总结一下Go语言中 make 和 new 关键字的实现原理，make 关键字的主要作用是创建 slice、map 和 Channel 等内置的数据结构，而 new 的主要作用是为类型申请一片内存空间，并返回指向这片内存的指针。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="364.html" title="C语言空（null）指针和NULL指针的区别详解" target="_blank">C语言空（null）指针和NULL指针的区别详解</a></li>
+<li><a href="vip_2036.html" title="大端小端以及判别方式" target="_blank">大端小端以及判别方式</a></li>
+<li><a href="vip_3238.html" title="Shell declare -i：将变量声明为整数类型" target="_blank">Shell declare -i：将变量声明为整数类型</a></li>
+<li><a href="7981.html" title="GCC -c选项：生成目标文件" target="_blank">GCC -c选项：生成目标文件</a></li>
+<li><a href="../nexus/repository.html" title="Nexus仓库属性和分类" target="_blank">Nexus仓库属性和分类</a></li>
+<li><a href="niz69i_4.html" title="嵌入式学习路线（高薪就业版）" target="_blank">嵌入式学习路线（高薪就业版）</a></li>
+<li><a href="1l3lvy9.html" title="Redis SETRANGE命令的用法" target="_blank">Redis SETRANGE命令的用法</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 5722;
+window.arcId = "3f86ZaggpzadHuKFqbgvE5U7JLzsdBvDnuptqbbPyivYMsaGkEnnqHc6sRo";
+window.typeidChain = "6|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Python多线程爬虫详解</title>
+<meta name="description" content="网络爬虫程序是一种 IO 密集型程序，程序中涉及了很多网络 IO 以及本地磁盘 IO 操作，这些都会消耗大量的时间，从而降低程序的执行效率，而 Python 提供的多线程能够在一定程度上提升" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="../view/niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+	<div id="sidebar" class="toggle-target">
+	<div id="contents">
+		<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="python_spider_2.html">Python爬虫</a></dt>
+		<dd>
+        	<span class="channel-num">1</span>
+        	<a href="what-is-spider_2.html">网络爬虫是什么</a>
+        </dd>
+<dd>
+        	<span class="channel-num">2</span>
+        	<a href="webpage_2.html">网页构成</a>
+        </dd>
+<dd>
+        	<span class="channel-num">3</span>
+        	<a href="static-and-dynamic_2.html">静态网页和动态网页</a>
+        </dd>
+<dd>
+        	<span class="channel-num">4</span>
+        	<a href="check-element_2.html">审查网页元素</a>
+        </dd>
+<dd>
+        	<span class="channel-num">5</span>
+        	<a href="preparatory-work_2.html">学习前的准备工作</a>
+        </dd>
+<dd>
+        	<span class="channel-num">6</span>
+        	<a href="the-first-spider_2.html">第一个Python爬虫程序</a>
+        </dd>
+<dd>
+        	<span class="channel-num">7</span>
+        	<a href="user-agent_2.html">User-Agent用户代理</a>
+        </dd>
+<dd>
+        	<span class="channel-num">8</span>
+        	<a href="useragent-pool_2.html">User-Agnet代理池</a>
+        </dd>
+<dd>
+        	<span class="channel-num">9</span>
+        	<a href="url-coding_2.html">URL编码和解码</a>
+        </dd>
+<dd>
+        	<span class="channel-num">10</span>
+        	<a href="crawl-webpage_2.html">[实例]爬虫抓取网页</a>
+        </dd>
+<dd>
+        	<span class="channel-num">11</span>
+        	<a href="case01_2.html">[实例]抓取百度贴吧数据</a>
+        </dd>
+<dd>
+        	<span class="channel-num">12</span>
+        	<a href="regexp-syntax_2.html">正则表达式语法</a>
+        </dd>
+<dd>
+        	<span class="channel-num">13</span>
+        	<a href="re-module_2.html">Python re模块用法</a>
+        </dd>
+<dd>
+        	<span class="channel-num">14</span>
+        	<a href="csv-module_2.html">Python csv模块</a>
+        </dd>
+<dd>
+        	<span class="channel-num">15</span>
+        	<a href="case02_2.html">[实例]抓取猫眼电影排行榜</a>
+        </dd>
+<dd>
+        	<span class="channel-num">16</span>
+        	<a href="pymysql_2.html">Python Pymysql存储数据</a>
+        </dd>
+<dd>
+        	<span class="channel-num">17</span>
+        	<a href="case03_2.html">[实例]抓取多级页面数据</a>
+        </dd>
+<dd>
+        	<span class="channel-num">18</span>
+        	<a href="requests_2.html">Python Requests库</a>
+        </dd>
+<dd>
+        	<span class="channel-num">19</span>
+        	<a href="crawl-photo_2.html">[实例]抓取网络照片</a>
+        </dd>
+<dd>
+        	<span class="channel-num">20</span>
+        	<a href="requests-args_2.html">Requests库方法和参数</a>
+        </dd>
+<dd>
+        	<span class="channel-num">21</span>
+        	<a href="switchyomega_2.html">Proxy SwitchyOmeg</a>
+        </dd>
+<dd>
+        	<span class="channel-num">22</span>
+        	<a href="xpath_2.html">Xpath简明教程</a>
+        </dd>
+<dd>
+        	<span class="channel-num">23</span>
+        	<a href="xpath-helper_2.html">Xpath Helper安装使用</a>
+        </dd>
+<dd>
+        	<span class="channel-num">24</span>
+        	<a href="lxml_2.html">Python lxml库</a>
+        </dd>
+<dd>
+        	<span class="channel-num">25</span>
+        	<a href="lxml-case_2.html">[实例]Python lxml应用</a>
+        </dd>
+<dd>
+        	<span class="channel-num">26</span>
+        	<a href="case04_2.html">[实例]抓取链家二手房数据</a>
+        </dd>
+<dd>
+        	<span class="channel-num">27</span>
+        	<a href="capture-package_2.html">浏览器实现抓包</a>
+        </dd>
+<dd>
+        	<span class="channel-num">28</span>
+        	<a href="case05_2.html">[实例]破解有道翻译</a>
+        </dd>
+<dd>
+        	<span class="channel-num">29</span>
+        	<a href="case06_2.html">[实例]抓取动态加载数据</a>
+        </dd>
+<dd>
+        	<span class="channel-num">30</span>
+        	<a href="json_2.html">Python json模块</a>
+        </dd>
+<dd>
+        	<span class="channel-num">31</span>
+        	<a href="cookie-login_2.html">[实例]Cookie模拟登录</a>
+        </dd>
+<dd>
+        	<span class="channel-num">32</span>
+        	<a href="multithreading_2.html">Python多线程爬虫</a>
+        </dd>
+<dd>
+        	<span class="channel-num">33</span>
+        	<a href="bs4_2.html">Python BS4解析库</a>
+        </dd>
+<dd>
+        	<span class="channel-num">34</span>
+        	<a href="case07_2.html">[实例]爬虫下载小说</a>
+        </dd>
+<dd>
+        	<span class="channel-num">35</span>
+        	<a href="selenium_2.html">Selenium下载和安装</a>
+        </dd>
+<dd>
+        	<span class="channel-num">36</span>
+        	<a href="selenium-using_2.html">Python Selenium用法</a>
+        </dd>
+<dd>
+        	<span class="channel-num">37</span>
+        	<a href="selenium-case_2.html">[实例]Selenium实战应用</a>
+        </dd>
+<dd>
+        	<span class="channel-num">38</span>
+        	<a href="scrapy_2.html">Python Scrapy爬虫框架</a>
+        </dd>
+<dd>
+        	<span class="channel-num">39</span>
+        	<a href="scrapy-case_2.html">[实例]Scrapy框架应用</a>
+        </dd>
+
+	</div>
+</div>
+	<div id="article-wrap">
+		<div id="article">
+			<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="python_spider_2.html">Python爬虫</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+			<h1>Python多线程爬虫详解</h1>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+			<div id="arc-body">网络爬虫程序是一种 IO 密集型程序，程序中涉及了很多网络 IO 以及本地磁盘 IO 操作，这些都会消耗大量的时间，从而降低程序的执行效率，而 Python 提供的多线程能够在一定程度上提升 IO 密集型程序的执行效率。
+<p class="tip-box">
+	如果想学习 Python 多进程、多线程以及 Python GIL 全局解释器锁的相关知识，可参考《<a href="../thread/thread_2.html" target="_blank">Python并发编程教程</a>》。</p>
+<h2>
+	多线程使用流程</h2>
+Python 提供了两个支持多线程的模块，分别是 _thread 和 threading。其中 _thread 模块偏底层，它相比于 threading 模块功能有限，因此推荐大家使用 threading 模块。 threading 中不仅包含了&nbsp; _thread 模块中的所有方法，还提供了一些其他方法，如下所示：
+<ul>
+	<li>
+		threading.currentThread() 返回当前的线程变量。</li>
+	<li>
+		threading.enumerate() 返回一个所有正在运行的线程的列表。</li>
+	<li>
+		threading.activeCount() 返回正在运行的线程数量。</li>
+</ul>
+<br />
+线程的具体使用方法如下所示：<br />
+<pre class="python">
+from threading import Thread
+​#线程创建、启动、回收
+t = Thread(target=函数名) # 创建线程对象
+t.start() # 创建并启动线程
+t.join()  # 阻塞等待回收线程
+</pre>
+创建多线程的具体流程:
+<pre class="python">
+t_list = []
+for i in range(5):
+    t = Thread(target=函数名)
+    t_list.append(t)
+    t.start()
+for t in t_list:
+    t.join()</pre>
+除了使用该模块外，您也可以使用&nbsp;&nbsp;Thread&nbsp; 线程类来创建多线程。<br />
+<br />
+在处理线程的过程中要时刻注意线程的同步问题，即多个线程不能操作同一个数据，否则会造成数据的不确定性。通过 threading 模块的 Lock 对象能够保证数据的正确性。<br />
+<br />
+比如，使用多线程将抓取数据写入磁盘文件，此时，就要对执行写入操作的线程加锁，这样才能够避免写入的数据被覆盖。当线程执行完写操作后会主动释放锁，继续让其他线程去获取锁，周而复始，直到所有写操作执行完毕。具体方法如下所示：
+<pre class="python">
+from threading import Lock
+lock = Lock()
+# 获取锁
+lock.acquire()
+wirter.writerows(&quot;线程锁问题解决&quot;)
+# 释放锁
+lock.release()</pre>
+<h2>
+	Queue队列模型</h2>
+对于 Python 多线程而言，由于 GIL 全局解释器锁的存在，同一时刻只允许一个线程占据解释器执行程序，当此线程遇到 IO 操作时就会主动让出解释器，让其他处于等待状态的线程去获取解释器来执行程序，而该线程则回到等待状态，这主要是通过线程的调度机制实现的。<br />
+<br />
+由于上述原因，我们需要构建一个多线程共享数据的模型，让所有线程都到该模型中获取数据。queue（队列，先进先出） 模块提供了创建共享数据的队列模型。比如，把所有待爬取的 URL 地址放入队列中，每个线程都到这个队列中去提取 URL。queue 模块的具体使用方法如下：<br />
+<pre class="python">
+# 导入模块
+from queue import Queue
+q = Queue() #创界队列对象
+q.put(url) 向队列中添加爬取一个url链接
+q.get() # 获取一个url，当队列为空时，阻塞
+q.empty() # 判断队列是否为空，True/False</pre>
+<h2>
+	多线程爬虫案例</h2>
+下面通过多线程方法抓取小米应用商店（<a href="https://app.mi.com/" target="_blank">https://app.mi.com/</a>）中应用分类一栏，所有类别下的 APP 的名称、所属类别以及下载详情页 URL 。如下图所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="多线程爬虫" src="../uploads/allimg/210819/9-210Q91513411P_2.gif" /><br />
+	图1：小米应用商城</div>
+抓取下来的数据 demo 如下所示：<br />
+<pre class="info-box">
+三国杀,棋牌桌游,http://app.mi.com/details?id=com.bf.sgs.hdexp.mi</pre>
+<h4>
+	1) 案例分析</h4>
+通过搜索关键字可知这是一个动态网站，因此需要抓包分析。<br />
+<br />
+刷新网页来重新加载数据，可得知请求头的 URL 地址，如下所示：
+<pre class="info-box">
+https://app.mi.com/categotyAllListApi?page=0&amp;categoryId=1&amp;pageSize=30</pre>
+其中查询参数 pageSize 参数值不变化，page 会随着页码的增加而变化，而类别 Id 通过查看页面元素，如下所示
+<pre class="html">
+&lt;ul class=&quot;category-list&quot;&gt;
+&lt;li&gt;&lt;a class=&quot;current&quot; href=&quot;/category/15&quot;&gt;游戏&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/category/5&quot;&gt;实用工具&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/category/27&quot;&gt;影音视听&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/category/2&quot;&gt;聊天社交&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/category/7&quot;&gt;图书阅读&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/category/12&quot;&gt;学习教育&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/category/10&quot;&gt;效率办公&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/category/9&quot;&gt;时尚购物&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/category/4&quot;&gt;居家生活&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/category/3&quot;&gt;旅行交通&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/category/6&quot;&gt;摄影摄像&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/category/14&quot;&gt;医疗健康&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/category/8&quot;&gt;体育运动&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/category/11&quot;&gt;新闻资讯&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/category/13&quot;&gt;娱乐消遣&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/category/1&quot;&gt;金融理财&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</pre>
+因此，可以使用 Xpath 表达式匹配 href 属性，从而提取类别 ID 以及类别名称，表达式如下：
+<pre class="info-box">
+基准表达式：xpath_bds = &#39;//ul[@class=&quot;category-list&quot;]/li&#39;
+提取 id 表达式：typ_id = li.xpath(&#39;./a/@href&#39;)[0].split(&#39;/&#39;)[-1]
+类型名称：typ_name = li.xpath(&#39;./a/text()&#39;)[0]</pre>
+点击开发者工具的 response 选项卡，查看响应数据，如下所示：<br />
+<pre class="info-box">
+{
+count: 2000,
+data: [
+{
+appId: 1348407,
+displayName: &quot;天气暖暖-关心Ta从关心天气开始&quot;,
+icon: &quot;http://file.market.xiaomi.com/thumbnail/PNG/l62/AppStore/004ff4467a7eda75641eea8d38ec4d41018433d33&quot;,
+level1CategoryName: &quot;居家生活&quot;,
+packageName: &quot;com.xiaowoniu.WarmWeather&quot;
+},
+{
+appId: 1348403,
+displayName: &quot;贵斌同城&quot;,
+icon: &quot;http://file.market.xiaomi.com/thumbnail/PNG/l62/AppStore/0e607ac85ed9742d2ac2ec1094fca3a85170b15c8&quot;,
+level1CategoryName: &quot;居家生活&quot;,
+packageName: &quot;com.gbtc.guibintongcheng&quot;
+},
+...
+...</pre>
+通过上述响应内容，我们可以从中提取出 APP 总数量（count）和 APP （displayName）名称，以及下载详情页的 packageName。由于每页中包含了 30 个 APP，所以总数量（count）可以计算出每个类别共有多少页。
+<pre class="info-box">
+pages = int(count) // 30 + 1</pre>
+下载详情页的地址是使用 packageName 拼接而成，如下所示：
+<pre class="info-box">
+link = &#39;http://app.mi.com/details?id=&#39; + app[&#39;packageName&#39;]</pre>
+<h4>
+	​2) 完整程序</h4>
+完整程序如下所示：
+<pre class="python">
+# -*- coding:utf8 -*-
+import requests
+from threading import Thread
+from queue import Queue
+import time
+from fake_useragent import UserAgent
+from lxml import etree
+import csv
+from threading import Lock
+import json
+
+class XiaomiSpider(object):
+  def __init__(self):
+    self.url = &#39;http://app.mi.com/categotyAllListApi?page={}&amp;categoryId={}&amp;pageSize=30&#39;
+    # 存放所有URL地址的队列
+    self.q = Queue()
+    self.i = 0
+    # 存放所有类型id的空列表
+    self.id_list = []
+    # 打开文件
+    self.f = open(&#39;XiaomiShangcheng.csv&#39;,&#39;a&#39;,encoding=&#39;utf-8&#39;)
+    self.writer = csv.writer(self.f)
+    # 创建锁
+    self.lock = Lock()
+
+  def get_cateid(self):
+    # 请求
+    url = &#39;http://app.mi.com/&#39;
+    headers = { &#39;User-Agent&#39;: UserAgent().random}
+    html = requests.get(url=url,headers=headers).text
+    # 解析
+    parse_html = etree.HTML(html)
+    xpath_bds = &#39;//ul[@class=&quot;category-list&quot;]/li&#39;
+    li_list = parse_html.xpath(xpath_bds)
+    for li in li_list:
+      typ_name = li.xpath(&#39;./a/text()&#39;)[0]
+      typ_id = li.xpath(&#39;./a/@href&#39;)[0].split(&#39;/&#39;)[-1]
+      # 计算每个类型的页数
+      pages = self.get_pages(typ_id)
+      #往列表中添加二元组
+      self.id_list.append( (typ_id,pages) )
+
+    # 入队列
+    self.url_in()
+
+  # 获取count的值并计算页数
+  def get_pages(self,typ_id):
+    # 获取count的值，即app总数
+    url = self.url.format(0,typ_id)
+    html = requests.get(
+      url=url,
+      headers={&#39;User-Agent&#39;:UserAgent().random}
+    ).json()
+    count = html[&#39;count&#39;]
+    pages = int(count) // 30 + 1
+    return pages
+
+  # url入队函数，拼接url，并将url加入队列
+  def url_in(self):
+    for id in self.id_list:
+      # id格式：(&#39;4&#39;,pages)
+      for page in range(1,id[1]+1):
+        url = self.url.format(page,id[0])
+        # 把URL地址入队列
+        self.q.put(url)
+
+  # 线程事件函数: get() -请求-解析-处理数据,三步骤
+  def get_data(self):
+    while True:
+       # 判断队列不为空则执行，否则终止
+      if not self.q.empty():
+        url = self.q.get()
+        headers = {&#39;User-Agent&#39;:UserAgent().random}
+        html = requests.get(url=url,headers=headers)
+        res_html = html.content.decode(encoding=&#39;utf-8&#39;)
+        html=json.loads(res_html)
+        self.parse_html(html)
+      else:
+        break
+  # 解析函数
+  def parse_html(self,html):
+    # 写入到csv文件
+    app_list = []
+
+    for app in html[&#39;data&#39;]:
+      # app名称 + 分类 + 详情链接
+      name = app[&#39;displayName&#39;]
+      link = &#39;http://app.mi.com/details?id=&#39; + app[&#39;packageName&#39;]
+      typ_name = app[&#39;level1CategoryName&#39;]
+      # 把每一条数据放到app_list中,并通过writerows()实现多行写入
+      app_list.append([name,typ_name,link])
+
+      print(name,typ_name)
+      self.i += 1
+
+    # 向CSV文件中写入数据
+    self.lock.acquire()
+    self.writer.writerows(app_list)
+    self.lock.release()
+
+  # 入口函数
+  def main(self):
+    # URL入队列
+    self.get_cateid()
+    t_list = []
+    # 创建多线程
+    for i in range(1):
+      t = Thread(target=self.get_data)
+      t_list.append(t)
+      # 启动线程
+      t.start()
+
+    for t in t_list:
+        # 回收线程   
+        t.join()
+
+    self.f.close()
+    print(&#39;数量:&#39;,self.i)
+
+if __name__ == &#39;__main__&#39;:
+  start = time.time()
+  spider = XiaomiSpider()
+  spider.main()
+  end = time.time()
+  print(&#39;执行时间:%.1f&#39; % (end-start))</pre>
+运行上述程序后，打开存储文件，其内容如下：
+<pre class="info-box">
+在我们之间-单机版,休闲创意,http://app.mi.com/details?id=com.easybrain.impostor.gtx
+
+粉末游戏,模拟经营,http://app.mi.com/details?id=jp.danball.powdergameviewer.bnn
+
+三国杀,棋牌桌游,http://app.mi.com/details?id=com.bf.sgs.hdexp.mi
+
+腾讯欢乐麻将全集,棋牌桌游,http://app.mi.com/details?id=com.qqgame.happymj
+
+快游戏,休闲创意,http://app.mi.com/details?id=com.h5gamecenter.h2mgc
+
+皇室战争,战争策略,http://app.mi.com/details?id=com.supercell.clashroyale.mi
+
+地铁跑酷,跑酷闯关,http://app.mi.com/details?id=com.kiloo.subwaysurf
+...
+...</pre>
+</div>
+			<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="../view/niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/461_2.html" title="Dev C++下载地址和安装教程（图解）" target="_blank">Dev C++下载地址和安装教程（图解）</a></li>
+<li><a href="../view/vip_1984_2.html" title="C语言宏参数的字符串化和宏参数的连接" target="_blank">C语言宏参数的字符串化和宏参数的连接</a></li>
+<li><a href="../view/vip_2273_2.html" title="C++继承时的对象内存模型" target="_blank">C++继承时的对象内存模型</a></li>
+<li><a href="../c/ceil_2.html" title="C语言ceil()函数：求不小于x的最小整数（向上取整）" target="_blank">C语言ceil()函数：求不小于x的最小整数（向上取整）</a></li>
+<li><a href="../view/5131_2.html" title="Go语言反射规则浅析" target="_blank">Go语言反射规则浅析</a></li>
+<li><a href="../view/stable-sorting_2.html" title="稳定排序算法有哪些" target="_blank">稳定排序算法有哪些</a></li>
+<li><a href="../view/2lj98f9_2.html" title="《嗨翻C语言》PDF下载（高清完整版）" target="_blank">《嗨翻C语言》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+		</div>
+		
+	</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9086;
+window.arcId = "b9c0Q1mmUlwb0XFY8L40zk5exRJhwC78QVnp1Y1Y2z2JdJElV0dKnpoTDG0";
+window.typeidChain = "421";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="../view/8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="../view/8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="../view/8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="../view/9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="../view/8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/python_spider/cookie-login.html";
+window.nextPageURL = "/python_spider/bs4.html";
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Linux关机和重启命令（超详解）</title>
+<meta name="description" content="在早期的 Linux 系统中，应该尽量使用 shutdown 命令来进行关机和重启。因为在那时的 Linux 中，只有 shutdown 命令在关机或重启之前会正确地中止进程及服务，所以我们一直认为 shutdown 才是" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Linux关机和重启命令（超详解）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">说到关机和重启，很多人认为，重要的服务器（比如银行的服务器、电信的服务器）如果重启了，则会造成大范围的灾难。笔者在这里解释一下。<br />
+<br />
+首先，就算是银行或电信的服务器，也不是不需要维护，而是依靠备份服务器代替。其次，每个人的经验都是和自己的技术成长环境息息相关的。比如笔者是游戏运维出身，而游戏又是数据为王，所以一切操作的目的就是保证数据的可靠和安全。这时，有计划的重启远比意外岩机造成的损失要小得多，所以定义重启是游戏运维的重要手段。
+<h2>
+shutdown命令</h2>
+在早期的 Linux 系统中，应该尽量使用 shutdown 命令来进行关机和重启。因为在那时的 Linux 中，只有 shutdown 命令在关机或重启之前会正确地中止进程及服务，所以我们一直认为 shutdown 才是最安全的关机与重启命令。<br />
+<br />
+而在现在的系统中，一些其他的命令（如 reboot）也会正确地中止进程及服务，但我们仍建议使用 shutdown 命令来进行关机和重启。<br />
+<br />
+shutdown 命令的基本信息如下。
+<ul>
+<li>
+命令名称：shutdown。</li>
+<li>
+英文原意：bring the system down。</li>
+<li>
+所在路径：/sbin/shutdown。</li>
+<li>
+执行权限：超级用户。</li>
+<li>
+功能描述：关机和重启</li>
+</ul>
+<h4>
+命令格式</h4>
+<p class="info-box">
+[root@localhost ~]# shutdown [选项] 时间 [警告信息]</p>
+选项:
+<ul>
+<li>
+-c：取消已经执行的 shutdown 命令；</li>
+<li>
+-h：关机；</li>
+<li>
+-r：重启；</li>
+</ul>
+<br />
+<strong>【例 1】</strong>重启与定时重启。<br />
+先来看看如何使用 shutdown 命令进行重启：
+<p class="info-box">
+[root@localhost ~]# shutdown -r now<br />
+#重启, now是现在重启的意思<br />
+[root@localhost ~]# shutdown -r 05:30<br />
+#指定时间重启，但会占用前台终端<br />
+[root@localhost ~]# shutdown -r 05:30 &amp;<br />
+#把定义重启命令放入后台，&amp;是后台的意思<br />
+[root@localhost ~]# shutdown -c<br />
+//取消定时重启<br />
+[root@localhost ~]# shutdown -r +10<br />
+#10分钟之后重启</p>
+<strong>【例 2】</strong>关机和定时关机。
+<p class="info-box">
+[root@localhost ~]# shutdown -h now<br />
+#现在关机<br />
+[root@localhost ~]# shutdown -h 05:30<br />
+#指定时间关机</p>
+<h2>
+reboot命令</h2>
+在现在的系统中，reboot 命令也是安全的，而且不需要加入过多的选项。
+<p class="info-box">
+[root@localhost ~]# reboot<br />
+#重启</p>
+<h2>
+halt和poweroff命令</h2>
+这两个都是关机命令，直接执行即可。
+<p class="info-box">
+[root@localhost ~】# halt<br />
+#关机<br />
+[root@localhost ~】# poweroff<br />
+#关机</p>
+<h2>
+init命令</h2>
+init 是修改 Linux 运行级别的命令，也可以用于关机和重启。
+<p class="info-box">
+[root@localhost~]# init 0<br />
+#关机，也就是调用系统的 0 级别<br />
+[root@localhost ~】# init 6<br />
+#重启，也就是调用系统的 6 级别</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1368.html" title="C++ while（do-while）循环详解" target="_blank">C++ while（do-while）循环详解</a></li>
+<li><a href="3423.html" title="伙伴系统管理动态内存" target="_blank">伙伴系统管理动态内存</a></li>
+<li><a href="vip_7365.html" title="Go语言实现RSA和AES加解密" target="_blank">Go语言实现RSA和AES加解密</a></li>
+<li><a href="7456.html" title="MySQL CROSS JOIN：交叉连接" target="_blank">MySQL CROSS JOIN：交叉连接</a></li>
+<li><a href="7525.html" title="Django模板加载与响应" target="_blank">Django模板加载与响应</a></li>
+<li><a href="ynn1r1.html" title="C语言extern关键字" target="_blank">C语言extern关键字</a></li>
+<li><a href="4bwyvjo.html" title="C# IndexOf()方法：查找字符串第一次出现的位置" target="_blank">C# IndexOf()方法：查找字符串第一次出现的位置</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 793;
+window.arcId = "ba8fO8R5RAQXlUZq/9Ds9cl4n37ev+ICE6C6GDns/cvYiAYemoNisyveew";
+window.typeidChain = "210|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

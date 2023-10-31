@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>for的用法详解，C语言for循环完全攻略</title>
+<meta name="description" content="for 循环语句的一般形式为： for (表达式1; 表达式2; 表达式3) { 语句; } 首先要强调两点： 1) 表达式1、表达式2和表达式3之间是用分号 ; 隔开的，千万不要写成逗号。 2) for(表达式1；表达式" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>for的用法详解，C语言for循环完全攻略</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">for 循环语句的一般形式为：
+<p class="info-box">
+for (表达式1; 表达式2; 表达式3)<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 语句;<br />
+}</p>
+首先要强调两点：<br />
+1) 表达式1、表达式2和表达式3之间是用分号<code>;</code>隔开的，千万不要写成逗号。<br />
+<br />
+2)&nbsp;<code>for(表达式1；表达式2；表达式3)</code>的后面千万不要加分号，很多新手都会犯这种错误&mdash;&mdash;会情不自禁地在后面加分号。<br />
+<br />
+因为 for 循环只能控制到其后的一条语句，而在C语言中分号也是一个语句&mdash;&mdash;空语句。所以如果在后面加个分号，那么 for 循环就只能控制到这个分号，下面大括号里面的语句就不属于 for 循环了。<br />
+<br />
+下面来看看它的执行过程：
+<ol>
+<li>
+求解表达式1。</li>
+<li>
+求解表达式2。若其值为真，则执行 for 语句中指定的内嵌语句，然后执行第3步；若表达式2值为假，则结束循环，转到第5步。</li>
+<li>
+求解表达式3。</li>
+<li>
+转回上面第2步继续执行。</li>
+<li>
+循环结束，执行 for 语句下面的语句。</li>
+</ol>
+<br />
+从这个执行过程中可以看出，&ldquo;表达式1&rdquo;只执行一次，循环是在&ldquo;表达式2&rdquo;&ldquo;表达式3&rdquo;和&ldquo;内嵌语句&rdquo;之间进行的。<br />
+<br />
+for语句最简单的形式是：
+<p class="info-box">
+for (循环变量赋初值; 循环条件; 循环变量增值)<br />
+{<br />
+&nbsp;&nbsp;&nbsp; 语句;<br />
+}</p>
+<br />
+下面给大家写一个程序，求 1+2+3+4+&hellip;+100 的总和。
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int i;
+    int sum = 0;  //sum的英文意思是&ldquo;总和&rdquo;
+    for (i=1; i&lt;=100; ++i)  //++是自加的意思, ++i相当于i = i + 1
+    {
+        sum = sum + i;  /*等价于sum += i;但是不建议这么写, 因为sum = sum + i看起来更清楚、更舒服*/
+    }
+    printf(&quot;sum = %d\n&quot;, sum);
+    return 0;
+}</pre>
+输出结果是：<br />
+sum = 5050<br />
+<br />
+这个程序的功能是实现求 1+2+3+4+&hellip;+100 的和，如果不用循环，加一次就要一条语句，加 100 次就要 100 条语句。这里是从 1 加到 100，要是从 1 加到 10000 那就要 10000 条语句。但有了循环就很方便了，你想加到多少就加到多少，只要改一个参数就可以了。所以循环很重要。<br />
+<br />
+下面按照执行过程看看上面这个程序是怎样执行的。<br />
+<br />
+1) 首先定义一个循环变量 i。定义的时候可以不给它赋初值，在 for 循环里面再给它赋初值也行。但前面说过，最好在定义变量的时候就对它进行初始化，如果值不确定就初始化为 0。所以程序中也可以在定义 i 的时候就给它赋初值，那么 for 循环里的&ldquo;表达式1&rdquo;就可以省略了，但分号不可以省略。<br />
+<br />
+这样的话，执行的时候就跳过第1步，直接进入第2步，其他的不变。所以程序也可以像下面这样写：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int i = 1;
+    int sum = 0;
+    for (; i&lt;=100; ++i)
+    {
+        sum = sum + i;
+    }
+    printf(&quot;sum = %d\n&quot;, sum);
+    return 0;
+}</pre>
+当然表达式1加上也行，大不了再重新赋一次值。<br />
+<br />
+2) 然后定义一个用来存放&ldquo;和&rdquo;的变量 sum，并给它赋初值 0，然后进入 for 循环：
+<ol>
+<li>
+首先求解表达式1，即给变量i赋初值，<code>i=1;</code>表达式1只执行这一次，下面都不会再执行了。</li>
+<li>
+然后求解表达式2，若 1&lt;=100 成立，则执行 for 循环中的内嵌语句，即 sum=0+1。</li>
+<li>
+然后执行第3步，变量 i 自加 1，即变量 i 由 1 变为 2。</li>
+<li>
+然后再求解表达式2，2&lt;=100 成立，则执行 for 循环中的内嵌语句，sum=0+1+2。</li>
+<li>
+然后再执行第3步，变量 i 自加 1，即变量 i 由 2 变为 3。</li>
+<li>
+然后再求解表达式2，即 3&lt;=100 成立，则执行 for 循环中的内嵌语句，sum=0+1+2+3。</li>
+<li>
+&hellip;&hellip;</li>
+</ol>
+<br />
+就这样一直循环下去，直到 ++i 等于 100 的时候，求解表达式2，即 100&lt;=100 成立，则执行 for 循环中的内嵌语句，sum=0+1+2+3+&hellip;+100。<br />
+<br />
+然后再执行第3步，变量 i 自加 1，即变量 i 由 100 变为 101。然后再求解表达式2，即 101&lt;=100 不成立，则结束循环，执行 for 循环下面的语句即 printf。<br />
+<br />
+以上就是这个程序的执行过程。关于 for 语句的代码规范化问题，有两点要再跟大家强调一下：<br />
+1）if、else、for、while、do 都只能控制到其后的一条语句，如果要控制多条语句必须加大括号<code>{}</code>。但基于代码规范化，if、else、for、while、do 后面的执行语句不论有多少行，就算只有一行也要加<code>{}</code>。<br />
+<br />
+2) 像 if、for、while 等关键字之后应留一个空格再跟左括号<code>(</code>，以突出关键字。<br />
+<br />
+此外上面的程序还有一个知识点要跟大家说一下：从功能上讲，<code>for(i=1; i&lt;=100;++i)</code>完全可以写成<code>for(i=1; i&lt;101; ++i)</code>，而且建议大家尽量使用这种写法。也就是说，循环语句的循环条件尽量写成半开半闭的，不管是 for 循环还是 while 循环。<br />
+<br />
+<code>for(i=1; i&lt;101; ++i)</code>实际上是 1&le;i&lt;101，是半开半闭的；而<code>for(i=1; i&lt;=100; ++i)</code>实际上是 1&le;i&le;100，是全闭的。那么为什么建议使用半开半闭的呢？因为如果写成 i&lt;=100 的话，那么每次判断的时候都要判断两次，即 i&lt;100 和 i==100，而写成 i&lt;101 的话每次只需要判断一次。<br />
+<br />
+也许有人说：程序在执行 i&lt;=100 的时候不是将它转换成 i&lt;100||i==100 吗？这样由&ldquo;短路或&rdquo;的知识可知，如果前面的为真那么后面的不就不会执行了吗？这样不也是判断一次吗？不是这样的，系统是不会将 i&lt;=100 转换成 i&lt;100||i==100 的，每次判断的时候 i&lt;100 和 i==100 都要判断。<br />
+<br />
+但是写成半开半闭也有一个问题，就是会影响对代码的理解。有时候写成全闭的区间理解起来才顺畅，而写成半开半闭反而不易理解，比如<code>&lt;=</code>右边是变量或表达式的时候。这时候要以可读性为第一要素，即哪种好理解就使用哪种。现在 CPU 速度那么快，也不在乎那点效率。所以前面说&ldquo;尽量&rdquo;，没有要求一定要那样写。<br />
+<br />
+下面再给大家写一个程序，求 1 到 100 之间所有奇数的和。
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int i;
+    int sum = 0 ;
+    for (i=1; i&lt;100; i+=2)  //i+=2;等价于i = i + 2;
+    {
+        sum = sum + i;
+    }
+    printf(&quot;sum = %d\n&quot;, sum);
+    return 0;
+}</pre>
+输出结果是：<br />
+sum = 2500
+<h2>
+关于自增和自减</h2>
+一直以来，++ 和 &ndash;&ndash; 语法浪费了太多人的时间。说句实在话，++ 和 &ndash;&ndash; 在C语言中根本就不重要，除了表达简练外，真的没有什么其他好处了。<br />
+<br />
+简单地说：++i 和 i++ 在单独使用时，都表示 i=i+1；&ndash;&ndash;i 和 i&ndash;&ndash; 在单独使用时，都表示 i=i&ndash;1。<br />
+<br />
+而 a=++i 就相当于 i=i+1，a=i；a=i++ 就相当于 a=i，i=i+1。<br />
+同理，a=&ndash;&ndash;i 就相当于 i=i&ndash;1，a=i；a=i&ndash;&ndash; 就相当于 a=i，i=i&ndash;1。<br />
+<br />
+如果实在搞不明白 ++ 和 &ndash;&ndash; 是怎么回事，那也不是什么天塌下来的事情。因为<code>a=++i;</code>完全可以写成<code>i++; a=i;</code>。而<code>a=i++;</code>也完全可以写成<code>a=i; i++;</code>。而且，这也是一种很好的程序风格。<br />
+<br />
+作为一个优秀的程序员，在你的程序中就不应该体现出 ++i 和 i++ 的区别，要么都用 ++i，要么都用 i++，不要一会儿用 ++i 一会儿用 i++。<br />
+<br />
+对于自增和自减还有一点需要强调的是：只有&ldquo;变量&rdquo;才能进行自增和自减！你认为 3++ 等于多少？C语言中没有这种写法，常量是不能进行自增和自减的。
+<h2>
+for循环练习</h2>
+1) 求 1! + 2! + 3! + ... + n!
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int n = 0;
+    int i = 0;
+    int m = 1;
+    int sum=0;
+    printf(&quot;请输入n的值:&quot;);
+    scanf(&quot;%d&quot;, &amp;n);
+    for (i=1; i&lt;=n; ++i)
+    {
+        m = m * i;
+        sum = sum +m;
+    }
+    printf (&quot;sum = %d\n&quot;, sum);
+    return 0;
+}</pre>
+这个程序虽然短，但逻辑性很强，算法很好，所以建议读者记住。因为逻辑性强，所以只看是很难明白的，自己在纸上试一下，将自己当成计算机一步步地计算就明白了。<br />
+<br />
+假如 n=4：
+<ol>
+<li>
+当 i=1 时，m=1，sum=1。</li>
+<li>
+当 i=2 时，m=1&times;2，sum=1+1&times;2。</li>
+<li>
+当 i=3 时，m=1&times;2&times;3，sum=1+1&times;2+1&times;2&times;3。</li>
+<li>
+当 i=4 时，m=1&times;2&times;3&times;4，sum=1+1&times;2+1&times;2&times;3+1&times;2&times;3&times;4。</li>
+</ol>
+<br />
+看出规律来了吗？m 的值是一直往下乘，乘以 i 之前 m 的值是（i&ndash;1）的阶乘，乘以 i 之后 m 的值就是 i 的阶乘了。这样 i 循环到多少，m*i 就立刻将这个数的阶乘计算出来，然后加到 sum 中。<br />
+<br />
+2) for 和 if 的嵌套使用。求 1 到 100 之间所有能被 3 整除的数之和。
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int i;
+    int sum = 0;
+    for (i=3; i&lt;100; ++i)
+    {
+        if (0 == i%3)
+        {
+            sum = sum +i;
+        }
+    }
+    printf(&quot;sum = %d\n&quot;, sum);
+    return 0;
+}</pre>
+输出结果是：<br />
+sum = 1683<br />
+<br />
+大家想想如果不用 if，这个程序能不能写出来？当然能，能被 3 整除的数肯定是 3 的倍数，只要 i 每次自加 3 就行了。我们将这个程序写一下：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int i;
+    int sum = 0;
+    for (i=3; i&lt;100; i+=3)
+    {
+        sum = sum +i;
+    }
+    printf(&quot;sum = %d\n&quot;, sum);
+    return 0;
+}</pre>
+因为 ++i 每次只加 1，而 i+=3 每次加 3，所以这种写法与第一种写法比较起来计算机少执行很多步，所以执行起来更快。由此可知，完成相同的功能，算法不一样则效果就不一样。对计算机而言当然是执行得越快越好。<br />
+<br />
+3) 编写程序，输出 1~1000 之间所有的完全平方数。
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+# include &lt;math.h&gt;  //要用sqrt()
+int main(void)
+{
+    int i;  //循环变量
+    int x;  //存储每个数的二次方根
+    for (i=1; i&lt;1000; ++i)
+    {
+        x = sqrt(i);  /*如果i不是完全平方数, 那么sqrt(i)肯定是小数, 而i是int型, 所以x是sqrt(i)取整后的值, 这样x*x肯定不等于i*/
+        if (x*x == i)
+        {
+            printf(&quot;%d\t&quot;, i);  // \t是跳到下一个Tab位置
+        }
+    }
+    printf(&quot;\n&quot;);
+    return 0;
+}</pre>
+输出结果是：
+<pre class="info-box">
+1       4       9       16      25      36      49      64      81    100
+121     144     169     196     225     256     289     324     361   400
+441     484     529     576     625     676     729     784     841   900
+961</pre>
+<br />
+其实这个程序还有更简单的算法，不需要使用 sqrt()。下面将这个程序也写下来：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+int main(void)
+{
+    int i;  //循环变量
+    for (i=1; i*i&lt;1000; ++i)
+    {
+        printf(&quot;%d\t&quot;, i * i);  // \t是跳到下一个Tab位置
+    }
+    printf(&quot;\n&quot;);
+    return 0;
+}</pre>
+输出结果是：
+<pre class="info-box">
+1       4       9       16      25      36      49      64      81    100
+121     144     169     196     225     256     289     324     361   400
+441     484     529     576     625     676     729     784     841   900
+961</pre>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="924.html" title="Java复制（拷贝）数组的4种方法：arraycopy()方法、clone() 方法、copyOf()和copyOfRan" target="_blank">Java复制（拷贝）数组的4种方法：arraycopy()方法、clone() 方法、copyOf()和copyOfRan</a></li>
+<li><a href="vip_2297.html" title="C++虚析构函数的必要性" target="_blank">C++虚析构函数的必要性</a></li>
+<li><a href="../mysql/cot.html" title="MySQL COT函数：求余切值" target="_blank">MySQL COT函数：求余切值</a></li>
+<li><a href="7118.html" title="Python list列表查找元素" target="_blank">Python list列表查找元素</a></li>
+<li><a href="../jsp2/forward.html" title="JSP forward动作" target="_blank">JSP forward动作</a></li>
+<li><a href="../ml_alg/kmeans-application.html" title="K-means聚类算法的应用以及实现" target="_blank">K-means聚类算法的应用以及实现</a></li>
+<li><a href="../c/freopen.html" title="C语言freopen()：重新打开文件" target="_blank">C语言freopen()：重新打开文件</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 172;
+window.arcId = "0486/JsczSe8BZ2k/8PMWyBsoZ3Kin5ymO4P1q/BeSC7PiRUw0jrbtc9hw";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

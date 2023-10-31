@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++函数对象详解（附带实例）</title>
+<meta name="description" content="在详细学习关联容器和算法之前，需要先了解函数对象的概念。 如果一个类将()运算符重载为成员函数，这个类就称为函数对象类，这个类的对象就是函数对象。函数对象是一个对象，" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++函数对象详解（附带实例）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">如果一个类将<code>()</code>运算符重载为成员函数，这个类就称为函数对象类，这个类的对象就是函数对象。函数对象是一个对象，但是使用的形式看起来像函数调用，实际上也执行了函数调用，因而得名。<br />
+<br />
+下面是一个函数对象的例子。
+<pre class="cpp">
+#include &lt;iostream&gt;
+u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+
+class CAverage
+{
+public:
+    double operator()(int a1, int a2, int a3)
+    {  //重载()运算符
+        return (double)(a1 + a2 + a3) / 3;
+    }
+};
+
+int main()
+{
+    CAverage average;  //能够求三个整数平均数的函数对象
+    cout &lt;&lt; average(3, 2, 3);  //等价于 cout &lt;&lt; average.operator(3, 2, 3);
+    return 0;
+}</pre>
+程序的输出结果是：<br />
+2. 66667<br />
+<br />
+<code>()</code>是目数不限的运算符，因此重载为成员函数时，有多少个参数都可以。<br />
+<br />
+average 是一个对象，average(3, 2, 3) 实际上就是 average.operator(3, 2, 3)，这使得 average 看上去像函数的名字，故称其为函数对象。
+<h2>
+函数对象应用实例1：在 accumulate 算法中的应用</h2>
+<a href='../stl/stl.html' target='_blank'>STL</a> 中有以下实现&ldquo;累加&rdquo;功能的算法（函数模板）：
+<p class="info-box">
+template &lt;class InIt, class T, class Pred&gt;<br />
+T accumulate(InIt first, InIt last, T val, Pred op);</p>
+该模板的功能是对 [first, last) 中的每个迭代器 I 执行 val = op(val, *I)，返回最终的 val。在 Dev <a href='../cplus/cplus.html' target='_blank'>C++</a> 中，numeric 头文件中 accumulate 的源代码如下：
+<pre class="cpp">
+template &lt;class InIt, class T, class Pred&gt;
+T accumulate(InIt first, Init last, T init, Pred op)
+{
+    for (; first != last; ++first)
+        init = op(init, *first);
+    return init;
+};</pre>
+此模板被实例化后，<code>op(init, *first)</code>必须要有定义，则 op 只能是函数<a href='../c/80/80.html' target='_blank'>指针</a>或者函数对象。因此调用该 accmulate 模板时，形参 op 对应的实参只能是函数名、函数指针或者函数对象。<br />
+<br />
+下面的程序通过 accumulate 模板求一个 vector 中元素的平方和，其中用到了函数对象。
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;numeric&gt; //accumulate 在此头文件定义
+using namespace std;
+template &lt;class T&gt;
+void PrintInterval(T first, T last)
+{ //输出区间[first,last)中的元素
+    for (; first != last; ++first)
+        cout &lt;&lt; *first &lt;&lt; &quot; &quot;;
+    cout &lt;&lt; endl;
+}
+int SumSquares(int total, int value)
+{
+    return total + value * value;
+}
+template&lt;class T&gt;
+class SumPowers
+{
+private:
+    int power;
+public:
+    SumPowers(int p) :power(p) { }
+    const T operator() (const T &amp; total, const T &amp; value)
+    { //计算 value的power次方，加到total上
+        T v = value;
+        for (int i = 0; i &lt; power - 1; ++i)
+            v = v * value;
+        return total + v;
+    }
+};
+int main()
+{
+    const int SIZE = 10;
+    int a1[] = { 1,2,3,4,5,6,7,8,9,10 };
+    vector&lt;int&gt; v(a1, a1 + SIZE);
+    cout &lt;&lt; &quot;1) &quot;; PrintInterval(v.begin(), v.end());
+    int result = accumulate(v.begin(), v.end(), 0, SumSquares);
+    cout &lt;&lt; &quot;2) 平方和：&quot; &lt;&lt; result &lt;&lt; endl;
+    result = accumulate(v.begin(), v.end(), 0, SumPowers&lt;int&gt;(3));
+    cout &lt;&lt; &quot;3) 立方和：&quot; &lt;&lt; result &lt;&lt; endl;
+    result = accumulate(v.begin(), v.end(), 0, SumPowers&lt;int&gt;(4));
+    cout &lt;&lt; &quot;4) 4次方和：&quot; &lt;&lt; result;
+    return 0;
+}</pre>
+程序的输出结果如下：<br />
+1)1 2 3 4 5 6 7 8 9 10<br />
+2)平方和:385<br />
+3)立方和3025<br />
+4)4次方和:25333<br />
+<br />
+第 37 行，第四个参数是 SumSquares 函数的名字。函数名字的类型是函数指针，因此本行将 accumulate 模板实例化后得到的模板函数定义如下：
+<pre class="cpp">
+int accumulate(vector &lt;int&gt;::iterator first, vector &lt;int&gt;::iterator last, int init, int(*op)(int, int))
+{
+    for (; first != last; ++first)
+        init = op(init, *first);
+    return init;
+}</pre>
+形参 op 是一个函数指针，而<code>op(init, *first)</code>就调用了指针 op 指向的函数，在第 37 行的情况下就是函数 SumSquares。<br />
+<br />
+第 39 行，第四个参数是 SumPowers&lt;int&gt;(3)。SumPowers 是类模板的名字，SumPowers&lt;int&gt; 就是类的名字。类的名字后面跟着构造函数的参数列表，就代表一个临时对象。因此 SumPowers&lt;int&gt;(3) 就是一个 SumPowers&lt;int&gt; 类的临时对象。<br />
+<br />
+编译器在编译此行时，会将 accumulate 模板实例化成以下函数：
+<pre class="cpp">
+int accumulate(vector&lt;int&gt;::iterator first, vector&lt;int&gt;::iterator last, int init, SumPowers&lt;int&gt; op)
+{
+    for (; first != last; ++first)
+        init = op(init, *first);
+    return init;
+}</pre>
+形参 op 是一个函数对象，而<code>op(init, *first)</code>等价于：
+<p class="info-box">
+op.operator()(init, *first);</p>
+即调用了 SumPowers&lt;int&gt; 类的 operator() 成员函数。<br />
+<br />
+对比 SumPowers 和 SumSquares 可以发现，函数对象的 operator() 成员函数可以根据对象内部的不同状态执行不同操作，而普通函数就无法做到这一点。因此函数对象的功能比普通函数更强大。
+<h2>
+函数对象应用实例2：在sort算法中的应用</h2>
+STL 中的排序模板 sort 能将区间从小到大排序。sort 算法有两个版本。第一个版本的原型如下：
+<p class="info-box">
+template &lt;class_Randlt&gt;<br />
+void sort(_Randlt first, _RandIt last);</p>
+该模板可以用来将区间 [first, last) 中的元素从小到大排序，要求 first、last 是随机访问迭代器。元素比较大小是用<code>&lt;</code>进行的。如果表达式<code>a&lt;b</code>的值为 true，则 a 排在 b 前面；如果<code>a&lt;b</code>的值为 false，则 b 未必排在 a 前面，还要看<code>b&lt;a</code>是否成立，成立的话 b 才排在 a 前面。要使用这个版本的 sort 算法，待排序的对象必须能用<code>&lt;</code>运算符进行比较。<br />
+<br />
+sort 算法第二个版本的原型如下：
+<p class="info-box">
+template &lt;class_Randlt, class Pred&gt;<br />
+void sort(_Randlt first, _RandIt last, Pred op);</p>
+这个版本和第一个版本的差别在于，元素 a、b 比较大小是通过表达式<code>op(a, b)</code>进行的。如果该表达式的值为 true，则 a 比 b 小；如果该表达式的值为 false，也不能认为 b 比 a 小，还要看<code>op(b, a)</code>的值。总之，op 定义了元素比较大小的规则。下面是一个使用 sort 算法的例子。
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;algorithm&gt;  //sort算法在此头文件中定义
+using namespace std;
+template &lt;class T&gt;
+void Printlnterva1(T first, T last)
+{  //用以输出 [first, last) 区间中的元素
+    for (; first != last; ++first)
+        cout &lt;&lt; *first &lt;&lt; &quot; &quot;;
+    cout &lt;&lt; endl;
+}
+class A
+{
+public:
+    int v;
+    A(int n) : v(n) {}
+};
+bool operator &lt; (const A &amp; a1, const A &amp; a2)
+{  //重载为 A 的 const 成员函数也可以，重载为非 const 成员函数在某些编译器上会出错
+    return a1.v &lt; a2.v;
+}
+bool GreaterA(const A &amp; a1, const A &amp; a2)
+{  //v值大的元素作为较小的数
+    return a1.v &gt; a2.v;
+}
+struct LessA
+{
+    bool operator() (const A &amp; a1, const A &amp; a2)
+    {  //v的个位数小的元素就作为较小的数
+        return (a1.v % 10) &lt; (a2.v % 10);
+    }
+};
+ostream &amp; operator &lt;&lt; (ostream &amp; o, const A &amp; a)
+{
+    o &lt;&lt; a.v;
+    return o;
+}
+int main()
+{
+    int a1[4] = { 5, 2, 4, 1 };
+    A a2[5] = { 13, 12, 9, 8, 16 };
+    sort(a1, a1 + 4);
+    cout &lt;&lt; &quot;1)&quot;; Printlnterva1(a1, a1 + 4);  //输出 1)1 2 4 5
+    sort(a2, a2 + 5);  //按v的值从小到大排序
+    cout &lt;&lt; &quot;2)&quot;; Printlnterva1(a2, a2 + 5);  //输出 2)8 9 12 13 16
+    sort(a2, a2 + 5, GreaterA);  //按v的值从大到小排序
+    cout &lt;&lt; &quot;3)&quot;; Printlnterva1(a2, a2 + 5);  //输出 3)16 13 12 9 8
+    sort(a2, a2 + 5, LessA());  //按v的个位数从小到大排序
+    cout &lt;&lt; &quot;4)&quot;; Printlnterva1(a2, a2 + 5);  //输出 4)12 13 16 8 9
+    return 0;
+}</pre>
+编译至第 45 行时，编译器将 sort 实例化得到的函数原型如下：
+<p class="info-box">
+void sort(A* first, A* last, bool (*op)(const A &amp;, const A &amp;) );</p>
+该函数在执行过程中，当要比较两个元素 a、b 的大小时，就是看 op(a, b) 和 op(b, a) 的返回值。本程序中 op 指向 GreaterA,因此就用 GreaterA 定义的规则来比较大小。<br />
+<br />
+编译至第 47 行时，编译器将 sort 实例化得到的函数原型如下：
+<p class="info-box">
+void sort( A* first, A* last, LessA op);</p>
+该函数在执行过程中，当要比较两个元素 a、b 的大小时，就是看 op(a, b) 和 op(b, a) 的返回值。本程序中，op(a, b) 等价于 op.opeartor(a, b)，因此就用 LessA 定义的规则来比较大小。<br />
+<br />
+STL 中定义了一些函数对象类模板，都位于头文件 functional 中。例如，greater 模板的源代码如下：
+<pre class="cpp">
+template &lt;class T&gt;
+struct greater
+{
+    bool operator()(const T&amp; x, const T&amp; y) const{
+        return x &gt; y;
+    }
+};</pre>
+假设有以下数组：
+<p class="info-box">
+int a[4] = {3, 5, 34, 8};</p>
+要将该数组从大到小排序，则只需写：
+<p class="info-box">
+sort( a, a+4, greater&lt;int&gt;() );</p>
+要使用 greater 模板，须确保<code>&gt;</code>运算符本来就有定义，或经过了适当的重载。<br />
+<br />
+list 容器的 sort 成员能将元素从小到大排序。它也有两个版本：一个是没有参数的函数，比较大小用<code>&lt;</code>运算符；另一个是函数模板，原型如下：
+<p class="info-box">
+template &lt;class Pred&gt;<br />
+void sort(Pred op);</p>
+sort 函数允许自定义比较大小的规则，即 op(x, y) 为真就认为 x 比 y 小。例如，假设有：
+<p class="info-box">
+list&lt;int&gt; lst;</p>
+如果希望将 lst 中的元素按其整数数值从大到小排序，只需写：
+<p class="info-box">
+lst.sort( greater&lt;int&gt;() );</p>
+在使用关联容器和许多算法时，都可以用函数对象来定义比较大小的规则，以及其他一些规则和操作。
+<h2>
+STL 中的函数对象类模板</h2>
+STL 中有一些函数对象类模板，如表 1 所示。<br />
+<table>
+<caption>
+表1：STL 中的函数对象类模板</caption>
+<tbody>
+<tr>
+<th>
+函数对象类模板</th>
+<th>
+成员函数&nbsp;T operator ( const T &amp;&nbsp;x, const T &amp;&nbsp;y) 的功能</th>
+</tr>
+<tr>
+<td>
+plus &lt;T&gt;</td>
+<td>
+return x + y;</td>
+</tr>
+<tr>
+<td>
+minus &lt;&nbsp;&gt;</td>
+<td>
+return x - y;</td>
+</tr>
+<tr>
+<td>
+multiplies &lt;T&gt;</td>
+<td>
+return x * y;</td>
+</tr>
+<tr>
+<td>
+divides &lt;T&gt;</td>
+<td>
+return x / y;</td>
+</tr>
+<tr>
+<td>
+modulus &lt;T&gt;</td>
+<td>
+return x % y;</td>
+</tr>
+<tr>
+<td>
+&nbsp;</td>
+<td>
+成员函数&nbsp;bool operator( const T &amp;&nbsp;x, const T &amp;&nbsp;y) 的功能</td>
+</tr>
+<tr>
+<td>
+equal_to &lt;T&gt;</td>
+<td>
+return x == y;</td>
+</tr>
+<tr>
+<td>
+not_equal_to &lt;T&gt;</td>
+<td>
+return x! = y;</td>
+</tr>
+<tr>
+<td>
+greater &lt;T&gt;</td>
+<td>
+return x &gt;&nbsp;y;</td>
+</tr>
+<tr>
+<td>
+less &lt;T&gt;</td>
+<td>
+return x &lt;&nbsp;y;</td>
+</tr>
+<tr>
+<td>
+greater_equal &lt;T&gt;</td>
+<td>
+return x &gt;&nbsp;= y;</td>
+</tr>
+<tr>
+<td>
+less_equal &lt;T&gt;</td>
+<td>
+return x &lt;= y;</td>
+</tr>
+<tr>
+<td>
+logical_and &lt;T&gt;</td>
+<td>
+return x &amp;&amp;&nbsp;y;</td>
+</tr>
+<tr>
+<td>
+logical_or &lt;T&gt;</td>
+<td>
+return x ||&nbsp;y;</td>
+</tr>
+<tr>
+<td>
+&nbsp;</td>
+<td>
+成员函数 T operator( const T &amp;&nbsp;x) 的功能</td>
+</tr>
+<tr>
+<td>
+negate &lt;T&gt;</td>
+<td>
+return - x;</td>
+</tr>
+<tr>
+<td>
+&nbsp;</td>
+<td>
+成员函数&nbsp;bool operator( const T &amp;&nbsp;x) 的功能</td>
+</tr>
+<tr>
+<td>
+logical_not &lt;T&gt;</td>
+<td>
+return ! x;</td>
+</tr>
+</tbody>
+</table>
+<br />
+例如，如果要求两个 double 型变量 x、y 的乘积，可以写：
+<p class="info-box">
+multiplies&lt;double&gt; () (x, y)</p>
+<br />
+less 是 STL 中最常用的函数对象类模板，其定义如下：
+<pre class="cpp">
+template &lt;class_Tp&gt;
+struct less
+{
+    bool operator() (const_Tp &amp; __x, const_Tp &amp; __y) const
+    { return __x &lt; __y; }
+};</pre>
+要判断两个 int 变量 x、y 中 x 是否比 y 小，可以写：
+<p class="info-box">
+if( less&lt;int&gt;()(x, y) ) { ... }</p>
+<h2>
+引入函数对象后 STL 中的&ldquo;大&rdquo;、&ldquo;小&rdquo;和&ldquo;相等&rdquo;概念</h2>
+前面提到过，默认情况下，STL 中的容器和算法比较元素的大小是通过<code>&lt;</code>运算符进行的。通过 10.3.4 节可知，sort 和 list::sort 都可以通过一个函数对象或函数自定义比较元素大小的规则。例如以下的 sort 版本：
+<p class="info-box">
+template &lt;class_RandIt, class Pred&gt;<br />
+void sort(_RandIt first, _RandIt last, Pred op);</p>
+实际调用 sort 时，和 op 对应的实参可以是一个函数对象或者函数的名字。sort 在执行过程中用 op(x, y) 比较 x 和 y 的大小，因此可以将 op 称为自定义的&ldquo;比较器&rdquo;。<br />
+<br />
+关联容器中的元素是从小到大排序的。使用关联容器时，也可以用自定义的比较器取代<code>&lt;</code>运算符，以规定元素之间的大小关系。STL 中还有许多算法都可以自定义比较器。在自定义比较器 op 的情况下，以下三种说法是等价的：
+<ul>
+<li>
+x 小于 y。</li>
+<li>
+op(x, y) 的返回值为 true。</li>
+<li>
+y 大于 x。</li>
+</ul>
+<br />
+同样地，对关联容器的 find 和 count 成员函数以及其他一些在有序区间上的 STL 算法而言，在自定义比较器 op 的情况下，<code>x和y相等</code>与<code>op(x, y)和op(y, x)都为假</code>是等价的。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="315.html" title="C++函数模板（模板函数）详解" target="_blank">C++函数模板（模板函数）详解</a></li>
+<li><a href="1747.html" title="分析第一个C语言程序" target="_blank">分析第一个C语言程序</a></li>
+<li><a href="6235.html" title="PHP clone关键字（克隆对象）" target="_blank">PHP clone关键字（克隆对象）</a></li>
+<li><a href="../mybatis/sql-execute.html" title="MyBatis执行SQL的两种方式" target="_blank">MyBatis执行SQL的两种方式</a></li>
+<li><a href="../spring_boot/servlet-filter-listener.html" title="Spring Boot注册Web原生组件（Servlet、Filter、Listener）" target="_blank">Spring Boot注册Web原生组件（Servlet、Filter、Listener）</a></li>
+<li><a href="../matplotlib/pyplot-api.html" title="Matplotlib.pyplot接口汇总" target="_blank">Matplotlib.pyplot接口汇总</a></li>
+<li><a href="ylj0mom.html" title="C#冒泡排序算法（附带源码）" target="_blank">C#冒泡排序算法（附带源码）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 354;
+window.arcId = "9289q7/13mhFMhPUXEqThshIP6dN6pQb/EaLtAsDhS8QXOsMIEA+pGUEwg";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

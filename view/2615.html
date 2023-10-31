@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>MySQL用户授权（GRANT）</title>
+<meta name="description" content="当成功创建用户账户后，还不能执行任何操作，需要为该用户分配适当的访问权限。可以使用 SHOW GRANT FOR 语句来查询用户的权限。 注意：新创建的用户只有登录MySQL服务器的权限，没有" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>MySQL用户授权（GRANT）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">当成功创建用户账户后，还不能执行任何操作，需要为该用户分配适当的访问权限。可以使用 SHOW GRANT FOR 语句来查询用户的权限。
+<blockquote>
+<p>
+注意：新创建的用户只有登录 <a href='../mysql/mysql_3.html' target='_blank'>MySQL</a> 服务器的权限，没有任何其他权限，不能进行其他操作。</p>
+</blockquote>
+USAGE ON*.* 表示该用户对任何数据库和任何表都没有权限。
+<h2>
+授予用户权限</h2>
+对于新建的 MySQL 用户，必须给它授权，可以用 GRANT 语句来实现对新建用户的授权。<br />
+<br />
+语法格式：
+<pre class="info-box">
+GRANT
+&lt;权限类型&gt; [ ( &lt;列名&gt; ) ] [ , &lt;权限类型&gt; [ ( &lt;列名&gt; ) ] ]
+ON &lt;对象&gt; &lt;权限级别&gt; TO &lt;用户&gt;
+其中&lt;用户&gt;的格式：
+&lt;用户名&gt; [ IDENTIFIED ] BY [ PASSWORD ] &lt;口令&gt;
+[ WITH GRANT OPTION]
+| MAX_QUERIES_PER_HOUR &lt;次数&gt;
+| MAX_UPDATES_PER_HOUR &lt;次数&gt;
+| MAX_CONNECTIONS_PER_HOUR &lt;次数&gt;
+| MAX_USER_CONNECTIONS &lt;次数&gt;</pre>
+语法说明如下：
+<h4>
+1) &lt;列名&gt;</h4>
+可选项。用于指定权限要授予给表中哪些具体的列。
+<h4>
+2) ON 子句</h4>
+用于指定权限授予的对象和级别，如在 ON 关键字后面给出要授予权限的数据库名或表名等。
+<h4>
+3) &lt;权限级别&gt;</h4>
+用于指定权限的级别。可以授予的权限有如下几组：
+<ul>
+<li>
+列权限，和表中的一个具体列相关。例如，可以使用 UPDATE 语句更新表 students 中 student_name 列的值的权限。</li>
+<li>
+表权限，和一个具体表中的所有数据相关。例如，可以使用 SELECT 语句查询表 students 的所有数据的权限。</li>
+<li>
+数据库权限，和一个具体的数据库中的所有表相关。例如，可以在已有的数据库 mytest 中创建新表的权限。</li>
+<li>
+用户权限，和 MySQL 中所有的数据库相关。例如，可以删除已有的数据库或者创建一个新的数据库的权限。</li>
+</ul>
+<br />
+对应地，在 GRANT 语句中可用于指定权限级别的值有以下几类格式：
+<ul>
+<li>
+*：表示当前数据库中的所有表。</li>
+<li>
+*.*：表示所有数据库中的所有表。</li>
+<li>
+db_name.*：表示某个数据库中的所有表，db_name 指定数据库名。</li>
+<li>
+db_name.tbl_name：表示某个数据库中的某个表或视图，db_name 指定数据库名，tbl_name 指定表名或视图名。</li>
+<li>
+tbl_name：表示某个表或视图，tbl_name 指定表名或视图名。</li>
+<li>
+db_name.routine_name：表示某个数据库中的某个存储过程或函数，routine_name 指定存储过程名或函数名。</li>
+<li>
+TO 子句：用来设定用户口令，以及指定被赋予权限的用户 user。若在 TO 子句中给系统中存在的用户指定口令，则新密码会将原密码覆盖；如果权限被授予给一个不存在的用户，MySQL 会自动执行一条 CREATE USER 语句来创建这个用户，但同时必须为该用户指定口令。</li>
+</ul>
+<br />
+GRANT语句中的<code>&lt;权限类型&gt;</code>的使用说明如下：
+<h4>
+1) 授予数据库权限时，&lt;权限类型&gt;可以指定为以下值：</h4>
+<ul>
+<li>
+SELECT：表示授予用户可以使用 SELECT 语句访问特定数据库中所有表和视图的权限。</li>
+<li>
+INSERT：表示授予用户可以使用 INSERT 语句向特定数据库中所有表添加数据行的权限。</li>
+<li>
+DELETE：表示授予用户可以使用 DELETE 语句删除特定数据库中所有表的数据行的权限。</li>
+<li>
+UPDATE：表示授予用户可以使用 UPDATE 语句更新特定数据库中所有数据表的值的权限。</li>
+<li>
+REFERENCES：表示授予用户可以创建指向特定的数据库中的表外键的权限。</li>
+<li>
+CREATE：表示授权用户可以使用 CREATE TABLE 语句在特定数据库中创建新表的权限。</li>
+<li>
+ALTER：表示授予用户可以使用 ALTER TABLE 语句修改特定数据库中所有数据表的权限。</li>
+<li>
+SHOW VIEW：表示授予用户可以查看特定数据库中已有视图的视图定义的权限。</li>
+<li>
+CREATE ROUTINE：表示授予用户可以为特定的数据库创建存储过程和存储函数的权限。</li>
+<li>
+ALTER ROUTINE：表示授予用户可以更新和删除数据库中已有的存储过程和存储函数的权限。</li>
+<li>
+INDEX：表示授予用户可以在特定数据库中的所有数据表上定义和删除索引的权限。</li>
+<li>
+DROP：表示授予用户可以删除特定数据库中所有表和视图的权限。</li>
+<li>
+CREATE TEMPORARY TABLES：表示授予用户可以在特定数据库中创建临时表的权限。</li>
+<li>
+CREATE VIEW：表示授予用户可以在特定数据库中创建新的视图的权限。</li>
+<li>
+EXECUTE ROUTINE：表示授予用户可以调用特定数据库的存储过程和存储函数的权限。</li>
+<li>
+LOCK TABLES：表示授予用户可以锁定特定数据库的已有数据表的权限。</li>
+<li>
+ALL 或 ALL PRIVILEGES：表示以上所有权限。</li>
+</ul>
+<h4>
+2) 授予表权限时，&lt;权限类型&gt;可以指定为以下值：</h4>
+<ul>
+<li>
+SELECT：授予用户可以使用 SELECT 语句进行访问特定表的权限。</li>
+<li>
+INSERT：授予用户可以使用 INSERT 语句向一个特定表中添加数据行的权限。</li>
+<li>
+DELETE：授予用户可以使用 DELETE 语句从一个特定表中删除数据行的权限。</li>
+<li>
+DROP：授予用户可以删除数据表的权限。</li>
+<li>
+UPDATE：授予用户可以使用 UPDATE 语句更新特定数据表的权限。</li>
+<li>
+ALTER：授予用户可以使用 ALTER TABLE 语句修改数据表的权限。</li>
+<li>
+REFERENCES：授予用户可以创建一个外键来参照特定数据表的权限。</li>
+<li>
+CREATE：授予用户可以使用特定的名字创建一个数据表的权限。</li>
+<li>
+INDEX：授予用户可以在表上定义索引的权限。</li>
+<li>
+ALL 或 ALL PRIVILEGES：所有的权限名。</li>
+</ul>
+<h4>
+3) 授予列权限时，&lt;权限类型&gt;的值只能指定为 SELECT、INSERT 和 UPDATE，同时权限的后面需要加上列名列表 column-list。</h4>
+<h4>
+4) 最有效率的权限是用户权限。</h4>
+授予用户权限时，&lt;权限类型&gt;除了可以指定为授予数据库权限时的所有值之外，还可以是下面这些值：
+<ul>
+<li>
+CREATE USER：表示授予用户可以创建和删除新用户的权限。</li>
+<li>
+SHOW DATABASES：表示授予用户可以使用 SHOW DATABASES 语句查看所有已有的数据库的定义的权限。</li>
+</ul>
+<br />
+【实例】使用 GRANT 语句创建一个新的用户 testUser，密码为 testPwd。用户 testUser 对所有的数据有查询、插入权限，并授予 GRANT 权限。输入的 SQL 语句和执行过程如下所示。
+<pre class="info-box">
+mysql&gt; GRANT SELECT,INSERT ON *.*
+    -&gt; TO &#39;testUser&#39;@&#39;localhost&#39;
+    -&gt; IDENTIFIED BY &#39;testPwd&#39;
+    -&gt; WITH GRANT OPTION;
+Query OK, 0 rows affected, 1 warning (0.05 sec)</pre>
+使用 SELECT 语句查询用户 testUser 的权限，如下所示。
+<pre class="info-box">
+mysql&gt; SELECT Host,User,Select_priv,Grant_priv
+    -&gt; FROM mysql.user
+    -&gt; WHERE User=&#39;testUser&#39;;
++-----------+----------+-------------+------------+
+| Host      | User     | Select_priv | Grant_priv |
++-----------+----------+-------------+------------+
+| localhost | testUser | Y           | Y          |
++-----------+----------+-------------+------------+
+1 row in set (0.01 sec)</pre>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="5671.html" title="JS遍历数组（for in和forEach循环）" target="_blank">JS遍历数组（for in和forEach循环）</a></li>
+<li><a href="../mybatis/sql-execute.html" title="MyBatis执行SQL的两种方式" target="_blank">MyBatis执行SQL的两种方式</a></li>
+<li><a href="9801.html" title="IP协议是什么（超级详细）" target="_blank">IP协议是什么（超级详细）</a></li>
+<li><a href="5tj0wt7.html" title="Java注释（单行注释+多行注释+文档注释）" target="_blank">Java注释（单行注释+多行注释+文档注释）</a></li>
+<li><a href="gtjlm21.html" title="C#二维数组的创建和使用" target="_blank">C#二维数组的创建和使用</a></li>
+<li><a href="dtj4v9d.html" title="Python writelines()方法：向文件中写入多行字符串" target="_blank">Python writelines()方法：向文件中写入多行字符串</a></li>
+<li><a href="1br5fzg.html" title="Linux du命令：查看目录或文件占用的硬盘空间" target="_blank">Linux du命令：查看目录或文件占用的硬盘空间</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 2615;
+window.arcId = "d77fWHZU+gGdsI6gQ2EsOjL4lIZfGyeSK6/VZSLAS8k69je1Y2jkZVLYf0Q";
+window.typeidChain = "345|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

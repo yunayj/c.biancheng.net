@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Django Auth应用实现用户身份认证</title>
+<meta name="description" content="我们知道 Django Auth 应用一般用在用户的登录注册上，用于判断当前的用户是否合法，从而可以帮助开发者快速的构建用户系统，实现 根据给定的条件或属性尝试获取用户对象的行为被称" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../django/django.html">Django</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Django Auth应用实现用户身份认证</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">我们知道 Django Auth 应用一般用在用户的登录注册上，用于判断当前的用户是否合法，从而可以帮助开发者快速的构建用户系统，在《<a href="8001_2.html" target="_blank">Django Auth用户与用户组详述</a>》一节我们知道了用户与用户组的概念，那么 Auth 应用又是如何是实现用户的认证的呢？当给定相关的条件或属性时候，我们可以去获取用户对象这个过程就被称为用户认证，Django Auth 应用提供了一个用来认证的方法即 authenticate 方法用来实现用户的认证行为。下面就让我们一起来认识一下吧！<br />
+<h2>
+1. 实现用户的认证</h2>
+authenticate 方法一般接受 username 与 password 作为参数，如果通过了认证，就返回认证的实例对象，否则就会返回 None，下面我们进行一下相关的实例演示：
+<pre class="python">
+In [1]: from django.contrib.auth import authenticate
+In [2]: user=authenticate(username=&quot;bookstore&quot;,password=&quot;python_django&quot;)
+In [3]: user
+Out[3]: &lt;User: bookstore&gt;
+In [4]: user=authenticate(username=&quot;bookstore&quot;,password=&quot;python&quot;)
+In [5]: user is None
+Out[5]: True</pre>
+<h4>
+1) 用户认证过程解析</h4>
+上述代码中，我们首先引入 authenticate ，可知该方法定义在 django/contrib/auth/__init__.py 文件中，然后我们对上一节中创建的 user 用户进行可认证，输入它的两个参数值，最后验证通过返回了 user 的实例对象，最后我们更改了密码的参数值将其设置为不正确，并使用 user is None 的方法查看其返回结果是否为 None，得到的布尔值为 Ture，所以用户认证失败。这就是用户认证的的过程。<br />
+<br />
+那么 authenticate 方法是如何实现的呢？我们分析一下它的源码：
+<pre class="python">
+def authenticate(request=None, **credentials):
+    #__get_backends获取当前系统中定义的认证后端，并依次迭代
+    for backend, backend_path in _get_backends(return_tuples=True):
+        try:
+            inspect.getcallargs(backend.authenticate, request, **credentials)
+        except TypeError:
+            #此后端不接受这些凭据作为参数。返回继续执行循环
+            continue
+        try:
+             #通过当前的认证后端尝试获取 User，若获取不到就会抛出异常！
+            user = backend.authenticate(request, **credentials)
+        except PermissionDenied:
+            #抛出异常Permission
+            break
+         #如果没有返回，继续执行下一个认证
+        if user is None:
+            continue
+        #添加一个属性标志，代表后端认证成功
+        user.backend = backend_path
+        return user
+    # 所提供的凭据对所有后端、触发信号无效
+    user_login_failed.send(sender=__name__, credentials=_clean_credentials(credentials), request=request)
+</pre>
+<h4>
+2) Django获取后端认证</h4>
+上述代码中，我们可以看出，authenticate 方法使用了当前系统中定义的认证后端来获取用户对象，当前系统的默认认证后端是 ModelBackend。那么 Django 是如何获取认证后端的呢？如下所示：<br />
+<pre class="python">
+def _get_backends(return_tuples=False):
+    backends = []
+    #AUTHENTICATION_BACKENDS 定义了当前系统可以用的身份认证列表
+    for backend_path in settings.AUTHENTICATION_BACKENDS:
+        #加载后端
+        backend = load_backend(backend_path)
+        backends.append((backend, backend_path) if return_tuples else backend)
+    #如果未定义后端列表抛出异常
+    if not backends:
+        raise ImproperlyConfigured(
+            &#39;No authentication backends have been defined. Does &#39;
+            &#39;AUTHENTICATION_BACKENDS contain anything?&#39;
+        )
+    return backends</pre>
+但是我们并没有对 AUTHENTICATION_BACKENDS 进行定义，所以这里会使用户 Django 框架默认的后端认认证，它位于 django/conf/global_settings.py 文件中，如下所示：
+<p class="info-box">
+AUTHENTICATION_BACKENDS=[&#39;django.contib.auth.backends.ModelBackend&#39;]&nbsp; #当前系统默认认证后端ModelBackend</p>
+<h2>
+2. Auth应用获取用户模型</h2>
+get_user_model 用于获取当前系统定义的&ldquo;用户模型&rdquo;。其源代码如下所示：
+<pre class="python">
+def get_user_model():
+    &quot;&quot;&quot;
+    返回一个处于激活状态的 User
+    &quot;&quot;&quot;
+    try:
+        return django_apps.get_model(settings.AUTH_USER_MODEL, require_ready=False)
+    except ValueError:
+        raise ImproperlyConfigured(&quot;AUTH_USER_MODEL must be of the form &#39;app_label.model_name&#39;&quot;)
+    except LookupError:
+        raise ImproperlyConfigured(
+            &quot;AUTH_USER_MODEL refers to model &#39;%s&#39; that has not been installed&quot; % settings.AUTH_USER_MODEL
+        )</pre>
+get_user_model 使用实例如下所示：
+<pre class="python">
+# 使用默认User model时
+&gt;&gt;&gt; from django.contrib.auth import get_user_model
+&gt;&gt;&gt; get_user_model()
+&lt;class &#39;django.contrib.auth.models.User&#39;&gt;
+# 使用自定义User model时
+&gt;&gt;&gt; from django.contrib.auth import get_user_model
+&gt;&gt;&gt; get_user_model()
+&lt;class &#39;xxx.models.NewUser&#39;&gt;
+# get_user_model()实际获取的是settings.AUTH_USER_MODEL指定的User model</pre>
+Django 允许在 settings.py 文件中定义 AUTH_USER_MODEL 覆盖默认的 auth.User，以满足特定项目的需求。所以，ModelBacakend 的 authenticate 方法首先会通过 username 尝试获取 User 对象，再去校验密码是否正确以及 is_active 的状态，最后返回 User 对象或是返回 None。在&nbsp;&nbsp;settings.py 配置&nbsp;AUTH_USER_MODEL 格式如下所示：
+<pre class="python">
+#格式： &quot;&lt;django_app名&gt;.&lt;model名&gt;&quot;
+AUTH_USER_MODEL = &quot;appname.NewUser&quot; 
+
+#在models.py编写示例
+from django.conf import settings
+from django.db import models
+class Article(models.Model):
+    author = models.ForeignKey(settings.AUTH_USER_MODEL)
+    title = models.CharField(max_length=100)</pre>
+在 django/contrib/auth/__init__.py 文件中定义了用户的各种行为，例如，登录、退出、用户的认证等等，通过这些可见 Django 的强大所在，Auth 应用模块可以帮助开发者减少很多的工作量，而且 Auth 应用的源码可以给开发者提供诸多的用户系统重写思路。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="4731.html" title="Java List.contains()方法：判断列表中是否包含指定元素" target="_blank">Java List.contains()方法：判断列表中是否包含指定元素</a></li>
+<li><a href="4774.html" title="Go语言依赖管理" target="_blank">Go语言依赖管理</a></li>
+<li><a href="../spring_mvc/file-download.html" title="Spring MVC文件下载" target="_blank">Spring MVC文件下载</a></li>
+<li><a href="../redis2/lindex_command.html" title="Redis LINDEX命令" target="_blank">Redis LINDEX命令</a></li>
+<li><a href="9384.html" title="HTML标题标签&lt;h1&gt;到&lt;h6&gt;" target="_blank">HTML标题标签&lt;h1&gt;到&lt;h6&gt;</a></li>
+<li><a href="../pygame/transform.html" title="Pygame Transform图像变形" target="_blank">Pygame Transform图像变形</a></li>
+<li><a href="../tkinter/widget-and-attribute.html" title="Tkinter常用控件和属性" target="_blank">Tkinter常用控件和属性</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8002;
+window.arcId = "a04aRqUlZC/llMB+GNslkMuqk2s08fFd/0bW9eCuwaWx7PffspMv+uxRKP4";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

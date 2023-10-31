@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Django的FBV与CBV模式</title>
+<meta name="description" content="FBV 是 function base views 的英文缩写，顾名思义代表的是基于函数的视图，在以前的我们编写的代码中，在 views.py 文件编写的都是这类视图函数，相信大家对这种编写视图函数的方式已经比" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../django/django.html">Django</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Django的FBV与CBV模式</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">FBV 是<b>&nbsp;function based views&nbsp;</b>的英文缩写，顾名思义代表的是基于函数的视图，在以前的我们编写的代码中，在 views.py 文件编写的都是这类视图函数，相信大家对这种编写视图函数的方式已经比较的熟悉。在本节我们将介绍另一种吧编写视图函数的方式，即 <b>CBV </b> （class based views）基于类的视图函数。<br />
+<br />
+你可能会问为什么又突然介绍 CBV，刚熟悉了 FBV 的模式，那么我只能告诉你学习技术一个循序渐进的过程，CBV 的模式相比 FBV 还是略显复杂，所以只有掌握了 FBV 模式，才能够更好的理解 CBV模式。那么 这两者到底有什么不同之处呢，使用方法又有什么区别呢？下面就让我们一起来学习新知识吧。
+<h2>
+1. CBV与FBV的区别</h2>
+我们知道 Python 是一个门面向对象的编程语言。如果我们只用函数来编写视图函数，那么就会造成很多面向对象的优点无法利用起来，比如说封装、继承、多态等。这也是 Django 之所以加入了 CBV 模式的原因。它可以让开发者使用类的形式去编写 View 视图函数。对于使用 CBV 模式优势总结了如下几点：
+<ul>
+<li>
+CBV 将整个<span style="color:#ff0000;">视图函数</span>的逻辑拆成了<span style="color:#ff0000;">类</span>下的多个函数，依靠函数调用来实现完整的逻辑；</li>
+<li>
+提高代码的可复用性，更加灵活，让开发者使用面向对象的技术，比如多继承、多态等；</li>
+<li>
+可以用不同的函数针对不同的 HTTP 方法处理，而不是通过很多 if 判断，提高代码可读性。</li>
+</ul>
+<br />
+当然 CBV 也不是万能的，当继承关系变得很复杂，亦或是代码不是特别规整的时候，这时要去找某一个函数到底是被哪一个父类重载也是一个麻烦事。此时使用 FBV 模式就变的很方便，所以还是要理解它们两者的区别，在合适的场景选用合适的方法，不能把其中某一种模式视为唯一。总体上来说 CBV 的模式，在实际的开发工作中使用的相对较多，所以我们要掌握这种编写 view 视图函数的模式。<br />
+<h2>
+2. FBV与CBV实际应用</h2>
+下面就让我们实际应用一下 CBV 这种基于类的视图函数，我们 FBV 与 CBV 的方式编写如下视图函数：
+<pre class="python">
+#使用FBV方式
+def login_fbv(request):
+    if request.method==&quot;GET&quot;:
+        return HttpResponse(&quot;登录成功&quot;)
+    elif request.method==&quot;POST&quot;:
+        pass
+#使用CBV方式
+from django.views import View
+class LoginView(View): #需要继承自View类
+    def get(self,request):
+        return HttpResponse(&quot;登录成功&quot;)
+    def post(self,request):
+        pass</pre>
+<h4>
+1) as_view()方法创建类实例</h4>
+首先 CBV 需要继承自 View 类所以需要使用如下方式进行导包<br />
+<p class="info-box">
+from django.views import View</p>
+在 FBV 模式中 Django 的 URL 将一个请求分配给可调用的函数的即 login_fbv()，那么基于类的视图函数这种方式就不再适用了，URL 无法将一个请求分发给类去处理。针对这个问题，CBV 提供了一个 as_view() 静态方法，调用这个方法就会创建一个类的实例。
+<h4>
+2) dispatch()分发函数</h4>
+通过实例自动调用 CBV 内置 dispatch() 方法，我们把 dispatch() 方法看做一个分发函数，它会根据不同的请求方法调用相应的get()或者post()来进行处理。同样 CBV 模式也需要接受一个 HttpRequest对象即 request，最终返回一个 response 。如果想了解 dispatch()函数可以通过源码进行了解，它的主要作用就是实现请求的分发。
+<h4>
+3) 配置CBV模式的路由</h4>
+其实细心的小伙伴不难发现，其实在 Django 生成的配置文件中已经告诉我们，如何使用 CVB 方式进行路由的配置。在项目文件即 BookStore\BookStore\urls.py 中注释着如何使用的提示代码，如下所示：<br />
+<pre class="info-box">
+Function views  #基于函数的视图配置url
+&nbsp;&nbsp;&nbsp; 1. Add an import:&nbsp; from my_app import views
+&nbsp;&nbsp;&nbsp; 2. Add a URL to urlpatterns:&nbsp; path(&#39;&#39;, views.home, name=&#39;home&#39;)
+Class-based views #基于类的视图配置url
+&nbsp;&nbsp;&nbsp; 1. Add an import:&nbsp; from other_app.views import Home #第一步
+&nbsp;&nbsp;&nbsp; 2. Add a URL to urlpatterns:&nbsp; path(&#39;&#39;, Home.as_view(), name=&#39;home&#39;) #第二步</pre>
+<p>
+现在我们在 index\urls.py 中配置路由，如下所示：</p>
+<pre class="python">
+from index.views import LoginView
+urlpatterns=[path(&#39;logincbv/&#39;,LoginView.as_view())]#使用as_view()方法创建类实例</pre>
+<h2>
+3.CBV中类属性设置方法</h2>
+类属性的设置方法有两种，一种可以是使用 Python 方法，即继承父类，重写其相应的属性，或者添加新的属性，第二种方式我们可以使用路由中的 as_view() 方法传递参数属性值，从而来指定类的属性。示例如下所示：
+<pre class="python">
+#第一种方式重写父类
+class LoginView(View): #需要继承自View类
+    username=&#39;xiaoli&#39;
+    def get(self,request):
+        return HttpResponse(&quot;登录成功&quot;)
+    def post(self,request):
+        pass
+class LoginViewChild(LoginView):
+    #继承后重写类属性
+    username = &#39;xiaowang&#39;
+#第二种方法也可以
+urlpatterns = [
+   path(r&#39;logincbv/&#39;, LoginView.as_view(name=&quot;xiaowang&quot;))
+]</pre>
+CBV 体现了 Python 面向对象这一语言特性。CBV 是通过类的方式来编写视图函数。这相比较于 function，更能利用面向对象中多态的特性，因此更容易将项目中比较通用的功能抽象出来。<br />
+<br />
+CBV 的实现原理大家可以通过看 Django 的源码就进一步的理解，大概流程就是由 path 路由的 as_view() 创建一个类的实例由此关联到类视图，关联到类视图之后，通过 CBV 内部的 dispatch() 方法进行请求的分发处理，处理完成后并将 Response 返回。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="796.html" title="Java数据类型转换：强制类型转换+自动类型转换" target="_blank">Java数据类型转换：强制类型转换+自动类型转换</a></li>
+<li><a href="vip_5072.html" title="Linux函数库（静态函数库和动态函数库）及其安装过程" target="_blank">Linux函数库（静态函数库和动态函数库）及其安装过程</a></li>
+<li><a href="vip_5864.html" title="面向连接和无连接的套接字到底有什么区别" target="_blank">面向连接和无连接的套接字到底有什么区别</a></li>
+<li><a href="7158.html" title="C++ auto和decltype的区别" target="_blank">C++ auto和decltype的区别</a></li>
+<li><a href="7458.html" title="Django创建第一个项目" target="_blank">Django创建第一个项目</a></li>
+<li><a href="../c/isascii.html" title="C语言isascii()：判断一个字符是否为ASCII码字符" target="_blank">C语言isascii()：判断一个字符是否为ASCII码字符</a></li>
+<li><a href="2tjydsx.html" title="MATLAB运算符（算术运算符、关系运算符和逻辑运算符）" target="_blank">MATLAB运算符（算术运算符、关系运算符和逻辑运算符）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7763;
+window.arcId = "a9aarMCKvh9QxKXRinhJxJPFvVwOQ75vk+OFDMcguyVdjWnCVT8mCleVkn0";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>NumPy ndarray数组元素的获取</title>
+<meta name="description" content="生成 ndarray 数组后，如何读取我们所需要的数据呢？在 NumPy 中，既可以获取 ndarray 数组的单个元素，也可以获取一组元素（也即切片），这与 Python 中的列表（list）和元组（tuple）非常" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>NumPy ndarray数组元素的获取</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">生成 ndarray 数组后，如何读取我们所需要的数据呢？在 NumPy 中，既可以获取 ndarray 数组的单个元素，也可以获取一组元素（也即切片），这与 <a href='../python/python.html' target='_blank'>Python</a> 中的列表（list）和元组（tuple）非常类似。<br />
+<br />
+请看下面的代码：
+<pre class="python">
+import numpy as np
+
+np.random.seed(2019)
+nd1 = np.random.random([10])
+#获取指定位置的数据, 获取第4个元素
+nd1[3]
+#截取一段数据
+nd1[3:6]
+#截取固定间隔数据
+nd1[1:6:2]
+#倒序取数
+nd1[::-2]
+#截取一个多维数组的一个区域内数据
+nd2=np.arange(25).reshape([5,5])
+nd2[1:3,1:3]
+#截取一个多维数组中, 数值在一个值域之内的数据
+nd2[(nd2&gt;3)&amp;(nd2&lt;10)]
+#截取多维数组中, 指定的行,如读取第2,3行
+nd2[[1,2]]  #或nd12[1:3,:]
+##截取多维数组中, 指定的列,如读取第2,3列
+nd2[:,1:3]</pre>
+如果对上面这些获取方式还不是很清楚，没关系，下面则将通过图形的方式来进一步说明，如图1所示，左边为表达式，右边为表达式获取的元素。注意，不同的边界，表示不同的表达式。<br />
+<br />
+<div style="text-align: center;">
+<img alt="获取多维数组中的元素" src="../uploads/allimg/200215/1-20021510554Nb.gif" /><br />
+图1：获取多维数组中的元素</div>
+<br />
+获取数组中的部分元素除了通过指定索引标签来实现外，还可以通过使用一些函数来实现，如通过random.choice函数从指定的样本中随机抽取数据。
+<pre class="python">
+import numpy as np
+from numpy import random as nr
+
+a=np.arange(1,25,dtype=float)
+c1=nr.choice(a,size=(3,4))  #size指定输出数组形状
+c2=nr.choice(a,size=(3,4),replace=False)  #replace缺省为True, 即可重复抽取。
+#下式中参数p指定每个元素对应的抽取概率, 缺省为每个元素被抽取的概率相同。
+c3=nr.choice(a,size=(3,4),p=a / np.sum(a))
+print(&quot;随机可重复抽取&quot;)
+print(c1)
+print(&quot;随机但不重复抽取&quot;)
+print(c2)
+print(&quot;随机但按制度概率抽取&quot;)
+print(c3)</pre>
+运行结果：
+<p class="info-box">
+随机可重复抽取<br />
+[[&nbsp; 7.&nbsp; 22.&nbsp; 19.&nbsp; 21.]<br />
+[&nbsp; 7.&nbsp;&nbsp; 5.&nbsp;&nbsp; 5.&nbsp;&nbsp; 5.]<br />
+[&nbsp; 7.&nbsp;&nbsp; 9.&nbsp; 22.&nbsp; 12.]]<br />
+随机但不重复抽取<br />
+[[ 21.&nbsp;&nbsp; 9.&nbsp; 15.&nbsp;&nbsp; 4.]<br />
+[ 23.&nbsp;&nbsp; 2.&nbsp;&nbsp; 3.&nbsp;&nbsp; 7.]<br />
+[ 13.&nbsp;&nbsp; 5.&nbsp;&nbsp; 6.&nbsp;&nbsp; 1.]]<br />
+随机但按制度概率抽取<br />
+[[ 15.&nbsp; 19.&nbsp; 24.&nbsp;&nbsp; 8.]<br />
+[&nbsp; 5.&nbsp; 22.&nbsp;&nbsp; 5.&nbsp; 14.]<br />
+[&nbsp; 3.&nbsp; 22.&nbsp; 13.&nbsp; 17.]]</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1081.html" title="Linux vmstat命令详解：监控系统资源" target="_blank">Linux vmstat命令详解：监控系统资源</a></li>
+<li><a href="vip_5060.html" title="Vim多窗口编辑模式" target="_blank">Vim多窗口编辑模式</a></li>
+<li><a href="vip_7654.html" title="深度剖析Linux硬链接和软链接，直击它们的本质！" target="_blank">深度剖析Linux硬链接和软链接，直击它们的本质！</a></li>
+<li><a href="vip_8346.html" title="MySQL如何创建并执行事件？" target="_blank">MySQL如何创建并执行事件？</a></li>
+<li><a href="../redis/sets.html" title="Redis set集合" target="_blank">Redis set集合</a></li>
+<li><a href="../spring_mvc/9680.html" title="Spring MVC拦截器" target="_blank">Spring MVC拦截器</a></li>
+<li><a href="3twdmxc.html" title="《Web前端应用开发技术》PDF下载（高清完整版）" target="_blank">《Web前端应用开发技术》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7206;
+window.arcId = "0283o9Z1CNS4fRVObtjQ4PQDKtJmBIbCoVU6Kloq9e/zn2YsZALfBVEi9ds";
+window.typeidChain = "145|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

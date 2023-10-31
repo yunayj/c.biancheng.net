@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Hibernate核心接口（5个）</title>
+<meta name="description" content="在 Hibernate 中有 5 个常用的核心接口，它们分别是 Configuration 接口、SessionFactory 接口、Session 接口、Transaction 接口和 Query 接口。本节，我们就对这 5 个核心接口进行详细讲解。 1. Configu" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="../view/niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="hibernate.html">Hibernate</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href="orm.html">ORM是什么</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href="what-is-hibernate.html">Hibernate是什么</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href="first-example.html">Hibernate项目创建流程</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href="crud.html">Hibernate增删改查操作</a>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href="principle.html">Hibernate工作原理</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href="hibernate-cfg-xml.html">Hibernate核心配置文件</a>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href="xxx-hbm-xml.html">Hibernate映射文件</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href="core-interface.html">Hibernate核心接口</a>
+</dd>
+<dd>
+<span class="channel-num">9</span>
+<a href="po.html">Hibernate持久化类</a>
+</dd>
+<dd>
+<span class="channel-num">10</span>
+<a href="l1-cache.html">Hibernate一级缓存</a>
+</dd>
+<dd>
+<span class="channel-num">11</span>
+<a href="mapping.html">Hibernate关联映射</a>
+</dd>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="hibernate.html">Hibernate</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Hibernate核心接口（5个）</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在 Hibernate 中有 5 个常用的核心接口，它们分别是 Configuration 接口、SessionFactory 接口、Session 接口、Transaction 接口和 Query 接口。本节，我们就对这 5 个核心接口进行详细讲解。
+<h2>
+1. Configuration</h2>
+正如其名，Configuration 主要用于管理 Hibernate 配置信息，并在启动 Hibernate 应用时，创建 SessionFactory 实例。<br />
+<br />
+在 Hibernate 应用启动时，需要获取一些基本信息，例如，数据库 URL、数据库用户名、数据库用户密码、数据库驱动程序和数据库方言等等。这些属性都可以在 Hibernate 的核心配置文件（hiberntae.cfg.xml）中进行设置。<br />
+<h4>
+创建&nbsp;Configuration 实例</h4>
+Hibernate 通常使用以下方式创建 Configuration&nbsp;实例，此时&nbsp; Hibernate 会自动在当前项目的类路径（CLASSPATH）中，搜索核心配置文件 hibernate.cfg.xml 并将其加载到内存中，作为后续操作的基础配置 。
+<pre class="java">
+Configuration configuration = new Configuration().configure();</pre>
+<br />
+若 Hibernate 核心配置文件没有在项目的类路径（&nbsp;src 目录）下，则需要在 configure() 方法中传入一个参数指定配置文件位置，示例代码如下：
+<pre class="java">
+Configuration configuration = new Configuration().configure(&quot;/net/biancheng/www/mapping/hibernate.cfg.xml&quot;);</pre>
+<h4 class="java">
+加载映射文件</h4>
+我们知道，在 Hibernate 的核心配置文件中，&lt;mapping&gt; 元素用来指定 Hibernate 映射文件的位置信息，加载映射文件，但该元素并非核心配置文件中的必须元素，即我们可以不在&nbsp;hibernate.cfg.xml 中指定映射文件的位置。此时，我们可以通过&nbsp;2 种方式加载映射文件。<br />
+<br />
+1. 调用&nbsp;Configuration 提供的&nbsp;addResource() 方法，并在该方法中传入一个参数指定映射文件的位置，示例代码如下。
+<pre class="java">
+configuration.addResource(&quot;net/biancheng/www/mapping/User.hbm.xml&quot;);</pre>
+<br />
+2. 调用&nbsp;Configuration 提供的&nbsp;addClass() 方法，并将与映射文件对应的实体类以参数的形式传入该方法中，示例代码如下。
+<pre class="java">
+configuration.addClass(User.class);</pre>
+<br />
+使用 addClass() 方法加载映射文件时，需要同时满足以下 2 个条件，否则将无法加载映射文件。
+<ul>
+<li>
+映射文件的命名要规范，即映射文件要完全按照&ldquo;实体类.hbm.xml&nbsp;&rdquo;的形式命名；</li>
+<li>
+映射文件要与实体类在同一个包下。</li>
+</ul>
+<br />
+需要注意的是，Configuration 对象只存在于系统的初始化阶段，将 SessionFactory 创建完成后，它的使命就完成了。<br />
+<h2>
+2. SessionFactory</h2>
+SessionFactory 对象用来读取和解析映射文件，并负责创建和管理 Session 对象。<br />
+<br />
+SessionFactory 对象中保存了当前的数据库配置信息、所有映射关系以及 Hibernate 自动生成的预定义 SQL 语句，同时它还维护了 Hibernate 的二级缓存。<br />
+<br />
+一个 SessionFactory 实例对应一个数据库存储源，Hibernate 应用可以从 SessionFactory 实例中获取 Session 实例。<br />
+<br />
+SessionFactory 具有以下特点：
+<ul>
+<li>
+SessionFactory 是线程安全的，它的同一个实例可以被应用多个不同的线程共享。</li>
+<li>
+SessionFactory 是重量级的，不能随意创建和销毁它的实例。如果应用只访问一个数据库，那么在应用初始化时就只需创建一个 SessionFactory 实例；如果应用需要同时访问多个数据库，那么则需要为每一个数据库创建一个单独的 SesssionFactory 实例。</li>
+</ul>
+<blockquote>
+<p>
+SessionFactory 之所以是重量级的，是因为它需要一个很大的缓存，用来存放预定义 SQL 语句以及映射关系数据等内容。我们可以为 SessionFactory 配置一个缓存插件，它被称为 Hiernate 的二级缓存，此处了解即可，我们会在后面详细介绍。</p>
+</blockquote>
+<h4>
+创建 SessionFactory 对象</h4>
+通常情况下，我们通过&nbsp;Configuration 的&nbsp;buildSessionFactory() 方法来创建 SessionFactory 的实例对象，示例代码如下。
+<pre class="java">
+SessionFactory sessionFactory = configuration.buildSessionFactory();</pre>
+<h4>
+抽取工具类</h4>
+由于 SessionFactory 是重量级的，它的实例不能随意创建和销毁，因此在实际开发时，我们通常会抽取出一个工具类，将 SessionFactory 对象的创建过程放在静态代码快中，以避免 SessionFactory 对象被多次创建。<br />
+<br />
+例如，在 hibernate-demo 项目的 net.biancheng.www.utils 包下，创建一个工具类&nbsp;HibernateUtils，代码如下。<br />
+<pre class="java">
+package net.biancheng.www.utils;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
+/**
+* 工具类
+*/
+public class HibernateUtils {
+    private static final Configuration configuration;
+    private static final SessionFactory sessionFactory;
+
+    //在静态代码块中创建 SessionFactory 对象
+    static {
+        configuration = new Configuration().configure();
+        sessionFactory = configuration.buildSessionFactory();
+    }
+
+    //通过 SessionFactory 对象创建 Session 对象
+    public static Session openSession() {
+        return sessionFactory.openSession();
+    }
+
+    public static void main(String[] args) {
+//        openSession();
+        HibernateUtils hibernateUtils = new HibernateUtils();
+    }
+}</pre>
+<blockquote>
+由以上代码可知，我们直接调用 HibernateUtils 的 getSession() 的方式，便可以获取 Session 对象。</blockquote>
+<h2>
+3. Session</h2>
+Session 是 Hibernate&nbsp;应用程序与数据库进行交互时，使用最广泛的接口，它也被称为 Hibernate 的持久化管理器，所有持久化对象必须在 Session 的管理下才可以进行持久化操作。持久化类只有与 Session 关联起来后，才具有了持久化的能力。<br />
+<br />
+Session 具有以下特点：
+<ul>
+<li>
+不是线程安全的，因此应该避免多个线程共享同一个 Session 实例；</li>
+<li>
+Session 实例是轻量级的，它的创建和销毁不需要消耗太多的资源。通常我们会将每一个Session 实例和一个数据库事务绑定，每执行一个数据库事务，不论执行成功与否，最后都因该调用 Session 的 Close() 方法，关闭 Session 释放占用的资源。</li>
+</ul>
+<br />
+Session 对象维护了 Hibernate 的一级缓存，在显式执行 flush 之前，所有的持久化操作的数据都缓存在 Session 对象中。<br />
+<blockquote>
+<p>
+这里的持久化指的是对数据库数据的保存、更新、删除和查询。持久化类指与数据库表建立了映射关系的实体类，持久化对象指的是持久化类的对象。<br />
+<br />
+关于持久化以及一级缓存的概念，这里了解即可，我们会在&nbsp;<a href="po.html" target="_blank">Hibernate 持久化类</a>和 <a href="l1-cache.html" target="_blank">Hibernate 一级缓存</a>中详细讲解。</p>
+</blockquote>
+<h4>
+创建 Session 对象</h4>
+我们可以通过以下 2 个方法创建 Session 对象：<br />
+<br />
+1.调用&nbsp;SessionFactrory 提供的&nbsp;openSession() 方法，来获取 Session 对象，示例代码如下。
+<pre class="java">
+//采用 openSession() 方法获取 Session 对象
+Session session = sessionFactory.openSession();</pre>
+<p class="java">
+<br />
+2. 调用SessionFactrory 提供的 getCurrentSession() 方法，获取 Session 对象，示例代码如下。</p>
+<pre class="java">
+//采用 getCurrentSession() 方法获取 Session 对象
+Session session = sessionFactory.getCurrentSession();</pre>
+<br />
+以上 2 种方式都能获取 Session 对象，但两者的区别在于：
+<ul>
+<li>
+采用 openSession() 方法获取 Session 对象时，SessionFactory 直接创建一个新的 Session 实例，且在使用完成后需要调用 close() 方法进行手动关闭。</li>
+<li>
+采用 getCurrentSession() 方法创建的 Session 实例会被绑定到当前线程中，它在事务提交或回滚后会自动关闭。</li>
+</ul>
+<h4>
+Session 中的持久化方法</h4>
+在 Session 中，提供了多个持久化的操作方法，其常用方法如下表。<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+方法</th>
+<th>
+描述</th>
+</tr>
+<tr>
+<td>
+save()</td>
+<td>
+执行插入操作</td>
+</tr>
+<tr>
+<td>
+update()</td>
+<td>
+执行修改操作</td>
+</tr>
+<tr>
+<td>
+saveOrUpdate()</td>
+<td>
+根据参数，执行插入或修改操作</td>
+</tr>
+<tr>
+<td>
+delete()</td>
+<td>
+执行删除操作</td>
+</tr>
+<tr>
+<td>
+get()</td>
+<td>
+根据主键查询数据（立即加载）</td>
+</tr>
+<tr>
+<td>
+load()</td>
+<td>
+根据主键查询数据（延迟加载）</td>
+</tr>
+<tr>
+<td>
+createQuery()</td>
+<td>
+获取 Hibernate 查询对象</td>
+</tr>
+<tr>
+<td>
+createSQLQuery()</td>
+<td>
+获取 SQL 查询对象</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>
+注意：Hibernate 中的 Session 与 Java Web 中的 HttpSession 没有任何关系，如无特别说明，本教程中的 Session 都指的是 Hibernate 中的 Session。</p>
+</blockquote>
+<h2>
+4. Transaction&nbsp;</h2>
+Transaction 是 Hibernate 提供的数据库事务管理接口，它对底层的事务接口进行了封装。所有的持久化操作（即使是只读操作）都应该在事务管理下进行，因此在进行 CRUD 持久化操作之前，必须获得 Trasaction 对象并开启事务。
+<h4>
+获取 Transaction 对象</h4>
+我们可以通过 Session 提供的以下两个方法来获取 Transaction 对象：<br />
+<br />
+1. 调用 Session 提供的 beginTransaction() 方法获取 Transaction 对象，示例代码如下。<br />
+<pre class="java">
+Transaction transaction = session.beginTransaction();</pre>
+<br />
+2. 调用 Session 提供的 getTransaction() 方法获取 Transaction 对象，示例代码如下。
+<pre class="java">
+Transaction transaction1 = session.getTransaction();</pre>
+<br />
+以上两个方法均可以获取 Transaction 对象，但两者存在以下不同：
+<ul>
+<li>
+getTransaction() 方法：根据 Session 获得一个 Transaction 对象，但是并没有开启事务。</li>
+<li>
+beginTransaction() 方法：是在根据 Session&nbsp;获得一个 Transaction 对象后，又继续调用 Transaction 的 begin() 方法，开启了事务。</li>
+</ul>
+<br />
+Transation 接口中提供了管理事务的方法，常用方法如下表。<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+方法</th>
+<th>
+描述</th>
+</tr>
+<tr>
+<td>
+begin()</td>
+<td>
+该方法用于开启事务</td>
+</tr>
+<tr>
+<td>
+commit()&nbsp;</td>
+<td>
+该方法用于提交事务</td>
+</tr>
+<tr>
+<td>
+rollback()&nbsp;</td>
+<td>
+该方法用于回滚事务</td>
+</tr>
+</tbody>
+</table>
+<h4>
+提交或回滚事务</h4>
+持久化操作执行完成后，需要调用了 Transaction 接口的 commit() 方法进行事务提交，只有在事务提交后，才能真正地将数据同步到数据库中。当发生异常时，则需要调用 rollback() 方法进行事务回滚，以避免数据发生错误，示例代码如下。
+<pre class="java">
+@Test
+public void test() {
+    User user = new User();
+    Session session = HibernateUtils.openSession();
+    //获取事务对象
+    Transaction transaction = session.getTransaction();
+    //开启事务
+    transaction.begin();
+    try {
+        //执行持久化操作
+        Serializable save = session.save(user);
+        //提交事务
+        transaction.commit();
+    } catch (Exception e) {
+        //发生异常回滚事务
+        transaction.rollback();
+    } finally {
+        //释放资源
+        session.close();
+    }
+}</pre>
+<h2>
+5. Query</h2>
+Query 是 Hibernate 提供的查询接口，主要用执行 Hinernate 的查询操作。Query 对象中通常包装了一个 HQL（Hibernate Query Language）语句，HQL 语句与 SQL 语句存在相似之处，但 HQL 语句是面向对象的，它使用的是类名和类的属性名，而不是表名和表中的字段名。HQL 能够提供更加丰富灵活、更为强大的查询能力，因此 Hibernate 官方推荐使用 HQL 进行查询。<br />
+<br />
+在 Hibernate 应用中使用 Query 对象进行查询，通常需要以下步骤：
+<ol>
+<li>
+获得 Hibernate 的 Sesssin 对象；</li>
+<li>
+定义 HQL 语句；</li>
+<li>
+调用 Session 接口提供的&nbsp;createQuery() 方法创建 Query 对象，并将 HQL 语句以参数的形式传入到该方法中；</li>
+<li>
+若 HQL 语句中包含参数，则调用 Query 接口提供的 setXxx() 方法设置参数；</li>
+<li>
+调用 Query 的&nbsp;getResultList() 方法，进行查询，并获取查询结果集。</li>
+</ol>
+<br />
+HQL 查询的实例，请参考&nbsp;<a href="crud.html" target="_blank">Hibernate 增删改查操作</a>中的 HQL 查询，这里就不再赘述。<br />
+<br />
+除了&nbsp;getResultList() 方法外，Query 接口中还包含一些其他的常用方法，如下表。<br />
+<br />
+<table>
+<tbody>
+<tr>
+<th>
+方法</th>
+<th>
+描述</th>
+</tr>
+<tr>
+<td>
+setXxx()</td>
+<td>
+Query 接口中提供了一系列 setXxx() 方法，用于设置查询语句中的参数。这些方法都需要两个参数，分别是：参数名或占位符位置、参数值。我们需要根据参数类型的不同，分别调用不同的 setXxx() 方法，例如 setString()、setInteger()、setLong()、setBoolean() 和 setDate() 等等。</td>
+</tr>
+<tr>
+<td>
+Iterator&lt;R&gt; iterate();</td>
+<td>
+该方法用于执行查询语句，并返回一个 Iterator 对象。我们可以通过返回的&nbsp;Iterator 对象，遍历得到结果集。</td>
+</tr>
+<tr>
+<td>
+Object&nbsp;uniqueResult();</td>
+<td>
+该方法用户执行查询，并返回一个唯一的结果。使用该方法时，需要确保查询结果只有一条数据，否则就会报错。</td>
+</tr>
+<tr>
+<td>
+int executeUpdate();</td>
+<td>
+该方法用于执行 HQL 的更新和删除操作。</td>
+</tr>
+<tr>
+<td>
+Query&lt;R&gt; setFirstResult(int var1);</td>
+<td>
+该方法用户设置结果集第一条记录的位置，即设置从第几条记录开始查询，默认从 0 开始。</td>
+</tr>
+<tr>
+<td>
+Query&lt;R&gt; setMaxResults(int var1);</td>
+<td>
+该方法用于设置结果集的最大记录数，通常与 setFirstResult() 方法结合使用，用于限制结果集的范围，以实现分页功能。</td>
+</tr>
+</tbody>
+</table>
+<h4>
+&nbsp;</h4>
+除了数据库查询外，HQL 语句还可以进行更新和删除操操作，需要注意的是 HQL 并不支持 insert 操作，想要保存数据请使用 Session 接口提供的 save() 或 saveOrUpate() 方法。<br />
+<br />
+下面我们通过一个实例，演示如何使用 HQL 进行更新和删除操作，代码如下。<br />
+<pre class="java">
+@Test
+public void testHqlInsert() {
+    //获取 Session 对象
+    Session session = HibernateUtils.openSession();
+    //获取事务对象
+    Transaction transaction = session.getTransaction();
+    //开启事务
+    transaction.begin();
+
+    //更新操作
+    Query query = session.createQuery(&quot;update User SET userName=:username,userId=:userId,email=:email where id=:id&quot;);
+    //为更新语句设置参数
+    query.setParameter(&quot;username&quot;, &quot;HQL&quot;);
+    query.setParameter(&quot;userId&quot;, &quot;HQL&quot;);
+    query.setParameter(&quot;email&quot;, &quot;HQL&quot;);
+    query.setParameter(&quot;id&quot;, 4);
+    //执行更新操作
+    int i = query.executeUpdate();
+    if (i &gt; 0) {
+        System.out.println(&quot;成功修改了 &quot; + i + &quot; 条记录&quot;);
+    }
+
+    //删除操作
+    Query query1 = session.createQuery(&quot;delete from User WHERE userId=?1&quot;);
+    //为删除语句设置参数
+    query1.setParameter(1, &quot;005&quot;);
+    //执行删除操作
+    int d = query1.executeUpdate();
+    if (d &gt; 0) {
+        System.out.println(&quot;成功删除了 &quot; + d + &quot; 条记录&quot;);
+    }
+
+    //提交事务
+    transaction.commit();
+    //释放资源
+    session.close();
+}</pre>
+<br />
+执行该测试方法，控制台输出如下。<br />
+<pre class="info-box">
+Hibernate:
+    update
+        user
+    set
+        user_name=?,
+        user_id=?,
+        email=?
+    where
+        id=?
+成功修改了 1 条记录
+Hibernate:
+    delete
+    from
+        user
+    where
+        user_id=?
+成功删除了 1 条记录</pre>
+<br />
+查看数据库 user 表，结果如下。<br />
+<br />
+<div style="text-align: center;">
+<img alt="HQL 更新删除结果" src="../uploads/allimg/210914/1051532135-0.png" style="border-width: 1px; border-style: solid;" /><br />
+图1：HQL 更新删除结果</div>
+从上图可知，我们成功地使用 HQL 进行更新和删除操作。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="../view/niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/1067.html" title="Java Map集合详解" target="_blank">Java Map集合详解</a></li>
+<li><a href="../view/1130.html" title="Linux memcache安装和配置（自启动）过程详解" target="_blank">Linux memcache安装和配置（自启动）过程详解</a></li>
+<li><a href="../view/4379.html" title="Python dict字典基本操作（包括添加、修改、删除键值对）" target="_blank">Python dict字典基本操作（包括添加、修改、删除键值对）</a></li>
+<li><a href="../view/6593.html" title="C++ STL基本组成（6大组件+13个头文件）" target="_blank">C++ STL基本组成（6大组件+13个头文件）</a></li>
+<li><a href="../view/7200.html" title="MySQL删除被其它表关联的主表" target="_blank">MySQL删除被其它表关联的主表</a></li>
+<li><a href="../pandas/resample.html" title="Pandas resample数据重采样" target="_blank">Pandas resample数据重采样</a></li>
+<li><a href="../view/ibwvnzi.html" title="C++ if语句的嵌套（入门必读）" target="_blank">C++ if语句的嵌套（入门必读）</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9334;
+window.arcId = "3b0fmKVY4Si/OwKAc5YPVnJK3Ra4xMrP8l+mlUEWKNF8YRjDWst3iyf8oY8";
+window.typeidChain = "291";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="../view/8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="../view/8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="../view/8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="../view/9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="../view/8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/hibernate/xxx-hbm-xml.html";
+window.nextPageURL = "/hibernate/po.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

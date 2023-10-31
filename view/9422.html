@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Qt布局管理详解（5种布局控件）</title>
+<meta name="description" content="实际开发中，一个界面上可能包含十几个控件，手动调整它们的位置既费时又费力。作为一款成熟的 GUI 框架，Qt 提供了很多摆放控件的辅助工具（又称布局管理器或者布局控件），它们" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Qt布局管理详解（5种布局控件）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">实际开发中，一个界面上可能包含十几个控件，手动调整它们的位置既费时又费力。作为一款成熟的 GUI 框架，Qt 提供了很多摆放控件的辅助工具（又称布局管理器或者布局控件），它们可以完成两件事：
+<ul>
+<li>
+自动调整控件的位置，包括控件之间的间距、对齐等；</li>
+<li>
+当用户调整窗口大小时，位于布局管理器内的控件也会随之调整大小，从而保持整个界面的美观。</li>
+</ul>
+<br />
+总之借助布局管理器，我们无需再逐个调整控件的位置和大小，可以将更多的精力放在软件功能的实现上。<br />
+<br />
+Qt 共提供了 5 种布局管理器，每种布局管理器对应一个类，分别是 QVBoxLayout（垂直布局）、QHBoxLayout（水平布局）、QGridLayout（网格布局）、QFormLayout（表单布局）和 QStackedLayout（分组布局），它们的继承关系如下图所示：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211028/1642162334-0.gif" /><br />
+图 1 各个布局管理类的继承关系</div>
+<h2>
+QVBoxLayout垂直布局</h2>
+垂直布局指的是将所有控件从上到下（或者从下到上）依次摆放，例如：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211028/1642161F2-1.gif" /><br />
+图 2 QVBoxLayout垂直布局</div>
+<br />
+图 2 展示了 4 个 QPushButton 按钮利用 QVBoxLayout 垂直布局的效果。实际场景中，QVBoxLayout 中还可以放置其它控件，比如 QLabel 文本框、QLineEdit 单行输入框等。<br />
+<br />
+程序中使用 QVBoxLayout 布局控件，需提前引入<code>&lt;QVBoxLayout&gt;</code>头文件。每个 QVBoxLayout 控件本质都是 QVBoxLayout 类的实例对象，该类提供了两个构造函数，分别是：
+<pre class="info-box">
+QVBoxLayout()
+QVBoxLayout(QWidget *parent)</pre>
+创建 QVBoxLayout 控件的同时可以指定父窗口，那么它将作为父窗口中管理其它控件的工具；也可以暂时不指定父窗口，待全部设置完毕后再将其添加到某个窗口中。<br />
+<br />
+QVBoxLayout 类没有新增任何成员方法，它只能使用从父类继承的成员方法，下表给大家罗列了常用的一些：<br />
+<br />
+<table>
+<caption>
+表 1 QVBoxLayout常用方法</caption>
+<tbody>
+<tr>
+<th>
+成员方法</th>
+<th>
+功 能</th>
+</tr>
+<tr>
+<td>
+void QBoxLayout::addWidget(QWidget *widget, int stretch = 0, Qt::Alignment alignment = Qt::Alignment())</td>
+<td>
+向布局管理器中添加指定的 widget 控件。<br />
+<br />
+默认情况下，stretch 拉伸系数为 0，表示 widget 控件的尺寸为默认值；alignment 是一个枚举类型参数，默认值也是 0，表示该控件会填满占用的整个空间。</td>
+</tr>
+<tr>
+<td>
+void QBoxLayout::addStretch(int stretch = 0)</td>
+<td>
+添加一个空白行，整个窗口中除了控件占用的区域外，其它区域可以由多个（&ge;0）空白行分摊，分摊比例取余于各个空白行设置的 stretch 参数的值。<br />
+<br />
+strech 参数的默认值为 0，表示当窗口很小时，空白行可以不占据窗口空间。当窗口中包含多个 strech 值为 0 的空白行时，它们会平分窗口中的空白区域。</td>
+</tr>
+<tr>
+<td>
+void QBoxLayout::addSpacing(int size)</td>
+<td>
+添加一个 size 大小的固定间距。</td>
+</tr>
+<tr>
+<td>
+void QLayout::setMargin(int margin)</td>
+<td>
+设置布局管理器中所有控件的外边距，上、下、左、右外边距的大小都为 margin。默认情况下，所有方向的外边距为 11 px。</td>
+</tr>
+<tr>
+<td>
+void QLayout::setContentsMargins(int left, int top, int right, int bottom)</td>
+<td>
+设置布局管理器中所有控件的外边距，和 setMargin() 的区别是，此方法可以自定义上、下、左、右外边距的值。</td>
+</tr>
+<tr>
+<td>
+void QBoxLayout::setDirection(Direction direction)</td>
+<td>
+设置布局管理器中控件的布局方向，Direction 是一个枚举类型，对于 QVBoxLayout 布局管理器，direction 参数的值通常选择&nbsp;QBoxLayout::TopToBottom（从上到下依次摆放）或者&nbsp;QBoxLayout::BottomToTop（从下到上依次摆放）。</td>
+</tr>
+<tr>
+<td>
+bool QBoxLayout::setStretchFactor(QWidget *widget, int stretch)</td>
+<td>
+设置布局管理器中某个控件的拉伸系数。</td>
+</tr>
+<tr>
+<td>
+bool QBoxLayout::setStretchFactor(QLayout *layout, int stretch)</td>
+<td>
+布局管理器内部可以再放置一个布局管理器，该方法用来设置内部某个布局管理器的拉伸系数。</td>
+</tr>
+</tbody>
+</table>
+<br />
+举个简单的例子：
+<pre class="cpp">
+#include &lt;QApplication&gt;
+#include &lt;QWidget&gt;
+#include &lt;QLabel&gt;
+#include &lt;QVBoxLayout&gt;
+
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    //创建主窗口
+    QWidget widget;
+    widget.setWindowTitle(&quot;QVBoxLayout垂直布局&quot;);
+    //创建垂直布局管理器
+    QVBoxLayout *layout=new QVBoxLayout;
+    //设置布局管理器中所有控件从下往上依次排列
+    layout-&gt;setDirection(QBoxLayout::BottomToTop);
+   
+    //连续创建 3 个文本框，并设置它们的背景和字体大小
+    QLabel lab1(&quot;Label1&quot;);
+    lab1.setStyleSheet(&quot;QLabel{background:#dddddd;font:20px;}&quot;);
+    lab1.setAlignment(Qt::AlignCenter);
+    QLabel lab2(&quot;Label2&quot;);
+    lab2.setStyleSheet(&quot;QLabel{background:#cccccc;font:20px;}&quot;);
+    lab2.setAlignment(Qt::AlignCenter);
+    QLabel lab3(&quot;Label3&quot;);
+    lab3.setStyleSheet(&quot;QLabel{background:#ffffff;font:20px;}&quot;);
+    lab3.setAlignment(Qt::AlignCenter);
+   
+    //将 3 个文本框和 2 个空白行添加到管理器中，它们的伸缩系数比是 2:1:2:3:3
+    layout-&gt;addStretch(2);
+    layout-&gt;addWidget(&amp;lab1,1);
+    layout-&gt;addWidget(&amp;lab2,2);
+    layout-&gt;addWidget(&amp;lab3,3);
+    layout-&gt;addStretch(3);
+   
+    //将布局管理器添加到 widget 窗口中
+    widget.setLayout(layout);
+    widget.show();
+    return a.exec();
+}</pre>
+程序中做了以下几个操作：
+<ul>
+<li>
+通过调用 setDirection() 方法，将添加到 QVBoxLayout 管理器中的所有控件（包括空白行）按照从下到上的顺序依次摆放。举个例子，由于 lab1 文本框是第二个添加到管理器中的，因此在最终显示的界面中，lab1 位于倒数第二的位置。</li>
+<li>
+通过调用 addStrech() 方法，向管理器中先后添加了两个空白行，它们的伸缩系数分别为 2 和 3，因此 widget 窗口中的空白区域会平均分为 5 份，一个空白行占&nbsp;3 份，另一个占 2 份。</li>
+<li>
+通过调用 addWidget() 方法，向管理器中先后添加了 3 个文本框，它们的拉伸系数比为 1:2:3，所以当我们拉伸 widget 窗口时，三个文本框的大小（宽度）呈现 1:2:3 的关系。</li>
+<li>
+通过调用 setLayout() 方法，成功地将&nbsp;layout 布局管理器添加到了 widget 窗口中。当然，也可以在创建 layout 对象时指定 widget 作为它的父窗口，两种方式是完全等价的。</li>
+</ul>
+<br />
+执行结果为：<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211028/1642163464-2.gif" /><br />
+图 3 QVBoxLayout 实例演示</div>
+<h2>
+QHBoxLayout水平布局</h2>
+水平布局指的是将所有控件从左到右（或者从右到左）依次摆放，例如：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211028/16421CD8-3.gif" /><br />
+图 4 QHBoxLayout水平布局</div>
+<br />
+使用 QHBoxLayout 水平布局控件，程序中要提前引入<code>&lt;QHBoxLayout&gt;</code>头文件。QHBoxLayout 和 QVBoxLayout 继承自同一个类，它们的用法非常相似，比如 QHBoxLayout 类也提供了两个构造函数：<br />
+<pre class="info-box">
+QHBoxLayout()
+QHBoxLayout(QWidget *parent)</pre>
+QHBoxLayout 类也没有新添任何成员方法，它只能使用从父类继承的成员方法。因此，表 1 中罗列的所有成员方法也同样适用于 QHBoxLayout 对象。
+<blockquote>
+<p>
+注意，当 QHBoxLayout 对象调用表 1 中的 addStretch() 方法时，表示添加一个空白列。</p>
+</blockquote>
+举个简单的例子：
+<pre class="cpp">
+#include &lt;QApplication&gt;
+#include &lt;QWidget&gt;
+#include &lt;QLabel&gt;
+#include &lt;QHBoxLayout&gt;
+
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    //创建主窗口
+    QWidget widget;
+    widget.setWindowTitle(&quot;QHBoxLayout水平布局&quot;);
+    //创建水平布局管理器
+    QHBoxLayout *layout=new QHBoxLayout;
+    //设置布局管理器中所有控件的布局方向为从右往左依次排列
+    layout-&gt;setDirection(QBoxLayout::RightToLeft);
+
+    //连续创建 3 个文本框，并设置它们的背景和字体大小
+    QLabel lab1(&quot;Label1&quot;);
+    lab1.setStyleSheet(&quot;QLabel{background:#dddddd;font:20px;}&quot;);
+    lab1.setAlignment(Qt::AlignCenter);
+    QLabel lab2(&quot;Label2&quot;);
+    lab2.setStyleSheet(&quot;QLabel{background:#cccccc;font:20px;}&quot;);
+    lab2.setAlignment(Qt::AlignCenter);
+    QLabel lab3(&quot;Label3&quot;);
+    lab3.setStyleSheet(&quot;QLabel{background:#ffffff;font:20px;}&quot;);
+    lab3.setAlignment(Qt::AlignCenter);
+
+    //将 3 个文本框和 2 个空白列添加到管理器中，它们的拉伸系数比是 2:1:2:3:3
+    layout-&gt;addStretch(2);
+    layout-&gt;addWidget(&amp;lab1,1);
+    layout-&gt;addWidget(&amp;lab2,2);
+    layout-&gt;addWidget(&amp;lab3,3);
+    layout-&gt;addStretch(3);
+
+    //将布局管理器添加到 widget 窗口中
+    widget.setLayout(layout);
+    widget.show();
+    return a.exec();
+}</pre>
+程序执行结果为：
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211028/1642164509-4.gif" /><br />
+图 5 QHBoxLayout水平布局实例</div>
+<blockquote>
+<p>
+图 5 中，最左侧和最右侧各添加了一个空白列，它们的伸缩比例为 3:2，即它们的宽度比为 3:2。</p>
+</blockquote>
+<h2>
+QGridLayout网格布局</h2>
+网格布局又称格栅布局或者表格布局，指的是将一些控件按照行和列排列在窗口上，例如：<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211028/16421B2O-5.gif" /><br />
+图 6 QGridLayout网格布局</div>
+<br />
+QGridLayout 的行标和列标都从 0 开始，例如图 6 中 one 按钮的位置为 (0, 0)，Four 按钮的位置为 (2, 0)。我们可以随意指定 QGridLayout 的行数和列数，各个控件可以随意摆放，必要时某些位置可以空着不用。<br />
+<br />
+使用 QGridLayout 网格控件，程序中需引入<code>&lt;QGridLayout&gt;</code>头文件。每个 QGridLayout 控件都是 QGridLayout 类的一个实例对象，该类提供了两个构造函数，分别是：
+<pre class="info-box">
+QGridLayout(QWidget *parent)
+QGridLayout()</pre>
+<br />
+QGridLayout 类提供了很多实用的成员方法，常用的如下表所示：<br />
+<table>
+<caption>
+表 2 QGridLayout常用方法</caption>
+<tbody>
+<tr>
+<th>
+成员方法</th>
+<th>
+功 能</th>
+</tr>
+<tr>
+<td>
+int QGridLayout::rowCount() const</td>
+<td>
+获取网格的行数。</td>
+</tr>
+<tr>
+<td>
+int QGridLayout::columnCount() const</td>
+<td>
+获取网格的列数。</td>
+</tr>
+<tr>
+<td>
+void QGridLayout::addWidget(QWidget *widget, int row, int column, Qt::Alignment alignment = Qt::Alignment())</td>
+<td>
+将 widget 控件添加到网格中的&nbsp;(row,column) 位置处，并且可以自定义该控件的对齐方式。</td>
+</tr>
+<tr>
+<td>
+void QGridLayout::addWidget(QWidget *widget, int fromRow, int fromColumn, int rowSpan, int columnSpan, Qt::Alignment alignment = Qt::Alignment())</td>
+<td>
+将 widget 控件从 (fromRow, fromColumn)&nbsp;位置开始，跨 rowSpan 行和 ColumnSpan 列添加到网格中，并且可以自定义该控件的对齐方式。</td>
+</tr>
+<tr>
+<td>
+void QGridLayout::addLayout(QLayout *layout, int row, int column, Qt::Alignment alignment = Qt::Alignment())</td>
+<td>
+向网格中的 (row, column) 位置处添加 layout 布局管理器。</td>
+</tr>
+<tr>
+<td>
+void QGridLayout::addLayout(QLayout *layout, int row, int column, int rowSpan, int columnSpan, Qt::Alignment alignment = Qt::Alignment())</td>
+<td>
+将 layout 布局管理器从&nbsp;&nbsp;(row, column) 位置开始，跨 rowSpan 行和 ColumnSpan 列添加到网格中，并且可以自定义该布局控件的对齐方式。</td>
+</tr>
+<tr>
+<td>
+void QGridLayout::setColumnStretch(int column, int stretch)</td>
+<td>
+给指定的第 column 列设置伸缩系数。</td>
+</tr>
+<tr>
+<td>
+void QGridLayout::setRowStretch(int row, int stretch)</td>
+<td>
+给指定的第 row 行设置伸缩系数。</td>
+</tr>
+<tr>
+<td>
+void QGridLayout::setColumnMinimumWidth(int column, int minSize)</td>
+<td>
+设置第 column 列的最小宽度。</td>
+</tr>
+<tr>
+<td>
+void QGridLayout::setRowMinimumHeight(int row, int minSize)</td>
+<td>
+设置第 row 行的最小宽度。</td>
+</tr>
+</tbody>
+</table>
+<br />
+举个简单的例子：
+<pre class="cpp">
+#include &lt;QApplication&gt;
+#include &lt;QWidget&gt;
+#include &lt;QLabel&gt;
+#include &lt;QGridLayout&gt;
+#include &lt;QPushButton&gt;
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    //创建主窗口
+    QWidget widget;
+    widget.setWindowTitle(&quot;QGridLayout网格布局&quot;);
+    //创建 4 个按钮和 1 个文本框
+    QPushButton *but1 = new QPushButton(&quot;but1&quot;);
+    QPushButton *but2 = new QPushButton(&quot;but2&quot;);
+    QLabel *lab3 = new QLabel(&quot;lab&quot;);
+    lab3-&gt;setStyleSheet(&quot;QLabel{background:#dddddd;font:20px;}&quot;);
+    lab3-&gt;setAlignment(Qt::AlignCenter);
+    QPushButton *but3 = new QPushButton(&quot;but3&quot;);
+    QPushButton *but4 = new QPushButton(&quot;but4&quot;);
+    //创建网格布局控件
+    QGridLayout *layout = new QGridLayout;
+    //向 layout 中添加控件，并指定各个控件的位置
+    layout-&gt;addWidget(but1, 0, 0);
+    layout-&gt;addWidget(but2, 0, 2);
+    layout-&gt;addWidget(lab3, 1, 0, 3, 3);
+    layout-&gt;addWidget(but3, 4, 0);
+    layout-&gt;addWidget(but4, 4, 2);
+    //将 layout 添加到 widget 窗口中
+    widget.setLayout(layout);
+    widget.show();
+    return a.exec();
+}</pre>
+程序运行结果为：<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211028/16421A021-6.gif" /><br />
+图 7 QGridLayout网格布局实例</div>
+<blockquote>
+<p>
+图 7 中，文本框控件从 (1,0) 位置开始，占据了 3 行 3 列的表格空间。</p>
+</blockquote>
+<h2>
+QFormLayout表单布局</h2>
+Qt 提供了很多种输入框控件，包括 QLineEdit 单行输入框、QTextEdit 多行输入框等。通常情况下，每个输入框的旁边都会附带一些文字（又称标签），用来提示用户需要输入的信息。例如，图 8 中第一个输入框的标签为 &quot;Name&quot;，提示用户填写自己的姓名。<br />
+<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211028/16421634M-7.gif" /><br />
+图 8 QFromLayout表单布局</div>
+<br />
+生成图 8 这样的界面，实现的方法有很多，例如：
+<ol>
+<li>
+分别创建 3 个 QLabel 控件和 3 个 QLineEdit 控件，手动指定它们的位置；</li>
+<li>
+在 QHBoxLayout 中嵌套 3 个 QVBoxLayout，又或者在 QVBoxLayout 中嵌套 3 个 QHBoxLayout，然后再添加 3 个 QLabel 控件和 3 个 QLineEdit 控件；</li>
+<li>
+使用 QGridLayout 创建一个 3 行 2&nbsp;列的表格，向表格中添加 3 个 QLabel 控件和 3 个 QLineEdit 控件。</li>
+<li>
+使用 QFormLayout 表单布局控件实现。</li>
+</ol>
+<br />
+第 1 种方法最大的弊端在于，各个控件的尺寸都是固定的，不会随着父窗口尺寸的改变而改变。第 2、3、4 种方法都是借助布局控件实现的，各个控件的尺寸可以自动调整，但前两种方法需要手动设置每一列的 strech 拉伸系数，而第 4 种方式不需要。总之对于生成类似图 8 这样的表单窗口，建议大家使用 QFormLayout 控件，因为使用 QFormLayout 编写的代码量最少，开发效率最高。&nbsp;<br />
+<br />
+QFormLayout 可以容纳很多个输入框以及对应的标签，并将它们从上到下依次排列在界面上（如图 8 所示）。大多数情况下，QFormLayout 底层是用 QGridLayout 网格布局管理器实现的，和后者不同的是，QFormLayout 只包含 2 列（不限制行数），且第一列放置标签，第二列放置输入框。<br />
+<br />
+使用 QFormLayout 布局控件之前，程序中应引入<code>&lt;QFormLayout&gt;</code>头文件。每一个表单布局控件都是 QFormLayout 类的一个实例对象，该类仅提供了一个构造函数：
+<pre class="cpp" shownum="false">
+QFormLayout(QWidget *parent = Q_NULLPTR)</pre>
+<br />
+下表给大家罗列了操作 QFormLayout 对象常用的一些成员方法：<br />
+<br />
+<table>
+<caption>
+表 3 QFormLayout常用方法</caption>
+<tbody>
+<tr>
+<th>
+成员方法</th>
+<th>
+功 能</th>
+</tr>
+<tr>
+<td>
+void QFormLayout::addRow(QWidget *label, QWidget *field)</td>
+<td>
+将指定的 field 控件和存储标签的&nbsp;label 控件添加到表单控件中的末尾。&nbsp;</td>
+</tr>
+<tr>
+<td>
+void QFormLayout::addRow(const QString &amp;labelText, QWidget *field)</td>
+<td>
+将指定的 field 控件和 labelText 标签添加到表单控件的末尾。</td>
+</tr>
+<tr>
+<td>
+void QFormLayout::insertRow(int row, const QString &amp;labelText, QWidget *field)</td>
+<td>
+将指定的 field 控件和 labelText 标签插入到表单控件中指定行的位置。</td>
+</tr>
+<tr>
+<td>
+void QFormLayout::removeRow(int row)</td>
+<td>
+删除表单控件中的指定行。</td>
+</tr>
+<tr>
+<td>
+void QFormLayout::removeRow(QWidget *widget)</td>
+<td>
+删除表单控件中 widget 控件所在的行。</td>
+</tr>
+<tr>
+<td>
+void setRowWrapPolicy(RowWrapPolicy policy)</td>
+<td>
+设置标签的显示格式，默认标签位于控件的左侧。<br />
+<br />
+RowWrapPolicy 是 QFormLayout 中定义的枚举类型，该类型包含 3 个值：
+<ul>
+<li>
+QFormLayout::DontWrapRows：标签始终在输入框的左侧；</li>
+<li>
+QFormLayout::WrapLongRows：根据输入框的尺寸，标签可能位于输入框的左侧，也可能位于上方；</li>
+<li>
+QFormLayout::WrapAllRows：标签始终在输入框的上方；</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td>
+void QFormLayout::setSpacing(int spacing)</td>
+<td>
+将行间距和列间距设置为 spacing。</td>
+</tr>
+</tbody>
+</table>
+<br />
+举个简单的例子：
+<pre class="cpp">
+#include &lt;QApplication&gt;
+#include &lt;QWidget&gt;
+#include &lt;QLineEdit&gt;
+#include &lt;QFormLayout&gt;
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    //创建主窗口
+    QWidget widget;
+    widget.setWindowTitle(&quot;QFormLayout表单布局&quot;);
+    //创建 4 个按钮和 1 个文本框
+    QFormLayout* layout = new QFormLayout();
+    //设置表单中的标签都位于控件的上方
+    layout-&gt;setRowWrapPolicy(QFormLayout::WrapAllRows);
+    //添加 3 行输入框和标签
+    layout-&gt;addRow(&quot;Name:&quot;,new QLineEdit());
+    layout-&gt;addRow(&quot;Email:&quot;,new QLineEdit());
+    layout-&gt;addRow(&quot;Adress:&quot;,new QLineEdit());
+    //设置行间距和列间距为 10
+    layout-&gt;setSpacing(10);
+    //将 layout 表单添加到 widget 窗口中
+    widget.setLayout(layout);
+    widget.show();
+    return a.exec();
+}</pre>
+程序运行结果为：
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211028/1642162412-8.gif" /><br />
+图 9 QFormLayout表单布局实例</div>
+<h2>
+QStackedLayout分组布局</h2>
+QStackedLayout 布局管理器可以容纳多个控件或者窗口，但每次只显示其中的一个。<br />
+<br />
+举个简单的例子，下图中的界面就使用了 QStackedLayout 布局管理器：<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211028/1642161219-9.gif" /><br />
+图 10 QStackedLayout布局管理器</div>
+<br />
+整个窗口被一分为二，左侧是 QListWidget 列表控件，右侧是 QStackedLayout 布局管理器。QStackedLayout 中包含 QPushButonn、QLabel 和 QLineEdit 这 3 个控件，但每次只能 3 个控件中的一个。<br />
+<blockquote>
+<p>
+QStackedLayout 自身无法切换当前显示的控件或窗口，实际应用时通常和 QListWidget 或者 QComboBox 搭配使用。</p>
+</blockquote>
+<br />
+使用 QStackedLayout 布局控件，程序中必须先引入<code>&lt;QStackedLayout&gt;</code>头文件。 每个 QStackedLayout 控件都是 QStackedLayout 类的一个实例对象，该类提供有 3 个构造函数，分别是：<br />
+<pre class="info-box">
+QStackedLayout()
+QStackedLayout(QWidget *parent)
+QStackedLayout(QLayout *parentLayout)</pre>
+借助第二个构造函数，我们可以将 QStackedLayout 添加到指定的 parent 窗口中；借助第三个构造函数，我们可以将 QStackedLayout 嵌入到指定的&nbsp;parentLayout 布局控件中
+<blockquote>
+<p>
+本节学习的 5 种布局控件都可以嵌套使用，例如将 QVBoxLayout 放到 QHBoxLayout 内部、将 QGridLayout 放到 QStackedLayout 内部等。</p>
+</blockquote>
+下表罗列了操作 QStackedLayout 对象常用的一些成员方法：<br />
+<table>
+<caption>
+表 4 QStackedLayout常用方法</caption>
+<tbody>
+<tr>
+<th>
+成员方法</th>
+<th>
+功 能</th>
+</tr>
+<tr>
+<td>
+int QStackedLayout::addWidget(QWidget *widget)</td>
+<td>
+将 widget 控件添加到 QStackedLayout 控件中。</td>
+</tr>
+<tr>
+<td>
+int QStackedLayout::insertWidget(int index, QWidget *widget)</td>
+<td>
+将 widget 控件插入到 QStackedLayout&nbsp;控件指定的位置处。</td>
+</tr>
+<tr>
+<th>
+信号函数</th>
+<th>
+功 能</th>
+</tr>
+<tr>
+<td>
+void QStackedLayout::currentChanged(int index)</td>
+<td>
+切换当前显示的控件时，会触发此信号，index 为显示的新控件的索引。</td>
+</tr>
+<tr>
+<td>
+void QStackedLayout::widgetRemoved(int index)</td>
+<td>
+移除某个控件时，会触发此信号，index 为被移除控件的索引。</td>
+</tr>
+<tr>
+<th>
+槽函数</th>
+<th>
+功 能</th>
+</tr>
+<tr>
+<td>
+void setCurrentIndex(int index)</td>
+<td>
+将第 index 个控件作为要显示的控件。</td>
+</tr>
+<tr>
+<td>
+void QStackedLayout::setCurrentWidget(QWidget *widget)</td>
+<td>
+设置 widget 作为当前要实现的控件。注意，必须保证 widget 存储在 QStackedLayout 控件中。</td>
+</tr>
+</tbody>
+</table>
+<br />
+这里我们以图 10 所示的窗口为例，实现代码如下：
+<pre class="cpp">
+#include &lt;QApplication&gt;
+#include &lt;QWidget&gt;
+#include &lt;QPushButton&gt;
+#include &lt;QLabel&gt;
+#include &lt;QLineEdit&gt;
+#include &lt;QStackedLayout&gt;
+#include &lt;QListWidget&gt;
+#include &lt;QHBoxLayout&gt;
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    //创建主窗口
+    QWidget widget;
+    widget.setWindowTitle(&quot;QStackedLayout分组布局&quot;);
+    widget.resize(600,400);
+    //向主窗口中添加一个水平布局控件
+    QHBoxLayout *layout=new QHBoxLayout;
+   
+    //创建一个列表
+    QListWidget listWidget(&amp;widget);
+    listWidget.setMinimumWidth(150);
+    listWidget.setFont(QFont(&quot;宋体&quot;,14));
+    listWidget.addItem(&quot;QPushButton&quot;);
+    listWidget.addItem(&quot;QLabel&quot;);
+    listWidget.addItem(&quot;QLineEdit&quot;);
+   
+    //新建 3 个窗口，分别放置文本框、按钮和单行输入框
+    QWidget widget1;
+    widget1.setMinimumSize(400,400);
+    QPushButton but1(&quot;这是一个按钮&quot;,&amp;widget1);
+
+    QWidget widget2;
+    widget2.setMinimumSize(400,400);
+    QLabel lab1(&quot;这是一个文本框&quot;,&amp;widget2);
+
+    QWidget widget3;
+    widget3.setMinimumSize(400,400);
+    QLineEdit edit(&quot;这是一个单行输入框&quot;,&amp;widget3);
+   
+    //创建一个分组布局，将 3 个窗口添加到分组控件中
+    QStackedLayout *stackedLayout = new QStackedLayout;
+    stackedLayout-&gt;addWidget(&amp;widget1);
+    stackedLayout-&gt;addWidget(&amp;widget2);
+    stackedLayout-&gt;addWidget(&amp;widget3);
+   
+    //layout 第一列添加 QListWidget 控件，第二列添加分组布局控件，设置它们的伸缩系数比为 1:4
+    layout-&gt;addWidget(&amp;listWidget,1);
+    layout-&gt;addLayout(stackedLayout,4);
+    //将 layout 水平布局控件添加到 widget 窗口中
+    widget.setLayout(layout);
+    widget.show();
+    //连接信号和槽，实现当点击列表中的某一项，切换分组布局管理器显示的控件
+    QObject::connect(&amp;listWidget,&amp;QListWidget::currentRowChanged,stackedLayout,&amp;QStackedLayout::setCurrentIndex);
+    return a.exec();
+}</pre>
+此程序中，我们在 QHBoxLayout 水平布局控件内又放置了一个 QStackedLayout 分组布局控件。感兴趣的读者可以编写程序，测试其它布局控件之间嵌套的效果。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../c/strcpy.html" title="C语言strcpy()函数：字符串复制（拷贝）函数" target="_blank">C语言strcpy()函数：字符串复制（拷贝）函数</a></li>
+<li><a href="vip_6005.html" title="Python如何合理使用assert（新手必读）" target="_blank">Python如何合理使用assert（新手必读）</a></li>
+<li><a href="../dll/vip_8704.html" title="Windows下静态链接库的创建和使用" target="_blank">Windows下静态链接库的创建和使用</a></li>
+<li><a href="../maven2/idea-build-maven.html" title="IDEA新建Maven项目" target="_blank">IDEA新建Maven项目</a></li>
+<li><a href="../ml_alg/naive-bayes.html" title="朴素贝叶斯分类算法原理" target="_blank">朴素贝叶斯分类算法原理</a></li>
+<li><a href="9378.html" title="JS类型转换（强制类型转换+隐式类型转换）" target="_blank">JS类型转换（强制类型转换+隐式类型转换）</a></li>
+<li><a href="../spring/autowire-xml.html" title="Spring自动装配" target="_blank">Spring自动装配</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9422;
+window.arcId = "137cruQFjGpjFYFY9UvO8WNmI0eLABxsQAnsglL4Gc2yEvaaig48Yh2cPVY";
+window.typeidChain = "294|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

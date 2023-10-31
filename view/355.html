@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C语言字符串数组</title>
+<meta name="description" content="字符串是连续的字符序列，最后以空字符\0作为终止符。一个字符串的长度指所有字符的数量，但不包括终止符。在 C 语言中，没有字符串类型，自然也就没有运算符以字符串为操作数。" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C语言字符串数组</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body"><span style="color:#b22222;">字符串是连续的字符序列，最后以空字符&#39;\0&#39;作为终止符。一个字符串的长度指所有字符的数量，但不包括终止符。</span>在 C 语言中，没有字符串类型，自然也就没有运算符以字符串为操作数。<br />
+<br />
+<span style="color:#b22222;">字符串被存储在元素类型为 char 或宽字符类型数组中（宽字符类型指 wchar_t、char16_t 或 char32_t）。</span>宽字符组成的字符串也称为<span style="color:#006400;">宽字符串（wide string）</span>。<br />
+<br />
+C 标准库提供了大量的函数，它们可以对字符串进行基本操作，例如字符串的比较、复制和连接等。在这些传统的字符串函数以外，C11 新增了这些函数的&ldquo;安全&rdquo;版本，它们能确保字符串操作不会超出数组的边界。<br />
+<br />
+<span style="color:#b22222;">可以使用字符串字面量来初始化任何字符类型数组。</span>例如，下面两个数组的定义是等价的：
+<pre class="cpp">
+char str1[30] = &quot;Let&#39;s go&quot;;             // 字符串长度：8；数组长度：30
+char str1[30] = { &#39;L&#39;, &#39;e&#39;, &#39;t&#39;, &#39;\&#39;&#39;, &#39;s&#39;,&#39; &#39;, &#39;g&#39;, &#39;o&#39;, &#39;\0&#39; };</pre>
+<br />
+<span style="color:#b22222;">存储字符串的数组一定比字符串长度多一个元素，以容纳下字符串终止符（空字符&#39;\0&#39;）。</span>因此，str1 数组能够存储的字符串最大长度是 29。如果定义数组长度为 8，而不是 30，就会发生错误，因为它无法包含字符串终止符。<br />
+<br />
+如果在定义一个字符数组时，没有显式地指定长度，但使用了字符串字面量来对它进行初始化，该数组的长度会比字符串长度多 1。如下列所示：
+<pre class="cpp">
+char str2[] = &quot; to London!&quot;;    // 字符串长度：11 （注意开头的空格）；
+                                                // 数组长度：12</pre>
+<br />
+下面的语句使用标准函数 strcat（）把字符串 str2 附加到字符串 str1 的后面（str1 数组长度必须足够大以容纳连接后的全部字符）。
+<pre class="cpp">
+#include &lt;string.h&gt;
+char str1[30] = &quot;Let&#39;s go&quot;;
+char str2[ ] = &quot; to London!&quot;;
+/* ... */
+strcat( str1, str2 );
+puts( str1 );</pre>
+<br />
+调用 puts（）后，输出新的 str1 数组内容：
+<pre class="cpp">
+Let&#39;s go to London!</pre>
+<br />
+str1 和 str2 的名字其实是两个指针，它们指向各自数组的第一个字符。这样的指针被称为<span style="color:#006400;">指向字符串的指针（pointer to a string）</span>，或者简称为<span style="color:#006400;">字符串指针（string pointer）</span>。<br />
+<br />
+<span style="color:#b22222;">字符串处理函数（例如 scrcat（）和 puts（））需要接收字符串起始地址并将其作为参数。</span>这样的函数通常逐个字符地处理字符串，直到遇到结尾终止符&#39;\0&#39;为止。<br />
+<br />
+例 1 是函数 strcat（）的另&mdash;&mdash;种可能的实现方式。它采用从函数参数传入的指针遍历处理整个字符串。<br />
+<br />
+【例1】函数 strcat（）
+<pre class="cpp">
+// 函数strcat() 将第二个字符串复制一份并附加到第一个字符串的尾部
+// 参数：指向两个字符串的指针
+// 返回值：指向第一个字符串的指针，此时已将第二个字符串连接到了其尾部
+char *strcat( char * restrict s1, const char * restrict s2 )
+{
+  char *rtnPtr = s1;
+  while ( *s1 != &#39;\0&#39; )                         // 找到字符串s1的尾部
+    ++s1;
+  while (( *s1++ = *s2++ ) != &#39;\0&#39; )    // 将s2的首字符替换掉s1的终止符
+    ;
+  return rtnPtr;
+}</pre>
+<br />
+以 s1 地址为起始位置的 char 数组，其长度至少是两个字符串长度的和再加上 1，以容纳字符串终止符。在调用 strcat（）之前，可以采用标准函数 strlen（）进行测试，以确保长度没有问题，函数 strlen（）返回其字符串参数的长度，如下所示：
+<pre class="cpp">
+if ( sizeof(str1) &gt;= ( strlen( str1 ) + strlen( str2 ) + 1 ) )
+  strcat( str1, str2 );</pre>
+<br />
+<span style="color:#b22222;">宽字符串字面量会加上一个前缀 L、u 或 U，它们是宽字符串的标志。</span>因此，wchar_t 数组的初始化过程如下所示：
+<pre class="cpp">
+#include &lt;stddef.h&gt;                        // 定义wchart_t类型
+/* ... */
+wchar_t dinner[] = L&quot;chop suey&quot;;        // 字符串长度：10；
+                                                // 数组长度：11；
+                                                // 数组空间大小：11 * sizeof(wchar_t)</pre>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="365.html" title="void指针及其应用，C语言void指针及使用注意事项详解" target="_blank">void指针及其应用，C语言void指针及使用注意事项详解</a></li>
+<li><a href="449.html" title="C语言条件编译（#if，#ifdef，#ifndef，#endif，#else，#elif）" target="_blank">C语言条件编译（#if，#ifdef，#ifndef，#endif，#else，#elif）</a></li>
+<li><a href="2627.html" title="Python线程池及其原理和使用（超级详细）" target="_blank">Python线程池及其原理和使用（超级详细）</a></li>
+<li><a href="6689.html" title="Java.util.logging：JDK自带记录日志类" target="_blank">Java.util.logging：JDK自带记录日志类</a></li>
+<li><a href="../python_spider/xpath.html" title="Xpath简明教程（十分钟入门）" target="_blank">Xpath简明教程（十分钟入门）</a></li>
+<li><a href="../pygame/rect.html" title="Pygame Rect区域位置（图解）" target="_blank">Pygame Rect区域位置（图解）</a></li>
+<li><a href="sl3wl9m.html" title="Python定义函数（def关键字）" target="_blank">Python定义函数（def关键字）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 355;
+window.arcId = "ec81b1YxfRL9pNyKg5gGy7PXPkYRwYbSswZAG5RH1mRm3xFe9uvkGLXpkg";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

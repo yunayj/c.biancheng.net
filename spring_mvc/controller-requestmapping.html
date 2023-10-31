@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Spring MVC @Controller和@RequestMapping注解</title>
+<meta name="description" content="将依赖注入到 Spring MVC 控制器时需要用到 @Autowired 和 @Service 注解。 @Autowired 注解属于org.springframework.beans.factory. annotation 包，可以对类成员变量、方法及构造函数进行标注，完成自动装配" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="../view/niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Spring MVC @Controller和@RequestMapping注解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">Spring 2.5 版本新增了 Spring MVC 注解功能，用于替换传统的基于 XML 的 Spring MVC 配置。<br />
+<br />
+在《<a href="first-program.html" target="_blank">第一个Spring MVC应用</a>》一节中创建了两个传统风格的控制器，它们是实现 Controller 接口的类。传统风格的控制器不仅需要在配置文件中部署映射，而且只能编写一个处理方法，不够灵活。<br />
+<br />
+使用基于注解的控制器具有以下 2 个优点：
+<ol>
+<li>
+在基于注解的控制器类中可以编写多个处理方法，进而可以处理多个请求（动作），这就允许将相关的操作编写在同一个控制器类中，从而减少控制器类的数量，方便以后维护。</li>
+<li>
+基于注解的控制器不需要在配置文件中部署映射，仅需要使用 @RequestMapping 注解一个方法进行请求处理即可。</li>
+</ol>
+<br />
+下面介绍在 Spring MVC 中最重要的两个注解类型：@Controller 和 @RequestMapping。<br />
+<br />
+本节示例基于《<a href="first-program.html" target="_blank">第一个Spring MVC应用</a>》一节中的代码实现。<br />
+<h2>
+Controller注解</h2>
+@Controller 注解用于声明某类的实例是一个控制器。例如，在 net.biancheng.controller 包中创建控制器类 IndexController，示例代码如下。
+<pre class="java">
+package net.biancheng.controller;
+
+import org.springframework.stereotype.Controller;
+
+@Controller
+public class IndexController {
+    // 处理请求的方法
+}</pre>
+Spring MVC 使用扫描机制找到应用中所有基于注解的控制器类，所以，为了让控制器类被 Spring MVC 框架扫描到，需要在配置文件中声明 spring-context，并使用 <code>&lt;context:component-scan/&gt;</code> 元素指定控制器类的基本包（请确保所有控制器类都在基本包及其子包下）。<br />
+<br />
+例如，在 springmvcDemo 应用的配置文件 springmvc-servlet.xml 中添加以下代码：
+<pre class="xml">
+&lt;!-- 使用扫描机制扫描控制器类，控制器类都在net.biancheng.controller包及其子包下 --&gt;
+&lt;context:component-scan base-package=&quot;net.biancheng.controller&quot; /&gt;
+</pre>
+<h2>
+RequestMapping注解</h2>
+一个控制器内有多个处理请求的方法，如 UserController 里通常有增加用户、修改用户信息、删除指定用户、根据条件获取用户列表等。每个方法负责不同的请求操作，而 @RequestMapping 就负责将请求映射到对应的控制器方法上。<br />
+<br />
+在基于注解的控制器类中可以为每个请求编写对应的处理方法。使用 @RequestMapping 注解将请求与处理方法一 一对应即可。<br />
+<br />
+@RequestMapping 注解可用于类或方法上。用于类上，表示类中的所有响应请求的方法都以该地址作为父路径。<br />
+<br />
+@RequestMapping 注解常用属性如下。
+<h3>
+1. value 属性</h3>
+value 属性是 @RequestMapping 注解的默认属性，因此如果只有 value 属性时，可以省略该属性名，如果有其它属性，则必须写上 value 属性名称。如下。<br />
+<pre class="java" shownum="false">
+@RequestMapping(value=&quot;toUser&quot;)
+@RequestMapping(&quot;toUser&quot;)</pre>
+value 属性支持通配符匹配，如 @RequestMapping(value=&quot;toUser/*&quot;) 表示 http://localhost:8080/toUser/1 或 http://localhost:8080/toUser/hahaha 都能够正常访问。
+<h3>
+2. path属性</h3>
+path 属性和 value 属性都用来作为映射使用。即&nbsp;@RequestMapping(value=&quot;toUser&quot;) 和 @RequestMapping(path=&quot;toUser&quot;) 都能访问 toUser() 方法。<br />
+<br />
+path 属性支持通配符匹配，如 @RequestMapping(path=&quot;toUser/*&quot;) 表示 http://localhost:8080/toUser/1 或 http://localhost:8080/toUser/hahaha 都能够正常访问。
+<h3>
+3. name属性</h3>
+name属性相当于方法的注释，使方法更易理解。如&nbsp;@RequestMapping(value = &quot;toUser&quot;,name = &quot;获取用户信息&quot;)。
+<h3>
+4. method属性</h3>
+method 属性用于表示该方法支持哪些 HTTP 请求。如果省略 method 属性，则说明该方法支持全部的 HTTP 请求。<br />
+<br />
+@RequestMapping(value = &quot;toUser&quot;,method = RequestMethod.GET) 表示该方法只支持 GET 请求。也可指定多个 HTTP 请求，如 @RequestMapping(value = &quot;toUser&quot;,method = {RequestMethod.GET,RequestMethod.POST})，说明该方法同时支持 GET 和 POST 请求。<br />
+<h3>
+5. params属性</h3>
+params 属性用于指定请求中规定的参数，代码如下。<br />
+<pre class="java" shownum="false">
+@RequestMapping(value = &quot;toUser&quot;,params = &quot;type&quot;)
+public String toUser() {
+    
+    return &quot;showUser&quot;;
+}</pre>
+以上代码表示请求中必须包含 type 参数时才能执行该请求。即 http://localhost:8080/toUser?type=xxx 能够正常访问 toUser() 方法，而&nbsp;http://localhost:8080/toUser 则不能正常访问 toUser() 方法。<br />
+<pre class="java" shownum="false">
+@RequestMapping(value = &quot;toUser&quot;,params = &quot;type=1&quot;)
+public String toUser() {
+    
+    return &quot;showUser&quot;;
+}
+</pre>
+以上代码表示请求中必须包含 type 参数，且 type 参数为 1 时才能够执行该请求。即&nbsp;http://localhost:8080/toUser?type=1 能够正常访问 toUser() 方法，而 http://localhost:8080/toUser?type=2 则不能正常访问 toUser() 方法。<br />
+<h3>
+6. header属性</h3>
+header 属性表示请求中必须包含某些指定的 header 值。<br />
+<br />
+@RequestMapping(value = &quot;toUser&quot;,headers = &quot;Referer=http://www.xxx.com&quot;) 表示请求的 header 中必须包含了指定的&ldquo;Referer&rdquo;请求头，以及值为&ldquo;http://www.xxx.com&rdquo;时，才能执行该请求。
+<h3>
+7.&nbsp;consumers属性</h3>
+consumers 属性用于指定处理请求的提交内容类型（Content-Type），例如：application/json、text/html。如&nbsp;<br />
+@RequestMapping(value = &quot;toUser&quot;,consumes = &quot;application/json&quot;)。<br />
+<h3>
+8. produces属性</h3>
+produces 属性用于指定返回的内容类型，返回的内容类型必须是 request 请求头（Accept）中所包含的类型。如&nbsp;@RequestMapping(value = &quot;toUser&quot;,produces = &quot;application/json&quot;)。<br />
+<br />
+除此之外，produces 属性还可以指定返回值的编码。如&nbsp;@RequestMapping(value = &quot;toUser&quot;,produces = &quot;application/json,charset=utf-8&quot;)，表示返回 utf-8 编码。<br />
+<br />
+使用 @RequestMapping 来完成映射，具体包括 4 个方面的信息项：请求 URL、请求参数、请求方法和请求头。
+<h3>
+通过请求URL进行映射</h3>
+<h4>
+1）方法级别注解</h4>
+方法级别注解的示例代码如下。
+<pre class="java">
+package net.biancheng.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+public class IndexController {
+    @RequestMapping(value = &quot;/index/login&quot;)
+    public String login() {
+        return &quot;login&quot;;
+    }
+
+    @RequestMapping(value = &quot;/index/register&quot;)
+    public String register() {
+        return &quot;register&quot;;
+    }
+}</pre>
+上述示例中有两个 RequestMapping 注解语句，它们都作用在处理方法上。在整个 Web 项目中，@RequestMapping 映射的请求信息必须保证全局唯一。<br />
+<br />
+用户可以使用如下 URL 访问 login 方法（请求处理方法），在访问 login 方法之前需要事先在 /WEB-INF/jsp/ 目录下创建 login.jsp。
+<p class="info-box">
+http://localhost:8080/springmvcDemo/index/login</p>
+<h4>
+2）类级别注解</h4>
+类级别注解的示例代码如下：
+<pre class="java">
+package net.biancheng.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+@Controller
+@RequestMapping(&quot;/index&quot;)
+public class IndexController {
+    @RequestMapping(&quot;/login&quot;)
+    public String login() {
+        return &quot;login&quot;;
+    }
+
+    @RequestMapping(&quot;/register&quot;)
+    public String register() {
+        return &quot;register&quot;;
+    }
+}</pre>
+在类级别注解的情况下，控制器类中的所有方法都将映射为类级别的请求。用户可以使用如下 URL 访问 login 方法。
+<p class="info-box">
+http://localhost:8080/springmvcDemo/index/login</p>
+为了方便维护程序，建议开发者采用类级别注解，将相关处理放在同一个控制器类中。例如，对用户的增、删、改、查等处理方法都可以放在 UserController 控制类中。
+<h3>
+通过请求参数、请求方法进行映射</h3>
+@RequestMapping 除了可以使用请求 URL 映射请求之外，还可以使用请求参数、请求方法来映射请求，通过多个条件可以让请求映射更加精确。<br />
+<pre class="java">
+package net.biancheng.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+public class IndexController {
+    @RequestMapping(value = &quot;/index/success&quot; method=RequestMethod.GET, Params=&quot;username&quot;)
+    public String success(@RequestParam String username) {
+        
+        return &quot;index&quot;;
+}</pre>
+上述代码中，@RequestMapping 的 value 表示请求的 URL；method 表示请求方法，此处设置为 GET 请求，若是 POST 请求，则无法进入 success 这个处理方法中。params 表示请求参数，此处参数名为 username。<br />
+<h2>
+编写请求处理方法</h2>
+在控制类中每个请求处理方法可以有多个不同类型的参数，以及一个多种类型的返回结果。<br />
+<h4>
+1）请求处理方法中常出现的参数类型</h4>
+如果需要在请求处理方法中使用 Servlet API 类型，那么可以将这些类型作为请求处理方法的参数类型。Servlet API 参数类型的示例代码如下：
+<pre class="java">
+package net.biancheng.controller;
+import javax.servlet.http.HttpSession;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+@Controller
+@RequestMapping(&quot;/index&quot;)
+public class IndexController {
+    @RequestMapping(&quot;/login&quot;)
+    public String login(HttpSession session,HttpServletRequest request) {
+        session.setAttribute(&quot;skey&quot;, &quot;session范围的值&quot;);
+        session.setAttribute(&quot;rkey&quot;, &quot;request范围的值&quot;);
+        return &quot;login&quot;;
+    }
+}</pre>
+除了 Servlet API 参数类型以外，还有输入输出流、表单实体类、注解类型、与 Spring 框架相关的类型等，这些类型在后续章节中使用时再详细介绍。<br />
+<br />
+其中特别重要的类型是 org.springframework.ui.Model 类型，该类型是一个包含 Map 的 Spring MVC类型。在每次调用请求处理方法时 Spring MVC 都将创建 org.springframework.ui.Model 对象。Model 参数类型的示例代码如下：<br />
+<pre class="java">
+package net.biancheng.controller;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+@Controller
+@RequestMapping(&quot;/index&quot;)
+public class IndexController {
+    @RequestMapping(&quot;/register&quot;)
+    public String register(Model model) {
+        /*在视图中可以使用EL表达式${success}取出model中的值*/
+        model.addAttribute(&quot;success&quot;, &quot;注册成功&quot;);
+        return &quot;register&quot;;
+    }
+}</pre>
+<h4>
+2）请求处理方法常见的返回类型</h4>
+请求处理方法可以返回如下类型的对象：
+<ul>
+<li>
+ModelAndView</li>
+<li>
+Model</li>
+<li>
+包含模型属性的 Map</li>
+<li>
+View</li>
+<li>
+代表逻辑视图名的 String</li>
+<li>
+void</li>
+<li>
+其它任意Java类型</li>
+</ul>
+<br />
+最常见的返回类型就是代表逻辑视图名称的 String 类型，例如前面几节中的请求处理方法。
+<h2>
+示例</h2>
+创建 Web 应用 springmvcDemo2，导入相应的 JAR 包（可参考《<a href="first-program.html" target="_blank">第一个Spring MVC程序</a>》一节导入的 JAR 包）。<br />
+<br />
+springmvcDemo2 应用目录结构如下。<br />
+<div style="text-align: center;">
+<img alt="springmvcDemo2目录结构" src="../uploads/allimg/210705/144TT424-0.png" style="border-width: 1px; border-style: solid;" /><br />
+springmvcDemo2目录结构</div>
+<br />
+web.xml 代码如下。
+<pre class="xml">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;web-app xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xmlns=&quot;http://java.sun.com/xml/ns/javaee&quot;
+    xmlns:web=&quot;http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd&quot;
+    xsi:schemaLocation=&quot;http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd&quot;
+    version=&quot;3.0&quot;&gt;
+    &lt;display-name&gt;springMVC&lt;/display-name&gt;
+
+    &lt;!-- 部署 DispatcherServlet --&gt;
+    &lt;servlet&gt;
+        &lt;servlet-name&gt;springmvc&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;
+        &lt;init-param&gt;
+            &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+            &lt;param-value&gt;/WEB-INF/springmvc-servlet.xml&lt;/param-value&gt;
+        &lt;/init-param&gt;
+        &lt;!-- 表示容器再启动时立即加载servlet --&gt;
+        &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+    &lt;/servlet&gt;
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;springmvc&lt;/servlet-name&gt;
+        &lt;!-- 处理所有URL --&gt;
+        &lt;url-pattern&gt;/&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+&lt;/web-app&gt;</pre>
+springmvc-servlet.xml 配置文件代码如下。
+<pre class="xml">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xmlns:mvc=&quot;http://www.springframework.org/schema/mvc&quot;
+    xmlns:p=&quot;http://www.springframework.org/schema/p&quot;
+    xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+    xsi:schemaLocation=&quot;
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd&quot;&gt;
+    &lt;context:component-scan
+        base-package=&quot;net.biancheng.controller&quot; /&gt;
+
+    &lt;bean id=&quot;viewResolver&quot;
+        class=&quot;org.springframework.web.servlet.view.InternalResourceViewResolver&quot;&gt;
+        &lt;!--前缀 --&gt;
+        &lt;property name=&quot;prefix&quot; value=&quot;/WEB-INF/jsp/&quot; /&gt;
+        &lt;!--后缀 --&gt;
+        &lt;property name=&quot;suffix&quot; value=&quot;.jsp&quot; /&gt;
+    &lt;/bean&gt;
+&lt;/beans&gt;</pre>
+创建 User 实体类，代码如下。如前面所说，使用 Controller 注解的一个优点在于一个控制类可以包含多个请求处理方法。创建 UserController，代码如下。
+<pre class="java">
+package net.biancheng.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import net.biancheng.po.User;
+
+@Controller
+@RequestMapping(&quot;/user&quot;)
+public class UserController {
+
+    @RequestMapping(&quot;/login&quot;)
+    public String getLogin(Model model) {
+        User us = new User();
+        us.setName(&quot;编程帮&quot;);
+        model.addAttribute(&quot;user&quot;, us);
+        return &quot;login&quot;;
+    }
+
+    @RequestMapping(&quot;/register&quot;)
+    public String getRegister() {
+
+        return &quot;register&quot;;
+    }
+}</pre>
+index.jsp 文件页面代码如下。
+<pre class="xml">
+&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=UTF-8&quot;
+    pageEncoding=&quot;UTF-8&quot;%&gt;
+&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot;&gt;
+&lt;title&gt;Insert title here&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    未注册的用户，请
+    &lt;a href=&quot;${pageContext.request.contextPath }/user/register&quot;&gt; 注册&lt;/a&gt;！
+    &lt;br /&gt; 已注册的用户，去
+    &lt;a href=&quot;${pageContext.request.contextPath }/user/login&quot;&gt; 登录&lt;/a&gt;！
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+login.jsp 代码如下。
+<pre class="xml">
+&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=UTF-8&quot;
+pageEncoding=&quot;UTF-8&quot;%&gt;
+&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot;&gt;
+&lt;title&gt;Insert title here&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    登录页面！ 欢迎 ${user.name} 登录
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+register.jsp 代码如下。
+<pre class="xml">
+&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=UTF-8&quot;
+         pageEncoding=&quot;UTF-8&quot; %&gt;
+&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot;&gt;
+    &lt;title&gt;Insert title here&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    注册页面！
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+运行结果如下。
+<div style="text-align: center;">
+<img alt="index.jsp页面" src="../uploads/allimg/210705/144TWB9-1.png" /><br />
+index.jsp页面<br />
+<br />
+<img alt="register.jsp页面" src="../uploads/allimg/210705/144TSU0-2.png" /><br />
+register.jsp页面<br />
+<br />
+<img alt="login.jsp页面" src="../uploads/allimg/210705/144TU950-3.png" /><br />
+login.jsp页面</div>
+<br />
+在上图所示的页面中，当用户单击&ldquo;注册&rdquo;超链接时，控制器会将该请求转发给 UserController 的 getLogin 方法处理，处理后跳转到 /WEB-INF/jsp 下的 register.jsp 视图。同理，当单击&ldquo;登录&rdquo;超链接时，控制器处理后转到 /WEB-INF/jsp下的 login.jsp 视图。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="../view/niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/1350.html" title="C++ cin.getline用法详解" target="_blank">C++ cin.getline用法详解</a></li>
+<li><a href="../mysql/datediff.html" title="MySQL DATEDIFF函数：获取两个日期的时间间隔" target="_blank">MySQL DATEDIFF函数：获取两个日期的时间间隔</a></li>
+<li><a href="../view/2615.html" title="MySQL用户授权（GRANT）" target="_blank">MySQL用户授权（GRANT）</a></li>
+<li><a href="../view/4261.html" title="Spring Bean的生命周期" target="_blank">Spring Bean的生命周期</a></li>
+<li><a href="../servlet2/listener.html" title="Servlet Listener（监听器）" target="_blank">Servlet Listener（监听器）</a></li>
+<li><a href="../redis2/randomkey.html" title="Redis RANDOMKEY命令" target="_blank">Redis RANDOMKEY命令</a></li>
+<li><a href="../view/9782.html" title="Go语言注释（单行注释和多行注释）详解" target="_blank">Go语言注释（单行注释和多行注释）详解</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8702;
+window.arcId = "75c1V/R+0N+4TaXk0yhIYEP1vO1i+pF4T9gv+/lPCFXS4lVfNvjSWEkUios";
+window.typeidChain = "456|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="../view/8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="../view/8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="../view/8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="../view/9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="../view/8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

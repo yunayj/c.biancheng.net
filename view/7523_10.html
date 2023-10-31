@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Django Admin数据表可视化</title>
+<meta name="description" content="在上一节中，我们创建了 项目所需的数据表，在本节，我们将继续深入探讨 ORM 的应用，在前文章节我我们介绍过，Django 的后台管理系统是为了方便管理员对数据进行管理， Django的OR" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../django/django_2.html">Django</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Django Admin数据表可视化</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在《<a href="7334_4.html">Django Admin后台管理系统</a>》介绍过 Django 的后台管理系统是为了方便站点管理人员对数据表进行操作。Django 的 ORM 模块提供了丰富的 API 用于实现对 Model 的增删改查，但是对于 Web 站点的管理运营人员来说，学习它们的成本较高，且误操作的可能性较大。当然开发人员自己也可以去构建管理界面，但是当系统越来越复杂，Model 越来越多的时候， 就会增加很多重复性的工作。<br />
+<br />
+综上所述，Django 完全考虑到了这些问题，它可以让开发人员几乎不用写代码就能拥有一个功能强大的 Model 管理后台。下面我们一起来学习 Django 提供的这个强大功能。
+<h2>
+	1. 创建超级用户</h2>
+我们是使用在《<a href="7334_4.html">Django Admin后台管理系统</a>》中提到过的命令创建超级管理员账户，命令如下所示：<br />
+<p class="info-box">
+	python manage.py createsuperuser --username=admin --email=admin@163.com</p>
+这里将用户名设置为 admin，邮箱设置为 admin@163.com，也可以根据自己的需要去修改。如果在 createsuperuser 后面不加任何内容，Django 会提示用户输入用户名和邮箱。当前命令执行后，需要重复输入两次密码，密码可以根据自己的需要设置，但是密码不能过于简单，如下图所示，表示创建成功：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="创建超级用户的命令图" src="../uploads/allimg/200408/9-20040Q10F2215_2.gif" /><br />
+	图1：创建超级用户admin</div>
+<p class="tip-box">
+	提示：超级用户拥有所有权限，方便技术人员或非技术人员以可视化的形式对应用数据记录实现增删改查的操作。</p>
+在 CMD 命令行工具启动 BookStore 项目，然后在浏览器地址栏输入 127.0.0.1:8000/admin 访问，输入刚刚创建的超级用户名以及密码进行登录。如下所示登录成功：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="admin超级用户登录" src="../uploads/allimg/200408/9-20040Q1241DT_2.png" /><br />
+	图2：Admin后台超级用户登录</div>
+<h2>
+	2. 将Model注册到管理后台</h2>
+<h4>
+	1)在admin.py文件中声明</h4>
+那么如何把自定义的数据表 Model 注册到管理后台呢？也就是说要把 Model 显示在 Admin 后台管理系统界面，需要做哪些操作呢？当我们使用 startapp 命令创建 index 应用的时候会自动创建 admin.py 文件，想要把自定义的 Model 注册到管理后台，就需要在 admin.py&nbsp;文件中进行声明，添加如下代码：<br />
+<pre class="python">
+from django.contrib import admin #Django自动在admin.py文件中导入
+from index.models import Book, Author,UserInfo #这个需要我们自己导入相应的模型类（数据表）
+admin.site.register([Book,Author,UserInfo])
+</pre>
+通过上述代码，我们就完成了将 Model 注册到后台管理系统的操作，其实实现的过程也非常的简单，首先通过 django.contrib 的标准库引入 admin 应用，然后把 index 应用下我们自定义的三张数据表引入，最后我们调用 admin.site.register() 方法实现模型类的注册。多个模型类一起注册我们使用列表的形式来统一注册，如果是单一的模型类注册，我们可以使用以下方式即可：<br />
+<pre class="python">
+admin.site.register(Book)
+</pre>
+<br />
+至此我们就完成了数据表在 Admin后台管理系统的可视化操作，我们再次使用<code>ctrl+F5</code>刷新后台管理系统的显示页面，可以得到如下结果：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="admin后台数据表可视化" src="../uploads/allimg/200408/9-20040Q630132L_2.gif" /><br />
+	图3：admin 后台数据表可视化</div>
+<p class="tip-box">
+	提示：在图 3 中，每张数据表的名字都加上了 s ，这是 Django 自动设定的，我们可以通过相应的修改将其去掉，在后续章节我们将介绍。</p>
+<br />
+虽然看似页面简单并且没有太多的附加功能，但是对于简单的增删改操作而言已经足够使用了。我们打开其中的 UserInfos 数据表来查看，如下所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="admin后台可视化" src="../uploads/allimg/200408/9-20040Q63PHJ_2.png" /><br />
+	图4：admin后台数据表可视化<br />
+	&nbsp;</div>
+点击增加 USERI INFO 按钮会得到如下页面，在此页面我们可以进行数据的添加、编辑、保存操作：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="admin后台数据表可视化" src="../uploads/allimg/200408/9-20040QAK6150_2.png" /><br />
+	图5：admin后台数据表可视化<br />
+	&nbsp;</div>
+上图中提到的问题，其实只需要我们在自定义的模型类中添加上一个字段选项 verbose_name 就可以修改了，小伙伴们可以自己修改一下。
+<h2>
+	3.&nbsp; django_admin_log数据表</h2>
+Admin 应用在数据库迁移的过程中只创建了 django_admin_log 一张表 ，用于记录通过管理后台完成的对 Model 的增删改操作，如下所示，是数据库迁移过程中生成的所有数据表：<br />
+<pre class="info-box">
+mysql&gt; show tables;
++----------------------------+
+| Tables_in_bookstoredb      |
++----------------------------+
+| auth_group                 |
+| auth_group_permissions     |
+| auth_permission            |
+| auth_user                  |
+| auth_user_groups           |
+| auth_user_user_permissions |
+| django_admin_log           |
+| django_content_type        |
+| django_migrations          |
+| django_session             |
+| index_author               |
+| index_book                 |
+| index_userinfo             |
++----------------------------+
+13 rows in set (0.00 sec)</pre>
+我们可以使用<code>desc</code>命令查看 django_admin_log 表结构， 如下所示：<br />
+<pre class="info-box">
+mysql&gt; desc django_admin_log;
++-----------------+----------------------+------+-----+---------+----------------+
+| Field           | Type                 | Null | Key | Default | Extra          |
++-----------------+----------------------+------+-----+---------+----------------+
+| id              | int(11)              | NO   | PRI | NULL    | auto_increment |
+| action_time     | datetime(6)          | NO   |     | NULL    |                |
+| object_id       | longtext             | YES  |     | NULL    |                |
+| object_repr     | varchar(200)         | NO   |     | NULL    |                |
+| action_flag     | smallint(5) unsigned | NO   |     | NULL    |                |
+| change_message  | longtext             | NO   |     | NULL    |                |
+| content_type_id | int(11)              | YES  | MUL | NULL    |                |
+| user_id         | int(11)              | NO   | MUL | NULL    |                |
++-----------------+----------------------+------+-----+---------+----------------+
+8 rows in set (0.01 sec)</pre>
+这些字段含义只做简单了解即可，如下所示：
+<ul>
+	<li>
+		id 是自增的主键字；</li>
+	<li>
+		action_time：datetime 类型，保存操作发生的日期和时间；</li>
+	<li>
+		object_id：longtext 类型，保存修改对象的主键；</li>
+	<li>
+		object_repr：varchar 类型，保存修改后的对象执行 repr 函数的值，repr 是 Python 的内置函数，用于将对象转换为字符串；</li>
+	<li>
+		action_flag：无符号 smallint 类型，用于记录操作类型 ADDITION（值为1，表示添加）、CHANGE（值为 2，表示更新）、DELETION（值为 3，表示删除）；</li>
+	<li>
+		change_message：longtext 类型，用于保存修改对象的详细描述；</li>
+	<li>
+		content_type_id：int 类型，外键关联 ContentType 对象；</li>
+</ul>
+<ul>
+	<li>
+		user_id：int类型，外键关键User对象（默认值），记录执行操作的用户。</li>
+</ul>
+<br />
+本节我们在 Admin 后台管理系统实现了数据表的可视化，通过这个功能我们就可以对数据表进行管理，极大的方便了 Web 站点的管理人员。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="299_3.html" title="C++文本文件的读取和写入" target="_blank">C++文本文件的读取和写入</a></li>
+<li><a href="vip_2036_2.html" title="大端小端以及判别方式" target="_blank">大端小端以及判别方式</a></li>
+<li><a href="3606_2.html" title="汇编语言DIV指令：无符号除法" target="_blank">汇编语言DIV指令：无符号除法</a></li>
+<li><a href="vip_7352_2.html" title="Go语言Telnet回音服务器——TCP服务器的基本结构" target="_blank">Go语言Telnet回音服务器——TCP服务器的基本结构</a></li>
+<li><a href="vip_8332_2.html" title="结合实例，彻底搞懂数据库设计的三大范式" target="_blank">结合实例，彻底搞懂数据库设计的三大范式</a></li>
+<li><a href="../jsp2/include_2.html" title="JSP include动作" target="_blank">JSP include动作</a></li>
+<li><a href="../mongodb2/drop-database_2.html" title="MongoDB删除数据库" target="_blank">MongoDB删除数据库</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7523;
+window.arcId = "ed83KuJDX71l0Q/PGLWyFGVDeUu+oS5c6g+tiouGHxB5/HdSozzEl8ZjBqo";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

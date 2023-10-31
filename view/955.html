@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Shell（Bash）变量及定义规范</title>
+<meta name="description" content="什么是变量呢？从字面上来看就是可以变的量。举个例子，我们小时候都做过数学的应用题，经常定义 x 的值是某个数，如果换了一道题，还是定义 x 的值，但是 x 的值就不和第一道题" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Shell（Bash）变量及定义规范</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">什么是变量呢？从字面上来看就是可以变的量。举个例子，我们小时候都做过数学的应用题，经常定义 x 的值是某个数，如果换了一道题，还是定义 x 的值，但是 x 的值就不和第一道题相同了，这个 x 就是变量。<br />
+<br />
+变量是计算机内存的单元，其中存放的值可以改变。当 Shell 脚本需要保存一些信息时，如一个文件名或一个数字，就把它存放在一个变量中。<br />
+<br />
+每个变量都有一个名字，所以很容易引用它。变量可以定制用户本身的工作环境。使用变量可以保存有用信息，使系统获知用户相关设置。变量也可以用于保存暂时信息。<br />
+<br />
+那么，应该如何设置变量呢？其实非常简单，命令如下：<br />
+<p class="info-box">
+[root@localhost ~]# name=sc<br />
+#定义变量name的值<br />
+[root@localhost ~]# echo $name、<br />
+sc<br />
+#查询变量的值</p>
+在定义变量时，有一些规则需要遵守。<br />
+<br />
+1) 变量名可以由字母、数字和下画线组成，但是不能以数字开头。如果变量名是&quot;2name&quot;，则是错误的。<br />
+<br />
+2) 在 Bash 中，变量的默认类型都是字符串型，如果要进行数值运算，则必须指定变量类型为数值型。比如：
+<p class="info-box">
+[root@localhost ~]# aa=1+2<br />
+[root@localhost ~]# echo $aa<br />
+1+2</p>
+看到了吧，变量 aa 的值不是&quot;3&quot;，而是&quot;1+2&quot;。在 Bash 中，变量类型是字符串型，所以认为&quot;1+2&quot;只是一个字符串，而不会进数值运算（数值运算方法会在后续章节中介绍）。<br />
+<br />
+3) 变量用等号&quot;=&quot;连接值，&quot;=&quot;左右两侧不能有空格。这是 Shell 语言特有的格式要求。在绝大多数的其他语言中，&quot;=&quot;左右两侧是可以加入空格的。但是在 Shell 中命令的执行格式是&quot;命令 [选项] [参数]&quot;，如果在&quot;=&quot;左右两侧加入空格，那么 Linux 会误以为这是系统命令，是会报错的。<br />
+<br />
+4) 变量值中如果有空格，则需要使用单引号或双引号包含，如 test=&quot;hello world!&quot;。双引号括起来的内容&quot;$&quot;和反引号者都拥有特殊含义，而单引号括起来的内容都是普通字符。<br />
+<br />
+5) 在变量值中，可以使用转义符&quot;\&quot;。<br />
+<br />
+6) 如果需要増加变量值，那么可以进行变量叠加。 例如：<br />
+<p class="info-box">
+[root@localhost ~]#test=123<br />
+[root@localhost ~]#test=&quot;$test&quot;<br />
+456<br />
+[root@localhost ~]# echo $test<br />
+123456<br />
+#叠加变量test，变量值变成了123456<br />
+[root@localhost ~]#test=${test}789<br />
+[root@localhost ~]# echo $test<br />
+123456789<br />
+#再叠加变量test，变量值变成了123456789</p>
+变量叠加可以使用两种格式：&quot;$变量名&quot;或 ${变量名}。<br />
+<br />
+7) 如果要把命令的执行结果作为变量值赋予变量，则需要使用反引号或 $() 包含命令。例如：
+<p class="info-box">
+[root@localhost ~]# test=$(date)<br />
+[root@localhost ~]# echo Stest<br />
+2013年10月21日 星期一20:27:50 CST</p>
+<br />
+8) 环境变量名建议大写，便于区分。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="501.html" title="C语言求完数（完全数）（详解版）" target="_blank">C语言求完数（完全数）（详解版）</a></li>
+<li><a href="934.html" title="Linux echo详解：输出命令" target="_blank">Linux echo详解：输出命令</a></li>
+<li><a href="vip_8325.html" title="MySql Command Line Client闪退原因及解决方案" target="_blank">MySql Command Line Client闪退原因及解决方案</a></li>
+<li><a href="../jstl/sql-param.html" title="&lt;sql:param&gt;标签" target="_blank">&lt;sql:param&gt;标签</a></li>
+<li><a href="../jstl/fn-startswith-endswith.html" title="fn:startsWith()和fn:endsWith()函数" target="_blank">fn:startsWith()和fn:endsWith()函数</a></li>
+<li><a href="vip_9651.html" title="Qt控件和事件" target="_blank">Qt控件和事件</a></li>
+<li><a href="l0324ke.html" title="《Web前端设计从入门到实战（第2版）》PDF下载（高清完整版）" target="_blank">《Web前端设计从入门到实战（第2版）》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 955;
+window.arcId = "1408QdhI+fpjWpO8NMCu8alWS21acNHhLeB8INhaoizsHSCH7qkGn6CnPA";
+window.typeidChain = "210|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

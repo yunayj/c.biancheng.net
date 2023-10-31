@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Spring MVC文件下载</title>
+<meta name="description" content="顾名思义，文件下载就是将服务器中的文件下载到本地，下面主要介绍 Spring MVC 文件下载的实现方法和实现过程。 文件下载的实现方法 文件下载有以下两种实现方法： 通过超链接实现" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="../view/niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Spring MVC文件下载</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">顾名思义，文件下载就是将服务器中的文件下载到本地，下面主要介绍 Spring MVC 文件下载的实现方法和实现过程。
+<h2>
+	文件下载的实现方法</h2>
+文件下载有以下两种实现方法：
+<ul>
+	<li>
+		通过超链接实现下载：实现简单，但暴露了下载文件的真实位置，并且只能下载 Web 应用程序所在目录下的文件，WEB-INF 目录除外。</li>
+	<li>
+		利用程序编码实现下载：增强安全访问控制，可以下载除 Web 应用程序所在目录以外的文件，也可以将文件保存到数据库中。</li>
+</ul>
+<br />
+利用程序编码实现下载需要设置以下两个报头：<br />
+<ol>
+	<li>
+		Web 服务器需要告诉浏览器其所输出内容的类型不是普通文本文件或 HTML 文件，而是一个要保存到本地的下载文件，这需要设置 Content-Type 的值为 application/x-msdownload。</li>
+	<li>
+		Web 服务器希望浏览器不直接处理相应的实体内容，而是由用户选择将相应的实体内容保存到一个文件中，这需要设置 Content-Disposition 报头。</li>
+</ol>
+<br />
+该报头指定了接收程序处理数据内容的方式，在 HTTP 应用中只有 attachment 是标准方式，attachment 表示要求用户干预。在 attachment 后面还可以指定 filename 参数，该参数是服务器建议浏览器将实体内容保存到文件中的文件名称。<br />
+<br />
+设置报头的示例如下：
+<p class="info-box">
+	response.setHeader(&quot;Content-Type&quot;, &quot;application/x-msdownload&quot;);<br />
+	response.setHeader(&quot;Content-Disposition&quot;, &quot;attachment;filename=&quot;+filename);</p>
+<br />
+程序编码文件下载可分为两个步骤：
+<ol>
+	<li>
+		在客户端使用一个文件下载超链接，链接指向后台下载文件的方法以及文件名。</li>
+	<li>
+		在控制器类中，提供文件下载方法进行下载。</li>
+</ol>
+<h2>
+	示例</h2>
+下面继续通过 springMVCDemo2 应用讲述利用程序实现下载的过程，要求从《<a href="file-upload_2.html" target="_blank">Spring MVC文件上传</a>》上传文件的目录（workspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\springMVCDemo2\uploadfiles）中下载文件，具体开发步骤如下。<br />
+<h4>
+	1. 编写控制器类</h4>
+首先编写控制器类 FileDownController，在该类中有 3 个方法，即 show、down 和 toUTF8String。其中，show 方法获取被下载的文件名称；down 方法执行下载功能；toUTF8String 方法是下载保存时中文文件名的字符编码转换方法。<br />
+<br />
+FileDownController 类的代码如下：
+<pre class="java">
+package controller;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+@Controller
+public class FileDownController {
+    // 得到一个用来记录日志的对象，在打印时标记打印的是哪个类的信息
+    private static final Log logger = LogFactory
+            .getLog(FileDownController.class);
+
+    /**
+     * 显示要下载的文件
+     */
+    @RequestMapping(&quot;showDownFiles&quot;)
+    public String show(HttpServletRequest request, Model model) {
+        // 从 workspace\.metadata\.plugins\org.eclipse.wst.server.core\
+        // tmp0\wtpwebapps\springMVCDemo11\下载
+        String realpath = request.getServletContext()
+                .getRealPath(&quot;uploadfiles&quot;);
+        File dir = new File(realpath);
+        File files[] = dir.listFiles();
+        // 获取该目录下的所有文件名
+        ArrayList&lt;String&gt; fileName = new ArrayList&lt;String&gt;();
+        for (int i = 0; i &lt; files.length; i++) {
+            fileName.add(files[i].getName());
+        }
+        model.addAttribute(&quot;files&quot;, fileName);
+        return &quot;showDownFiles&quot;;
+    }
+
+    /**
+     * 执行下载
+     */
+    @RequestMapping(&quot;down&quot;)
+    public String down(@RequestParam String filename,
+            HttpServletRequest request, HttpServletResponse response) {
+        String aFilePath = null; // 要下载的文件路径
+        FileInputStream in = null; // 输入流
+        ServletOutputStream out = null; // 输出流
+        try {
+            // 从workspace\.metadata\.plugins\org.eclipse.wst.server.core\
+            // tmp0\wtpwebapps下载
+            aFilePath = request.getServletContext().getRealPath(&quot;uploadfiles&quot;);
+            // 设置下载文件使用的报头
+            response.setHeader(&quot;Content-Type&quot;, &quot;application/x-msdownload&quot;);
+            response.setHeader(&quot;Content-Disposition&quot;, &quot;attachment; filename=&quot;
+                    + toUTF8String(filename));
+            // 读入文件
+            in = new FileInputStream(aFilePath + &quot;\\&quot; + filename);
+            // 得到响应对象的输出流，用于向客户端输出二进制数据
+            out = response.getOutputStream();
+            out.flush();
+            int aRead = 0;
+            byte b[] = new byte[1024];
+            while ((aRead = in.read(b)) != -1 &amp; in != null) {
+                out.write(b, 0, aRead);
+            }
+            out.flush();
+            in.close();
+            out.close();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        logger.info(&quot;下载成功&quot;);
+        return null;
+    }
+
+    /**
+     * 下载保存时中文文件名的字符编码转换方法
+     */
+    public String toUTF8String(String str) {
+        StringBuffer sb = new StringBuffer();
+        int len = str.length();
+        for (int i = 0; i &lt; len; i++) {
+            // 取出字符中的每个字符
+            char c = str.charAt(i);
+            // Unicode码值为0~255时，不做处理
+            if (c &gt;= 0 &amp;&amp; c &lt;= 255) {
+                sb.append(c);
+            } else { // 转换 UTF-8 编码
+                byte b[];
+                try {
+                    b = Character.toString(c).getBytes(&quot;UTF-8&quot;);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                    b = null;
+                }
+                // 转换为%HH的字符串形式
+                for (int j = 0; j &lt; b.length; j++) {
+                    int k = b[j];
+                    if (k &lt; 0) {
+                        k &amp;= 255;
+                    }
+                    sb.append(&quot;%&quot; + Integer.toHexString(k).toUpperCase());
+                }
+            }
+        }
+        return sb.toString();
+    }
+}</pre>
+<h4>
+	2. 创建文件列表页面</h4>
+下载文件示例需要一个显示被下载文件的 JSP 页面 showDownFiles.jsp，代码如下：
+<pre class="xml">
+&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=UTF-8&quot;
+    pageEncoding=&quot;UTF-8&quot;%&gt;
+&lt;%@ taglib uri=&quot;http://java.sun.com/jsp/jstl/core&quot; prefix=&quot;c&quot;%&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot;&gt;
+&lt;title&gt;Insert title here&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;table&gt;
+        &lt;tr&gt;
+            &lt;td&gt;被下载的文件名&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;!--遍历 model中的 files--&gt;
+        &lt;c:forEach items=&quot;${files}&quot; var=&quot;filename&quot;&gt;
+            &lt;tr&gt;
+                &lt;td&gt;
+                    &lt;a href=&quot;${pageContext.request.contextPath }/down?filename=${filename}&quot;&gt;${filename}&lt;/a&gt;
+                &lt;/td&gt;
+            &lt;/tr&gt;
+        &lt;/c:forEach&gt;
+    &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+<h4>
+	3. 测试下载功能</h4>
+访问地址：http://localhost:8080/springmvcDemo2/showDownFiles，运行结果如下。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="showDownFiles.jsp页面" src="../uploads/allimg/210705/153K44c5-0_2.png" /><br />
+	下载文件列表页面</div>
+<br />
+单击上图中的超链接即可下载文件。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="../view/niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="../view/tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="../view/unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="../view/66_3.html" title="Go语言实例化结构体——为结构体分配内存并初始化" target="_blank">Go语言实例化结构体——为结构体分配内存并初始化</a></li>
+<li><a href="../view/113_2.html" title="Go语言reflect.ValueOf()和reflect.Value（通过反射获取值信息）" target="_blank">Go语言reflect.ValueOf()和reflect.Value（通过反射获取值信息）</a></li>
+<li><a href="../view/494_2.html" title="C语言九九乘法表（五种输出形式）" target="_blank">C语言九九乘法表（五种输出形式）</a></li>
+<li><a href="../view/vip_2242_2.html" title="C++成员对象和封闭类详解" target="_blank">C++成员对象和封闭类详解</a></li>
+<li><a href="../mybatis/annotation_2.html" title="MyBatis注解（3种类型）" target="_blank">MyBatis注解（3种类型）</a></li>
+<li><a href="../view/9384_2.html" title="HTML标题标签&lt;h1&gt;到&lt;h6&gt;" target="_blank">HTML标题标签&lt;h1&gt;到&lt;h6&gt;</a></li>
+<li><a href="../view/70jbvzm_2.html" title="Redis GET命令的用法" target="_blank">Redis GET命令的用法</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8723;
+window.arcId = "b9995exYkSzlbXfWqIW+f8dSTErVsfmuJzRANyio/7sC6wl2vG90tm6/Nks";
+window.typeidChain = "456|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="../view/8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="../view/8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="../view/8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="../view/9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="../view/8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

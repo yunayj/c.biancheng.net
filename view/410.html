@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++强制类型转换运算符（static_cast、reinterpret_cast、const_cast和dynamic_cast）</title>
+<meta name="description" content="11.1 static_cast、reinterpret_cast、const_cast 和 dynamic_cast 将类型名作为强制类型转换运算符的做法是C语言的老式做法，C++ 为保持兼容而予以保留。 C++ 引入了四种功能不同的强制类型转换运算" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++强制类型转换运算符（static_cast、reinterpret_cast、const_cast和dynamic_cast）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">将类型名作为强制类型转换运算符的做法是C语言的老式做法，<a href='../cplus/cplus.html' target='_blank'>C++</a> 为保持兼容而予以保留。<br />
+<br />
+C++ 引入了四种功能不同的强制类型转换运算符以进行强制类型转换：static_cast、reinterpret_cast、const_cast 和 dynamic_cast。<br />
+<br />
+强制类型转换是有一定风险的，有的转换并不一定安全，如把整型数值转换成<a href='../c/80/80.html' target='_blank'>指针</a>，把基类指针转换成派生类指针，把一种函数指针转换成另一种函数指针，把常量指针转换成非常量指针等。C++ 引入新的强制类型转换机制，主要是为了克服C语言强制类型转换的以下三个缺点。<br />
+<br />
+1) 没有从形式上体现转换功能和风险的不同。<br />
+<br />
+例如，将 int 强制转换成 double 是没有风险的，而将常量指针转换成非常量指针，将基类指针转换成派生类指针都是高风险的，而且后两者带来的风险不同（即可能引发不同种类的错误），C语言的强制类型转换形式对这些不同并不加以区分。<br />
+<br />
+2) 将多态基类指针转换成派生类指针时不检查安全性，即无法判断转换后的指针是否确实指向一个派生类对象。<br />
+<br />
+3) 难以在程序中寻找到底什么地方进行了强制类型转换。<br />
+<br />
+强制类型转换是引发程序运行时错误的一个原因，因此在程序出错时，可能就会想到是不是有哪些强制类型转换出了问题。<br />
+<br />
+如果采用C语言的老式做法，要在程序中找出所有进行了强制类型转换的地方，显然是很麻烦的，因为这些转换没有统一的格式。<br />
+<br />
+而用 C++ 的方式，则只需要查找<code>_cast</code>字符串就可以了。甚至可以根据错误的类型，有针对性地专门查找某一种强制类型转换。例如，怀疑一个错误可能是由于使用了 reinterpret_cast 导致的，就可以只查找<code>reinterpret_cast</code>字符串。<br />
+<br />
+C++ 强制类型转换运算符的用法如下：
+<p class="info-box">
+强制类型转换运算符 &lt;要转换到的类型&gt; (待转换的表达式)</p>
+例如：
+<p class="info-box">
+double d = static_cast &lt;double&gt; (3*5);&nbsp; //将 3*5 的值转换成实数</p>
+下面分别介绍四种强制类型转换运算符。
+<h2>
+static_cast</h2>
+static_cast 用于进行比较&ldquo;自然&rdquo;和低风险的转换，如整型和浮点型、字符型之间的互相转换。另外，如果对象所属的类重载了强制类型转换运算符 T（如 T 是 int、int* 或其他类型名），则 static_cast 也能用来进行对象到 T 类型的转换。<br />
+<br />
+static_cast 不能用于在不同类型的指针之间互相转换，也不能用于整型和指针之间的互相转换，当然也不能用于不同类型的引用之间的转换。因为这些属于风险比较高的转换。<br />
+<br />
+static_cast 用法示例如下：
+<pre class="cpp">
+#include &lt;iostream&gt;
+u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+class A
+{
+public:
+    operator int() { return 1; }
+    operator char*() { return NULL; }
+};
+int main()
+{
+    A a;
+    int n;
+    char* p = &quot;New Dragon Inn&quot;;
+    n = static_cast &lt;int&gt; (3.14);  // n 的值变为 3
+    n = static_cast &lt;int&gt; (a);  //调用 a.operator int，n 的值变为 1
+    p = static_cast &lt;char*&gt; (a);  //调用 a.operator char*，p 的值变为 NULL
+    n = static_cast &lt;int&gt; (p);  //编译错误，static_cast不能将指针转换成整型
+    p = static_cast &lt;char*&gt; (n);  //编译错误，static_cast 不能将整型转换成指针
+    return 0;
+}</pre>
+<h2>
+reinterpret_cast</h2>
+reinterpret_cast 用于进行各种不同类型的指针之间、不同类型的引用之间以及指针和能容纳指针的整数类型之间的转换。转换时，执行的是逐个比特复制的操作。<br />
+<br />
+这种转换提供了很强的灵活性，但转换的安全性只能由程序员的细心来保证了。例如，程序员执意要把一个 int* 指针、函数指针或其他类型的指针转换成 string* 类型的指针也是可以的，至于以后用转换后的指针调用 string 类的成员函数引发错误，程序员也只能自行承担查找错误的烦琐工作：（C++ 标准不允许将函数指针转换成对象指针，但有些编译器，如 Visual Studio 2010，则支持这种转换）。<br />
+<br />
+reinterpret_cast 用法示例如下：
+<pre class="cpp">
+#include &lt;iostream&gt;
+using namespace std;
+class A
+{
+public:
+    int i;
+    int j;
+    A(int n):i(n),j(n) { }
+};
+int main()
+{
+    A a(100);
+    int &amp;r = reinterpret_cast&lt;int&amp;&gt;(a); //强行让 r 引用 a
+    r = 200;  //把 a.i 变成了 200
+    cout &lt;&lt; a.i &lt;&lt; &quot;,&quot; &lt;&lt; a.j &lt;&lt; endl;  // 输出 200,100
+    int n = 300;
+    A *pa = reinterpret_cast&lt;A*&gt; ( &amp; n); //强行让 pa 指向 n
+    pa-&gt;i = 400;  // n 变成 400
+    pa-&gt;j = 500;  //此条语句不安全，很可能导致程序崩溃
+    cout &lt;&lt; n &lt;&lt; endl;  // 输出 400
+    long long la = 0x12345678abcdLL;
+    pa = reinterpret_cast&lt;A*&gt;(la); //la太长，只取低32位0x5678abcd拷贝给pa
+    unsigned int u = reinterpret_cast&lt;unsigned int&gt;(pa);//pa逐个比特拷贝到u
+    cout &lt;&lt; hex &lt;&lt; u &lt;&lt; endl;  //输出 5678abcd
+    typedef void (* PF1) (int);
+    typedef int (* PF2) (int,char *);
+    PF1 pf1;  PF2 pf2;
+    pf2 = reinterpret_cast&lt;PF2&gt;(pf1); //两个不同类型的函数指针之间可以互相转换
+}</pre>
+程序的输出结果是：<br />
+200, 100<br />
+400<br />
+5678abed<br />
+<br />
+第 19 行的代码不安全，因为在编译器看来，pa-&gt;j 的存放位置就是 n 后面的 4 个字节。 本条语句会向这 4 个字节中写入 500。但这 4 个字节不知道是用来存放什么的，贸然向其中写入可能会导致程序错误甚至崩溃。<br />
+<br />
+上面程序中的各种转换都没有实际意义，只是为了演示 reinteipret_cast 的用法而已。在编写黑客程序、病毒或反病毒程序时，也许会用到这样怪异的转换。<br />
+<br />
+reinterpret_cast体现了 C++ 语言的设计思想：用户可以做任何操作，但要为自己的行为负责。
+<h2>
+const_cast</h2>
+const_cast 运算符仅用于进行去除 const 属性的转换，它也是四个强制类型转换运算符中唯一能够去除 const 属性的运算符。<br />
+<br />
+将 const 引用转换为同类型的非 const 引用，将 const 指针转换为同类型的非 const 指针时可以使用 const_cast 运算符。例如：
+<pre class="cpp">
+const string s = &quot;Inception&quot;;
+string&amp; p = const_cast &lt;string&amp;&gt; (s);
+string* ps = const_cast &lt;string*&gt; (&amp;s);  // &amp;s 的类型是 const string*</pre>
+<h2>
+dynamic_cast</h2>
+用 reinterpret_cast 可以将多态基类（包含虚函数的基类）的指针强制转换为派生类的指针，但是这种转换不检查安全性，即不检查转换后的指针是否确实指向一个派生类对象。dynamic_cast专门用于将多态基类的指针或引用强制转换为派生类的指针或引用，而且能够检查转换的安全性。对于不安全的指针转换，转换结果返回 NULL 指针。<br />
+<br />
+dynamic_cast 是通过&ldquo;运行时类型检查&rdquo;来保证安全性的。dynamic_cast 不能用于将非多态基类的指针或引用强制转换为派生类的指针或引用&mdash;&mdash;这种转换没法保证安全性，只好用 reinterpret_cast 来完成。<br />
+<br />
+dynamic_cast 示例程序如下：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+class Base
+{  //有虚函数，因此是多态基类
+public:
+    virtual ~Base() {}
+};
+class Derived : public Base { };
+int main()
+{
+    Base b;
+    Derived d;
+    Derived* pd;
+    pd = reinterpret_cast &lt;Derived*&gt; (&amp;b);
+    if (pd == NULL)
+        //此处pd不会为 NULL。reinterpret_cast不检查安全性，总是进行转换
+        cout &lt;&lt; &quot;unsafe reinterpret_cast&quot; &lt;&lt; endl; //不会执行
+    pd = dynamic_cast &lt;Derived*&gt; (&amp;b);
+    if (pd == NULL)  //结果会是NULL，因为 &amp;b 不指向派生类对象，此转换不安全
+        cout &lt;&lt; &quot;unsafe dynamic_cast1&quot; &lt;&lt; endl;  //会执行
+    pd = dynamic_cast &lt;Derived*&gt; (&amp;d);  //安全的转换
+    if (pd == NULL)  //此处 pd 不会为 NULL
+        cout &lt;&lt; &quot;unsafe dynamic_cast2&quot; &lt;&lt; endl;  //不会执行
+    return 0;
+}</pre>
+程序的输出结果是：<br />
+unsafe dynamic_cast1<br />
+<br />
+第 20 行，通过判断 pd 的值是否为 NULL，就能知道第 19 行进行的转换是否是安全的。第 23 行同理。<br />
+<br />
+如果上面的程序中出现了下面的语句：
+<p class="info-box">
+Derived &amp; r = dynamic_cast &lt;Derived &amp;&gt; (b);</p>
+那该如何判断该转换是否安全呢？不存在空引用，因此不能通过返回值来判断转换是否安全。C++ 的解决办法是：dynamic_cast 在进行引用的强制转换时，如果发现转换不安全，就会拋出一个异常，通过处理异常，就能发现不安全的转换。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="3.html" title="哪些项目使用Go语言开发？" target="_blank">哪些项目使用Go语言开发？</a></li>
+<li><a href="379.html" title="gets和fgets函数及其区别，C语言gets和fgets函数详解" target="_blank">gets和fgets函数及其区别，C语言gets和fgets函数详解</a></li>
+<li><a href="1766.html" title="在C语言中使用英文字符" target="_blank">在C语言中使用英文字符</a></li>
+<li><a href="vip_7336.html" title="Go语言实现有限状态机（FSM）" target="_blank">Go语言实现有限状态机（FSM）</a></li>
+<li><a href="vip_7659.html" title="如何在Vim中执行Linux命令？" target="_blank">如何在Vim中执行Linux命令？</a></li>
+<li><a href="jlj3o5k.html" title="系统调用（System Call）是怎么回事？" target="_blank">系统调用（System Call）是怎么回事？</a></li>
+<li><a href="3l30dye.html" title="Vue v-cloak命令的用法" target="_blank">Vue v-cloak命令的用法</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 410;
+window.arcId = "6e4cmFe044eL2Azion1NnQhPQGuPCKdEOUS5KoWJvswKKzpC2mcU5bTn8Q";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++ set容器用法详解</title>
+<meta name="description" content="set 是 C++ 标准库中提供的一个关联式容器，以红黑树作为其底层数据结构，因此插入数据时可以自动排序。同时，在排好序的红黑树中查找数据效率也非常高。 为了能在红黑树中存取数" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++ set容器用法详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">set 是 C++ 标准库中提供的一个关联式容器，以红黑树作为其底层数据结构，因此插入数据时可以自动排序。同时，在排好序的红黑树中查找数据效率也非常高。<br />
+<br />
+为了能在红黑树中存取数据，set 中的元素也分为键值和实值，但这两者之间不存在对应关系，set 中各个元素的键值和实值是相同的。<br />
+<br />
+为了满足底层数据结构红黑树的要求，set 容器不得不将其元素分为键值和实值两部分，一定程度上导致了内存空间的浪费。因此选择使用 set 时，尽量使用那些占内存小的数据类型。<br />
+<h2>
+set容器的构造</h2>
+在 C++ 标准库中，set 容器的定义如下：
+<pre class="info-box">
+template &lt; class T, // set::key_type/value_type
+           class Compare = less&lt;T&gt;, // set::key_compare/value_compare
+           class Alloc = allocator&lt;T&gt; // set::allocator_type
+         &gt;class set;</pre>
+在 set 容器中，键值和实值是一样的，它们的类型都是类模板实例化时的类型参数 T。<br />
+<br />
+创建 set 容器的方法，常用的有以下 5 种。<br />
+<br />
+1) 创建空的 set 容器。比如：
+<pre class="cpp" shownum="false">
+std::set&lt;std::string&gt; myset;</pre>
+如果程序中已经默认指定了 std 命令空间，这里可以省略<code>std::</code>。<br />
+<br />
+由此就创建好了一个 set 容器，该容器采用默认的 std::less&lt;T&gt; 排序规则，会对存储的 string 类型元素做升序排序。<br />
+<blockquote>
+<p>
+注意，由于 set 容器支持随时向内部添加新的元素，因此创建空 set 容器的方法是经常使用的。</p>
+</blockquote>
+<br />
+2) 除此之外，set 类模板还支持在创建 set 容器的同时，对其进行初始化。例如：
+<pre class="cpp" shownum="false">
+std::set&lt;std::string&gt; myset{&quot;http://c.biancheng.net/java/&quot;,
+                            &quot;http://c.biancheng.net/stl/&quot;,
+                            &quot;http://c.biancheng.net/python/&quot;};</pre>
+由此即创建好了包含 3 个 string 元素的 myset 容器。由于其采用默认的 std::less&lt;T&gt; 规则，因此其内部存储 string 元素的顺序如下所示：
+<p class="info-box">
+&quot;http://c.biancheng.net/java/&quot;<br />
+&quot;http://c.biancheng.net/python/&quot;<br />
+&quot;http://c.biancheng.net/stl/&quot;</p>
+<br />
+3) set 类模板中还提供了拷贝（复制）构造函数，可以实现在创建新 set 容器的同时，将已有 set 容器中存储的所有元素全部复制到新 set 容器中。<br />
+<br />
+例如，在第 2 种方式创建的 myset 容器的基础上，执行如下代码：
+<pre class="cpp" shownum="false">
+std::set&lt;std::string&gt; copyset(myset);
+//等同于
+//std::set&lt;std::string&gt; copyset = myset</pre>
+该行代码在创建 copyset 容器的基础上，还会将 myset 容器中存储的所有元素，全部复制给 copyset 容器一份。<br />
+<br />
+另外，C++ 11 标准还为 set 类模板新增了移动构造函数，其功能是实现创建新 set 容器的同时，利用临时的 set 容器为其初始化。比如：
+<pre class="cpp" shownum="false">
+set&lt;string&gt; retSet() {
+    std::set&lt;std::string&gt; myset{ &quot;http://c.biancheng.net/java/&quot;,
+                            &quot;http://c.biancheng.net/stl/&quot;,
+                            &quot;http://c.biancheng.net/python/&quot; };
+    return myset;
+}
+std::set&lt;std::string&gt; copyset(retSet());
+//或者
+//std::set&lt;std::string&gt; copyset = retSet();</pre>
+注意，由于 retSet() 函数的返回值是一个临时 set 容器，因此在初始化 copyset 容器时，其内部调用的是 set 类模板中的移动构造函数，而非拷贝构造函数。<br />
+<br />
+显然，无论是调用复制构造函数还是调用拷贝构造函数，都必须保证这 2 个容器的类型完全一致。<br />
+<br />
+4) 在第 3 种方式的基础上，set 类模板还支持取已有 set 容器中的部分元素，来初始化新 set 容器。例如：
+<pre class="cpp" shownum="false">
+std::set&lt;std::string&gt; myset{ &quot;http://c.biancheng.net/java/&quot;,
+                    &quot;http://c.biancheng.net/stl/&quot;,
+                    &quot;http://c.biancheng.net/python/&quot; };
+std::set&lt;std::string&gt; copyset(++myset.begin(), myset.end());</pre>
+由此初始化的 copyset 容器，其内部仅存有如下 2 个 string 字符串：
+<pre class="info-box">
+&quot;http://c.biancheng.net/python/&quot;
+&quot;http://c.biancheng.net/stl/&quot;</pre>
+<br />
+5) 以上几种方式创建的 set 容器，都采用了默认的<code>std::less&lt;T&gt;</code>规则。其实，借助 set 类模板定义中第 2 个参数，我们完全可以手动修改 set 容器中的排序规则。比如：
+<pre class="cpp" shownum="false">
+std::set&lt;std::string,std::greater&lt;string&gt; &gt; myset{
+    &quot;http://c.biancheng.net/java/&quot;,
+    &quot;http://c.biancheng.net/stl/&quot;,
+    &quot;http://c.biancheng.net/python/&quot;};</pre>
+通过选用 std::greater&lt;string&gt; 降序规则，myset 容器中元素的存储顺序为:
+<p class="info-box">
+&quot;http://c.biancheng.net/stl/&quot;<br />
+&quot;http://c.biancheng.net/python/&quot;<br />
+&quot;http://c.biancheng.net/java/&quot;</p>
+<br />
+以下是一个完整的 C++ 实例，包含上述 5 种创建 set 容器的方法：<br />
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;set&gt;
+#include &lt;string&gt;
+
+// retSet函数应该在main函数之外定义
+std::set&lt;std::string&gt; retSet() {
+    return std::set&lt;std::string&gt;{
+        &quot;http://c.biancheng.net/java/&quot;,
+            &quot;http://c.biancheng.net/stl/&quot;,
+            &quot;http://c.biancheng.net/python/&quot;
+    };
+}
+
+int main() {
+    // 1. 创建空的 set 容器
+    std::set&lt;std::string&gt; emptySet;
+
+    // 2. 初始化 set 容器
+    std::set&lt;std::string&gt; myset{
+        &quot;http://c.biancheng.net/java/&quot;,
+        &quot;http://c.biancheng.net/stl/&quot;,
+        &quot;http://c.biancheng.net/python/&quot;
+    };
+    for (const auto&amp; url : myset) {
+        std::cout &lt;&lt; url &lt;&lt; std::endl;
+    }
+    std::cout &lt;&lt; &quot;--------------------&quot; &lt;&lt; std::endl;
+
+    // 3. 拷贝构造函数和移动构造函数
+    std::set&lt;std::string&gt; copyset1(myset);
+    for (const auto&amp; url : copyset1) {
+        std::cout &lt;&lt; url &lt;&lt; std::endl;
+    }
+    std::cout &lt;&lt; &quot;--------------------&quot; &lt;&lt; std::endl;
+
+    std::set&lt;std::string&gt; copyset2(retSet());
+    for (const auto&amp; url : copyset2) {
+        std::cout &lt;&lt; url &lt;&lt; std::endl;
+    }
+    std::cout &lt;&lt; &quot;--------------------&quot; &lt;&lt; std::endl;
+
+    // 4. 使用部分已有 set 容器的元素初始化新 set 容器
+    std::set&lt;std::string&gt; partialCopyset(++myset.begin(), myset.end());
+    for (const auto&amp; url : partialCopyset) {
+        std::cout &lt;&lt; url &lt;&lt; std::endl;
+    }
+    std::cout &lt;&lt; &quot;--------------------&quot; &lt;&lt; std::endl;
+
+    // 5. 手动修改 set 容器的排序规则
+    std::set&lt;std::string, std::greater&lt;std::string&gt;&gt; customOrderSet{
+        &quot;http://c.biancheng.net/java/&quot;,
+        &quot;http://c.biancheng.net/stl/&quot;,
+        &quot;http://c.biancheng.net/python/&quot;
+    };
+    for (const auto&amp; url : customOrderSet) {
+        std::cout &lt;&lt; url &lt;&lt; std::endl;
+    }
+    std::cout &lt;&lt; &quot;--------------------&quot; &lt;&lt; std::endl;
+
+    return 0;
+}</pre>
+<h2>
+set容器的迭代器</h2>
+正如前面已经提到过的，set 容器中的元素虽然也包含键值和实值，但是这两个值是相同的。因此，使用迭代器访问 set 容器的元素时，与 map 容器的迭代器有两个不同地方：<br />
+<ul>
+<li>
+使用解引用运算符&ldquo;*&rdquo;取值，不用 first 和 second。</li>
+<li>
+所有迭代器都是常量迭代器，不能用来修改所指元素。</li>
+</ul>
+<br />
+因为键值和实值相同，所以在 set 元素中区分键值和实值就没有任何意义，因此也就不必使用 first 和 second 成员了。<br />
+<br />
+以下是一个 set 容器的完整 C++ 实例，演示了如何使用迭代器遍历容器并访问元素：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;set&gt;
+
+int main() {
+    // 初始化 set 容器
+    std::set&lt;int&gt; numbers{3, 1, 4, 1, 5, 9, 2, 6, 5};
+
+    // 使用迭代器遍历 set 容器
+    for (std::set&lt;int&gt;::iterator it = numbers.begin(); it != numbers.end(); ++it) {
+        std::cout &lt;&lt; *it &lt;&lt; &quot; &quot;;  // 使用解引用运算符&ldquo;*&rdquo;来访问元素值
+    }
+    std::cout &lt;&lt; std::endl;
+
+    return 0;
+}</pre>
+<br />
+另外，也是因为键值和实值相同，所以也不允许通过迭代器修改实值。因为修改实值，就意味着要修改键值，而修改键值则必然导致红黑树重新排序。如果程序中存在大量修改键值的操作，那么必将严重影响程序的效率。因此，set 容器禁止修改其元素的值。<br />
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;set&gt;
+
+int main() {
+    // 初始化 set 容器
+    std::set&lt;int&gt; numbers{ 3, 1, 4, 1, 5, 9, 2, 6, 5 };
+
+    for (std::set&lt;int&gt;::iterator it = numbers.begin(); it != numbers.end(); ++it) {
+        *it = *it * 2;  // 错误，尝试修改元素的值
+    }
+
+    return 0;
+}</pre>
+<h2>
+set容器的基本操作</h2>
+set 容器的基本操作包括数据的增、删、查，以及判断容器是否为空、求元素个数、交换两个容器的内容、求指向容器头尾的迭代器等。<br />
+<br />
+下表列出了 set 容器提供的常用成员方法以及各自的功能。<br />
+<br />
+<table>
+<caption>
+表 1 C++ set 容器常用成员方法</caption>
+<tbody>
+<tr>
+<th>
+成员方法</th>
+<th>
+功能</th>
+</tr>
+<tr>
+<td>
+begin()</td>
+<td>
+返回指向容器中第一个（注意，是已排好序的第一个）元素的双向迭代器。如果 set 容器用 const 限定，则该方法返回的是 const 类型的双向迭代器。</td>
+</tr>
+<tr>
+<td>
+end()</td>
+<td>
+返回指向容器最后一个元素（注意，是已排好序的最后一个）所在位置后一个位置的双向迭代器，通常和 begin() 结合使用。如果 set 容器用 const 限定，则该方法返回的是 const 类型的双向迭代器。</td>
+</tr>
+<tr>
+<td>
+rbegin()</td>
+<td>
+返回指向最后一个（注意，是已排好序的最后一个）元素的反向双向迭代器。如果 set 容器用 const 限定，则该方法返回的是 const 类型的反向双向迭代器。</td>
+</tr>
+<tr>
+<td>
+rend()</td>
+<td>
+返回指向第一个（注意，是已排好序的第一个）元素所在位置前一个位置的反向双向迭代器。如果 set 容器用 const 限定，则该方法返回的是 const 类型的反向双向迭代器。</td>
+</tr>
+<tr>
+<td>
+cbegin()</td>
+<td>
+和 begin() 功能相同，只不过在其基础上，增加了 const 属性，不能用于修改容器内存储的元素值。</td>
+</tr>
+<tr>
+<td>
+cend()</td>
+<td>
+和 end() 功能相同，只不过在其基础上，增加了 const 属性，不能用于修改容器内存储的元素值。</td>
+</tr>
+<tr>
+<td>
+crbegin()</td>
+<td>
+和 rbegin() 功能相同，只不过在其基础上，增加了 const 属性，不能用于修改容器内存储的元素值。</td>
+</tr>
+<tr>
+<td>
+crend()</td>
+<td>
+和 rend() 功能相同，只不过在其基础上，增加了 const 属性，不能用于修改容器内存储的元素值。</td>
+</tr>
+<tr>
+<td>
+find(val)</td>
+<td>
+在 set 容器中查找值为 val 的元素，如果成功找到，则返回指向该元素的双向迭代器；反之，则返回和 end() 方法一样的迭代器。另外，如果 set 容器用 const 限定，则该方法返回的是 const 类型的双向迭代器。</td>
+</tr>
+<tr>
+<td>
+lower_bound(val)</td>
+<td>
+返回一个指向当前 set 容器中第一个大于或等于 val 的元素的双向迭代器。如果 set 容器用 const 限定，则该方法返回的是 const 类型的双向迭代器。</td>
+</tr>
+<tr>
+<td>
+upper_bound(val)</td>
+<td>
+返回一个指向当前 set 容器中第一个大于 val 的元素的迭代器。如果 set 容器用 const 限定，则该方法返回的是 const 类型的双向迭代器。</td>
+</tr>
+<tr>
+<td>
+equal_range(val)</td>
+<td>
+该方法返回一个 pair 对象（包含 2 个双向迭代器），其中 pair.first 和 lower_bound() 方法的返回值等价，pair.second 和 upper_bound() 方法的返回值等价。也就是说，该方法将返回一个范围，该范围中包含的值为 val 的元素（set 容器中各个元素是唯一的，因此该范围最多包含一个元素）。</td>
+</tr>
+<tr>
+<td>
+empty()</td>
+<td>
+若容器为空，则返回 true；否则 false。</td>
+</tr>
+<tr>
+<td>
+size()</td>
+<td>
+返回当前 set 容器中存有元素的个数。</td>
+</tr>
+<tr>
+<td>
+max_size()</td>
+<td>
+返回 set 容器所能容纳元素的最大个数，不同的操作系统，其返回值亦不相同。</td>
+</tr>
+<tr>
+<td>
+insert()</td>
+<td>
+向 set 容器中插入元素。</td>
+</tr>
+<tr>
+<td>
+erase()</td>
+<td>
+删除 set 容器中存储的元素。</td>
+</tr>
+<tr>
+<td>
+swap()</td>
+<td>
+交换 2 个 set 容器中存储的所有元素。这意味着，操作的 2 个 set 容器的类型必须相同。</td>
+</tr>
+<tr>
+<td>
+clear()</td>
+<td>
+清空 set 容器中所有的元素，即令 set 容器的 size() 为 0。</td>
+</tr>
+<tr>
+<td>
+emplace()</td>
+<td>
+在当前 set 容器中的指定位置直接构造新元素。其效果和 insert() 一样，但效率更高。</td>
+</tr>
+<tr>
+<td>
+emplace_hint()</td>
+<td>
+在本质上和 emplace() 在 set 容器中构造新元素的方式是一样的，不同之处在于，使用者必须为该方法提供一个指示新元素生成位置的迭代器，并作为该方法的第一个参数。</td>
+</tr>
+<tr>
+<td>
+count(val)</td>
+<td>
+在当前 set 容器中，查找值为 val 的元素的个数，并返回。注意，由于 set 容器中各元素的值是唯一的，因此该函数的返回值最大为 1。</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>
+有关表示各个成员函数的语法格式，读者不需要死记硬背，需要时直接去查<a href="https://cplusplus.com/reference/set/set/" target="_blank"> C++ 标准库</a>即可，这里不再过多赘述。</p>
+</blockquote>
+<br />
+如下的 C++ 程序演示了表中部分成员函数的用法：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;set&gt;
+#include &lt;string&gt;
+using namespace std;
+
+int main()
+{
+    //创建空set容器
+    std::set&lt;std::string&gt; myset;
+    //空set容器不存储任何元素
+    cout &lt;&lt; &quot;1、myset size = &quot; &lt;&lt; myset.size() &lt;&lt; endl;
+    //向myset容器中插入新元素
+    myset.insert(&quot;http://c.biancheng.net/java/&quot;);
+    myset.insert(&quot;http://c.biancheng.net/stl/&quot;);
+    myset.insert(&quot;http://c.biancheng.net/python/&quot;);
+    cout &lt;&lt; &quot;2、myset size = &quot; &lt;&lt; myset.size() &lt;&lt; endl;
+    //利用双向迭代器，遍历myset
+    for (auto iter = myset.begin(); iter != myset.end(); ++iter) {
+        cout &lt;&lt; *iter &lt;&lt; endl;
+    }
+    return 0;
+}</pre>
+输出结果为：
+<p class="info-box">
+1、myset size = 0<br />
+2、myset size = 3<br />
+http://c.biancheng.net/java/<br />
+http://c.biancheng.net/python/<br />
+http://c.biancheng.net/stl/</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="3990.html" title="Go语言的特性有哪些？" target="_blank">Go语言的特性有哪些？</a></li>
+<li><a href="4215.html" title="Python print()函数高级用法" target="_blank">Python print()函数高级用法</a></li>
+<li><a href="7503.html" title="C++ search()函数用法完全攻略" target="_blank">C++ search()函数用法完全攻略</a></li>
+<li><a href="vip_8316.html" title="常用数据库大汇总（附带优缺点）" target="_blank">常用数据库大汇总（附带优缺点）</a></li>
+<li><a href="../css3/cursor.html" title="CSS cursor（鼠标样式）" target="_blank">CSS cursor（鼠标样式）</a></li>
+<li><a href="../hibernate/crud.html" title="Hibernate增删改查操作（CRUD）" target="_blank">Hibernate增删改查操作（CRUD）</a></li>
+<li><a href="2lj02i2.html" title="Python open()函数：打开文件" target="_blank">Python open()函数：打开文件</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10366;
+window.arcId = "f0c0AjE/Os5tfc9JyAUlMq+8vg2MFg8qd4u3GzR3d9vdP9vM1YcFE7t3z3aS";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

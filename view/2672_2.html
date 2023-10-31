@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Shell expr命令：进行整数计算</title>
+<meta name="description" content="expr 是 evaluate expressions 的缩写，译为表达式求值。Shell expr 是一个功能强大，并且比较复杂的命令，它除了可以实现数值计算（加减乘除、比较等），还可以： 处理字符串，例如计算字" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Shell expr命令：进行整数计算</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">expr 是 evaluate expressions 的缩写，译为&ldquo;表达式求值&rdquo;。Shell expr 是一个功能强大，并且比较复杂的命令，它除了可以实现整数计算，还可以结合一些选项对字符串进行处理，例如计算字符串长度、字符串比较、字符串匹配、字符串提取等。<br />
+<br />
+本节只讲解 expr 在整数计算方面的应用，并不涉及字符串处理，有兴趣的读者请自行研究。<br />
+<br />
+Shell expr 对于整数计算的用法为：
+<p class="info-box">
+	expr 表达式</p>
+expr 对<code>表达式</code>的格式有几点特殊的要求：
+<ul>
+	<li>
+		出现在<code>表达式</code>中的运算符、数字、变量和小括号的左右两边至少要有一个空格，否则会报错。</li>
+	<li>
+		有些特殊符号必须用反斜杠<code>\</code>进行转义（屏蔽其特殊含义），比如乘号<code>*</code>和小括号<code>()</code>，如果不用<code>\</code>转义，那么 Shell 会把它们误解为正则表达式中的符号（<code>*</code>对应通配符，<code>()</code>对应分组）。</li>
+	<li>
+		使用变量时要加<code>$</code>前缀。</li>
+</ul>
+<br />
+【实例1】expr 整数计算简单举例：
+<pre class="info-box">
+[c.biancheng.net]$ expr 2 +3  #错误：加号和 3 之前没有空格
+expr: 语法错误
+[c.biancheng.net]$ expr 2 + 3  #这样才是正确的
+5
+[c.biancheng.net]$ expr 4 * 5  #错误：乘号没有转义
+expr: 语法错误
+[c.biancheng.net]$ expr 4 \* 5  #使用 \ 转义后才是正确的
+20
+[c.biancheng.net]$ expr ( 2 + 3 ) \* 4  #小括号也需要转义
+bash: 未预期的符号 `2&#39; 附近有语法错误
+[c.biancheng.net]$ expr \( 2 + 3 \) \* 4  #使用 \ 转义后才是正确的
+20
+[c.biancheng.net]$ n=3
+[c.biancheng.net]$ expr n + 2  #使用变量时要加 $
+expr: 非整数参数
+[c.biancheng.net]$ expr $n + 2  #加上 $ 才是正确的
+5
+[c.biancheng.net]$ m=7
+[c.biancheng.net]$ expr $m \* \( $n + 5 \)
+56</pre>
+以上是直接使用 expr 命令，计算结果会直接输出，如果你希望将计算结果赋值给变量，那么需要将整个表达式用反引号<code>``</code>（位于 Tab 键的上方）包围起来，请看下面的例子。<br />
+<br />
+【实例2】将 expr 的计算结果赋值给变量：
+<pre class="info-box">
+[c.biancheng.net]$ m=5
+[c.biancheng.net]$ n=`expr $m + 10`
+[c.biancheng.net]$ echo $n
+15</pre>
+<br />
+你看，使用 expr 进行数学计算是多么的麻烦呀，需要注意各种细节，我奉劝大家还是省省心，老老实实用 (())、let 或者 $[] 吧。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1021_2.html" title="Linux /etc/inittab：设置（修改）系统默认运行级别" target="_blank">Linux /etc/inittab：设置（修改）系统默认运行级别</a></li>
+<li><a href="vip_1799_2.html" title="C语言清空（刷新）缓冲区，从根本上消除那些奇怪的行为" target="_blank">C语言清空（刷新）缓冲区，从根本上消除那些奇怪的行为</a></li>
+<li><a href="5469_2.html" title="JS &amp;、|、^和~（逻辑位运算符）" target="_blank">JS &amp;、|、^和~（逻辑位运算符）</a></li>
+<li><a href="5855_2.html" title="Java求数组元素的最大和最小值" target="_blank">Java求数组元素的最大和最小值</a></li>
+<li><a href="7547_2.html" title="Django模板变量精讲" target="_blank">Django模板变量精讲</a></li>
+<li><a href="vip_7682_2.html" title="C++打开的文件一定要用close()方法关闭！" target="_blank">C++打开的文件一定要用close()方法关闭！</a></li>
+<li><a href="../nexus/download-component_2.html" title="从Nexus下载构件" target="_blank">从Nexus下载构件</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 2672;
+window.arcId = "51048cks6AKYPcW1m1D3eW0c5xWJGeddvphx1JT5XcrNCDLCPmqwy3C/oYI";
+window.typeidChain = "210|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

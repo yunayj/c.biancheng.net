@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C++二进制文件的读取和写入（精华版）</title>
+<meta name="description" content="用文本方式存储信息不但浪费空间，而且不便于检索。例如，一个学籍管理程序需要记" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C++二进制文件的读取和写入（精华版）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">我们先来说一下为什么要使用二进制文件，它比文本文件有哪些好处。<br />
+<br />
+用文本方式存储信息不但浪费空间，而且不便于检索。例如，一个学籍管理程序需要记录所有学生的学号、姓名、年龄信息，并且能够按照姓名查找学生的信息。程序中可以用一个类来表示学生：
+<pre class="cpp">
+class CStudent
+{
+    char szName[20];  //假设学生姓名不超过19个字符，以 &#39;\0&#39; 结尾
+    char szId[l0];  //假设学号为9位，以 &#39;\0&#39; 结尾
+    int age;  //年龄
+};</pre>
+如果用文本文件存储学生的信息，文件可能是如下样子：<br />
+Micheal Jackson 110923412 17<br />
+Tom Hanks 110923413 18<br />
+<br />
+这种存储方式不但浪费空间，而且查找效率低下。因为每个学生的信息所占用的字节数不同，所以即使文件中的学生信息是按姓名排好序的，要用程序根据名字进行查找仍然没有什么好办法，只能在文件中从头到尾搜索。<br />
+<br />
+如果把全部的学生信息都读入内存并排序后再查找，当然速度会很快，但如果学生数巨大，则把所有学生信息都读人内存可能是不现实的。<br />
+<br />
+可以用二进制的方式来存储学生信息，即把 CStudent 对象直接写入文件。在该文件中，每个学生的信息都占用 sizeof(CStudent) 个字节。对象写入文件后一般称作&ldquo;记录&rdquo;。本例中，每个学生都对应于一条记录。该学生记录文件可以按姓名排序，则使用折半查找的效率会很高。<br />
+<br />
+读写二进制文件不能使用前面提到的类似于 cin、cout 从流中读写数据的方法。这时可以调用 ifstream 类和 fstream 类的 read 成员函数从文件中读取数据，调用 ofstream 和 fstream 的 write 成员函数向文件中写入数据。
+<h2>
+	用 ostream::write 成员函数写文件</h2>
+ofstream 和 fstream 的 write 成员函数实际上继承自 ostream 类，原型如下：
+<p class="info-box">
+	ostream &amp; write(char* buffer, int count);</p>
+该成员函数将内存中 buffer 所指向的 count 个字节的内容写入文件，返回值是对函数所作用的对象的引用，如 obj.write(...) 的返回值就是对 obj 的引用。<br />
+<br />
+write 成员函数向文件中写入若干字节，可是调用 write 函数时并没有指定这若干字节要写入文件中的什么位置。那么，write 函数在执行过程中到底把这若干字节写到哪里呢？答案是从文件写<a href='../c/80/80_2.html' target='_blank'>指针</a>指向的位置开始写入。<br />
+<br />
+文件写指针是 ofstream 或 fstream 对象内部维护的一个变量。文件刚打开时，文件写指针指向文件的开头（如果以 ios::app 方式打开，则指向文件末尾），用 write 函数写入 n 个字节，写指针指向的位置就向后移动 n 个字节。<br />
+<br />
+下面的程序从键盘输入几名学生的姓名和年龄（输入时，在单独的一行中按 Ctrl+Z 键再按回车键以结束输入。假设学生姓名中都没有空格），并以二进制文件形式存储，成为一个学生记录文件 students.dat。<br />
+<br />
+例子，用二进制文件保存学生记录：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;fstream&gt;
+u<a href='https://m.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+class CStudent
+{
+public:
+    char szName[20];
+    int age;
+};
+int main()
+{
+    CStudent s;
+    ofstream outFile(&quot;students.dat&quot;, ios::out | ios::binary);
+    while (cin &gt;&gt; s.szName &gt;&gt; s.age)
+        outFile.write((char*)&amp;s, sizeof(s));
+    outFile.close();
+    return 0;
+}</pre>
+输入：<br />
+Tom 60↙<br />
+Jack 80↙<br />
+Jane 40↙<br />
+^Z↙<br />
+<br />
+则形成的 students.dat 为 72 字节，用&ldquo;记事本&rdquo;程序打开呈现乱码：
+<p class="info-box">
+	Tom烫烫烫烫烫烫烫烫 Jack烫烫烫烫烫烫烫？ Jane烫烫烫烫烫烫烫？</p>
+<br />
+第 13 行指定文件的打开模式是 ios::out|ios::binary，即以二进制写模式打开。在 Windows平台中，用二进制模式打开是必要的，否则可能出错，原因会在《<a href="311_3.html" target="_blank">文件的文本打开方式和二进制打开方式的区别</a>》一节中介绍。<br />
+<br />
+第 15 行将 s 对象写入文件。s 的地址就是要写入文件的内存缓冲区的地址。但是 &amp;s 不是 char * 类型，因此要进行强制类型转换。<br />
+<br />
+第 16 行，文件使用完毕一定要关闭，否则程序结束后文件的内容可能不完整。
+<h2>
+	用 istream::read 成员函数读文件</h2>
+ifstream 和 fstream 的 read 成员函数实际上继承自 istream 类，原型如下：
+<p class="info-box">
+	istream &amp; read(char* buffer, int count);</p>
+该成员函数从文件中读取 count 个字节的内容，存放到 buffer 所指向的内存缓冲区中，返回值是对函数所作用的对象的引用。<br />
+<br />
+如果想知道一共成功读取了多少个字节（读到文件尾时，未必能读取 count 个字节），可以在 read 函数执行后立即调用文件流对象的 gcount 成员函数，其返回值就是最近一次 read 函数执行时成功读取的字节数。gcount 是 istream 类的成员函数，原型如下：
+<p class="info-box">
+	int gcount();</p>
+read 成员函数从文件读指针指向的位置开始读取若干字节。文件读指针是 ifstream 或 fstream 对象内部维护的一个变量。文件刚打开时，文件读指针指向文件的开头（如果以ios::app 方式打开，则指向文件末尾），用 read 函数读取 n 个字节，读指针指向的位置就向后移动 n 个字节。因此，打开一个文件后连续调用 read 函数，就能将整个文件的内容读取出来。<br />
+<br />
+下面的程序将前面创建的学生记录文件 students.dat 的内容读出并显示。
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;fstream&gt;
+using namespace std;
+class CStudent
+{
+    public:
+        char szName[20];
+        int age;
+};
+int main()
+{
+    CStudent s;       
+    ifstream inFile(&quot;students.dat&quot;,ios::in|ios::binary); //二进制读方式打开
+    if(!inFile) {
+        cout &lt;&lt; &quot;error&quot; &lt;&lt;endl;
+        return 0;
+    }
+    while(inFile.read((char *)&amp;s, sizeof(s))) { //一直读到文件结束
+        int readedBytes = inFile.gcount(); //看刚才读了多少字节
+        cout &lt;&lt; s.szName &lt;&lt; &quot; &quot; &lt;&lt; s.age &lt;&lt; endl;   
+    }
+    inFile.close();
+    return 0;
+}</pre>
+程序的输出结果是：<br />
+Tom 60<br />
+Jack 80<br />
+Jane 40<br />
+<br />
+第 18 行，判断文件是否已经读完的方法和 while(cin&gt;&gt;n) 类似，归根到底都是因为 istream 类重载了 bool 强制类型转换运算符。<br />
+<br />
+第 19 行只是演示 gcount 函数的用法，删除该行对程序运行结果没有影响。<br />
+<br />
+思考题：关于 students.dat 的两个程序中，如果 CStudent 类的 szName 的定义不是&ldquo;char szName[20] &rdquo;而是&ldquo;string szName&rdquo;，是否可以？为什么？
+<h2>
+	用文件流类的 put 和 get 成员函数读写文件</h2>
+可以用 ifstream 和 fstream 类的 get 成员函数（继承自 istream 类）从文件中一次读取一个字节，也可以用 ofstream 和 fstream 类的 put 成员函数（继承自 ostream 类） 向文件中一次写入一个字节。<br />
+<br />
+例题：编写一个 mycopy 程序，实现文件复制的功能。用法是在&ldquo;命令提示符&rdquo;窗口输入：
+<p class="info-box">
+	mycopy 源文件名 目标文件名</p>
+就能将源文件复制到目标文件。例如：
+<p class="info-box">
+	mycopy src.dat dest.dat</p>
+即将 src.dat 复制到 dest.dat。如果 dest.dat 原本就存在，则原来的文件会被覆盖。<br />
+<br />
+解题的基本思路是每次从源文件读取一个字节，然后写入目标文件。程序如下：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;fstream&gt;
+using namespace std;
+int main(int argc, char* argv[])
+{
+    if (argc != 3) {
+        cout &lt;&lt; &quot;File name missing!&quot; &lt;&lt; endl;
+        return 0;
+    }
+    ifstream inFile(argv[l], ios::binary | ios::in);  //以二进制读模式打开文件
+    if (!inFile) {
+        cout &lt;&lt; &quot;Source file open error.&quot; &lt;&lt; endl;
+        return 0;
+    }
+    ofstream outFile(argv[2], ios::binary | ios::out);  //以二进制写模式打开文件
+    if (!outFile) {
+        cout &lt;&lt; &quot;New file open error.&quot; &lt;&lt; endl;
+        inFile.close();  //打开的文件一定要关闭
+        return 0;
+    }
+    char c;
+    while (inFile.get(c))  //每次读取一个字符
+        outFile.put(c);  //每次写入一个字符
+    outFile.close();
+    inFile.close();
+    return 0;
+}</pre>
+文件存放于磁盘中，磁盘的访问速度远远低于内存。如果每次读一个字节或写一个字节都要访问磁盘，那么文件的读写速度就会慢得不可忍受。因此，操作系统在接收到读文件的请求时，哪怕只要读一个字节，也会把一片数据（通常至少是 512 个字节，因为磁盘的一个扇区是 512 B）都读取到一个操作系统自行管理的内存缓冲区中，当要读下一个字节时，就不需要访问磁盘，直接从该缓冲区中读取就可以了。<br />
+<br />
+操作系统在接收到写文件的请求时，也是先把要写入的数据在一个内存缓冲区中保存起来，等缓冲区满后，再将缓冲区的内容全部写入磁盘。关闭文件的操作就能确保内存缓冲区中的数据被写入磁盘。<br />
+<br />
+尽管如此，要连续读写文件时，像 mycopy 程序那样一个字节一个字节地读写，还是不如一次读写一片内存区域快。每次读写的字节数最好是 512 的整数倍。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="165_2.html" title="C++静态成员变量和静态成员函数详解" target="_blank">C++静态成员变量和静态成员函数详解</a></li>
+<li><a href="../mysql/concat_2.html" title="MySQL CONCAT函数：字符串拼接" target="_blank">MySQL CONCAT函数：字符串拼接</a></li>
+<li><a href="../mysql/rand_2.html" title="MySQL RAND函数：生成随机数" target="_blank">MySQL RAND函数：生成随机数</a></li>
+<li><a href="4034_2.html" title="Go语言变量的生命周期" target="_blank">Go语言变量的生命周期</a></li>
+<li><a href="../mongodb2/shard_2.html" title="MongoDB分片" target="_blank">MongoDB分片</a></li>
+<li><a href="../json/schema_2.html" title="JSON schema（模式）" target="_blank">JSON schema（模式）</a></li>
+<li><a href="4twxipr_2.html" title="Vue按键修饰符（keydown、keyup和keypress）" target="_blank">Vue按键修饰符（keydown、keyup和keypress）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 302;
+window.arcId = "65d5LILpp3spHo2AponIyncfU5gxC8XwFZowrqHJU0bR3cGJ4aTMWh+RhQ";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

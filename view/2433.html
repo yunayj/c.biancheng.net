@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>MySQL修改数据表（ALTER TABLE语句）</title>
+<meta name="description" content="为实现数据库中表规范化设计的目的，有时候需要对之前已经创建的表进行结构修改或者调整。 在 MySQL 中可以使用 ALTER TABLE 语句来改变原有表的结构，例如增加或删减列、创建或取消" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>MySQL修改数据表（ALTER TABLE语句）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">为实现数据库中表规范化设计的目的，有时候需要对之前已经创建的表进行结构修改或者调整。<br />
+<br />
+在 <a href='../mysql/mysql_3.html' target='_blank'>MySQL</a> 中可以使用 <span style="color:#008000;"><strong>ALTER TABLE</strong></span> 语句来改变原有表的结构，例如增加或删减列、创建或取消索引、更改原有列类型、重新命名列或表等。
+<h2>
+基本语法</h2>
+修改表指的是修改数据库中已经存在的数据表的结构。MySQL 使用 ALTER TABLE 语句修改表。常用的修改表的操作有修改表名、修改字段数据类型或字段名、增加和删除字段、修改字段的排列位置、更改表的存储引擎、删除表的外键约束等。<br />
+<br />
+常用的语法格式如下：
+<p class="info-box">
+ALTER TABLE &lt;表名&gt; [修改选项]</p>
+修改选项的语法格式如下：
+<p class="info-box">
+{ ADD COLUMN &lt;列名&gt; &lt;类型&gt;<br />
+| CHANGE COLUMN &lt;旧列名&gt; &lt;新列名&gt; &lt;新列类型&gt;<br />
+| ALTER COLUMN &lt;列名&gt; { SET DEFAULT &lt;默认值&gt; | DROP DEFAULT }<br />
+| MODIFY COLUMN &lt;列名&gt; &lt;类型&gt;<br />
+| DROP COLUMN &lt;列名&gt;<br />
+| RENAME TO &lt;新表名&gt; }</p>
+<h2>
+添加字段</h2>
+随着业务的变化，可能需要在已经存在的表中添加新的字段，一个完整的字段包括字段名、数据类型、完整性约束。添加字段的语法格式如下：
+<p class="info-box">
+ALTER TABLE &lt;表名&gt; ADD &lt;新字段名&gt; &lt;数据类型&gt; [约束条件] [FIRST|AFTER 已存在的字段名]；</p>
+<code>新字段名</code>为需要添加的字段的名称；<code>FIRST</code> 为可选参数，其作用是将新添加的字段设置为表的第一个字段；<code>AFTER</code> 为可选参数，其作用是将新添加的字段添加到指定的<code>已存在的字段名</code>的后面。<br />
+<br />
+【实例 1】使用 ALTER TABLE 修改表 tb_emp1 的结构，在表的第一列添加一个 int 类型的字段 col1，输入的 SQL 语句和运行结果如下所示。
+<pre class="info-box">
+mysql&gt; ALTER TABLE tb_emp1
+    -&gt; ADD COLUMN col1 INT FIRST;
+Query OK, 0 rows affected (0.94 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+mysql&gt; DESC tb_emp1;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| col1   | int(11)     | YES  |     | NULL    |       |
+| id     | int(11)     | YES  |     | NULL    |       |
+| name   | varchar(25) | YES  |     | NULL    |       |
+| deptId | int(11)     | YES  |     | NULL    |       |
+| salary | float       | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)</pre>
+<blockquote>
+<p>
+提示：&ldquo;FIRST 或 AFTER 已存在的字段名&rdquo;用于指定新增字段在表中的位置，如果 SQL 语句中没有这两个参数，则默认将新添加的字段设置为数据表的最后列。</p>
+</blockquote>
+【实例 2】使用 ALTER TABLE 修改表 tb_emp1 的结构，在一列 name 后添加一个 int 类型的字段 col2，输入的 SQL 语句和运行结果如下所示。
+<pre class="info-box">
+mysql&gt; ALTER TABLE tb_emp1
+    -&gt; ADD COLUMN col2 INT AFTER name;
+Query OK, 0 rows affected (0.50 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+mysql&gt; DESC tb_emp1;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| col1   | int(11)     | YES  |     | NULL    |       |
+| id     | int(11)     | YES  |     | NULL    |       |
+| name   | varchar(25) | YES  |     | NULL    |       |
+| col2   | int(11)     | YES  |     | NULL    |       |
+| deptId | int(11)     | YES  |     | NULL    |       |
+| salary | float        | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)</pre>
+可以看到，表 tb_emp1 中增加了一个名称为 col2 的字段，其位置在指定的 name 字段后面，添加字段成功。
+<h2>
+修改字段数据类型</h2>
+修改字段的数据类型就是把字段的数据类型转换成另一种数据类型。在 MySQL 中修改字段数据类型的语法规则如下：
+<pre class="info-box">
+ALTER TABLE &lt;表名&gt; MODIFY &lt;字段名&gt; &lt;数据类型&gt;</pre>
+其中，<code>表名</code>指要修改数据类型的字段所在表的名称，<code>字段名</code>指需要修改的字段，<code>数据类型</code>指修改后字段的新数据类型。<br />
+<br />
+【实例 3】使用 ALTER TABLE 修改表 tb_emp1 的结构，将 name 字段的数据类型由 VARCHAR(22) 修改成 VARCHAR(30)，输入的 SQL 语句和运行结果如下所示。
+<pre class="info-box">
+mysql&gt; ALTER TABLE tb_emp1
+    -&gt; MODIFY name VARCHAR(30);
+Query OK, 0 rows affected (0.15 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+mysql&gt; DESC tb_emp1;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| col1   | int(11)     | YES  |     | NULL    |       |
+| id     | int(11)     | YES  |     | NULL    |       |
+| name   | varchar(30) | YES  |     | NULL    |       |
+| col2   | int(11)     | YES  |     | NULL    |       |
+| deptId | int(11)     | YES  |     | NULL    |       |
+| salary | float        | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)</pre>
+语句执行后，发现表 tb_emp1 中 name 字段的数据类型已经修改成 VARCHAR(30)，修改成功。
+<h2>
+删除字段</h2>
+删除字段是将数据表中的某个字段从表中移除，语法格式如下：
+<p class="info-box">
+ALTER TABLE &lt;表名&gt; DROP &lt;字段名&gt;；</p>
+其中，<code>字段名</code>指需要从表中删除的字段的名称。<br />
+<br />
+【实例 4】使用 ALTER TABLE 修改表 tb_emp1 的结构，删除 col2 字段，输入的 SQL 语句和运行结果如下所示。
+<pre class="info-box">
+mysql&gt; ALTER TABLE tb_emp1
+    -&gt; DROP col2;
+Query OK, 0 rows affected (0.53 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql&gt; DESC tb_emp1;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| col1   | int(11)     | YES  |     | NULL    |       |
+| id     | int(11)     | YES  |     | NULL    |       |
+| name   | varchar(30) | YES  |     | NULL    |       |
+| deptId | int(11)     | YES  |     | NULL    |       |
+| salary | float        | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)</pre>
+<h2>
+修改字段名称</h2>
+MySQL 中修改表字段名的语法规则如下：
+<p class="info-box">
+ALTER TABLE &lt;表名&gt; CHANGE &lt;旧字段名&gt; &lt;新字段名&gt; &lt;新数据类型&gt;；</p>
+其中，<code>旧字段名</code>指修改前的字段名；<code>新字段名</code>指修改后的字段名；<code>新数据类型</code>指修改后的数据类型，如果不需要修改字段的数据类型，可以将新数据类型设置成与原来一样，但数据类型不能为空。<br />
+<br />
+【实例 5】使用 ALTER TABLE 修改表 tb_emp1 的结构，将 col1 字段名称改为 col3，同时将数据类型变为 CHAR(30)，输入的 SQL 语句和运行结果如下所示。
+<pre class="info-box">
+mysql&gt; ALTER TABLE tb_emp1
+    -&gt; CHANGE col1 col3 CHAR(30);
+Query OK, 0 rows affected (0.76 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+mysql&gt; DESC tb_emp1;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| col3   | char(30)    | YES  |     | NULL    |       |
+| id     | int(11)     | YES  |     | NULL    |       |
+| name   | varchar(30) | YES  |     | NULL    |       |
+| deptId | int(11)     | YES  |     | NULL    |       |
+| salary | float        | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+5 rows in set (0.01 sec)</pre>
+CHANGE 也可以只修改数据类型，实现和 MODIFY 同样的效果，方法是将 SQL 语句中的&ldquo;新字段名&rdquo;和&ldquo;旧字段名&rdquo;设置为相同的名称，只改变&ldquo;数据类型&rdquo;。
+<blockquote>
+<p>
+提示：由于不同类型的数据在机器中的存储方式及长度并不相同，修改数据类型可能会影响数据表中已有的数据记录，因此，当数据表中已经有数据时，不要轻易修改数据类型。</p>
+</blockquote>
+<h2>
+修改表名</h2>
+MySQL 通过 ALTER TABLE 语句来实现表名的修改，语法规则如下：
+<p class="info-box">
+ALTER TABLE &lt;旧表名&gt; RENAME [TO] &lt;新表名&gt;；</p>
+其中，<code>TO</code> 为可选参数，使用与否均不影响结果。<br />
+<br />
+【实例 6】使用 ALTER TABLE 将数据表 tb_emp1 改名为 tb_emp2，输入的 SQL 语句和运行结果如下所示。
+<pre class="info-box">
+mysql&gt; ALTER TABLE tb_emp1
+    -&gt; RENAME TO tb_emp2;
+mysql&gt; SHOW TABLES;
++--------------------+
+| Tables_in_test_db  |
++--------------------+
+| tb_emp2            |
++--------------------+
+1 rows in set (0.00 sec)</pre>
+<blockquote>
+<p>
+提示：用户可以在修改表名称时使用 DESC 命令查看修改后两个表的结构，修改表名并不修改表的结构，因此修改名称后的表和修改名称前的表的结构是相同的。</p>
+</blockquote>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="150.html" title="C++对象数组中使用构造函数" target="_blank">C++对象数组中使用构造函数</a></li>
+<li><a href="1840.html" title="对C语言数组的总结" target="_blank">对C语言数组的总结</a></li>
+<li><a href="../mysql/sign.html" title="MySQL SIGN函数：返回参数的符号" target="_blank">MySQL SIGN函数：返回参数的符号</a></li>
+<li><a href="3439.html" title="插入排序算法及C语言实现" target="_blank">插入排序算法及C语言实现</a></li>
+<li><a href="8598.html" title="C++11引用限定符的用法" target="_blank">C++11引用限定符的用法</a></li>
+<li><a href="vip_8694.html" title="C++11移动构造函数的功能和用法" target="_blank">C++11移动构造函数的功能和用法</a></li>
+<li><a href="atjtot4.html" title="C#获取字符串长度（Length属性）" target="_blank">C#获取字符串长度（Length属性）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 2433;
+window.arcId = "2e41Z5kMwTWcwSyy9+84YJoRtuejuiGOHtx1uvgWhXI1V6MAHH05fj1cLE8";
+window.typeidChain = "345|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

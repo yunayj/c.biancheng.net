@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>结构体指针，C语言结构体指针详解</title>
+<meta name="description" content="结构体指针，可细分为 指向结构体变量的指针 和 指向结构体数组的指针 。 指向结构体变量的指针 前面我们通过结构体变量名.成员名的方式引用结构体变量中的成员，除了这种方法之" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>结构体指针，C语言结构体指针详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">结构体指针，可细分为<span style="color:#008000;">指向结构体变量的指针</span>和<span style="color:#008000;">指向结构体数组的指针</span>。<br />
+<h2>
+	指向结构体变量的指针</h2>
+前面我们通过&ldquo;结构体变量名.成员名&rdquo;的方式引用结构体变量中的成员，除了这种方法之外还可以使用指针。<br />
+<br />
+前面讲过，&amp;student1 表示结构体变量 student1 的首地址，即 student1 第一个项的地址。如果定义一个指针变量 p 指向这个地址的话，p 就可以指向结构体变量 student1 中的任意一个成员。<br />
+<br />
+那么，这个指针变量定义成什么类型呢？只能定义成结构体类型，且指向什么结构体类型的结构体变量，就要定义成什么样的结构体类型。比如指向 struct STUDENT 类型的结构体变量，那么指针变量就一定要定义成 struct STUDENT* 类型。<br />
+<br />
+下面将前面的程序用指针的方式修改一下：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+# include &lt;string.h&gt;
+struct AGE
+{
+    int year;
+    int month;
+    int day;
+};
+struct STUDENT
+{
+    char name[20];  //姓名
+    int num;  //学号
+    struct AGE birthday;  //生日
+    float score;  //分数
+};
+int main(void)
+{
+    struct STUDENT student1; /*用struct STUDENT结构体类型定义结构体变量student1*/
+    struct STUDENT *p = NULL;  /*定义一个指向struct STUDENT结构体类型的指针变量p*/
+    p = &amp;student1;  /*p指向结构体变量student1的首地址, 即第一个成员的地址*/
+    strcpy((*p).name, &quot;小明&quot;);  //(*p).name等价于student1.name
+    (*p).birthday.year = 1989;
+    (*p).birthday.month = 3;
+    (*p).birthday.day = 29;
+    (*p).num = 1207041;
+    (*p).score = 100;
+    printf(&quot;name : %s\n&quot;, (*p).name);  //(*p).name不能写成p
+    printf(&quot;birthday : %d-%d-%d\n&quot;, (*p).birthday.year, (*p).birthday.month, (*p).birthday.day);
+    printf(&quot;num : %d\n&quot;, (*p).num);
+    printf(&quot;score : %.1f\n&quot;, (*p).score);
+    return 0;
+}</pre>
+输出结果是：<br />
+name : 小明<br />
+birthday : 1989-3-29<br />
+num : 1207041<br />
+score : 100.0<br />
+<br />
+我们看到，用指针引用结构体变量成员的方式是：
+<p class="info-box">
+	(*指针变量名).成员名</p>
+注意，*p 两边的括号不可省略，因为成员运算符&ldquo;.&rdquo;的优先级高于指针运算符&ldquo;*&rdquo;，所以如果 *p 两边的括号省略的话，那么 *p.num 就等价于 *(p.num) 了。<br />
+<br />
+从该程序也可以看出：因为指针变量 p 指向的是结构体变量 student1 第一个成员的地址，即字符数组 name 的首地址，所以 p 和 (*p).name 是等价的。<br />
+<br />
+但是，&ldquo;等价&rdquo;仅仅是说它们表示的是同一个内存单元的地址，但它们的类型是不同的。指针变量 p 是 struct STUDENT* 型的，而 (*p).name 是 char* 型的。所以在 strcpy 中不能将 (*p).name 改成 p。用 %s 进行输入或输出时，输入参数或输出参数也只能写成 (*p).name 而不能写成 p。<br />
+<br />
+同样，虽然 &amp;student1 和 student1.name 表示的是同一个内存单元的地址，但它们的类型是不同的。&amp;student1 是 struct STUDENT* 型的，而 student1.name 是 char* 型的，所以在对 p 进行初始化时，&ldquo;p=&amp;student1；&rdquo;不能写成&ldquo;p=student1.name&rdquo;。因为 p 是 struct STUDENT* 型的，所以不能将 char* 型的 student1.name 赋给 p。<br />
+<br />
+此外为了使用的方便和直观，用指针引用结构体变量成员的方式：
+<p class="info-box">
+	(*指针变量名).成员名</p>
+可以直接用：
+<p class="info-box">
+	指针变量名-&gt;成员名</p>
+来代替，它们是等价的。&ldquo;-&gt;&rdquo;是&ldquo;指向结构体成员运算符&rdquo;，它的优先级同结构体成员运算符&ldquo;.&rdquo;一样高。p-&gt;num 的含义是：指针变量 p 所指向的结构体变量中的 num 成员。p-&gt;num 最终代表的就是 num 这个成员中的内容。<br />
+<br />
+下面再将程序用&ldquo;-&gt;&rdquo;修改一下：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+# include &lt;string.h&gt;
+struct AGE
+{
+    int year;
+    int month;
+    int day;
+};
+struct STUDENT
+{
+    char name[20];  //姓名
+    int num;  //学号
+    struct AGE birthday;  /*用struct AGE结构体类型定义结构体变量birthday, 生日*/
+    float score;  //分数
+};
+int main(void)
+{
+    struct STUDENT student1; /*用struct STUDENT结构体类型定义结构体变量student1*/
+    struct STUDENT *p = NULL;  /*定义struct STUDENT结构体类型的指针变量p*/
+    p = &amp;student1;  /*p指向结构体变量student1的首地址, 即第一项的地址*/
+    strcpy(p-&gt;name, &quot;小明&quot;);
+    p-&gt;birthday.year = 1989;
+    p-&gt;birthday.month = 3;
+    p-&gt;birthday.day = 29;
+    p-&gt;num = 1207041;
+    p-&gt;score = 100;
+    printf(&quot;name : %s\n&quot;, p-&gt;name);  //p-&gt;name不能写成p
+    printf(&quot;birthday : %d-%d-%d\n&quot;, p-&gt;birthday.year, p-&gt;birthday.month, p-&gt;birthday.day);
+    printf(&quot;num : %d\n&quot;, p-&gt;num);
+    printf(&quot;score : %.1f\n&quot;, p-&gt;score);
+    return 0;
+}</pre>
+输出结果是：<br />
+name : 小明<br />
+birthday : 1989-3-29<br />
+num : 1207041<br />
+score : 100.0<br />
+<br />
+但是要注意的是，只有&ldquo;指针变量名&rdquo;后面才能加&ldquo;-&gt;&rdquo;，千万不要在成员名如 birthday 后面加&ldquo;-&gt;&rdquo;。<br />
+综上所述，以下 3 种形式是等价的：
+<ul>
+	<li>
+		结构体变量.成员名。</li>
+	<li>
+		(*指针变量).成员名。</li>
+	<li>
+		指针变量-&gt;成员名。</li>
+</ul>
+<br />
+其中第 3 种方式很重要，通常都是使用这种方式，另外两种方式用得不多。后面讲链表的时候用的也都是第 3 种方式。<br />
+<h2>
+	指向结构体数组的指针</h2>
+在前面讲数值型数组的时候可以将数组名赋给一个指针变量，从而使该指针变量指向数组的首地址，然后用指针访问数组的元素。结构体数组也是数组，所以同样可以这么做。<br />
+<br />
+我们知道，结构体数组的每一个元素都是一个结构体变量。如果定义一个结构体指针变量并把结构体数组的数组名赋给这个指针变量的话，就意味着将结构体数组的第一个元素，即第一个结构体变量的地址，也即第一个结构变量中的第一个成员的地址赋给了这个指针变量。比如：<br />
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+struct STU
+{
+    char name[20];
+    int age;
+    char sex;
+    char num[20];
+};
+int main(void)
+{
+    struct STU stu[5] = {{&quot;小红&quot;, 22, &#39;F&#39;, &quot;Z1207031&quot;}, {&quot;小明&quot;, 21, &#39;M&#39;, &quot;Z1207035&quot;}, {&quot;小七&quot;, 23, &#39;F&#39;, &quot;Z1207022&quot;}};
+    struct STU *p = stu;
+    return 0;
+}</pre>
+此时指针变量 p 就指向了结构体数组的第一个元素，即指向 stu[0]。我们知道，当一个指针指向一个数组后，指针就可以通过移动的方式指向数组的其他元素。<br />
+<br />
+这个原则对结构体数组和结构体指针同样适用，所以 p+1 就指向 stu[1] 的首地址；p+2 就指向 stu[2] 的首地址&hellip;&hellip;所以只要利用 for 循环，指针就能一个个地指向结构体数组元素。<br />
+<br />
+同样需要注意的是，要将一个结构体数组名赋给一个结构体指针变量，那么它们的结构体类型必须相同。<br />
+<br />
+下面编写一个程序：
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+struct STU
+{
+    char name[20];
+    int age;
+    char sex;
+    char num[20];
+};
+int main(void)
+{
+    struct STU stu[3] = {{&quot;小红&quot;, 22, &#39;F&#39;, &quot;Z1207031&quot;}, {&quot;小明&quot;, 21, &#39;M&#39;, &quot;Z1207035&quot;}, {&quot;小七&quot;, 23, &#39;F&#39;, &quot;Z1207022&quot;}};
+    struct STU *p = stu;
+    for (; p&lt;stu+3; ++p)
+    {
+        printf(&quot;name:%s; age:%d; sex:%c; num:%s\n&quot;, p-&gt;name, p-&gt;age, p-&gt;sex, p-&gt;num);
+    }
+    return 0;
+}</pre>
+输出结果是：<br />
+name:小红; age:22; sex:F; num:Z1207031<br />
+name:小明; age:21; sex:M; num:Z1207035<br />
+name:小七; age:23; sex:F; num:Z1207022<br />
+<br />
+此外同前面&ldquo;普通数组和指针的关系&rdquo;一样，当指针变量 p 指向 stu[0] 时，p[0] 就等价于 stu[0]；p[1] 就等价于 stu[1]；p[2] 就等价于 stu[2]&hellip;&hellip;所以 stu[0].num 就可以写成 p[0].num，其他同理。下面将上面的程序用 p[i] 的方式修改一下：<br />
+<pre class="cpp">
+# include &lt;stdio.h&gt;
+struct STU
+{
+    char name[20];
+    int age;
+    char sex;
+    char num[20];
+};
+int main(void)
+{
+    struct STU stu[3] = {{&quot;小红&quot;, 22, &#39;F&#39;, &quot;Z1207031&quot;}, {&quot;小明&quot;, 21, &#39;M&#39;, &quot;Z1207035&quot;}, {&quot;小七&quot;, 23, &#39;F&#39;, &quot;Z1207022&quot;}};
+    struct STU *p = stu;
+    int i = 0;
+    for (; i&lt;3; ++i)
+    {
+        printf(&quot;name:%s; age:%d; sex:%c; num:%s\n&quot;, p[i].name, p[i].age, p[i].sex, p[i].num);
+    }
+    return 0;
+}</pre>
+输出结果是：<br />
+name:小红; age:22; sex:F; num:Z1207031<br />
+name:小明; age:21; sex:M; num:Z1207035<br />
+name:小七; age:23; sex:F; num:Z1207022<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1453_2.html" title="C++字符串查找函数详解" target="_blank">C++字符串查找函数详解</a></li>
+<li><a href="2236_2.html" title="C++ string详解，C++字符串详解" target="_blank">C++ string详解，C++字符串详解</a></li>
+<li><a href="vip_7302_2.html" title="Go语言输出正弦函数（Sin）图像" target="_blank">Go语言输出正弦函数（Sin）图像</a></li>
+<li><a href="vip_7319_2.html" title="Go语言哈希函数" target="_blank">Go语言哈希函数</a></li>
+<li><a href="../spring_boot/starter_2.html" title="Spring Boot starter入门" target="_blank">Spring Boot starter入门</a></li>
+<li><a href="9806_2.html" title="HBase数据库简介（非常详细）" target="_blank">HBase数据库简介（非常详细）</a></li>
+<li><a href="9812_2.html" title="百钱买百鸡Python编程详解" target="_blank">百钱买百鸡Python编程详解</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 246;
+window.arcId = "7feal7AeJO5yYsgrPNnZQf+W8WzR5RMjmjR7k8X04JZf0waFQ2eFCVB7EA";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C++ cout格式化输出（输出格式）完全攻略</title>
+<meta name="description" content="有时希望按照一定的格式进行输出，如按十六进制输出整数，输出浮点数时保留小数点后面两位，输出整数时按 6 个数字的宽度输出，宽度不足时左边补 0，等等。在 C++ 中，用 cout 进行" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C++ cout格式化输出（输出格式）完全攻略</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">有时希望按照一定的格式进行输出，如按十六进制输出整数，输出浮点数时保留小数点后面两位，输出整数时按 6 个数字的宽度输出，宽度不足时左边补 0，等等。C语言中的 printf() 函数使用以<code>%</code>开头的格式控制符，例如 %X、%.2f、%6d 等；<a href='../cplus/cplus_2.html' target='_blank'>C++</a> 中的 cout 对象则使用流操作算子（你也可以叫做格式控制符）或者成员函数进行控制。
+<h2>
+	使用流操作算子</h2>
+C++ 中常用的输出流操纵算子如表 1 所示，它们都是在头文件 iomanip 中定义的；要使用这些流操纵算子，必须包含该头文件。
+<blockquote>
+	<p>
+		注意：&ldquo;流操纵算子&rdquo;一栏中的星号<code>*</code>不是算子的一部分，星号表示在没有使用任何算子的情况下，就等效于使用了该算子。例如，在默认情况下，整数是用十进制形式输出的，等效于使用了 dec 算子。</p>
+</blockquote>
+<table>
+	<caption>
+		表1：C++ 流操纵算子</caption>
+	<tbody>
+		<tr>
+			<th>
+				流操纵算子</th>
+			<th colspan="2">
+				作 &nbsp;用</th>
+		</tr>
+		<tr>
+			<td>
+				*dec</td>
+			<td>
+				以十进制形式输出整数</td>
+			<td rowspan="13">
+				常用</td>
+		</tr>
+		<tr>
+			<td>
+				hex</td>
+			<td>
+				以十六进制形式输出整数</td>
+		</tr>
+		<tr>
+			<td>
+				oct</td>
+			<td>
+				以八进制形式输出整数</td>
+		</tr>
+		<tr>
+			<td>
+				fixed</td>
+			<td>
+				以普通小数形式输出浮点数</td>
+		</tr>
+		<tr>
+			<td>
+				scientific</td>
+			<td>
+				以科学计数法形式输出浮点数</td>
+		</tr>
+		<tr>
+			<td>
+				left</td>
+			<td>
+				左对齐，即在宽度不足时将填充字符添加到右边</td>
+		</tr>
+		<tr>
+			<td>
+				*right</td>
+			<td>
+				右对齐，即在宽度不足时将填充字符添加到左边</td>
+		</tr>
+		<tr>
+			<td>
+				setbase(b)</td>
+			<td>
+				设置输出整数时的进制，b=8、10 或 16</td>
+		</tr>
+		<tr>
+			<td>
+				setw(w)</td>
+			<td>
+				指定输出宽度为 w 个字符，或输人字符串时读入 w 个字符</td>
+		</tr>
+		<tr>
+			<td>
+				setfill(c)</td>
+			<td>
+				在指定输出宽度的情况下，输出的宽度不足时用字符 c 填充（默认情况是用空格填充）</td>
+		</tr>
+		<tr>
+			<td>
+				setprecision(n)</td>
+			<td>
+				设置输出浮点数的精度为 n。<br />
+				<br />
+				在使用非 fixed 且非 scientific&nbsp;方式输出的情况下，n 即为有效数字最多的位数，如果有效数字位数超过 n，则小数部分四舍五人，或自动变为科学计 数法输出并保留一共 n 位有效数字。<br />
+				<br />
+				在使用 fixed 方式和 scientific 方式输出的情况下，n 是小数点后面应保留的位数。</td>
+		</tr>
+		<tr>
+			<td>
+				setiosflags(flag)</td>
+			<td>
+				将某个输出格式标志置为 1</td>
+		</tr>
+		<tr>
+			<td>
+				resetiosflags(flag)</td>
+			<td>
+				将某个输出格式标志置为 0</td>
+		</tr>
+		<tr>
+			<td>
+				boolapha</td>
+			<td>
+				把 true 和 false 输出为字符串</td>
+			<td rowspan="13">
+				不常用</td>
+		</tr>
+		<tr>
+			<td>
+				*noboolalpha</td>
+			<td>
+				把 true 和 false 输出为 0、1</td>
+		</tr>
+		<tr>
+			<td>
+				showbase</td>
+			<td>
+				输出表示数值的进制的前缀</td>
+		</tr>
+		<tr>
+			<td>
+				*noshowbase</td>
+			<td>
+				不输出表示数值的进制.的前缀</td>
+		</tr>
+		<tr>
+			<td>
+				showpoint</td>
+			<td>
+				总是输出小数点</td>
+		</tr>
+		<tr>
+			<td>
+				*noshowpoint</td>
+			<td>
+				只有当小数部分存在时才显示小数点</td>
+		</tr>
+		<tr>
+			<td>
+				showpos</td>
+			<td>
+				在非负数值中显示 +</td>
+		</tr>
+		<tr>
+			<td>
+				*noshowpos</td>
+			<td>
+				在非负数值中不显示 +</td>
+		</tr>
+		<tr>
+			<td>
+				*skipws</td>
+			<td>
+				输入时跳过空白字符</td>
+		</tr>
+		<tr>
+			<td>
+				noskipws</td>
+			<td>
+				输入时不跳过空白字符</td>
+		</tr>
+		<tr>
+			<td>
+				uppercase</td>
+			<td>
+				十六进制数中使用 A~E。若输出前缀，则前缀输出&nbsp;0X，科学计数法中输出 E</td>
+		</tr>
+		<tr>
+			<td>
+				*nouppercase</td>
+			<td>
+				十六进制数中使用 a~e。若输出前缀，则前缀输出 0x，科学计数法中输出 e。</td>
+		</tr>
+		<tr>
+			<td>
+				internal</td>
+			<td>
+				数值的符号（正负号）在指定宽度内左对齐，数值右对 齐，中间由填充字符填充。</td>
+		</tr>
+	</tbody>
+</table>
+<h4>
+	流操作算子的使用方法</h4>
+使用这些算子的方法是将算子用 &lt;&lt; 和 cout 连用。例如：
+<pre class="cpp">
+cout &lt;&lt; hex &lt;&lt; 12 &lt;&lt; &quot;,&quot; &lt;&lt; 24;</pre>
+这条语句的作用是指定以十六进制形式输出后面两个数，因此输出结果是：<br />
+c, 18<br />
+<h4>
+	setiosflags() 算子</h4>
+setiosflags() 算子实际上是一个库函数，它以一些标志作为参数，这些标志可以是在 iostream 头文件中定义的以下几种取值，它们的含义和同名算子一样。<br />
+<table>
+	<caption>
+		表2：setiosflags() 可以使用的标志及其说明</caption>
+	<tbody>
+		<tr>
+			<th>
+				标 志</th>
+			<th>
+				作 用</th>
+		</tr>
+		<tr>
+			<td>
+				ios::left</td>
+			<td>
+				输出数据在本域宽范围内向左对齐</td>
+		</tr>
+		<tr>
+			<td>
+				ios::right</td>
+			<td>
+				输出数据在本域宽范围内向右对齐</td>
+		</tr>
+		<tr>
+			<td>
+				ios::internal</td>
+			<td>
+				数值的符号位在域宽内左对齐，数值右对齐，中间由填充字符填充</td>
+		</tr>
+		<tr>
+			<td>
+				ios::dec</td>
+			<td>
+				设置整数的基数为 10</td>
+		</tr>
+		<tr>
+			<td>
+				ios::oct</td>
+			<td>
+				设置整数的基数为 8</td>
+		</tr>
+		<tr>
+			<td>
+				ios::hex</td>
+			<td>
+				设置整数的基数为 16</td>
+		</tr>
+		<tr>
+			<td>
+				ios::showbase</td>
+			<td>
+				强制输出整数的基数（八进制数以 0 开头，十六进制数以 0x 打头）</td>
+		</tr>
+		<tr>
+			<td>
+				ios::showpoint</td>
+			<td>
+				强制输出浮点数的小点和尾数 0</td>
+		</tr>
+		<tr>
+			<td>
+				ios::uppercase</td>
+			<td>
+				在以科学记数法格式 E 和以十六进制输出字母时以大写表示</td>
+		</tr>
+		<tr>
+			<td>
+				ios::showpos</td>
+			<td>
+				对正数显示&ldquo;+&rdquo;号</td>
+		</tr>
+		<tr>
+			<td>
+				ios::scientific</td>
+			<td>
+				浮点数以科学记数法格式输出</td>
+		</tr>
+		<tr>
+			<td>
+				ios::fixed</td>
+			<td>
+				浮点数以定点格式（小数形式）输出</td>
+		</tr>
+		<tr>
+			<td>
+				ios::unitbuf</td>
+			<td>
+				每次输出之后刷新所有的流</td>
+		</tr>
+		<tr>
+			<td>
+				ios::stdio</td>
+			<td>
+				每次输出之后清除 stdout,&nbsp;stderr</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+这些标志实际上都是仅有某比特位为 1，而其他比特位都为 0 的整数。<br />
+<br />
+多个标志可以用<code>|</code>运算符连接，表示同时设置。例如：
+<pre class="cpp">
+cout &lt;&lt; setiosflags(ios::scientific|ios::showpos) &lt;&lt; 12.34;</pre>
+输出结果是：<br />
++1.234000e+001<br />
+<br />
+如果两个相互矛盾的标志同时被设置，如先设置 setiosflags(ios::fixed)，然后又设置 setiosflags(ios::scientific)，那么结果可能就是两个标志都不起作用。因此，在设置了某标志，又要设置其他与之矛盾的标志时，就应该用 resetiosflags 清除原先的标志。例如下面三条语句：
+<pre class="cpp">
+cout &lt;&lt; setiosflags(ios::fixed) &lt;&lt; 12.34 &lt;&lt; endl;
+cout &lt;&lt; resetiosflags(ios::fixed) &lt;&lt; setiosflags(ios::scientific | ios::showpos) &lt;&lt; 12.34 &lt;&lt; endl;
+cout &lt;&lt; resetiosflags(ios::showpos) &lt;&lt; 12.34 &lt;&lt; endl;  //清除要输出正号的标志</pre>
+输出结果是：<br />
+12.340000<br />
++1.234000e+001<br />
+1.234000e+001
+<h4>
+	综合示例</h4>
+关于流操纵算子的使用，来看下面的程序。
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+u<a href='https://m.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+int main()
+{
+    int n = 141;
+    //1) 分别以十六进制、十进制、八进制先后输出 n
+    cout &lt;&lt; &quot;1)&quot; &lt;&lt; hex &lt;&lt; n &lt;&lt; &quot; &quot; &lt;&lt; dec &lt;&lt; n &lt;&lt; &quot; &quot; &lt;&lt; oct &lt;&lt; n &lt;&lt; endl;
+    double x = 1234567.89, y = 12.34567;
+    //2)保留5位有效数字
+    cout &lt;&lt; &quot;2)&quot; &lt;&lt; setprecision(5) &lt;&lt; x &lt;&lt; &quot; &quot; &lt;&lt; y &lt;&lt; &quot; &quot; &lt;&lt; endl;
+    //3)保留小数点后面5位
+    cout &lt;&lt; &quot;3)&quot; &lt;&lt; fixed &lt;&lt; setprecision(5) &lt;&lt; x &lt;&lt; &quot; &quot; &lt;&lt; y &lt;&lt; endl;
+    //4)科学计数法输出，且保留小数点后面5位
+    cout &lt;&lt; &quot;4)&quot; &lt;&lt; scientific &lt;&lt; setprecision(5) &lt;&lt; x &lt;&lt; &quot; &quot; &lt;&lt; y &lt;&lt; endl;
+    //5)非负数显示正号，输出宽度为12字符，宽度不足则用 * 填补
+    cout &lt;&lt; &quot;5)&quot; &lt;&lt; showpos &lt;&lt; fixed &lt;&lt; setw(12) &lt;&lt; setfill(&#39;*&#39;) &lt;&lt; 12.1 &lt;&lt; endl;
+    //6)非负数不显示正号，输出宽度为12字符，宽度不足则右边用填充字符填充
+    cout &lt;&lt; &quot;6)&quot; &lt;&lt; noshowpos &lt;&lt; setw(12) &lt;&lt; left &lt;&lt; 12.1 &lt;&lt; endl;
+    //7)输出宽度为 12 字符，宽度不足则左边用填充字符填充
+    cout &lt;&lt; &quot;7)&quot; &lt;&lt; setw(12) &lt;&lt; right &lt;&lt; 12.1 &lt;&lt; endl;
+    //8)宽度不足时，负号和数值分列左右，中间用填充字符填充
+    cout &lt;&lt; &quot;8)&quot; &lt;&lt; setw(12) &lt;&lt; internal &lt;&lt; -12.1 &lt;&lt; endl;
+    cout &lt;&lt; &quot;9)&quot; &lt;&lt; 12.1 &lt;&lt; endl;
+    return 0;
+}</pre>
+程序的输出结果是：<br />
+1)8d 141 215<br />
+2)1.2346e+06 12.346<br />
+3)1234567.89000 12.34567<br />
+4)1.23457e+06 1.23457e+01<br />
+5)***+12.10000<br />
+6)12.10000****<br />
+7)****12.10000<br />
+8)-***12.10000<br />
+9)12.10000<br />
+<br />
+需要注意的是，setw() 算子所起的作用是一次性的，即只影响下一次输出。每次需要指定输出宽度时都要使用 setw()。因此可以看到，第 9) 行的输出因为没有使用 setw()，输出的宽度就不再是前面指定的 12 个字符。<br />
+<br />
+在读入字符串时，setw() 还能影响 cin 的行为。例如下面的程序：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+using namespace std;
+int main()
+{
+    string s1, s2;
+    cin &gt;&gt; setw(4) &gt;&gt; s1 &gt;&gt; setw(3) &gt;&gt; s2;
+    cout &lt;&lt; s1 &lt;&lt; &quot;,&quot; &lt;&lt; s2 &lt;&lt; endl;
+    return 0;
+}</pre>
+输入：<br />
+1234567890↙<br />
+<br />
+程序的输出结果是：<br />
+1234,567<br />
+<br />
+说明<code>setw(4)</code>使得读入 s1 时，只读入 4 个字符，其后的<code>setw(3)</code>使得读入 s2 时只读入 3 个字符。<br />
+<br />
+setw() 用于 cin 时，同样只影响下一次的输入。<br />
+<br />
+思考题：setw() 究竟是如何实现的，以至于能和 cout 连用来指定输出宽度？自行查看编译器所带的 iomanip 头文件，然后写一个功能和 setw() 完全相同的 mysetw()。
+<h2>
+	调用cout的成员函数</h2>
+ostream 类有一些成员函数，通过 cout 调用它们也能用于控制输出的格式，其作用和流操纵算子相同，如表 3 所示。<br />
+<br />
+<table border="1">
+	<caption>
+		表3：ostream 类的成员函数</caption>
+	<tbody>
+		<tr>
+			<th>
+				成员函数</th>
+			<th>
+				作用相同的流操纵算子</th>
+			<th>
+				说明</th>
+		</tr>
+		<tr>
+			<td>
+				precision(n)</td>
+			<td>
+				setprecision(n)</td>
+			<td>
+				设置输出浮点数的精度为 n。</td>
+		</tr>
+		<tr>
+			<td>
+				width(w)</td>
+			<td>
+				setw(w)</td>
+			<td>
+				指定输出宽度为 w 个字符。</td>
+		</tr>
+		<tr>
+			<td>
+				fill(c)</td>
+			<td>
+				setfill (c)</td>
+			<td>
+				在指定输出宽度的情况下，输出的宽度不足时用字符 c 填充（默认情况是用空格填充）。</td>
+		</tr>
+		<tr>
+			<td>
+				setf(flag)</td>
+			<td>
+				setiosflags(flag)</td>
+			<td>
+				将某个输出格式标志置为 1。</td>
+		</tr>
+		<tr>
+			<td>
+				unsetf(flag)</td>
+			<td>
+				resetiosflags(flag)</td>
+			<td>
+				将某个输出格式标志置为 0。</td>
+		</tr>
+	</tbody>
+</table>
+<div style="clear:both;">
+	&nbsp;</div>
+setf 和 unsetf 函数用到的<code>flag</code>，与 setiosflags 和 resetiosflags 用到的完全相同。<br />
+<br />
+这些成员函数的用法十分简单。例如下面的三行程序：
+<pre class="cpp">
+cout.setf(ios::scientific);
+cout.precision(8);
+cout &lt;&lt; 12.23 &lt;&lt; endl;</pre>
+输出结果是：<br />
+1.22300000e+001<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="202_3.html" title="函数是什么，C语言函数概述" target="_blank">函数是什么，C语言函数概述</a></li>
+<li><a href="5574_2.html" title="Go语言WEB框架(Gin)详解" target="_blank">Go语言WEB框架(Gin)详解</a></li>
+<li><a href="vip_7722_2.html" title="如何修改关联式容器中键值对的键？" target="_blank">如何修改关联式容器中键值对的键？</a></li>
+<li><a href="8238_2.html" title="GDB print和display命令：查看变量的值" target="_blank">GDB print和display命令：查看变量的值</a></li>
+<li><a href="../c/sqrt_2.html" title="C语言sqrt()：求平方根" target="_blank">C语言sqrt()：求平方根</a></li>
+<li><a href="mlrkl2s_2.html" title="C++函数的默认参数详解" target="_blank">C++函数的默认参数详解</a></li>
+<li><a href="6t3k18f_2.html" title="C++局部变量和全局变量详解" target="_blank">C++局部变量和全局变量详解</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 275;
+window.arcId = "39ee3uHLDXd3uRSMuxuUEFJy/Y8/A+sdVye4Plxe9Tq5GguVh+6OjNYR9w";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

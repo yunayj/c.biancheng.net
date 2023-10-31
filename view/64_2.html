@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Go语言宕机恢复（recover）——防止程序崩溃</title>
+<meta name="description" content="无论是代码运行错误由 Runtime 层抛出的 panic 崩溃，还是主动触发的 panic 崩溃，都可以配合 defer 和 recover 实现错误捕捉和恢复，让代码在发生崩溃后允许继续运行。 提示 在其他语言里，" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+	<div id="sidebar" class="toggle-target">
+	<div id="contents">
+		<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../golang/golang_2.html">Go语言</a></dt>
+		
+			<dd>
+				<span class="channel-num">1</span>
+				<a href='../golang/intro/intro_2.html'>Go语言简介</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">2</span>
+				<a href='../golang/syntax/syntax_2.html'>Go语言基本语法</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">3</span>
+				<a href='../golang/container/container_2.html'>Go语言容器</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">4</span>
+				<a href='../golang/flow_control/flow_control_2.html'>流程控制</a>
+			</dd>
+		<dd class="this"> <span class="channel-num">5</span> <a href="../golang/func/func_2.html">Go语言函数</a> </dd><dl class="dl-sub"><dd>5.1 <a href="52_3.html">Go语言函数声明</a></dd><dd>5.2 <a href="vip_7315_2.html">示例：将秒转换为具体的时间</a><span class="iconfont iconfont-vip2"></span></dd><dd>5.3 <a href="vip_7316_2.html">示例：函数中的参数传递效果测试</a><span class="iconfont iconfont-vip2"></span></dd><dd>5.4 <a href="55_2.html">Go语言函数变量</a></dd><dd>5.5 <a href="vip_7317_2.html">Go语言字符串的链式处理</a><span class="iconfont iconfont-vip2"></span></dd><dd>5.6 <a href="57_2.html">Go语言匿名函数</a></dd><dd>5.7 <a href="58_2.html">Go语言函数类型实现接口</a></dd><dd>5.8 <a href="59_3.html">Go语言闭包（Closure）</a></dd><dd>5.9 <a href="60_2.html">Go语言可变参数</a></dd><dd>5.10 <a href="61_2.html">Go语言defer（延迟执行语句）</a></dd><dd>5.11 <a href="4193_2.html">Go语言递归函数</a></dd><dd>5.12 <a href="62_2.html">Go语言处理运行时错误</a></dd><dd>5.13 <a href="63_3.html">Go语言宕机（panic）</a></dd><dd>5.14 <a href="64_2.html">Go语言宕机恢复（recover）</a></dd><dd>5.15 <a href="4194_2.html">Go语言计算函数执行时间</a></dd><dd>5.16 <a href="vip_7318_2.html">示例：通过内存缓存来提升性能</a><span class="iconfont iconfont-vip2"></span></dd><dd>5.17 <a href="vip_7319_2.html">Go语言哈希函数</a><span class="iconfont iconfont-vip2"></span></dd><dd>5.18 <a href="vip_7321_2.html">Go语言函数的底层实现</a><span class="iconfont iconfont-vip2"></span></dd><dd>5.19 <a href="5409_2.html">Go语言Test功能测试函数</a></dd></dl>
+			<dd>
+				<span class="channel-num">6</span>
+				<a href='../golang/struct/struct_2.html'>Go语言结构体</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">7</span>
+				<a href='../golang/interface/interface_2.html'>Go语言接口</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">8</span>
+				<a href='../golang/package/package_2.html'>Go语言包（package）</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">9</span>
+				<a href='../golang/concurrent/concurrent_2.html'>Go语言并发</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">10</span>
+				<a href='../golang/reflect/reflect_2.html'>Go语言反射</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">11</span>
+				<a href='../golang/102/102_2.html'>Go语言文件处理</a>
+			</dd>
+		
+			<dd>
+				<span class="channel-num">12</span>
+				<a href='../golang/build/build_2.html'>Go语言编译与工具</a>
+			</dd>
+		
+	</div>
+</div>
+	<div id="article-wrap">
+		<div id="article">
+			<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../golang/golang_2.html">Go语言</a> &gt; <a href="../golang/func/func_2.html">Go语言函数</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+			<h1>Go语言宕机恢复（recover）——防止程序崩溃</h1>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+			<div id="arc-body">Recover 是一个Go语言的内建函数，可以让进入宕机流程中的 goroutine 恢复过来，recover 仅在延迟函数 defer 中有效，在正常的执行过程中，调用 recover 会返回 nil 并且没有其他任何效果，如果当前的 goroutine 陷入恐慌，调用 recover 可以捕获到 panic 的输入值，并且恢复正常的执行。<br />
+<br />
+通常来说，不应该对进入 panic 宕机的程序做任何处理，但有时，需要我们可以从宕机中恢复，至少我们可以在程序崩溃前，做一些操作，举个例子，当 web 服务器遇到不可预料的严重问题时，在崩溃前应该将所有的连接关闭，如果不做任何处理，会使得客户端一直处于等待状态，如果 web 服务器还在开发阶段，服务器甚至可以将异常信息反馈到客户端，帮助调试。<br />
+<h4>
+	提示</h4>
+在其他语言里，宕机往往以异常的形式存在，底层抛出异常，上层逻辑通过 try/catch 机制捕获异常，没有被捕获的严重异常会导致宕机，捕获的异常可以被忽略，让代码继续运行。<br />
+<br />
+Go语言没有异常系统，其使用 panic 触发宕机类似于其他语言的抛出异常，recover 的宕机恢复机制就对应其他语言中的 try/catch 机制。
+<h2>
+	让程序在崩溃时继续执行</h2>
+下面的代码实现了 ProtectRun() 函数，该函数传入一个匿名函数或闭包后的执行函数，当传入函数以任何形式发生 panic 崩溃后，可以将崩溃发生的错误打印出来，同时允许后面的代码继续运行，不会造成整个进程的崩溃。<br />
+<br />
+保护运行函数：
+<pre class="go">
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;runtime&quot;
+)
+
+// 崩溃时需要传递的上下文信息
+type panicContext struct {
+    function string // 所在函数
+}
+
+// 保护方式允许一个函数
+func ProtectRun(entry func()) {
+
+    // 延迟处理的函数
+    defer func() {
+
+        // 发生宕机时，获取panic传递的上下文并打印
+        err := recover()
+
+        switch err.(type) {
+        case runtime.Error: // 运行时错误
+            fmt.Println(&quot;runtime error:&quot;, err)
+        default: // 非运行时错误
+            fmt.Println(&quot;error:&quot;, err)
+        }
+
+    }()
+
+    entry()
+
+}
+
+func main() {
+    fmt.Println(&quot;运行前&quot;)
+
+    // 允许一段手动触发的错误
+    ProtectRun(func() {
+
+        fmt.Println(&quot;手动宕机前&quot;)
+
+        // 使用panic传递上下文
+        panic(&amp;panicContext{
+            &quot;手动触发panic&quot;,
+        })
+
+        fmt.Println(&quot;手动宕机后&quot;)
+    })
+
+    // 故意造成空指针访问错误
+    ProtectRun(func() {
+
+        fmt.Println(&quot;赋值宕机前&quot;)
+
+        var a *int
+        *a = 1
+
+        fmt.Println(&quot;赋值宕机后&quot;)
+    })
+
+    fmt.Println(&quot;运行后&quot;)
+}</pre>
+代码输出结果：
+<p class="info-box">
+	运行前<br />
+	手动宕机前<br />
+	error: &amp;{手动触发panic}<br />
+	赋值宕机前<br />
+	runtime error: runtime error: invalid memory address or nil pointer dereference<br />
+	运行后</p>
+对代码的说明：
+<ul>
+	<li>
+		第 9 行声明描述错误的结构体，保存执行错误的函数。</li>
+	<li>
+		第 17 行使用 defer 将闭包延迟执行，当 panic 触发崩溃时，ProtectRun() 函数将结束运行，此时 defer 后的闭包将会发生调用。</li>
+	<li>
+		第 20 行，recover() 获取到 panic 传入的参数。</li>
+	<li>
+		第 22 行，使用 switch 对 err 变量进行类型断言。</li>
+	<li>
+		第 23 行，如果错误是有 Runtime 层抛出的运行时错误，如空指针访问、除数为 0 等情况，打印运行时错误。</li>
+	<li>
+		第 25 行，其他错误，打印传递过来的错误数据。</li>
+	<li>
+		第 44 行，使用 panic 手动触发一个错误，并将一个结构体附带信息传递过去，此时，recover 就会获取到这个结构体信息，并打印出来。</li>
+	<li>
+		第 57 行，模拟代码中空指针赋值造成的错误，此时会由 Runtime 层抛出错误，被 ProtectRun() 函数的 recover() 函数捕获到。</li>
+</ul>
+<h2>
+	panic 和 recover 的关系</h2>
+panic 和 recover 的组合有如下特性：
+<ul>
+	<li>
+		有 panic 没 recover，程序宕机。</li>
+	<li>
+		有 panic 也有 recover，程序不会宕机，执行完对应的 defer 后，从宕机点退出当前函数后继续执行。</li>
+</ul>
+<h4>
+	提示</h4>
+虽然 panic/recover 能模拟其他语言的异常机制，但并不建议在编写普通函数时也经常性使用这种特性。<br />
+<br />
+在 panic 触发的 defer 函数内，可以继续调用 panic，进一步将错误外抛，直到程序整体崩溃。<br />
+<br />
+如果想在捕获错误时设置当前函数的返回值，可以对返回值使用命名返回值方式直接进行设置。</div>
+			<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="625_2.html" title="C++ replace,replace_if和replace_copy函数用法详解" target="_blank">C++ replace,replace_if和replace_copy函数用法详解</a></li>
+<li><a href="775_2.html" title="Java算术运算符" target="_blank">Java算术运算符</a></li>
+<li><a href="vip_3499_2.html" title="Linux Shell trap命令：捕获信号" target="_blank">Linux Shell trap命令：捕获信号</a></li>
+<li><a href="3537_2.html" title="汇编语言CALL和RET指令：调用一个过程" target="_blank">汇编语言CALL和RET指令：调用一个过程</a></li>
+<li><a href="vip_7720_2.html" title="C++ map容器3种插入键值对的方法，谁的效率更高？" target="_blank">C++ map容器3种插入键值对的方法，谁的效率更高？</a></li>
+<li><a href="../thread/vip_8622_2.html" title="使用C++11进行多线程编程" target="_blank">使用C++11进行多线程编程</a></li>
+<li><a href="../numpy/array-curd_2.html" title="NumPy数组元素增删改查" target="_blank">NumPy数组元素增删改查</a></li>
+</ul>
+</div>
+		</div>
+		
+	</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 64;
+window.arcId = "317a9po+sroFpJ1IjStJxO6z3R456etyNoK3MXwdLeDye4rHy4OUgP0m";
+window.typeidChain = "8|1";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/view/63.html";
+window.nextPageURL = "/view/4194.html";
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

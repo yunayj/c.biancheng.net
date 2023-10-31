@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++字符串查找函数详解</title>
+<meta name="description" content="在 C 语言和 C++ 语言中，可用于实现字符串查找功能的函数非常多。在 STL 中，字符串的查找功能可以实现多种功能，比如说： 搜索单个字符、搜索子串； 实现前向搜索、后向搜索； 分" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++字符串查找函数详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在 C 语言和 <a href='../cplus/cplus.html' target='_blank'>C++</a> 语言中，可用于实现字符串查找功能的函数非常多。在 <a href='../stl/stl.html' target='_blank'>STL</a> 中，字符串的查找功能可以实现多种功能，比如说：
+<ul>
+<li>
+搜索单个字符、搜索子串；</li>
+<li>
+实现前向搜索、后向搜索；</li>
+<li>
+分别实现搜索第一个和最后一个满足条件的字符（或子串）；</li>
+</ul>
+<br />
+若查找 find() 函数和其他函数没有搜索到期望的字符（或子串），则返回 npos；若搜索成功，则返回搜索到的第 1 个字符或子串的位置。其中，npos 是一个无符号整数值，初始值为 -1。当搜索失败时， npos 表示&ldquo;没有找到（not found）&rdquo;或&ldquo;所有剩佘字符&rdquo;。<br />
+<br />
+值得注意的是，所有查找 find() 函数的返回值均是 size_type 类型，即无符号整数类型。该返回值用于表明字符串中元素的个数或者字符在字符串中的位置。<br />
+<br />
+下面分别介绍和字符查找相关的函数。<br />
+<h2>
+find()函数和 rfind()</h2>
+<span style="color:#008000;">find() 函数</span>的原型主要有以下 4 种：
+<p class="info-box">
+size_type find (value_type _Chr, size_type _Off = 0) const;<br />
+//find()函数的第1个参数是被搜索的字符、第2个参数是在源串中开始搜索的下标位置<br />
+size_type find (const value_type* _Ptr , size_type _Off = 0) const;<br />
+//find()函数的第1个参数是被搜索的字符串，第2个参数是在源串中开始搜索的下标位置<br />
+size_type find (const value_type* _Ptr, size_type _Off = 0, size_type _Count) const;<br />
+//第1个参数是被搜索的字符串，第2个参数是源串中开始搜索的下标，第3个参数是关于第1个参数的字符个数，可能是 _Ptr 的所有字符数，也可能是 _Ptr 的子串宇符个数<br />
+size_type find (const basic_string&amp; _Str, size_type _Off = 0) const;<br />
+//第1个参数是被搜索的字符串，第2参数是在源串中开始搜索的下标位置</p>
+<span style="color:#008000;">rfind() 函数</span>的原型和find()函数的原型类似，参数情况也类似。只不过 rfind() 函数适用于实现逆向查找。<br />
+<br />
+find() 函数和 rfind() 函数的使用方法参见如下程序：
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+int main ()
+{
+    string str_ch (&quot; for&quot;);
+    string str (&quot; Hi, Peter, I&#39;m sick. Please bought some drugs for me.&quot;);
+    string::size_type m= str.find (&#39;P&#39;, 5);
+    string::size_type rm= str.rfind(&#39;P&#39;, 5);
+    cout &lt;&lt; &quot;Example - find() : The position (forward) of &#39;P&#39; is: &quot; &lt;&lt; (int) m &lt;&lt; endl;
+    cout &lt;&lt; &quot;Example - rfind(): The position (reverse) of &#39;P&#39; is: &quot; &lt;&lt; (int) rm &lt;&lt; endl;
+    string::size_type n = str.find (&quot; some&quot;, 0);
+    string::size_type rn = str.rfind (&quot; some&quot;, 0);
+    cout &lt;&lt; &quot;Example - find () : The position (forward) of &#39;some&#39; is: &quot; &lt;&lt; (int) n &lt;&lt; endl;
+    cout &lt;&lt; &quot;Example - rfind () : The position (reverse) of &#39;some&#39; is: &quot; &lt;&lt; (int) rn &lt;&lt; endl;
+    string::size_type mo = str.find (&quot; drugs&quot;, 0, 5);
+    string::size_type rmo = str.rfind (&quot; drugs&quot;, 0, 5);
+    cout &lt;&lt; &quot;Example - find(): The position (forward) of &#39;drugs&#39; is: &quot; &lt;&lt; (int) mo &lt;&lt; endl;
+    cout &lt;&lt; &quot;Example - rfind(): The position (reverse) of &#39;drugs&#39; is: &quot; &lt;&lt; (int) rmo &lt;&lt; endl;
+    string::size_type no = str.find (str_ch, 0);
+    string::size_type rno = str.rfind(str_ch, 0);
+    cout &lt;&lt; &quot;Example - find (): The position of &#39;for&#39; is: &quot; &lt;&lt; (int) no &lt;&lt; endl;
+    cout &lt;&lt; &quot;Example - rfind(): The position of &#39;for&#39; is: &quot; &lt;&lt; (int) rno &lt;&lt; endl;
+    cin.get ();
+}</pre>
+程序的运行结果为：
+<p class="info-box">
+Example - find() : The position (forward) of &#39;P&#39; is: 5<br />
+Example - rfind(): The position (reverse) of &#39;P&#39; is: 5<br />
+Example - find () : The position (forward) of &#39;some&#39; is: 35<br />
+Example - rfind () : The position (reverse) of &#39;some&#39; is: -1<br />
+Example - find(): The position (forward) of &#39;drugs&#39; is: 40<br />
+Example - rfind(): The position (reverse) of &#39;drugs&#39; is: -1<br />
+Example - find (): The position of &#39;for&#39; is: 46<br />
+Example - rfind(): The position of &#39;for&#39; is: -1</p>
+<h2>
+find_first_of()函数和 find_last_of()函数</h2>
+<span style="color:#008000;">find_first_of() 函数</span>可实现在源串中搜索某字符串的功能，该函数的返回值是被搜索字符串的第 1 个字符第 1 次出现的下标（位置）。若查找失败，则返回 npos。<br />
+<br />
+<span style="color:#008000;">find_last_of() 函数</span>同样可实现在源串中搜索某字符串的功能。与 find_first_of() 函数所不同的是，该函数的返回值是被搜索字符串的最后 1 个字符的下标（位置）。若查找失败，则返回 npos。<br />
+<br />
+上述两个函数的原型分别为：
+<p class="info-box">
+size_type find_first_not_of (value_type_Ch, size_type_Off = 0) const; size_type find_first_of (const value_type* _Ptr, size_type _Off = 0) const;<br />
+size_type find_first_of (const value_type* _Ptr, size_type_Off, size_type_Count) const;<br />
+size_type find_first_of (const basic_string &amp; _Str, size_type_Off = 0) const;<br />
+size_type find_last_of (value_type _Ch, size_type_Off = npos) const;<br />
+size_type find_last_of (const value_type* _Ptr, size_type_Off = npos) const;<br />
+size_type find_last_of (const value_type* _Ptr, size_type _Off, size_type _Count) const;<br />
+size_type find_last_of (const basic_string&amp; _Str, size_type_Off = npos) const;</p>
+下面的程序示例详细阐述了 find_first_of() 函数和 find_last_of() 函数的使用方法。这两个函数和 find() 函数及 rfind() 函数的使用方法相同，具体参数的意义亦相同。
+<pre class="cpp">
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+int main ()
+{
+    string str_ch (&quot;for&quot;);
+    string str(&quot;Hi, Peter, I&#39;m sick. Please bought some drugs for me. &quot;);
+    int length = str.length();
+    string::size_type m = str.find_first_of (&#39;P&#39;, 0);
+    string::size_type rm = str.find_last_of (&#39;P&#39;, (length - 1));
+    cout &lt;&lt; &quot;Example - find_first_of (): The position (forward) of &#39;P&#39; is: &quot; &lt;&lt; (int) m &lt;&lt; endl;
+    cout &lt;&lt; &quot;Example - find_last_of (): The position (reverse) of &#39;P&#39; is： &quot; &lt;&lt; (int) rm &lt;&lt; endl;
+    string:: size_type n = str.find_first_of (&quot;some&quot;, 0);
+    string:: size_type rn = str.find_last_of (&quot;some&quot;, (length -1));
+    cout &lt;&lt; &quot;Example - find_first_of(): The position (forward) of &#39;some&#39; is: &quot; &lt;&lt; (int) n &lt;&lt; endl;
+    cout &lt;&lt; &quot;Example - find_last_of(): The position (reverse) of &#39;some&#39; is: &quot; &lt;&lt; (int) rn &lt;&lt; endl;
+    string:: size_type mo = str.find_first_of (&quot;drugs&quot;, 0, 5);
+    string:: size_type rmo = str.find_last_of (&quot;drugs&quot;, (length-1), 5);
+    cout &lt;&lt; &quot;Example - find_first_of () : The position (forward) of &#39;drugs&#39; is: &quot; &lt;&lt; (int) mo &lt;&lt; endl;
+    cout &lt;&lt; &quot;Example - find_last_of () : The position (reverse) of &#39;drugs&#39; is: &quot; &lt;&lt; (int) rmo &lt;&lt; endl;
+    string::size_type no = str.find_first_of (str_ch, 0);
+    string::size_type rno = str.find_last_of (str_ch, (length -1));
+    cout &lt;&lt; &quot;Example - find_first_of() : The position of &#39;for&#39; is: &quot; &lt;&lt; (int) no &lt;&lt; endl;
+    cout &lt;&lt; &quot;Example - find_last_of () : The position of &#39;for&#39; is: &quot; &lt;&lt; (int) rno &lt;&lt; endl;
+    cin.get();
+    return 0;
+}</pre>
+程序执行结果：
+<p class="info-box">
+Example - find_first_of (): The position (forward) of &#39;P&#39; is: 4<br />
+Example - find_last_of (): The position (reverse) of &#39;P&#39; is： 21<br />
+Example - find_first_of(): The position (forward) of &#39;some&#39; is: 5<br />
+Example - find_last_of(): The position (reverse) of &#39;some&#39; is: 51<br />
+Example - find_first_of () : The position (forward) of &#39;drugs&#39; is: 8<br />
+Example - find_last_of () : The position (reverse) of &#39;drugs&#39; is: 48<br />
+Example - find_first_of() : The position of &#39;for&#39; is: 8<br />
+Example - find_last_of () : The position of &#39;for&#39; is: 48</p>
+<h2>
+find_first_not_of()函数和 find_last_not_of()函数</h2>
+<span style="color:#008000;">find_first_not_of() 函数</span>的函数原型为：
+<p class="info-box">
+size_type find_first_not_of (value_type _Ch, size_type_Off = 0) const;<br />
+size_type find_first_not_of (const value_type * _Ptr, size_type_Off = 0) const;<br />
+size_type find_first_not_of (const value_type* _Ptr, size_type_Off, size_type_Count) const;<br />
+size_type find_first_not_of (const basic_string &amp; _Str, size_type_Off = 0) const;</p>
+find_first_not_of() 函数可实现在源字符串中搜索与指定字符（串）不相等的第 1 个字符；find_last_not_of() 函数可实现在源字符串中搜索与指定字符（串）不相等的最后 1 个字符。这两个函数的参数意义和前面几个函数相同，它们的使用方法和前面几个函数也基本相同。详见下面的程序：
+<pre class="cpp">
+#include &lt; iostream &gt;
+#include &lt;string&gt;
+using namespace std;
+int main ()
+{
+    string str_ch (&quot; for&quot;);
+    string str (&quot;Hi, Peter, I&#39;m sick. Please bought some drugs for me.&quot;);
+    int length = str.length ();
+    string::size_type m= str.find_first_not_of (&#39;P&#39;,0);
+    string::size_type rm= str.find_last_not_of (&#39;P&#39;, (length -1);
+    cout &lt;&lt; &quot;Example - find_first_of (): The position (forward) of &#39;P&#39; is: &quot; &lt;&lt; (int) m &lt;&lt; endl;
+    cout &lt;&lt; &quot;Example - find_last_of (): The position (reverse) of &#39;P&#39; is: &quot; &lt;&lt; (int) rm &lt;&lt; endl;
+    string:: size_type n = str.find_first_not_of (&quot;some&quot;, 0);
+    string:: size_type rn = str.find_last_not_of (&quot;some&quot;, (length -1));
+    cout &lt;&lt; &quot;Example - find_first_of (): The position (forward) of &#39;some&#39; is: &quot; &lt;&lt; (int) n &lt;&lt; endl;
+    cout &lt;&lt; &quot;Example - find_last_of (): The position (reverse) of &#39;some&#39; is: &quot; &lt;&lt; (int) rn &lt;&lt; endl;
+    string:: size_type mo = str.find_first_not_of (&quot;drugs&quot;, 0, 5);
+    string:: size_type rmo = str.find_last_not_of (&quot;drugs&quot;, (length-1), 5);
+    cout &lt;&lt; &quot;Example - find_first_of (): The position (forward) of &#39;drugs&#39; is: &quot; &lt;&lt; (int) mo &lt;&lt; endl;
+    cout &lt;&lt; &quot;Example - find_last_of (): The position (reverse) of &#39;drugs&#39; is: &quot; &lt;&lt; (int) rno &lt;&lt; endl;
+    string::size_type no = str.find_first_not_of (str_ch, 0);
+    string::size_type rno = str.find_last_not_of (str_ch, (length-1));
+    cout &lt;&lt; &quot;Example - find_first_of (): The position of &#39;for&#39; is: &quot; &lt;&lt; (int) no &lt;&lt; endl;
+    cout &lt;&lt; &quot;Example - find_last_of () : The position of &#39;for&#39; is: &quot; &lt;&lt; (int) rno &lt;&lt; endl;
+    cin.get ();
+    return 0;
+}</pre>
+程序运行结果为：
+<p class="info-box">
+Example - find_first_of (): The position (forward) of &#39;P&#39; is: 0<br />
+Example - find_last_of (): The position (reverse) of &#39;P&#39; is: 52<br />
+Example - find_first_of (): The position (forward) of &#39;some&#39; is: 0<br />
+Example - find_last_of (): The position (reverse) of &#39;some&#39; is: 52<br />
+Example - find_first_of (): The position (forward) of &#39;drugs&#39; is: 0<br />
+Example - find_last_of (): The position (reverse) of &#39;drugs&#39; is: 52<br />
+Example - find_first_of (): The position of &#39;for&#39; is: 0<br />
+Example - find_last_of () : The position of &#39;for&#39; is: 52</p>
+本小节主要讲述 C++ STL 中的字符串查找函数。对于所述的 6 个查找函数，它们的使用形式大致相同，对于每个函数均配备了实例作为参考。请读者能认真对照例题，深刻理解这 6 个函数的使用方法，仔细体会函数每个参数的意义。<br />
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="917.html" title="Java多维数组" target="_blank">Java多维数组</a></li>
+<li><a href="930.html" title="Java选择排序法" target="_blank">Java选择排序法</a></li>
+<li><a href="2267.html" title="Python类调用实例方法" target="_blank">Python类调用实例方法</a></li>
+<li><a href="3288.html" title="HTML CSS JS之间的关系" target="_blank">HTML CSS JS之间的关系</a></li>
+<li><a href="vip_5082.html" title="Linux开机自动挂载硬件设备（配置/etc/fstab文件）" target="_blank">Linux开机自动挂载硬件设备（配置/etc/fstab文件）</a></li>
+<li><a href="../css3/column.html" title="CSS column（多列布局）" target="_blank">CSS column（多列布局）</a></li>
+<li><a href="wnimh7.html" title="Word文字对齐（对齐文字时不敲空格）" target="_blank">Word文字对齐（对齐文字时不敲空格）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 1453;
+window.arcId = "e60cuQug1Je5LsL1fKcYk/rfUU+07nx0i0kDMNkhi+9OsHj2Z6HRkBelY0o";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

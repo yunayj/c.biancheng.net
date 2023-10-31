@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Python写入文件（write和writelines）详解</title>
+<meta name="description" content="如果以 r+、w、w+、a、a+ 模式打开文件，则都可以写入。需要指出的是，当以 r+、w、w+ 模式打开文件时，文件指针位于文件开头处；当以 a、a+ 模式打开文件时，文件指针位于文件结尾处" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Python写入文件（write和writelines）详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">如果以 r+、w、w+、a、a+ 模式打开文件，则都可以写入。需要指出的是，当以 r+、w、w+ 模式打开文件时，文件指针位于文件开头处；当以 a、a+ 模式打开文件时，文件指针位于文件结尾处。<br />
+<br />
+另外，需要说明的是，当以 w 或 w+ 模式打开文件时，程序会立即清空文件的内容。<br />
+<h2>
+文件指针的概念</h2>
+文件指针用于标明文件读写的位置。假如把文件看成一个水流，文件中每个数据（以 b 模式打开，每个数据就是一个字节；以普通模式打开，每个数据就是一个字符）就相当于一个水滴，而文件指针就标明了文件将要读写哪个位置。<br />
+<br />
+图 1 简单示意了文件指针的概念。
+<div style="text-align: center;">
+<br />
+<img alt="文件指针概念示意图" src="../uploads/allimg/190301/2-1Z3011103345F.gif" /><br />
+图 1 文件指针概念示意图</div>
+<br />
+文件对象提供了以下方法来操作文件指针：
+<ul>
+<li>
+seek(offset[, whence])：该方法把文件指针移动到指定位置。当 whence 为 0 时（这是默认值），表明从文件开头开始计算，比如将 offset 设为 3，就是将文件指针移动到第 3 处；当 whence 为 1 时，表明从指针当前位置开始计算，比如文件指针当前在第 5 处，将 offset 设为 3，就是将文件指针移动到第 8 处；当 whence 为 2 时，表明从文件结尾开始计算，比如将 offset 设为 3，表明将文件指针移动到文件结尾倒数第 3 处。</li>
+<li>
+tell()：判断文件指针的位置。</li>
+</ul>
+<br />
+此外，当程序使用文件对象读写数据时，文件指针会自动向后移动：读写了多少个数据，文件指针就自动向后移动多少个位置。<br />
+<br />
+下面程序示范了文件指针操作：
+<pre class="python">
+f = open(&#39;filept_test.py&#39;, &#39;rb&#39;)
+# 判断文件指针的位置
+print(f.tell()) # 0
+# 将文件指针移动到3处
+f.seek(3)
+print(f.tell()) # 3
+# 读取一个字节，文件指针自动后移1个数据
+print(f.read(1)) # o
+print(f.tell())  # 4
+# 将文件指针移动到5处
+f.seek(5)
+print(f.tell())  # 5
+# 将文件指针向后移动5个数据
+f.seek(5, 1)
+print(f.tell())  # 10
+# 将文件指针移动到倒数第10处
+f.seek(-10, 2)
+print(f.tell())
+print(f.read(1))  # d</pre>
+上面程序示范了使用 seek() 方法来移动文件指针，包括从文件开头、指针当前位置、文件结尾处开始计算。运行上面程序，结合程序输出结果可以体会文件指针移动的效果。<br />
+<br />
+当文件指针位于哪里时，程序就会读取哪个位置的数据；当程序读取多少个数据时，文件指针就会自动向后移动多少个位置。<br />
+<h2>
+输出内容</h2>
+文件对象提供的写文件的方法主要有两个：
+<ol>
+<li>
+write(str 或 bytes)：输出字符串或字节串。只有以二进制模式（b 模式）打开的文件才能写入字节串。</li>
+<li>
+writelines（可迭代对象）：输出多个字符串或多个字节串。</li>
+</ol>
+<br />
+下面程序示范了使用 write() 和 writelines() 输出字符串：
+<pre class="python">
+import os
+f = open(&#39;x.txt&#39;, &#39;w+&#39;)
+# os.linesep代表当前操作系统上的换行符
+f.write(&#39;我爱<a href='../python/python.html' target='_blank'>Python</a>&#39; + os.linesep)
+f.writelines((&#39;土门壁甚坚，&#39;+ os.linesep,
+    &#39;杏园度亦难。&#39;+ os.linesep,
+    &#39;势异邺城下，&#39;+ os.linesep,
+    &#39;纵死时犹宽。&#39;+ os.linesep))</pre>
+上面程序中第 4 行代码调用 write() 方法输出单个字符串；第 5 行代码则调用 writelines() 方法输出多个字符串。<br />
+<br />
+当采用上面方法输出文件时，程序会使用当前操作系统默认的字符集。如果需要使用指定的字符集来输出文件，则可以来用二进制形式（程序先将所输出的字符串转换成指定字符集对应的二进制数据（字节串），然后输出二进制数据）。<br />
+<br />
+下面程序示范了使用二进制数据输出，通过这种方式来实现以 UTF-8 字符集保存文件：
+<pre class="python">
+import os
+f = open(&#39;y.txt&#39;, &#39;wb+&#39;)
+# os.linesep代表当前操作系统上的换行符
+f.write((&#39;我爱Python&#39; + os.linesep).encode(&#39;utf-8&#39;))
+f.writelines(((&#39;土门壁甚坚，&#39;+ os.linesep).encode(&#39;utf-8&#39;),
+    (&#39;杏园度亦难。&#39;+ os.linesep).encode(&#39;utf-8&#39;),
+    (&#39;势异邺城下，&#39;+ os.linesep).encode(&#39;utf-8&#39;),
+    (&#39;纵死时犹宽。&#39;+ os.linesep).encode(&#39;utf-8&#39;)))</pre>
+上面程序中的代码以 wb+ 模式打开文件，这意味着程序会以二进制形式来输出文件，此时程序输出的必须是宇节串，不能是字符串。因此，程序调用 encode() 方法将字符串转换成字节串，转换时指定使用 UTF-8 字符集，这意味着程序将会以 UTF-8 字符集来保存文件。<br />
+<br />
+该程序输出的文件内容与上一个程序输出的文件内容相同，只是该程序输出的文件内容是以 UTF-8 字符集保存的。<br />
+<br />
+从上面的程序可以看到，当使用 w+、wb+ 模式打开文件时，会导致文件内容被清空。因此，无论程序运行多少次，其输出的文件内容都只保留最近一次的输出数据。如果程序希望在文件后面追加内容，则应该使用 a+ 或 ab+ 模式。例如如下程序：<br />
+<pre class="python">
+import os
+f = open(&#39;z.txt&#39;, &#39;a+&#39;)
+# os.linesep代表当前操作系统上的换行符
+f.write(&#39;我爱Python&#39; + os.linesep)
+f.writelines((&#39;土门壁甚坚，&#39;+ os.linesep,
+    &#39;杏园度亦难。&#39;+ os.linesep,
+    &#39;势异邺城下，&#39;+ os.linesep,
+    &#39;纵死时犹宽。&#39;+ os.linesep))</pre>
+上面程序以 a+ 模式打开指定文件，这意味着以追加模式来打开文件，因此，使用 open() 函数打开文件后，不会立即清空文件内容，并且会将文件指针移动到文件结尾处，程序会在文件结尾处追加内容。<br />
+<br />
+每次运行上面程序，都会向 z.txt 文件中追加一段内容；程序运行的次数越多，z.txt 文件的内容就会越多。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="118.html" title="Go语言通过反射调用函数" target="_blank">Go语言通过反射调用函数</a></li>
+<li><a href="466.html" title="Code::Blocks汉化教程（附带汉化包）" target="_blank">Code::Blocks汉化教程（附带汉化包）</a></li>
+<li><a href="906.html" title="Java数组简介：数组是什么？" target="_blank">Java数组简介：数组是什么？</a></li>
+<li><a href="vip_3334.html" title="顺序表和链表的优缺点（区别、特点）详解" target="_blank">顺序表和链表的优缺点（区别、特点）详解</a></li>
+<li><a href="6127.html" title="PHP for循环" target="_blank">PHP for循环</a></li>
+<li><a href="6834.html" title="C++ STL vector插入元素（insert()和emplace()）详解" target="_blank">C++ STL vector插入元素（insert()和emplace()）详解</a></li>
+<li><a href="7290.html" title="MySQL执行事务的语法和流程" target="_blank">MySQL执行事务的语法和流程</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 2556;
+window.arcId = "9601DqYcPrd6475jhMn+lqLRoNqEAmjrOoxc6bQkhduzTTD2PUhEzKZOmVc";
+window.typeidChain = "145|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

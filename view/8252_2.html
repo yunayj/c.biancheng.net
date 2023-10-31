@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>GDB print命令高级用法</title>
+<meta name="description" content="《 GDB print和display命令 》一节中，就如何在 GDB 调试代码过程中查看某一变量或表达式的值，对 print 和 display 命令的功能和基本用法做了详细的介绍。在此基础上，print 命令还有更高级" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>GDB print命令高级用法</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body"><div style="text-align: justify;">
+	《<a href="8238_2.html" target="_blank">GDB print和display命令</a>》一节中，就如何在 GDB 调试代码过程中查看某一变量或表达式的值，对 print 和 display 命令的功能和基本用法做了详细的介绍。<br />
+	<br />
+	除此之外，print 命令还有更高级的功能和用法，例如以指定的格式输出变量或者表达式的值、输出数组中指定区间内的所有元素等等，接下来将给读者一一做详细的讲解。</div>
+<br />
+和 print 命令最基本的用法相比，该命令的完整语法格式如下所示：
+<p class="info-box">
+	(gdb) print [options --] [/fmt] expr</p>
+<blockquote>
+	<p>
+		格式中用 [ ] 括起来的部分是可选的，可以使用也可以省略。</p>
+</blockquote>
+其中，各个参数的含义如下：
+<ol>
+	<li>
+		options：表示该命令所支持的选项，这些选项可以控制 print 命令输出指定内容的变量或者表达式的值；</li>
+	<li>
+		fmt：指定输出变量或表达式值时所采用的格式；</li>
+	<li>
+		expr：指定要查看的变量或表达式。</li>
+</ol>
+<br />
+1) 首先介绍 options 参数的用法，表 1 罗列了常用的几个 options 参数值。<br />
+<br />
+<table>
+	<caption>
+		表 1 print options参数的取值</caption>
+	<tbody>
+		<tr>
+			<th>
+				options 参数</th>
+			<th>
+				功 能</th>
+		</tr>
+		<tr>
+			<td>
+				-address on|off</td>
+			<td>
+				查看某一指针变量的值时，是否同时打印其占用的内存地址，默认值为 on。该选项等同于单独执行 set print address on|off 命令。</td>
+		</tr>
+		<tr>
+			<td>
+				-array on|off</td>
+			<td>
+				是否以便于阅读的格式输出数组中的元素，默认值为 off。该选项等同于单独执行 set printf array on|off 命令。</td>
+		</tr>
+		<tr>
+			<td>
+				-array-indexes on|off</td>
+			<td>
+				对于非字符类型数组，在打印数组中每个元素值的同时，是否同时显示每个元素对应的数组下标，默认值为 off。该选项等同于单独执行 set print array-indexes on|off 命令。</td>
+		</tr>
+		<tr>
+			<td>
+				-pretty on|off</td>
+			<td>
+				以便于阅读的格式打印某个结构体变量的值，默认值为 off。该选项等同于单独执行 set print pretty on|off 命令。</td>
+		</tr>
+	</tbody>
+</table>
+<blockquote>
+	<p>
+		注意，options 参数和 /fmt 或者 expr 之间，必须用<code>--</code>（ 2 个 - 字符）分隔。此外，options 参数还有很多选项可以使用，感兴趣的读者可自行前往 <a href="https://sourceware.org/gdb/current/onlinedocs/gdb/Data.html#Data" target="_blank">GDB官网</a>查看，这里不再一一罗列。</p>
+</blockquote>
+<br />
+2) 和 display 命令一样，print 命令可允许自定义输出格式，表 2 罗列了几个常用的 /fmt 参数。<br />
+<br />
+<table>
+	<caption>
+		表 2&nbsp;/fmt 常用的值</caption>
+	<tbody>
+		<tr>
+			<th>
+				/fmt</th>
+			<th>
+				功 能</th>
+		</tr>
+		<tr>
+			<td>
+				/x</td>
+			<td>
+				以十六进制的形式打印出整数。</td>
+		</tr>
+		<tr>
+			<td>
+				/d</td>
+			<td>
+				以有符号、十进制的形式打印出整数。</td>
+		</tr>
+		<tr>
+			<td>
+				/u</td>
+			<td>
+				以无符号、十进制的形式打印出整数。</td>
+		</tr>
+		<tr>
+			<td>
+				/o</td>
+			<td>
+				以八进制的形式打印出整数。</td>
+		</tr>
+		<tr>
+			<td>
+				/t</td>
+			<td>
+				以二进制的形式打印出整数。</td>
+		</tr>
+		<tr>
+			<td>
+				/f</td>
+			<td>
+				以浮点数的形式打印变量或表达式的值。</td>
+		</tr>
+		<tr>
+			<td>
+				/c</td>
+			<td>
+				以字符形式打印变量或表达式的值。</td>
+		</tr>
+	</tbody>
+</table>
+<blockquote>
+	<p>
+		当 print 命令不指定任何 options 参数时，print 和 /fmt 之间不用添加空格，例如以十六进制的形式输出 num 整形变量的值，执行命令为 (gdb) print/x num。</p>
+</blockquote>
+<br />
+3) 我们知道，print 命令可以打印指定变量或表达式的值。值得一提的是，当指定目标表达式时，除了表达式本身外，GDB 调试器还支持使用<code>@</code>和<code>::</code>运算符。<br />
+<br />
+<code>@</code>运算符用于输出数组中指定区域的元素，使用格式如下：
+<p class="info-box">
+	(gdb) print first@len</p>
+其中，参数 first 用于指定数组查看区域内的首个元素的值；参数 len 用于指令自 first 元素开始查看的元素个数。<br />
+<br />
+假设有一个 array 数组，其定义如下：
+<pre class="cpp">
+int array[5] = {1,2,3,4};</pre>
+如果我们想查看第 1 个元素和第 2 个元素的值，可以执行如下指令：
+<p class="info-box">
+	(gdb) print array[0]@2<br />
+	$1 = {1, 2}</p>
+当程序中包含多个作用域不同但名称相同的变量或表达式时，可以借助<code>::</code>运算符明确指定要查看的目标变量或表达式。<code>::</code>运算符的语法格式如下：
+<p class="info-box">
+	(gdb) print file::variable<br />
+	(gdb) print function::variable</p>
+其中 file 用于指定具体的文件名，funciton 用于指定具体所在函数的函数名，variable 表示要查看的目标变量或表达式。<br />
+<br />
+举个例子：
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+int num = 10;
+int main(){
+    int num = 20;
+    return 0;
+}</pre>
+假设该程序存储在 main.c 文件中，则使用 GDB 调试至第 5 行（return 0）处暂停后，通过执行如下命令，即可查看 num 全局变量的值：
+<p class="info-box">
+	(gdb) print &#39;main.c&#39;::num<br />
+	$1 = 10</p>
+而通过执行如下命令，可以查看 num 局部变量的值：
+<p class="info-box">
+	(gdb) p main::num<br />
+	$1 = 20</p>
+当然，由于 GDB 调试就暂停在 main() 函数中，因此即便不指明<code>main::</code>，这里的 num 默认指代的也是 num 局部变量。<br />
+<br />
+为了让读者彻底搞清楚 print 命令的用法，这里以一段 C 语言程序为例，为大家演示以上所讲 print 命令的用法：
+<p class="info-box">
+	(gdb) l<br />
+	1 #include &lt;stdio.h&gt;<br />
+	2 typedef struct website{<br />
+	3&nbsp;&nbsp;&nbsp;&nbsp; char *url;<br />
+	4&nbsp;&nbsp;&nbsp;&nbsp; int time;<br />
+	5 }web;<br />
+	6 int num = 10;<br />
+	7 int main(){<br />
+	8&nbsp;&nbsp;&nbsp;&nbsp; int num = 20;<br />
+	9&nbsp;&nbsp;&nbsp;&nbsp; int array[10]={1,2,3,4,5,6};<br />
+	10&nbsp;&nbsp;&nbsp;&nbsp; web LanguageC = {&quot;http://c.biancheng.net&quot;,6};<br />
+	(gdb)<br />
+	11&nbsp;&nbsp;&nbsp;&nbsp; return 0;<br />
+	12 }<br />
+	(gdb) b 11<br />
+	Breakpoint 1 at 0x11cf: file main.c, line 11.<br />
+	(gdb) r<br />
+	Starting program: ~/demo/main.exe<br />
+	<br />
+	Breakpoint 1, main () at main.c:11<br />
+	11&nbsp;&nbsp;&nbsp;&nbsp; return 0;<br />
+	(gdb) print -address on -- LanguageC.url&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;-- 打印 url 指针的同时，输出其所在的内存地址<br />
+	$1 = 0x555555556004 &quot;http://c.biancheng.net&quot;<br />
+	(gdb) print -address off -- LanguageC.url&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;-- 打印 url 指针，但不输出其所在的内存地址<br />
+	$2 = &quot;http://c.biancheng.net&quot;<br />
+	(gdb) print -pretty on -- LanguageC&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;-- 以便于阅读的方式，输出结构体的值<br />
+	$3 = {<br />
+	&nbsp; url = 0x555555556004 &quot;http://c.biancheng.net&quot;,<br />
+	&nbsp; time = 6<br />
+	}<br />
+	(gdb) print LanguageC&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;-- 以压缩的格式输出结构体的值<br />
+	$4 = {url = 0x555555556004 &quot;http://c.biancheng.net&quot;, time = 6}<br />
+	(gdb) print/x num&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;-- 以十六进制的形式输出局部变量 num 的值<br />
+	$5 = 0x14<br />
+	(gdb) print array[1]@2&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;-- 从 array[1] 处开始，输出 array 数组中后续的 2 个元素的值<br />
+	$6 = {2, 3}<br />
+	(gdb) print num&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;-- 输出局部变量 num 的值<br />
+	$7 = 20<br />
+	(gdb) print &#39;main.c&#39;::num&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;-- 输出全局变量 num 的值<br />
+	$8 = 10<br />
+	(gdb)</p>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="96_2.html" title="goroutine和coroutine的区别" target="_blank">goroutine和coroutine的区别</a></li>
+<li><a href="2544_2.html" title="Python open()函数详解：打开指定文件" target="_blank">Python open()函数详解：打开指定文件</a></li>
+<li><a href="vip_6067_2.html" title="浅谈Python类命名空间" target="_blank">浅谈Python类命名空间</a></li>
+<li><a href="7105_2.html" title="MySQL是什么？它有什么优势？" target="_blank">MySQL是什么？它有什么优势？</a></li>
+<li><a href="7226_2.html" title="MySQL函数简介" target="_blank">MySQL函数简介</a></li>
+<li><a href="../jstl/fmt-timezone_2.html" title="&lt;fmt:timeZone&gt;标签" target="_blank">&lt;fmt:timeZone&gt;标签</a></li>
+<li><a href="ibwk45q_2.html" title="C++函数模板的重载" target="_blank">C++函数模板的重载</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8252;
+window.arcId = "ad0fC6MRlKtvzm9YEzwEkeCx/6mu3Z2CUxsd0SE4Cw2+Ws2z07ZEi+QslRQ";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

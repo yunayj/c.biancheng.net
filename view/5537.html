@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Python GIL全局解释器锁详解（深度剖析）</title>
+<meta name="description" content="通过前面的学习，我们了解了 Pyton 并发编程的特性以及什么是多线程编程。其实除此之外，Python 多线程还有一个很重要的知识点，就是本节要讲的 GIL。 GIL，中文译为全局解释器锁。在" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Python GIL全局解释器锁详解（深度剖析）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">通过前面的学习，我们了解了 Pyton 并发编程的特性以及什么是多线程编程。其实除此之外，<a href='../python/python.html' target='_blank'>Python</a> 多线程还有一个很重要的知识点，就是本节要讲的 GIL。<br />
+<br />
+GIL，中文译为全局解释器锁。在讲解 GIL 之前，首先通过一个例子来直观感受一下 GIL 在 Python 多线程程序运行的影响。<br />
+<br />
+首先运行如下程序：
+<pre class="python">
+import time
+start = time.clock()
+def CountDown(n):
+    while n &gt; 0:
+        n -= 1
+CountDown(100000)
+print(&quot;Time used:&quot;,(time.clock() - start))</pre>
+运行结果为：
+<p class="info-box">
+Time used: 0.0039529000000000005</p>
+<br />
+在我们的印象中，使用多个（适量）线程是可以加快程序运行效率的，因此可以尝试将上面程序改成如下方式：<br />
+<pre class="python">
+import time
+from threading import Thread
+start = time.clock()
+def CountDown(n):
+    while n &gt; 0:
+        n -= 1
+t1 = Thread(target=CountDown, args=[100000 // 2])
+t2 = Thread(target=CountDown, args=[100000 // 2])
+t1.start()
+t2.start()
+t1.join()
+t2.join()
+print(&quot;Time used:&quot;,(time.clock() - start))</pre>
+运行结果为：
+<p class="info-box">
+Time used: 0.006673</p>
+可以看到，此程序中使用了 2 个线程来执行和上面代码相同的工作，但从输出结果中可以看到，运行效率非但没有提高，反而降低了。<br />
+<blockquote>
+<p>
+如果使用更多线程进行尝试，会发现其运行效率和 2 个线程效率几乎一样（本机器测试使用 4 个线程，其执行效率约为 0.005）。这里不再给出具体测试代码，有兴趣的读者可自行测试。</p>
+</blockquote>
+是不是和你猜想的结果不一样？事实上，得到这样的结果是肯定的，因为 GIL 限制了 Python 多线程的性能不会像我们预期的那样。<br />
+<br />
+那么，什么是 GIL 呢？GIL 是最流程的 CPython 解释器（平常称为 Python）中的一个技术术语，中文译为全局解释器锁，其本质上类似操作系统的 Mutex。GIL 的功能是：在 CPython 解释器中执行的每一个 Python 线程，都会先锁住自己，以阻止别的线程执行。<br />
+<br />
+当然，CPython 不可能容忍一个线程一直独占解释器，它会轮流执行 Python 线程。这样一来，用户看到的就是&ldquo;伪&rdquo;并行，即 Python 线程在交替执行，来模拟真正并行的线程。<br />
+<br />
+有读者可能会问，既然 CPython 能控制线程伪并行，为什么还需要 GIL 呢？其实，这和 CPython 的底层内存管理有关。<br />
+<br />
+CPython 使用引用计数来管理内容，所有 Python 脚本中创建的实例，都会配备一个引用计数，来记录有多少个指针来指向它。当实例的引用计数的值为 0 时，会自动释放其所占的内存。<br />
+<br />
+举个例子，看如下代码：
+<p class="info-box">
+&gt;&gt;&gt; import sys<br />
+&gt;&gt;&gt; a = []<br />
+&gt;&gt;&gt; b = a<br />
+&gt;&gt;&gt; sys.getrefcount(a)<br />
+3</p>
+可以看到，a 的引用计数值为 3，因为有 a、b 和作为参数传递的 getrefcount 都引用了一个空列表。<br />
+<br />
+假设有两个 Python 线程同时引用 a，那么双方就都会尝试操作该数据，很有可能造成引用计数的条件竞争，导致引用计数只增加 1（实际应增加 2），这造成的后果是，当第一个线程结束时，会把引用计数减少 1，此时可能已经达到释放内存的条件（引用计数为 0），当第 2 个线程再次视图访问 a 时，就无法找到有效的内存了。<br />
+<br />
+所以，CPython 引进 GIL，可以最大程度上规避类似内存管理这样复杂的竞争风险问题。<br />
+<h2>
+Python GIL底层实现原理</h2>
+<div style="text-align: center;">
+<img alt="GIL工作流程示意图" src="../uploads/allimg/190830/2-1ZS012105L23.gif" /><br />
+图 1 GIL 工作流程示意图</div>
+<br />
+上面这张图，就是 GIL 在 Python 程序的工作示例。其中，Thread 1、2、3 轮流执行，每一个线程在开始执行时，都会锁住 GIL，以阻止别的线程执行；同样的，每一个线程执行完一段后，会释放 GIL，以允许别的线程开始利用资源。<br />
+<br />
+读者可能会问，为什么 Python 线程会去主动释放 GIL 呢？毕竟，如果仅仅要求 Python 线程在开始执行时锁住 GIL，且永远不去释放 GIL，那别的线程就都没有运行的机会。其实，CPython 中还有另一个机制，叫做<span style="color:#008000;">间隔式检查（check_interval）</span>，意思是 CPython 解释器会去轮询检查线程 GIL 的锁住情况，每隔一段时间，Python 解释器就会强制当前线程去释放 GIL，这样别的线程才能有执行的机会。<br />
+<br />
+注意，不同版本的 Python，其间隔式检查的实现方式并不一样。早期的 Python 是 100 个刻度（大致对应了 1000 个字节码）；而 Python 3 以后，间隔时间大致为 15 毫秒。当然，我们不必细究具体多久会强制释放 GIL，读者只需要明白，CPython 解释器会在一个&ldquo;合理&rdquo;的时间范围内释放 GIL 就可以了。<br />
+<br />
+整体来说，每一个 Python 线程都是类似这样循环的封装，来看下面这段代码：
+<pre class="python">
+for (;;) {
+    if (--ticker &lt; 0) {
+        ticker = check_interval;   
+        /* Give another thread a chance */
+        PyThread_release_lock(interpreter_lock);
+        /* Other threads may run now */   
+        PyThread_acquire_lock(interpreter_lock, 1);
+    }
+    bytecode = *next_instr++;
+    switch (bytecode) {
+        /* execute the next instruction ... */
+    }
+}</pre>
+从这段代码中可以看出，每个 Python 线程都会先检查 ticker 计数。只有在 ticker 大于 0 的情况下，线程才会去执行自己的代码。<br />
+<h2>
+Python GIL不能绝对保证线程安全</h2>
+注意，有了 GIL，并不意味着 Python 程序员就不用去考虑线程安全了，因为即便 GIL 仅允许一个 Python 线程执行，但别忘了 Python 还有 check interval 这样的抢占机制。<br />
+<br />
+比如，运行如下代码：
+<pre class="python">
+import threading
+n = 0
+def foo():
+    global n
+    n += 1
+threads = []
+for i in range(100):
+    t = threading.Thread(target=foo)
+    threads.append(t)
+for t in threads:
+    t.start()
+for t in threads:
+    t.join()
+print(n)</pre>
+执行此代码会发现，其大部分时候会打印 100，但有时也会打印 99 或者 98，原因在于&nbsp;n+=1 这一句代码让线程并不安全。如果去翻译 foo 这个函数的字节码就会发现，它实际上是由下面四行字节码组成：
+<p class="info-box">
+&gt;&gt;&gt; import dis<br />
+&gt;&gt;&gt; dis.dis(foo)<br />
+LOAD_GLOBAL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 (n)<br />
+LOAD_CONST&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1 (1)<br />
+INPLACE_ADD<br />
+STORE_GLOBAL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 (n)</p>
+而这四行字节码中间都是有可能被打断的！所以，千万别以为有了 GIL 程序就不会产生线程问题，我们仍然需要注意线程安全。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="495.html" title="C语言杨辉三角（两种方法）" target="_blank">C语言杨辉三角（两种方法）</a></li>
+<li><a href="1727.html" title="载入内存，让程序运行起来" target="_blank">载入内存，让程序运行起来</a></li>
+<li><a href="vip_1794.html" title="C语言在屏幕的任意位置输出字符，开发小游戏的第一步" target="_blank">C语言在屏幕的任意位置输出字符，开发小游戏的第一步</a></li>
+<li><a href="vip_7663.html" title="Linux如何查看内存的使用情况？" target="_blank">Linux如何查看内存的使用情况？</a></li>
+<li><a href="7928.html" title="Django Form表单完整使用流程" target="_blank">Django Form表单完整使用流程</a></li>
+<li><a href="../spring_mvc/interceptor.html" title="Spring MVC拦截器（Interceptor）" target="_blank">Spring MVC拦截器（Interceptor）</a></li>
+<li><a href="1bw5qpz.html" title="2023最新嵌入式开发学习路线（免费）" target="_blank">2023最新嵌入式开发学习路线（免费）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 5537;
+window.arcId = "ccd6KYLQdVF6UOMUqacQdVvQMk0wqzLsah0QhNJdwvEIEh6mC3ZTijKf7uw";
+window.typeidChain = "145|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

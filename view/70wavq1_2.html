@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C++内联函数详解</title>
+<meta name="description" content="在 C++ 编程中，函数调用通常涉及一系列操作，比如参数传递、返回地址保存等，这些操作会消耗一定的时间和资源。 例如，下面是一个求和函数： int add(int a, int b) { return a + b;} 求和在" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C++内联函数详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在 C++ 编程中，函数调用通常涉及一系列操作，比如参数传递、返回地址保存等，这些操作会消耗一定的时间和资源。<br />
+<br />
+例如，下面是一个求和函数：
+<pre class="cpp">
+int add(int a, int b) {
+    return a + b;
+}</pre>
+求和在计算机中是最基本的运算，只要一条指令就可以完成。如果写成函数，则需要附加两次跳转、参数传递、函数返回等操作，这将极大地影响效率。<br />
+<br />
+俺么，对于一些简单、调用频繁的函数，如何减少这些额外开销呢？答案就是内联函数（Inline Functions）。<br />
+<br />
+在 C++ 中，如果在函数的声明前加上 inline 关键字，则称为内联函数。<br />
+<br />
+内联函数是 C++ 编译器提供的一种优化机制。当一个函数被声明为内联时，编译器会尝试将该函数的代码嵌入到每个调用它的地方，以减少函数调用的开销。<br />
+<br />
+具体来讲，对于内联函数，编译器不再创建真实的函数，而只是在函数调用处展开（即将函数的代码直接复制到调用处）。这样，在&ldquo;调用&rdquo;函数时就不用跳转了，避免了使用真实函数的代价。<br />
+<br />
+修改上面的 add() 函数，把它定义为内联函数：<br />
+<pre class="cpp">
+inline int add(int a, int b) {
+    return a + b;
+}</pre>
+函数调用如下：
+<pre class="cpp" shownum="false">
+int sum = add(1 + 2);</pre>
+那么程序编译后，实际的代码是：
+<pre class="cpp" shownum="false">
+int sum = 1 + 2;</pre>
+<br />
+【实例】下面是一个使用内联函数的简单示例。<br />
+<pre class="cpp">
+#include &lt;iostream&gt;
+
+inline int add(int a, int b) {
+    return a + b;
+}
+
+int main() {
+    int x = 5, y = 10;
+
+    // 调用内联函数
+    int sum = add(x, y);
+
+    std::cout &lt;&lt; &quot;The sum is: &quot; &lt;&lt; sum &lt;&lt; std::endl; // 输出 &quot;The sum is: 15&quot;
+
+    return 0;
+}</pre>
+在这个例子中，函数 add() 可能会被嵌入到main函数中，就像你直接写<code>int sum = x + y;</code>一样。<br />
+<br />
+需要注意的是，inline 只是一个建议，编译器可以选择忽略它。也就是说，即便函数用 inline 修饰，要不要将此函数作为内联函数，取决于编译器的判断。<br />
+<br />
+实际场景中，有些函数是不适合作为内联函数的，如递归函数，或者有很多语句的函数，这样的函数即便是加了 inline 关键字，编译器依然会将其当做一般函数对待。<br />
+<h2>
+	总结</h2>
+内联函数是一种用于提高程序执行效率的有效手段，它的优点是：
+<ul>
+	<li>
+		性能提升：减少了函数调用的开销。</li>
+	<li>
+		代码优化：有时，编译器能进一步优化嵌入的代码。</li>
+</ul>
+<br />
+当然，内联函数也有它的局限性：
+<ul>
+	<li>
+		代码膨胀：如果一个内联函数在多个地方被调用，那么它的代码会被复制多次，导致编译后的程序体积增加。</li>
+	<li>
+		调试困难：因为代码被嵌入，所以可能会使得调试更加困难。</li>
+	<li>
+		编译时间增加：内联函数需要在编译阶段进行代码替换，可能会导致编译时间增加。</li>
+</ul>
+<br />
+总之，对于简单、短小和频繁调用的函数，使用内联是有益的。避免对复杂或循环体内的函数使用内联，因为这样可能不会带来预期的优化效果。<br />
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="2022_2.html" title="C语言二维数组指针（指向二维数组的指针）详解" target="_blank">C语言二维数组指针（指向二维数组的指针）详解</a></li>
+<li><a href="2554_2.html" title="MySQL AS：设置别名" target="_blank">MySQL AS：设置别名</a></li>
+<li><a href="vip_3233_2.html" title="如何编写自己的Shell配置文件（配置脚本）？" target="_blank">如何编写自己的Shell配置文件（配置脚本）？</a></li>
+<li><a href="vip_5868_2.html" title="如何优雅地断开TCP连接？" target="_blank">如何优雅地断开TCP连接？</a></li>
+<li><a href="7168_2.html" title="GCC创建和使用静态链接库（.a文件）" target="_blank">GCC创建和使用静态链接库（.a文件）</a></li>
+<li><a href="../nexus/nexus3_2.html" title="Nexus3使用教程" target="_blank">Nexus3使用教程</a></li>
+<li><a href="ll3tami_2.html" title="JS函数定义的三种方式" target="_blank">JS函数定义的三种方式</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10329;
+window.arcId = "e646UPQwlg2uq2urSBfTXoWiS0RlYDHr/aV6qkjG6T1FQvnIUTvWqXgUzBbY";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Qt QStackedLayout布局用法详解</title>
+<meta name="description" content="QStackedLayout是 Qt 提供的一种布局工具（或者理解为一种布局控件），它可以容纳多个控件或者窗口，但每次只能显示一个控件或窗口。 举个简单的例子，图 1 中就用到了 QStackedLayout 布局" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Qt QStackedLayout布局用法详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">QStackedLayout&nbsp;是 Qt 提供的一种布局工具（或者理解为一种布局控件），它可以容纳多个控件或者窗口，但每次只能显示一个控件或窗口。<br />
+<br />
+举个简单的例子，图 1 中就用到了 QStackedLayout 布局控件：<br />
+<div style="text-align: center;">
+<img alt="" src="../uploads/allimg/211028/1AKSb7-0.gif" /><br />
+图 1 QStackedLayout分组控件</div>
+<br />
+整个窗口被一分为二，左侧是 QListWidget 列表控件，右侧是 QStackedLayout 布局控件。QStackedLayout 中包含 QPushButonn、QLabel 和 QLineEdit 这 3 个控件，但每次只显示一个。<br />
+<blockquote>
+<p>
+注意，QStackedLayout 自身无法切换当前显示的控件或窗口，实际应用时通常和 QListWidget 或者 QComboBox 搭配使用。</p>
+</blockquote>
+使用 QStackedLayout 布局控件之前，程序中要先引入<code style="font-size: 14px;">&lt;QStackedLayout&gt;</code>头文件。 每个 QStackedLayout 控件都是 QStackedLayout 类的一个实例对象，该类提供有 3 个构造函数，分别是：<br />
+<pre class="info-box">
+QStackedLayout()
+QStackedLayout(QWidget *parent)
+QStackedLayout(QLayout *parentLayout)</pre>
+借助第二个构造函数，可以将 QStackedLayout 添加到指定的 parent 窗口中；借助第三个构造函数，可以将 QStackedLayout 嵌入到指定的&nbsp;parentLayout 布局控件中（布局控件是可以嵌套使用的）。<br />
+<br />
+下表罗列了操作 QStackedLayout 对象常用的一些成员方法：<br />
+<table>
+<caption>
+表 2&nbsp;QStackedLayout常用方法</caption>
+<tbody>
+<tr>
+<th>
+成员方法</th>
+<th>
+功 能</th>
+</tr>
+<tr>
+<td>
+int QStackedLayout::addWidget(QWidget *widget)</td>
+<td>
+将 widget 控件添加到 QStackedLayout 控件中。</td>
+</tr>
+<tr>
+<td>
+int QStackedLayout::insertWidget(int index, QWidget *widget)</td>
+<td>
+将 widget 控件插入到 QStackedLayout&nbsp;控件指定的位置处。</td>
+</tr>
+<tr>
+<th>
+信号函数</th>
+<th>
+功 能</th>
+</tr>
+<tr>
+<td>
+void QStackedLayout::currentChanged(int index)</td>
+<td>
+切换当前显示的控件时，会触发此信号，index 为显示的新控件的索引。</td>
+</tr>
+<tr>
+<td>
+void QStackedLayout::widgetRemoved(int index)</td>
+<td>
+移除某个控件时，会触发此信号，index 为被移除控件的索引。</td>
+</tr>
+<tr>
+<th>
+槽函数</th>
+<th>
+功 能</th>
+</tr>
+<tr>
+<td>
+void setCurrentIndex(int index)</td>
+<td>
+将第 index 个控件作为要显示的控件。</td>
+</tr>
+<tr>
+<td>
+void QStackedLayout::setCurrentWidget(QWidget *widget)</td>
+<td>
+设置 widget 作为当前要实现的控件。注意，必须保证 widget 存储在 QStackedLayout 控件中。</td>
+</tr>
+</tbody>
+</table>
+<br />
+这里我们以图 1 所示的窗口为例，实现代码如下：
+<pre class="cpp">
+#include &lt;QApplication&gt;
+#include &lt;QWidget&gt;
+#include &lt;QPushButton&gt;
+#include &lt;QLabel&gt;
+#include &lt;QLineEdit&gt;
+#include &lt;QStackedLayout&gt;
+#include &lt;QListWidget&gt;
+#include &lt;QHBoxLayout&gt;
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    //创建主窗口
+    QWidget widget;
+    widget.setWindowTitle(&quot;QStackedLayout分组布局&quot;);
+    widget.resize(600,400);
+    //向主窗口中添加一个水平布局控件
+    QHBoxLayout *layout=new QHBoxLayout;
+   
+    //创建一个列表
+    QListWidget listWidget(&amp;widget);
+    listWidget.setMinimumWidth(150);
+    listWidget.setFont(QFont(&quot;宋体&quot;,14));
+    listWidget.addItem(&quot;QPushButton&quot;);
+    listWidget.addItem(&quot;QLabel&quot;);
+    listWidget.addItem(&quot;QLineEdit&quot;);
+   
+    //新建 3 个窗口，分别放置文本框、按钮和单行输入框
+    QWidget widget1;
+    widget1.setMinimumSize(400,400);
+    QPushButton but1(&quot;这是一个按钮&quot;,&amp;widget1);
+
+    QWidget widget2;
+    widget2.setMinimumSize(400,400);
+    QLabel lab1(&quot;这是一个文本框&quot;,&amp;widget2);
+
+    QWidget widget3;
+    widget3.setMinimumSize(400,400);
+    QLineEdit edit(&quot;这是一个单行输入框&quot;,&amp;widget3);
+   
+    //创建一个分组布局，将 3 个窗口添加到分组控件中
+    QStackedLayout *stackedLayout = new QStackedLayout;
+    stackedLayout-&gt;addWidget(&amp;widget1);
+    stackedLayout-&gt;addWidget(&amp;widget2);
+    stackedLayout-&gt;addWidget(&amp;widget3);
+   
+    //layout 第一列添加 QListWidget 控件，第二列添加分组布局控件，设置它们的伸缩系数比为 1:4
+    layout-&gt;addWidget(&amp;listWidget,1);
+    layout-&gt;addLayout(stackedLayout,4);
+    //将 layout 水平布局控件添加到 widget 窗口中
+    widget.setLayout(layout);
+    widget.show();
+    //连接信号和槽，实现当点击列表中的某一项，切换分组布局管理器显示的控件
+    QObject::connect(&amp;listWidget,&amp;QListWidget::currentRowChanged,stackedLayout,&amp;QStackedLayout::setCurrentIndex);
+    return a.exec();
+}</pre>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="998.html" title="Java方法重载" target="_blank">Java方法重载</a></li>
+<li><a href="1037.html" title="Linux字符界面调整分辨率的方法" target="_blank">Linux字符界面调整分辨率的方法</a></li>
+<li><a href="1058.html" title="Linux源码包服务管理（启动与自启动）" target="_blank">Linux源码包服务管理（启动与自启动）</a></li>
+<li><a href="vip_3356.html" title="[数据结构实践项目]括号匹配算法（C语言实现）" target="_blank">[数据结构实践项目]括号匹配算法（C语言实现）</a></li>
+<li><a href="../numpy/index-slice.html" title="Numpy索引和切片" target="_blank">Numpy索引和切片</a></li>
+<li><a href="../tkinter/layout-manager-method.html" title="Tkinter布局管理器（三种方法详解）" target="_blank">Tkinter布局管理器（三种方法详解）</a></li>
+<li><a href="../c/putchar.html" title="C语言putchar()：输出一个字符" target="_blank">C语言putchar()：输出一个字符</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9427;
+window.arcId = "1728X2QStVZwuvK4VZddtrlOOpv7019y06Y8/TFmrUeClXCOMaDbYQJXvFk";
+window.typeidChain = "294|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

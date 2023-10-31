@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Linux ACL访问控制权限完全攻略（超详细）</title>
+<meta name="description" content="在普通权限中，用户对文件只有三种身份，就是属主、属组和其他人；每种用户身份拥有读（read）、写（write）和执行（execute）三种权限。但是在实际工作中，这三种身份实在是不够用" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Linux ACL访问控制权限完全攻略（超详细）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在普通权限中，用户对文件只有三种身份，就是属主、属组和其他人；每种用户身份拥有读（read）、写（write）和执行（execute）三种权限。但是在实际工作中，这三种身份实在是不够用，我们举个例子来看看。
+<div style="text-align: center;">
+	<br />
+	<img alt="" src="../uploads/allimg/181011/2-1Q011153333H0_2.jpg" style="width: 500px; height: 252px;" /><br />
+	图 1 ACL权限简介</div>
+<br />
+图 1 的根目录中有一个 /project 目录，这是班级的项目目录。班级中的每个学员都可以访问和修改这个目录，老师也需要对这个目录拥有访问和修改权限，其他班级的学员当然不能访问这个目录。需要怎么规划这个目录的权限呢？应该这样：老师使用 root 用户，作为这个目录的属主，权限为 rwx；班级所有的学员都加入 tgroup 组，使 tgroup 组作为 /project 目录的属组，权限是 rwx；其他人的权限设定为 0。这样这个目录的权限就可以符合我们的项目开发要求了。<br />
+<br />
+有一天，班里来了一位试听的学员 st，她必须能够访问 /project 目录，所以必须对这个目录拥有 r 和 x 权限；但是她又没有学习过以前的课程，所以不能赋予她 w 权限，怕她改错了目录中的内容，所以学员 st 的权限就是 r-x。可是如何分配她的身份呢？变为属主？当然不行，要不 root 该放哪里？加入 tgroup 组？也不行，因为 tgroup 组的权限是 rwx，而我们要求学员 st 的权限是 r-x。如果把其他人的权限改为 r-x 呢？这样一来，其他班级的所有学员都可以访问 /project 目录了。<br />
+<br />
+当出现这种情况时，普通权限中的三种身份就不够用了。ACL 权限就是为了解决这个问题的。在使用 ACL 权限给用户 st 陚予权限时，st 既不是 /project 目录的属主，也不是属组，仅仅赋予用户 st 针对此目录的 r-x 权限。这有些类似于 Windows 系统中分配权限的方式，单独指定用户并单独分配权限，这样就解决了用户身份不足的问题。<br />
+<br />
+<span style="color:#b22222;">ACL是Access Control List（访问控制列表）的缩写，不过在Linux系统中，ACL用于设定用户针对文件的权限，而不是在交换路由器中用来控制数据访问的功能（类似于防火墙）。</span><br />
+<h2>
+	开启ACL权限</h2>
+在 CentOS 6.x 系统中 ACL 权限默认是开启的，不需要手工开启。不过，如果你的操作系统不是 CentOS 6.x，那该如何查看 ACL 权限是否开启了呢？可以这样查看：<br />
+<p class="info-box">
+	[root@localhost ~]# mount<br />
+	/dev/sda1 on /boot type ext4 (rw)<br />
+	/dev/sda3 on I type ext4 (rw)<br />
+	&hellip;省略部分输出&hellip;<br />
+	#使用mount命令可以看到系统中已经挂载的分区，但是并没有看到ACL权限的设置<br />
+	[root@localhost ~]# dumpe2fs -h /dev/sda3<br />
+	#dumpe2fs是查询指定分区文件系统详细信息的命令<br />
+	&hellip;省略部分输出&hellip;<br />
+	Default mount options: user_xattr acl<br />
+	&hellip;省略部分输出&hellip;</p>
+其中，dumpe2fs 命令可选的选项及其含义如下：
+<ul>
+	<li>
+		-h：仅显示超级块中的信息，而不显示磁盘块组的详细信息；</li>
+</ul>
+<br />
+使用 mount 命令可以査看到系统中已经挂载的分区，而使用 dumpe2fs 命令可以査看到这个分区文件系统的详细信息。大家可以看到，我们的 ACL 权限是 /dev/sda3 分区的默认挂载选项，所以不需要手工挂载。<br />
+<br />
+不过我的 Linux 系统如果没有默认挂载，则可以手工挂载吗？当然可以，执行如下命令：<br />
+<p class="info-box">
+	[root@localhost ~]# mount -o remount, acl /<br />
+	#重新挂载根分区，并加入ACL权限</p>
+使用 mount 命令重新挂载，并加入 ACL 权限。不过使用此命令是临时生效的。要想永久生效，需要修改 /etc/fstab 文件，命令如下：<br />
+<p class="info-box">
+	[root@localhost ~]#vi /etc/fstab<br />
+	UUID=c2ca6f57-b15c-43ea-bca0-f239083d8bd2 /ext4 defaults, acl 1 1<br />
+	#加入ACL权限<br />
+	[root@localhost ~]# mount -o remount /<br />
+	#重新挂载文件系统或重启系统，使修改生效</p>
+在你需要开启 ACL 权限的分区行上（也就是说 ACL 权限针对的是分区），手工在 defaults 后面加入&quot;，acl&quot;即可永久在此分区中开启 ACL 权限。<br />
+<h2>
+	ACL权限设置</h2>
+<h4>
+	1) ACL权限管理命令</h4>
+我们知道了 ACL 权限的作用，也知道了如何开启 ACL 权限，接下来学习如何査看和设定 ACL 权限。命令如下：
+<p class="info-box">
+	[root@localhost ~]# getfacle 文件名<br />
+	#查看ACL权限<br />
+	[root@localhost ~]# setfacl 选项 文件名<br />
+	#设定ACL权限</p>
+选项：
+<ul>
+	<li>
+		-m：设定 ACL 权限。如果是给予用户 ACL 权限，则使用&quot;u:用户名：权限&quot;格式赋予；如果是给予组 ACL 权限，则使用&quot;g:组名：权限&quot; 格式赋予；</li>
+	<li>
+		-x：删除指定的 ACL 权限；</li>
+	<li>
+		-b：删除所有的 ACL 权限；</li>
+	<li>
+		-d：设定默认 ACL 权限。只对目录生效，指目录中新建立的文件拥有此默认权限；</li>
+	<li>
+		-k：删除默认 ACL 权限；</li>
+	<li>
+		-R：递归设定 ACL 权限。指设定的 ACL 权限会对目录下的所有子文件生效；</li>
+</ul>
+<h4>
+	2) 给用户和用户组添加ACL权限</h4>
+举个例子，就来看看图 1 中的权限怎么分配。我们要求 root 是 /project 目录的属主，权限是 rwx；tgroup 是此目录的属组，tgroup 组中拥有班级学员 zhangsan 和 lisi，权限是 rwx；其他人的权限是 0。这时，试听学员 st 来了，她的权限是 r-x。我们来看具体的分配命令。<br />
+<p class="info-box">
+	[root@localhost ~]# useradd zhangsan<br />
+	[root@localhost ~]# useradd lisi<br />
+	[root@localhost ~]# useradd st<br />
+	[root@localhost ~]# groupadd tgroup<br />
+	#添加需要试验的用户和用户组，省略设定密码的过程<br />
+	[root@localhost ~]# mkdir /project #建立需要分配权限的目录<br />
+	[root@localhost ~]# chown root:tgroup /project/<br />
+	#改变/project目录的属主和属组<br />
+	[root@localhost ~]# chmod 770 /project/<br />
+	#指定/project目录的权限<br />
+	[root@localhost ~]# ll -d /project/<br />
+	drwxrwx--- 2 root tgroup 4096 1月19 04:21 /project/<br />
+	#查看一下权限，已经符合要求了<br />
+	#这时st学员来试听了，如何给她分配权限<br />
+	[root@localhost ~]# setfacl -m u:st:rx /project/<br />
+	#给用户st赋予r-x权限，使用&quot;u:用户名：权限&quot; 格式<br />
+	[root@localhost /]# cd /<br />
+	[root@localhost /]# ll -d project/<br />
+	drwxrwx---+ 3 root tgroup 4096 1月19 05:20 project/<br />
+	#使用ls-l査询时会发现，在权限位后面多了一个&quot;+&quot;，表示此目录拥有ACL权限<br />
+	[root@localhost /]# getfacl project<br />
+	#查看/prpject目录的ACL权限<br />
+	#file: project &lt;-文件名<br />
+	#owner: root &lt;-文件的属主<br />
+	#group: tgroup &lt;-文件的属组<br />
+	user::rwx &lt;-用户名栏是空的，说明是属主的权限<br />
+	user:st:r-x &lt;-用户st的权限<br />
+	group::rwx &lt;-组名栏是空的，说明是属组的权限<br />
+	mask::rwx &lt;-mask权限<br />
+	other::--- &lt;-其他人的权限</p>
+大家可以看到，st 用户既不是 /prpject 目录的属主、属组，也不是其他人，我们单独给 st 用户分配了 r-x 权限。这样分配权限太方便了，完全不用先辛苦地规划用户身份了。<br />
+<br />
+我想给用户组赋予 ACL 权限可以吗？当然可以，命令如下：<br />
+<p class="info-box">
+	[root@localhost /]# groupadd tgroup2<br />
+	#添加测试组<br />
+	[root@localhost /]# setfacl -m g:tgroup2:rwx project/<br />
+	#为组tgroup2纷配ACL权限，使用&quot;g:组名:权限&quot;格式<br />
+	[root@localhost /]# ll -d project/<br />
+	drwxrwx---+ 2 root tgroup 4096 1月19 04:21 project/<br />
+	#属组并没有更改<br />
+	[root@localhost /]# getfacl project/<br />
+	#file: project/<br />
+	#owner: root<br />
+	#group: tgroup<br />
+	user::rwx<br />
+	user:st:r-x<br />
+	group::rwx<br />
+	group:tgroup2:rwx &lt;-用户组tgroup2拥有了rwx权限<br />
+	mask::rwx<br />
+	other::--</p>
+<h4>
+	3) 最大有效权限mask</h4>
+mask 是用来指定最大有效权限的。mask 的默认权限是 rwx，如果我给 st 用户赋予了 r-x 的 ACL 权限，mj 需要和 mask 的 rwx 权限&quot;相与&quot;才能得到 st 的真正权限，也就是 r-x &quot;相与&quot;rwxtj 出的值是 r-x，所以 st 用户拥有 r-x 权限。<br />
+<br />
+如果把 mask 的权限改为 r--，和 st 用户的权限相与，也就是 r--&quot;相与&quot;r-x 得出的值是 r--，st 用户的权限就会变为只读。大家可以这么理解：用户和用户组所设定的权限必须在 mask 权限设定的范围之内才能生效，mask权限就是最大有效权限。<br />
+<br />
+不过我们一般不更改 mask 权限，只要给予 mask 最大权限 rwx，那么任何权限和 mask 权限相与，得出的值都是权限本身。也就是说，我们通过给用户和用户组直接赋予权限，就可以生效，这样做更直观。<br />
+<br />
+补充：逻辑与运算的运算符是&quot;and&quot;。可以理解为生活中所说的&quot;并且&quot;。也就是相与的两个值都为真，结果才为真；有一个值为假，与的结果就为假。比如 A 相与 B，结果入表 2 所示。<br />
+<br />
+<table>
+	<caption>
+		表 2 逻辑与运算</caption>
+	<tbody>
+		<tr>
+			<th>
+				A</th>
+			<th>
+				B</th>
+			<th>
+				and</th>
+		</tr>
+		<tr>
+			<td>
+				真</td>
+			<td>
+				真</td>
+			<td>
+				真</td>
+		</tr>
+		<tr>
+			<td>
+				真</td>
+			<td>
+				假</td>
+			<td>
+				假</td>
+		</tr>
+		<tr>
+			<td>
+				假</td>
+			<td>
+				真</td>
+			<td>
+				假</td>
+		</tr>
+		<tr>
+			<td>
+				假</td>
+			<td>
+				假</td>
+			<td>
+				假</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+那么两个权限相与和上面的结果类似，我们以读（r）权限为例，结果如表 3 所示。<br />
+<br />
+<table>
+	<caption>
+		表 3 读权限相与</caption>
+	<tbody>
+		<tr>
+			<th>
+				A</th>
+			<th>
+				B</th>
+			<th>
+				and</th>
+		</tr>
+		<tr>
+			<td>
+				r</td>
+			<td>
+				r</td>
+			<td>
+				r</td>
+		</tr>
+		<tr>
+			<td>
+				r</td>
+			<td>
+				-</td>
+			<td>
+				-</td>
+		</tr>
+		<tr>
+			<td>
+				-</td>
+			<td>
+				r</td>
+			<td>
+				-</td>
+		</tr>
+		<tr>
+			<td>
+				-</td>
+			<td>
+				-</td>
+			<td>
+				-</td>
+		</tr>
+	</tbody>
+</table>
+<br />
+所以，&quot;rwx&quot;相与&quot;r-x&quot;，结果是&quot;r-x&quot;；&quot;r--&quot;相与&quot;r-x&quot;，结果是&quot;r--&quot;。<br />
+<br />
+修改最大有效权限的命令如下：<br />
+<p class="info-box">
+	[root@localhost /]# setfacl -m m:rx project/<br />
+	#设定mask权限为r-x，使用&quot;m:权限&quot;格式<br />
+	[root@localhost /]# getfacl project/<br />
+	#file：project/<br />
+	#owner：root<br />
+	#group：tgroup<br />
+	user::rwx<br />
+	group::rwx #effective:r-x<br />
+	mask::r-x<br />
+	#mask权限变为r-x<br />
+	other::--</p>
+<h4>
+	4) 默认ACL权限和递归ACL权限</h4>
+我们已经给 /project 目录设定了 ACL 权限，那么，在这个目录中新建一些子文件和子目录，这些文件是否会继承父目录的 ACL 权限呢？我们试试吧。<br />
+<p class="info-box">
+	[root@localhost /]# cd /project/<br />
+	[root@localhost prq&#39;ect]# touch abc<br />
+	[root@localhost prq&#39;ect]# mkdir d1<br />
+	#在/project目录中新建了abc文件和d1目录<br />
+	[root@localhost project]#ll<br />
+	总用量4<br />
+	-rw-r--r-- 1 root root 01月19 05:20 abc<br />
+	drwxr-xr-x 2 root root 4096 1月19 05:20 d1<br />
+	#这两个新建立的文件权限位后面并没有&quot;+&quot;，表示它们没有继承ACL权限</p>
+子文件 abc 和子目录 d1 因为是后建立的，所以并没有继承父目录的 ACL 权限。当然，我们可以手工给这两个文件分配 ACL 权限，但是如果在目录中再新建文件，都要手工指定，则显得过于麻烦。这时就需要用到默认 ACL 权限。<br />
+<br />
+<span style="color:#b22222;">默认 ACL 权限的作用是：如果给父目录设定了默认 ACL 权限，那么父目录中所有新建的子文件都会继承父目录的 ACL 权限。</span>默认 ACL 权限只对目录生效。命令如下：<br />
+<p class="info-box">
+	[root@localhost /]# setfacl -m d:u:st:rx /project/<br />
+	#使用&quot;d:u:用户名：权限&quot;格式设定默认ACL权限<br />
+	[root@localhost project]# getfacl project/<br />
+	# file: project/<br />
+	# owner: root<br />
+	# group: tgroup<br />
+	user:: rwx<br />
+	user:st:r-x<br />
+	group::rwx<br />
+	group:tgroup2:rwx<br />
+	mask::rwx<br />
+	other::--<br />
+	default:user::rwx &lt;-多出了default字段<br />
+	default:user:st:r-x<br />
+	default:group::rwx<br />
+	default:mask::rwx<br />
+	default:other::--<br />
+	[root@localhost /]# cd project/<br />
+	[root@localhost project]# touch bcd<br />
+	[root@localhost project]# mkdir d2<br />
+	#新建子文件和子目录<br />
+	[root@localhost project]# ll 总用量8<br />
+	-rw-r--r-- 1 root root 01月19 05:20 abc<br />
+	-rw-rw----+ 1 root root 01月19 05:33 bcd<br />
+	drwxr-xr-x 2 root root 4096 1月19 05:20 d1<br />
+	drwxrwx---+ 2 root root 4096 1月19 05:33 d2<br />
+	#新建的bcd和d2已经继承了父目录的ACL权限</p>
+大家发现了吗？原先的 abc 和 d1 还是没有 ACL 权限，因为默认 ACL 权限是针对新建立的文件生效的。<br />
+<br />
+再说说<span style="color:#008000;">递归 ACL 权限</span>。递归是指父目录在设定 ACL 权限时，所有的子文件和子目录也会拥有相同的 ACL 权限。<br />
+<p class="info-box">
+	[root@localhost project]# setfacl -m u:st:rx -R/project/<br />
+	#-R递归<br />
+	[root@localhost project]# ll<br />
+	总用量8<br />
+	-rw-r-xr--+ 1 root root 01月19 05:20 abc<br />
+	-rw-rwx--+ 1 root root 01月19 05:33 bcd<br />
+	drwxr-xr-x+ 2 root root 4096 1月19 05:20 d1<br />
+	drwxrwx--+ 2 root root 4096 1月19 05:33 d2<br />
+	#abc和d1也拥有了ACL权限</p>
+总结一下：默认 ACL 权限指的是针对父目录中新建立的文件和目录会继承父目录的 ACL 权限，格式是&quot;setfacl-m d:u:用户名：权限 文件名&quot;；递归 ACL 权限指的是针对父目录中已经存在的所有子文件和子目录继承父目录的 ACL 权限，格式是&quot;setfacl-m u:用户名： 权限 -R 文件名&quot;。<br />
+<h4>
+	5) 删除ACL权限</h4>
+我们来看看怎么删除 ACL 权限，命令如下：<br />
+<br />
+删除指定的ACL权限：
+<p class="info-box">
+	[root@localhost /]# setfacl -x u:st /project/<br />
+	#删除指定用户和用户组的ACL权限<br />
+	[root@localhost /]# getfacl project/<br />
+	# file:project/<br />
+	# owner: root<br />
+	# group: tgroup<br />
+	user::rwx<br />
+	group::rwx<br />
+	group:tgroup2:rwx<br />
+	mask::rwx<br />
+	other::--<br />
+	#st用户的权限已被删除</p>
+<br />
+删除所有ACL权限：
+<p class="info-box">
+	[root@localhost /]# setfacl -b project/<br />
+	#会删除文件的所有ACL权限<br />
+	[root@localhost /]# getfacl project/<br />
+	#file: project/<br />
+	#owner: root<br />
+	# group: tgroup<br />
+	user::rwx<br />
+	group::rwx<br />
+	other::--<br />
+	#所有ACL权限已被删除</p>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_2242_2.html" title="C++成员对象和封闭类详解" target="_blank">C++成员对象和封闭类详解</a></li>
+<li><a href="2291_2.html" title="Python __slots__：限制类实例动态添加属性和方法" target="_blank">Python __slots__：限制类实例动态添加属性和方法</a></li>
+<li><a href="vip_3237_2.html" title="Linux bc命令：一款数学计算器" target="_blank">Linux bc命令：一款数学计算器</a></li>
+<li><a href="../numpy/array-operation_2.html" title="NumPy相关数组操作" target="_blank">NumPy相关数组操作</a></li>
+<li><a href="../numpy/matrix_2.html" title="NumPy Matrix矩阵库" target="_blank">NumPy Matrix矩阵库</a></li>
+<li><a href="tniyvh_2.html" title="C语言socket网络编程" target="_blank">C语言socket网络编程</a></li>
+<li><a href="qlwckwz_2.html" title="Go语言函数的定义和调用" target="_blank">Go语言函数的定义和调用</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 863;
+window.arcId = "f376JcFLihkbgXEwl0jl1Hzo8P9XXO5m0FrgA/lYDvsCMnMDNhSH6aFdDQ";
+window.typeidChain = "210|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

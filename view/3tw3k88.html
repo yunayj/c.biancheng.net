@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Go语言指针使用教程</title>
+<meta name="description" content="一个指针变量指向了一个值的内存地址。类似于变量和常量，在使用指针前需要声明指针。指针声明格式如下： var var_name *var-type var-type为指针类型，var_name为指针变量名，*号用于指定变" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Go语言指针使用教程</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">一个指针变量指向了一个值的内存地址。类似于变量和常量，在使用指针前需要声明指针。<br />
+<br />
+Go语言指针声明格式如下：
+<p class="info-box">
+var var_name *var-type</p>
+其中，var-type 为指针类型，var_name 为指针变量名，* 号用于指定变量是作为一个指针。<br />
+<br />
+以下是有效的指针声明：
+<pre class="go">
+var ip *int        /*指向整型*/
+var fp *float32    /*指向浮点型*/</pre>
+指针在Go语言中可以被拆分为两部分内容：
+<ul>
+<li>
+类型指针：允许对这个指针类型的数据进行修改，传递数据可以直接使用指针，而无须复制数据，类型指针不能进行偏移和运算。</li>
+<li>
+切片：由指向起始元素的原始指针、元素数量和容量组成。</li>
+</ul>
+<br />
+所有指针的值的实际数据类型（无论是整数、浮点数还是其他数据类型）都是相同的，它表示内存地址的长十六进制数。<br />
+<br />
+使用指针基本上分为3个步骤：
+<ul>
+<li>
+定义一个指针变量；</li>
+<li>
+将一个变量的地址赋值给一个指针；</li>
+<li>
+最后访问指针变量中可用地址的值。</li>
+</ul>
+<br />
+请看下面的例子：
+<pre class="go">
+package main
+import (
+    &quot;fmt&quot;
+)
+func main() {
+    a := 20
+    ap := &amp;a
+    fmt.Printf(&quot;a的地址:%x\n&quot;, &amp;a)
+    fmt.Printf(&quot;ap的地址:%x\n&quot;, ap)
+    fmt.Printf(&quot;*ap的值:%d\n&quot;, *ap)
+}</pre>
+运行结果如下：<br />
+a的地址:c000010198<br />
+ap的地址:c000010198<br />
+*ap的值:20
+<h2>
+Go语言指针地址和指针类型</h2>
+一个指针变量可以指向任何一个值的内存地址，它所指向的值的内存地址在 32 位和 64 位机器上分别占用 4B 或 8B，占用字节的大小与所指向的值的大小无关。<br />
+<br />
+当一个指针被定义后没有分配到任何变量时，它的默认值为 nil。指针变量通常缩写为 ptr。<br />
+<br />
+每个变量在运行时都拥有一个地址，这个地址代表变量在内存中的位置。Go 语言中使用<code>&amp;</code>操作符放在变量前面对变量进行取地址操作，格式如下：
+<p class="info-box">
+ptr := &amp;v&nbsp; //v 的类型为 T</p>
+其中，v 代表被取地址的变量，变量 v 的地址使用变量 ptr 进行接收，ptr 的类型为<code>*T</code>，称为 T 的指针类型，<code>*</code>代表指针。<br />
+<br />
+指针使用流程如下：
+<ul>
+<li>
+定义指针变量；</li>
+<li>
+为指针变量赋值；</li>
+<li>
+访问指针变量中指向地址的值。</li>
+</ul>
+<br />
+指针实际用法如下：
+<pre class="go">
+package main
+import (
+    &quot;fmt&quot;
+)
+func main() {
+    var cat int = 1
+    var str string = &quot;banana&quot;
+    fmt.Printf(&quot;%p %p&quot;, &amp;cat, &amp;str)
+}</pre>
+运行结果如下：<br />
+0xc00012a058 0xc000108220<br />
+<br />
+在以上代码中：
+<ul>
+<li>
+第 6 行，声明整型变量 cat。</li>
+<li>
+第 7 行，声明字符串变量 str。</li>
+<li>
+第 8 行，使用 fmt.Printf 的动词<code>%p</code>打印 cat 和 str 变量取地址后的指针值，指针值带有<code>0x</code>的十六进制前缀。</li>
+</ul>
+<br />
+注意：变量、指针和地址的关系是，每个变量都拥有地址，指针的值就是地址。
+<h2>
+Go语言指针的创建</h2>
+可以使用 new() 函数来创建指针，格式如下：
+<p class="info-box">
+new(类型)</p>
+使用 new() 函数来创建指针可以写成如下：
+<pre class="go">
+str := new(string)
+*str = &quot;你好,世界！&quot;
+fmt.Println(*str)</pre>
+new() 函数可以创建一个对应类型的指针，创建过程会分配内存，被创建的指针指向默认值。<br />
+<br />
+指针的特点有以下几点：<br />
+<br />
+1) 在赋值语句中，*T 如果出现在 = 左边，表示指针声明；*T 如果出现在 = 右边，则表示取指针指向的值，例如：
+<pre class="go">
+var m = 20
+p := &amp;m   //*p和m的值都为20</pre>
+<br />
+2) 结构体指针访问结构体字段仍然使用<code>.</code>操作符，Go语言中没有<code>-&gt;</code>操作符，例如：
+<pre class="go">
+type User struct {
+    name string
+    age int
+}
+andes := User {
+    name: &quot;andes &quot; ,
+    age: 20,
+}
+p := &amp;andes
+fmt.Println(p.name)   //p.name通过&quot;.&quot;操作符访问成员变量</pre>
+<br />
+3) Go语言中不支持指针的运算。<br />
+<br />
+Go语言支持垃圾回收机制，如果再支持指针运算，则会给垃圾回收的实现带来不便，又由于指针运算在 C/C++ 中很容易出现问题，因此Go语言直接禁止指针运算，例如：
+<pre class="go">
+a := 1234
+p := &amp;a
+p++     //这种写法是不允许的,系统会报&quot;non-numeric type *int&quot;错误</pre>
+<br />
+4) 函数中允许返回局部变量的地址。<br />
+<br />
+Go语言的编译器使用&ldquo;栈逃逸&rdquo;机制将这种局部变量的空间分配在堆上，例如：
+<pre class="go">
+func sum (a ,b int) *int {
+    sum := a+b
+    return &amp; sum  //这种情况是允许的,sum会分配在heap上
+}</pre>
+<h2>
+从指针获取指向指针的值</h2>
+当使用<code>&amp;</code>操作符对普通变量进行取地址操作并得到变量的指针后，可以对指针使用<code>*</code>操作符，也就是指针取值，代码如下：
+<pre class="go">
+package main
+import (
+    &quot;fmt&quot;
+)
+func main() {
+    //准备一个字符串类型
+    var house = &quot;Malibu Point 10880, 90265&quot;
+    //对字符串取地址, ptr类型为*string
+    ptr := &amp;house
+    //打印ptr的类型
+    fmt.Printf(&quot;ptr type: %T\n&quot;, ptr)
+    //打印ptr的指针地址
+    fmt.Printf(&quot;address: %p\n&quot;, ptr)
+    //对指针进行取值操作
+    value := *ptr
+    //取值后的类型
+    fmt.Printf(&quot;value type: %T\n&quot;, value)
+    //指针取值后就是指向变量的值
+    fmt.Printf(&quot;value: %s\n&quot;, value)
+}</pre>
+运行结果如图1所示。<br />
+<br />
+<div style="text-align: center;">
+<img alt="获取指针指向的值" src="../uploads/allimg/230708/1-230FQ11Z2K8.jpg" /><br />
+图1：获取指针指向的值</div>
+<br />
+在以上代码中：
+<ul>
+<li>
+第 7 行，准备一个字符串并赋值。</li>
+<li>
+第 9 行，对字符串取地址，将指针保存到变量 ptr 中。</li>
+<li>
+第 11 行，打印变量 ptr 的类型，其类型为 *string。</li>
+<li>
+第 13 行，打印 ptr 的指针地址，地址每次运行都会发生变化。</li>
+<li>
+第 15 行，对 ptr 指针变量进行取值操作，变量 value 的类型为 string。</li>
+<li>
+第 17 行，打印取值后 value 的类型。</li>
+<li>
+第 19 行，打印 value 的值。</li>
+</ul>
+<br />
+取地址操作符<code>&amp;</code>和取值操作符<code>*</code>是一对互补操作符，<code>&amp;</code>取出地址，<code>*</code>根据地址取出地址指向的值。<br />
+<br />
+变量、指针地址、指针变量、取地址、取值的相互关系和特性如下：
+<ul>
+<li>
+对变量进行取地址操作使用<code>&amp;</code>操作符，可以获得这个变量的指针变量。</li>
+<li>
+指针变量的值是指针地址。</li>
+<li>
+对指针变量进行取值操作使用<code>*</code>操作符，可以获得指针变量指向的原变量的值。</li>
+</ul>
+<h2>
+Go语言使用指针修改值</h2>
+通过指针不仅可以取值，还可以修改值。<br />
+<br />
+使用指针也可以进行数值交换，代码如下：
+<pre class="go">
+package main
+import &quot;fmt&quot;
+//交换函数
+func swap(a, b *int) {
+    //取a指针的值, 赋给临时变量t
+    t := *a
+    //取b指针的值, 赋给a指针指向的变量
+    *a = *b
+    //将a指针的值赋给b指针指向的变量
+    *b = t
+}
+func main() {
+//准备两个变量, 赋值2和5
+    x, y := 2, 5
+    //交换变量值
+    swap(&amp;x, &amp;y)
+    //输出变量值
+    fmt.Println(x, y)
+}</pre>
+运行结果如下：<br />
+5 2<br />
+<br />
+在以上代码中：
+<ul>
+<li>
+第4行，定义一个交换函数，参数为 a、b，类型都为 *int 指针类型。</li>
+<li>
+第6行，取指针 a 的值，并把值赋给变量 t，t 此时是 int 类型。</li>
+<li>
+第8行，取 b 的指针值，赋给指针 a 指向的变量。此时 *a 不是取 a 指针的值，而是&ldquo;a指向的变量&rdquo;。</li>
+<li>
+第10行，将 t 的值赋给指针 b 指向的变量。</li>
+<li>
+第14行，准备 x、y 两个变量，分别赋值为 2 和 5，类型为 int。</li>
+<li>
+第16行，取 x 和 y 的地址作为参数传给 swap() 函数进行调用。</li>
+<li>
+第18行，交换完毕，输出 x 和 y 的值。</li>
+</ul>
+<br />
+<code>*</code>操作符作为右值时，意思是取指针的值；作为左值时，也就是放在赋值操作符的左边时，表示 a 指向的变量。<br />
+<br />
+总的来说，<code>*</code>操作符的根本意义就是操作指针指向的变量。当操作在右值时，就是取指向变量的值，当操作在左值时，就是将值设置给指向的变量。<br />
+<br />
+当在 swap() 函数中交换操作的是指针值时，代码如下：
+<pre class="go">
+package main
+import &quot;fmt&quot;
+func swap(a, b *int) {
+    b, a = a, b
+}
+func main() {
+    x, y := 2, 5
+    swap(&amp;x, &amp;y)
+    fmt.Println(x, y)
+}</pre>
+运行结果如下：<br />
+2 5<br />
+<br />
+从以上结果中可以看出，交换不成功。<br />
+<br />
+swap() 函数交换的是 a 和 b 的地址，在交换完毕后，a 和 b 的变量值确实被交换了，但和 a、b 关联的两个变量并没有实际关联，因此最终的结果是交换不成功。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_7076.html" title="Java实例之完善除法运算的错误信息" target="_blank">Java实例之完善除法运算的错误信息</a></li>
+<li><a href="vip_7327.html" title="Go语言将结构体数据保存为JSON格式数据" target="_blank">Go语言将结构体数据保存为JSON格式数据</a></li>
+<li><a href="../thread/vip_8622.html" title="使用C++11进行多线程编程" target="_blank">使用C++11进行多线程编程</a></li>
+<li><a href="../numpy/statistic-function.html" title="NumPy统计函数" target="_blank">NumPy统计函数</a></li>
+<li><a href="../css3/what-is-css.html" title="CSS是什么" target="_blank">CSS是什么</a></li>
+<li><a href="../spring/spel.html" title="Spring SpEL表达式语言" target="_blank">Spring SpEL表达式语言</a></li>
+<li><a href="qb3t7s2.html" title="Vue v-once命令的用法" target="_blank">Vue v-once命令的用法</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10036;
+window.arcId = "c0ebcPnHUIme+WFp79jGpfJRAXPiVj3PBKiZXVDUodQslL0u0ca8n5GqwlsM";
+window.typeidChain = "6|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

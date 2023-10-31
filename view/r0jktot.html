@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>JS Promise用法详解（非常全面）</title>
+<meta name="description" content="在介绍 Promise 之前，先了解一下传统的、使用回调函数实现异步的方式。 JavaScript 是事件驱动（Event-Driven）的编程模型，也就是说它会通过监听事件的触发，来执行指定的代码。 在浏览" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>JS Promise用法详解（非常全面）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">在介绍 Promise 之前，先了解一下传统的、使用回调函数实现异步的方式。<br />
+<br />
+JavaScript 是事件驱动（Event-Driven）的编程模型，也就是说它会通过监听事件的触发，来执行指定的代码。<br />
+<br />
+在浏览器中可以给 HTML 元素添加事件监听器，当用户使用鼠标单击或触发其他事件时，事件监听中的回调函数就会执行，且事件对象会作为参数传递给回调函数。这个过程是异步的，事件监听不会阻塞线程，从而不影响 HTML 的解析，以及页面元素的响应。<br />
+<br />
+在 Node.js 中，文件的读写都是异步的，例如使用 File API 读取文件时，它接收一个回调函数，当文件读取完成之后，会把数据传递给回调函数。这些事件监听回调和文件读取回调都不会立即执行，而是会一直等待用户的行为和数据读取的进度，当完成之后才执行回调函数，同时在等待的过程中也不会影响其他代码的执行。<br />
+<br />
+不过使用回调函数编写的代码非常不容易阅读，如果有多个嵌套的回调，在视觉上就会形成回调地狱（Callback Hell），例如下方的伪代码：
+<pre class="javascript">
+Database.connect(config,(err)=&gt;{
+    if(error){ /*处理错误*/ }
+    const db=Database.db(dbName);
+    db.insert(data,(err,result)=&gt;{
+        if(error){/*处理错误*/}
+        db.find({},(err,data)=&gt;{
+            if(error){/*处理错误*/}
+            data.forEach(item=&gt;{
+                item.collection.map(col=&gt;{
+                    const[id,...rest]=col;
+                    return rest;
+                })
+            })
+        })
+    })
+})</pre>
+可以看到上方代码非常难以阅读，回调函数嵌套了很多层级，并且有很多缩进。另外在处理异常情况时，error 对象中的错误信息也需要在每个回调中进行处理。<br />
+<br />
+在 ES6 中出现的 Promise 对象解决了这个问题，使用它可以编写更清晰易读的异步代码。Promise 对象改变了回调的传递方式，改为使用平行的方式来处理回调，因而不会形成回调地狱。<br />
+<br />
+这一点需要特别注意，Promise 只是单纯地改变了现有异步操作的处理方式，并不是创建了一个新的异步操作。<br />
+<br />
+JavaScript 自身不能像 Java 等语言一样开启新的线程，以便异步执行里边的代码，这是因为 JavaScript 是单线程的，需要使用 JavaScript 运行环境所提供的、已编写好的异步 API 实现异步操作，例如发送网络请求的 fetch() 方法、Node.js 中文件的读取、数据库的操作等。使用 Promise 不能实现这种异步操作，只是对异步操作进行了包装。<br />
+<br />
+那么 Promise 到底是什么呢？<br />
+<br />
+JavaScript 中的大部分异步操作使用回调函数来处理异步结果，可以从上边的例子中看出来，回调函数的形式难以阅读，并且难以集中处理错误，所以 Promise 就对这种回调函数的形式进行了改良，支持链式调用，让代码从嵌套关系变为平行关系，并提供了统一处理错误的机制。<br />
+<br />
+Promise 本身代表着一项异步操作的执行状态，这个操作随时可能会完成或出错停止，需要通过 Promise 提供的 API 来处理完成后或出错后的处理逻辑。
+<h2>
+创建 Promise</h2>
+一般地，在开发过程中绝大多数情况下会调用已经封装好的异步操作的 Promise 版本，例如使用 fetch() 加载远程服务器数据，在很少的情况下需要自己创建 Promise，除非现有的异步操作只支持 callback 形式，此时需要把它转换为 Promise 形式。<br />
+<br />
+不过，通过自行创建 Promise 可以了解它的底层是怎么运作的。<br />
+<br />
+setTimeout() 函数用于把某个函数延迟若干毫秒后执行，这里利用它模拟耗时的操作，在等待 1s 之后返回数据 5，并使用 Promise 包装这个操作，代码如下：
+<pre class="javascript">
+const p=new Promise((resolve)=&gt;{
+    setTimeout(()=&gt;{
+        resolve(5);
+    },1000);
+});</pre>
+上述代码使用 Promise 构造函数创建了一个 Promise 对象，构造函数接收1个回调函数作为参数，这个回调函数又被称为执行器（Executor），它接收两个参数，分别为 resolve() 和 reject() 函数，示例中只用到了 resolve()，稍后再介绍 reject() 的用法。<br />
+<br />
+在介绍 resolve() 的含义之前，先了解一下 Promise 的 3 种状态。
+<ul>
+<li>
+fulfilled：表示操作已经成功完成，并准备返回结果。</li>
+<li>
+rejected：表示操作执行失败，代码可能有异常或人为地调用了 reject()。</li>
+<li>
+pending：如果状态既不是 fulfilled 也不是 rejected，则为 pending 状态，表示操作执行中。</li>
+</ul>
+<br />
+使用 new 创建 Promise 对象之后，执行器中的代码会立即执行，此时 Promise 为 pending 状态；当调用 resolve() 函数之后，会把 Promise 的 pending 状态改为 fulfilled 状态；类似地，reject() 函数会把它从 pending 改为 rejected 状态。<br />
+<br />
+fulfilled 和 rejected 状态统称为settled，可以认为是完成状态（无论是成功还是失败）。<br />
+<br />
+示例中执行器的代码使用了 setTimeout() 把 resolve() 的调用延后了 1s，所以此 Promise 的执行时长大约为 1s。<br />
+<br />
+resolve()函数接收1个参数，用于表示 Promise 的返回值，这样在调用 resolve() 并返回执行结果之后，就可以在后边获取这个结果并执行一些其他操作了。resolve() 可以接收任何类型的值，包括另一个 Promise 对象。<br />
+<br />
+获取返回结果可以使用 Promise 对象暴露出来的 then() 方法，它接收一个回调函数，回调函数的参数即为 Promise 返回的结果。<br />
+<br />
+例如获得 Promise 返回的 5 并打印到命令行，代码如下：
+<pre class="javascript" showmenu="false" shownum="false">
+p.then((value)=&gt;console.log(value));  //在1s后打印出结果5.</pre>
+传给 then() 的回调函数中的 value 即为 Promise 对象中 resolve() 参数的值：5。如果不需要在 then() 的回调中使用返回值，则可以省略参数。<br />
+<br />
+上述的代码也可以直接跟在 Promise 对象后边，代码如下：
+<pre class="javascript" showmenu="false" shownum="false">
+new Promise((resolve)=&gt;{/*...*/}).then((value=&gt;{/*...*/}))</pre>
+<br />
+在这个例子中，setTimeout() 才是真正的异步操作，它是浏览器或 Node.js 运行环境提供给开发者使用的，而这里的 Promise 只是对 setTimeout() 进行了包装，这样可以用 Promise 的方式执行 setTimeout()。<br />
+<br />
+其他的异步操作，例如旧版的 fetch():XMLHttpRequest，以及 Node.js 中的大部分 API，都可以用这种方式封装为 Promise 版本。<br />
+<br />
+基于 Promise 的这个特点，Promise 执行器中的代码是同步执行的，如果在执行器中编写了同步代码，例如使用超大数字的 for 循环，它同样会阻塞（Block）代码的执行，代码如下：
+<pre class="javascript">
+const p=new Promise((resolve)=&gt;{
+    console.log(＂in promise...＂);
+    for(let i=0;i&lt;10000000000;i++){}
+    resolve();
+})
+console.log(＂start＂);</pre>
+代码输出结果如下：
+<p class="info-box">
+in promise...<br />
+start</p>
+可以看到在 for 循环结束之前，最外层的 console.log(&quot;start&quot;) 不会被执行。
+<h2>
+链式调用</h2>
+如果异步代码需要分多步才能完成任务，且每个任务都互相依赖，则使用普通回调函数的形式需要嵌套多层，而使用 Promise 的链式调用方式可以把嵌套的回调函数改成平行关系。<br />
+<br />
+传递给 Promise 的 then() 方法的回调函数会返回一个全新的 Promise，可以在它的基础上继续调用 Promise 中的方法。如果 then() 中的回调函数有 return 语句，则它的返回值就会作为新的 Promise 执行器中的 resolve() 参数的值，后边可以继续使用 then() 获取这个值并执行其他的操作。<br />
+<br />
+后面的 then() 在获取之前 then() 的返回值时有3种情况：
+<ul>
+<li>
+如果返回值是普通类型的值，则这个新的 Promise 会立即完成（Resolved），后边 then 中的代码也会立即执行。</li>
+<li>
+如果返回的是一个 Promise 对象，则会等待该 Promise 执行完成之后再执行它后边 then() 中的回调函数。</li>
+<li>
+如果 then() 中的回调函数里没有 return 语句或返回 undefined，则仍然会返回新的 Promise，这样下一个 then() 中的回调函数的参数就没有值了。</li>
+</ul>
+<br />
+这里需要提一下，Promise 除了这3种状态之外，还有两种执行结果：已完成（Resolved）和未完成（Unresolved）。
+<ul>
+<li>
+一个已完成的 Promise 可能是任何一种状态，fulfilled、rejected 或 pending。当 Promise 调用 resolve() 或 reject() 时，就代表该 Promise 的执行结果是已完成，它们会分别把 Promise 的状态设置为 fulfilled 或 rejected。</li>
+<li>
+当 Promise 本身已完成，但是还需要等待其他 Promise 执行时，例如给 resolve() 传递另一个 Promise 作为参数，那么第1个 Promise 为 pending 状态，但是本身是已完成的（Resolved）。另一个未完成的 Promise 则只可能是 pending 状态，后续随时可能通过调用 resolve() 或 reject() 把它变为已完成状态。</li>
+</ul>
+<br />
+来看一个链式调用的例子，代码如下：
+<pre class="javascript">
+new Promise((resolve)=&gt;{
+    setTimeout(()=&gt;{
+        resolve(5);
+    },1000);
+})
+    .then((value)=&gt;{  //第1个then
+        console.log(value);
+        return 10;
+    })
+    .then((value)=&gt;{  //第2个then
+        console.log(value);
+        return new Promise((resolve)=&gt;{
+            setTimeout(()=&gt;{
+                resolve(15);
+            },3*1000);
+        });
+    })
+    .then((value)=&gt;{  //第3个then
+        console.log(value);
+    })
+    .then(()=&gt;{  //第4个then
+        console.log(＂done＂);
+    });</pre>
+代码中首先创建了一个 Promise，1s 后返回 5，之后分别使用了 4 个 then() 进行链式调用：
+<ul>
+<li>
+第1个 then() 打印了 Promise 返回的 5 并返回了一个普通的数字类型的值 10。相当于返回了new Promise(resolve=&gt;resolve(10))。</li>
+<li>
+第2个 then() 打印了第1个 then() 的 10，然后返回了一个新的 Promise，该 Promise 会在 3s 后返回 15。</li>
+<li>
+第3个 then() 在 3s 后，即第2个 then() 返回的 Promise 完成之后打印出 15。这个 then() 中没有返回值。</li>
+<li>
+第4个 then() 因为第3个 then() 没有返回值，所以传递给它的回调函数没有参数，它直接打印出＂done＂。</li>
+</ul>
+<br />
+这样在输出结果时，首先等待 1s 打印出 5，并紧接着打印出 10，再过 3s 打印出 15 并紧接着打印出＂done＂，到这里全部的 Promise 就完成了。<br />
+<br />
+这里需要注意的是，链式调用的每个 then() 返回的都是全新的 Promise 对象，并不是最开始的 Promise。<br />
+<br />
+这个示例可以看到使用 then() 链式调用的操作跟嵌套多个回调函数的操作是一样的，只是形式上有很大区别，这里的 then() 的调用是平行的，且通过返回值的形式把值传递给下一个 then()，这种流程就清晰了很多。<br />
+<br />
+再看一个比较实际的例子，假设某个应用需要请求远程服务器上的博客列表 JSON 数据，地址为＂/api/posts＂，这时可以使用浏览器内置的 fetch() 方法，它接收一个 URL 作为参数，在请求结束后返回一个 Promise 对象，用于获取请求返回的响应数据，代码如下：
+<pre class="javascript">
+fetch(&quot;/api/posts&quot;)
+    .then((res)=&gt;res.json())
+    .then((posts)=&gt;{
+        console.log(posts);
+    });</pre>
+代码首先使用了 fetch() 发送请求，当请求返回时（时间不确定），第1个 then() 中的回调函数会获得响应数据，此时它是一个响应对象，需要调用它的 json() 方法才能把原始数据转换为 JavaScript 对象，res.json() 会返回一个新的 Promise，当它完成时，会执行第2个 then()，打印出解析后的文章列表对象，这时整个任务就执行完成了。<br />
+<br />
+注意这个<code>/api/posts</code>并非真实的地址，如果想成功运行代码则可以把地址改为公开的 JSON API 示例：
+<p class="info-box">
+https://jsonplaceholder.typicode.com/posts</p>
+此代码只能在浏览器中执行，因为 fetch() 是浏览器内置的 API。Node.js 下可以安装 isomorphic-fetch 库支持fetch API。
+<h2>
+处理异常</h2>
+上边的例子都没有处理异常情况，本节来看一下当 Promise 中的代码抛出异常时，该怎么处理。<br />
+<br />
+如果使用的是 Promise 构造函数创建的自定义 Promise 对象，则首先有可能在执行器中抛出异常，例如下方示例，为了演示，在 setTimeout 中有意编写了会抛出异常的代码，代码如下：
+<pre class="javascript">
+new Promise((resolve)=&gt;{
+    setTimeout(()=&gt;{
+        new Array(NaN);
+        resolve(5);
+    },1000);
+}).then((value)=&gt;{
+    console.log(value);
+});</pre>
+给 Array 构造函数传递 NaN 会抛出 RangeError 异常，因为它不是有效的数字，不能作为数组的长度。这种在 setTimeout() 内部出现的异常是无法在 Promise 外边使用 try...catch 进行捕获的，只能在 setTimeout() 内部进行捕获。在有异常抛出之后，resolve() 方法就得不到执行了，进而后边的 then() 也无法执行，但是正常的逻辑应该是在 Promise 抛出异常后，能够在后边的 then() 中去处理。<br />
+<br />
+为了达到这个目的，可以使用执行器的第2个参数，即 reject() 方法，它可以把 Promise 的状态改为 rejected，提示 Promise 运行失败，并通过 reject() 的参数传递自定义的失败原因，例如 error 对象或者错误提示字符串。这时可以在 setTimeout() 中捕获异常并在 catch 语句块中调用 reject() 函数。<br />
+<br />
+例如，在上方示例的执行器函数中加上 reject 参数，并把 setTimeout() 中的代码改为下例所示，代码如下：
+<pre class="javascript">
+try{
+    new Array(NaN);
+    resolve(5);
+}catch{
+    reject(&quot;指定数组长度时必须是有效数字&quot;);
+}</pre>
+这时再运行代码会提示：未处理的Promise异常：指定数组长度时必须是有效数字，未处理的异常是因为此 Promise 的异常还没进行捕获并处理。<br />
+<br />
+这时可以使用 then() 中回调函数的第2个参数处理错误，值为 reject() 中所定义的错误原因，代码如下：
+<pre class="javascript">
+.then(
+    (value)=&gt;{
+        console.log(value);
+    },
+    (error)=&gt;{
+        console.log(error);
+    }
+);</pre>
+当Promise出现异常时，then()就会执行第2个回调函数，这里打印出了之前传递的原因：＂指定数组长度时必须是有效数字＂，而且控制台也不提示未处理的Promise异常了。<br />
+<br />
+不过，这样使用 then() 中第2个回调函数处理错误的形式会使代码变得不易阅读，所以 Promise 提供了 catch() 方法专门用于处理异常，它接收1个回调函数作为参数，回调函数的结构与 then() 的第2个参数一样，相当于 then(null ,errorHandler)。<br />
+<br />
+由于 new Promise() 和 then() 等返回的都是 Promise 对象，所以都可以调用 catch()。<br />
+<br />
+例如使用 catch() 捕获异常，代码如下：
+<pre class="javascript">
+.then(
+    (value)=&gt;{
+        console.log(value);
+    }
+)
+.catch((error)=&gt;{
+    console.log(error);
+});</pre>
+代码的输出结果与使用 then() 处理异常的结果一样。<br />
+<br />
+这里应该注意到 catch() 放到了 then() 的后边，但是 then() 中的代码没有执行，反而 catch() 先执行了，这也是使用 catch() 的另一个好处，如果 Promise 中抛出了异常，则这个异常会传播（Propagate）到离它最近的一个 catch() 中，中间所有的 then() 都不会执行，而当 catch() 捕获异常之后，它返回的又是一个全新的 Promise，后续又可以使用 then() 处理 catch() 中的返回值。<br />
+<br />
+例如上方示例把 catch() 和 then() 的顺序换个位置，并在 catch() 中返回 10，最后 then() 就能打印出 10 了，代码如下：
+<pre class="javascript">
+.catch((error)=&gt;{
+    console.log(error);
+    return 10;
+})
+.then((value)=&gt;{
+    console.log(value);
+});</pre>
+输出结果如下：
+<p class="info-box">
+指定数组长度时必须是有效数字<br />
+10</p>
+可以看到后边 then() 中回调函数的参数是 catch() 的返回值。<br />
+<br />
+基于这个特性，可以在 Promise 的调用链中间使用 catch() 处理特殊的错误，并在最后使用一个 catch() 统一处理其他错误，例如使用 fetch() 加载远程服务器数据时，有可能出现网络错误、请求错误（404、500）等，所以可以根据情况处理这些错误，对于其他错误在最后的 catch() 中统一处理，代码如下：
+<pre class="javascript">
+fetch(&quot;https://jsonplaceholder.typicode.com/posts&quot;)
+    .then((res)=&gt;{
+        const status=res.status;
+        if(status&gt;=400){
+            throw status;
+        }
+        return res.json();
+    })
+    .catch((error)=&gt;{
+        if(error===404){
+            console.log(＂未请求到数据＂);
+            return[];
+        }
+        throw error;
+    })
+    .then((posts)=&gt;{
+        console.log(posts);
+    })
+    .catch((error)=&gt;{
+        console.log(error);
+    });</pre>
+代码中使用 fetch() 请求博客列表数据，当返回响应对象时，这里首先通过它的 status 属性获取 HTTP 响应码，如果是大于 400 的响应码，则直接把它们作为异常抛出，并针对 404 这种异常进行特殊处理。<br />
+<br />
+在第1个 catch() 中先判断异常是不是 404，如果是则打印＂未请求到数据＂，并返回空的博客列表数组，如果是其他情况，则再次把异常抛出。之后在下一个 then() 中，打印出博客列表数组，这里如果请求成功则会打印出有数据的数组。如果是 404 状态，则会打印出空数组，其他异常情况则会跳过这个 then() 而运行到最后一个 catch() 中，它简单地打印了 error 参数的值。<br />
+<br />
+该代码如果正常执行会打印出博客列表数组[{...}, {...}, {...}]，如果把 const status=res.status 改为 const status=404 测试一下，则它会打印出如下结果：
+<p class="info-box">
+未请求到数据<br />
+[]</p>
+这是因为第1个 then() 抛出了 404 异常，第1个 catch() 捕获住了该异常并返回了空的数组，第2个 then() 打印出了空数组的值，最后一个 catch() 由于没有异常所以没有执行。<br />
+<br />
+如果改为 500，则会打印出 500，因为第1个 then() 中抛出了 500，而第1个 catch() 中又继续把 500 抛出，传播到了最后的 catch() 中并打印了出来，中间第2个 then() 不会执行。<br />
+<br />
+利用 Promise 异常传播特性和 catch() 方法，可以有针对性地处理单个异常或者多个异常，无论是从哪里抛出来的，而使用传统回调函数的方式只能在每一层分别处理异常。<br />
+<br />
+最后，Promise 对象中还有 finally() 方法，如同 try...catch...finally 中的 finally，可以放在最后执行一些清理和收尾操作，finally() 只要 Promise 的状态为 settled，即无论是 fulfilled 还是 rejected 都会执行，一般放到调用链的最后边。
+<h2>
+执行多个Promise</h2>
+如果有多个 Promise 需要同时执行，例如同时发起多个网络请求、执行多个动画、批量数据库操作等，则根据所要求的返回结果的不同，Promise 提供了4种方式执行多个 Promise，分别是：
+<ul>
+<li>
+Promise.all()</li>
+<li>
+Promise.allSettled()</li>
+<li>
+Promise.any()</li>
+<li>
+Promise.race()</li>
+</ul>
+<br />
+接下来分别看一下它们的作用和区别。
+<h4>
+1) Promise.all()</h4>
+接收一个可迭代的对象（例如数组）作为参数，每个元素为要执行的 Promise。<br />
+<br />
+Promise.all() 会返回一个新的 Promise，如果参数中所有的 Promise 都变为 fulfilled，这个新的 Promise 就会变为 resolved，它会把所有的结果按元素的顺序放到数组中并返回。参数数组中的元素也可以是普通的 JavaScript 数据类型，这样它的值会原样返回结果数组中。<br />
+<br />
+Promise.all() 用法的代码如下：
+<pre class="javascript" showmenu="false" shownum="false">
+const promise1=new Promise(resolve=&gt;setTimeout(resolve,300,1));
+const promise2=new Promise(resolve=&gt;setTimeout(resolve,100,2));
+const promise3=3;
+Promise.all([promise1,promise2,promise3]).then(values=&gt;{console.log(values)});</pre>
+promise1 会在 300ms 后返回1，这里使用 setTimeout() 中的第3个参数来给 resolve() 函数传递参数；promise2 会在 100ms 后返回 2；promise3 是基本类型数据，会立即返回。<br />
+<br />
+虽然这3个 promise 的执行顺序是 promise3、promise2、promise1，但是因为 Promise.all() 的返回值是按数组中元素的顺序返回的，即 promise1、promise2、promise3，所以上述代码的输出结果为 [1，2，3]。<br />
+<br />
+如果有任意一个 Promise 发生错误或状态变为 rejected，则后续的 Promise 会停止执行，Promise.all() 返回的 Promise 会变为 rejected，并且 catch 语句中的错误信息，为第1个出错的 Promise 的原因。<br />
+<br />
+例如把 promise1 改为 rejected：
+<pre class="javascript" showmenu="false" shownum="false">
+const promise1=new Promise( (resolve, reject)=&gt;setTimeout(reject, 300, &quot;失败&quot;) )</pre>
+这时如果运行代码会抛出未捕获的 Promise 异常，在 Promise.all() 后边使用 catch() 可以捕获该异常，代码如下：
+<pre class="javascript">
+Promise.all([promise1,promise2,promise3])
+    .then((values)=&gt;{console.log(values)})
+    .catch((error)=&gt;{console.log(error)});</pre>
+输出结果为＂失败＂。
+<h4>
+2) Promise.allSettled()</h4>
+与 Promise.all() 类似，只是无论 Promise 是 fulfilled 还是 rejected（Settled）都会返回结果数组中，fulfilled 会把结果放入数组中，rejected 会把原因放入数组中，且不会影响其他 Promise 的执行。<br />
+<br />
+Promise.allSettled() 适合需要知道每个 Promise 的执行情况的场景，例如把上一小节最后的 Promise.all 改为使用 Promise.allSettled()，代码如下：
+<pre class="javascript" showmenu="false" shownum="false">
+Promise.allSettled([promise1,promise2,promise3]).then((values)=&gt;{
+    console.log(values);
+});</pre>
+它返回的数组如下：
+<pre class="info-box">
+[
+    {status:&#39;rejected&#39;,reason:&#39;失败&#39;},
+    {status:&#39;fulfilled&#39;,value:2},
+    {status:&#39;fulfilled&#39;,value:3}
+]</pre>
+数组中的每个元素都是一个对象，status 表示 Promise 的最终状态，value 为正常执行的 Promise 的结果，reason 为发生异常的 Promise 的原因。
+<h4>
+3) Promise.any()</h4>
+与 Promise.all() 不同的是，参数数组中的 Promise 只要有1种状态变为 fulfilled，就会把该 Promise 的结果返回。Promise.any() 返回的 Promise 中只有单一的结果。<br />
+<br />
+如果所有的 Promise 的状态都为 rejected，则 Promise.any() 会抛出 AggregateError，代码如下：
+<pre class="javascript">
+const promise1=new Promise(resolve=&gt;setTimeout(resolve,300,1));
+const promise2=new Promise(resolve=&gt;setTimeout(resolve,100,2));
+const promise3=3;
+Promise.any([promise1,promise2,promise3]).then(value=&gt;{console.log(value)});
+//3</pre>
+需要注意，在本文截稿前，只有 Chrome 85 和 Node.js15.0 以上版本支持 Promise.any()，它是 ES2021 发布的新特性。
+<h4>
+4) Promise.race()</h4>
+相当于是 any() 版的 allSettled()，参数数组中的 Promise 只要有1个 Promise 状态变为 fulfilled 或 rejected，就会返回它的结果或异常原因。
+<h4>
+5) 顺序执行</h4>
+如果想执行一系列互相依赖的 Promise，并使用最后一个 Promise 的返回值，一般的写法则会在每个 Promise 后的 then() 中执行下一个 Promise，代码如下：
+<pre class="javascript">
+const promise1=new Promise((resolve)=&gt;setTimeout(resolve,300,3));
+const promise2=new Promise((resolve)=&gt;setTimeout(resolve,200,2));
+const promise3=new Promise((resolve)=&gt;setTimeout(resolve,400,1));
+promise1.then(()=&gt;promise2).then(()=&gt;promise3).then((value)=&gt;{
+    console.log(value);//1
+});</pre>
+代码中每个 then() 中的回调函数只是简单地返回了下一个要执行的 Promise，实际的场景可能有其他业务逻辑代码。不过，《<a href="kt3alqh.html" target="_blank">JS async和await关键字的用法</a>》一文中介绍的 async/await 关键字可以更直观地实现顺序执行。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1.html" title="Go语言简介" target="_blank">Go语言简介</a></li>
+<li><a href="82.html" title="Go语言接口的嵌套组合" target="_blank">Go语言接口的嵌套组合</a></li>
+<li><a href="vip_2329.html" title="C++类模板中的静态成员" target="_blank">C++类模板中的静态成员</a></li>
+<li><a href="7578.html" title="C++ cout格式化输出（超级详细）" target="_blank">C++ cout格式化输出（超级详细）</a></li>
+<li><a href="vip_7710.html" title="深度剖析C++ vector容器的底层实现机制" target="_blank">深度剖析C++ vector容器的底层实现机制</a></li>
+<li><a href="9814.html" title="Python PyTorch库介绍（非常详细）" target="_blank">Python PyTorch库介绍（非常详细）</a></li>
+<li><a href="3bjdkvt.html" title="《极致C语言》PDF下载（高清完整版）" target="_blank">《极致C语言》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10318;
+window.arcId = "4988Q379/HGIuH+23OL3EutK6MJgtMJnlu1RrIKZLe2Hhg7RNvv/44fFr6Bs";
+window.typeidChain = "309|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>时间复杂度和空间复杂度</title>
+<meta name="description" content="时间复杂度和空间复杂度是评价算法好坏的重要依据，时间复杂度用来描述算法的执行效率，空间复杂度用来描述算法占用内存空间的大小，时间复杂度和空间复杂度通常都用大O记法表示。" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>时间复杂度和空间复杂度</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">《<a href="../algorithm/what-is-algorithm_2.html" target="_blank">算法是什么</a>》一节提到，解决一个问题的算法可能有多种，这种情况下，我们就必须对这些算法进行取舍，从中挑选出一个&ldquo;最好&rdquo;的。<br />
+<br />
+算法本身是不分&ldquo;好坏&rdquo;的，所谓&ldquo;最好&rdquo;的算法，指的是最适合当前场景的算法。挑选算法时，主要考虑以下两方面因素：
+<ul>
+	<li>
+		执行效率：根据算法所编写的程序，执行时间越短，执行效率就越高；</li>
+	<li>
+		占用的内存空间：不同算法编写出的程序，运行时占用的内存空间也不相同。如果实际场景中仅能使用少量的内存空间，就应该优先选择占用空间最少的算法。</li>
+</ul>
+<br />
+当问题对应的算法数量较少时（比如 2、3 种），我们可以编写出各个算法对应的程序，逐个在机器上运行，记录它们各自的执行时间和占用内存空间的大小，最终挑选出&ldquo;最好&rdquo;的算法。如果问题对应的算法数量有很多（比如 10 种，20 种），先前的挑选方式将不再适用，因为将各个算法一一编写成程序的工作量是巨大的，得不偿失。<br />
+<br />
+实际开发中，我们往往采用&ldquo;预先估值&rdquo;的方法挑选算法。具体来讲，就是分析各个算法的实现过程（步骤），估算出它们各自的运行时间和占用的内存空间，进而挑选出&ldquo;最好&rdquo;的算法。用&ldquo;预先估算&rdquo;方式挑选算法时，我们习惯用<span style="color:#008000;">时间复杂度</span>表示一个算法的运行时间，用<span style="color:#008000;">空间复杂度</span>表示算法占用存储空间的大小。<br />
+<br />
+接下来，我们就来了解一下如何估算一个算法的时间复杂度和空间复杂度。
+<h2>
+	时间复杂度</h2>
+时间复杂度用于表示算法的执行时间。<br />
+<br />
+接下来，我们以《<a href="../algorithm/what-is-algorithm_2.html" target="_blank">算法是什么</a>》一节中求 n! 的算法为例：
+<p class="info-box">
+	输入 n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // 接收 n 的值<br />
+	p &lt;- 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // p 的初值置为 1<br />
+	for i&lt;-1 to n：&nbsp;&nbsp;&nbsp; // i 的值从 1 一直到 n<br />
+	&nbsp;&nbsp;&nbsp; p &lt;- p * i&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // 将 p*i 的值赋值给 p<br />
+	Print p&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // 输出 p 的值</p>
+计算它的时间复杂度，只需经历以下几个步骤：
+<h4>
+	1) 统计算法中各个步骤的执行次数</h4>
+整个算法中共有 5 行伪指令，它们各自的执行次数分别是：
+<p class="info-box">
+	输入 n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;- 执行 1 次<br />
+	p &lt;- 1&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;- 执行 1 次<br />
+	for i&lt;-1 to n：&nbsp; &nbsp; &lt;- i 的值从 1 遍历到 n，当 i 的值为 n+1 的时候退出循环，总共执行 n+1 次<br />
+	&nbsp;&nbsp;&nbsp; p &lt;- p * i&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;- i 从 1 到 n 的过程，共执行 n 次<br />
+	Print p&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;- 执行 1 次</p>
+统计算法中所有伪指令执行的总次数，结果为 2*n+4。显然，2*n+4 不是一个固定值，整个表达式值的大小取决于 n 的值。<br />
+<br />
+2*n+4 可以直接作为算法执行时间的估值，也可以对它进行简化，用规范的形式表示算法的运行时间。<br />
+<h4>
+	2) 简化算法的执行次数</h4>
+通过统计各个算法中每条伪指令的执行次数，每个算法的运行时间都可以用类似 2*n+4、3*n<sup>2</sup>+4*n+5 这样的表达式表示。这就产生一个问题，如何比较各个表达式的大小呢？<br />
+<br />
+首先，我们可以尝试对每个表达式进行简化，简化方法是：假设表达式中变量的值无限大时，去除掉那些对表达式结果影响较小的项。以 3*n<sup>2</sup>+4*n+5 为例，简化过程为：
+<ul>
+	<li>
+		当 n 无限大时，3*n<sup>2</sup>+4*n 与 3*n<sup>2</sup>+4*n+5 的值非常接近，是否加 5 对表达式的值影响不大，因此表达式可以简化为 3*n<sup>2</sup>+4*n；</li>
+	<li>
+		当 n 无限大时，3*n<sup>2</sup> 的值要远远大于 4*n 的值，它们之间类似于 10000 和 1 之间的关系，因此是否加 4*n 对表达式最终的值影响不大，整个表达式可以简化为 3*n<sup>2</sup>；</li>
+	<li>
+		当 n 无限大时，n<sup>2</sup> 的值已经超级大，是否乘 3 对最终结果影响不大，整个表达式可以简化为&nbsp; n<sup>2</sup>。</li>
+</ul>
+<br />
+简化表达式的过程可以总结为：
+<ul>
+	<li>
+		去掉表达式中所有的加法常数项，3*n<sup>2</sup>+4*n+5 中的 5 就是加法常数项；</li>
+	<li>
+		只保留表达式中变量指数最大的项，3*n<sup>2</sup>+4*n 中 n 的最大指数为 2，所以只保留 3*n<sup>2</sup>；</li>
+	<li>
+		去掉常数系数，3*n<sup>2</sup> 中的 3 就是 n<sup>2</sup> 的常数系数。</li>
+</ul>
+<br />
+基于&ldquo;n 值无限大&rdquo;的思想，3*n<sup>2</sup>+4*n+5 最终可以简化为 n<sup>2</sup>。无论多么复杂的表达式，都可以采用这种方式进行简化。
+<h4>
+	3) 大O记法表示时间复杂度</h4>
+除了用 n 外，一些人还可能会用 a、b、c 等字符作为表达式中的变量。为此，人们逐渐达成了一种共识，即都用 n 作为表达式中的变量，并采用大 O 记法表示算法的执行时间。<br />
+<br />
+采用大 O 记法表示算法的执行时间，直接套用如下的格式即可：
+<p class="info-box">
+	O(频度)</p>
+频度指的就是简化后的表达式。<br />
+<br />
+采用大 O 记法，2*n+4 可以用 O(n) 表示，3*n<sup>2</sup>+4*n+5 可以用<code>O(n<sup>2</sup>)</code>表示。注意，如果一个算法对应的表达式中没有变量（比如 10，100 等），则用<code>O(1)</code>表示算法的执行时间。<br />
+<br />
+如果一个算法的执行时间最终估算为<code>O(n)</code>，那么该算法的时间复杂度就是<code>O(n)</code>。如下列举了常用的几种时间复杂度以及它们之间的大小关系：
+<p class="info-box">
+	O(1)&lt; O(logn) &lt; O(n) &lt; O(n<sup>2</sup>) &lt; O(n<sup>3</sup>) &lt; O(2<sup>n</sup>)</p>
+<code>O(1)</code>是最小的，对应的算法的执行时间最短，执行效率最高。<br />
+<h2>
+	空间复杂度</h2>
+空间复杂度衡量的是算法执行过程占用的内存空间的大小。<br />
+<br />
+比较多个算法占用的内存大小，本质上比较的是各个算法执行过程中额外申请的内存空间的大小。举个简单的例子：
+<p class="info-box">
+	输入 n<br />
+	A[i...n] = {1...n}&nbsp; &nbsp; &lt;- 额外申请 n 个空间</p>
+根据 n 的值，算法执行时需要申请 n 个整数的内存空间，n 的值越大，额外申请的内存空间就越多。<br />
+<br />
+与时间复杂度的表示方法一样，空间复杂度也采用大 O 记法表示。算法空间复杂度的估算方法是：
+<ul>
+	<li>
+		如果算法中额外申请的内存空间不受用户输入值的影响（是一个固定值），那么该算法的空间复杂度用 O(1) 表示；</li>
+	<li>
+		如果随着输入值 n 的增大，算法申请的存储空间成线性增长，则程序的空间复杂度用 O(n) 表示;</li>
+	<li>
+		如果随着输入值 n 的增大，程序申请的存储空间成 n<sup>2</sup> 关系增长，则程序的空间复杂度用 O(n<sup>2</sup>) 表示；</li>
+	<li>
+		如果随着输入值 n 的增大，程序申请的存储空间成 n<sup>3</sup> 关系增长，则程序的空间复杂度用 O(n<sup>3</sup>) 表示；</li>
+</ul>
+<blockquote>
+	<p>
+		多数场景中，挑选 &quot;好&quot; 算法往往更注重的是时间复杂度，空间复杂度只要处于一个合理的范围即可。</p>
+</blockquote>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="62_2.html" title="Go语言处理运行时错误" target="_blank">Go语言处理运行时错误</a></li>
+<li><a href="819_2.html" title="Shell删除数组元素（也可以删除整个数组）" target="_blank">Shell删除数组元素（也可以删除整个数组）</a></li>
+<li><a href="1832_2.html" title="C语言字符数组和字符串详解" target="_blank">C语言字符数组和字符串详解</a></li>
+<li><a href="4035_2.html" title="Go语言注释的定义及使用（godoc工具提取注释内容）" target="_blank">Go语言注释的定义及使用（godoc工具提取注释内容）</a></li>
+<li><a href="6174_2.html" title="PHP array_merge()：数组合并" target="_blank">PHP array_merge()：数组合并</a></li>
+<li><a href="../json/schema_2.html" title="JSON schema（模式）" target="_blank">JSON schema（模式）</a></li>
+<li><a href="hiqllx_2.html" title="C语言注释" target="_blank">C语言注释</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9095;
+window.arcId = "b7e8kG9+/DOptTJtYuaQehxdeQHVK4z3XHdChwH1Pa0i7tIWumWL4hS4i98";
+window.typeidChain = "457|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

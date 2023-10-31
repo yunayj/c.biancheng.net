@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C语言线程和进程</title>
+<meta name="description" content="当启动一个程序时，操作系统创建一个进程，并在该进程中执行程序。 一个进程包括一个或多个线程。每个线程又是一个局部进程，它以独立于其他局部进程的方式执行一个命令序列。" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C语言线程和进程</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">当启动一个程序时，操作系统创建一个进程，并在该进程中执行程序。<span style="color:#b22222;">一个进程包括一个或多个线程。每个线程又是一个局部进程，它以独立于其他局部进程的方式执行一个命令序列。</span><br />
+<br />
+<span style="color:#b22222;">当进程启动时，它的主线程则成为活动线程。</span>这时，任何正在运行的线程都可以启动其他线程。<span style="color:#b22222;">当进程终止时，</span>例如，通过在 main（）函数中执行一个 return 语句或通过调用 exit（）函数，<span style="color:#b22222;">所有已开启但还未结束的线程都会被终止。</span><br />
+<br />
+<span style="color:#b22222;">系统调度器为所有可运行的线程平均分配可用的 CPU 时间。</span>通常，调度器是抢占式的：它会中断正在执行的线程，给中央处理单元（CPU）留出可用的短暂时间，并将 CPU 分配给其他线程使用一段时间。<br />
+<br />
+这种调度的结果是：即使是在单处理系统上，在用户面前运行的线程看上去像是在同时执行，实际上，只有在多处理器系统中，几个线程才可能真正地同时执行。<br />
+<br />
+<span style="color:#b22222;">每一个进程在内存中都有自己的地址空间，并拥有独占的资源</span>，例如，打开的文件。一个进程中的所有线程都继承该进程的资源。最具有意义的是，在一个进程中的几个线程共享一个地址空间。这使得在一个进程中的任务切换比在不同进程间的任务切换要简单得多。<br />
+<br />
+然而<span style="color:#b22222;">，为了在不同线程间切换任务，每个线程也拥有自己的资源：包括栈存储器和 CPU 寄存器。</span>这些资源允许每个线程在不受其他线程干扰的条件下，处理自身的本地数据。此外，一个线程也可以具有线程专用的永久内存。<br />
+<br />
+对于一个给定进程，由于它内部的所有线程均使用相同的地址空间，所以它们共享全局数据与静态数据。然而，这也意味着，同一个进程中的两个不同线程可以同时访问同一个内存单元。这种情况在 C 标准中被称为<span style="color:#006400;">数据竞争（data race）</span>，或者通常称之为<span style="color:#006400;">竞态条件（race condition）</span>。<br />
+<br />
+为了防止在共享数据时出现冲突，当这些不同线程使用内存中相同位置时，程序员必须明确地同步这些不同线程的写操作或读写操作。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="82.html" title="Go语言接口的嵌套组合" target="_blank">Go语言接口的嵌套组合</a></li>
+<li><a href="2360.html" title="Python raise用法（超级详细，看了无师自通）" target="_blank">Python raise用法（超级详细，看了无师自通）</a></li>
+<li><a href="4643.html" title="Python __name__=='__main__'作用详解" target="_blank">Python __name__=='__main__'作用详解</a></li>
+<li><a href="../mybatis/bind.html" title="MyBatis bind标签" target="_blank">MyBatis bind标签</a></li>
+<li><a href="nlr526t.html" title="PHP常量的定义和使用" target="_blank">PHP常量的定义和使用</a></li>
+<li><a href="d03uvfj.html" title="《图解算法(使用C语言)》PDF下载（高清完整版）" target="_blank">《图解算法(使用C语言)》PDF下载（高清完整版）</a></li>
+<li><a href="1l38yo1.html" title="《HTML5从入门到精通（第3版）》PDF下载（高清完整版）" target="_blank">《HTML5从入门到精通（第3版）》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 423;
+window.arcId = "6717N2fkG5rdmaDigevYKlsNi14/4AqLZlupKYlzX5cRuEFRrNB7iC2QLw";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

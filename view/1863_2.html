@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Qt QTableWidget及基本操作（详解版）</title>
+<meta name="description" content="QTableWidget 是 Qt 中的表格组件类。在窗体上放置一个 QTableWidget 组件后，可以在 Property Editor 里对其进行属性设置，双击这个组件，可以打开一个编辑器，对其 Colum、Row 和 Item 进行编辑。" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Qt QTableWidget及基本操作（详解版）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">QTableWidget 是 <a href='../qt/qt_2.html' target='_blank'>Qt</a> 中的表格组件类。在窗体上放置一个 QTableWidget 组件后，可以在 Property Editor 里对其进行属性设置，双击这个组件，可以打开一个编辑器，对其 Colum、Row 和 Item 进行编辑。<br />
+<br />
+一个 QTableWidget 组件的界面基本结构如图 1 所示，这个表格设置为 6 行 5 列。
+<div style="text-align: center;">
+	<br />
+	<img alt="" src="../uploads/allimg/190103/2-1Z103144231126_2.gif" /><br />
+	图 1 一个 QTableWidget 表格的基本结构和工作区的行、列索引号</div>
+<br />
+表格的第 1 行称为行表头，用于设置每一列的标题，第 1 列称为列表头，可以设置其标题，但一般使用缺省的标题，即为行号。行表头和列表头一般是不可编辑的。<br />
+<br />
+除了行表头和列表头之外的表格区域是内容区，内容区是规则的网格状，如同一个<a href='https://m.biancheng.net/c/array/' target='_blank'>二维数组</a>，每个网格单元称为一个单元格。每个单元格有一个行号、列号，图 1 表示了行号、列号的变化规律。<br />
+<br />
+在 QTableWidget 表格中，每一个单元格是一个 QTable Widgetltem 对象，可以设置文字内容、字体、前景色、背景色、图标，也可以设置编辑和显示标记。每个单元格还可以存储一个 QVariant 数据，用于设置用户自定义数据。
+<div style="text-align: center;">
+	<br />
+	<img alt="" src="../uploads/allimg/190103/2-1Z10314434C31_2.gif" /><br />
+	图 2 实例 Samp4_9 的运行时界面</div>
+<br />
+实例 samp4_9 以 QTableWidget 为主要组件，演示 QTableWidget 一些主要操作的实现。实例运行时的界面如图 2 所示，该实例将演示以下功能的实现方法：
+<ul>
+	<li>
+		设置表格的列数和行数，设置表头的文字、格式等。</li>
+	<li>
+		初始化表格数据，设置一批实例数据填充到表格里。</li>
+	<li>
+		插入行、添加行、删除当前行的操作。</li>
+	<li>
+		遍历表格所有单元格，读取表格内容到一个 QPlainTextEdit 里，表格的一行数据作为一行文本。</li>
+	<li>
+		表格上选择的当前单元格变化时，在状态栏显示单元格存储的信息。</li>
+</ul>
+<h2>
+	界面设计与初始化</h2>
+Samp4_9 的主窗体从 QMainWindow 继承而来。在图 2 所示的窗口上，一个 QTableWidget 组件和一个 QPlainTextEdit 组件组成上下分割布局 splitter。左侧的按钮都放在一个 QGroupBox 组件里，釆用 Grid 布局，然后将 groupBox 与 splitter 采用左右分割布局。这是一个典型的三区分割的布局。<br />
+<br />
+在主窗口类 MainWindow 里自定义了一些变量和函数，用于后面的代码实现，下面是在 MainWindow 的 private 部分自定义的变量和函数：<br />
+<p class="info-box">
+	private:<br />
+	&nbsp;&nbsp;&nbsp; //自定义单元格Type的类型，在创建单元格的item时使用<br />
+	&nbsp;&nbsp;&nbsp; enum CellType{ctName=1000,ctSex,ctBirth,ctNation,ctPartyM,ctScore};<br />
+	&nbsp;&nbsp;&nbsp; //各字段在表格中的列号<br />
+	&nbsp;&nbsp;&nbsp; enum FieldColNum{colName=0,colSex,colBirth,colNation,colScore,colPartyM};<br />
+	&nbsp;&nbsp;&nbsp; QLabel *labCellIndex; //状态栏上用于显示单元格的行号、列号<br />
+	&nbsp;&nbsp;&nbsp; QLabel *labCellType; //状态栏上用于显示单元格的type<br />
+	&nbsp;&nbsp;&nbsp; QLabel *labStudID; //状态栏上用于显示学号<br />
+	&nbsp;&nbsp;&nbsp; void createItemsARow(int rowNo,QString Name,QString Sex,QDate birth,QString Nation,bool isPM,int score) ; //为某一行创建 items</p>
+枚举类型 CellType 是用来表示单元格类型的，在创建单元格时使用。枚举类型 FieldColNum 用枚举常量表示各字段在表格中的列号。<br />
+<br />
+在 MainWindow 的构造函数里对界面进行初始化，代码如下:
+<pre class="cpp">
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
+{
+    ui-&gt;setupUi(this);
+    setCentralWidget(ui-&gt;splitterMain);
+    //状态栏初始化创建
+    labCellIndex = new QLabel (&quot;当前单元格坐标：&quot;, this);
+    labCellIndex-&gt;setMinimumWidth(250);
+    labCellType=new QLabel (&quot;当前单元格类型：&quot;,this);
+    labCellType-&gt;setMinimumWidth(200);
+    labStudID=new QLabel (&quot;学生ID: &quot;, this);
+    labStudID-&gt;setMinimumWidth(200);
+    ui-&gt;statusBar-&gt;addWidget (labCellIndex) ; //加到状态栏
+    ui-&gt;statusBar-&gt;addWidget(labCellType);
+    ui-&gt;statusBar-&gt;addWidget(labStudID);
+}</pre>
+<h2>
+	QTableWidget 基本操作</h2>
+<h4>
+	设置表头</h4>
+界面上的&ldquo;设置表头&rdquo;按钮实现对表头的设置，其 clicked() 信号的槽函数代码如下：
+<pre class="cpp">
+void MainWindow::on_btnSetHeader_clicked()
+{ //设置表头
+    QTableWidgetItem    *headerItem;
+    QStringList headerText;
+    headerText&lt;&lt;&quot;姓 名&quot;&lt;&lt;&quot;性 别&quot;&lt;&lt;&quot;出生日期&quot;&lt;&lt;&quot;民 族&quot;&lt;&lt;&quot;分数&quot;&lt;&lt;&quot;是否党员&quot;;  //表头标题用QStringList来表示
+    //ui-&gt;tableInfo-&gt;setHorizontalHeaderLabels(headerText);
+    ui-&gt;tableInfo-&gt;setColumnCount(headerText.count());//列数设置为与 headerText的行数相等
+    for (int i=0;i&lt;ui-&gt;tableInfo-&gt;columnCount();i++)//列编号从0开始
+    {
+        //cellItem=ui-&gt;tableInfo-&gt;horizontalHeaderItem(i);
+        headerItem=new QTableWidgetItem(headerText.at(i)); //新建一个QTableWidgetItem， headerText.at(i)获取headerText的i行字符串
+        QFont font=headerItem-&gt;font();//获取原有字体设置
+        font.setBold(true);//设置为粗体
+        font.setPointSize(12);//字体大小
+        headerItem-&gt;setTextColor(Qt::red);//字体颜色
+        headerItem-&gt;setFont(font);//设置字体
+        ui-&gt;tableInfo-&gt;setHorizontalHeaderItem(i,headerItem); //设置表头单元格的Item
+    }
+
+    ui-&gt;tableInfo-&gt;setItemDelegateForColumn(colScore,&amp;spinDelegate);//设置自定义代理组件
+}</pre>
+行表头各列的文字标题由一个 QStringList 对象 headerText 初始化存储，如果只是设置行表头各列的标题，使用下面一行语句即可：<br />
+<p class="info-box">
+	ui-&gt;tableInfo-&gt;setHorizontalHeaderLabels(headerText);</p>
+如果需要进行更加具体的格式设置，需要为行表头的每个单元格创建一个 QTableWidgetItem 类型的变量，并进行相应设置。<br />
+<br />
+在一个表格中，不管是表头还是工作区，每个单元格都是一个 QTableWidgetItem 对象。QTableWidgetItem 对象存储了单元格的所有内容，包括字标题、格式设置，以及关联的数据。上面程序中的 <a href='172_2.html' target='_blank'>for 循环</a>遍历 headerText 的每一行，用每一行的文字创建一个 QTableWidgetItem 对象 headerltem，然后设置 headerItem 的字体大小为 12、粗体、红色，然后将 headerltem 赋给表头的某一列:<br />
+<p class="info-box">
+	ui-&gt;tableInfo-&gt;setHorizontalHeaderItern (i, headerItem);</p>
+<h4>
+	初始化表格数据</h4>
+界面上的&ldquo;初始化表格数据&rdquo;按钮根据表格的行数，生成数据填充表格，并为每个单元格生成 QTableWidgetItem 对象，设置相应属性。下面是 btnlniData 的 clicked() 信号的槽函数代码：<br />
+<pre class="cpp">
+void MainWindow::on_btnIniData_clicked()
+{ //初始化表格内容
+    QString strName,strSex;
+    bool    isParty=false;
+
+    QDate   birth;
+    birth.setDate(1980,4,7);//初始化一个日期
+    ui-&gt;tableInfo-&gt;clearContents();//只清除工作区，不清除表头
+
+    int Rows=ui-&gt;tableInfo-&gt;rowCount(); //数据区行数，
+    for (int i=0;i&lt;Rows;i++) //数据区第1行的编号为0，所以范围是0~rowCount()-1
+    {
+        strName=QString::asprintf(&quot;学生%d&quot;,i); //学生姓名
+        if ((i % 2)==0) //分奇数，偶数行设置性别，及其图标
+            strSex=&quot;男&quot;;
+        else
+            strSex=&quot;女&quot;;
+
+        createItemsARow(i, strName, strSex, birth,&quot;汉族&quot;,isParty,70); //为某一行创建items
+
+        birth=birth.addDays(20); //日期加20天
+        isParty =!isParty;
+    }
+}</pre>
+QTableWidget::clearContents() 函数清除表格数据区的所有内容，但是不清除表头。<br />
+<br />
+QTableWidget::rowCount() 函数返回表格数据区的行数。<br />
+<br />
+在 for 循环里为每一行生成需要显示的数据，然后调用自定义函数 createItemsARow()，为表格一行的各个单元格生成 QTableWidgetItem 对象。<br />
+<br />
+createItemsARow() 是在窗体类里自定义的函数，其实现代码如下：
+<pre class="cpp">
+void MainWindow::createItemsARow(int rowNo,QString Name,QString Sex,QDate birth,QString Nation,bool isPM,int score)
+{ //为一行的单元格创建 Items
+    QTableWidgetItem    *item;
+    QString str;
+    uint StudID=201605000; //学号基数
+
+    //姓名
+    //新建一个Item，设置单元格type为自定义的MainWindow::ctName
+    item=new  QTableWidgetItem(Name,MainWindow::ctName);
+    item-&gt;setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter); //文本对齐格式
+    StudID  +=rowNo; //学号=基数+ 行号
+    item-&gt;setData(Qt::UserRole,QVariant(StudID));  //设置studID为data
+    ui-&gt;tableInfo-&gt;setItem(rowNo,MainWindow::colName,item); //为单元格设置Item
+
+    //性别
+    QIcon   icon;
+    if (Sex==&quot;男&quot;)
+        icon.addFile(&quot;:/images/icons/boy.ico&quot;);
+    else
+        icon.addFile(&quot;:/images/icons/girl.ico&quot;);
+    item=new  QTableWidgetItem(Sex,MainWindow::ctSex); //新建一个Item，设置单元格type为自定义的 MainWindow::ctSex
+    item-&gt;setIcon(icon);
+    item-&gt;setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);//为单元格设置Item
+    ui-&gt;tableInfo-&gt;setItem(rowNo,MainWindow::colSex,item);//为单元格设置Item
+
+    //出生日期
+    str=birth.toString(&quot;yyyy-MM-dd&quot;); //日期转换为字符串
+    item=new  QTableWidgetItem(str,MainWindow::ctBirth);//新建一个Item，设置单元格type为自定义的 MainWindow::ctBirth
+    item-&gt;setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter); //文本对齐格式
+    ui-&gt;tableInfo-&gt;setItem(rowNo,MainWindow::colBirth,item);//为单元格设置Item
+
+    //民族
+    item=new  QTableWidgetItem(Nation,MainWindow::ctNation); //新建一个Item，设置单元格type为自定义的 MainWindow::ctNation
+    item-&gt;setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);//文本对齐格式
+    ui-&gt;tableInfo-&gt;setItem(rowNo,MainWindow::colNation,item);//为单元格设置Item
+
+    //是否党员
+    item=new  QTableWidgetItem(&quot;党员&quot;,MainWindow::ctPartyM);//新建一个Item，设置单元格type为自定义的 MainWindow::ctPartyM
+    item-&gt;setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);//文本对齐格式
+    if (isPM)
+        item-&gt;setCheckState(Qt::Checked);
+    else
+        item-&gt;setCheckState(Qt::Unchecked);
+    item-&gt;setBackgroundColor(Qt::yellow);//Qt::green  lightGray  yellow
+    ui-&gt;tableInfo-&gt;setItem(rowNo,MainWindow::colPartyM,item);//为单元格设置Item
+
+    //分数
+    str.setNum(score);
+    item=new  QTableWidgetItem(str,MainWindow::ctScore);//新建一个Item，设置单元格type为自定义的 MainWindow::ctPartyM
+    item-&gt;setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);//文本对齐格式
+    ui-&gt;tableInfo-&gt;setItem(rowNo,MainWindow::colScore,item);//为单元格设置Item
+}</pre>
+该表格的每一行有5列，为每一个单元格都创建一个 QTableWidgetItem 类型的变量 item，并做相应的设置。<br />
+<br />
+创建 QTableWidgetItem 使用的构造函数的原型为：<br />
+<p class="info-box">
+	QTableWidgetItem::QTableWidgetItem (const QString &amp;text, int type = Type)</p>
+其中，第一个参数作为单元格的显示文字，第二个参数作为节点的类型。<br />
+<br />
+例如创建&ldquo;姓名&rdquo;单元格对象时的语句是：<br />
+<p class="info-box">
+	cellItem=new QtableWidgetItem(Name,MainWindow::ctName);</p>
+其中，MainWindow::ctName 是定义的枚举类型 CellType 的一个常量值。<br />
+<br />
+&ldquo;姓名&rdquo;单元格还调用 setData() 函数设置了一个自定义的数据，存储的是学生 ID。<br />
+<p class="info-box">
+	cellItem-&gt;setData(Qt::UserRole,QVariant(StudID));</p>
+这个自定义数据是不显示在界面上的，但是与单元格相关联。<br />
+<br />
+QTableWidgetItem 有一些函数对单元格进行属性设置，如下：
+<ul>
+	<li>
+		setTextAlignment (int alignment)：设置文字对齐方式。</li>
+	<li>
+		setBackground(const QBrush &amp;brush)：设置单元格背景颜色。</li>
+	<li>
+		setForeground(const QBrush &amp;brush)：设置单元格前景色。</li>
+	<li>
+		setIcon(const QIcon &amp;icon)：为单元格设置一个显不图标。</li>
+	<li>
+		setFont(const QFont &amp;font)：为单元格显示文字设置字体。</li>
+	<li>
+		setCheckState(Qt::CheckState state)：设置单元格勾选状态，单元格里出现一个QCheckBox组件。</li>
+	<li>
+		setFlags(Qt::ItemFlags flags)：设置单元格的一些属性标记。</li>
+</ul>
+<br />
+设置好 item 的各种属性之后，用 QTableWidget 的 setItem 函数将 item 设置为单元格的项，例如:
+<p class="info-box">
+	ui-&gt;tableInfo-&gt;setItem(rowNo,MainWindow::colName,item);</p>
+其中，MainWindow::colName 是定义的枚举类型 FieldColNum 的一个常量值。<br />
+<br />
+这样初始化设置后，就可以得到如图 2 所示的运行时的表格内容。表格里并没有显示学号，学号是&ldquo;姓名&rdquo;单元格的关联数据。<br />
+<h4>
+	获得当前单元格数据</h4>
+当鼠标在表格上单击单元格时，被选中的单元格是当前单元格。通过 QTableWidget 的 currentColumn() 和 currentRow() 可以获得当前单元格的列编号和行编号。<br />
+<br />
+当前单元格发生切换时，会发射 currentCellChanged() 信号和 currentItemChanged() 信号，两个信号都可以利用，只是传递的参数不同。<br />
+<br />
+对 currentCellChanged() 信号编写槽函数，用于获取当前单元格的数据，以及当前行的学生的学号信息，代码如下：<br />
+<pre class="cpp">
+void MainWindow::on_tableInfo_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn)
+{//当前选择单元格发生变化时的响应
+   Q_UNUSED(previousRow);
+   Q_UNUSED(previousColumn);
+
+    QTableWidgetItem* item=ui-&gt;tableInfo-&gt;item(currentRow,currentColumn); //获取单元格的 Item
+    if  (item==NULL)
+        return;
+
+    labCellIndex-&gt;setText(QString::asprintf(&quot;当前单元格坐标：%d 行，%d 列&quot;,currentRow,currentColumn));
+
+    int cellType=item-&gt;type();//获取单元格的类型
+    labCellType-&gt;setText(QString::asprintf(&quot;当前单元格类型：%d&quot;,cellType));
+
+    item=ui-&gt;tableInfo-&gt;item(currentRow,MainWindow::colName); //取当前行第1列的单元格的 item
+    int ID=item-&gt;data(Qt::UserRole).toInt();//读取用户自定义数据
+    labStudID-&gt;setText(QString::asprintf(&quot;学生ID：%d&quot;,ID));//学生ID
+}</pre>
+在 currentCellChanged() 信号中，传递的参数 currentRow 和 currentColumn 表示当前单元格的行号和列号，通过这两个编号可以得到单元格的 QTableWidgetltem 对象 item。<br />
+<br />
+获得 item 之后，通过 type() 函数得到单元格的类型参数，这个类型就是为单元格创建 QTableWidgetItem 对象时传递的类型参数。<br />
+<br />
+再获取同一行的&ldquo;姓名&rdquo;单元格的项，用data()函数提取自定义数据，也就是创建单元格时存储的学生 ID。<br />
+<h4>
+	插入、添加、删除行</h4>
+QTableWidget 处理行操作的函数如下：
+<ul>
+	<li>
+		insertRow(int row)：在行号为row的行前面插入一行，如果row等于或大于总行数，则在表格最后添加一行。insertRow()函数只是插入一个空行，不会为单元格创建QTableWidgetItem对象，需要手工为单元格创建。</li>
+	<li>
+		removeRow(int row)：删除行号为 row 的行。</li>
+</ul>
+<br />
+下面是界面上&ldquo;插入行&rdquo; &ldquo;添加行&rdquo;&ldquo;删除当前行&rdquo;按钮的响应代码。在插入行之后，会调用 createItemsARow() 函数，为新创建的空行的各单元格构造 QTableWidgetItem 对象：<br />
+<pre class="cpp">
+void MainWindow::on_btnInsertRow_clicked()
+{ //插入一行
+    //int curRow;
+    int curRow=ui-&gt;tableInfo-&gt;currentRow();//当前行号
+
+    ui-&gt;tableInfo-&gt;insertRow(curRow); //插入一行，但不会自动为单元格创建item
+    createItemsARow(curRow, &quot;新学生&quot;, &quot;男&quot;,
+          QDate::fromString(&quot;1990-1-1&quot;,&quot;yyyy-M-d&quot;),&quot;苗族&quot;,true,60 ); //为某一行创建items
+}
+void MainWindow::on_btnAppendRow_clicked()
+{ //添加一行
+    //int curRow;
+    int curRow=ui-&gt;tableInfo-&gt;rowCount();//当前行号
+    ui-&gt;tableInfo-&gt;insertRow(curRow);//在表格尾部添加一行
+    createItemsARow(curRow, &quot;新生&quot;, &quot;女&quot;,
+          QDate::fromString(&quot;2000-1-1&quot;,&quot;yyyy-M-d&quot;),&quot;满族&quot;,false,50 ); //为某一行创建items
+}
+void MainWindow::on_btnDelCurRow_clicked()
+{//删除当前行及其items
+    //int curRow;
+    int curRow=ui-&gt;tableInfo-&gt;currentRow();//当前行号
+    ui-&gt;tableInfo-&gt;removeRow(curRow); //删除当前行及其items
+}</pre>
+<h4>
+	自动调整行高和列宽</h4>
+QTableWidget 有几个函数自动调整表格的行高和列宽，分别如下：<br />
+<ul>
+	<li>
+		resizeColumnsToContents()：自动调整所有列的宽度，以适应其内容。</li>
+	<li>
+		resizeColumnToContents(int column)：自动调整列号为 co/www 的列的宽度。</li>
+	<li>
+		resizeRowsToContents()：自动调整所有行的高度，以适应其内容。</li>
+	<li>
+		resizeRowToContents(int row)：自动调整行号为 raw 的行的高度。</li>
+</ul>
+<p class="info-box">
+	这几个函数实际上是 QTableWidget 的父类 QTableView 的函数。</p>
+<h4>
+	其他属性控制</h4>
+<ul>
+	<li>
+		设置表格内容是否可编辑：QTableWidget 的 EditTriggers 属性表示是否可编辑，以及进入编辑状态的方式。界面上的&quot;表格可编辑&quot;复选框的槽函数代码为：
+		<pre class="cpp">
+void MainWindow::on_chkBoxTabEditable_clicked(bool checked)
+{ //设置编辑模式
+    if (checked)
+        //双击或获取焦点后单击，进入编辑状态
+        ui-&gt;tableInfo-&gt;setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::SelectedClicked);
+    else
+        ui-&gt;tableInfo-&gt;setEditTriggers(QAbstractItemView::NoEditTriggers); //不允许编辑
+}</pre>
+	</li>
+	<li>
+		设置行表头、列表头是否显示：horizontalHeader()获取行表头，verticalHeader()获取列表头，然后可设置其可见性。
+		<pre class="cpp">
+void MainWindow::on_chkBoxHeaderH_clicked(bool checked)
+{
+    //是否显示水平表头
+    ui-&gt;tableInfo-&gt;horizontalHeader()-&gt;setVisible(checked);
+}
+void MainWindow::on_chkBoxHeaderV_clicked(bool checked)
+{
+    //是否显示垂直表头
+    ui-&gt;tableInfo-&gt;verticalHeader()-&gt;setVisible(checked);
+}</pre>
+	</li>
+	<li>
+		间隔行底色：setAltematingRowColors() 函数可以设置表格的行是否用交替底色显示，若为交替底色，则间隔的一行会用灰色作为底色。具体底色的设置需要用 styleSheet，在后续章节会有介绍。
+		<pre class="cpp">
+void MainWindow::on_chkBoxRowColor_clicked(bool checked)
+{
+    ui-&gt;tableInfo-&gt;setAlternatingRowColors(checked);
+}</pre>
+	</li>
+	<li>
+		选择模式：setSelectionBehavior() 函数可以设置选择方式为单元格选择，还是行选择：
+		<pre class="cpp">
+void MainWindow::on_rBtnSelectItem_clicked()
+{//选择行为：单元格选择
+    ui-&gt;tableInfo-&gt;setSelectionBehavior(QAbstractltemView::Selectltems);
+}
+void MainWindow::on_rBtnSelectRow_clicked()
+{//选择行为：行选择
+    ui-&gt;tableInfo-&gt;setSelectionBehavior(QAbstractltemView::SelectRows);
+}</pre>
+	</li>
+</ul>
+<h4>
+	遍历表格读取数据</h4>
+&ldquo;读取表格内容到文本&rdquo;按钮演示了将表格数据区的内容全部读出的方法，它将每个单元格的文字读出，同一行的单元格的文字用空格分隔开，作为文本的一行，然后将这行文字作为文本编辑器的一行内容，代码如下：
+<pre class="cpp">
+void MainWindow::on_btnReadToEdit_clicked()
+{//将 QTableWidget的所有行的内容提取字符串，显示在QPlainTextEdit里
+    QString str;
+    QTableWidgetItem    *cellItem;
+
+    ui-&gt;textEdit-&gt;clear(); //文本编辑器清空
+    for (int i=0;i&lt;ui-&gt;tableInfo-&gt;rowCount();i++) //逐行处理
+    {
+        str=QString::asprintf(&quot;第 %d 行： &quot;,i+1);
+       for (int j=0;j&lt;ui-&gt;tableInfo-&gt;columnCount()-1;j++) //逐列处理，但最后一列是check型，单独处理
+        {
+            cellItem=ui-&gt;tableInfo-&gt;item(i,j); //获取单元格的item
+            str=str+cellItem-&gt;text()+&quot;   &quot;; //字符串连接
+        }
+       cellItem=ui-&gt;tableInfo-&gt;item(i,colPartyM);  //最后一列，党员
+       if (cellItem-&gt;checkState()==Qt::Checked)  //根据check状态显示文字
+           str=str+&quot;党员&quot;;
+       else
+           str=str+&quot;群众&quot;;
+       ui-&gt;textEdit-&gt;appendPlainText(str); //添加到编辑框作为一行
+    }
+}</pre>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1094_2.html" title="Java图书信息查询" target="_blank">Java图书信息查询</a></li>
+<li><a href="6908_2.html" title="C++ STL deque容器底层实现原理（深度剖析）" target="_blank">C++ STL deque容器底层实现原理（深度剖析）</a></li>
+<li><a href="7487_2.html" title="Django初始化项目环境精讲" target="_blank">Django初始化项目环境精讲</a></li>
+<li><a href="7642_2.html" title="Django实现数据表数据插入（创建Model实例）" target="_blank">Django实现数据表数据插入（创建Model实例）</a></li>
+<li><a href="vip_7650_2.html" title="想学好Linux，这些习惯必须养成（初学者必读）" target="_blank">想学好Linux，这些习惯必须养成（初学者必读）</a></li>
+<li><a href="../redis2/msetnx_2.html" title="Redis MSETNX命令" target="_blank">Redis MSETNX命令</a></li>
+<li><a href="../spring_mvc/9669_2.html" title="Spring MVC工作流程" target="_blank">Spring MVC工作流程</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 1863;
+window.arcId = "5e00DjUhuADKkOAoAzLRnabFXR7PjaDVmGA3MrAyo8rssbqLnX7nLLemzO4";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

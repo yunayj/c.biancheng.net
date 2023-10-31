@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>git reset命令：回溯历史版本</title>
+<meta name="description" content="通过前面学习的操作，我们已经学会如何在实现功能后进行提交，累积提交日志作为历史记录，借此不断培育一款软件。 Git 的另一特征便是可以灵活操作历史版本。借助分散仓库的优势" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>git reset命令：回溯历史版本</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">通过前面学习的操作，我们已经学会如何在实现功能后进行提交，累积提交日志作为历史记录，借此不断培育一款软件。<br />
+<br />
+Git 的另一特征便是可以灵活操作历史版本。借助分散仓库的优势，可以在不影响其他仓库的前提下对历史版本进行操作。<br />
+<br />
+在这里，为了让各位熟悉对历史版本的操作，我们先回溯历史版本，创建一个名为 fix-B 的特性分支（图 1）。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/230905/2-230Z5102522343_2.gif" /><br />
+	图 1 回溯历史，创建 fix-B 分支</div>
+<h2>
+	回溯到创建feature-A分支前</h2>
+前面我们在 feature-A 分支创建之前，创建一个名为 fix-B 的特性分支。<br />
+<br />
+要让仓库的 HEAD、暂存区、当前工作树回溯到指定状态，需要用到 git reset &mdash;&mdash;hard 命令。只要提供目标时间点的哈希值，就可以完全恢复至该时间点的状态。事不宜迟，让我们执行下面的命令。<br />
+<pre class="info-box">
+$ git reset &mdash;&mdash;hard fd0cbf0d4a25f747230694d95cac1be72d33441d
+HEAD is now at fd0cbf0 Add index</pre>
+我们已经成功回溯到特性分支（feature-A）创建之前的状态。由于所有文件都回溯到了指定哈希值对应的时间点上，README.md 文件的内容也恢复到了当时的状态。<br />
+<h2>
+	创建fix-B分支</h2>
+现在我们来创建特性分支（fix-B）。<br />
+<pre class="info-box">
+$ git checkout -b fix-B
+Switched to a new branch &#39;fix-B&#39;</pre>
+作为这个主题的作业内容，我们在 README.md 文件中添加一行文字。<br />
+<pre class="info-box">
+# Git教程
+- fix-B</pre>
+然后直接提交 README.md 文件。<br />
+<pre class="info-box">
+$ git add README.md
+$ git commit -m &quot;Fix B&quot;
+[fix-B 4096d9e] Fix B
+1 file changed， 2 insertions(+)</pre>
+现在的状态如图 2 所示。
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/230905/2-230Z5102U21P_2.gif" /><br />
+	图 2 当前 fix-B 分支的状态</div>
+<br />
+接下来我们的目标是图 3 中所示的状态，即主干分支合并 feature-A 分支的修改后，又合并了 fix-B 的修改。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/230905/2-230Z510291I19_2.gif" /><br />
+	图 3 fix-B 分支的下一步目标</div>
+<h2>
+	推进至feature-A分支合并后的状态</h2>
+首先恢复到 feature-A 分支合并后的状态。不妨称这一操作为&ldquo;推进历史&rdquo;。<br />
+<br />
+git log 命令只能查看以当前状态为终点的历史日志，所以这里要使用 git reflog 命令，查看当前仓库的操作日志。在日志中找出回溯历史之前的哈希值，通过 git reset &mdash;&mdash;hard 命令恢复到回溯历史前的状态。<br />
+<br />
+首先执行 git reflog 命令，查看当前仓库执行过的操作的日志。<br />
+<pre class="info-box">
+$ git reflog
+4096d9e HEAD@{0}：commit：Fix B
+fd0cbf0 HEAD@{1}：checkout：moving from master to fix-B
+fd0cbf0 HEAD@{2}：reset：moving to fd0cbf0d4a25f747230694d95cac1be72d33441d
+83b0b94 HEAD@{3}：merge feature-A：Merge made by the &#39;recursive&#39; strategy.
+fd0cbf0 HEAD@{4}：checkout：moving from feature-A to master
+8a6c8b9 HEAD@{5}：checkout：moving from master to feature-A
+fd0cbf0 HEAD@{6}：checkout：moving from feature-A to master
+8a6c8b9 HEAD@{7}：commit：Add feature-A
+fd0cbf0 HEAD@{8}：checkout：moving from master to feature-A
+fd0cbf0 HEAD@{9}：commit：Add index
+9f129ba HEAD@{10}：commit (initial)：First commit</pre>
+在日志中，我们可以看到 commit、checkout、reset、merge 等 Git 命令的执行记录。只要不进行 Git 的 GC（Garbage Collection，垃圾回收），就可以通过日志随意调取近期的历史状态，就像给时间机器指定一个时间点，在过去未来中自由穿梭一般。即便开发者错误执行了 Git 操作，基本也都可以利用 git reflog 命令恢复到原先的状态，所以请各位读者务必牢记本部分。<br />
+<br />
+从上面数第四行表示 feature-A 特性分支合并后的状态，对应哈希值为 83b0b94。我们将 HEAD、暂存区、工作树恢复到这个时间点的状态。<br />
+<pre class="info-box">
+$ git checkout master
+$ git reset &mdash;&mdash;hard 83b0b94
+HEAD is now at 83b0b94 Merge branch &#39;feature-A&#39;</pre>
+之前我们使用 git reset &mdash;&mdash;hard 命令回溯了历史，这里又再次通过它恢复到了回溯前的历史状态。当前的状态如图 4 所示。<br />
+<br />
+<div style="text-align: center;">
+	<img alt="" src="../uploads/allimg/230905/2-230Z5103001331_2.gif" /><br />
+	图 4 恢复历史后的状态</div>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="858_2.html" title="Linux groupdel命令：刪除用户组" target="_blank">Linux groupdel命令：刪除用户组</a></li>
+<li><a href="vip_1873_2.html" title="递归函数的致命缺陷：巨大的时间开销和内存开销（附带优化方案）" target="_blank">递归函数的致命缺陷：巨大的时间开销和内存开销（附带优化方案）</a></li>
+<li><a href="../c/log_2.html" title="C语言log()函数：返回x的自然对数（以e为底的对数）" target="_blank">C语言log()函数：返回x的自然对数（以e为底的对数）</a></li>
+<li><a href="vip_6169_2.html" title="什么是上下文管理器，Python with as底层原理详解" target="_blank">什么是上下文管理器，Python with as底层原理详解</a></li>
+<li><a href="vip_7331_2.html" title="Go语言接口内部实现" target="_blank">Go语言接口内部实现</a></li>
+<li><a href="../matplotlib/9285_2.html" title="Matplotlib折线图（绘图实例+代码详解）" target="_blank">Matplotlib折线图（绘图实例+代码详解）</a></li>
+<li><a href="9343_2.html" title="JS while循环语句的用法" target="_blank">JS while循环语句的用法</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10377;
+window.arcId = "c4f5XAtcLU9s0OtiT1USK7NyswXPnffToG5ktaFE4blusJz145tNAFZHpqIa";
+window.typeidChain = "461|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>GDB print和display命令：查看变量的值</title>
+<meta name="description" content="前面章节中提到，使用 GDB 调试程序，最常用的方法就是：单步调试或者断点调试程序，期间通过查看某个变量或者表达式的值，判断程序当前的执行过程是否正确，不断缩小程序中异常" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+	<div id="sidebar" class="toggle-target">
+	<div id="contents">
+		<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../gdb/gdb_2.html">GDB</a></dt>
+		<dd>
+        	<span class="channel-num">1</span>
+        	<a href="8123_2.html">GDB是什么？</a>
+        </dd>
+<dd>
+        	<span class="channel-num">2</span>
+        	<a href="8130_2.html">GDB下载和安装教程</a>
+        </dd>
+<dd>
+        	<span class="channel-num">3</span>
+        	<a href="vip_8511_2.html">如何在Windows平台上安装GDB调试器？</a><span class="iconfont iconfont-vip2"></span>
+        </dd>
+<dd>
+        	<span class="channel-num">4</span>
+        	<a href="vip_8512_2.html">Sublime Text配置GDB调试环境</a><span class="iconfont iconfont-vip2"></span>
+        </dd>
+<dd>
+        	<span class="channel-num">5</span>
+        	<a href="8153_2.html">GDB调试C/C++程序的整个过程</a>
+        </dd>
+<dd>
+        	<span class="channel-num">6</span>
+        	<a href="vip_8520_2.html">调用GDB调试器的4种方式</a><span class="iconfont iconfont-vip2"></span>
+        </dd>
+<dd>
+        	<span class="channel-num">7</span>
+        	<a href="8174_2.html">gdb run（r）命令：启动程序</a>
+        </dd>
+<dd>
+        	<span class="channel-num">8</span>
+        	<a href="8189_2.html">GDB break（b）：设置断点</a>
+        </dd>
+<dd>
+        	<span class="channel-num">9</span>
+        	<a href="8191_2.html">如何实时监控变量值的变化情况？</a>
+        </dd>
+<dd>
+        	<span class="channel-num">10</span>
+        	<a href="8199_2.html">GDB catch命令：建立捕捉断点</a>
+        </dd>
+<dd>
+        	<span class="channel-num">11</span>
+        	<a href="8255_2.html">GDB条件断点（condition命令）详解</a>
+        </dd>
+<dd>
+        	<span class="channel-num">12</span>
+        	<a href="8232_2.html">GDB单步调试程序</a>
+        </dd>
+<dd>
+        	<span class="channel-num">13</span>
+        	<a href="vip_8519_2.html">如何使用GDB进行断点调试？</a><span class="iconfont iconfont-vip2"></span>
+        </dd>
+<dd>
+        	<span class="channel-num">14</span>
+        	<a href="8238_2.html">GDB print和display命令：查看变量的值</a>
+        </dd>
+<dd>
+        	<span class="channel-num">15</span>
+        	<a href="vip_8513_2.html">GDB print命令更高级的用法！</a><span class="iconfont iconfont-vip2"></span>
+        </dd>
+<dd>
+        	<span class="channel-num">16</span>
+        	<a href="8219_2.html">GDB禁用和删除断点</a>
+        </dd>
+<dd>
+        	<span class="channel-num">17</span>
+        	<a href="vip_8514_2.html">如何用GDB调试多线程程序？</a><span class="iconfont iconfont-vip2"></span>
+        </dd>
+<dd>
+        	<span class="channel-num">18</span>
+        	<a href="vip_8515_2.html">GDB non-stop模式详解</a><span class="iconfont iconfont-vip2"></span>
+        </dd>
+<dd>
+        	<span class="channel-num">19</span>
+        	<a href="vip_8516_2.html">GDB如何在后台执行调试命令？</a><span class="iconfont iconfont-vip2"></span>
+        </dd>
+<dd>
+        	<span class="channel-num">20</span>
+        	<a href="vip_8517_2.html">GDB调试多进程程序</a><span class="iconfont iconfont-vip2"></span>
+        </dd>
+<dd>
+        	<span class="channel-num">21</span>
+        	<a href="vip_8518_2.html">GDB如何进行反向调试？</a><span class="iconfont iconfont-vip2"></span>
+        </dd>
+<dd>
+        	<span class="channel-num">22</span>
+        	<a href="8291_2.html">GDB handle命令：信号处理</a>
+        </dd>
+<dd>
+        	<span class="channel-num">23</span>
+        	<a href="8282_2.html">GDB frame和backtrace命令：查看栈信息</a>
+        </dd>
+<dd>
+        	<span class="channel-num">24</span>
+        	<a href="7466_2.html">GDB编辑和搜索源码</a>
+        </dd>
+<dd>
+        	<span class="channel-num">25</span>
+        	<a href="8293_2.html">GDB help命令：查看目标命令的具体用法</a>
+        </dd>
+
+	</div>
+</div>
+	<div id="article-wrap">
+		<div id="article">
+			<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../gdb/gdb_2.html">GDB</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+			<h1>GDB print和display命令：查看变量的值</h1>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+			<div id="arc-body">前面章节中提到，使用 GDB 调试程序，最常用的方法是：单步调试或者断点调试程序，期间通过查看某个变量或者表达式的值，判断当前程序的执行过程是否正确，不断缩小异常或 Bug 位于代码中的范围，最终找到并修复。<br />
+<br />
+对于在调试期间查看某个变量或表达式的值，GDB 调试器提供有 2 种方法，即使用 print 命令或者 display 命令。本节就对这 2 个命令的功能和用法做详细的讲解，整个讲解过程将以调试如下 C 语言程序为例：
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+int main(){
+    int num,result=0,i=0;
+    scanf(&quot;%d&quot;, &amp;num);
+    while(i&lt;=num){
+        result += i;
+        i++;
+    }  
+    printf(&quot;result=%d\n&quot;, result);
+    return 0;
+}</pre>
+此程序存储在<code>~/demo/main.c</code>文件中（<code>~</code> 代指当前系统登录用户的主目录），并且已经其编译为可供 GDB 调试的 main.exe 可执行文件：
+<p class="info-box">
+	[root@bogon demo]# gcc main.c -o main.exe -g<br />
+	[root@bogon demo]# ls<br />
+	main.c&nbsp; main.exe</p>
+<h2>
+	GDB print命令</h2>
+前面章节中，我们已经多次接触并使用了 print 命令，它的功能就是在 GDB 调试程序的过程中，输出或者修改指定变量或者表达式的值。<br />
+<blockquote>
+	<p>
+		所谓表达式，简单理解就是由多个变量构成的式子。例如 a、b、c 为单个变量，a+b、a+b*c 即为表达式。</p>
+</blockquote>
+print 命令可以缩写为 p，最常用的语法格式如下所示：
+<p class="info-box">
+	(gdb) print num<br />
+	(gdb) p num</p>
+其中，参数 num 用来代指要查看或者修改的目标变量或者表达式。<br />
+<br />
+以调试 main.exe 为例：
+<p class="info-box">
+	[root@bogon demo]# gdb main.exe -q<br />
+	Reading symbols from ~/demo/main.exe...done.<br />
+	(gdb) l<br />
+	1 #include &lt;stdio.h&gt;<br />
+	2 int main(){<br />
+	3&nbsp;&nbsp;&nbsp;&nbsp; int num,result=0,i=0;<br />
+	4&nbsp;&nbsp;&nbsp;&nbsp; scanf(&quot;%d&quot;, &amp;num);<br />
+	5&nbsp;&nbsp;&nbsp;&nbsp; while(i&lt;=num){<br />
+	6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result += i;<br />
+	7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; i++;<br />
+	8&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp;&nbsp;<br />
+	9&nbsp;&nbsp;&nbsp;&nbsp; printf(&quot;result=%d\n&quot;, result);<br />
+	10&nbsp;&nbsp;&nbsp;&nbsp; return 0;<br />
+	(gdb)<br />
+	11 }<br />
+	(gdb) b 3<br />
+	Breakpoint 1 at 0x40053c: file main.c, line 3.<br />
+	(gdb) r<br />
+	Starting program: /root/demo/main.exe<br />
+	<br />
+	Breakpoint 1, main () at main.c:4<br />
+	4&nbsp;&nbsp;&nbsp;&nbsp; scanf(&quot;%d&quot;, &amp;num);<br />
+	(gdb) n<br />
+	3<br />
+	5&nbsp;&nbsp;&nbsp;&nbsp; while(i&lt;=num){<br />
+	(gdb) p num&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;--输出 num 的值<br />
+	$1 = 3<br />
+	(gdb) p num=4&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;-- 修改 num 的值为 4<br />
+	$2 = 4<br />
+	(gdb) b 9<br />
+	Breakpoint 2 at 0x400569: file main.c, line 9.<br />
+	(gdb) c<br />
+	Continuing.<br />
+	<br />
+	Breakpoint 2, main () at main.c:9<br />
+	9&nbsp;&nbsp;&nbsp;&nbsp; printf(&quot;result=%d\n&quot;, result);<br />
+	(gdb) p result&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;-- 输出 result 的值<br />
+	$2 = 10<br />
+	(gdb) p result=20&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;-- 修改 result 的值<br />
+	$2 = 20<br />
+	(gdb) c<br />
+	Continuing.<br />
+	result=20<br />
+	<br />
+	Program exited normally.<br />
+	(gdb)</p>
+可以看到，调试 main.exe 的过程中，我们先后使用 p 命令输出了程序中 num 和 result 变量的值，同时还使用该命令对它们的值做了修改。
+<blockquote>
+	<p>
+		print 命令还有更高级的用法，后续会给读者做详细的讲解。</p>
+</blockquote>
+<h2>
+	GDB display命令</h2>
+和 print 命令一样，display 命令也用于调试阶段查看某个变量或表达式的值，它们的区别是，使用 display 命令查看变量或表达式的值，每当程序暂停执行（例如单步执行）时，GDB 调试器都会自动帮我们打印出来，而 print 命令则不会。<br />
+<br />
+也就是说，使用 1 次 print 命令只能查看 1 次某个变量或表达式的值，而同样使用 1 次 display 命令，每次程序暂停执行时都会自动打印出目标变量或表达式的值。因此，当我们想频繁查看某个变量或表达式的值从而观察它的变化情况时，使用 display 命令可以一劳永逸。<br />
+<br />
+display 命令没有缩写形式，常用的语法格式如下 2 种：
+<p class="info-box">
+	(gdb) display expr<br />
+	(gdb) display/fmt expr</p>
+其中，expr 表示要查看的目标变量或表达式；参数 fmt 用于指定输出变量或表达式的格式，表 1 罗列了常用的一些 fmt 参数。<br />
+<br />
+<table>
+	<caption>
+		表 1 /fmt 常用的值</caption>
+	<tbody>
+		<tr>
+			<th>
+				/fmt</th>
+			<th>
+				功 能</th>
+		</tr>
+		<tr>
+			<td>
+				/x</td>
+			<td>
+				以十六进制的形式打印出整数。</td>
+		</tr>
+		<tr>
+			<td>
+				/d</td>
+			<td>
+				以有符号、十进制的形式打印出整数。</td>
+		</tr>
+		<tr>
+			<td>
+				/u</td>
+			<td>
+				以无符号、十进制的形式打印出整数。</td>
+		</tr>
+		<tr>
+			<td>
+				/o</td>
+			<td>
+				以八进制的形式打印出整数。</td>
+		</tr>
+		<tr>
+			<td>
+				/t</td>
+			<td>
+				以二进制的形式打印出整数。</td>
+		</tr>
+		<tr>
+			<td>
+				/f</td>
+			<td>
+				以浮点数的形式打印变量或表达式的值。</td>
+		</tr>
+		<tr>
+			<td>
+				/c</td>
+			<td>
+				以字符形式打印变量或表达式的值。</td>
+		</tr>
+	</tbody>
+</table>
+<blockquote>
+	<p>
+		注意，display 命令和 /fmt 之间不要留有空格。以 /x 为例，应写为 (gdb)display/x expr。</p>
+</blockquote>
+仍以调试 main.exe 为例：
+<p class="info-box">
+	(gdb) b 4<br />
+	Breakpoint 1 at 0x40053c: file main.c, line 4.<br />
+	(gdb) b 9<br />
+	Breakpoint 2 at 0x400569: file main.c, line 9.<br />
+	(gdb) r<br />
+	Starting program: /root/demo/main.exe<br />
+	<br />
+	Breakpoint 1, main () at main.c:4<br />
+	4&nbsp;&nbsp;&nbsp;&nbsp; scanf(&quot;%d&quot;, &amp;num);<br />
+	(gdb) display num<br />
+	<span style="color:#b22222;">1: num = 32767</span><br />
+	(gdb) display/t result<br />
+	<span style="color:#b22222;">2: /t result = 0</span><br />
+	(gdb) n<br />
+	3<br />
+	5&nbsp;&nbsp;&nbsp;&nbsp; while(i&lt;=num){<br />
+	<span style="color:#b22222;">2: /t result = 0<br />
+	1: num = 3</span><br />
+	(gdb) c<br />
+	Continuing.<br />
+	<br />
+	Breakpoint 2, main () at main.c:9<br />
+	9&nbsp;&nbsp;&nbsp;&nbsp; printf(&quot;result=%d\n&quot;, result);<br />
+	<span style="color:#b22222;">2: /t result = 110<br />
+	1: num = 3</span><br />
+	(gdb) c<br />
+	Continuing.<br />
+	result=6<br />
+	<br />
+	Program exited normally.<br />
+	(gdb)</p>
+可以看到，使用 display 命令查看 num 和 result 变量值时，不仅在执行该命令的同时会看到目标变量的值，后续每次程序停止执行时，GDB 调试器都会将目标变量的值打印出来。<br />
+<br />
+事实上，对于使用 display 命令查看的目标变量或表达式，都会被记录在一张列表（称为<span style="color:#008000;">自动显示列表</span>）中。通过执行<code>info dispaly</code>命令，可以打印出这张表：
+<p class="info-box">
+	(gdb) info display<br />
+	Auto-display expressions now in effect:<br />
+	Num Enb Expression<br />
+	2:&nbsp; &nbsp; &nbsp; y&nbsp; &nbsp; &nbsp; /t result<br />
+	1:&nbsp; &nbsp; &nbsp; y&nbsp; &nbsp; &nbsp; num</p>
+其中，各列的含义为：
+<ul>
+	<li>
+		Num 列为各变量或表达式的编号，GDB 调试器为每个变量或表达式都分配有唯一的编号；</li>
+	<li>
+		Enb 列表示当前各个变量（表达式）是处于激活状态还是禁用状态，如果处于激活状态（用 y 表示），则每次程序停止执行，该变量的值都会被打印出来；反之，如果处于禁用状态（用 n 表示），则该变量（表达式）的值不会被打印。</li>
+	<li>
+		Expression 列：表示查看的变量或表达式。</li>
+</ul>
+<br />
+对于不需要再打印值的变量或表达式，可以将其删除或者禁用。<br />
+<br />
+1) 通过执行如下命令，即可删除自动显示列表中的变量或表达式：
+<p class="info-box">
+	(gdb) undisplay num...<br />
+	(gdb) delete display num...</p>
+参数 num... 表示目标变量或表达式的编号，编号的个数可以是多个。<br />
+<br />
+举个例子：
+<p class="info-box">
+	(gdb) undisplay 1<br />
+	(gdb) info display<br />
+	Auto-display expressions now in effect:<br />
+	Num Enb Expression<br />
+	2:&nbsp; &nbsp; &nbsp; y&nbsp; &nbsp; &nbsp; /t result<br />
+	(gdb)</p>
+可以看到，借助 undisplay 命令成功删除了编号为 1 的 num 变量。<br />
+<br />
+2) 通过执行如下命令，可以禁用自动显示列表中处于激活状态下的变量或表达式：
+<p class="info-box">
+	(gdb) disable display num...</p>
+num... 表示要禁用的变量或表达式的编号，编号的个数可以是多个，表示一次性禁用多个变量或表达式<br />
+<br />
+举个例子：
+<p class="info-box">
+	(gdb) disable display 2<br />
+	(gdb) info display<br />
+	Auto-display expressions now in effect:<br />
+	Num Enb Expression<br />
+	2:&nbsp; &nbsp; &nbsp; n&nbsp; &nbsp; &nbsp; /t result<br />
+	(gdb)&nbsp;</p>
+可以看到，编号为 2 的 result 变量的 Enb 由 y 变成了 n。处于禁用状态的变量或表达式，程序停止执行时将不再自动打印出它们的值。<br />
+<br />
+当然根据需要，也可以激活当前处于禁用状态的变量或表达式，执行如下命令即可：
+<p class="info-box">
+	(gdb) enable display num...</p>
+参数 num... 表示要激活的变量或表达式的编号，编号的个数可以是多个，表示一次性激活多个变量或表达式。<br />
+<br />
+举个例子：
+<p class="info-box">
+	(gdb) enable display 2<br />
+	(gdb) info display<br />
+	Auto-display expressions now in effect:<br />
+	Num Enb Expression<br />
+	2:&nbsp;&nbsp; y&nbsp; /t result<br />
+	(gdb)&nbsp;</p>
+总的来说，每次程序停止执行时，GDB 调试器会将自动显示列表中处于激活状态下的变量或表达式的值打印出来，display 命令可以实现在查看目标变量或表达式的值的同时，将其添加到自动显示列表中，而 print 命令则只会打印出目标变量或表达式的值。<br />
+</div>
+			<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+			<div class="pre-next-page clearfix">&nbsp;</div>
+			<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="596_2.html" title="C语言统计单词个数，单词个数算法" target="_blank">C语言统计单词个数，单词个数算法</a></li>
+<li><a href="923_2.html" title="Java数组使用binarySearch()方法查找指定元素" target="_blank">Java数组使用binarySearch()方法查找指定元素</a></li>
+<li><a href="3851_2.html" title="Qt下载（多种下载通道+所有版本）" target="_blank">Qt下载（多种下载通道+所有版本）</a></li>
+<li><a href="vip_6002_2.html" title="Python使用字典格式化字符串" target="_blank">Python使用字典格式化字符串</a></li>
+<li><a href="../numpy/linear-algebra_2.html" title="NumPy线性代数" target="_blank">NumPy线性代数</a></li>
+<li><a href="../redis2/decr_2.html" title="Redis DECR命令" target="_blank">Redis DECR命令</a></li>
+<li><a href="9365_2.html" title="JS Screen对象：获取屏幕信息" target="_blank">JS Screen对象：获取屏幕信息</a></li>
+</ul>
+</div>
+		</div>
+		
+	</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 8238;
+window.arcId = "18b7mqBJIBqQdgB2WclnC7UCOHeAPTmluJ6FWScKN4n421ZjR0OQWbvifVU";
+window.typeidChain = "154";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/view/vip_8519.html";
+window.nextPageURL = "/view/vip_8513.html";
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

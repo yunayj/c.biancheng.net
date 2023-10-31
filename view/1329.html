@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C++数据类型（强制）转换详解</title>
+<meta name="description" content="有时，编程的过程中需要将值从一种数据类型转换为另一种数据类型。C++ 提供了这样做的方法。 如果将一个浮点值分配给一个 int 整型变量，该变量会接收什么值？如果一个 int 整数乘" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C++数据类型（强制）转换详解</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">有时，编程的过程中需要将值从一种数据类型转换为另一种数据类型。<a href='../cplus/cplus.html' target='_blank'>C++</a> 提供了这样做的方法。<br />
+<br />
+如果将一个浮点值分配给一个 int 整型变量，该变量会接收什么值？如果一个 int 整数乘以一个 float 浮点数，结果将会是什么数据类型？如果一个 double 浮点数除以一个 unsigned int 无符号整数会怎么样？是否有办法预测在这些情况下会发生什么？<br />
+<br />
+答案是肯定的。当运算符的操作数具有不同的数据类型时，C++ 会自动将它们转换为相同的数据类型。当它这样做时，遵循一组规则。理解这些规则将有助于程序员防止一些细微的错误蔓延到自己的程序中。<br />
+<br />
+就像军队的军官有军阶一样，数据类型也可以按等级排名。如果一个数字数据类型可以容纳的数字大于另一个数据类型，那么它的排名就高于后者。例如，float 类型就超越了 int 类型，而 double 类型又超越了 float 类型。表 1 列出了从高到低排列的数据类型。<br />
+<br />
+<table>
+<caption>
+表 1 数据类型排名</caption>
+<tbody>
+<tr>
+<td>
+long double</td>
+</tr>
+<tr>
+<td>
+double</td>
+</tr>
+<tr>
+<td>
+float</td>
+</tr>
+<tr>
+<td>
+unsigned long long int</td>
+</tr>
+<tr>
+<td>
+long long int</td>
+</tr>
+<tr>
+<td>
+unsigned long int</td>
+</tr>
+<tr>
+<td>
+long int</td>
+</tr>
+<tr>
+<td>
+unsigned int</td>
+</tr>
+<tr>
+<td>
+int</td>
+</tr>
+</tbody>
+</table>
+<br />
+表 1 中排名的一个例外是当 int 和 long int 的大小相同时。在这种情况下，unsigned int 将超越 long int，因为它可以保存更高的值。<br />
+<br />
+当 C++ 使用运算符时，它会努力将操作数转换为相同的类型。这种隐式或自动的转换称为<span style="color:#008000;">类型强制</span>。当一个值被转换为更髙的数据类型时，称之为升级。反之，降级则意味着将其转换为更低的数据类型。<br />
+<br />
+现在来看一看管理数学表达式评估的具体规则：
+<ul>
+<li>
+规则 1：char、short 和 unsigned short 值自动升级为 int 值。细心的读者可能已经注意到，char、short 和 unsigned short 都未出现在表 1 中，这是因为无论何时在数学表达式中使用这些数据类型的值，它们都将自动升级为 int 类型。</li>
+<li>
+规则 2：当运算符使用不同数据类型的两个值时，较低排名的值将被升级为较高排名值的类型。在下面的表达式中，假设 years 是一个 int 变量，而 interestRate 是一个 double 变量：</li>
+</ul>
+<p class="info-box">
+years * interestRate</p>
+在乘法发生之前，years 中的值将升级为 double 类型。<br />
+<ul>
+<li>
+规则 3：当表达式的最终值分配给变量时，它将被转换为该变量的数据类型。在下面的语句中，假设 area 是一个 long int 长整型变量，而 length 和 width 都是 int 整型变量：</li>
+</ul>
+<p class="info-box">
+area = length * width;</p>
+因为存储在 length 和 width 中的值是相同的数据类型，所以它们都不会被转换为任何其他数据类型。但是，乘法的结果将被升级为 long int 类型，这样才可以存储到 area 中。<br />
+<br />
+但是，如果接收值的变量的数据类型低于接收的值，那该怎么办呢？在这种情况下，值将被降级为变量的类型。如果变量的数据类型没有足够的存储空间来保存该值，则该值的一部分将丢失，并且该变量可能会收到不准确的结果。<br />
+<br />
+我们知道，如果接收值的变量想要的是一个整数，而赋给它的值是一个浮点数，那么当转换为 int 并存储在变量中时，浮点值将被截断。这意味着小数点后的所有内容都将被丢弃。示例如下：<br />
+<p class="info-box">
+int x;<br />
+double y = 3.75;<br />
+x = y; // x被赋值为3，y仍然保留3.75</p>
+但是，重要的是要了解，当变量值的数据类型更改时，它不会影响变量本身。例如，来看下面的代码段。<br />
+<p class="info-box">
+int quantity1 = 6;<br />
+double quantity2 = 3.7;<br />
+double total;<br />
+total = quantity1 + quantity2;</p>
+在 C++ 执行上述加法之前，它会将一个 quantity1 值的副本移动到其工作空间中，并将其转换为 double 类型。然后把 6.0 和 3.7 相加，并且将结果值 9.7 存储到 total 中。但是，变量 quantity1 保持为 int，存储在存储器中的值保持不变，它仍然是整数 6。<br />
+<h2>
+类型强制转换</h2>
+有时程序员想要自己更改值的数据类型，这可以通过使用类型强制转换表达式来完成。类型强制转换表达式允许手动升级或降级值。它的一般格式如下：<br />
+<p class="info-box">
+static_cast&lt;DataType&gt;(Value)</p>
+其中 Value 是要转换的变量或文字值，DataType 是要转换的目标数据类型。以下是使用类型转换表达式的代码示例：<br />
+<p class="info-box">
+double number = 3.7;<br />
+int val;<br />
+val = static_cast&lt;int&gt;(number);</p>
+上述代码定义了两个变量：double 类型的 number 和 int 类型的 val。第 3 个语句中的类型转换表达式返回 number 中的值的副本，转换为 int。当 double 或 float 类型的值转换为 int 时，小数部分被截断，因此该语句将 3 存储在 val 中。而 number 的值仍为 3.7，保持不变。<br />
+<p class="info-box">
+类型转换表达式在 C++ 不能自动执行所需转换的情况下很有用。</p>
+下面的程序显示了使用类型强制转换表达式来防止发生整除法的示例。<br />
+<pre class="cpp">
+//This program uses a type cast to avoid an integer division.
+#include &lt;iostream&gt;
+u<a href='https://c.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+
+int main()
+{
+    intbooks, months;
+    double booksPerMonth;
+    // Get user inputs
+    cout &lt;&lt; &quot;How many books do you plan to read? &quot;;
+    cin &gt;&gt; books;
+    cout &lt;&lt; &quot;How many months will it take you to read them? &quot;;
+    cin &gt;&gt; months;
+    // Compute and display books read per month
+    booksPerMonth = static_cast&lt;double&gt;(books) / months;
+    cout &lt;&lt; &quot;That is &quot; &lt;&lt; booksPerMonth &lt;&lt; &quot; books per month.\n&quot;;
+    return 0;
+}</pre>
+程序输出结果：
+<p class="info-box">
+How many books do you plan to read? 30<br />
+How many months will it take you to read them? 7<br />
+That is 4.28571 books per month.</p>
+其中，使用类型强制转换表达式的语句是：
+<p class="info-box">
+booksPerMonth = static cast&lt;double&gt;(books) / months;</p>
+变量 books 是一个整数，但是它的值的副本在除法运算之前被转换为 double 类型。如果没有此类型转换表达式，则将执行整除法，导致错误的答案。值得一提的是，如果按以下语句改写此行，则整除法仍然会发生：<br />
+<p class="info-box">
+booksPerMonth = static_cast &lt;double&gt; (books / months);</p>
+因为括号内的操作在其他操作之前完成，所以除法运算符将对其两个整数操作数执行整除法，books / month 表达式的结果将是 4，然后将 4 转换为 double 类型的值 4.0，这就是将赋给 booksPerMonth 的值。<br />
+<br />
+警告，为了防止发生整除法，在除法运算之前，其中一个操作数应该转换为一个 double 双精度值。这将强制 C++ 自动将其他操作数的值也转换为双精度值。<br />
+<br />
+下面的程序显示了类型强制转换的另一种用法：
+<pre class="cpp">
+//This program prints a character from its ASCII code.
+#include &lt;iostream&gt;
+using namespace std;
+
+int main()
+{
+    int number = 65;
+    //Display the value of the number variable
+    cout &lt;&lt; number &lt;&lt; endl;
+    // Use a type cast to display the value of number
+    // converted to the char data type
+    cout &lt;&lt; static_cast&lt;char&gt;(number) &lt;&lt; endl;
+    return 0;
+}</pre>
+程序输出结果：
+<p class="info-box">
+65<br />
+A</p>
+现在来仔细看一看这个程序。首先，int 变量 number 的值被初始化为值 65，同时将 number 发送到 cout，导致显示 65。随后，类型强制转换表达式用于将 number 的值转换为 char 数据类型，再将其发送到 cout。我们知道，字符作为整数 ASCII 代码存储在内存中。因为数字 65 是字母 A 的 ASCII 码，所以最后的输出语句会显示字母 A。<br />
+<br />
+注意，C++ 提供了若干种不同类型的强制转换表达式。static_cast 是最常用的类型强制转换表达式，所以这将是在本教程中主要使用的表达式。<br />
+<h2>
+C 风格和预标准 C++ 类型强制转换表达式</h2>
+虽然 static_cast 是目前使用最多的类型强制转换表达式，但是 C++ 还支持两种较旧的形式，这也是程序员应该有所了解的，即 C 风格形式和预标准 C++ 形式。<br />
+<br />
+C 风格的转换将要转换的数据类型放在括号中，位于值要转换的操作数的前面。因为类型转换运算符在操作数前面，所以这种类型转换表示法被称为前缀表示法，示例如下：<br />
+<p class="info-box">
+booksPerMonth = (double)books / months;</p>
+预标准 C++ 形式类型强制转换表达式也是将要转换的数据类型放在其值要转换的操作数之前，但它将括号放在操作数周围，而不是围绕数据类型。这种类型转换表示法被称为<span style="color:#008000;">功能性表示法</span>，示例如下：
+<p class="info-box">
+booksPerMonth = double(books) / months;</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="235.html" title="fgets函数及其用法，C语言fgets函数详解" target="_blank">fgets函数及其用法，C语言fgets函数详解</a></li>
+<li><a href="920.html" title="Linux LV逻辑卷（创建、查看、调整大小及删除）详解" target="_blank">Linux LV逻辑卷（创建、查看、调整大小及删除）详解</a></li>
+<li><a href="971.html" title="Shell数值运算方法（3种）" target="_blank">Shell数值运算方法（3种）</a></li>
+<li><a href="3546.html" title="Linux文件系统的层次结构" target="_blank">Linux文件系统的层次结构</a></li>
+<li><a href="8186.html" title="Python unittest模块实现单元测试" target="_blank">Python unittest模块实现单元测试</a></li>
+<li><a href="what-is-algorithm.html" title="算法是什么" target="_blank">算法是什么</a></li>
+<li><a href="qiqevt.html" title="C语言while循环" target="_blank">C语言while循环</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 1329;
+window.arcId = "96768uGM/mAWCoLKbKqnbYX4q4uju2YfGgd/e9lruPSxL73DU6JY979h9nE";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

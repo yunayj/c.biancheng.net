@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C语言多线程编程</title>
+<meta name="description" content="C语言是一种支持多线程编程的语言，它通过线程来实现并发执行，可以大大提高程序的运行效率和响应速度。在本文中，我们将介绍 C语言中的多线程编程，包括线程的创建、同步、互" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C语言多线程编程</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">C语言是一种支持多线程编程的语言，它通过线程来实现并发执行，可以大大提高程序的运行效率和响应速度。在本文中，我们将介绍 C语言中的多线程编程，包括线程的创建、同步、互斥、条件变量等方面。<br />
+<h2>
+	线程的创建</h2>
+在 C语言中，可以通过 pthread 库来创建线程。pthread 库是一个 POSIX 标准的线程库，可以在 Linux、Unix 等操作系统上使用。线程的创建需要用到 pthread_create 函数，它的原型如下：<br />
+<pre class="c">
+int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine) (void *), void *arg);</pre>
+参数说明：<br />
+<ul>
+	<li>
+		thread：指向 pthread_t 类型的指针，用于存储新创建的线程的 ID；</li>
+	<li>
+		attr：指向 pthread_attr_t 类型的指针，用于设置线程的属性，一般可以设置为 NULL；</li>
+	<li>
+		start_routine：指向线程的函数指针，该函数用于执行新线程的任务；</li>
+	<li>
+		arg：传递给线程函数的参数。</li>
+</ul>
+<br />
+下面是一个简单的线程创建示例代码：<br />
+<pre class="c">
+#include &lt;stdio.h&gt;
+#include &lt;pthread.h&gt;
+
+void *thread_func(void *arg) {
+    printf(&quot;This is a new thread!\n&quot;);
+    pthread_exit(NULL);
+}
+
+int main() {
+    pthread_t tid;
+    pthread_create(&amp;tid, NULL, thread_func, NULL);
+    printf(&quot;This is the main thread!\n&quot;);
+    pthread_exit(NULL);
+}</pre>
+运行结果：<br />
+<p class="info-box">
+	This is the main thread!<br />
+	This is a new thread!</p>
+可以看到，在 main 函数中调用 pthread_create 函数创建了一个新线程，然后在新线程中执行了 thread_func 函数，并打印出&quot;This is a new thread!&quot;。同时，主线程也继续执行，并打印出&quot;This is the main thread!&quot;。<br />
+<br />
+需要注意的是，在使用 pthread 库时，main 函数必须调用 pthread_exit 函数来结束程序，否则可能会出现线程无法正常退出的情况。
+<h2>
+	线程的同步</h2>
+在多线程编程中，由于多个线程同时执行，可能会出现资源竞争的情况。为了避免这种情况，需要对线程进行同步。在 C语言中，可以使用互斥锁、条件变量等机制来实现线程同步。<br />
+<h4>
+	1) 互斥锁</h4>
+互斥锁是一种用于保护共享资源的锁，只有获得锁的线程才能访问共享资源。<br />
+<br />
+在 C语言中，可以使用 pthread 库中的 pthread_mutex_init、pthread_mutex_lock、pthread_mutex_unlock、pthread_mutex_destroy 函数来实现互斥锁。其中，pthread_mutex_init 函数用于初始化互斥锁，pthread_mutex_lock 函数用于加锁，pthread_mutex_unlock 函数用于解锁，pthread_mutex_destroy 函数用于销毁互斥锁。<br />
+<br />
+下面是一个使用互斥锁的示例代码：<br />
+<pre class="c">
+#include &lt;stdio.h&gt;
+#include &lt;pthread.h&gt;
+
+int counter = 0;
+pthread_mutex_t mutex;
+
+void *thread_func(void *arg) {
+    int i;
+    for (i = 0; i &lt; 1000000; i++) {
+        pthread_mutex_lock(&amp;mutex);
+        counter++;
+        pthread_mutex_unlock(&amp;mutex);
+    }
+    pthread_exit(NULL);
+}
+
+int main() {
+    pthread_t tid1, tid2;
+    pthread_mutex_init(&amp;mutex, NULL);
+    pthread_create(&amp;tid1, NULL, thread_func, NULL);
+    pthread_create(&amp;tid2, NULL, thread_func, NULL);
+    pthread_join(tid1, NULL);
+    pthread_join(tid2, NULL);
+    pthread_mutex_destroy(&amp;mutex);
+    printf(&quot;counter = %d\n&quot;, counter);
+    pthread_exit(NULL);
+}</pre>
+运行结果：<br />
+<p class="info-box">
+	counter = 2000000</p>
+可以看到，在 main 函数中创建了两个线程 tid1 和 tid2，它们的任务是分别对 counter 变量进行 1000000 次累加操作。由于 counter 变量是一个共享资源，因此需要使用互斥锁来保护它。<br />
+<br />
+在线程函数中，首先调用 pthread_mutex_lock 函数获得锁，然后对 counter 变量进行操作，最后调用 pthread_mutex_unlock 函数释放锁。在 main 函数中，使用 pthread_join 函数等待线程 tid1 和 tid2 执行完毕，然后销毁互斥锁并打印出 counter 的最终值。<br />
+<h4>
+	2) 条件变量</h4>
+条件变量是一种用于线程间通信的机制，可以用于实现线程的等待和唤醒操作。<br />
+<br />
+在 C语言中，可以使用 pthread 库中的 pthread_cond_init、pthread_cond_wait、pthread_cond_signal、pthread_cond_broadcast、pthread_cond_destroy 函数来实现条件变量。<br />
+<br />
+其中，pthread_cond_init 函数用于初始化条件变量，pthread_cond_wait 函数用于等待条件变量，pthread_cond_signal 函数用于唤醒等待条件变量的线程，pthread_cond_broadcast 函数用于唤醒所有等待条件变量的线程，pthread_cond_destroy 函数用于销毁条件变量。<br />
+<br />
+下面是一个使用条件变量的示例代码：<br />
+<pre class="c">
+#include &lt;stdio.h&gt;
+#include &lt;pthread.h&gt;
+
+int buffer = 0;
+pthread_mutex_t mutex;
+pthread_cond_t cond;
+
+void *producer(void *arg) {
+    int i;
+    for (i = 0; i &lt; 10; i++) {
+        pthread_mutex_lock(&amp;mutex);
+        buffer++;
+        printf(&quot;Producer produced %d\n&quot;, buffer);
+        pthread_cond_signal(&amp;cond);
+        pthread_mutex_unlock(&amp;mutex);
+        sleep(1);
+    }
+    pthread_exit(NULL);
+}
+
+void *consumer(void *arg) {
+    int i;
+    for (i = 0; i &lt; 10; i++) {
+        pthread_mutex_lock(&amp;mutex);
+        while (buffer == 0) {
+            pthread_cond_wait(&amp;cond, &amp;mutex);
+        }
+        buffer--;
+        printf(&quot;Consumer consumed %d\n&quot;, buffer);
+        pthread_mutex_unlock(&amp;mutex);
+        sleep(1);
+    }
+    pthread_exit(NULL);
+}
+
+int main() {
+    pthread_t tid1, tid2;
+    pthread_mutex_init(&amp;mutex, NULL);
+    pthread_cond_init(&amp;cond, NULL);
+    pthread_create(&amp;tid1, NULL, producer, NULL);
+    pthread_create(&amp;tid2, consumer, NULL);
+    pthread_join(tid1, NULL);
+    pthread_join(tid2, NULL);
+    pthread_mutex_destroy(&amp;mutex);
+    pthread_cond_destroy(&amp;cond);
+    pthread_exit(NULL);
+}</pre>
+运行结果：<br />
+<p class="info-box">
+	Producer produced 1<br />
+	Consumer consumed 0<br />
+	Producer produced 1<br />
+	Consumer consumed 0<br />
+	Producer produced 1<br />
+	Consumer consumed 0<br />
+	Producer produced 1<br />
+	Consumer consumed 0<br />
+	Producer produced 1<br />
+	Consumer consumed 0<br />
+	Producer produced 1<br />
+	Consumer consumed 0<br />
+	Producer produced 1<br />
+	Consumer consumed 0<br />
+	Producer produced 1<br />
+	Consumer consumed 0<br />
+	Producer produced 1<br />
+	Consumer consumed 0<br />
+	Producer produced 1<br />
+	Consumer consumed 0</p>
+可以看到，该程序中有一个生产者线程和一个消费者线程，它们共享一个缓冲区变量 buffer。生产者线程负责将 buffer 逐个增加，消费者线程负责将 buffer 逐个减少。当 buffer 为 0 时，消费者线程将进入等待状态，等待生产者线程将 buffer 增加后发出信号唤醒自己。当 buffer 不为 0 时，生产者线程将向消费者线程发送一个信号，通知其可以开始消费。通过使用条件变量和互斥锁，生产者和消费者线程可以保证对 buffer 变量的操作是互斥的。<br />
+<h2>
+	总结</h2>
+本文介绍了 C语言中的多线程编程技术，包括线程的创建、同步和互斥、条件变量等。多线程编程是一种高级编程技术，需要程序员具备一定的计算机系统知识和编程经验。多线程编程可以提高程序的性能和并发能力，但也存在一些问题，例如线程安全、死锁等。在实际开发过程中，需要综合考虑多种因素，合理使用多线程技术，提高程序的质量和效率。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="310_3.html" title="switch语句用法注意事项，如何正确使用switch语句" target="_blank">switch语句用法注意事项，如何正确使用switch语句</a></li>
+<li><a href="550_2.html" title="vi文本删除命令（删除文件内容）" target="_blank">vi文本删除命令（删除文件内容）</a></li>
+<li><a href="vip_2203_2.html" title="如何规范地使用C++内联函数" target="_blank">如何规范地使用C++内联函数</a></li>
+<li><a href="5568_2.html" title="Go语言链表操作" target="_blank">Go语言链表操作</a></li>
+<li><a href="6552_2.html" title="MongoDB insert()方法：插入数据" target="_blank">MongoDB insert()方法：插入数据</a></li>
+<li><a href="../ml_alg/knn_2.html" title="KNN最邻近分类算法" target="_blank">KNN最邻近分类算法</a></li>
+<li><a href="fbj0o4p_2.html" title="MySQL删除字段（附带示例）" target="_blank">MySQL删除字段（附带示例）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 9935;
+window.arcId = "01d4w2beFhJDZ3xqa4651649hwjm6aKtuSCzLNYJ5L9EPyV8HX9h5aewRVA";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>gets和fgets函数及其区别，C语言gets和fgets函数详解</title>
+<meta name="description" content="每当讨论 gets 函数时，大家不由自主地就会想起 1988 年的互联网蠕虫，它在 UNIX 操作系统的 finger 后台程序中使用一个 gets 调用作为它的攻击方式之一。很显然，对蠕虫病毒的实现来说，" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>gets和fgets函数及其区别，C语言gets和fgets函数详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">每当讨论 gets 函数时，大家不由自主地就会想起 1988 年的&ldquo;互联网蠕虫&rdquo;，它在 UNIX 操作系统的 finger 后台程序中使用一个 gets 调用作为它的攻击方式之一。很显然，对蠕虫病毒的实现来说， gets 函数的功劳不可小视。不仅如此，<a href='../gcc/gcc_2.html' target='_blank'>GCC</a> 也不推荐使用gets和puts函数。<br />
+<br />
+那么，究竟是什么原因导致 gets 函数这么不招人待见呢？<br />
+<br />
+我们知道，对于 gets 函数，它的任务是从 stdin 流中读取字符串，直至接收到换行符或 EOF 时停止，并将读取的结果存放在 buffer 指针所指向的字符数组中。这里需要注意的是，换行符不作为读取串的内容，读取的换行符被转换为 null(&#39;\0&#39;) 值，并由此来结束字符串。即换行符会被丢弃，然后在末尾添加 null(&#39;\0&#39;) 字符。其函数的原型如下：<br />
+<pre class="cpp">
+char* gets(char* buffer);</pre>
+如果读入成功，则返回与参数 buffer 相同的指针；如果读入过程中遇到 EOF 或发生错误，返回 NULL 指针。因此，在遇到返回值为 NULL 的情况，要用 ferror 或 feof 函数检查是发生错误还是遇到 EOF。<br />
+<br />
+函数 gets 可以无限读取，不会判断上限，所以程序员应该确保 buffer 的空间足够大，以便在执行读操作时不发生溢出。也就是说，gets 函数并不检查缓冲区 buffer 的空间大小，事实上它也无法检查缓冲区的空间。<br />
+<br />
+如果函数的调用者提供了一个指向堆栈的指针，并且 gets 函数读入的字符数量超过了缓冲区的空间（即发生溢出），gets 函数会将多出来的字符继续写入堆栈中，这样就覆盖了堆栈中原来的内容，破坏一个或多个不相关变量的值。如下面的示例代码所示：<br />
+<pre class="cpp">
+int main(void)
+{
+    char buffer[11];
+    gets(buffer);
+    printf(&quot;输出： %s\n&quot;,buffer);
+    return 0;
+}</pre>
+示例代码的运行结果为：<br />
+aaa<br />
+输出： aaa<br />
+<br />
+根据运行结果，当用户在键盘上输入的字符个数大于缓冲区 buffer 的最大界限时，gets 函数也不会对其进行任何检查，因此我们可以将恶意代码多出来的数据写入堆栈。由此可见，gets 函数是极其不安全的，可能成为病毒的入口，因为 gets 函数没有限制输入的字符串长度。所以我们应该使用 fgets 函数来替换 gets 函数，实际上这也是大多程序员所推荐的做法。<br />
+<br />
+相对于 gets 函数，fgets 函数最大的改进就是能够读取指定大小的数据，从而避免 gets 函数从 stdin 接收字符串而不检查它所复制的缓冲区空间大小导致的缓存溢出问题。当然，fgets 函数主要是为文件 I/O 而设计的（注意，不能用 fgets 函数读取二进制文件，因为 fgets 函数会把二进制文件当成文本文件来处理，这势必会产生乱码等不必要的麻烦）。其中，fgets 函数的原型如下：<br />
+<pre class="cpp">
+char *fgets(char *buf, int bufsize, FILE *stream);</pre>
+该函数的第二个参数 bufsize 用来指示最大读入字符数。如果这个参数值为 n，那么 fgets 函数就会读取最多 n-1 个字符或者读完一个换行符为止，在这两者之中，最先满足的那个条件用于结束输入。<br />
+<br />
+与 gets 函数不同的是，如果 fgets 函数读到换行符，就会把它存储到字符串中，而不是像 gets 函数那样丢弃它。即给定参数 n，fgets 函数只能读取 n-1 个字符（包括换行符）。如果有一行超过 n-1 个字符，那么 fgets 函数将返回一个不完整的行（只读取该行的前 n-1 个字符）。但是，缓冲区总是以 null(&#39;\0&#39;) 字符结尾，对 fgets 函数的下一次调用会继续读取该行。<br />
+<br />
+也就是说，每次调用时，fgets 函数都会把缓冲区的最后一个字符设为 null(&#39;\0&#39;)，这意味着最后一个字符不能用来存放需要的数据。所以如果某一行含有 size 个字符（包括换行符），要想把这行读入缓冲区，要把参数 n 设为 size+1，即多留一个位置存储 null(&#39;\0&#39;)。<br />
+<br />
+最后，它还需要第 3 个参数来说明读取哪个文件。如果是从键盘上读入数据，可以使用 stdin 作为该参数，如下面的代码所示：<br />
+<pre class="cpp">
+int main(void)
+{
+    char buffer[11];
+    fgets(buffer,11,stdin);
+    printf(&quot;输出： %s\n&quot;,buffer);
+    return 0;
+}</pre>
+对于上面的示例代码，如果输入的字符串小于或等于 10 个字符，那么程序将完整地输出结果；如果输入的字符串大于 10 个字符，那么程序将截断输入的字符串，最后只输出前 10 个字符。示例代码运行结果为：<br />
+<br />
+aaaaaaaaaaaaaaaa<br />
+输出： aaaaaaaaaa<br />
+<br />
+除此之外，C99 还提供了 fgets 函数的宽字符版本 fgetws 函数，其函数的一般原型如下面的代码所示：<br />
+<pre class="cpp">
+wchar_t *fgetws(wchar_t * restrict s, int n, FILE * restrict stream);</pre>
+该函数的功能与 fgets 函数一样。</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="599_2.html" title="C语言字符串加密和解密算法" target="_blank">C语言字符串加密和解密算法</a></li>
+<li><a href="1096_2.html" title="Linux rsyslogd服务及启动方法（详解版）" target="_blank">Linux rsyslogd服务及启动方法（详解版）</a></li>
+<li><a href="3412_2.html" title="深度优先生成树和广度优先生成树（详解版）" target="_blank">深度优先生成树和广度优先生成树（详解版）</a></li>
+<li><a href="vip_6092_2.html" title="Python assert调试程序" target="_blank">Python assert调试程序</a></li>
+<li><a href="7981_2.html" title="GCC -c选项：生成目标文件" target="_blank">GCC -c选项：生成目标文件</a></li>
+<li><a href="../sql/distinct_2.html" title="SQL DISTINCT关键字：删除重复记录" target="_blank">SQL DISTINCT关键字：删除重复记录</a></li>
+<li><a href="9644_2.html" title="为什么中国的996干不过美国的955？" target="_blank">为什么中国的996干不过美国的955？</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 379;
+window.arcId = "4522h2I6pGdowA4U8sgo0nHFvFjNVcwTyJns994pJsSufpERSMpZ4egUdQ";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

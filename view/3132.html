@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Linux ACL权限设置（setfacl和getfacl）</title>
+<meta name="description" content="通过上一节的学习，我们知道了什么是 ACL 权限，也了解了如何配置 Linux 系统使其开启 ACL 权限，本节来学习 ACL 设定文件访问权限的具体方法。 设定 ACl 权限，常用命令有 2 个，分别是" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<span id="sidebar-toggle" class="toggle-btn" toggle-target="#sidebar">目录 <span class="iconfont"></span></span>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main" class="clearfix">
+<div id="sidebar" class="toggle-target">
+<div id="contents">
+<dt><span class="iconfont iconfont-list-vertical" aria-hidden="true"></span><a href="../linux_tutorial/linux_tutorial.html">Linux</a></dt>
+<dd>
+<span class="channel-num">1</span>
+<a href='../linux_tutorial/10/10.html'>Linux简介</a>
+</dd>
+<dd>
+<span class="channel-num">2</span>
+<a href='../linux_tutorial/20/20.html'>Linux安装</a>
+</dd>
+<dd>
+<span class="channel-num">3</span>
+<a href='../linux_tutorial/file_content/file_content.html'>Linux文件和目录管理</a>
+</dd>
+<dd>
+<span class="channel-num">4</span>
+<a href='../linux_tutorial/bale_compress/bale_compress.html'>Linux打包（归档）和压缩</a>
+</dd>
+<dd>
+<span class="channel-num">5</span>
+<a href='../linux_tutorial/40/40.html'>Vim文本编辑器</a>
+</dd>
+<dd>
+<span class="channel-num">6</span>
+<a href='../linux_tutorial/text_processing/text_processing.html'>Linux文本处理（Linux三剑客）</a>
+</dd>
+<dd>
+<span class="channel-num">7</span>
+<a href='../linux_tutorial/50/50.html'>Linux软件安装</a>
+</dd>
+<dd>
+<span class="channel-num">8</span>
+<a href='../linux_tutorial/60/60.html'>Linux用户和用户组管理</a>
+</dd>
+<dd class="this"> <span class="channel-num">9</span> <a href="../linux_tutorial/70/70.html">Linux权限管理</a> </dd><dl class="dl-sub"><dd>9.1 <a href="3147.html">Linux权限管理的重要性</a></dd><dd>9.2 <a href="762.html">Linux修改文件和目录的所属组（chgrp命令）</a></dd><dd>9.3 <a href="761.html">Linux修改文件和目录的所有者和所属组（chown命令）</a></dd><dd>9.4 <a href="753.html">Linux文件权限到底是如何设定的？</a></dd><dd>9.5 <a href="vip_5074.html">Linux读写执行权限（-r、-w、-x）的真正含义是什么？</a><span class="iconfont iconfont-vip2"></span></dd><dd>9.6 <a href="755.html">Linux修改文件或目录权限（chmod命令）</a></dd><dd>9.7 <a href="764.html">Linux默认权限的设定和修改（umask）</a></dd><dd>9.8 <a href="3120.html">Linux ACL访问控制权限</a></dd><dd>9.9 <a href="3132.html">Linux ACL权限设置（setfacl和getfacl）</a></dd><dd>9.10 <a href="3136.html">Linux mask有效权限有什么用，如何修改？</a></dd><dd>9.11 <a href="868.html">Linux SetUID（SUID）特殊权限</a></dd><dd>9.12 <a href="vip_5076.html">不要轻易设置SetUID（SUID）权限，否则会带来重大安全隐患！</a><span class="iconfont iconfont-vip2"></span></dd><dd>9.13 <a href="870.html">Linux SetGID（SGID）特殊权限</a></dd><dd>9.14 <a href="872.html">Linux Stick BIT（SBIT）特殊权限</a></dd><dd>9.15 <a href="vip_5078.html">Linux文件特殊权限（SUID、SGID和SBIT）的设置</a><span class="iconfont iconfont-vip2"></span></dd><dd>9.16 <a href="874.html">Linux修改文件或目录的隐藏属性（chattr命令）</a></dd><dd>9.17 <a href="875.html">Linux查看文件或目录的隐藏属性（lsattr命令）</a></dd><dd>9.18 <a href="877.html">Linux sudo命令（包含和su命令的对比）</a></dd><dd>9.19 <a href="vip_7661.html">结合实例分析Linux权限对指令执行的影响</a><span class="iconfont iconfont-vip2"></span></dd></dl>
+<dd>
+<span class="channel-num">10</span>
+<a href='../linux_tutorial/80/80.html'>Linux文件系统管理</a>
+</dd>
+<dd>
+<span class="channel-num">11</span>
+<a href='../linux_tutorial/90/90.html'>Linux高级文件系统管理</a>
+</dd>
+<dd>
+<span class="channel-num">12</span>
+<a href='../linux_tutorial/14/14.html'>Linux系统管理</a>
+</dd>
+<dd>
+<span class="channel-num">13</span>
+<a href='../linux_tutorial/17/17.html'>Linux备份与恢复</a>
+</dd>
+<dd>
+<span class="channel-num">14</span>
+<a href='../linux_tutorial/13/13.html'>Linux系统服务管理</a>
+</dd>
+<dd>
+<span class="channel-num">15</span>
+<a href='../linux_tutorial/15/15.html'>Linux系统日志管理</a>
+</dd>
+<dd>
+<span class="channel-num">16</span>
+<a href='../linux_tutorial/12/12.html'>Linux启动管理</a>
+</dd>
+<dd>
+<span class="channel-num">17</span>
+<a href='../linux_tutorial/16/16.html'>LAMP环境搭建和LNMP环境搭建</a>
+</dd>
+<dd>
+<span class="channel-num">18</span>
+<a href='../linux_tutorial/18/18.html'>SELinux管理</a>
+</dd>
+</div>
+</div>
+<div id="article-wrap">
+<div id="article">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../linux_tutorial/linux_tutorial.html">Linux</a> &gt; <a href="../linux_tutorial/70/70.html">Linux权限管理</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Linux ACL权限设置（setfacl和getfacl）</h1>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">通过上一节的学习，我们知道了什么是 ACL 权限，也了解了如何配置 Linux 系统使其开启 ACL 权限，本节来学习 ACL 设定文件访问权限的具体方法。<br />
+<br />
+设定 ACl 权限，常用命令有 2 个，分别是<span style="color:#008000;"> setfacl </span>和 <span style="color:#008000;">getfacl </span>命令，前者用于给指定文件或目录设定 ACL 权限，后者用于查看是否配置成功。<br />
+<br />
+getfacl 命令用于查看文件或目录当前设定的 ACL 权限信息。该命令的基本格式为：
+<p class="info-box">
+[root@localhost ~]# getfacl 文件名</p>
+getfacl 命令的使用非常简单，且常和 setfacl 命令一起搭配使用。<br />
+<br />
+setfacl 命令可直接设定用户或群组对指定文件的访问权限。此命令的基本格式为：
+<p class="info-box">
+[root@localhost ~]# setfacl 选项 文件名</p>
+表 1 罗列出了该命令可以使用的所用选项及功能。<br />
+<br />
+<table>
+<caption>
+表 1 setfacl 命令选项及用法</caption>
+<tbody>
+<tr>
+<th>
+选项</th>
+<th>
+功能</th>
+</tr>
+<tr>
+<td>
+-m 参数</td>
+<td>
+设定 ACL 权限。如果是给予用户 ACL 权限，参数则使用 &quot;u:用户名:权限&quot; 的格式，例如 <code>setfacl -m u:st:rx /project</code> 表示设定 st 用户对 project 目录具有 rx 权限；如果是给予组 ACL 权限，参数则使用 &quot;g:组名:权限&quot; 格式，例如 <code>setfacl -m g:tgroup:rx /project</code> 表示设定群组 tgroup 对 project 目录具有 rx 权限。</td>
+</tr>
+<tr>
+<td>
+-x 参数</td>
+<td>
+删除指定用户（参数使用 u:用户名）或群组（参数使用 g:群组名）的 ACL 权限，例如 <code>setfacl -x u:st /project</code> 表示删除 st 用户对 project 目录的 ACL 权限。</td>
+</tr>
+<tr>
+<td>
+-b</td>
+<td>
+删除所有的 ACL 权限，例如 <code>setfacl -b /project</code> 表示删除有关 project 目录的所有 ACL 权限。</td>
+</tr>
+<tr>
+<td>
+-d</td>
+<td>
+设定默认 ACL 权限，命令格式为 &quot;setfacl -m d:u:用户名:权限 文件名&quot;（如果是群组，则使用 d:g:群组名:权限），<span style="color:#b22222;">只对目录生效</span>，指目录中新建立的文件拥有此默认权限，例如 <code style="font-size: 14px;">setfacl -m d:u:st:rx /project</code> 表示 st 用户对 project 目录中新建立的文件拥有 rx 权限。</td>
+</tr>
+<tr>
+<td>
+-R</td>
+<td>
+递归设定 ACL 权限，指设定的 ACL 权限会对目录下的所有子文件生效，命令格式为 &quot;setfacl -m u:用户名:权限 -R 文件名&quot;（群组使用 g:群组名:权限），例如 <code style="font-size: 14px;">setfacl -m u:st:rx -R /project</code> 表示 st 用户对已存在于 project 目录中的子文件和子目录拥有 rx 权限。</td>
+</tr>
+<tr>
+<td>
+-k</td>
+<td>
+删除默认 ACL 权限。</td>
+</tr>
+</tbody>
+</table>
+<h2>
+setfacl -m：给用户或群组添加 ACL 权限</h2>
+回归上一节案例，解决方案如下：
+<ul>
+<li>
+老师使用 root 用户，并作为 /project 的所有者，对 project 目录拥有 rwx 权限；</li>
+<li>
+新建 tgroup 群组，并作为 project 目录的所属组，包含本班所有的班级学员（假定只有&nbsp;zhangsan 和 lisi），拥有对 project 的 rwx 权限；</li>
+<li>
+将其他用户访问 project 目录的权限设定为 0（也就是 ---）。</li>
+<li>
+对于试听学员 st 来说，我们对其设定 ACL 权限，令该用户对 project 拥有 rx 权限。</li>
+</ul>
+<br />
+具体的设置命令如下：
+<p class="info-box">
+[root@localhost ~]# useradd zhangsan<br />
+[root@localhost ~]# useradd lisi<br />
+[root@localhost ~]# useradd st<br />
+[root@localhost ~]# groupadd tgroup &lt;-- 添加需要试验的用户和用户组，省略设定密码的过程<br />
+[root@localhost ~]# mkdir /project &lt;-- 建立需要分配权限的目录<br />
+[root@localhost ~]# chown root:tgroup /project &lt;-- 改变/project目录的所有者和所属组<br />
+[root@localhost ~]# chmod 770 /project&nbsp; &lt;-- 指定/project目录的权限<br />
+[root@localhost ~]# ll -d /project<br />
+drwxrwx---. 2 root tgroup 4096 Apr 16 12:55 /project<br />
+#这时st学员来试听了，如何给她分配权限<br />
+[root@localhost ~]# setfacl -m u:st:rx /project<br />
+#给用户st赋予r-x权限，使用&quot;u:用户名：权限&quot; 格式<br />
+[root@localhost /]# cd /<br />
+[root@localhost /]# ll -d /project<br />
+drwxrwx---+ 2 root tgroup 4096 Apr 16 12:55 /project<br />
+#<span style="color:#b22222;">如果查询时会发现，在权限位后面多了一个&quot;+&quot;，表示此目录拥有ACL权限</span><br />
+[root@localhost /]# getfacl project<br />
+#查看/prpject目录的ACL权限<br />
+#file:project &lt;--文件名<br />
+#owner:root &lt;--文件的所有者<br />
+#group:tgroup &lt;--文件的所属组<br />
+user::rwx &lt;--用户名栏是空的，说明是所有者的权限<br />
+<span style="color:#b22222;">user:st:r-x &lt;--用户st的权限</span><br />
+group::rwx &lt;--组名栏是空的，说明是所属组的权限<br />
+mask::rwx &lt;--mask权限<br />
+other::--- &lt;--其他人的权限</p>
+可以看到，通过设定 ACL 权限，我们可以单独给 st 用户分配 r-x 权限，而无需给 st 用户设定任何身份。<br />
+<br />
+同样的道理，也可以给用户组设定 ACL 权限，例如：<br />
+<p class="info-box">
+[root@localhost /]# groupadd tgroup2<br />
+#添加新群组<br />
+[root@localhost /]# setfacl -m g:tgroup2:rwx project<br />
+#为组tgroup2纷配ACL权限<br />
+[root@localhost /]# ll -d project<br />
+drwxrwx---+ 2 root tgroup 4096 1月19 04:21 project<br />
+#属组并没有更改<br />
+[root@localhost /]# getfacl project<br />
+#file: project<br />
+#owner: root<br />
+#group: tgroup<br />
+user::rwx<br />
+user:st:r-x<br />
+group::rwx<br />
+<span style="color:#b22222;">group:tgroup2:rwx &lt;-用户组tgroup2拥有了rwx权限</span><br />
+mask::rwx<br />
+other::---</p>
+<h2>
+setfacl -d：设定默认 ACL 权限</h2>
+既然已经对 project 目录设定了 ACL 权限，那么，如果在这个目录中新建一些子文件和子目录，这些文件是否会继承父目录的 ACL 权限呢？执行以下命令进行验证：
+<p class="info-box">
+[root@localhost /]# cd project<br />
+[root@localhost project]# touch abc<br />
+[root@localhost project]# mkdir d1<br />
+#在/project目录中新建了abc文件和d1目录<br />
+[root@localhost project]#ll<br />
+总用量4<br />
+-rw-r--r-- 1 root root 01月19 05:20 abc<br />
+drwxr-xr-x 2 root root 4096 1月19 05:20 d1</p>
+可以看到，这两个新建立的文件权限位后面并没有 &quot;+&quot;，表示它们没有继承 ACL 权限。这说明，后建立的子文件或子目录，并不会继承父目录的 ACL 权限。<br />
+<br />
+当然，我们可以手工给这两个文件分配 ACL 权限，但是如果在目录中再新建文件，都要手工指定，则显得过于麻烦。这时就需要用到默认 ACL 权限。<br />
+<br />
+<span style="color:#b22222;">默认 ACL 权限的作用是，如果给父目录设定了默认 ACL 权限，那么父目录中所有新建的子文件都会继承父目录的 ACL 权限。需要注意的是，默认 ACL 权限只对目录生效。</span><br />
+<br />
+例如，给 project 文件设定 st 用户访问 rx 的默认 ACL 权限，可执行如下指令：
+<p class="info-box">
+[root@localhost /]# setfacl -m d:u:st:rx project<br />
+[root@localhost project]# getfacl project<br />
+# file: project<br />
+# owner: root<br />
+# group: tgroup<br />
+user:: rwx<br />
+user:st:r-x<br />
+group::rwx<br />
+group:tgroup2:rwx<br />
+mask::rwx<br />
+other::---<br />
+default:user::rwx &lt;--多出了default字段<br />
+default:user:st:r-x<br />
+default:group::rwx<br />
+default:mask::rwx<br />
+default:other::---<br />
+[root@localhost /]# cd project<br />
+[root@localhost project]# touch bcd<br />
+[root@localhost project]# mkdir d2<br />
+#新建子文件和子目录<br />
+[root@localhost project]# ll 总用量8<br />
+-rw-r--r-- 1 root root 01月19 05:20 abc<br />
+<span style="color:#b22222;">-rw-rw----+ 1 root root 01月19 05:33 bcd</span><br />
+drwxr-xr-x 2 root root 4096 1月19 05:20 d1<br />
+<span style="color:#b22222;">drwxrwx---+ 2 root root 4096 1月19 05:33 d2</span><br />
+#新建的bcd和d2已经继承了父目录的ACL权限</p>
+大家发现了吗？原先的 abc 和 d1 还是没有 ACL 权限，因为默认 ACL 权限是针对新建立的文件生效的。<br />
+<br />
+对目录设定的默认 ACL 权限，可直接使用<span style="color:#008000;"> setfacl -k 命令</span>删除。例如：
+<p class="info-box">
+[root@localhost /]# setfacl -k project</p>
+通过此命令，即可删除 project 目录的默认 ACL 权限，读者可自行通过 getfacl 命令查看。<br />
+<h2>
+setfacl -R：设定递归 ACL 权限</h2>
+递归 ACL 权限指的是父目录在设定 ACL 权限时，所有的子文件和子目录也会拥有相同的 ACL 权限。<br />
+<br />
+例如，给 project 目录设定 st 用户访问权限为 rx 的递归 ACL 权限，执行命令如下：<br />
+<p class="info-box">
+[root@localhost project]# setfacl -m u:st:rx -R project<br />
+[root@localhost project]# ll<br />
+总用量 8<br />
+<span style="color:#b22222;">-rw-r-xr--+ 1 root root 01月19 05:20 abc</span><br />
+-rw-rwx--+ 1 root root 01月19 05:33 bcd<br />
+<span style="color:#b22222;">drwxr-xr-x+ 2 root root 4096 1月19 05:20 d1</span><br />
+drwxrwx---+ 2 root root 4096 1月19 05:33 d2<br />
+#abc和d1也拥有了ACL权限</p>
+注意，默认 ACL 权限指的是针对父目录中后续建立的文件和目录会继承父目录的 ACL 权限；递归 ACL 权限指的是针对父目录中已经存在的所有子文件和子目录会继承父目录的 ACL 权限。<br />
+<h2>
+setfacl -x：删除指定的 ACL 权限</h2>
+使用 <code>setfacl -x</code> 命令，可以删除指定的 ACL 权限，例如，删除前面建立的 st 用户对 project 目录的 ACL 权限，执行命令如下：
+<p class="info-box">
+[root@localhost /]# setfacl -x u:st project<br />
+#删除指定用户和用户组的ACL权限<br />
+[root@localhost /]# getfacl project<br />
+# file:project<br />
+# owner: root<br />
+# group: tgroup<br />
+user::rwx<br />
+group::rwx<br />
+group:tgroup2:rwx<br />
+mask::rwx<br />
+other::---<br />
+#st用户的权限已被删除</p>
+<h2>
+setfacl -b：删除指定文件的所有 ACL 权限</h2>
+此命令可删除所有与指定文件或目录相关的 ACL 权限。例如，现在我们删除一切与 project 目录相关的 ACL 权限，执行命令如下：
+<p class="info-box">
+[root@localhost /]# setfacl -b project<br />
+#会删除文件的所有ACL权限<br />
+[root@localhost /]# getfacl project<br />
+#file: project<br />
+#owner: root<br />
+# group: tgroup<br />
+user::rwx<br />
+group::rwx<br />
+other::---<br />
+#所有ACL权限已被删除</p>
+</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div class="pre-next-page clearfix">&nbsp;</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="vip_1837.html" title="C语言变长数组：使用变量指明数组的长度" target="_blank">C语言变长数组：使用变量指明数组的长度</a></li>
+<li><a href="2225.html" title="Python for循环及用法详解" target="_blank">Python for循环及用法详解</a></li>
+<li><a href="9385.html" title="HTML段落标签&lt;p&gt;" target="_blank">HTML段落标签&lt;p&gt;</a></li>
+<li><a href="9649.html" title="中国一共有多少IP地址？" target="_blank">中国一共有多少IP地址？</a></li>
+<li><a href="../csharp/attribute.html" title="C#特性（Attribute）" target="_blank">C#特性（Attribute）</a></li>
+<li><a href="9796.html" title="JavaScript变量的声明和使用" target="_blank">JavaScript变量的声明和使用</a></li>
+<li><a href="../c/getchar.html" title="C语言getchar()：输入一个字符" target="_blank">C语言getchar()：输入一个字符</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 3132;
+window.arcId = "e8eerw0Edz/Jdka/+BVJzk3MiLYtsWjnbpCFF6yYs31lUGquWdp5q9i1JD4";
+window.typeidChain = "86|77";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+window.prePageURL = "/view/3120.html";
+window.nextPageURL = "/view/3136.html";
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

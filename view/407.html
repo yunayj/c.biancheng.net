@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>C语言文件的打开和关闭，C语言文件操作</title>
+<meta name="description" content="文件代表一系列的字节。函数 fopen（）将一个文件和一个流关联起来，并初始化一个类型为 FILE 的对象，该对象包含了控制该流的所有信息。这些信息包括指向缓冲区的指针；文件位置" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>C语言文件的打开和关闭，C语言文件操作</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">文件代表一系列的字节。函数 fopen（）将一个文件和一个流关联起来，并初始化一个类型为 FILE 的对象，该对象包含了控制该流的所有信息。这些信息包括指向缓冲区的指针；文件位置指示器，它指定了获取文件的位置；以及指示错误和文件结尾情况的标志。<br />
+<br />
+<span style="color:#b22222;">每个用于打开文件的函数（也就是 fopen（）、freopen（）和 tmpfile（））都会返回一个指向 FILE 对象的指针，该 FILE 对象包含与被打开文件相关联的流。</span>一旦打开了文件，就可以调用函数传递数据并对流进行处理。这些函数都把指向 FILE 对象的指针（通常称为 FILE 指针）作为它们的参数之一。FILE 指针指定了正在进行操作的流。<br />
+<br />
+I/O 链接库也包含了用于操作文件系统的函数，这些函数把文件名作为它们的参数之一。使用这些函数不需要事先打开文件。它们包括：<br />
+<br />
+(1) <span style="color:#b22222;">函数 remove（）删除一个文件（或者空目录）。</span>该字符串参数是文件名。如果文件具有多个名称，那么 remove（）只会删除所指定的名称，而非删除文件本身。该文件数据还可以通过别的方式来获取，但是不能通过已删除的文件名访问。<br />
+<br />
+(2)<span style="color:#b22222;"> 函数 rename（）改变一个文件（或目录）的名称。</span>该函数的两个字符串参数依次为旧文件名和新文件名。函数 remove（）和 rename（）的返回值类型都是 int，成功时都会返回 0，失败时都会返回非 0值，下面的语句将 songs.dat 重命名为 mysong.dat：
+<pre class="cpp">
+if ( rename( &quot;songs.dat&quot;, &quot;mysongs.dat&quot; ) != 0 )
+  fprintf( stderr, &quot;Error renaming \&quot;songs.dat\&quot;.\n );</pre>
+<br />
+导致函数 rename（）失败的原因包括：使用旧文件名的文件不存在；程序获取文件的权限不够；或者文件已经被打开。至于具体何种格式的文件名才是合法的，这是由实现版本决定。<br />
+<br />
+无论是新文件或已有文件，首先必须打开该文件，才可以向文件中写入数据，或者修改其中的内容。<span style="color:#b22222;">打开一个文件时，必须指定访问模式（access mode）</span>，以表明计划对该文件进行的是读、写或读写结合等操作。当使用完该文件后，必须关闭它以释放资源。
+<h2>
+打开文件</h2>
+<span style="color:#b22222;">标准库提供函数 fopen（）用以打开文件（在特殊情况下，还可以使用函数 freopen（）和 tmpfile（）来打开文件）</span>：
+<pre class="cpp">
+FILE *fopen( const char * restrict filename,
+             const char * restrict mode );</pre>
+<br />
+字符串 filename 向该函数传入所需打开的文件的名称。该文件名字符串也可以包含目录信息，但必须保证字符串长度不得超过宏 FILENAME_MAX 中指定的最大长度。函数的第二个参数 mode 也是一个字符串，用来指定文件访问模式。<span style="color:#b22222;">函数 freopen（）会把文件与一个新的流关联起来。</span>
+<pre class="cpp">
+FILE *freopen(const char * restrict filename,
+              const char * restrict mode,
+              FILE * restrict stream );</pre>
+<br />
+该函数将一个流重新定向。与 fopen（）类似，freopen（）也会用指定的访问模式打开指定的文件。但不同的是，<span style="color:#b22222;">freopen（）不会建立新的流，而是将文件与已有的流关联</span>，已有的流通过该函数的第三个参数指定。之前与该流关联的文件会被关闭。freopen（）常被用来重新定向到标准流 stdin、stdout 和 stderr。
+<pre class="cpp">
+FILE *tmpfile( void );</pre>
+<br />
+函数 tmpfile（）会建立一个新的临时文件，其文件名与所有已有文件名都不一样，然后打开该文件，进行二进制数据的读写操作（类似于函数 fopen（）采用&ldquo;wb+&rdquo;访问模式）。如果该程序正常地结束，该文件会被自动删除。<br />
+<br />
+<span style="color:#b22222;">所有三个打开文件的函数 fopen（）、freopen（）和 tmpfile（），都会返回一个指针。如果成功，该指针就指向已打开的流，如果失败，该指针就为空指针。</span><br />
+<br />
+如果一个文件打开用于写操作，程序应赋予其独立访问权限以防止其他程序同时对该文件进行写操作。传统的标准函数并不能确保独立文件访问权限，但是 C11 新增的三个新&ldquo;安全&rdquo;函数 fopen_s（）、freopen_s（）和 tmpfile_s（），在操作系统支持的前提下，可以提供独立访问权限。
+<h2>
+访问模式</h2>
+函数 fopen（）和 freopen（）的第二个参数指定了文件的访问模式，<span style="color:#b22222;">访问模式决定了流所许可的输入和输出操作</span>。对访问模式字符串的许可值有严格的限制。该字符串的第一个字符只能为三种形式：<span style="color:#b22222;">r（表示&ldquo;read&rdquo;）、w（表示&ldquo;write&rdquo;）或者 a（表示&ldquo;append&rdquo;）</span>。<br />
+<br />
+在最简单情况下，该字符串只包含一个字符。<span style="color:#b22222;">模式字符串还可以包含 + 和 b</span>（如果两者同时具有，次序是没有关系的，+b 效果等同于 b+）。<br />
+<br />
+模式字符串中的加号（+）表示读写操作都可以进行。然而，程序不可以在读操作和写操作之间立即作切换。在写操作之后，必须调用函数 fflush（）或者定位函数（fseek（）、fsetpos（）或 rewind（）），然后才可以执行读操作。在读操作之后，必须调用定位函数，然后才可以执行写操作。<br />
+<br />
+模式字符串中的 b 表示文件以二进制模式打开。也就是说，与该文件关联的流是二进制流。如果模式字符串中没有 b，新建立的流就是字符串流。<br />
+<br />
+当模式字符串以 r 开始时，该文件必须已经存在于文件系统中。当模式字符串以 w 开始时，如果文件不存在，则会建立一个新文件；如果文件存在，该文件当前内容会被清除，因为在&ldquo;write&rdquo;模式中，函数 fopen（）将文件长度设置为 0。<br />
+<br />
+C11 新增一个功能，在操作系统支持的前提下，允许在独立写操作模式下打开文件。可以在以 w 起始的模式字符串中使用后缀 x，例如 wx 或 w+bx，以指定独立访问权限。如果文件已经存在或者不能被创建，则文件打开函数执行失败（返回空指针）。否则，将创建文件并以独立访问权限打开它。<br />
+<br />
+当模式字符串以 a 开始时，如果文件不存在，则也会建立一个新文件。如果文件存在，该文件当前内容会被保留，因为所有新写入的内容都会从文件尾端添加。下面是一个简单的示例：
+<pre class="cpp">
+#include &lt;stdio.h&gt;
+#include &lt;stdbool.h&gt;
+_Bool isReadWriteable( const char *filename )
+{
+  FILE *fp = fopen( filename, &quot;r+&quot; );   // 打开一个文件以用于读写
+  if ( fp != NULL )                             // fopen()是否执行成功
+  {
+    fclose(fp);                                 // 成功：关闭文件，没有错误需要处理
+    return true;
+  }
+  else                                          // 失败
+    return false;
+}</pre>
+<br />
+上例也展示了如何利用函数 fclose（）关闭一个文件。
+<h2>
+关闭文件</h2>
+<span style="color:#b22222;">关闭文件时需要使用函数 fclose（）</span>，该函数的原型是：
+<pre class="cpp">
+int fclose( FILE *fp );</pre>
+<br />
+该函数把缓冲区内存在的所有数据保存到文件中，关闭文件，释放所有用于该流输入输出缓冲区的内存。<span style="color:#b22222;">函数 fclose（）返回 0 表示成功，返回 EOF 表示产生错误。</span><br />
+<br />
+当程序退出时，所有打开的文件都会自动关闭。尽管如此，还是应该在完成文件处理后，主动关闭文件。否则，一旦遇到非正常的程序终止，就可能会丢失数据。而且，一个程序可以同时打开的文件数量是有限的，数量上限小于等于常量 FOPEN_MAX 的值。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="478.html" title="C++ stack(STL stack)用法详解" target="_blank">C++ stack(STL stack)用法详解</a></li>
+<li><a href="vip_2080.html" title="调试的概念以及调试器的选择" target="_blank">调试的概念以及调试器的选择</a></li>
+<li><a href="vip_2254.html" title="编译器会为const引用创建临时变量" target="_blank">编译器会为const引用创建临时变量</a></li>
+<li><a href="3906.html" title="SELinux 的工作模式（Disabled、Permissive和Enforcing）" target="_blank">SELinux 的工作模式（Disabled、Permissive和Enforcing）</a></li>
+<li><a href="8191.html" title="GDB watch命令：监控变量值的变化" target="_blank">GDB watch命令：监控变量值的变化</a></li>
+<li><a href="../c/modf.html" title="C语言modf()：将浮点数分解为整数部分和小数部分" target="_blank">C语言modf()：将浮点数分解为整数部分和小数部分</a></li>
+<li><a href="ul3x9g5.html" title="C++纯虚函数和抽象类" target="_blank">C++纯虚函数和抽象类</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 407;
+window.arcId = "1087YQYMyy0yEaonIozeUXAJU+eb/nrk8dQXIFfqQ0gXvA0+oUdBgtwngQ";
+window.typeidChain = "131|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

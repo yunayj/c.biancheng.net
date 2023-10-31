@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Django Form表单Field属性与方法</title>
+<meta name="description" content="前面通过《 Django表单系统初体验 》一节，我们初步认识了 Django 的表单系统" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; <a href="../django/django.html">Django</a></span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Django Form表单Field属性与方法</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">前面通过《<a href="7765_3.html" target="_blank">Django表单系统初体验</a>》一节，我们初步认识了 Django 的表单系统，然后通过《<a href="7895_2.html" target="_blank">Django HTML表单实例应用</a>》一节对于传统的 HTML 表单也有了更深入的认识。<br />
+<br />
+如果是处理简单的表单，那么可以使用 HTML 表单的形式，但是在实际的业务处理中，表单往往都比较复杂，可能同时对多个字段进行校验，如果再按照 HTML 表单的形式为每个字段编写模板代码，并在视图函数中完成校验给出错误提示，就会非常麻烦。所以 Django为解决这个问题提供了表单系，它让开发者更注重于实现业务逻辑，而不是编写反复重复的代码。本节我们将从表单系统的字段属性讲起，让我们一起走进它的世界吧。<br />
+<h2>
+1. forms定义表单</h2>
+<h4>
+1) 使用表单系统定义表单</h4>
+表单系统的核心是 Form 对象，它将表单中字段封装成一系列的 Field 字段和验证规则，以此来自动生成 HTML 表单标签。和其他对象的定义规则类似，我们可以将 Form 对象定义在任何位置，不过 Django 建议最好 Form 对象定义在应用的 forms.py 中，就像视图函数写在 views.py 文件中一样，其实这样做的主要原因是为了实现分类管理。所以我们要在 index 应用下新建一个 forms.py 文件。
+<pre class="python">
+from django import forms
+class TitleSearch(forms.Form):
+    title=forms.CharField(label=&#39;书名&#39;)</pre>
+上述代码中，首先 Django 规定所有的 Form 对象都必须继承自 django.forms.Form，然后定义了一个 title 属性，它是 forms.CharField 类型的 Field，根据名字可以得知，它将 title 指定为字符类型， 而 lable 标签指定了这个字段的名称，在此处我们省略一个它的默认属性即 required，默认值为 True，代表是必填项。<br />
+<br />
+从上述的介绍中，我们可以看出它和我们之前学习的 Model 模型类非常的相似，这我们在《<a href="7765_3.html">Django表单系统初体验</a>》一节也提到过，大家可以进行比较学习。
+<h2>
+2. 表单字段基类Field属性</h2>
+Django 的表单系统同 Model 模型类一样，内置了数十种的表单字段类型，当这些内置的字段无法满足场景需求的时，Django 同样支持自定义 Field 类。Field 类定义在 django/forms/fields.py 文件中，在 Field 的构造函数中定义很多属性，Field 的子类(即字段)中也可以根据需要设定这些属性值，它的常用属性如下所示：
+<h4>
+1) required</h4>
+设定当前的 Field 是否是必须提供的，默认值是 True，即必须提供。Field 中定义了一个类属性 empt y_values，clean 方法会判断当前 Field 的值是否是空值，若当值是 None 或者空字符串等空值时就会抛出 ValidationError 异常。如果将其设置为 False，那么 Field 将会变成可选的，即使不提供也不会抛出异常。
+<h4>
+2) widget</h4>
+指定在页面中字段的控件（插件）类型，可以是 Widget 类或者 Widget 类实例。默认的控件使用 TextInput（相当于 HTML 表单中 &lt;input type=&quot;text&quot;&gt;）。实例如下所示：
+<pre class="python">
+from django import forms
+class TitleSearch(forms.Form):
+    title=forms.CharField(label=&#39;书名&#39;,widget=forms.Textarea)#文本域</pre>
+<h4>
+3) lable</h4>
+指定在页面中显示的字段的名称提示。在定义TitleSearch 时已经使用了，将 title 的 label 属性设定为&ldquo;&rdquo;书名&ldquo;&rdquo;。如果不指定的话，页面中将直接显示字段定义的变量名。<br />
+<h4>
+4) initial</h4>
+指定字段初始值，默认值为 None。当给字段的 initial 属性设定一个非空值时，页面中的对应表单将使用这个值填充。举例如下给 title 设定初始值
+<pre class="python">
+from django import forms
+class TitleSearch(forms.Form):
+    title=forms.CharField(label=&#39;书名&#39;,initial=&quot;C语言中文网&quot;)</pre>
+<h4>
+5）error_messages</h4>
+这个属性用于覆盖 Field 默认的错误消息。为了更好地说明它的作用，下面用 title 字段举例说明，如下所示：
+<pre class="python">
+#不指定该属性的情况下
+In [2]: from django import forms
+In [3]: title=forms.CharField(lable=&quot;title name&quot;)
+ln [4]: title.clean(&#39;&#39;)
+.....
+ValidationError: [&#39;这个字段是必填项。&#39;]
+#指定该属性
+In [7]: title=forms.CharField(label=&quot;title name&quot;,error_messages={&quot;required&quot;:&quot;请输入正确的title&quot;})
+In [8]: title.clean(&#39;&#39;)
+....
+ValidationError: [&#39;请输入正确的title&#39;]</pre>
+<h4>
+6) disabled</h4>
+其默认值是 False，如果修改为 True，则当前的表单字段将不可编辑。当设置字段为不可编辑时，需要提供初始值（initial），否则，这个字段也就没有意义了。<br />
+<h2>
+3. 表单字段基类Field方法</h2>
+<h4>
+1) clean()</h4>
+上面介绍了一些常用属性，在这里重点介绍 Field 常用的一些方法。Field 实例调用 clean 方法用来对传递的数据做&ldquo;清理&rdquo;和校验：对数据做清理可以将数据转换成对应的 Python 对象；而校验则是检验当前给定的数据是否满足 Field 属性的约束，如果不满足，则会抛出<span style="color:#ff0000;"> ValidationError</span> 异常（验证失败），如下所示：
+<pre class="python">
+#输入有效的Email通过clean验证
+In [2]: from django import forms
+   ...: f = forms.EmailField()
+   ...: f.clean(&#39;Mr@163.com&#39;)
+Out[2]: &#39;Mr@163.com&#39;
+#输入无效的Email通过clean验证并抛出异常
+In [3]: f.clean(&#39;无效的地址&#39;)
+....
+ValidationError: [&#39;输入一个有效的 Email 地址。&#39;]</pre>
+每个 <span style="color:#ff0000;">Field 的实例都有一个 clean() 方法</span>，它接受一个参数，然后返回&ldquo;清洁的&rdquo;数据或者抛出一个 django.forms.ValidationError 异常。在后续会对 Form 表单的校验做针对的讲解。
+<p class="tip-box">
+提示：clean()在 Django 的表单系统中非常重要，该方法经常用在开发或测试过程中对数据进行验证和测试。</p>
+在下一节，我们将介绍 Django 表单系统的常用字段。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1125.html" title="Linux Apache安装过程详解（LAMP环境搭建）" target="_blank">Linux Apache安装过程详解（LAMP环境搭建）</a></li>
+<li><a href="1838.html" title="C语言对数组元素进行排序（冒泡排序法）" target="_blank">C语言对数组元素进行排序（冒泡排序法）</a></li>
+<li><a href="4645.html" title="Python导入模块的3种方式（超级详细）" target="_blank">Python导入模块的3种方式（超级详细）</a></li>
+<li><a href="../css3/filter.html" title="CSS filter（滤镜）详解" target="_blank">CSS filter（滤镜）详解</a></li>
+<li><a href="quick-sort.html" title="快速排序算法" target="_blank">快速排序算法</a></li>
+<li><a href="9758.html" title="Python Spyder下载、安装和使用教程" target="_blank">Python Spyder下载、安装和使用教程</a></li>
+<li><a href="80jbhaz.html" title="Python readlines()方法：读取文件中的所有行" target="_blank">Python readlines()方法：读取文件中的所有行</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7835;
+window.arcId = "a3b43WrXFNBG3wT1WuawvyP/rJqQneNchebk3QZrIMFh2Vzb1+q04LWbc+E";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

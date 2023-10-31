@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Django路由系统精讲</title>
+<meta name="description" content="在《URL是什么》一节中，我们对URL有了基本的了解，以此为基础，本节介绍 Django 的路由系统。经过上一节的介绍我们知道，URL作用，那么Django中，它又是如何进行应用的呢?让我一起来" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+	<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; <a href="../django/django_2.html">Django</a></span>
+</div>
+
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Django路由系统精讲</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">在《<a href="7374_2.html">URL是什么</a>》一节中，我们对 URL 有了基本的认识，在本节将对 Django 的路由系统展开详细的讲解， 让我们更加清楚的了解 URL 在 Django 中到底是如何应用的。<br />
+<h2>
+	&nbsp;1. Django 路由系统应用</h2>
+一个用户向 Web 站点发送请求，是通过 URL 实现的，当 Web 服务器端接收到用户请求后，它又是怎么处理的呢？通过 MTV 的设计模式，我们可以得知，首先用户请求会到达相应的视图函数，那么视图函数又是怎样找到相应的访问资源的呢，在这里就用到了&ldquo;路由系统&rdquo;。<br />
+<br />
+Django 中利用 ROOT_URLCONF 构建了 URL 与视图函数的映射关系。在 django.conf.urls 中封装了路由模块，新建的 Django 项目中提供了 urls.py（创建项目后自动生成的配置文件） 路由配置文件，urls.py 文件中定义了一个 urlpatterns 的列表，它是由 url( ) 实例对象组成的列表，Django 中 url 的定义就是在这个列表完成的。
+<pre class="python">
+from django.conf.urls import url
+urlpatterns=[
+url(r &#39;^admin/&#39;,admin.site.urls),
+...
+]
+</pre>
+后台 Admin 管理系统的路由就定义在了列表第一个位置，下面我们对路由的语法格进行简单说明：
+<pre class="python">
+url(regex,view,name=None)</pre>
+上述 url 的参数解析如下：
+<ul>
+	<li>
+		regex，匹配请求路径，用正则表达式表示；</li>
+	<li>
+		view，指定 regex 匹配路径所对应的视图函数的名称；</li>
+	<li>
+		name，是给 url 地址起个别名，在模板反向解析的时候使用，这个知识点后面还有介绍。</li>
+</ul>
+<h4>
+	1）配置第一个URL实现页面访问</h4>
+在 urls.py 的同级目录下，新建 views.py 文件，把它作为编写视图函数的 View 层，然后在 views.py 中编写如下代码：
+<pre class="python">
+from django.http import HttpResponse
+def page_view(request):
+    html=&#39;&lt;h1&gt;欢迎来到，C语言中文网，网址是http://c.biancheng.net&lt;/h&gt;&#39;
+    return HttpResponse(html)
+
+</pre>
+假如现在有一个名叫 &ldquo;myject&rdquo;的 Django 项目，首先需要在 urls.py 文件中导入 views.py， 这么做的目的是把 URL 与视图层进行绑定，然后在 urls.py 的 urlpatterns 中编写如下代码：
+<pre class="python">
+from django.conf.urls import url
+from django.contrib import admin
+from myject import views
+urlpatterns = [
+    url(r&#39;admin/&#39;, admin.site.urls),
+    url(r&#39;^page$/&#39;,views.page_view),]
+</pre>
+上述代码解析：
+<ul>
+	<li>
+		代码的前 3 行分别对 URL 模块、admin 模块、以及视图层 views 做了导包操作；</li>
+	<li>
+		路径地址被定义为 page，也就是在本机浏览器地址栏输入：http://127.0.0.1:8000/page 进行访问，<code>views.page_view</code>将&nbsp;page/ 路径与对应的视图函数进行了关联。</li>
+</ul>
+<br />
+那么通过上述的代码就完成了路由的配置。在项目运行后，通过访问对应的地址就可以得到相应的页面了，如下图所示：<br />
+<br />
+<div style="text-align: center;">
+	<img alt="第一个URL配置页面" src="../uploads/allimg/200309/9-20030915262S93_2.png" /><br />
+	图1：C语言中文网欢迎你<br />
+	&nbsp;</div>
+<h4>
+	1）正则与正则分组使用</h4>
+在 Django 的路由系统中，正则匹配得到了充分的使用，比如要匹配任意 1000个页面，那么正则匹配路由地址可以写为：
+<pre class="python">
+url(r&#39;^page(\d+)&#39;,views.page_view)</pre>
+同时也可以使用正则分组的方式匹配地址：
+<pre class="info-box">
+r&#39;^(\d+)/(\w{3})/(\d+)&#39; 匹配类似于 http://127.0.0.1:8000/521/Django/1314的地址</pre>
+<h4>
+	2）正则捕获组使用</h4>
+捕获组：
+<pre class="python">
+url(r&#39;^person/(?P&lt;name&gt;\w+)/(?P&lt;age&gt;\d{1,2})&#39;,views.person_view)</pre>
+在视图函数层，用函数关键字传参的方法，将 name 与 age 传递给视图函数。
+<pre class="python">
+def person_view(request,name,age):
+    s = &#39;姓名： &#39; + name
+    s += &#39; 年龄: &#39; + age
+    return HttpResponse(s)</pre>
+一个分组表示一个参数，多个参数需要使用多个分组，并且使用 / 隔开。
+<h2>
+	2. path()与re_path()</h2>
+Django 的路由系统使用方法简洁且容易理解，这大大降低了如何配置 URL 的难度。<br />
+<br />
+在 Django 2.0 版本中推出了新的用法 path() 和 re_path()，进一步提升了 Django 的效率与使用的简洁性。2.0 版本以后虽然推出了新的方法，但是 1.0 版本的 URL 用法仍然可以在 2.0 版本中使用，向前做了兼容。<br />
+<p class="tip-box">
+	提示：我们可以简单的理解为：re_path() 等同于 1.0 版本的 url 正则匹配方法，而 path() 有其特定的使用方法，在后续的章节将会对其进行详细的介绍。</p>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1155_2.html" title="SELinux auditd日志使用方法详解" target="_blank">SELinux auditd日志使用方法详解</a></li>
+<li><a href="2433_2.html" title="MySQL修改数据表（ALTER TABLE语句）" target="_blank">MySQL修改数据表（ALTER TABLE语句）</a></li>
+<li><a href="../css3/box-model_2.html" title="CSS盒子模型精讲" target="_blank">CSS盒子模型精讲</a></li>
+<li><a href="9624_2.html" title="曝光一下字节跳动的工资待遇和职位级别" target="_blank">曝光一下字节跳动的工资待遇和职位级别</a></li>
+<li><a href="../c/sscanf_2.html" title="C语言sscanf()：从数组中格式化读取数据" target="_blank">C语言sscanf()：从数组中格式化读取数据</a></li>
+<li><a href="4br7qfu_2.html" title="《Web前端开发精品课 JavaScript基础教程》PDF下载（高清完整版）" target="_blank">《Web前端开发精品课 JavaScript基础教程》PDF下载（高清完整版）</a></li>
+<li><a href="o0j2cxg_2.html" title="《Web前端自动化构建：Gulp、Bower和Yeoman开发指南》PDF下载（高清完整版）" target="_blank">《Web前端自动化构建：Gulp、Bower和Yeoman开发指南》PDF下载（高清完整版）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 7375;
+window.arcId = "a790gC6AqhRP4OeGdaSrfH7jqwTlVghd9hUitD8bHc6zjGFVSqZ3+VNHFdY";
+window.typeidChain = "339";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

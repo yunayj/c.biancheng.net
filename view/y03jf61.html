@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="shortcut icon" href="../favicon.ico" />
+<link href="../templets/new/style/common.css" rel="stylesheet" />
+<title>Python自定义异常（附带示例）</title>
+<meta name="description" content="程序在运行的过程中可能会因为权限问题、用户输入问题、第三方 API 问题、请求参数缺失等问题产生异常，我们可以在程序内部通过捕获异常的语句让程序继续执行，也可以选择通过" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+<ul id="product-type" class="left">
+<li>
+<a href="../c_biancheng_default.html"><span class="iconfont iconfont-home"></span>首页</a>
+</li>
+<li class="active">
+<a href="../sitemap/sitemap_3.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+</li>
+<li>
+<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+</li>
+<li>
+<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+</li>
+<li>
+<a href="niz69i.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+</li>
+</ul>
+</div>
+<div id="header" class="clearfix">
+<a id="logo" class="left" href="../c_biancheng_default.html">
+<img height="26" src="../templets/new/images/logo.png" alt="C语言中文网" />
+</a>
+<ul id="nav-main" class="hover-none left clearfix">
+<li class="wap-yes"><a href="../c_biancheng_default.html">首页</a></li>
+<li><a href="../c/c_3.html">C语言教程</a></li>
+<li><a href="../cplus/cplus.html">C++教程</a></li>
+<li><a href="../python/python.html">Python教程</a></li>
+<li><a href="../java/java_3.html">Java教程</a></li>
+<li><a href="../linux_tutorial/linux_tutorial.html">Linux入门</a></li>
+<li><a href="../sitemap/sitemap_3.html" title="网站地图">更多&gt;&gt;</a></li>
+</ul>
+<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+<div class="arc-info">
+<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../c_biancheng_default.html">首页</a> &gt; 编程笔记</span>
+</div>
+<div id="ggxc-position-bottom" class="ggxc-box"></div>
+<h1>Python自定义异常（附带示例）</h1>
+<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+<div id="arc-body">程序在运行的过程中可能会因为权限问题、用户输入问题、第三方 API 问题、请求参数缺失等问题产生异常，我们可以在程序内部通过捕获异常的语句让程序继续执行，也可以选择通过 raise 语句抛出异常让程序终止运行，如果不进行异常处理，异常最终会被 Python 解释器捕获并终止运行程序。<br />
+<br />
+一般情况下，程序无法处理正常的逻辑执行过程时会发生异常。为了处理程序在运行过程中的异常和错误，Python 定义了很多的标准异常和异常处理机制来处理程序运行过程中出现的异常。<br />
+<br />
+在高级编程语言中，一般都有错误和异常的概念，异常是可以捕获并被处理的，但是错误是不能被捕获的。一个健壮的程序，应尽可能地避免错误，捕获和处理各种异常。<br />
+<br />
+Python 有两种错误很容易辨认：语法错误和异常。<br />
+<br />
+Python 的语法错误（或称解析错误）是解析代码时出现的错误。当代码不符合 Python 语法规则时，Python 解释器在解析时就会报出 SyntaxError 语法错误，同时还会明确指出探测到错误的语句和报错原因，如少了冒号、混用中英文符号等。<br />
+<br />
+即便 Python 程序的语法是正确的，在程序运行时，也有可能发生错误，运行期间检测到的错误被称为异常。大多数的异常都不会被程序处理，都以错误信息的形式展现，如除数为 0、年龄为负数、数组下标越界等。<br />
+<br />
+异常处理在任何一门编程语言里都是值得关注的话题，良好的异常处理可以让程序更加健壮，清晰的错误信息能帮助开发人员快速修复问题。
+<h2>
+Python 异常处理方法</h2>
+默认情况下，程序发生异常是会终止的，如果我们要避免程序终止执行，可以使用捕获异常的方式获取这个异常的名称，再通过其他的逻辑代码让程序继续运行，这种处理叫作异常处理。<br />
+<br />
+开发人员可以使用异常处理全面地控制自己的程序。异常处理大大提高了程序的健壮性和人机交互的友好性。<br />
+<br />
+在 Python 语言中，处理异常的关键字主要有 try、except、else、finally 和 raise：
+<ul>
+<li>
+try 关键字：用于检测异常，在程序发生异常时将异常信息交给 except 关键字。</li>
+<li>
+except 关键字：获取异常并进行处理。</li>
+<li>
+else 关键字：当执行完 try 关键字域中的代码，如果没有发现异常，则接着执行 else 关键字域中的代码。</li>
+<li>
+finally 关键字：无论是否发生异常都进入该关键字域进行处理，通常用于处理资源关闭、对象内存释放等必需的操作。</li>
+<li>
+raise 关键字：用于抛出自定义的异常信息使程序不能直接向下执行。</li>
+</ul>
+<br />
+处理异常的关键字通常组合使用，不同的组合能实现不同的异常处理场景。合理的异常处理不仅能完善程序运行过程中的逻辑，也能提升程序运行的性能。语法如下：
+<pre class="info-box">
+try:
+    &lt;语句&gt;  # 待捕获异常的代码
+except &lt;异常类&gt;:
+    &lt;语句&gt;  # 捕获某种类型的异常
+except &lt;异常类&gt; as &lt;变量名&gt;:
+    &lt;语句&gt;  # 捕获某种类型的异常并获得对象
+else:
+    &lt;语句&gt;  # 如果没有异常发生，则执行
+finally:
+    &lt;语句&gt;  # 退出try时总会执行，不管是否发生了异常，都要执行finally的部分</pre>
+上述语法的具体含义如下：
+<ul>
+<li>
+try 中语句在执行时发生异常，搜索 except 子句，并执行第一个匹配该异常的 except 子句。</li>
+<li>
+try 中语句在执行时发生异常，却没有匹配的 except 子句，异常将被递交到外层的 try，如果外层不处理该异常，异常将继续向外层传递。如果都不处理该异常，则会传递到最外层，如果还没有处理，就终止异常所在的线程。</li>
+<li>
+try 中语句在执行时没有发生异常，如果有 else 子句，可执行 else 子句中的语句。</li>
+<li>
+无论 try 中语句在执行时是否发生异常，finally 子句中的语句都会执行。</li>
+</ul>
+<br />
+一个 try 语句可以对应多个 expect 子句，但只能对应一个 finally 子句。我们可以使用 try-expect 组合检测和处理异常，也可以添加一个可选的 else 子句处理没有检测到异常的执行代码。而 finally 子句只用于检测异常和做一些必要的清除工作，例如无论是否发生异常，都要关闭连接。
+<h2>
+Python 自定义异常</h2>
+用户自定义异常，只要自定义异常类继承了 Exception 类即可。在自定义异常类时，我们基本不需要书写很多的代码，表1所示是 Python 中所有标准异常类。<br />
+<br />
+Python 用异常对象来表示异常，当遇到错误，会触发异常。如果异常对象未被捕捉或处理，程序就会被终止执行。<br />
+<br />
+<table>
+<caption>
+表1：Python 中所有标准异常类</caption>
+<tbody>
+<tr>
+<th>
+常见异常名称</th>
+<th>
+描述</th>
+</tr>
+<tr>
+<td>
+BaseException</td>
+<td>
+所有异常的基类</td>
+</tr>
+<tr>
+<td>
+SystemExit</td>
+<td>
+解释器请求退出</td>
+</tr>
+<tr>
+<td>
+KeyboardInterrupt</td>
+<td>
+用户中断执行，捕获用户中断行为，通常为按Ctrl + C键</td>
+</tr>
+<tr>
+<td>
+Exception</td>
+<td>
+常规错误的基类</td>
+</tr>
+<tr>
+<td>
+StopIteration</td>
+<td>
+迭代器没有更多的值</td>
+</tr>
+<tr>
+<td>
+SystemExit</td>
+<td>
+Python解释器请求退出</td>
+</tr>
+<tr>
+<td>
+OverflowError</td>
+<td>
+数值运算超出最大限制</td>
+</tr>
+<tr>
+<td>
+ZeroDivisionError</td>
+<td>
+除（或取模）零（所有数据类型）</td>
+</tr>
+<tr>
+<td>
+AssertionError</td>
+<td>
+断言语句失败</td>
+</tr>
+<tr>
+<td>
+AttributeError</td>
+<td>
+对象没有这个属性</td>
+</tr>
+<tr>
+<td>
+IOError</td>
+<td>
+输入/输出操作失败</td>
+</tr>
+<tr>
+<td>
+ImportError</td>
+<td>
+导入失败</td>
+</tr>
+<tr>
+<td>
+IndexError</td>
+<td>
+序列中没有这个索引</td>
+</tr>
+<tr>
+<td>
+KeyError</td>
+<td>
+映射中没有这个键</td>
+</tr>
+<tr>
+<td>
+MemoryError</td>
+<td>
+内存溢出错误</td>
+</tr>
+<tr>
+<td>
+NameError</td>
+<td>
+未声明/初始化对象（没有属性）</td>
+</tr>
+<tr>
+<td>
+UnboundLocalError</td>
+<td>
+访问未初始化的本地变量</td>
+</tr>
+<tr>
+<td>
+RuntimeError</td>
+<td>
+一般的运行时错误</td>
+</tr>
+<tr>
+<td>
+NotImplementedError</td>
+<td>
+尚未实现的方法</td>
+</tr>
+<tr>
+<td>
+SyntaxError</td>
+<td>
+Python语法错误</td>
+</tr>
+<tr>
+<td>
+IndentationError</td>
+<td>
+缩进错误</td>
+</tr>
+<tr>
+<td>
+TabError</td>
+<td>
+Tab和空格混用</td>
+</tr>
+<tr>
+<td>
+ValueError</td>
+<td>
+传入无效的参数</td>
+</tr>
+</tbody>
+</table>
+<br />
+如前文所述，Python 中自定义异常类型非常简单，只需要从 Exception 类继承即可。通过创建一个新的异常类，我们可以命名自己的异常。<br />
+<br />
+在如下示例中我们创建了一个自定义异常类 Networkerror，基类为 BaseException，用于在异常触发时输出更多的信息：
+<pre class="python">
+class Networkerror(BaseException):
+    def __init__(self,msg):
+        self.msg=msg
+    def __str__(self):
+        return self.msg
+try:
+    raise Networkerror(&#39;类型错误&#39;)
+except Networkerror as e:
+    print(e)</pre>
+在 try 中，若发生自定义异常，则执行 except 子句，其中变量 e 是用于创建 Networkerror 类的实例。<br />
+<br />
+如果我们需要自主抛出一个异常，可以使用 raise 关键字抛出异常，如上述示例中的 raise Networkerror(&#39;类型错误&#39;)。<br />
+<br />
+raise 的通常语法为：
+<p class="info-box">
+raise异常类名称(描述信息)</p>
+在触发指定类型的异常的同时，附带异常的描述信息。<br />
+<br />
+在实际调试程序的过程中，有时只获得异常的类型是远远不够的，还需要借助更详细的异常信息才能解决问题。捕获异常时，有两种方式可获得更多的异常信息，分别是：
+<ul>
+<li>
+使用 sys 库中的 exc_info 方法；</li>
+<li>
+使用 traceback 库中的相关函数。</li>
+</ul>
+<h4>
+TabError 的解决方法</h4>
+Python 文件运行时报错：
+<p class="info-box">
+TabError: inconsistent use of tabs and spaces in indentation</p>
+究其原因是 Python 文件中混用 Tab 和 Space 实现格式缩进，通常使用外部编辑器编辑 Python 文件时，会自动采用 Tab 进行格式缩进。<br />
+<br />
+解决方法为将 Tab 转换成 4 个 Space。
+<h2>
+示例</h2>
+在进行 Web 开发的工程中，如果采用 Flask 框架，那么需要自定义异常处理类，方便统一进行异常的处理。此时自定义的异常处理类应该继承自 HTTPException，自定义的内容通常包含如下几点：
+<ul>
+<li>
+定义想要返回的错误信息的 JSON 格式，如内部错误码、错误信息等；</li>
+<li>
+更改返回的响应头，返回 JSON 格式的信息响应头应设为 &#39;Content-Type&#39;: &#39;application/json&#39;；</li>
+<li>
+与 HTTPException 一样，定义状态码。</li>
+</ul>
+<br />
+我们自定义异常类 APIException，返回的信息包括内部错误码、错误信息和请求的 URL 如代码清单1所示。<br />
+<br />
+代码清单1：APIException
+<pre class="python">
+# -*- coding: utf-8 -*-
+# @Time : 2022/7/11 4:21 下午
+# @Project : ExceptionTestDemo
+# @File : APIException.py
+# @Version: Python3.9.8
+
+from flask import request, json
+from werkzeug.exceptions import HTTPException
+　
+class APIException(HTTPException):
+    code = 500
+    msg = &#39;sorry, we made a mistake!&#39;
+    error_code = 999
+    def __init__(self, msg=None, code=None, error_code=None, headers=None):
+        if code:
+            self.code = code
+        if error_code:
+            self.error_code = error_code
+        if msg:
+            self.msg = msg
+        super(APIException, self).__init__(msg, None)
+    def get_body(self, environ=None):
+        body = dict(
+            msg=self.msg,
+            error_code=self.error_code,
+            request=request.method + &#39; &#39; + self.get_url_no_param()
+        )
+        text = json.dumps(body)
+        return text
+    def get_headers(self, environ=None):
+        &quot;&quot;&quot;Get a list of headers.&quot;&quot;&quot;
+        return [(&#39;Content-Type&#39;, &#39;application/json&#39;)]
+    @staticmethod
+    def get_url_no_param():
+        full_path = str(request.full_path)
+        main_path = full_path.split(&#39;?&#39;)
+        return main_path[0]</pre>
+有了 APIException 类，我们就可以自由地定义各种状态码以及对应的异常信息，然后在合适的位置抛出异常，如代码清单2所示。<br />
+<br />
+代码清单2：APIExceptionExample
+<pre class="python">
+# -*- coding: utf-8 -*-
+# @Time : 2022/7/11 5:21 下午
+# @Project : ExceptionTestDemo
+# @File : APIExceptionExample.py
+# @Version: Python3.9.8
+
+import APIException
+　
+class Success(APIException):
+    code = 201
+    msg = &#39;ok&#39;
+    error_code = 0
+class ServerError(APIException):
+    code = 500
+    msg = &#39;sorry, we made a mistake!&#39;
+    error_code = 999
+class ParameterException(APIException):
+    code = 400
+    msg = &#39;invalid parameter&#39;
+    error_code = 1000
+class NotFound(APIException):
+    code = 404
+    msg = &#39;the resource are not found&#39;
+    error_code = 1001</pre>
+自定义异常类可以帮助我们在需要的地方抛出异常。在发生异常时，我们可以对照状态码去查找对应的异常类，非常方便。<br />
+<br />
+注意，虽然此处表述为异常类，但是我们可以在类中定义响应成功的返回，例如代码清单2中定义的状态码 201 对应的异常类，可以作为响应成功的返回。</div>
+<div id="ggxc-weixin-arcbottom">
+<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+<p style="margin-top:12px; text-align:center;">
+<img src="../templets/new/images/material/qrcode_mp.png" alt="公众号二维码" width="160" /><br />
+<span class="col-green">微信扫码关注公众号</span>
+</p>
+</div>
+<div id="nice-arcs" class="box-bottom">
+<h4>推荐阅读</h4>
+<ul class="clearfix">
+<li><a href="niz69i_4.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_2.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_2.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="1415.html" title="C++数组初始化方法详解" target="_blank">C++数组初始化方法详解</a></li>
+<li><a href="../mysql/sign.html" title="MySQL SIGN函数：返回参数的符号" target="_blank">MySQL SIGN函数：返回参数的符号</a></li>
+<li><a href="../mysql/cot.html" title="MySQL COT函数：求余切值" target="_blank">MySQL COT函数：求余切值</a></li>
+<li><a href="7288.html" title="Django MTV和MVC的区别" target="_blank">Django MTV和MVC的区别</a></li>
+<li><a href="7981.html" title="GCC -c选项：生成目标文件" target="_blank">GCC -c选项：生成目标文件</a></li>
+<li><a href="../redis2/move.html" title="Redis MOVE命令" target="_blank">Redis MOVE命令</a></li>
+<li><a href="../csharp/struct.html" title="C# struct：结构体" target="_blank">C# struct：结构体</a></li>
+</ul>
+</div>
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 10048;
+window.arcId = "f487GiSibS6pDkVChv7nRBosKurO78sFmb2OsHPUwD15XZReI4JpR7SpABjQ";
+window.typeidChain = "145|119";
+</script>
+<div id="footer" class="clearfix">
+<div class="info left">
+<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+<p>
+<a href="8066.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+<a href="8092_2.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+<a href="8097.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+<a href="9648.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+<a href="8093.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+<a href="../sitemap/sitemap_3.html" target="_blank" rel="nofollow">网站地图</a>
+</p>
+<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+</p>
+</div>
+<img id="logo_bottom" class="right" src="https://c.biancheng.net/templets/new/images/logo_bottom.gif" alt="底部Logo" />
+<span id="return-top"><b>↑</b></span>
+</div>
+<div id="addweixin-widget">
+<p>
+<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://c.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+<img src="../templets/new/images/material/qrcode_mp_2.png" alt="微信交流群" width="120" />
+<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+</p>
+<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+<script src="../templets/new/script/jquery1.12.4.min.js"></script>
+<script src="https://c.biancheng.net/templets/new/script/common.js"></script>
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+</body>
+</html>

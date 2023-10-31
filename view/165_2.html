@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>C++静态成员变量和静态成员函数详解</title>
+<meta name="description" content="类的静态成员有两种：静态成员变量和静态成员函数。静态成员变量就是在定义时前面加了 static 关键字的成员变量；静态成员函数就是在声明时前面加了 static 关键字的成员函数。 下面" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>C++静态成员变量和静态成员函数详解</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">类的静态成员有两种：静态成员变量和静态成员函数。静态成员变量就是在定义时前面加了 static 关键字的成员变量；静态成员函数就是在声明时前面加了 static 关键字的成员函数。<br />
+<br />
+下面的 CRec<a href='https://m.biancheng.net/ref/tan.html' target='_blank'>tan</a>gle 类就有两个静态成员变量和一个静态成员函数。
+<pre class="cpp">
+class CRectangle{
+private:
+    int w,h;
+    static int nTotalArea;  //静态成员变量
+    static int nTotalNumber;  //静态成员变量
+public:
+    static void PrintTotal ();  //静态成员函数
+};</pre>
+普通成员变量每个对象有各自的一份，而静态成员变量只有一份，被所有同类对象共享。<br />
+<br />
+普通成员函数一定是作用在某个对象上的，而静态成员函数并不具体作用在某个对象上。<br />
+<br />
+访问普通成员时，要通过<code>对象名.成员名</code>等方式，指明要访问的成员变量是属于哪个对象的，或要调用的成员函数作用于哪个对象；访问静态成员时，则可以通过<code>类名::成员名</code>的方式访问，不需要指明被访问的成员属于哪个对象或作用于哪个对象。因此，甚至可以在还没有任何对象生成时就访问一个类的静态成员。<br />
+<br />
+当然，非静态成员的访问方式（也即<code>对象名.成员名</code>）其实也适用于静态成员，但效果和<code>类名::成员名</code>这种访问方式没有区别。<br />
+<br />
+使用 sizeof 运算符计算对象所占用的存储空间时，不会将静态成员变量计算在内。对上面的 CRectangle 类来说，sizeof(CRectangle) 的值是 8。<br />
+<br />
+静态成员变量本质上是全局变量。一个类，哪怕一个对象都不存在，其静态成员变量也存在。静态成员函数并不需要作用在某个具体的对象上，因此本质上是全局函数。<br />
+<br />
+设置静态成员的目的，是为了将和某些类紧密相关的全局变量和全局函数写到类里面，形式上成为一个整体。考虑一个需要随时知道矩形总数和总面积的图形处理程序，当然可以用全局变量来记录这两个值，但是将这两个变量作为静态成员封装进类中，就更容易理解和维护。<br />
+<br />
+例如下面的程序：
+<pre class="cpp">
+#include &lt;iostream&gt;
+u<a href='https://m.biancheng.net/ref/sin.html' target='_blank'>sin</a>g namespace std;
+class CRectangle
+{
+private:
+    int w, h;
+    static int totalArea;  //矩形总面积
+    static int totalNumber;  //矩形总数
+public:
+    CRectangle(int w_, int h_);
+    ~CRectangle();
+    static void PrintTotal();
+};
+CRectangle::CRectangle(int w_, int h_)
+{
+    w = w_; h = h_;
+    totalNumber++;  //有对象生成则增加总数
+    totalArea += w * h;  //有对象生成则增加总面积
+}
+CRectangle::~CRectangle()
+{
+    totalNumber--;  //有对象消亡则减少总数
+    totalArea -= w*h;  //有对象消亡则减少总而积
+}
+void CRectangle::PrintTotal()
+{
+    cout &lt;&lt; totalNumber &lt;&lt; &quot;,&quot; &lt;&lt; totalArea &lt;&lt; endl;
+}
+int CRectangle::totalNumber = 0;
+int CRectangle::totalArea = 0;
+//必须在定义类的文件中对静态成员变量进行一次声明 //或初始化，否则编译能通过，链接不能通过
+int main()
+{
+    CRectangle r1(3, 3), r2(2, 2);
+
+    //cout &lt;&lt; CRectangle::totalNumber; //错误，totalNumber 是私有
+    CRectangle::PrintTotal();
+    r1.PrintTotal();
+    return 0;
+}</pre>
+程序的输出是：<br />
+2, 13<br />
+2, 13<br />
+<br />
+这个程序的基本思想是：CRectangle 类只提供一个构造函数，所有 CRectangle 对象生成时都需要用这个构造函数初始化，因此在这个构造函数中增加矩形的总数和总面积的数值即可；而所有 CRectangle 对象消亡时都会执行析构函数，所以在析构函数中减少矩形的总数和总面积的数值即可。<br />
+<br />
+第 7 行和第 8 行的两个成员变量用来记录程序中所有矩形对象的总数和它们的总面积。这两个值显然不能由每个对象都维护一份，而应该只有一份。<br />
+<br />
+虽然也可以用两个全局变量来存放这两个值，但那样就无法从形式上一眼看出这两个全局变量和 CRectangle 类的紧密联系，也就看不出这两个全局变量会在哪些函数中被访问。把它们写成 CRectangle 类的静态成员变量，这个问题就迎刃而解了。<br />
+<br />
+输出矩形总数和总面积的函数 PrintTotal 没有写成全局函数，而是写成 CRectangle 类的静态成员函数，道理也是一样的。<br />
+<br />
+静态成员变量必须在类定义的外面专门声明，声明时变量名前面加<code>类名::</code>，如第 29 行和第 30 行。声明的同时可以初始化。如果没有声明，那么程序编译时虽然不会报错，但是在链接（link）阶段会报告&ldquo;标识符找不到&rdquo;，不能生成<code>.exe</code>文件。<br />
+<br />
+第 36 行如果没有注释掉，编译会出错。因为 totalNumber 是私有成员，不能在成员函数外面访问。<br />
+<br />
+第 37 行和第 38 行的输出结果相同，说明二者是等价的。<br />
+<br />
+因为静态成员函数不具体作用于某个对象，所以静态成员函数内部不能访问非静态成员变量，也不能调用非静态成员函数。假如上面程序中的 PrintTotal 函数如下编写：
+<pre class="cpp">
+void CRectangle::PrintTotal()
+{
+    cout &lt;&lt; w &lt;&lt; &quot;,&quot; &lt;&lt; totalNumber &lt;&lt; &quot;,&quot; &lt;&lt; totalArea &lt;&lt; endl;  //错误
+}</pre>
+其中访问了非静态成员变量 w，这是不允许的，编译无法通过。因为如果用<code>CRetangle::PrintTotal();</code>这种形式调用 PrintTotal 函数，那就无法解释进入 PrintTotal 函数后，w 到底是属于哪个对象的。<br />
+<br />
+思考题：为什么在静态成员函数内不能调用非静态成员函数？<br />
+<br />
+在上面的程序中，CRectangle 类的写法表面看起来没有什么问题，实际上是有漏洞的。原因是，并非所有的 CRectangle 对象生成时都会用程序中的那个构造函数初始化。如果使用该类的程序稍微复杂一些，包含以 CRectangle 对象为参数的函数，或以 CRectangle 对象为返回值的函数，或出现<code>CRectangle rl(r2);</code>这样的语句，那么就有一些 CRectangle 对象是用默认复制构造函数，而不是 CRec:tangle(int w_, int h) 进行初始化的。这些对象生成时没有增加 totalNumber 和 totalArea 的值，而消亡时却减少了 totalNumber 和 totalArea 的 值，这显然是有问题的。<br />
+<br />
+解决办法是为 CRectangle 类编写如下复制构造函数：
+<pre class="cpp">
+CRectangle::CRectangle(CRectangle &amp; r)
+{
+    totalNumber++;
+    totalArea += r.w * r.h;
+    w = r.w; h = r.h;
+}</pre>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="335_3.html" title="数组指针和指针数组的区别，C语言数组指针和指针数组区别详解" target="_blank">数组指针和指针数组的区别，C语言数组指针和指针数组区别详解</a></li>
+<li><a href="2851_2.html" title="C# foreach循环用法详解" target="_blank">C# foreach循环用法详解</a></li>
+<li><a href="vip_5880_2.html" title="Python 2.x和Python 3.x，初学者应如何选择？" target="_blank">Python 2.x和Python 3.x，初学者应如何选择？</a></li>
+<li><a href="vip_7304_2.html" title="Go语言模拟枚举（const和iota模拟枚举）" target="_blank">Go语言模拟枚举（const和iota模拟枚举）</a></li>
+<li><a href="../python_spider/what-is-spider_2.html" title="网络爬虫是什么" target="_blank">网络爬虫是什么</a></li>
+<li><a href="../ml_alg/gradient-descent_2.html" title="梯度下降求极值" target="_blank">梯度下降求极值</a></li>
+<li><a href="sl3wl9m_2.html" title="Python定义函数（def关键字）" target="_blank">Python定义函数（def关键字）</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 165;
+window.arcId = "2ed11N4p4tC4uY4mYzHnhlfsGKtUJmv6dSniEEJ1FE6vTJo9uhzi4yxO1w";
+window.typeidChain = "120|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>

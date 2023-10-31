@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<!-- 启用Chromium高速渲染模式 -->
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit"/>
+<!-- 禁止百度转码 -->
+<meta name="applicable-device" content="pc,mobile" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!-- 禁止识别电话号码 -->
+<meta name="format-detection" content="telephone=no" />
+
+<link rel="shortcut icon" href="../favicon_3.ico" />
+<link href="../templets/new/style/common_2.css" rel="stylesheet" />
+<title>Linux挂载U盘（使用mount命令）</title>
+<meta name="description" content="挂载 U 盘 挂载 U 盘和挂载光盘的方式是一样的，只不过光盘的设备文件名是固定的（/dev/sr0 或 /dev/cdrom），而 U 盘的设备文件名是在插入 U 盘后系统自动分配的。因为U盘使用的是硬盘的" />
+</head>
+<body>
+<div id="topbar" class="clearfix">
+	<ul id="product-type" class="left">
+		<li>
+			<a href="../m_biancheng_default_2.html"><span class="iconfont iconfont-home"></span>首页</a>
+		</li>
+		<li class="active">
+			<a href="../sitemap/sitemap_2.html" rel="nofollow"><span class="iconfont iconfont-book"></span>教程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/vip/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-vip"></span>VIP会员</a>
+		</li>
+		<li>
+			<a href="../fudao_biancheng_default.html" rel="nofollow" target="_blank"><span class="iconfont iconfont-fudao"></span>辅导班</a>
+		</li>
+		<li>
+			<a href="niz69i_5.html" target="_blank"><span class="iconfont iconfont-chip"></span>嵌入式学习路线</a>
+		</li>
+		<!-- <li>
+			<a href="https://www.54benniao.com/c_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-c-course"></span>C语言高级课程</a>
+		</li>
+		<li>
+			<a href="https://www.54benniao.com/java_course/?from=biancheng" target="_blank"><span class="iconfont iconfont-java-course"></span>Java高级课程</a>
+		</li>
+		<li>
+			<a href="http://vip.biancheng.net/p/q2a/show.php" rel="nofollow" target="_blank"><span class="iconfont iconfont-q2a"></span>一对一答疑</a>
+		</li> -->
+	</ul>
+</div>
+<div id="header" class="clearfix">
+	<a id="logo" class="left" href="../m_biancheng_default_2.html">
+		<img height="26" src="../templets/new/images/logo_2.png" alt="C语言中文网" />
+	</a>
+	<ul id="nav-main" class="hover-none left clearfix">
+		<li class="wap-yes"><a href="../m_biancheng_default_2.html">首页</a></li>
+		<li><a href="../c/c_4.html">C语言教程</a></li>
+		<li><a href="../cplus/cplus_2.html">C++教程</a></li>
+		<li><a href="../python/python_2.html">Python教程</a></li>
+		<li><a href="../java/java_2.html">Java教程</a></li>
+		<li><a href="../linux_tutorial/linux_tutorial_2.html">Linux入门</a></li>
+		<li><a href="../sitemap/sitemap_2.html" title="网站地图">更多&gt;&gt;</a></li>
+	</ul>
+	<a href="http://vip.biancheng.net/?from=topbar" class="user-info iconfont iconfont-user hover-none" target="_blank" rel="nofollow" title="用户中心"></a>
+</div>
+<div id="main-no-course" class="clearfix">
+	<div class="arc-info">
+		<span class="position"><span class="iconfont iconfont-home2"></span> <a href="../m_biancheng_default_2.html">首页</a> &gt; 编程笔记</span>
+	</div>
+	<div id="ggxc-position-bottom" class="ggxc-box"></div>
+	<h1>Linux挂载U盘（使用mount命令）</h1>
+	<div id="ggxc-arctop-pc-1" class="ggxc-box"></div>
+	<div id="arc-body">挂载 U 盘和挂载光盘的方式是一样的，只不过光盘的设备文件名是固定的（/dev/sr0 或 /dev/cdrom），而 U 盘的设备文件名是在插入 U 盘后系统自动分配的。<br />
+<br />
+因为 U 盘使用的是硬盘的设备文件名，而每台服务器上插入的硬盘数量和分区方式都是不一样的，所以 U 盘的设备号需要单独检测与分配，以免和硬盘的设备文件名产生冲突。<br />
+<br />
+U 盘的设备文件名是系统自动分配的，我们只要查找出来然后挂载可以了。首先把 U 盘插入 Linux 系统中，这里需要注意的是，如果是虚拟机，则需要先把鼠标点入虚拟机再插入 U 盘。<br />
+<br />
+通过使用 fdisk 命令，即可查看到 U 盘的设备文件名，执行命令如下：<br />
+<p class="info-box">
+	[root@localhost ~]# fdisk -l<br />
+	Disk /dev/sda: 21.5GB, 21474836480 bytes<br />
+	#系统硬盘<br />
+	&hellip;省略部分输出&hellip;<br />
+	Disk/dev/sdb: 8022 MB, 8022654976 bytes<br />
+	#这就是识别的U盘，大小为8GB<br />
+	94 heads, 14 sectors/track, 11906 cylinders<br />
+	Units = cylinders of 1316 * 512 = 673792 bytes<br />
+	Sector size (logical/physical): 512 bytes / 512 bytes<br />
+	I/O size (minimum/optimal): 512 bytes / 512 bytes<br />
+	Disk identifier: 0x00000000<br />
+	Device Boot Start End Blocks Id System<br />
+	/dev/sdb1 1 11907 7834608 b W95 FAT32<br />
+	#系统给U盘分配的设备文件名</p>
+查看到 U 盘的设备文件名，接下来就要创建挂载点了。命令如下：
+<p class="info-box">
+	[root@localhost ~]# mkdir /mnt/usb</p>
+然后就是挂载了，挂载命令如下：
+<p class="info-box">
+	[root@localhost ~]# mount -t vfat /dev/sdb1 /mnt/usb/<br />
+	挂载U盘。因为是Windows分区，所以是vfat文件系统格式<br />
+	[root@localhost ~]# cd /mnt/usb/<br />
+	#去挂载点访问U盘数据<br />
+	[root@localhost usb]# ls<br />
+	#输出为乱码<br />
+	#之所以出现乱码，是因为编码格式不同</p>
+之所以出现乱码，是因为 U 盘是 Windows 中保存的数据，而 Windows 中的中文编码格式和 Linux 中的不一致，只需在挂载的时候指定正确的编码格式就可以解决乱码问题，命令如下：
+<p class="info-box">
+	[root@localhost ~]# mount -t vfat -o iocharset=utf8 /dev/sdb1 /mnt/usb/<br />
+	#挂载U盘，指定中文编码格式为UTF-8<br />
+	[root@localhost ~]# cd /mnt/usb/<br />
+	[root@localhost usb]# ls<br />
+	1111111年度总结及计划表.xls ZsyqlHL7osKSPBoGshZBr6.mp4 协议书<br />
+	12月21日.doc 恭喜发财(定）.mp4 新年VCR(定).mp4<br />
+	#可以正确地查看中文了</p>
+因为我们的 Linux 在安装时采用的是 UTF-8 编码格式，所以要让 U 盘在挂载时也指定为 UTF-8 编码格式，才能正确显示。
+<p class="info-box">
+	[root@localhost ~]# echo $LANG<br />
+	zh_CN.UTF-8<br />
+	#查看一下Linux默认的编码格式</p>
+注意，Linux 默认是不支持 NTFS 文件系统的，所以默认是不能挂载 NTFS 格式的移动硬盘的。要想让 Linux 支持移动硬盘，主要有三种方法：
+<ol>
+	<li>
+		重新编译内核，加入 ntfs 模块，然后安装 ntfs 模块即可；</li>
+	<li>
+		不自己编译内核，而是下载已经编译好的内核，直接安装即可；</li>
+	<li>
+		安装 NTFS 文件系统的第三方插件，也可以支持 NTFS 文件系统；</li>
+</ol>
+</div>
+	<div id="ggxc-weixin-arcbottom">
+	<p>关注公众号「<span class="col-green">站长严长生</span>」，在手机上阅读所有教程，随时随地都能学习。内含一款搜索神器，免费下载全网书籍和视频。</p>
+	<p style="margin-top:12px; text-align:center;">
+		<img src="../templets/new/images/material/qrcode_mp_4.png" alt="公众号二维码" width="160" /><br />
+		<span class="col-green">微信扫码关注公众号</span>
+	</p>
+</div>
+	<div id="nice-arcs" class="box-bottom">
+    <h4>推荐阅读</h4>
+    <ul class="clearfix">
+<li><a href="niz69i_8.html" title="一套完整的嵌入式开发学习路线（高薪就业版）" target="_blank">一套完整的嵌入式开发学习路线（高薪就业版）</a></li>
+<li><a href="tnnfqo_4.html" title="一套课程卖1万，TMD太贵了！" target="_blank">一套课程卖1万，TMD太贵了！</a></li>
+<li><a href="unnurw_4.html" title="跑了3000公里，见了一位大佬" target="_blank">跑了3000公里，见了一位大佬</a></li>
+<li><a href="3037_2.html" title="C# DataGridView：数据表格控件数据绑定" target="_blank">C# DataGridView：数据表格控件数据绑定</a></li>
+<li><a href="4674_2.html" title="C语言经典视频教程汇总，看了无师自通（共18套）" target="_blank">C语言经典视频教程汇总，看了无师自通（共18套）</a></li>
+<li><a href="4738_2.html" title="Java List.removeAll()方法：从列表中移除所有元素" target="_blank">Java List.removeAll()方法：从列表中移除所有元素</a></li>
+<li><a href="5690_2.html" title="什么是文件路径，Python中如何书写文件路径？" target="_blank">什么是文件路径，Python中如何书写文件路径？</a></li>
+<li><a href="6449_2.html" title="IP地址分配（静态分配+动态分配+零配置）" target="_blank">IP地址分配（静态分配+动态分配+零配置）</a></li>
+<li><a href="../springcloud/open-feign_2.html" title="OpenFeign：Spring Cloud声明式服务调用组件（非常详细）" target="_blank">OpenFeign：Spring Cloud声明式服务调用组件（非常详细）</a></li>
+<li><a href="vbr4grq_2.html" title="C++ vector容器详解" target="_blank">C++ vector容器详解</a></li>
+</ul>
+</div>
+	
+</div>
+<script type="text/javascript">
+// 当前文章ID
+window.arcIdRaw = 'a_' + 3670;
+window.arcId = "888e4PCGz5cM5Oj4LmyqcnozcOXLbdOLdh+KdV6tovFqOy/YP7efsCs/KyY";
+window.typeidChain = "210|119";
+</script>
+<div id="footer" class="clearfix">
+	<div class="info left">
+	<p>精美而实用的网站，分享优质编程教程，帮助有志青年。千锤百炼，只为大作；精益求精，处处斟酌；这种教程，看一眼就倾心。</p>
+	<p>
+		<a href="8066_2.html" target="_blank" rel="nofollow">关于网站</a> <span>|</span>
+		<a href="8092_3.html" target="_blank" rel="nofollow">关于站长</a> <span>|</span>
+		<a href="8097_2.html" target="_blank" rel="nofollow">如何完成一部教程</a> <span>|</span>
+		<a href="9648_2.html" target="_blank" rel="nofollow">公众号</a> <span>|</span>
+		<a href="8093_2.html" target="_blank" rel="nofollow">联系我们</a> <span>|</span>
+		<a href="../sitemap/sitemap_2.html" target="_blank" rel="nofollow">网站地图</a>
+	</p>
+	<p>Copyright ©2012-2022 biancheng.net, <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow" style="color:#666;">冀ICP备2022013920号</a>, <img height="13" src="../templets/new/images/gongan_2.png" alt="公安备案图标" /><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=13110202001352" target="_blank" rel="nofollow" style="color:#666;">冀公网安备13110202001352号</a>
+	</p>
+	</div>
+	<img id="logo_bottom" class="right" src="https://m.biancheng.net/templets/new/images/logo_bottom_2.gif" alt="底部Logo" />
+	<span id="return-top"><b>↑</b></span>
+</div>
+
+<div id="addweixin-widget">
+	<p>
+		<script type="text/javascript">
+			/*var suffix = 'c';
+			var thisMin = (new Date()).getMinutes();
+			if(thisMin>=40){
+				suffix = 'd';
+			}else if(thisMin>=20){
+				suffix = 'e';
+			}else{
+				suffix = 'c';
+			}
+			document.write('<img src="https://m.biancheng.net/templets/new/images/material/qrcode_wx_'%20+%20suffix%20+'.png?v=1.7.07" alt="微信交流群" width="120" /><br />');*/
+		</script>
+		<img src="https://m.biancheng.net/templets/new/images/material/qrcode_mp_4.png" alt="微信交流群" width="120" />
+		<span>关注微信公众号，加入官方交流群。内含一款搜索神器，免费下载全网书籍和视频。</span>
+	</p>
+	<span id="close-addweixin-widget" class="iconfont iconfont-close"></span>
+</div>
+
+<script type="text/javascript">
+window.siteId = 4;
+window.cmsTemplets = "/templets/new";
+window.cmsTempletsVer = "1.7.07";
+
+</script>
+
+<script src="https://m.biancheng.net/templets/new/script/jquery1.12.4.min_2.js"></script>
+<script src="https://m.biancheng.net/templets/new/script/common_2.js"></script>
+<!-- 51la V6 -->
+<span style="display: none;">
+<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"KDf6QzBhogyQjall",ck:"KDf6QzBhogyQjall",autoTrack:true})</script>
+</span>
+<!-- 51la V5 -->
+<!-- <span style="display: none;"><script type="text/javascript" src="https://js.users.51.la/21368967.js"></script></span> -->
+</body>
+</html>
